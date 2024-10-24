@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "argproject-client-side-solution",
+    "id": "837bf3bb-badf-4dd9-a5c4-0b5fd4280e8f",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "developer": {
+      "name": "",
+      "websiteUrl": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": "Undefined-1.19.0"
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "argproject description"
+      },
+      "longDescription": {
+        "default": "argproject description"
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "features": [
+      {
+        "title": "argproject Feature",
+        "description": "The feature that activates elements of the argproject solution.",
+        "id": "a00ac1fa-043a-453d-b3c9-b3654abfaa98",
+        "version": "1.0.0.0"
+      }
+    ]
+  },
+  "paths": {
+    "zippedPackage": "solution/argproject.sppkg"
+  }
+}

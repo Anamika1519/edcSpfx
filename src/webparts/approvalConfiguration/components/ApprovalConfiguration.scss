@@ -1,0 +1,59 @@
+
+.multiSelectContainer {
+    position: relative;
+    text-align: left;
+    width: 100%;
+    height: 100%;
+}
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+  }
+  
+  .mtable {
+    width: 100%;
+    min-width: 800px; /* You can adjust this to match the minimum width needed */
+  }
+  
+  @media screen and (max-width: 768px) {
+    .table-responsive {
+      overflow-x: scroll;
+    }
+  
+    .mtable {
+      min-width: 600px; /* Adjust as per your layout */
+    }
+  }
+
+  .chip {
+    align-items: center;
+    background: #0096fb;
+    border-radius: 11px;
+    color: #fff;
+    display: inline-block;
+    font-size: 10px;
+    line-height: 19px;
+    margin-bottom: .2rem;
+    margin-right: 0re;
+    padding: 2px 3px;
+}
+.searchWrapper {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    min-height: 22px;
+    padding: 5px;
+    position: relative;
+    display: inline-grid;
+}
+.mtable td
+{
+    height: 10rem;
+}
+.optionListContainer {
+  background: #fff;
+  border-radius: 4px;
+  margin-top: 1px;
+  position: relative !important;
+  width: 100%;
+  z-index: 99;
+}

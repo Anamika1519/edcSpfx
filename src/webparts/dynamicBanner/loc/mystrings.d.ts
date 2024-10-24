@@ -1,0 +1,19 @@
+declare interface IDynamicBannerWebPartStrings {
+  PropertyPaneDescription: string;
+  BasicGroupName: string;
+  DescriptionFieldLabel: string;
+  AppLocalEnvironmentSharePoint: string;
+  AppLocalEnvironmentTeams: string;
+  AppLocalEnvironmentOffice: string;
+  AppLocalEnvironmentOutlook: string;
+  AppSharePointEnvironment: string;
+  AppTeamsTabEnvironment: string;
+  AppOfficeEnvironment: string;
+  AppOutlookEnvironment: string;
+  UnknownEnvironment: string;
+}
+
+declare module 'DynamicBannerWebPartStrings' {
+  const strings: IDynamicBannerWebPartStrings;
+  export = strings;
+}

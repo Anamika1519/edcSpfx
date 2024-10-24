@@ -1,0 +1,211 @@
+.rbc-btn-group{
+    background-color:#1fb0e5;
+}
+.rbc-toolbar button{
+    color: white;
+    border: none; min-width: auto;
+}
+.imagehright img{
+    border-radius: 15px;
+    width: 100%;
+    height: 100%;object-fit: cover;
+}
+#calendarView{    float: left;
+    width: 100%;
+ 
+   }
+.card {
+    border-radius: 20px !important;
+    border: 1px solid #54ade0 !important;
+}
+.rbc-toolbar button.rbc-active{
+    background-color:#249ac5 ;
+    color: white;
+}
+.rbc-toolbar button:hover{
+    background-color:#249ac5 ;
+    color: white;
+}
+.rbc-toolbar button:active{
+    background-color:#249ac5 ;
+    color: white;
+}
+.rbc-toolbar button:focus{
+    background-color:#249ac5 ;
+    color: white;
+}
+.rbc-toolbar button.rbc-active:focus
+{
+    background-color:#249ac5 ;
+    color: white;
+}
+.rbc-toolbar button.rbc-active:hover{
+    background-color:#249ac5 ;
+    color: white;
+}
+.nav-pills .nav-link.active, .nav-pills .show>.nav-link {
+    background: #1fb0e5 !important;
+    color: white;
+}
+.backwhite{
+    background-color: white;
+    border: 1px solid #54ade0 !important;
+    border-radius: 20px;
+    padding: 15px;
+    float: left;
+    height: 550px;
+    width: 100%;
+}
+.rbc-calendar{
+    position: absolute;
+    width: 100%;
+    padding: 20px;
+}
+.rbc-toolbar .rbc-toolbar-label{
+    font-size: 1.25rem !important;
+    line-height: 1.875rem;
+    text-transform: uppercase;
+    font-weight: 500;
+}
+.rbc-btn-group{border-radius: 4px;    flex-direction: row-reverse;
+    display: flex;}
+    .rbc-header{
+        padding: 6px 3px;
+    }
+.navtab-bg .nav-link {
+    font-weight: 500;
+    border: 1px solid #54ade0 !important;
+    color: black;
+    text-decoration: none;
+    cursor: pointer; font-size: 14px;
+}
+.btn:hover {
+    color: var(--ct-btn-hover-color);
+    background-color: var(--ct-btn-hover-bg);
+    border-color: var(--ct-btn-hover-border-color);
+}
+.external-event {
+    cursor: move;
+    margin: 10px 0;
+    padding: 8px 10px;
+    color: #fff;
+    border-radius: 4px;
+    margin: 10px 0;
+    padding: 12px 10px;
+    height: 43px;
+    line-height:18px;
+}
+.rbc-button-link{
+    height: 20px;
+    min-width: 20px;
+    background: #f3f7f9;
+    border-radius: 1000px;
+
+    font-size: 11px;
+    margin: 5px;
+}
+.tab-content{padding: 0px 12px;}
+.imagemani {
+    width: 90%;
+    float: right;
+    
+}
+.imagemani img {
+    width: 100%;
+    height: 100%;
+    border-radius: 20px;
+}
+.posnew {
+    padding: 2px 12px !important;
+    border-radius: 4px;
+    background: rgba(0, 135, 81, 0.20) !important;
+    font-weight: 500 !important;
+    color: #008751;
+}
+.titleHeading
+{
+    line-height: 34px !important;
+    font-size: 30px !important;
+    font-weight: 800 !important;
+    color: #000 !important;
+    margin: 10px 0;
+}
+.customhead
+{
+    color: #98a6ad;
+    font-weight: 400;
+    font-size: 12px;
+}
+.customdescription
+{
+    line-height: 20px;
+    font-weight: 400;
+    color: #98a6ad;
+    font-size: 14px;
+}
+.btnCustomcss
+{
+    background-color: var(--ct-btn-active-bg);
+    border-color: var(--ct-btn-active-border-color);
+    color: var(--ct-btn-active-color);
+    padding: 10px;
+    border-radius: 20px;
+    width: fit-content;
+    font-size: 14px;
+    font-weight: 500;
+}
+.annuncementcard
+{
+    border-radius: 20px !important;
+    border: none !important;
+    box-shadow: 0 3px 20px #1d26260d;
+}
+.readmore {
+    color: #1fb0e5;
+    font-weight: 600;
+    font-size: 12px;
+}
+a
+{
+    text-decoration: unset;
+}
+a:hover
+{
+    text-decoration: unset;
+}
+.dropcss
+{
+    position: absolute;
+    right: 0;
+    border: none;
+    display: block;
+    margin: 0px;
+   
+    box-shadow: 0 2px 4px -2px rgba(0, 0, 0, 0.16), 0 2px 6px 0 rgba(0, 0, 0, 0.12);
+}
+.dropcssItem
+{
+    color: #323a46;
+    font-size: 14px;
+    font-weight: 400;
+    text-align: center;
+}
+.attendeesImg
+{
+    border-radius: 50% !important;
+    height: 1.5rem;
+    width: 1.5rem;
+}
+@media(max-width:1280px){
+    .rbc-day-slot .rbc-background-event, .rbc-event,  .rbc-toolbar button{font-size: 12px;}
+}
+@media(max-width:1200px)
+{
+    .rbc-toolbar button{    padding: .375rem 0.4rem;}
+}
+@media(max-width:1080px){
+.rbc-toolbar .rbc-toolbar-label {
+    font-size: 1rem !important;
+}
+.rbc-toolbar button{ padding: .375rem 0.3rem;}
+}

@@ -1,0 +1,79 @@
+/* Style the card to add padding and a shadow */
+.card {
+   
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+.mtable td{color: #6c757d;}
+table td, table th {
+    font-size: 14px;
+}
+/* Ensure inputs and selects have consistent padding and border radius */
+.form-control, 
+.form-select {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ced4da;
+    box-shadow: none;
+    transition: border-color 0.2s ease-in-out;
+}
+
+/* Focused input styling */
+.form-control:focus, 
+.form-select:focus {
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Custom button styling for consistency */
+.btn-success {
+    background-color: #1abc9c;
+    border-color: #1abc9c;
+}
+
+.btn-light {
+    background-color: #f8f9fa;
+    border-color: #f8f9fa;
+}
+
+/* Add hover effect to buttons */
+.btn-success:hover,
+.btn-light:hover {
+    opacity: 0.9;
+}
+
+/* Style the form labels to stand out */
+.form-label {
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+/* Style the description textarea */
+textarea.form-control {
+    resize: none;
+    border-radius: 5px;
+    border: 1px solid #ced4da;
+    padding: 10px;
+}
+
+/* Center the form buttons */
+.row.mt-3 .col-12.text-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Add some margin to the buttons */
+.row.mt-3 .col-12.text-center .btn {
+    margin: 0 10px;
+}
+.mtable td .svg-inline--fa{font-size: 20px;}
+/* Optional: Add custom styling for required fields */
+.text-danger {
+    color: #dc3545 !important;
+}
+div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm)
+{
+    background-color: #1abc9c !important;
+}
