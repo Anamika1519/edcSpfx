@@ -389,11 +389,11 @@ const BlogDetailsContext = ({ props }: any) => {
       <div className="content-page">
         <HorizontalNavbar />
         <div
-          className="content mt-4"
-          style={{ marginLeft: `${!useHide ? "240px" : "80px"}` }}
+          className="content "
+          style={{ marginLeft: `${!useHide ? "240px" : "80px"}`, marginTop:'1rem' }}
         >
           <div className="container-fluid  paddb">
-            <div className="row pt-2" style={{ paddingLeft: "0.5rem" }}>
+            <div className="row " >
               <div className="col-lg-3">
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
               </div>
@@ -410,14 +410,14 @@ const BlogDetailsContext = ({ props }: any) => {
                     <>
                       <div
                         className="row mt-3"
-                        style={{ paddingLeft: "0.5rem" }}
+                       
                       >
                         <p className="d-block mt-2 font-28" >
                           {item.Title}
                         </p>
                         <div className="row mt-2">
                           <div className="col-md-12 col-xl-12">
-                            <p className="mb-2 mt-1 font-14 d-block">
+                            <p className="mb-2 mt-1 newt6 font-14 d-block">
                               <span className="pe-2 text-nowrap mb-0 d-inline-block">
                                 <Calendar size={14} />{" "}
                                 {moment(item.Created).format("DD-MMM-YYYY")}{" "}
@@ -442,7 +442,7 @@ const BlogDetailsContext = ({ props }: any) => {
                           </div>
                         </div>
                       </div>
-                      <div className="row " style={{ paddingLeft: "0.5rem" }}>
+                      <div className="row " >
                         <p
                           style={{ lineHeight: "22px" }}
                           className="d-block text-muted mt-2 font-14"
@@ -452,7 +452,7 @@ const BlogDetailsContext = ({ props }: any) => {
                       </div>
                       <div
                         className="row internalmedia filterable-content mt-3"
-                        style={{ paddingLeft: "0.5rem" }}
+                        
                       >
                         {BlogGalleryJSON.length > 0 ? (
                           BlogGalleryJSON.map((res: any) => {
@@ -484,7 +484,7 @@ const BlogDetailsContext = ({ props }: any) => {
                       </div>
                       <div
                         className="row mt-2"
-                        style={{ paddingLeft: "0.5rem" }}
+                        
                       >
                         <p
                           style={{ lineHeight: "22px" }}
@@ -511,7 +511,7 @@ const BlogDetailsContext = ({ props }: any) => {
               }
  
             </div> */}
-            <div className="row mt-4" style={{ paddingLeft: "0.5rem" }}>
+            <div className="row mt-4" >
               <div className="col-md-6">
                 <div
                   className="card"
@@ -549,7 +549,7 @@ const BlogDetailsContext = ({ props }: any) => {
                 </div>
               </div>
             </div>
-            <div className="row " style={{ paddingLeft: "0.5rem" }}>
+            <div className="row ">
               {/* New comment input */}
  
               {comments.map((comment, index) => (

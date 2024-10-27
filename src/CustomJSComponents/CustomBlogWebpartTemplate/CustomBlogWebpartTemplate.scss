@@ -30,6 +30,7 @@
     font-weight: 400;
     font-size: 12px;
 }
+.annuncementcard p, .annuncementcard span{color: #6d757d;}
 .customdescription
 {
     line-height: 20px;
@@ -46,7 +47,7 @@
     border-radius: 20px;
     width: fit-content;
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 500; cursor: pointer; clear: both;
 }
 .annuncementcard
 {

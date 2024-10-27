@@ -99,7 +99,7 @@ const HelloWorldContext = ({props}:any) => {
     </div>
     <div className="content-page">
       <HorizontalNavbar />
-      <div className="content mt-5" style={{marginLeft: `${!useHide ? '240px' : '80px'}`}}>
+      <div className="conten" style={{marginLeft: `${!useHide ? '240px' : '80px'}`,marginTop:'1rem'}}>
           <div className="container-fluid  paddb">
             <div className="row" style={{ paddingLeft: '0.5rem' }}>
               <div className="col-lg-3">

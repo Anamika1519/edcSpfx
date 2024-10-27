@@ -6,10 +6,10 @@ import "../CustomBreadcrumb/CustomBreadcrumb.scss"
 const CustomBreadcrumb = ({Breadcrumb}) => {
     return (
         <div className=''>
-            <h4 className="page-title fw-bold mb-1 font-20">{Breadcrumb[1].ChildComponent}</h4>
+            <h4 className="page-title fw-bold mb-0 font-20">{Breadcrumb[1].ChildComponent}</h4>
             <ol className="breadcrumb m-0">
                 <li className="breadcrumb-item"><a href={Breadcrumb[0].MainComponentURl}>{Breadcrumb[0].MainComponent}</a></li>
-                <li className="breadcrumb-item pt-1">
+                <li className="breadcrumb-item pt-arr">
                     <FontAwesomeIcon
                         className="arrow-left"
                         icon={faChevronRight} size='xs' style={{color:'#6c757d'}}/>

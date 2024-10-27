@@ -783,9 +783,9 @@ const HelloWorldContext = ({ props }: any) => {
       </div>
       <div className="content-page newbancss" style={{ marginTop: '-15px' }}> {/* Edit by amjad */}
         <HorizontalNavbar />
-        <div className="content mt-4" style={{marginLeft: `${!useHide ? '240px' : '80px'}`}}> {/* Edit by amjad */}
+        <div className="content" style={{marginLeft: `${!useHide ? '240px' : '80px'}`, marginTop:'0.8rem'}}> {/* Edit by amjad */}
           <div className="container-fluid  paddb">
-            <div className="row pt-4">
+            <div className="row">
               <div className="col-lg-5">
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
               </div>
@@ -974,7 +974,7 @@ const HelloWorldContext = ({ props }: any) => {
                     </div>
 
 
-                    <div className="col-lg-5">
+                    <div className="col-lg-8">
                       <div className="mb-3">
                         <label htmlFor="overview" className="form-label">
                           Event Overview  <span className="text-danger">*</span>
@@ -993,7 +993,7 @@ const HelloWorldContext = ({ props }: any) => {
 
 
 
-                    <div className="col-lg-7">
+                    <div className="col-lg-12">
                       <div className="mb-3">
                         <label htmlFor="EventAgenda" className="form-label">
                           Event Agenda  <span className="text-danger">*</span>

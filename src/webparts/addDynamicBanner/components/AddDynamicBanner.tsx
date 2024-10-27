@@ -432,9 +432,9 @@ console.log(siteUrl)
       </div>
       <div className="content-page">
         <HorizontalNavbar />
-        <div className="content mt-4" style={{marginLeft: `${!useHide ? '240px' : '80px'}`}}>
+        <div className="content" style={{marginLeft: `${!useHide ? '240px' : '80px'}`}}>
             <div className="container-fluid  paddb">
-              <div className="row pt-2">
+              <div className="row">
                 <div className="col-lg-3">
                   <CustomBreadcrumb Breadcrumb={Breadcrumb} />
                 </div>
@@ -506,7 +506,7 @@ console.log(siteUrl)
                           </textarea>
                         </div>
                       </div>
-                      <div className="col-lg-3">
+                      <div className="col-lg-6">
                         <div className="mb-3">
                           <label htmlFor="url" className="form-label">
                             URL <span className="text-danger">*</span>

@@ -3,7 +3,7 @@
 }
 .rbc-toolbar button{
     color: white;
-    border: none; min-width: auto;
+    border: none; min-width: auto; font-size: 12px;
 }
 .imagehright img{
     border-radius: 15px;
@@ -14,6 +14,8 @@
     width: 100%;
  
    }
+   #listView span{color: #6c747d; font-size: 13px; font-weight: 400 !important;}
+   #listView p{color: #6c747d;}
 .card {
     border-radius: 20px !important;
     border: 1px solid #54ade0 !important;
@@ -144,7 +146,7 @@
     font-size: 14px;
 }
 .btnCustomcss
-{
+{clear: both;
     background-color: var(--ct-btn-active-bg);
     border-color: var(--ct-btn-active-border-color);
     color: var(--ct-btn-active-color);
@@ -152,7 +154,7 @@
     border-radius: 20px;
     width: fit-content;
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 500; cursor: pointer;
 }
 .annuncementcard
 {

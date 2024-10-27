@@ -180,9 +180,9 @@ const EventcalenderContext = ({ props }: any) => {
       </div>
       <div className="content-page">
         <HorizontalNavbar />
-        <div className="content" style={{ marginLeft: `${!useHide ? '240px' : '80px'}`, marginTop: '1.8rem' }}>
+        <div className="content" style={{ marginLeft: `${!useHide ? '240px' : '80px'}`, marginTop: '1rem' }}>
           <div className="container-fluid  paddb">
-            <div className="row pl-1">
+            <div className="row">
               <div className="col-lg-4">
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
               </div>
@@ -343,7 +343,7 @@ const EventcalenderContext = ({ props }: any) => {
                                   onClick={() => gotoNewsDetails(item)}
                                 >
                                   <h4
-                                    className="mt-0 mb-1 font-16 fw-bold text-dark"
+                                    className="mt-0 mb-1 font-16 fw-bold text-dark-new"
                                     style={{ fontSize: "16px" }}
                                   >
                                     {truncateText(item.EventName, 90)}
@@ -401,7 +401,7 @@ const EventcalenderContext = ({ props }: any) => {
                                         />
                                       </a> */}
 
-                                      <span style={{ display: 'flex', gap: '0.2rem' }}>
+                                      <span style={{ display: 'flex', gap: '0.2rem', alignItems:'center' }}>
                                         {
                                           item?.Attendees != undefined && item?.Attendees.length > 0 ? item?.Attendees.map((item1: any,index:any) => {
 

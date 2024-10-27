@@ -940,9 +940,9 @@ const AddannouncementContext = ({ props }: any) => {
       </div>
       <div className="content-page">
         <HorizontalNavbar />
-        <div className="content" style={{marginLeft: `${!useHide ? '240px' : '80px'}`,marginTop:'1.5rem'}}>
+        <div className="content" style={{marginLeft: `${!useHide ? '240px' : '80px'}`,marginTop:'0rem'}}>
           <div className="container-fluid  paddb">
-            <div className="row pt-2">
+            <div className="row">
               <div className="col-lg-5">
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
               </div>
@@ -951,7 +951,7 @@ const AddannouncementContext = ({ props }: any) => {
               <div className="card-body">
                 <div className="row mt-2">
                   <form className='row' >
-                    <div className="col-lg-3">
+                    <div className="col-lg-4">
                       <div className="mb-3">
                         <label htmlFor="title" className="form-label">
                           Title <span className="text-danger">*</span>
@@ -967,7 +967,7 @@ const AddannouncementContext = ({ props }: any) => {
                         />
                       </div>
                     </div>
-                    <div className="col-lg-3">
+                    <div className="col-lg-4">
                       <div className="mb-3">
                         <label htmlFor="Type" className="form-label">
                           Type <span className="text-danger">*</span>
@@ -991,7 +991,7 @@ const AddannouncementContext = ({ props }: any) => {
                         </select>
                       </div>
                     </div>
-                    <div className="col-lg-3">
+                    <div className="col-lg-4">
                       <div className="mb-3">
                         <label htmlFor="category" className="form-label">
                           Category <span className="text-danger">*</span>
@@ -1016,7 +1016,7 @@ const AddannouncementContext = ({ props }: any) => {
                       </div>
                     </div>
 
-                    <div className="col-lg-3">
+                    <div className="col-lg-4">
                       <div className="mb-3">
                         <label htmlFor="entity" className="form-label">
                           Entity <span className="text-danger">*</span>
@@ -1038,7 +1038,7 @@ const AddannouncementContext = ({ props }: any) => {
                       </div>
                     </div>
 
-                    <div className="col-lg-3">
+                    <div className="col-lg-4">
                       <div className="mb-3">
 
                         <div className='d-flex justify-content-between'>
@@ -1075,7 +1075,7 @@ const AddannouncementContext = ({ props }: any) => {
                       </div>
                     </div>
 
-                    <div className="col-lg-3">
+                    <div className="col-lg-4">
                       <div className="mb-3">
 
                         <div className='d-flex justify-content-between'>
@@ -1110,7 +1110,7 @@ const AddannouncementContext = ({ props }: any) => {
                       </div>
                     </div>
 
-                    <div className="col-lg-3">
+                    <div className="col-lg-4">
                       <div className="mb-3">
 
                         <div className='d-flex justify-content-between'>
@@ -1161,7 +1161,7 @@ const AddannouncementContext = ({ props }: any) => {
                       </div>
                     </div>
 
-                    <div className="col-lg-6">
+                    <div className="col-lg-12">
                       <div className="mb-3">
                         <label htmlFor="overview" className="form-label">
                           Overview <span className="text-danger">*</span>
@@ -1180,7 +1180,7 @@ const AddannouncementContext = ({ props }: any) => {
 
 
 
-                    <div className="col-lg-6">
+                    <div className="col-lg-12">
                       <div className="mb-3">
                         <label htmlFor="description" className="form-label">
                           Description <span className="text-danger">*</span>
@@ -1207,7 +1207,7 @@ const AddannouncementContext = ({ props }: any) => {
                  
 
 
-                    <div className="text-center butncss">
+                    <div className="text-center mt-0 butncss">
                       <div className="btn btn-success waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleFormSubmit}>
                         <div className='d-flex' style={{ justifyContent: 'space-around', width: '70px' }}>
                           <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} alt="Check" /> Submit

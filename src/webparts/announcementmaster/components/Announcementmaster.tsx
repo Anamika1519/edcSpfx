@@ -696,10 +696,10 @@ const Announcementmastercontext = ({ props }: any) => {
       </div>
       <div className="content-page">
         <HorizontalNavbar />
-        <div className="content mt-4" style={{ marginLeft: `${!useHide ? '240px' : '80px'}` }}>
+        <div className="content" style={{ marginLeft: `${!useHide ? '240px' : '80px'}` }}>
           <div className="container-fluid paddb">
             <div className="row">  {/* Edit by amjad */}
-              <div className="col-lg-6 pt-3">
+              <div className="col-lg-6">
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
               </div>
               <div className="col-lg-6">
@@ -728,7 +728,7 @@ const Announcementmastercontext = ({ props }: any) => {
               className="mb-3 mt-4"
             >
               <Tab eventKey="Announcement" title="Announcement">
-                <div className="card cardCss mt-4" style={{ height: '655px' }}>
+                <div className="card cardCss mt-4">
                   <div className="card-body">
 
                     <div id="cardCollpase4" className="collapse show">

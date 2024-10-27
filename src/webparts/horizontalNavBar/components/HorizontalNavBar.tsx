@@ -179,8 +179,8 @@ const HorizontalNavbar = () => {
         <Moon size='22' className={isDarkMode ? 'bx bx-moon desktoView' : 'bx bx-sun desktoView'} onClick={handleThemeToggle} />
         <Bell className='bx bx-bell searchcssmobile' size='80' />
         <div className="dropdown">
-          <div className='d-flex' onClick={toggleDropdown} style={{ gap: '10px', cursor: 'pointer' }}>
-            <div className='rounded-circle'>
+          <div className='d-flex' onClick={toggleDropdown} style={{ gap: '2px', cursor: 'pointer' }}>
+            <div >
               <User className='desktoView' size='22' />
               <User className='searchcssmobile' size='80' />
 

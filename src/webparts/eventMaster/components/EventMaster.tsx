@@ -288,9 +288,9 @@ const EntityMastercontext = ({ props }: any) => {
       </div>
       <div className="content-page">
         <HorizontalNavbar />
-        <div className="content mt-4" style={{marginLeft: `${!useHide ? '240px' : '80px'}`}}> {/* Edit by amjad */}
+        <div className="content " style={{marginLeft: `${!useHide ? '240px' : '80px'}`}}> {/* Edit by amjad */}
         <div className="container-fluid  paddb">
-              <div className="row pt-3">  {/* Edit by amjad */}
+              <div className="row ">  {/* Edit by amjad */}
                 <div className="col-lg-3">
                   <CustomBreadcrumb Breadcrumb={Breadcrumb} />
                 </div>
@@ -313,7 +313,7 @@ const EntityMastercontext = ({ props }: any) => {
                   </div>
                 </div>
               </div>
-              <div className="card cardCss mt-4" style={{ maxHeight: '655px' }}>
+              <div className="card cardCss mt-4" >
                 <div className="card-body">
                   <div id="cardCollpase4" className="collapse show">
                     <div className="table-responsive pt-0">

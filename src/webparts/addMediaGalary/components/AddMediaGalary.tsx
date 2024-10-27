@@ -629,9 +629,9 @@ const AddMediaGalaryContext = ({ props }: any) => {
       </div>
       <div className="content-page newbancss" style={{ marginTop: '-15px' }}> {/* Edit by Amjad */}
         <HorizontalNavbar />
-        <div className="content mt-4" style={{marginLeft: `${!useHide ? '240px' : '80px'}`}}>
+        <div className="content" style={{marginLeft: `${!useHide ? '240px' : '80px'}`, marginTop:'1.6rem'}}>
           <div className="container-fluid  paddb">
-            <div className="row pt-4">
+            <div className="row ">
                 <div className="col-lg-3 mt-1">
                   <CustomBreadcrumb Breadcrumb={Breadcrumb} />
                 </div>
@@ -640,7 +640,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
                 <div className="card-body">
                   <div className="row mt-2">
                     <form className='row' >
-                      <div className="col-lg-3">
+                      <div className="col-lg-4">
                         <div className="mb-3">
                           <label htmlFor="title" className="form-label">
                             Title <span className="text-danger">*</span>
@@ -655,7 +655,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
                             onChange={(e) => onChange(e.target.name, e.target.value)} />
                         </div>
                       </div>
-                      <div className="col-lg-3">
+                      <div className="col-lg-4">
                         <div className="mb-3">
                           <label htmlFor="entity" className="form-label">
                             Entity <span className="text-danger">*</span>
@@ -723,7 +723,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
                         </div>
                       </div>
 
-                      <div className="col-lg-3">
+                      <div className="col-lg-4">
                         <div className="mb-3">
 
                           <div className='d-flex justify-content-between'>

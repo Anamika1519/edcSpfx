@@ -280,7 +280,7 @@ const MediaMastercontext = ({ props }: any) => {
       </div>
       <div className="content-page"> 
         <HorizontalNavbar />
-        <div className="content mt-4" style={{marginLeft: `${!useHide ? '240px' : '80px'}`}}>
+        <div className="content" style={{marginLeft: `${!useHide ? '240px' : '80px'}`, marginTop:'0.6rem'}}>
           <div className="container-fluid  paddb">
             <div className="row pt-0">
               <div className="col-lg-3">
@@ -309,7 +309,7 @@ const MediaMastercontext = ({ props }: any) => {
               <div className="card-body">
                 <div id="cardCollpase4" className="collapse show">
                   <div className="table-responsive pt-0">
-                    <table className="mtable table-centered table-nowrap table-borderless mb-0">
+                    <table className="mtable pt-0 table-centered table-nowrap table-borderless mb-0">
                       <thead>
                         <tr>
                           <th style={{ borderBottomLeftRadius: '10px', minWidth: '50px', maxWidth: '50px', borderTopLeftRadius: '10px' }}>

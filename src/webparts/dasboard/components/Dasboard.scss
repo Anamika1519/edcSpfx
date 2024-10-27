@@ -9,11 +9,21 @@
     display: flex !important;
     align-items: flex-end !important;
     text-align: left !important;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    display: -webkit-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
+.margin01{margin-top: 2px;}
+.float-right{float: right;}
+.justify-between{gap:20px;}
+.carousel-indicators{list-style: none;;}
 .paddlright{padding-left: 0px  !important; padding-right:0px !important;}
 .paddlright .view-all{right: 0px !important;}
 .inbox-widget .heit8 .rounded-circle, .border-radius .rounded-circle  {width: 52px; height: 52px; margin-right: 7px;}
 .inbox-widget .heit8 p{ margin-left:15px;}
+.news-feed p{color:#6c757d;}
 .cptext {
     position: absolute;
     left: 0% !important;
@@ -121,6 +131,7 @@
 .mt-2 {
     margin-top: .75rem !important;
 }
+.inbox-widget .heit8 {position: relative; white-space: nowrap; padding:.75rem 0;}
 @media (max-width: 1920px) {
     .tabcontentv, .tabv {
         height: 434px !important;
@@ -144,7 +155,7 @@
     border: 1px solid #f1efef;
     border-radius: 10px;
 }
-.inbox-widget .heit8 {position: relative; white-space: nowrap; padding:.75rem 0;}
+
 @media (max-width: 1920px) {
     .tabcontentv, .tabv {
         height: 434px !important;
@@ -208,12 +219,13 @@ img, svg {
 .tabv button.active {
     background: transparent;
 }
-
+.margint50 {margin-top: 15px !important;}
+.newt{padding-bottom: 7px !important;}
 .tabv button {
     display: block;
     background-color: inherit;
     color: black;
-    padding: 11px 10px;
+    padding: 5px 10px;
     width: 100%;
     position: relative;
     border: none;
@@ -240,6 +252,9 @@ img, svg {
         width: 165px;
         font-size: 15px;
     }
+    .margint50{margin-top: 20px !important;}
+    .newt{padding-bottom: 7px !important;}
+    .tabv button{ padding: 19px 10px; }
 }
 
 .tabvtext {
@@ -268,7 +283,7 @@ img, svg {
     width: 60px;
 }
 .paddb {
-    padding: 10px 13px 0px 13px !important;
+    padding: 16px 13px 0px 13px !important;
 }
 .ipadt .w-100{margin-left: 15px;}
 
@@ -324,10 +339,28 @@ img, svg {
     .inbox-widget .heit8{    padding: .905rem 0;}
     .event{margin-bottom: 3px;
         margin-top: 13px;}
+        .tabv button{ padding: 11px 10px; }
+        .newt {
+            padding-bottom: 3px !important;
+        }
+        .margint50 {
+            margin-top: 12px !important;
+        }
 }
 
 @media(max-width:1440px){
     .inbox-widget .heit8 { padding:.625rem 0;}
-    .event{margin-bottom: 5px;
-        margin-top: 15px;}
+    .event{margin-bottom: 4px;
+        margin-top: 13px;}
+       
+}
+@media(max-width:1280px)
+{
+    .event {
+        margin-bottom: 5px;
+        margin-top: 13px;
+    }
+    .justify-between {
+        gap: 6px;
+    }
 }

@@ -448,9 +448,9 @@ const EventdetailscalenderContext = ({props}:any) => {
       </div>
       <div className="content-page">
         <HorizontalNavbar />
-        <div className="content mt-4" style={{marginLeft: `${!useHide ? '240px' : '80px'}`,marginTop:'1.8rem'}}>
+        <div className="content" style={{marginLeft: `${!useHide ? '240px' : '80px'}`,marginTop:'1rem'}}>
           <div className="container-fluid  paddb">
-          <div className="row pt-2" style={{ paddingLeft: '0.5rem' }}>
+          <div className="row " >
               <div className="col-lg-3">
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
               </div>
@@ -465,11 +465,11 @@ const EventdetailscalenderContext = ({props}:any) => {
                   console.log(EventGalleryJson);
                   return (
                     <>
-                      <div className="row mt-4" style={{ paddingLeft: '0.5rem' }}>
+                      <div className="row mt-4">
                       <p className="d-block mt-2 font-28">
                           {item.EventName}
                         </p>
-                        <div className="row mt-2" style={{ paddingLeft: '0.5rem' }}>
+                        <div className="row mt-2">
                           <div className="col-md-12 col-xl-12">
                           <p className="mb-2 mt-1 d-flex eventtextnew" style={{ paddingLeft: '0.5rem',cursor:'pointer' }}>
                             <span className="pe-2 text-nowrap mb-0 d-inline-block" >
@@ -603,11 +603,11 @@ const EventdetailscalenderContext = ({props}:any) => {
                 </div>
               </div>
             </div>
-            <div className="row" style={{ paddingLeft: '0.5rem' }}>
+            <div className="row" >
               {/* New comment input */}
 
               {comments.map((comment, index) => (
-                <div className="col-xl-6">
+                <div className="col-xl-6 eventcommm">
                   <CommentEventCard
                     key={index}
                     commentId={index}

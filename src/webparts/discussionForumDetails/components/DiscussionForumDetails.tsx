@@ -391,11 +391,11 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
       <div className="content-page">
         <HorizontalNavbar />
         <div
-          className="content mt-4"
-          style={{ marginLeft: `${!useHide ? "240px" : "80px"}` }}
+          className="content "
+          style={{ marginLeft: `${!useHide ? "240px" : "80px"}`, marginTop:'0.5rem'  }}
         >
           <div className="container-fluid  paddb">
-            <div className="row mt-1" style={{ paddingLeft: "0.5rem" }}>
+            <div className="row" style={{ paddingLeft: "0.5rem" }}>
               <div className="col-lg-3">
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
               </div>

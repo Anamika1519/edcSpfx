@@ -11,9 +11,16 @@
 .page-title{
   color: #343a40  !important;
 }
+.pt-arr{padding-top: 1px;}
+.pt-arr svg {
+  height: .9em;
+}
 .imagemani {
      
   height: 300px;
+}
+.paddb {
+  padding: 16px 13px 0px 13px !important;
 }
 .row{
   --bs-gutter-x: 0.8rem;
@@ -48,7 +55,8 @@
   color: #fff;
   font-weight: 500;
 }
-a{text-decoration: none !important;}
+.gal-box{width: 100%;}
+a{text-decoration: none !important; cursor: pointer;}
 .sidebar.close {
   padding: 0 0;
   width: 80px;
@@ -58,6 +66,14 @@ a{text-decoration: none !important;}
 text-overflow: ellipsis;
 -webkit-line-clamp: 2;
 display: -webkit-box;
+-webkit-box-orient: vertical;
+}
+.twolinewrap1{
+  overflow: hidden;
+text-overflow: ellipsis;
+-webkit-line-clamp: 3;
+display: -webkit-box;
+height:63px;
 -webkit-box-orient: vertical;
 }
 a:hover, a:active {
@@ -91,6 +107,8 @@ a:hover, a:active {
 .sidebar.close .logo_item{
   width: auto;
 }
+.dropcss a{display: block; text-align: center; font-size: 12px;}
+.text-dark-new{color: #343a40 !important;}
 .view-all {
   border-radius: 4px !important;
   float: right;
@@ -99,10 +117,25 @@ a:hover, a:active {
   position: relative;
   right: 0px;
   top: 5px;
+  color: #fff !important;
+  height: 24px !important;
+  background: #1fb0e5;
 }
+.view-all:hover{
+  background: #1fb0e5;
+}
+
+.annuncementcard h4{color: #343a40 !important;}
+.ht{   border: 1px solid #54ade0 !important;    height: 36px;
+  border-radius: 30px;
+  font-size: 13px;}
+.nose p{max-height: 77px; overflow-y: hidden;}
+.nose p:hover{overflow-y: auto;}
 .sidebar::-webkit-scrollbar {
   display: none;
 }
+.border-bottom p{color: #6c757d;}
+.eventcommm .nose{padding: 0px !important; margin: 0px !important;}
 .menu_content {
   position: relative;
 }
@@ -900,7 +933,7 @@ margin: 10px 0px !important ;
   .border-radius{
     padding-bottom: 12px;
   }
-  .view-all{position: absolute;right: 16px;
+  .view-all{position: absolute;right: 16px; height: 30px !important;
     top: 22px;}
   .announcementner .border-bottom{
     padding: 5px 0px 20px 0; 
@@ -942,6 +975,7 @@ margin: 10px 0px !important ;
      
       height: 370px;
   }
+  .twolinewrap1{height: 85px;}
 }
 @media(max-width:1800px)
 {
@@ -961,6 +995,8 @@ margin: 10px 0px !important ;
   .internalmedia .gal-box .image-popup {
       height: 250px !important;
   }
+  .view-all{height: 25px !important;}
+  .twolinewrap1{height: 68px;}
   .heightcard {
       height: 180px !important;
   }
@@ -1040,6 +1076,10 @@ margin: 10px 0px !important ;
   .internalmedia .gal-box .image-popup {
       height: 225px !important;
   }
+  .view-all{height: 24px !important;}
+  .twolinewrap1 {
+    height: 60px;
+}
   .event h4, .event p{
     width: 50px;
   }
@@ -1120,6 +1160,9 @@ margin: 10px 0px !important ;
     --bs-card-spacer-y: 0.8rem;
     --bs-card-spacer-x: 0.8rem;
   }
+  .twolinewrap1 {
+    height: 62px;
+}
   .border-radius .rounded-circle, .inbox-widget .heit8 .rounded-circle {
     height: 46px;
     margin-right: 7px;
@@ -1132,7 +1175,7 @@ margin: 10px 0px !important ;
 }
 .newc{margin-top: 10px !important;}
 .border-radius {
-  padding-bottom: 8px;
+  padding-bottom: 12px;
 }
 .newpadd{margin-top: 12px !important;}
   .imagehright {
@@ -1191,6 +1234,8 @@ margin: 10px 0px !important ;
   .internalmedia  .filter-item,.internalmedia1  .filter-item{
       width: 25% !important;
   }
+  .card-body{padding: 10px !important;}
+  
   .event h4, .event p{
     width:45px;
   } 

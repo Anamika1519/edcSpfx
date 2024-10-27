@@ -922,7 +922,7 @@ const BlogsContext = ({ props }: any) => {
       </div>
       <div className="content-page">
         <HorizontalNavbar />
-        <div className="content mt-2" style={{ marginLeft: `${!useHide ? '240px' : '80px'}` }}>
+        <div className="content mt-0" style={{ marginLeft: `${!useHide ? '240px' : '80px'}` }}>
           <div className="container-fluid  paddb">
             <div className="row">
               <div className="col-lg-3">

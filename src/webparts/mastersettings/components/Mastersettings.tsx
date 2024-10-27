@@ -155,7 +155,7 @@ export const MastersettingContext = ({ props }: any) => {
       </div>
       <div className="content-page">
         <HorizontalNavbar />
-        <div className="content mt-2" style={{marginLeft: `${!useHide ? '240px' : '80px'}`}}>
+        <div className="content" style={{marginLeft: `${!useHide ? '240px' : '80px'}`}}>
           <div className="container-fluid  paddb">
             <div className="row pt-0" style={{ paddingLeft: '0.5rem' }}>
               <div className="col-lg-3">

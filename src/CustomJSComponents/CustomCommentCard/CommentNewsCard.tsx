@@ -147,7 +147,7 @@ export const CommentNewsCard: React.FC<{
             <div className=" align-items-start mt-1">
               <div className="w-100">
                 <div className="d-flex align-items-start">
-                  <div className="al nice me-4">
+                  <div className="al nice me-2">
  
                     <img src={CurrentUserProfile} className="w30 avatar-sm rounded-circle" alt="user" />
                   </div>
