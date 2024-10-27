@@ -2,7 +2,9 @@ import Swal from 'sweetalert2';
 export const getAnncouncement = async (_sp) => {
   let arr = []
   let str = "Announcement"
-  await _sp.web.lists.getByTitle("ARGAnnouncementAndNews").items.select("*,AnnouncementandNewsTypeMaster/Id,AnnouncementandNewsTypeMaster/TypeMaster,Category/Id,Category/Category,Author/ID,Author/Title").expand("AnnouncementandNewsTypeMaster,Category,Author").filter(`AnnouncementandNewsTypeMaster/TypeMaster eq '${str}'`).getAll()
+  await _sp.web.lists.getByTitle("ARGAnnouncementAndNews").items
+  .select("*,AnnouncementandNewsTypeMaster/Id,AnnouncementandNewsTypeMaster/TypeMaster,Category/Id,Category/Category,Author/ID,Author/Title").expand("AnnouncementandNewsTypeMaster,Category,Author").filter(`AnnouncementandNewsTypeMaster/TypeMaster eq '${str}'`)
+  .orderBy("Created",false).getAll()
     .then((res) => {
       console.log(res);
 
@@ -18,7 +20,7 @@ export const getAnncouncement = async (_sp) => {
 export const getAnncouncementNewsCategory = async (_sp) => {
   let arr = []
   let str = "Announcement"
-  await _sp.web.lists.getByTitle("ARGAnnouncementsandNewsCategory").items.getAll()
+  await _sp.web.lists.getByTitle("ARGAnnouncementsandNewsCategory").items.orderBy("Created",false).getAll()
     .then((res) => {
       console.log(res);
 
@@ -209,7 +211,8 @@ export const getAnncouncementByID = async (_sp, id) => {
   let arr = []
   let arrs = []
   let bannerimg = []
-  await _sp.web.lists.getByTitle("ARGAnnouncementAndNews").items.getById(id).select("*,Category/ID,Category/Category,Entity/ID,Entity/Entity,AnnouncementandNewsTypeMaster/ID,AnnouncementandNewsTypeMaster/TypeMaster").expand("Category,Entity,AnnouncementandNewsTypeMaster")()
+  await _sp.web.lists.getByTitle("ARGAnnouncementAndNews").items.getById(id)
+  .select("*,Category/ID,Category/Category,Entity/ID,Entity/Entity,AnnouncementandNewsTypeMaster/ID,AnnouncementandNewsTypeMaster/TypeMaster").expand("Category,Entity,AnnouncementandNewsTypeMaster")()
     .then((res) => {
       console.log(res, ' let arrs=[]');
       const bannerimgobject = res.AnnouncementandNewsBannerImage != "{}" && JSON.parse(res.AnnouncementandNewsBannerImage)

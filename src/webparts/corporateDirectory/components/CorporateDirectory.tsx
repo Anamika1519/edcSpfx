@@ -48,6 +48,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
     Email: "",
     EmployeeID: "",
     Department: "",
+    MobilePhone:""
   });
 
   React.useEffect(() => {
@@ -105,7 +106,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
           "EMail",
           "Department",
           "JobTitle",
-          "Picture"
+          "Picture","MobilePhone"
         )
         .filter("EMail ne null")();
       console.log(userList, "userList");
@@ -170,8 +171,8 @@ const CorporateDirectoryContext = ({ props }: any) => {
         (filters.Name === "" ||
           item?.Title.toLowerCase().includes(filters.Name.toLowerCase())) &&
         (filters.Email === "" ||
-          item?.EMail.toLowerCase().includes(filters.Email.toLowerCase()))
-        // (filters.EmployeeID === '' || item?.ID.toLowerCase().includes(filters.EmployeeID.toLowerCase())) &&
+          item?.EMail.toLowerCase().includes(filters.Email.toLowerCase()))&&
+        (filters.MobilePhone === '' || item?.MobilePhone.toLowerCase().includes(filters.MobilePhone.toLowerCase())) 
         // (filters.Department === '' || item?.Department.toLowerCase().includes(filters.Department.toLowerCase()))
       );
     });
@@ -392,7 +393,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
                                   className="alignright"
                                   onClick={() =>
                                     window.open(
-                                      "https://teams.microsoft.com",
+                                      `https://teams.microsoft.com/l/call/0/0?users=${item.Email}`,
                                       "_blank"
                                     )
                                   }
@@ -692,6 +693,43 @@ const CorporateDirectoryContext = ({ props }: any) => {
                                       </div>
                                     </div>
                                   </th>
+                                  <th
+                                    style={{
+                                      minWidth: "100px",
+                                      maxWidth: "100px",
+                                    }}
+                                  >
+                                    <div className="d-flex flex-column bd-highlight ">
+                                      <div
+                                        className="d-flex  pb-2"
+                                        style={{
+                                          justifyContent: "space-between",
+                                        }}
+                                      >
+                                        {" "}
+                                        <span>Mobile Phone</span>{" "}
+                                        <span
+                                          onClick={() =>
+                                            handleSortChange("MobilePhone")
+                                          }
+                                        >
+                                          <FontAwesomeIcon icon={faSort} />{" "}
+                                        </span>
+                                      </div>
+                                      <div className=" bd-highlight">
+                                        {" "}
+                                        <input
+                                          type="text"
+                                          placeholder="Filter by Mobile Phone"
+                                          onChange={(e) =>
+                                            handleFilterChange(e, "MobilePhone")
+                                          }
+                                          className="inputcss"
+                                          style={{ width: "100%" }}
+                                        />
+                                      </div>
+                                    </div>
+                                  </th>
                                 </tr>
                               </thead>
                               <tbody>
@@ -729,9 +767,15 @@ const CorporateDirectoryContext = ({ props }: any) => {
                                         <td>{item.Title}</td>
                                         <td>{item.ID}</td>
                                         <td>{item.EMail}</td>
+                                        
                                         <td>
                                           {item?.Department != null
                                             ? item?.Department
+                                            : "NA"}
+                                        </td>
+                                        <td>
+                                          {item?.MobilePhone != null
+                                            ? item?.MobilePhone
                                             : "NA"}
                                         </td>
                                       </tr>

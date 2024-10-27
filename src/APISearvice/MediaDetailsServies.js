@@ -37,7 +37,7 @@ export const fetchMediaGallerydata = async (_sp) => {
       .items
       .select("*,MediaGalleryCategory/Id,MediaGalleryCategory/CategoryName")
       .expand("MediaGalleryCategory")
-      .filter(`Id eq ${Id}`) // Filter based on the main Id
+      .filter(`Id eq ${Id}`).orderBy("Created",false) // Filter based on the main Id
       .getAll()
       .then((res) => {
         if (res.length > 0) {

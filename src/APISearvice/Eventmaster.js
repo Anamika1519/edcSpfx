@@ -2,7 +2,7 @@ import Swal from 'sweetalert2';
 export const getAllEventMaster = async (_sp) => {
   let arr = []
   let str = "Announcements"
-  await _sp.web.lists.getByTitle("ARGEventMaster").items.select("*,Entity/ID,Entity/Entity").expand("Entity").getAll()
+  await _sp.web.lists.getByTitle("ARGEventMaster").items.select("*,Entity/ID,Entity/Entity").expand("Entity").orderBy("Created",false).getAll()
     .then((res) => {
       console.log(res);
 

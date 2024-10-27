@@ -3,7 +3,8 @@ import Swal from "sweetalert2";
 export const fetchBlogdata = async (_sp) => {
   let arr = []
  
-  await _sp.web.lists.getByTitle("ARGBlogs").items.select("*,Author/ID,Author/Title").expand("Author").getAll().then((res) => {
+  await _sp.web.lists.getByTitle("ARGBlogs")
+  .items.select("*,Author/ID,Author/Title").expand("Author").orderBy("Created",false).getAll().then((res) => {
     console.log(res);
  
     //res.filter(x=>x.Category?.Category==str)
@@ -17,7 +18,7 @@ export const fetchBlogdata = async (_sp) => {
 export const getBlog = async (_sp) => {
   let arr = []
   let str = "Announcements"
-  await _sp.web.lists.getByTitle("ARGBlogs").items.select("*,Author/ID,Author/Title").expand("Author").getAll()
+  await _sp.web.lists.getByTitle("ARGBlogs").items.select("*,Author/ID,Author/Title").expand("Author").orderBy("Created",false).getAll()
     .then((res) => {
       console.log("--discussion", res);
  
@@ -33,7 +34,7 @@ export const getBlog = async (_sp) => {
  
 export const GetCategory = async (_sp) => {
   let arr = []
-  await _sp.web.lists.getByTitle("ARGDiscussionForumCategory").items.getAll().then((res) => {
+  await _sp.web.lists.getByTitle("ARGDiscussionForumCategory").items.orderBy("Created",false).getAll().then((res) => {
     console.log("---category", res);
     arr = res;
   }).catch((error) => {
@@ -43,7 +44,7 @@ export const GetCategory = async (_sp) => {
 }
 export const GetBlogCategory = async (_sp) => {
   let arr = []
-  await _sp.web.lists.getByTitle("ARGBlogCategory").items.getAll().then((res) => {
+  await _sp.web.lists.getByTitle("ARGBlogCategory").items.orderBy("Created",false).getAll().then((res) => {
     console.log("---category", res);
     arr = res;
   }).catch((error) => {
@@ -187,7 +188,7 @@ export const uploadFileBlog = async (file, sp, docLib, siteUrl) => {
 export const fetchBlogdatatop = async (_sp) => {
   let arr = []
  
-  await _sp.web.lists.getByTitle("ARGBlogs").items.select("*,Author/ID,Author/Title,BlogCategory/Id,BlogCategory/categoryName").expand("Author,BlogCategory").top(4)().then((res) => {
+  await _sp.web.lists.getByTitle("ARGBlogs").items.select("*,Author/ID,Author/Title,BlogCategory/Id,BlogCategory/CategoryName").expand("Author,BlogCategory").top(4)().then((res) => {
     console.log(res);
  
     //res.filter(x=>x.Category?.Category==str)

@@ -1,24 +1,64 @@
 import Swal from "sweetalert2";
 
+// export const getGroupTeam = async (_sp) => {
+//   let arr = [];
+//   let str = "Announcements";
+//   await _sp.web.lists
+//     .getByTitle("ARGGroupandTeam")
+//     .items.select("*,Author/Title,Author/ID,GroupName,GroupType,InviteMemebers/Id") // Include GroupName and GroupType
+//     .expand("Author,InviteMemebers").orderBy("Created",false)
+//     .getAll()
+//     .then((res) => {
+//       console.log("--------group", res);
+
+//       //res.filter(x=>x.Category?.Category==str)
+//       arr = res;
+//     })
+//     .catch((error) => {
+//       console.error("Error fetching data: ", error);
+//     });
+//   return arr;
+// };
+
 export const getGroupTeam = async (_sp) => {
   let arr = [];
-  let str = "Announcements";
+  let currentUser;
+
+  // Fetch the current user
+  await _sp.web.currentUser()
+    .then(user => {
+      currentUser = user.Id; // Get the current user's ID
+    })
+    .catch(error => {
+      console.error("Error fetching current user: ", error);
+      return [];
+    });
+
+  if (!currentUser) return arr; // Return empty array if user fetch failed
+
   await _sp.web.lists
     .getByTitle("ARGGroupandTeam")
-    .items.select("*,Author/Title,Author/ID,GroupName,GroupType") // Include GroupName and GroupType
-    .expand("Author")
+    .items.select("*,Author/Title,Author/ID,GroupName,GroupType,InviteMemebers/Id")
+    .expand("Author,InviteMemebers")
+    .orderBy("Created", false)
     .getAll()
     .then((res) => {
       console.log("--------group", res);
 
-      //res.filter(x=>x.Category?.Category==str)
-      arr = res;
+      // Filter items based on GroupType and InviteMembers
+      arr = res.filter(item => 
+        // Include public groups or private groups where the current user is in the InviteMembers array
+        item.GroupType === "All" || 
+        (item.GroupType === "Selected Members" && item.InviteMemebers && item.InviteMemebers.some(member => member.Id === currentUser))
+      );
     })
     .catch((error) => {
       console.error("Error fetching data: ", error);
     });
+
   return arr;
 };
+
 export const updateItem = async (itemData, _sp, id) => {
   let resultArr = [];
   debugger
@@ -157,7 +197,7 @@ export const getType = async (_sp) => {
 export const fetchUserInformationList = async (sp) => {
   let arr =[]
   try {
-    const userList = await sp.web.lists.getByTitle("User Information List").items.select("ID", "Title", "EMail", "Department", "JobTitle", "Picture").filter("EMail ne null")();
+    const userList = await sp.web.lists.getByTitle("User Information List").items.select("ID", "Title", "EMail", "Department", "JobTitle", "Picture","MobilePhone").filter("EMail ne null")();
     console.log(userList, 'userList');
 
     arr = userList

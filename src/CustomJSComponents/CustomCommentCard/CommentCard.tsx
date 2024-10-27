@@ -1,5 +1,5 @@
 import { faHeart, faThumbsUp } from "@fortawesome/free-solid-svg-icons";
-
+ 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import { useState } from "react";
@@ -16,7 +16,7 @@ interface Reply {
   Created: string;
   UserProfile: string;
 }
-
+ 
 interface Like {
   ID: number;
   like: string;
@@ -25,7 +25,7 @@ interface Like {
   Count: number;
   Created: string;
 }
-
+ 
 interface Comment {
   Id: number
   UserName: string;
@@ -54,10 +54,10 @@ export const CommentCard: React.FC<{
   const [newReply, setNewReply] = useState('');
   const [loading, setLoading] = useState(false); // Loading state for replies
   console.log(Comments, 'Comments');
-
+ 
   const handleAddReply = async () => {
     if (newReply.trim() === '') return;
-
+ 
     // setLoading(true); // Set loading to true
     await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate an async operation
     onAddReply(newReply);
@@ -77,7 +77,7 @@ export const CommentCard: React.FC<{
       handleAddReply();
     }
   };
-
+ 
   return (
     <div className="card team-fedd" style={{ border: '1px solid #54ade0', borderRadius: '20px', boxShadow: '0 3px 20px #1d26260d' }}>
       <div className="card-body" style={{ padding: '15px' }}>
@@ -88,7 +88,7 @@ export const CommentCard: React.FC<{
               src={Comments[0].UserProfile}
               alt="User"
             />
-
+ 
             {/* <User /> */}
             <div className="w-100 mt-0">
               <h5 className="mt-0 font-16 fw600 mb-0 text-dark fw-bold">
@@ -101,9 +101,9 @@ export const CommentCard: React.FC<{
               </p>
             </div>
           </div>
-
+ 
           <p className="mt-2">{Commenttext}</p>
-
+ 
           <div className="mt-0 mb-2 d-flex" style={{ gap: '2rem' }}>
             <div onClick={onLike} className="btn btn-sm btn-link text-muted ps-0" style={{
               fontSize: '0.765625rem',
@@ -143,10 +143,10 @@ export const CommentCard: React.FC<{
                     <p className="text-muted font-12">
                       <small> {moment(reply.Created).format("DD-MMM-YYYY HH:mm")}</small>
                     </p>
-
+ 
                   </div>
                 </div>
-
+ 
               ))}
             </div>
           </div>
@@ -154,8 +154,8 @@ export const CommentCard: React.FC<{
             <div className=" align-items-start mt-1">
               <div className="w-100">
                 <div className="d-flex align-items-start">
-                  <div className="al nice me-4">
-
+                  <div className="al nice me-2">
+ 
                     <img src={CurrentUserProfile} className="w30 avatar-sm rounded-circle" alt="user" />
                   </div>
                   <input
@@ -168,7 +168,7 @@ export const CommentCard: React.FC<{
                     disabled={loading}
                   />
                 </div>
-
+ 
                 {/* <button
               className="btn btn-primary mt-2"
               onClick={handleAddReply}

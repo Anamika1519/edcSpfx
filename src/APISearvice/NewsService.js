@@ -3,7 +3,8 @@ import Swal from 'sweetalert2';
 export const getNews = async (_sp) => {
   let arr = []
      let str ="News"
-     await _sp.web.lists.getByTitle("ARGAnnouncementAndNews").items.select("*,AnnouncementandNewsTypeMaster/Id,AnnouncementandNewsTypeMaster/TypeMaster,Category/Id,Category/Category,Author/ID,Author/Title").expand("AnnouncementandNewsTypeMaster,Category,Author").filter(`AnnouncementandNewsTypeMaster/TypeMaster eq '${str}'`).getAll()
+     await _sp.web.lists.getByTitle("ARGAnnouncementAndNews")
+     .items.select("*,AnnouncementandNewsTypeMaster/Id,AnnouncementandNewsTypeMaster/TypeMaster,Category/Id,Category/Category,Author/ID,Author/Title").expand("AnnouncementandNewsTypeMaster,Category,Author").filter(`AnnouncementandNewsTypeMaster/TypeMaster eq '${str}'`).orderBy("Created",false).getAll()
      .then((res) => {
       console.log(res);
    

@@ -2,7 +2,8 @@ import Swal from 'sweetalert2';
 export const getMedia = async (_sp) => {
   let arr = []
      let str ="Announcements"
-  await _sp.web.lists.getByTitle("ARGMediaGallery").items.select("*,EntityMaster/ID,EntityMaster/Entity").expand("EntityMaster").getAll()
+  await _sp.web.lists.getByTitle("ARGMediaGallery")
+  .items.select("*,EntityMaster/ID,EntityMaster/Entity").expand("EntityMaster").orderBy("Created",false).getAll()
     .then((res) => {
       console.log(res);
    
@@ -225,7 +226,7 @@ export const ARGMediaGalleryCategory =async (sp)=>
   debugger
   let arr = []
   let arrs = []
-  await sp.web.lists.getByTitle("ARGMediaGalleryCategory").items.getAll().then((res) => {
+  await sp.web.lists.getByTitle("ARGMediaGalleryCategory").items.orderBy("Created",false).getAll().then((res) => {
           console.log(res, 'Resss');
         
            arrs = res

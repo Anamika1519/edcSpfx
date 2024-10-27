@@ -11,7 +11,7 @@ import "@pnp/sp/webs";
 import "@pnp/sp/lists";
 import "@pnp/sp/webs";
 import "../../../Assets/Figtree/Figtree-VariableFont_wght.ttf"
-import { Airplay, Calendar, File, Image, Clipboard, Bell, Users, Activity, Sun, Moon, Cpu, Rss, Maximize, Settings, Search, ChevronsDown, ChevronDown, Menu, User } from 'react-feather';
+import { Airplay, Calendar, File, Image, Clipboard, Bell, Users, Activity, Sun, Moon, Cpu, Rss, Maximize, Settings, Search, ChevronsDown, ChevronDown, Menu, User, Codepen, Command } from 'react-feather';
 import classNames from 'classnames'; // Assuming you use this for class management
 import { getCurrentUserName } from '../../../APISearvice/CustomService';
 import { graphfi } from "@pnp/graph";
@@ -306,7 +306,9 @@ const VerticalContext = ({ _context }: any) => {
       sun: Sun,
       moon: Moon,
       approval: Activity,
-      gear: Cpu
+      gear: Cpu,
+      codepen: Codepen,
+      command:Command
     };
     return iconMap[iconName] || null; // Return null if icon is not found
   };

@@ -16,9 +16,20 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
     const [showDropdownId, setShowDropdownId] = useState(null);
     const [currentEmail, setEmail] = useState('');
     const [blogData, setBlogData] = useState('');
+    const menuRef = useRef(null);
     useEffect(() => {
         ApIcall()
- 
+        const handleClickOutside = (event) => {
+            if (menuRef.current && !menuRef.current.contains(event.target)) {
+                setIsMenuOpenshare(false);
+            }
+        };
+        
+        document.addEventListener('mousedown', handleClickOutside);
+        
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
     }, [_sp, SiteUrl])
  
     const ApIcall = async () => {
@@ -34,7 +45,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
         if(text!=null)
         {
             return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
-
+ 
         }
     };
  
@@ -158,7 +169,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                                     </h4>
                                                     <p style={{ color: '#6b6b6b', fontSize: '14px', height: '2.5rem' }} className="mb-2 font-14 ng-binding">
                                                         {truncateText(item.Overview, 200)}</p>
-                                                    <p className="readmore" onClick={() => gotoBlogsDetails(item)} style={{ cursor: 'pointer' }}>Read more..</p>
+                                                    <div className="readmore" onClick={() => gotoBlogsDetails(item)} style={{ cursor: 'pointer' }}>Read more..</div>
                                                 </div>
                                                 </a>
                                             </div>
@@ -169,7 +180,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                                             <Share2 size={20} color="#6c757d" strokeWidth={2} style={{ fontWeight: '400' }} />
                                                         </div>
                                                         {showDropdownId === item.Id && (
-                                                            <div className="dropdown-menu dropcss">
+                                                            <div className="dropdown-menu dropcss" isMenuOpenshareref={menuRef}>
                                                                 <a className="dropdown-item dropcssItem" onClick={sendanEmail}>Share by email</a>
                                                                 <a className="dropdown-item dropcssItem" onClick={() => copyToClipboard(item.Id)}>
                                                                     Copy Link

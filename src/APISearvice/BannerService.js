@@ -1,7 +1,7 @@
 import Swal from 'sweetalert2';
 export const getDynamicBanner = async (_sp) => {
     let arr = []
-    await _sp.web.lists.getByTitle("DynamicBanners").items.getAll()
+    await _sp.web.lists.getByTitle("DynamicBanners").items.orderBy("Created",false).getAll()
         .then((res) => {
             console.log(res);
             arr = res;

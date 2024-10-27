@@ -71,6 +71,8 @@ export const getCurrentUser = async (_sp,siteUrl) => {
     });
     return arr;
 }
+
+
 export const getCurrentUserProfile = async (_sp,siteUrl) => {
     const ProfilePic =[]
    await _sp.web.currentUser()

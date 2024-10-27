@@ -3,14 +3,30 @@ import Swal from "sweetalert2";
 
 export const getDiscussionForum = async (_sp) => {
     let arr = []
-    let str = "Announcements"
-    await _sp.web.lists.getByTitle("ARGDiscussionForum").items.select("*,DiscussionForumCategory/Id,DiscussionForumCategory/CategoryName,Author/ID,Author/Title").expand("DiscussionForumCategory,Author").getAll()
+    let str = "Announcements";
+    let currentUser;
+    await _sp.web.currentUser()
+    .then(user => {
+      currentUser = user.Id; // Get the current user's ID
+    })
+    .catch(error => {
+      console.error("Error fetching current user: ", error);
+      return [];
+    });
+
+  if (!currentUser) return arr; // Return empty array if user fetch failed
+
+    await _sp.web.lists.getByTitle("ARGDiscussionForum")
+    .items.select("*,DiscussionForumCategory/Id,DiscussionForumCategory/CategoryName,Author/ID,Author/Title,InviteMemebers/Id,GroupType")
+    .expand("DiscussionForumCategory,Author,InviteMemebers").orderBy("Created",false).getAll()
         .then((res) => {
             console.log("--discussion", res);
 
-
-            //res.filter(x=>x.Category?.Category==str)
-            arr = res;
+            arr = res.filter(item => 
+                // Include public groups or private groups where the current user is in the InviteMembers array
+                item.GroupType === "Public" || 
+                (item.GroupType === "Private" && item.InviteMemebers && item.InviteMemebers.some(member => member.Id === currentUser))
+              );
         })
         .catch((error) => {
             console.log("Error fetching data: ", error);
@@ -20,7 +36,7 @@ export const getDiscussionForum = async (_sp) => {
 
 export const GetCategory = async (_sp) => {
     let arr = []
-    await _sp.web.lists.getByTitle("ARGDiscussionForumCategory").items.getAll().then((res) => {
+    await _sp.web.lists.getByTitle("ARGDiscussionForumCategory").items.orderBy("Created",false).getAll().then((res) => {
         console.log("---category", res);
         arr = res;
     }).catch((error) => {
@@ -152,5 +168,14 @@ export const getDiscussionComments = async (sp, Id) => {
         arr = mainArray
     }
     )
+    return arr;
+}
+export const getChoiceFieldOption = async (_sp,listName,fieldName) => {
+    let arr =[]
+    const field2 =  await _sp.web.lists.getByTitle(listName).fields.getByInternalNameOrTitle(fieldName)()
+    console.log(field2,'field2');
+   
+    arr= field2["Choices"]
+ 
     return arr;
 }
