@@ -15,6 +15,7 @@ import "@pnp/sp/fields";
 import "@pnp/sp/files";
 import "@pnp/sp/security";
 import "@pnp/sp/presets/all";
+
 // var _sp: SPFI;
 // export const getSP = (context?: WebPartContext): SPFI => {
 //   if (context != null && (_sp === undefined ||_sp === null)) {

@@ -26,6 +26,7 @@ import context from "../../../GlobalContext/context";
 // import { IBlogDetailsProps } from './IBlogDetailsProps';
 import { IDiscussionForumDetailsProps } from "./IDiscussionForumDetailsProps";
 import { getDiscussionForumDetailsById } from "../../../APISearvice/DiscussionForumService";
+import AvtarComponents from "../../../CustomJSComponents/AvtarComponents/AvtarComponents";
 // Define types for reply and comment structures
 interface Reply {
   Id: number;
@@ -35,7 +36,7 @@ interface Reply {
   Created: string;
   UserProfile: string;
 }
- 
+
 interface Like {
   ID: number;
   like: string;
@@ -44,7 +45,7 @@ interface Like {
   Count: number;
   Created: string;
 }
- 
+
 interface Comment {
   Id: number;
   UserName: string;
@@ -88,7 +89,7 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
       const nav = document.getElementById(navId);
       const bodypd = document.getElementById(bodyId);
       const headerpd = document.getElementById(headerId);
- 
+
       if (toggle && nav && bodypd && headerpd) {
         toggle.addEventListener("click", () => {
           nav.classList.toggle("show");
@@ -99,35 +100,35 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
       }
     };
     showNavbar("header-toggle", "nav-bar", "body-pd", "header");
- 
+
     const linkColor = document.querySelectorAll(".nav_link");
- 
+
     function colorLink(this: HTMLElement) {
       if (linkColor) {
         linkColor.forEach((l) => l.classList.remove("active"));
         this.classList.add("active");
       }
     }
- 
+
     linkColor.forEach((l) => l.addEventListener("click", colorLink));
   }, []);
   const ApiLocalStorageData = async () => {
     debugger;
- 
+
     //Get the Id parameter
     const ids = window.location.search;
     const originalString = ids;
     const idNum = originalString.substring(1);
     // const queryString = decryptId(Number(updatedString));
- 
+
     setArrDetails(await getDiscussionForumDetailsById(sp, Number(idNum)));
   };
- 
+
   const ApICallData = async () => {
     debugger;
-    setCurrentUser(await getCurrentUser(sp,siteUrl));
-    setCurrentUserProfile(await getCurrentUserProfile(sp,siteUrl));
- 
+    setCurrentUser(await getCurrentUser(sp, siteUrl));
+    setCurrentUserProfile(await getCurrentUserProfile(sp, siteUrl));
+
     let initialComments: any[] = [];
     const ids = window.location.search;
     const originalString = ids;
@@ -139,7 +140,7 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
       .filter(`DiscussionForumId eq ${Number(idNum)}`)()
       .then((result: any) => {
         console.log(result, "ARGDiscussionComments");
- 
+
         initialComments = result;
         setComments(
           initialComments.map((res) => ({
@@ -150,14 +151,14 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
             Created: new Date(res.Created).toLocaleString(), // Formatting the created date
             UserLikesJSON:
               res.UserLikesJSON != "" &&
-              res.UserLikesJSON != null &&
-              res.UserLikesJSON != undefined
+                res.UserLikesJSON != null &&
+                res.UserLikesJSON != undefined
                 ? JSON.parse(res.UserLikesJSON)
                 : [], // Default to empty array if null
             UserCommentsJSON:
               res.UserCommentsJSON != "" &&
-              res.UserCommentsJSON != null &&
-              res.UserCommentsJSON != undefined
+                res.UserCommentsJSON != null &&
+                res.UserCommentsJSON != undefined
                 ? JSON.parse(res.UserCommentsJSON)
                 : [], // Default to empty array if null
             userHasLiked: res.userHasLiked,
@@ -165,7 +166,7 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
             // Initialize as false
           }))
         );
- 
+
         // getUserProfilePicture(CurrentUser.Id,sp).then((url) => {
         //   if (url) {
         //     console.log("Profile Picture URL:", url);
@@ -175,7 +176,7 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
         // });
       });
   };
- 
+
   // Load comments from localStorage on component mount
   // useEffect(() => {
   //   const storedComments = localStorage.getItem('comments');
@@ -183,13 +184,13 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
   //     setComments(JSON.parse(storedComments));
   //   }
   // }, []);
- 
+
   // Save comments to localStorage whenever comments state changes
   // useEffect(() => {
   //   localStorage.setItem('comments', JSON.stringify(comments));
   // }, [comments]);
- 
-  const copyToClipboard = (Id:number) => {
+
+  const copyToClipboard = (Id: number) => {
     const link = `${siteUrl}/SitePages/DiscussionForumDetail.aspx?${Id}`;
     navigator.clipboard.writeText(link)
       .then(() => {
@@ -205,7 +206,7 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
     if (newComment.trim() === "") return;
     setLoading(true);
     await new Promise((resolve) => setTimeout(resolve, 1000));
- 
+
     await sp.web.lists
       .getByTitle("ARGDiscussionComments")
       .items.add({
@@ -234,15 +235,15 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
         setNewComment("");
         setLoading(false);
       });
- 
+
     // setComments((prevComments) => [...prevComments, newCommentData]);
   };
- 
+
   // Add a like to a comment
   const handleLikeToggle = async (commentIndex: number) => {
     const updatedComments = [...comments];
     const comment = updatedComments[commentIndex];
- 
+
     // Check if the user has already liked the comment
     const userLikeIndex = comment.UserLikesJSON.findIndex(
       (like: Like) => like.UserName === CurrentUser.Title // Replace with actual username property
@@ -250,7 +251,7 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
 
     if (userLikeIndex === -1) {
       // User hasn't liked yet, proceed to add a like
-     
+
       await sp.web.lists
         .getByTitle("ARGDiscussionUserLikes")
         .items.add({
@@ -261,7 +262,7 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
         })
         .then(async (ress: any) => {
           console.log(ress, "Added Like");
- 
+
           // Add the new like to the comment's UserLikesJSON array
           const newLikeJson: Like = {
             ID: ress.data.Id,
@@ -271,9 +272,9 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
             Created: ress.data.Created,
             Count: comment.UserLikesJSON.length + 1,
           };
-          
+
           updatedComments[commentIndex].UserLikesJSON.push(newLikeJson);
- 
+
           // Update the corresponding SharePoint list
           await sp.web.lists
             .getByTitle("ARGDiscussionComments")
@@ -294,17 +295,17 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
     } else {
       // User already liked, proceed to unlike (remove like)
       const userLikeId = comment.UserLikesJSON[userLikeIndex].ID; // Get the ID of the user's like
- 
+
       await sp.web.lists
         .getByTitle("ARGDiscussionUserLikes")
         .items.getById(userLikeId)
         .delete()
         .then(async () => {
           console.log("Removed Like");
- 
+
           // Remove the like from the comment's UserLikesJSON array
           updatedComments[commentIndex].UserLikesJSON.splice(userLikeIndex, 1);
- 
+
           // Update the corresponding SharePoint list
           await sp.web.lists
             .getByTitle("ARGDiscussionComments")
@@ -324,13 +325,13 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
         });
     }
   };
- 
+
   // Add a reply to a comment
   const handleAddReply = async (commentIndex: number, replyText: string) => {
     debugger;
     if (replyText.trim() === "") return;
     const updatedComments = [...comments];
- 
+
     const comment = updatedComments[commentIndex];
     await sp.web.lists
       .getByTitle("ARGDiscussionUserComments")
@@ -367,7 +368,7 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
           });
       });
   };
- 
+
   const Breadcrumb = [
     {
       MainComponent: "Home",
@@ -389,10 +390,10 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
         <VerticalSideBar _context={sp} />
       </div>
       <div className="content-page">
-        <HorizontalNavbar />
+          <HorizontalNavbar  _context={sp} siteUrl={siteUrl}/>
         <div
           className="content "
-          style={{ marginLeft: `${!useHide ? "240px" : "80px"}`, marginTop:'0.5rem'  }}
+          style={{ marginLeft: `${!useHide ? "240px" : "80px"}`, marginTop: '0.5rem' }}
         >
           <div className="container-fluid  paddb">
             <div className="row" style={{ paddingLeft: "0.5rem" }}>
@@ -402,111 +403,126 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
             </div>
             {ArrDetails.length > 0
               ? ArrDetails.map((item: any) => {
-                  const DiscussionForumGalleryJSON =
-                    item.DiscussionForumGalleryJSON == undefined ||
+                const DiscussionForumGalleryJSON =
+                  item.DiscussionForumGalleryJSON == undefined ||
                     item.DiscussionForumGalleryJSON == null
-                      ? ""
-                      : JSON.parse(item.DiscussionForumGalleryJSON);
-                  console.log(DiscussionForumGalleryJSON);
-                  return (
-                    <>
-                      <div
-                        className="row mt-4"
-                        style={{ paddingLeft: "0.5rem" }}
+                    ? ""
+                    : JSON.parse(item.DiscussionForumGalleryJSON);
+                console.log(DiscussionForumGalleryJSON);
+                return (
+                  <>
+                    <div
+                      className="row mt-4"
+                      style={{ paddingLeft: "0.5rem" }}
+                    >
+                      <p
+
+                        className="d-block mt-2 font-28"
                       >
-                        <p
-                          
-                          className="d-block mt-2 font-28"
-                        >
-                          {item.Topic}
-                        </p>
-                        <div className="row mt-2">
-                          <div className="col-md-12 col-xl-12">
-                            <p className="mb-2 mt-1 d-block" style={{fontSize:'14px'}}>
-                              <span className="pe-2 text-nowrap mb-0 d-inline-block">
-                                <Calendar size={14} />{" "}
-                                {moment(item.Created).format("DD-MMM-YYYY")}{" "}
-                                &nbsp; &nbsp; &nbsp;|
-                              </span>
-                              <span
-                                className="text-nowrap mb-0 d-inline-block"
-                                onClick={sendanEmail}
-                              >
-                                <Share size={14} /> Share by email &nbsp; &nbsp;
-                                &nbsp;|&nbsp; &nbsp; &nbsp;
-                              </span>
-                              <span
-                                className="text-nowrap mb-0 d-inline-block"
-                                onClick={() => copyToClipboard(item.Id)}
-                              >
-                                <Link size={14} /> Copy link &nbsp; &nbsp;
-                                &nbsp;
-                                {copySuccess && <span className="text-success">{copySuccess}</span>}
-                              </span>
-                            </p>
-                          </div>
+                        {item.Topic}
+                      </p>
+                      <div className="row mt-2">
+                        <div className="col-md-12 col-xl-12" style={{width:'100%'}}>
+                          <p className="mb-2 mt-1 d-flex" style={{ fontSize: '14px' }}>
+                            <span className="pe-2 text-nowrap mb-0 d-inline-block">
+                              <Calendar size={14} />{" "}
+                              {moment(item.Created).format("DD-MMM-YYYY")}{" "}
+                              &nbsp; &nbsp; &nbsp;|
+                            </span>
+                            <span
+                              className="text-nowrap mb-0 d-inline-block"
+                              onClick={sendanEmail}
+                            >
+                              <Share size={14} /> Share by email &nbsp; &nbsp;
+                              &nbsp;|&nbsp; &nbsp; &nbsp;
+                            </span>
+                            <span
+                              className="text-nowrap mb-0 d-inline-block"
+                              onClick={() => copyToClipboard(item.Id)}
+                            >
+                              <Link size={14} /> Copy link &nbsp; &nbsp;
+                              &nbsp;
+                              {copySuccess && <span className="text-success">{copySuccess}</span>}
+                            </span>
+                            <span>{item.GroupType}</span>
+                            <span style={{ display: 'flex', gap: '0.2rem' }}>
+                              {
+                                item?.InviteMemebers?.length > 0 && item?.InviteMemebers.map((item1: any, index: 0) => {
+
+                                  return (
+                                    <>
+                                      {item1.EMail ? <span style={{ margin: index == 0 ? '0 0 0 0' : '0 0 0px -12px' }} data-tooltip={item.Title}><img src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item1.EMail}`} className="attendeesImg" /> <span data-tooltip={item.Title}></span></span> :
+                                        <span> <AvtarComponents Name={item1.Title} data-tooltip={item.Title}/> </span>
+                                      }
+                                    </>
+                                  )
+                                })
+                              }
+                            </span>
+                          </p>
                         </div>
                       </div>
-                      <div className="row " style={{ paddingLeft: "0.5rem" }}>
-                        <p
-                          style={{ lineHeight: "22px" }}
-                          className="d-block text-muted mt-2 font-14"
-                        >
-                          {item.Overview}
-                        </p>
-                      </div>
-                      <div
-                        className="row internalmedia filterable-content mt-0"
-                        style={{ paddingLeft: "0.5rem" }}
+                    </div>
+                    <div className="row " style={{ paddingLeft: "0.5rem" }}>
+                      <p
+                        style={{ lineHeight: "22px" }}
+                        className="d-block text-muted mt-2 font-14"
                       >
-                        {DiscussionForumGalleryJSON.length > 0 ? (
-                          DiscussionForumGalleryJSON.map((res: any) => {
-                            return (
-                              <div className="col-sm-6 col-xl-3 filter-item all web illustrator">
-                                <div
-                                  className="gal-box"
-                                  style={{ height: "250px" }}
+                        {item.Overview}
+                      </p>
+                    </div>
+                    <div
+                      className="row internalmedia filterable-content mt-0"
+                      style={{ paddingLeft: "0.5rem" }}
+                    >
+                      {DiscussionForumGalleryJSON.length > 0 ? (
+                        DiscussionForumGalleryJSON.map((res: any) => {
+                          return (
+                            <div className="col-sm-6 col-xl-3 filter-item all web illustrator">
+                              <div
+                                className="gal-box"
+                                style={{ height: "250px" }}
+                              >
+                                <a
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#centermodal"
+                                  className="image-popup mb-2"
+                                  title="Screenshot-1"
                                 >
-                                  <a
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#centermodal"
-                                    className="image-popup mb-2"
-                                    title="Screenshot-1"
-                                  >
-                                    <img
-                                      src={`https://officeindia.sharepoint.com${res.fileUrl}`}
-                                      className="img-fluid imgcssscustom"
-                                      alt="work-thumbnail"
-                                      data-themekey="#"
-                                      style={{ width: "100%", height: "100%" }}
-                                    />
-                                  </a>
-                                </div>
+                                  <img
+                                    src={`https://officeindia.sharepoint.com${res.fileUrl}`}
+                                    className="img-fluid imgcssscustom"
+                                    alt="work-thumbnail"
+                                    data-themekey="#"
+                                    style={{ width: "100%", height: "100%" }}
+                                  />
+                                </a>
                               </div>
-                            );
-                          })
-                        ) : (
-                          <></>
-                        )}
-                      </div>
-                      <div
-                        className="row mt-5"
-                        style={{ paddingLeft: "0.5rem" }}
+                            </div>
+                          );
+                        })
+                      ) : (
+                        <></>
+                      )}
+                    </div>
+                    <div
+                      className="row mt-5"
+                      style={{ paddingLeft: "0.5rem" }}
+                    >
+                      <p
+                        style={{ lineHeight: "22px" }}
+                        className="d-block text-muted mt-2 mb-0 font-14"
                       >
-                        <p
-                          style={{ lineHeight: "22px" }}
-                          className="d-block text-muted mt-2 mb-0 font-14"
-                        >
-                          <div
-                            dangerouslySetInnerHTML={{
-                              __html: item.Description,
-                            }}
-                          ></div>
-                        </p>
-                      </div>
-                    </>
-                  );
-                })
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: item.Description,
+                          }}
+                        ></div>
+                      </p>
+                    </div>
+                  </>
+                );
+              })
               : null}
             {/* <div className="row">
               {
@@ -558,9 +574,9 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
             </div>
             <div className="row pt-2" style={{ paddingLeft: "0.5rem" }}>
               {/* New comment input */}
- 
+
               {comments.map((comment, index) => (
-                <div className="col-xl-6" style={{marginTop:"0rem"}}>
+                <div className="col-xl-6" style={{ marginTop: "0rem" }}>
                   <CommentCard
                     key={index}
                     commentId={index}
@@ -584,7 +600,7 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
     </div>
   );
 };
- 
+
 const DiscussionForumDetails: React.FC<IDiscussionForumDetailsProps> = (
   props
 ) => {
@@ -595,4 +611,4 @@ const DiscussionForumDetails: React.FC<IDiscussionForumDetailsProps> = (
   );
 };
 export default DiscussionForumDetails;
- 
+

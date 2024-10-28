@@ -33,6 +33,9 @@ export default class DiscussionForumWebPart extends BaseClientSideWebPart<IDiscu
         userDisplayName: this.context.pageContext.user.displayName,
         context: this.context,
         siteUrl: this.context.pageContext.web.absoluteUrl,
+        absoluteUrl:this.context.pageContext.web.absoluteUrl,
+        msGraphClientFactory: this.context.msGraphClientFactory,
+    spHttpClient: this.context.spHttpClient
       }
     );
 

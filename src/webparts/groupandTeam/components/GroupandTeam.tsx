@@ -96,7 +96,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
   const [groupsData, setGroupsData] = React.useState([]);
 
- 
+
 
   const elementRef = React.useRef<HTMLDivElement>(null);
 
@@ -106,7 +106,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
   const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
 
- 
+
 
   const [newsData, setNewsData] = React.useState([]);
 
@@ -124,11 +124,11 @@ const GroupandTeamcontext = ({ props }: any) => {
 
   const [TypeData, setTypeData] = React.useState([]);
 
- 
+
 
   const [DocumentpostIdsArr, setDocumentpostIdsArr] = React.useState([]);
 
- 
+
 
   const [EnityData, setEnityData] = React.useState([]);
 
@@ -152,7 +152,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
   const [isOpen, setIsOpen] = React.useState(false);
 
- 
+
 
   const toggleDropdown = () => {
 
@@ -214,7 +214,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
   const [IsinvideHide, setIsinvideHide] = React.useState(false);
 
- 
+
 
   const [Url, setBaseUrl] = React.useState("");
 
@@ -224,7 +224,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
   }>({});
 
- 
+
 
   React.useEffect(() => {
 
@@ -234,7 +234,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
   }, [useHide]);
 
- 
+
 
   React.useEffect(() => {
 
@@ -242,7 +242,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
   }, []);
 
- 
+
 
   const ApiCall = async () => {
 
@@ -278,7 +278,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
   };
 
- 
+
 
   const onFileChange = async (
 
@@ -298,23 +298,23 @@ const GroupandTeamcontext = ({ props }: any) => {
 
     let uloadDocsFiles1: any[] = [];
 
- 
+
 
     let uloadImageFiles: any[] = [];
 
     let uloadImageFiles1: any[] = [];
 
- 
+
 
     let uloadBannerImageFiles: any[] = [];
 
- 
+
 
     if (event.target.files && event.target.files.length > 0) {
 
       const files = Array.from(event.target.files);
 
- 
+
 
       if (libraryName === "Docs") {
 
@@ -344,7 +344,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
         );
 
- 
+
 
         if (docFiles.length > 0) {
 
@@ -390,7 +390,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
             });
 
- 
+
 
             setDocumentpostArr1(DocumentpostArr1);
 
@@ -420,7 +420,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
             });
 
- 
+
 
             setDocumentpostArr1(uloadDocsFiles1);
 
@@ -444,7 +444,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
       //   );
 
- 
+
 
       //   if (imageVideoFiles.length > 0) {
 
@@ -542,7 +542,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
   };
 
- 
+
 
   const getDescription = (des: any) => {
 
@@ -552,7 +552,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
   };
 
- 
+
 
   const handleFilterChange = (
 
@@ -572,13 +572,13 @@ const GroupandTeamcontext = ({ props }: any) => {
 
   };
 
- 
+
 
   const applyFiltersAndSorting = (data: any[]) => {
 
     // debugger;
 
- 
+
 
     // Filter data
 
@@ -612,7 +612,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
     });
 
- 
+
 
     // Sort data
 
@@ -624,7 +624,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
     //     const bValue = b[sortConfig.key] ? b[sortConfig.key].toLowerCase() : '';
 
- 
+
 
     //     if (aValue < bValue) {
 
@@ -644,7 +644,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
     // });
 
- 
+
 
     const sortedData = filteredData.sort((a, b) => {
 
@@ -656,7 +656,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
         const bIndex = data.indexOf(b);
 
- 
+
 
         return sortConfig.direction === "ascending"
 
@@ -672,7 +672,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
         const bValue = b[sortConfig.key] ? b[sortConfig.key].toLowerCase() : "";
 
- 
+
 
         if (aValue < bValue) {
 
@@ -700,7 +700,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
   const filteredNewsData = applyFiltersAndSorting(newsData);
 
- 
+
 
   const [currentPage, setCurrentPage] = React.useState(1);
 
@@ -708,7 +708,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
   const totalPages = Math.ceil(filteredAnnouncementData.length / itemsPerPage);
 
- 
+
 
   const handlePageChange = (pageNumber: any) => {
 
@@ -734,7 +734,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
   const [options, setOpions] = useState([
 
-   
+
 
   ]);
 
@@ -744,39 +744,39 @@ const GroupandTeamcontext = ({ props }: any) => {
 
     try {
 
-        const items = await fetchUserInformationList(sp);
+      const items = await fetchUserInformationList(sp);
 
-        console.log(items,'itemsitemsitems');
+      console.log(items, 'itemsitemsitems');
 
-       
 
-        const formattedOptions = items.map((item: { Title: any; Id: any; }) => ({
 
-            name: item.Title, // Adjust according to your list schema
+      const formattedOptions = items.map((item: { Title: any; Id: any; }) => ({
 
-            id: item.Id,
+        name: item.Title, // Adjust according to your list schema
 
-        }));
+        id: item.Id,
 
-        setOpions(formattedOptions);
+      }));
+
+      setOpions(formattedOptions);
 
     } catch (error) {
 
-        console.error('Error fetching options:', error);
+      console.error('Error fetching options:', error);
 
     }
 
-};
+  };
 
   const onSelect = (selectedList: React.SetStateAction<any[]>, selectedItem: any) => {
 
     setSelectedValue(selectedList);
 
-    console.log('Selected item:', selectedItem,'selectedList',selectedList);
+    console.log('Selected item:', selectedItem, 'selectedList', selectedList);
 
   }
 
- 
+
 
   const onRemove = (selectedList: React.SetStateAction<any[]>, removedItem: any) => {
 
@@ -790,7 +790,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
     console.log("This function is called only once", useHide);
 
- 
+
 
     const showNavbar = (
 
@@ -812,7 +812,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
       const headerpd = document.getElementById(headerId);
 
- 
+
 
       if (toggle && nav && bodypd && headerpd) {
 
@@ -832,15 +832,15 @@ const GroupandTeamcontext = ({ props }: any) => {
 
     };
 
- 
+
 
     showNavbar("header-toggle", "nav-bar", "body-pd", "header");
 
- 
+
 
     const linkColor = document.querySelectorAll(".nav_link");
 
- 
+
 
     function colorLink(this: HTMLElement) {
 
@@ -854,153 +854,71 @@ const GroupandTeamcontext = ({ props }: any) => {
 
     }
 
- 
+
 
     linkColor.forEach((l) => l.addEventListener("click", colorLink));
 
   }, [useHide]);
 
- 
-
-  // const exportData = currentData.map((item, index) => ({
-
-  //   "S.No.": startIndex + index + 1,
-
-  //   Title: item.Title,
-
-  //   Overview: item.Overview,
-
-  //   Category: item?.Category?.Category,
-
-  //   Type: item?.AnnouncementandNewsTypeMaster?.TypeMaster,
-
-  //   Status: item.Status,
-
-  //   "Submitted Date": item.Created,
-
-  // }));
-
- 
 
   const onChange = async (name: string, value: string) => {
 
-    // console.log("name->>>>",name)
-
-    // console.log("value->>>>",value)
-
     setFormData((prevData: any) => ({
-
       ...prevData,
-
       [name]: value,
-
     }));
-
     if (name == "GroupType" && value != "All") {
       setIsinvideHide(true);
 
-    } else if(name == "GroupType") {
+    } else if (name == "GroupType") {
 
       setIsinvideHide(false);
-
     }
-
   };
-
   const validateForm = () => {
-
     debugger
 
     const {
-
       GroupName,
-
       GroupType,
-
       category,
-
-      entity,
-
       overview,
-
       FeaturedAnnouncement,
-
       inviteMemebrs,
-
       GroupDescription,
 
     } = formData;
 
-    // const { description } = richTextValues;
-
     let valid = true;
 
- 
-
     if (!GroupName) {
-
       Swal.fire("Error", "Group Name is required!", "error");
-
       valid = false;
-
-    } else if (!entity) {
-
-      Swal.fire("Error", "Entity is required!", "error");
-
-      valid = false;
-
     }
-
-    // else if (!inviteMemebrs && formData.GroupType != 'Public') {
-
-    //   Swal.fire("Error", "Invite Memebrs is required!", "error");
-
-    //   valid = false;
-
-    // }
-
- 
-
     return valid;
 
   };
 
- 
+
 
   const setShowModalFunc = (bol: boolean, name: string) => {
 
     if (name == "bannerimg") {
-
       setShowModal(bol);
-
       setShowBannerTable(true);
-
       setShowImgTable(false);
-
       setShowDocTable(false);
-
     } else if (name == "Gallery") {
-
       setShowModal(bol);
-
       setShowImgTable(true);
-
       setShowBannerTable(false);
-
       setShowDocTable(false);
-
     } else {
-
       setShowModal(bol);
-
       setShowDocTable(true);
-
       setShowBannerTable(false);
-
       setShowImgTable(false);
-
     }
-
   };
 
   const members = [
@@ -1014,11 +932,7 @@ const GroupandTeamcontext = ({ props }: any) => {
     { value: "member4", label: "Member 4" },
 
   ];
-
   const handleFormSubmit = async () => {
-
- 
-
     if (validateForm()) {
 
       if (editForm) {
@@ -1050,146 +964,66 @@ const GroupandTeamcontext = ({ props }: any) => {
                 ? selectedValue.map((ele) => ele.id)
 
                 : null;
-
- 
-
-            //console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
-
             debugger;
-
             let bannerImageArray: any = {};
-
             let galleryIds: any[] = [];
-
             let documentIds: any[] = [];
-
             let galleryArray: any[] = [];
-
             let documentArray: any[] = [];
-
-            let arr :any[]=[];
-
- 
-
-           
-
-              // Update the list item with the user ID
-
-              // await sp.web.lists.getByTitle("ARGEventMaster").items.getById(Item.Id).update(
-
-              //   {
-
-              //     AttendeesId: arr,
-
-              //   }
-
-              // ).then(res=>
-
-              // {
-
-              //   console.log("People Picker field updated successfully!");
-
-              //   ApiLocalStorageData()
-
-              // }
-
-              // )
-
-         
-
-           
-
-             
-
+            let arr: any[] = [];
+            // Update the list item with the user ID
+            // await sp.web.lists.getByTitle("ARGEventMaster").items.getById(Item.Id).update(
+            //   {
+            //     AttendeesId: arr,
+            //   }
+            // ).then(res=>
+            // {
+            //   console.log("People Picker field updated successfully!");
+            //   ApiLocalStorageData()
+            // }
+            // )
             // formData.FeaturedAnnouncement === "on"?  true :false;
-
- 
-
             // Upload Banner Images
-
             if (
-
               BnnerImagepostArr.length > 0 &&
-
               BnnerImagepostArr[0]?.files?.length > 0
-
             ) {
-
               for (const file of BnnerImagepostArr[0].files) {
-
                 //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
-
                 bannerImageArray = await uploadFile(
-
                   file,
-
                   sp,
-
                   "Documents",
-
                   "https://officeindia.sharepoint.com"
-
                 );
-
               }
-
             } else {
-
               bannerImageArray = null;
-
             }
-
             debugger;
-
             if (bannerImageArray != null) {
-
               // Create Post
-
               let postPayload: any = {};
               if (formData.GroupType != "All") {
                 postPayload = {
-
                   GroupName: formData.GroupName,
-
                   Overview: formData.overview,
-
                   GroupDescription: formData.GroupDescription,
-
-                  EntityId: Number(formData.entity),
-
                   GroupType: formData.GroupType,
-
                   InviteMemebersId: selectedIds,
-
-                  // DiscussionForumCategoryId: Number(formData.category),
-
                 };
-
               } else {
-
                 postPayload = {
-
                   GroupName: formData.GroupName,
-
                   Overview: formData.overview,
-
                   GroupDescription: formData.GroupDescription,
-
-                  EntityId: Number(formData.entity),
-
                   GroupType: formData.GroupType,
-
-                  // DiscussionForumCategoryId: Number(formData.category),
-
                 };
 
               }
-
- 
-
               console.log(postPayload);
 
- 
+
 
               const postResult = await updateItem(postPayload, sp, editID);
 
@@ -1197,83 +1031,9 @@ const GroupandTeamcontext = ({ props }: any) => {
 
               debugger;
 
-              // if (!postId) {
+            
 
-              //   console.error("Post creation failed.");
 
-              //   return;
-
-              // }
-
- 
-
-              // Upload Gallery Images
-
-              // Upload Gallery Images
-
-              // if (ImagepostArr[0]?.files?.length > 0) {
-
-              //   for (const file of ImagepostArr[0].files) {
-
-              //     const uploadedGalleryImage = await uploadFileToLibrary(
-
-              //       file,
-
-              //       sp,
-
-              //       "GroupTeamGallery"
-
-              //     );
-
- 
-
-              //     galleryIds = galleryIds.concat(
-
-              //       uploadedGalleryImage.map((item: { ID: any }) => item.ID)
-
-              //     );
-
-              //     if (ImagepostArr1.length > 0) {
-
-              //       ImagepostArr1.push(uploadedGalleryImage[0]);
-
-              //       const updatedData = ImagepostArr1.filter(
-
-              //         (item) => item.ID !== 0
-
-              //       );
-
-              //       // debugger;
-
-              //       console.log(updatedData, "updatedData");
-
-              //       galleryArray = updatedData;
-
-              //       //galleryArray.push(ImagepostArr1);
-
- 
-
-              //       ImagepostIdsArr.push(galleryIds[0]); //galleryIds.push(ImagepostIdsArr)
-
-              //       galleryIds = ImagepostIdsArr;
-
-              //     } else {
-
-              //       galleryArray.push(uploadedGalleryImage);
-
-              //     }
-
-              //   }
-
-              // } else {
-
-              //   galleryIds = ImagepostIdsArr;
-
-              //   galleryArray = ImagepostArr1;
-
-              // }
-
- 
 
               // Upload Documents
 
@@ -1371,7 +1131,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
               }
 
- 
+
 
               const updatePayload = {
 
@@ -1379,7 +1139,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
                 //   GroupTeamGalleryId: galleryIds,
 
- 
+
 
                 //   GroupTeamGalleryJSON: JSON.stringify(flatArray(galleryArray)),
 
@@ -1395,7 +1155,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
               };
 
- 
+
 
               if (Object.keys(updatePayload).length > 0) {
 
@@ -1427,7 +1187,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
                   GroupDescription: formData.GroupDescription,
 
-                  EntityId: Number(formData.entity),
+                  // EntityId: Number(formData.entity),
 
                   GroupType: formData.GroupType,
 
@@ -1449,7 +1209,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
                   GroupDescription: formData.GroupDescription,
 
-                  EntityId: Number(formData.entity),
+                  // EntityId: Number(formData.entity),
 
                   GroupType: formData.GroupType,
 
@@ -1461,89 +1221,9 @@ const GroupandTeamcontext = ({ props }: any) => {
 
               console.log(postPayload);
 
- 
-
               const postResult = await updateItem(postPayload, sp, editID);
-
               const postId = postResult?.data?.ID;
-
               debugger;
-
-              // if (!postId) {
-
-              //   console.error("Post creation failed.");
-
-              //   return;
-
-              // }
-
- 
-
-              // Upload Gallery Images
-
-              // Upload Gallery Images
-
-              // if (ImagepostArr[0]?.files?.length > 0) {
-
-              //   for (const file of ImagepostArr[0].files) {
-
-              //     const uploadedGalleryImage = await uploadFileToLibrary(
-
-              //       file,
-
-              //       sp,
-
-              //       "GroupTeamGallery"
-
-              //     );
-
- 
-
-              //     galleryIds = galleryIds.concat(
-
-              //       uploadedGalleryImage.map((item: { ID: any }) => item.ID)
-
-              //     );
-
-              //     if (ImagepostArr1.length > 0) {
-
-              //       ImagepostArr1.push(uploadedGalleryImage[0]);
-
-              //       const updatedData = ImagepostArr1.filter(
-
-              //         (item) => item.ID !== 0
-
-              //       );
-
-              //       console.log(updatedData, "updatedData");
-
-              //       galleryArray = updatedData;
-
-              //       // galleryArray.push(ImagepostArr1);
-
- 
-
-              //       ImagepostIdsArr.push(galleryIds[0]); //galleryIds.push(ImagepostIdsArr)
-
-              //       galleryIds = ImagepostIdsArr;
-
-              //     } else {
-
-              //       galleryArray.push(uploadedGalleryImage);
-
-              //     }
-
-              //   }
-
-              // } else {
-
-              //   galleryIds = ImagepostIdsArr;
-
-              //   galleryArray = ImagepostArr1;
-
-              // }
-
- 
 
               // Upload Documents
 
@@ -1651,7 +1331,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
                 //   AnnouncementAndNewsGallaryId: galleryIds,
 
- 
+
 
                 //   AnnouncementAndNewsGallaryJSON: JSON.stringify(
 
@@ -1671,7 +1351,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
               };
 
- 
+
 
               if (Object.keys(updatePayload).length > 0) {
 
@@ -1699,7 +1379,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
             setDocumentpostArr([]);
 
- 
+
 
             sessionStorage.removeItem("announcementId");
 
@@ -1747,11 +1427,11 @@ const GroupandTeamcontext = ({ props }: any) => {
 
             let documentArray: any[] = [];
 
- 
+
 
             // formData.FeaturedAnnouncement === "on"?  true :false;
 
- 
+
 
             // Upload Banner Images
 
@@ -1825,7 +1505,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
             console.log("postPayload-->>>", postPayload);
 
- 
+
 
             const postResult = await addItem(sp, postPayload);
 
@@ -1841,7 +1521,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
             }
 
- 
+
 
             // console.log(
 
@@ -1863,7 +1543,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
             // );
 
- 
+
 
             // Upload Gallery Images
 
@@ -1881,7 +1561,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
             //     );
 
- 
+
 
             //     galleryIds = galleryIds.concat(
 
@@ -1895,7 +1575,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
             // }
 
- 
+
 
             // Upload Documents
 
@@ -1925,7 +1605,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
             }
 
- 
+
 
             // Update Post with Gallery and Document Information
 
@@ -1949,7 +1629,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
             };
 
- 
+
 
             if (Object.keys(updatePayload).length > 0) {
 
@@ -1991,13 +1671,13 @@ const GroupandTeamcontext = ({ props }: any) => {
 
   };
 
- 
+
 
   const dismissModal = () => {
 
     const modalElement = document.getElementById('discussionModal');
 
-   
+
 
     // Remove Bootstrap classes and attributes manually
 
@@ -2011,7 +1691,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
     modalElement.removeAttribute('role');
 
- 
+
 
     // Optionally, remove the backdrop if it was added manually
 
@@ -2025,7 +1705,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
   };
 
- 
+
 
   const flatArray = (arr: any[]): any[] => {
 
@@ -2033,7 +1713,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
   };
 
- 
+
 
   // const handleCancel = () => {
 
@@ -2045,7 +1725,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
   //   );
 
- 
+
 
   //   // Close the modal
 
@@ -2079,7 +1759,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
   };
 
- 
+
 
   const siteUrl = props.siteUrl;
 
@@ -2107,7 +1787,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
   //#endregion
 
- 
+
 
   return (
 
@@ -2121,7 +1801,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
       <div className="content-page">
 
-        <HorizontalNavbar />
+          <HorizontalNavbar  _context={sp} siteUrl={siteUrl}/>
 
         <div
 
@@ -2165,7 +1845,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
                 </div>
 
- 
+
 
                 {/* Bootstrap Modal */}
 
@@ -2324,7 +2004,7 @@ const GroupandTeamcontext = ({ props }: any) => {
                             </div>
                           </div> */}
 
- 
+
 
                           <div className="col-lg-6">
 
@@ -2369,8 +2049,8 @@ const GroupandTeamcontext = ({ props }: any) => {
                             <div className="mb-3">
 
                               <label htmlFor="Type" className="form-label">
-                              Visible to group  {" "}
-                         
+                                Visible to  {" "}
+
 
                               </label>
 
@@ -2416,7 +2096,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
                           </div>
 
-                          <div className="col-lg-6">
+                          {/* <div className="col-lg-6">
 
                             <div className="mb-3">
 
@@ -2462,7 +2142,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
                             </div>
 
-                          </div>
+                          </div> */}
 
                           {IsinvideHide && (
 
@@ -2481,7 +2161,7 @@ const GroupandTeamcontext = ({ props }: any) => {
                                   <span className="text-danger">*</span>
 
                                 </label>
-
+                              
                                 <Multiselect
 
                                   options={options}
@@ -2502,7 +2182,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
                           )}
 
- 
+
 
                           <div className="col-lg-12">
 
@@ -2516,7 +2196,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
                               >
                                 Group Objective{" "}
-                    
+
                               </label>
 
                               <textarea
@@ -2531,7 +2211,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
                                 rows={3}
 
-                                style={{height:'60px'}}
+                                style={{ height: '60px' }}
 
                                 value={formData.GroupDescription}
 
@@ -2599,7 +2279,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
                               data-bs-dismiss="modal"
 
-                              // onClick={handleCancel}
+                            // onClick={handleCancel}
 
                             >
 
@@ -2663,7 +2343,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
                     <div className="card-body">
 
-                      <a  key={index}>
+                      <a key={index}>
 
                         <div className="bg">
 
@@ -2673,7 +2353,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
                         <h4
 
-                          style={{ lineHeight: "26px", width:"79%", float:"left", color: "#fff",textTransform:'capitalize' }}
+                          style={{ lineHeight: "26px", width: "79%", float: "left", color: "#fff", textTransform: 'capitalize' }}
 
                           className="card-title fw-bold font-20 mb-1 mt-0"
 
