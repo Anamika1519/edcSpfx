@@ -159,7 +159,7 @@ export const getGroupTeamDetailsById = async (_sp, idNum) => {
   let arr1 = [];
   await _sp.web.lists
     .getByTitle("ARGGroupandTeam")
-    .items.getById(idNum)()
+    .items.getById(idNum).select("*,InviteMemebers/Id,InviteMemebers/Title,InviteMemebers/EMail,GroupType").expand("InviteMemebers")()
     .then((res) => {
       // arr=res;
       console.log("res------",res)

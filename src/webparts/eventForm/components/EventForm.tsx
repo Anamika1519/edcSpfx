@@ -782,7 +782,7 @@ const HelloWorldContext = ({ props }: any) => {
         <VerticalSideBar _context={sp} />
       </div>
       <div className="content-page newbancss" style={{ marginTop: '-15px' }}> {/* Edit by amjad */}
-        <HorizontalNavbar />
+          <HorizontalNavbar  _context={sp} siteUrl={siteUrl}/>
         <div className="content" style={{marginLeft: `${!useHide ? '240px' : '80px'}`, marginTop:'0.8rem'}}> {/* Edit by amjad */}
           <div className="container-fluid  paddb">
             <div className="row">

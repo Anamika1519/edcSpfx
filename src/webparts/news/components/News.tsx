@@ -98,7 +98,7 @@ const HelloWorldContext = ({props}:any) => {
       <VerticalSideBar _context={sp} />
     </div>
     <div className="content-page">
-      <HorizontalNavbar />
+        <HorizontalNavbar  _context={sp} siteUrl={SiteUrl}/>
       <div className="conten" style={{marginLeft: `${!useHide ? '240px' : '80px'}`,marginTop:'1rem'}}>
           <div className="container-fluid  paddb">
             <div className="row" style={{ paddingLeft: '0.5rem' }}>

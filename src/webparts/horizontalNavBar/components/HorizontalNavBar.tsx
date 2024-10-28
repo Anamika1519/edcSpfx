@@ -9,10 +9,10 @@ import { SPFI } from '@pnp/sp';
 import { getSP } from '../loc/pnpjsConfig';
 import { useRef, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
-import { getCurrentUserName } from '../../../APISearvice/CustomService';
+import { getCurrentUserName, getCurrentUserProfileEmail } from '../../../APISearvice/CustomService';
 import "../../../CustomCss/mainCustom.scss"
 
-const HorizontalNavbar = () => {
+const HorizontalNavbar = ({_context,siteUrl}: any) => {
   const sp: SPFI = getSP();
   const { useHide }: any = React.useContext(UserContext);
   const elementRef = React.useRef<HTMLDivElement>(null);
@@ -26,6 +26,8 @@ const HorizontalNavbar = () => {
   const [replyingTo, setReplyingTo] = useState<number | null>(null);
   const [isOpen, setIsOpen] = React.useState(false);
   const [currentUser, setCurrentUser] = React.useState("")
+  const [currentUserEmail, setCurrentUserEmail] = React.useState("")
+
   // Helper function to generate unique IDs
   const generateId = () => Math.floor(Math.random() * 100000);
   const [issearchOpen, setIsSearchOpen] = React.useState(false);
@@ -112,11 +114,16 @@ const HorizontalNavbar = () => {
     document.querySelector("body")?.classList.toggle("dark");
   };
   // const imgLogo = require("../assets/useimg.png");
+
+  
   const ApiCall = async () => {
-    setCurrentUser(await getCurrentUserName(sp))
+    setCurrentUser(await getCurrentUserName(_context))
+    setCurrentUserEmail(await getCurrentUserProfileEmail(_context))
+
     // const settingsData = setSettingArray(await getSettingAPI(sp))
     // console.log(settingsData, 'settingsData');
   };
+  console.log(currentUser,siteUrl,'currentUser');
   return (
     // <nav className="navbar container-fluid" style={{ zIndex: '99' }}>
     //   <div className="logo_item">
@@ -149,8 +156,6 @@ const HorizontalNavbar = () => {
     className={isSticky ? "sticky " : "navbar"}
     id="myHeader">
     <div className='navcss' style={{marginLeft: `${!useHide ? '240px' : '80px'}`}} >
-
-
       <div className="" onClick={() => handleSidebarToggle(useHide)}>
         <div className={` ${useHide ? 'sidebar-closedBar' : 'sidebar-openBa'}`} onClick={() => handleSidebarToggle(useHide)}>
           <div className="" onClick={() => handleSidebarToggle(useHide)}>
@@ -159,21 +164,16 @@ const HorizontalNavbar = () => {
           </div>
         </div>
       </div>
-
       <div className={`navbar_content ${useHide ? 'searchcssmobile sidebar-closedBar' : 'searchcssmobile sidebar-openBa'}`} onClick={() => handleSidebarToggle(useHide)}>
         <div className="search_bar">
           <input type="text" placeholder="Search.." className='searchcss desktoView' />
-
         </div>
-
         <div className="dropdown">
           <Search className='searchcssmobile' size='80' onClick={toggleSearchDropdown} />
           <div id="myDropdown" className={`dropdown-content ${issearchOpen ? 'show' : ''}`}>
             <input type="text" placeholder="Search.." className='searchcss searchcssmobile' />
           </div>
-
         </div>
-
         <Maximize className='bx bx-bell desktoView' size='22' onClick={toggleFullscreen} />
         <Bell className='bx bx-bell desktoView' size='22' />
         <Moon size='22' className={isDarkMode ? 'bx bx-moon desktoView' : 'bx bx-sun desktoView'} onClick={handleThemeToggle} />
@@ -181,17 +181,24 @@ const HorizontalNavbar = () => {
         <div className="dropdown">
           <div className='d-flex' onClick={toggleDropdown} style={{ gap: '2px', cursor: 'pointer' }}>
             <div >
-              <User className='desktoView' size='22' />
-              <User className='searchcssmobile' size='80' />
-
+              
+              <img  src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${currentUserEmail}`}
+                                  className="rounded-circlecss img-thumbnail desktoView 
+                                  avatar-xl"
+                                  alt="profile-image"
+                                  style={{ cursor: "pointer" }}  />
+                                   <img  src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${currentUserEmail}`}
+                                  className="rounded-circlecss img-thumbnail searchcssmobile 
+                                  avatar-xl"
+                                  alt="profile-image"
+                                  style={{ cursor: "pointer" }}  />
+             
             </div>
             <div className='dropcssUser desktoView'>
               <div>{currentUser}</div>
               <div><ChevronDown size={12} /></div>
             </div>
           </div>
-
-
           <div id="myDropdown" className={`dropdown-content ${isOpen ? 'show' : ''}`}>
             <a href="#home">Home</a>
             <a href="#about">About</a>
@@ -200,8 +207,6 @@ const HorizontalNavbar = () => {
         </div>
         <Settings className='bx bx-user desktoView' size='22' />
         <Settings className='bx bx-user searchcssmobile' size='80' />
-
-
       </div>
     </div>
   </div>

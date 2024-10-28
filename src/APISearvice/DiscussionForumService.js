@@ -17,7 +17,7 @@ export const getDiscussionForum = async (_sp) => {
   if (!currentUser) return arr; // Return empty array if user fetch failed
 
     await _sp.web.lists.getByTitle("ARGDiscussionForum")
-    .items.select("*,DiscussionForumCategory/Id,DiscussionForumCategory/CategoryName,Author/ID,Author/Title,InviteMemebers/Id,GroupType")
+    .items.select("*,DiscussionForumCategory/Id,DiscussionForumCategory/CategoryName,Author/ID,Author/Title,InviteMemebers/Id,InviteMemebers/Title,InviteMemebers/EMail,GroupType")
     .expand("DiscussionForumCategory,Author,InviteMemebers").orderBy("Created",false).getAll()
         .then((res) => {
             console.log("--discussion", res);
@@ -83,7 +83,7 @@ export const getDiscussionForumByID = async (_sp, id) => {
     let arr = []
     let arrs = []
     let bannerimg = []
-    await _sp.web.lists.getByTitle("ARGDiscussionForum").items.getById(id).select("*,DiscussionForumCategory/ID,Category/Category,Entity/ID,Entity/Entity").expand("Category,Entity,DiscussionForumTypeMaster")()
+    await _sp.web.lists.getByTitle("ARGDiscussionForum").items.getById(id).select("*","DiscussionForumCategory/ID","DiscussionForumCategory/CategoryName","Entity/ID","Entity/Entity","InviteMemebers/Id","InviteMemebers/Title","InviteMemebers/EMail","GroupType").expand("Entity","DiscussionForumCategory","InviteMemebers")()
         .then((res) => {
             console.log(res, ' let arrs=[]');
             // const bannerimgobject = res.AnnouncementandNewsBannerImage != "{}" && JSON.parse(res.AnnouncementandNewsBannerImage)
@@ -104,7 +104,8 @@ export const getDiscussionForumByID = async (_sp, id) => {
                 DiscussionForumGalleryJSON: res.DiscussionForumGalleryJSON != null ? JSON.parse(res.DiscussionForumGalleryJSON) : "",
                 DiscussionForumDocsJSON: res.DiscussionForumDocsJSON != null ? JSON.parse(res.DiscussionForumDocsJSON) : "",
                 DiscussionForumGalleryId: res.DiscussionForumGalleryId,
-                DiscussionForumDocsId: res.DiscussionForumDocsId
+                DiscussionForumDocsId: res.DiscussionForumDocsId,
+                inviteMembers:res?.InviteMemebers?.Title
                 // other fields as needed
             };
 
@@ -120,9 +121,11 @@ export const getDiscussionForumDetailsById = async (_sp, idNum) => {
     let arr = []
     let arr1 = []
 
-    await _sp.web.lists.getByTitle("ARGDiscussionForum").items.getById(idNum)()
+    await _sp.web.lists.getByTitle("ARGDiscussionForum").items.getById(idNum).select("*,DiscussionForumCategory/ID,DiscussionForumCategory/CategoryName,Entity/ID,Entity/Entity,InviteMemebers/Id,InviteMemebers/Title,InviteMemebers/EMail,GroupType").expand("Entity,DiscussionForumCategory,InviteMemebers")()
         .then((res) => {
             // arr=res;
+            console.log(res,'hhhjhjh');
+            
             arr1.push(res)
             arr = arr1
         }).catch((error) => {

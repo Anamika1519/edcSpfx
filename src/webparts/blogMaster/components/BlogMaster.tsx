@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState ,useRef} from 'react'
 import { IBlogMasterProps } from './IBlogMasterProps';
 import Provider from '../../../GlobalContext/provider';
 import UserContext from '../../../GlobalContext/context';
@@ -27,7 +27,7 @@ import CustomBlogpartTemplate from "../../../CustomJSComponents/CustomBlogWebpar
 const BlogsContext = ({ props }: any) => {
   const sp: SPFI = getSP();
   const { useHide }: any = React.useContext(UserContext);
-  const elementRef = React.useRef<HTMLDivElement>(null);
+  const elementRef = useRef<HTMLDivElement>(null);
   const SiteUrl = props.siteUrl;
   const Breadcrumb = [
     {
@@ -772,8 +772,9 @@ const BlogsContext = ({ props }: any) => {
             if (Object.keys(updatePayload).length > 0) {
               const updateResult = await updateItem(updatePayload, sp, postId);
               console.log("Update Result:", updateResult);
+              Swal.fire("Item added successfully", "", "success");
             }
-            // Swal.fire("Item added successfully", "", "success");
+            
             // sessionStorage.removeItem("bannerId");
             setAnnouncementData(await getBlog(sp));
             setTimeout(async () => {
@@ -921,7 +922,7 @@ const BlogsContext = ({ props }: any) => {
         <VerticalSideBar _context={sp} />
       </div>
       <div className="content-page">
-        <HorizontalNavbar />
+          <HorizontalNavbar  _context={sp} siteUrl={SiteUrl}/>
         <div className="content mt-0" style={{ marginLeft: `${!useHide ? '240px' : '80px'}` }}>
           <div className="container-fluid  paddb">
             <div className="row">

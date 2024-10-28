@@ -628,7 +628,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
         <VerticalSideBar _context={sp} />
       </div>
       <div className="content-page newbancss" style={{ marginTop: '-15px' }}> {/* Edit by Amjad */}
-        <HorizontalNavbar />
+          <HorizontalNavbar  _context={sp} siteUrl={siteUrl}/>
         <div className="content" style={{marginLeft: `${!useHide ? '240px' : '80px'}`, marginTop:'1.6rem'}}>
           <div className="container-fluid  paddb">
             <div className="row ">

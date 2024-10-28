@@ -6,4 +6,7 @@ export interface IDiscussionForumProps {
   userDisplayName: string;
   context: any;
   siteUrl: string;
+  spHttpClient:any;
+  msGraphClientFactory:any;
+  absoluteUrl:string;
 }

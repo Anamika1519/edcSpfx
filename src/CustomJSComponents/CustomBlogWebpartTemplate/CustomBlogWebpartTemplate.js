@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState,useRef } from 'react'
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./CustomBlogWebpartTemplate.scss";
 import "../../CustomCss/mainCustom.scss";
@@ -87,7 +87,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
     return (
         <><div className="row mt-2" style={{ paddingLeft: '0.5rem' }}>
             {blogData.length > 0 ?
-                blogData.filter(x => x.FeaturedAnnouncement != false).slice(0, 1).map(item => {
+                blogData.filter(x => x.FeaturedBlog != false).slice(0, 1).map(item => {
                     const AnnouncementandNewsBannerImage = item.BlogBannerImage == undefined || item.BlogBannerImage == null ? ""
                         : JSON.parse(item.BlogBannerImage);
                     return (

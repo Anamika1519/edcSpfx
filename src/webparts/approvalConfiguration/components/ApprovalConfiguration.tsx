@@ -125,7 +125,7 @@ export const ApprovalConfigurationcontext = ({ props }: any) => {
         <VerticalSideBar _context={sp} />
       </div>
       <div className="content-page">
-        <HorizontalNavbar />
+          <HorizontalNavbar  _context={sp} siteUrl={siteUrl}/>
         <div className="content mt-4" style={{ marginLeft: `${!useHide ? '240px' : '80px'}` }}>
           <div className="container-fluid paddb">
             <div className="row">

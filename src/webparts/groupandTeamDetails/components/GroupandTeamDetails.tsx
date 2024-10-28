@@ -53,6 +53,7 @@ import UserContext from "../../../GlobalContext/context";
 import context from "../../../GlobalContext/context";
 
 import { getGroupTeamDetailsById } from "../../../APISearvice/GroupTeamService";
+import AvtarComponents from "../../../CustomJSComponents/AvtarComponents/AvtarComponents";
 
 // Define types for reply and comment structures
 
@@ -932,7 +933,7 @@ const GroupandTeamDetailsContext = ({ props }: any) => {
 
       <div className="content-page">
 
-        <HorizontalNavbar />
+          <HorizontalNavbar  _context={sp} siteUrl={siteUrl}/>
 
         <div
 
@@ -958,18 +959,6 @@ const GroupandTeamDetailsContext = ({ props }: any) => {
 
               ? ArrDetails.map((item: any) => {
 
-                  // constGroupandTeamGallaryJSON =
-
-                  //   item.AnnouncementAndNewsGallaryJSON == undefined ||
-
-                  //   item.AnnouncementAndNewsGallaryJSON == null
-
-                  //     ? ""
-
-                  //     : JSON.parse(item.AnnouncementAndNewsGallaryJSON);
-
-                  // console.log(AnnouncementAndNewsGallaryJSON);
-
                   return (
 
                     <>
@@ -984,31 +973,17 @@ const GroupandTeamDetailsContext = ({ props }: any) => {
 
                         <div className="row mt-2">
 
-                          <div className="col-md-12 col-xl-12">
+                          <div className="d-flex">
 
-                            <p className="mb-2 mt-1 newsvg font-14 d-block">
+                            <p className="mb-2 mt-1 newsvg font-14 d-flex">
 
-                              <span className="pe-2 text-nowrap mb-0 d-inline-block">
+                              <span className="pe-2 text-nowrap mb-0 d-inline-block" style={{fontSize:'14px'}}>
 
-                                <Calendar size={18} />{" "}
+                                <Calendar size={16} />
 
-                                {moment(item.Created).format("DD-MMM-YYYY")}{" "}
+                                {moment(item.Created).format("DD-MMM-YYYY")}
 
-                                &nbsp; &nbsp; &nbsp;|
-
-                              </span>
-
-                              <span
-
-                                className="text-nowrap mb-0 d-inline-block"
-
-                                onClick={sendanEmail}
-
-                              >
-
-                                <Share size={18} /> Share by email &nbsp; &nbsp;
-
-                                &nbsp;|&nbsp; &nbsp; &nbsp;
+                                &nbsp; &nbsp;|
 
                               </span>
 
@@ -1016,18 +991,44 @@ const GroupandTeamDetailsContext = ({ props }: any) => {
 
                                 className="text-nowrap mb-0 d-inline-block"
 
-                                onClick={() => copyToClipboard(item.Id)}
+                                onClick={sendanEmail} style={{fontSize:'14px'}}
 
                               >
 
-                                <Link size={18} /> Copy link &nbsp; &nbsp;
+                                <Share size={16} /> Share by email &nbsp; 
 
-                                &nbsp;
+                                &nbsp;|&nbsp;
+
+                              </span>
+
+                              <span
+
+                                className="text-nowrap mb-0 d-inline-block"
+
+                                onClick={() => copyToClipboard(item.Id)} style={{fontSize:'14px'}}
+
+                              >
+
+                                <Link size={16} /> Copy link &nbsp; &nbsp;
 
                                 {copySuccess && <span className="text-success">{copySuccess}</span>}
 
                               </span>
+                              <span style={{fontSize:'14px'}}>&nbsp; &nbsp; |{item.GroupType}</span>
+                              <span style={{ display: 'flex', gap: '0.2rem',fontSize:'14px' }}> &nbsp; &nbsp;|
+                              {
+                                item?.InviteMemebers?.length > 0 && item?.InviteMemebers.map((item1: any, index: 0) => {
 
+                                  return (
+                                    <>
+                                      {item1.EMail ? <span style={{ margin: index == 0 ? '0 0 0 0' : '0 0 0px -12px' }} data-tooltip={item.Title}><img src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item1.EMail}`} className="attendeesImg" /> <span data-tooltip={item.Title}></span></span> :
+                                        <span> <AvtarComponents Name={item1.Title} data-tooltip={item.Title}/> </span>
+                                      }
+                                    </>
+                                  )
+                                })
+                              }
+                            </span>
                             </p>
 
                           </div>

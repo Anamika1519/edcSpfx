@@ -690,7 +690,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
       <div className="content-page">
 
-        <HorizontalNavbar />
+          <HorizontalNavbar  _context={sp} siteUrl={siteUrl}/>
 
         <div className="content" style={{marginLeft: `${!useHide ? '240px' : '80px'}`,marginTop:'1rem'}}>
 
