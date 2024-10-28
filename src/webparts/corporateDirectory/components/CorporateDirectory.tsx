@@ -48,7 +48,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
     Email: "",
     EmployeeID: "",
     Department: "",
-    MobilePhone:""
+    MobilePhone: ""
   });
 
   React.useEffect(() => {
@@ -100,17 +100,20 @@ const CorporateDirectoryContext = ({ props }: any) => {
     try {
       const userList = await sp.web.lists
         .getByTitle("User Information List")
-        .items.select(
+        .items.select("*",
           "ID",
           "Title",
           "EMail",
           "Department",
           "JobTitle",
-          "Picture","MobilePhone"
+          "Picture", "MobilePhone","WorkPhone"
         )
         .filter("EMail ne null")();
       console.log(userList, "userList");
-
+      let alluser =await sp.web.siteUsers();
+      let profile =  await sp.profiles.getPropertiesFor('keertijain@officeindia.onmicrosoft.com')
+      console.log("allusers",alluser);
+      console.log("profileeee",profile);
       setUsersArr(userList);
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -171,8 +174,8 @@ const CorporateDirectoryContext = ({ props }: any) => {
         (filters.Name === "" ||
           item?.Title.toLowerCase().includes(filters.Name.toLowerCase())) &&
         (filters.Email === "" ||
-          item?.EMail.toLowerCase().includes(filters.Email.toLowerCase()))&&
-        (filters.MobilePhone === '' || item?.MobilePhone.toLowerCase().includes(filters.MobilePhone.toLowerCase())) 
+          item?.EMail.toLowerCase().includes(filters.Email.toLowerCase())) &&
+        (filters.MobilePhone === '' || item?.WorkPhone.toLowerCase().includes(filters.MobilePhone.toLowerCase()))
         // (filters.Department === '' || item?.Department.toLowerCase().includes(filters.Department.toLowerCase()))
       );
     });
@@ -340,9 +343,8 @@ const CorporateDirectoryContext = ({ props }: any) => {
                       >
                         <li className="nav-itemcss">
                           <a
-                            className={`nav-linkss ${
-                              activeTab === "cardView" ? "active" : ""
-                            }`}
+                            className={`nav-linkss ${activeTab === "cardView" ? "active" : ""
+                              }`}
                             aria-selected={activeTab === "cardView"}
                             role="tab"
                             onClick={() => handleTabChange("cardView")}
@@ -352,17 +354,16 @@ const CorporateDirectoryContext = ({ props }: any) => {
                         </li>
                         <li className="nav-itemcss">
                           <a
-                            className={`nav-linkss ${
-                              activeTab === "listView" ? "active" : ""
-                            }`}
+                            className={`nav-linkss ${activeTab === "listView" ? "active" : ""
+                              }`}
                             aria-selected={activeTab === "listView"}
                             role="tab"
                             onClick={() => handleTabChange("listView")}
 
-                            // onClick={() => handleTabChange("listView")}
-                            // className={`nav-link ${
-                            //   activeTab === "listView" ? "active" : ""
-                            // }`}
+                          // onClick={() => handleTabChange("listView")}
+                          // className={`nav-link ${
+                          //   activeTab === "listView" ? "active" : ""
+                          // }`}
                           >
                             List View
                           </a>
@@ -378,6 +379,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
                 {activeTab === "cardView" && (
                   // Card View Content (only displayed when "cardView" is active)
                   <div className="row card-view">
+                    {console.log("usersssitem",usersitem)}
                     {usersitem.map((item) => (
                       <div className="col-lg-4 col-md-6" key={item.Title}>
                         <div
@@ -393,7 +395,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
                                   className="alignright"
                                   onClick={() =>
                                     window.open(
-                                      `https://teams.microsoft.com/l/call/0/0?users=${item.Email}`,
+                                      `https://teams.microsoft.com/l/call/0/0?users=${item.EMail}`,
                                       "_blank"
                                     )
                                   }
@@ -446,6 +448,18 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                   {/* </a> */}
                                 </span>
+                              </p>
+
+                              <p
+                                className="text-muted"
+                                style={{ fontSize: "11px" }}
+                              >
+                                <span data-tooltip={item.WorkPhone}>
+                                  {truncateText( item.WorkPhone != null
+                                      ? item.WorkPhone
+                                      : " NA ", 10)}
+                                </span>
+                                
                               </p>
                               <div
                                 style={{
@@ -756,26 +770,33 @@ const CorporateDirectoryContext = ({ props }: any) => {
                                           {" "}
                                           <img
                                             src={require("../assets/calling.png")}
-                                            alt="Connect" onClick={() =>
+                                            alt="Connect"
+                                            onClick={() =>
                                               window.open(
-                                                "https://teams.microsoft.com",
+                                                `https://teams.microsoft.com/l/call/0/0?users=${item.EMail}`,
                                                 "_blank"
                                               )
                                             }
+                                            //  onClick={() =>
+                                            //   window.open(
+                                            //     "https://teams.microsoft.com",
+                                            //     "_blank"
+                                            //   )
+                                            // }
                                           />
                                         </td>
                                         <td>{item.Title}</td>
                                         <td>{item.ID}</td>
                                         <td>{item.EMail}</td>
-                                        
+
                                         <td>
                                           {item?.Department != null
                                             ? item?.Department
                                             : "NA"}
                                         </td>
                                         <td>
-                                          {item?.MobilePhone != null
-                                            ? item?.MobilePhone
+                                          {item?.WorkPhone != null
+                                            ? item?.WorkPhone
                                             : "NA"}
                                         </td>
                                       </tr>
@@ -790,9 +811,8 @@ const CorporateDirectoryContext = ({ props }: any) => {
                             <nav className="pagination-container">
                               <ul className="pagination">
                                 <li
-                                  className={`page-item ${
-                                    currentPage === 1 ? "disabled" : ""
-                                  }`}
+                                  className={`page-item ${currentPage === 1 ? "disabled" : ""
+                                    }`}
                                 >
                                   <a
                                     className="page-link"
@@ -809,9 +829,8 @@ const CorporateDirectoryContext = ({ props }: any) => {
                                   (_, num) => (
                                     <li
                                       key={num}
-                                      className={`page-item ${
-                                        currentPage === num + 1 ? "active" : ""
-                                      }`}
+                                      className={`page-item ${currentPage === num + 1 ? "active" : ""
+                                        }`}
                                     >
                                       <a
                                         className="page-link"
@@ -825,9 +844,8 @@ const CorporateDirectoryContext = ({ props }: any) => {
                                   )
                                 )}
                                 <li
-                                  className={`page-item ${
-                                    currentPage === totalPages ? "disabled" : ""
-                                  }`}
+                                  className={`page-item ${currentPage === totalPages ? "disabled" : ""
+                                    }`}
                                 >
                                   <a
                                     className="page-link"

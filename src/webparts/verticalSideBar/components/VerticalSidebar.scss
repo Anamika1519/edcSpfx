@@ -31,6 +31,10 @@
   overflow: hidden;
   border-radius: 20px;
 }
+.btn-success{background: rgba(31,176,229,1) !important;    border-color: #1fb0e5 !important;
+}
+
+
 .announcementner {
   height: 330px;
   overflow: hidden;
@@ -186,7 +190,28 @@ a:hover, a:active {
 .menu_items {
   padding: 0;
   list-style: none;
+  max-height: 800px;
+  overflow-y: hidden;
 }
+.menu_items:hover{
+  overflow-y: auto;
+}
+/* Custom scrollbar styles */
+.menu_items::-webkit-scrollbar {
+  width: 5px; /* width of the entire scrollbar */
+  }
+  
+  .menu_items::-webkit-scrollbar-track {
+  background: #f1f1f1; /* color of the tracking area */
+  }
+  
+  .menu_items::-webkit-scrollbar-thumb {
+  background: #aaa; /* color of the scroll thumb */
+  }
+  
+  .menu_items::-webkit-scrollbar-thumb:hover {
+  background: #555; /* color of the scroll thumb on hover */
+  }
 .navlink_icon {
   position: relative;
   font-size: 16px;
@@ -1069,6 +1094,10 @@ margin: 10px 0px !important ;
     top: 18px;
   }
   .sidebar-enable .tabcontentv,.sidebar-enable .tabv{height: 350px !important;}
+  .menu_items{max-height: 730px;}
+  .item {
+    margin: .6rem .8rem 0;
+}
 }
 
 @media(max-width:1440px)
@@ -1092,6 +1121,11 @@ margin: 10px 0px !important ;
   .font-11 {
     font-size: 11px !important;
 }
+
+  .menu_items {
+      max-height: 650px;
+  }
+  
 .view-all {
 
   top: 18px;
@@ -1168,6 +1202,12 @@ margin: 10px 0px !important ;
     margin-right: 7px;
     width: 46px;
 }
+.menu_items {
+  max-height: 550px;
+}
+.item {
+margin: .1rem .8rem 0;
+}
   .view-all {
     position: absolute;
     right: 8px;
@@ -1235,7 +1275,16 @@ margin: 10px 0px !important ;
       width: 25% !important;
   }
   .card-body{padding: 10px !important;}
-  
+  .item {
+    margin: 0rem .8rem 0;
+}
+.sidebar .nav_link{
+  font-size:13.2px;
+}
+.menu_items {
+  max-height: 500px;
+}
+
   .event h4, .event p{
     width:45px;
   } 
