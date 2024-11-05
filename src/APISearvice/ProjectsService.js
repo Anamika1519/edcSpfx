@@ -1,0 +1,213 @@
+import Swal from "sweetalert2";
+ 
+ 
+export const fetchprojectdata = async (_sp) => {
+    let arr = []
+   
+       await _sp.web.lists.getByTitle("ARGProject").items.getAll().then((res) => {
+        console.log("checking the data of project---->>>",res);
+     
+        //res.filter(x=>x.Category?.Category==str)
+        arr = res;
+      })
+      .catch((error) => {
+        console.error("Error fetching data: ", error);
+      });
+    return arr;
+  }
+ 
+  export const uploadFileToLibrary = async (file, sp, docLib) => {
+    debugger
+    let arrFIleData = [];
+    let fileSize=0
+    try {
+      const result = await sp.web.lists.getByTitle(docLib).rootFolder.files.addChunked(file.name, file,
+ 
+        // const result = await sp.web.lists.getByTitle(docLib).rootFolder.files.addChunked(
+        // file.name,
+        // file,
+        (progress, data) => {
+          console.log(progress, data);
+          fileSize=progress.fileSize
+        },
+        true
+      );
+ 
+      const item = await sp.web.getFileByServerRelativePath(result.data.ServerRelativeUrl).getItem("*","ID", "AuthorId", "Modified")
+      console.log(item.Id, 'itemitem');
+      let arr = {
+        ID: item.Id,
+        Createdby: item.AuthorId,
+        Modified: item.Modified,
+        fileUrl: result.data.ServerRelativeUrl,
+        fileSize:fileSize,
+        fileType:file.type,
+        fileName:file.name,
+      }
+      arrFIleData.push(arr)
+      console.log(arrFIleData);
+ 
+      return arrFIleData;
+    } catch (error) {
+      console.log("Error uploading file:", error);
+      return null; // Or handle error differently
+    }
+  };
+ 
+ 
+  // export const XYZ = async (_sp) => {
+  //   let arr = []
+   
+  //      await _sp.web.lists.getByTitle("MediaGallery").items.select("*,file/Type,fil").getAll().then((res) => {
+  //       console.log("heloo chking",res);
+     
+  //       //res.filter(x=>x.Category?.Category==str)
+  //       arr = res;
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error fetching data: ", error);
+  //     });
+  //   return arr;
+  // }
+ 
+  export const XYZ = async (_sp) => {
+    let arr = [];
+ 
+    try {
+        const res = await _sp.web.lists.getByTitle("MediaGallery")
+            .items
+            .select("*, FileRef, FileLeafRef, File/ServerRelativeUrl,FileType")
+            .expand("File")
+            .getAll();
+ 
+        console.log("Retrieved items:", res);
+ 
+        arr = res.map(item => ({
+            ...item,
+            imageUrl: item.File ? item.File.ServerRelativeUrl : null // Ensure we get the image URL if it exists
+        }));
+    } catch (error) {
+        console.error("Error fetching data:", error);
+    }
+ 
+    return arr;
+};
+ 
+//   export const Choicedata = async (_sp) => {
+//     let arr = []
+ 
+//          await _sp.web.lists.getByTitle("ARGProject").items
+//             .select("ProjectPrivacy", "ProjectPriority")
+//             .filter("ProjectPrivacy ne null")(); // Await the call to get items
+       
+//         return arr; // Return the fetched data
+ 
+// };
+ 
+ 
+// export const Choicedata = async (_sp) => {
+//     let arr = [];
+ 
+//     await _sp.web.lists.getByTitle("ARGProject").items
+//       .select("ProjectPrivacy", "ProjectPriority")
+//       .filter("ID ne null")()
+//       .then((res) => {
+//         console.log(res);
+//         arr = res; // Assign the fetched data to arr
+//       })
+//       .catch((error) => {
+//         console.error("Error fetching data: ", error);
+//       });
+ 
+//     return arr; // Return the fetched data
+//   };
+ 
+ 
+  export const Choicedata = async (_sp) => {
+    let arr =[]
+    const field2 =  await _sp.web.lists.getByTitle("ARGProject").fields.getByInternalNameOrTitle("ProjectPriority")()
+    console.log("check field-->>",field2);
+   
+    arr= field2["Choices"]
+ 
+    return arr;
+}
+// export const Choicedataone = async (_sp) => {
+//   let arr =[]
+//   const field2 =  await _sp.web.lists.getByTitle("ARGProject").fields.getByInternalNameOrTitle("ProjectPrivacy")()
+//   console.log("check field-->>",field2);
+ 
+//   arr= field2["Choices"]
+ 
+//   return arr;
+// }
+// export const Choicedata = async (_sp) => {
+//   let arr = [];
+ 
+//   // Fetch choices for the ProjectPriority field
+//   const projectPriorityField = await _sp.web.lists.getByTitle("ARGProject").fields.getByInternalNameOrTitle("ProjectPriority")();
+//   const projectPriorityChoices = projectPriorityField["Choices"];
+//   console.log("projectPriorityChoices1-->>>",projectPriorityChoices)
+ 
+//   // Fetch choices for the ProjectPrivacy field
+//   const projectPrivacyField = await _sp.web.lists.getByTitle("ARGProject").fields.getByInternalNameOrTitle("ProjectPrivacy")();
+//   const projectPrivacyChoices = projectPrivacyField["Choices"];
+//   console.log("projectPrivacyChoices field1-->>",projectPrivacyChoices);
+ 
+//   // Combine both choices (if necessary) or return separately
+//   arr = [ projectPriorityChoices];
+ 
+//   return arr;
+// };
+ 
+ 
+ 
+export const updateItem = async (itemData, sp, id) => {
+  let resultArr = []
+  debugger
+  try {
+    const newItem = await sp.web.lists.getByTitle("ARGProject").items.getById(id).update(itemData);
+    Swal.fire('Item update successfully', '', 'success');
+    resultArr = newItem
+    // Perform any necessary actions after successful addition
+  } catch (error) {
+    console.log('Error adding item:', error);
+    Swal.fire(' Cancelled', '', 'error')
+    // Handle errors appropriately
+    resultArr = null
+  }
+  return resultArr;
+};
+ 
+export const addItem = async (itemData, _sp) => {
+  debugger
+  let resultArr = []
+  try {
+    const newItem = await _sp.web.lists.getByTitle("ARGProject").items.add(itemData);
+    debugger
+    console.log('Item added successfully:', newItem);
+ 
+    resultArr = newItem
+    // Perform any necessary actions after successful addition
+  } catch (error) {
+    console.log('Error adding item:', error);
+    Swal.fire(' Cancelled', '', 'error')
+    // Handle errors appropriately
+    resultArr = null
+  }
+  return resultArr;
+};
+export const DeleteProjectAPI = async (_sp, id) => {
+  let resultArr = []
+  try {
+    const newItem = await _sp.web.lists.getByTitle('ARGProject').items.getById(id).delete();
+    console.log('Item added successfully:', newItem);
+    resultArr = newItem
+    // Perform any necessary actions after successful addition
+  } catch (error) {
+    console.log('Error adding item:', error);
+    // Handle errors appropriately
+    resultArr = null
+  }
+  return resultArr;
+}

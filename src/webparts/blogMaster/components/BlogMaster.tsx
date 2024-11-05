@@ -14,7 +14,7 @@ import CustomBreadcrumb from '../../../CustomJSComponents/CustomBreadcrumb/Custo
 import context from '../../../GlobalContext/context';
 import { useMediaQuery } from 'react-responsive';
 import { addItem, getBlog, GetBlogCategory, GetCategory, updateItem, uploadFileBlog } from '../../../APISearvice/BlogService';
-import { getCategory, getEntity } from '../../../APISearvice/CustomService';
+import { addActivityLeaderboard, getCategory, getEntity } from '../../../APISearvice/CustomService';
 import { getNews, uploadFile, uploadFileToLibrary } from '../../../APISearvice/NewsService';
 import Swal from 'sweetalert2';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -710,6 +710,9 @@ const BlogsContext = ({ props }: any) => {
               console.log("Post creation failed.");
               return;
             }
+            // Blog by user
+
+            addActivity()
 
             console.log(
               ImagepostArr,
@@ -817,6 +820,11 @@ const BlogsContext = ({ props }: any) => {
       modalBackdrop.remove();
     }
   };
+
+  const addActivity=async ()=>
+    { 
+      await addActivityLeaderboard(sp,"Blog by user");
+    }
 
   const handleCancel = () => {
     debugger;
@@ -963,6 +971,7 @@ const BlogsContext = ({ props }: any) => {
                       >
                         <i className="fe-plus-circle"></i> Start New Blog
                       </button>
+                     
                     </div>
 
                     {/* Bootstrap Modal */}

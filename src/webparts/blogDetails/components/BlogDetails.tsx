@@ -13,6 +13,7 @@ import HorizontalNavbar from "../../horizontalNavBar/components/HorizontalNavBar
 // import 'react-comments-section/dist/index.css';
 import { CommentCard } from "../../../CustomJSComponents/CustomCommentCard/CommentCard";
 import {
+  addActivityLeaderboard,
   getCurrentUser,
   getCurrentUserProfile
 } from "../../../APISearvice/CustomService";
@@ -128,39 +129,82 @@ const BlogDetailsContext = ({ props }: any) => {
     const ids = window.location.search;
     const originalString = ids;
     const idNum = originalString.substring(1);
+    let initialArray: any[] = [];
+    let arrLike = {}
+    let likeArray: any[] = []
     sp.web.lists
       .getByTitle("ARGBlogComments")
       .items.select("*,ARGBlogs/Id")
       .expand("ARGBlogs")
       .filter(`ARGBlogsId eq ${Number(idNum)}`)()
-      .then((result: any) => {
+      .then(async (result: any) => {
         console.log(result, "ARGBlogComments");
  
         initialComments = result;
-        setComments(
-          initialComments.map((res) => ({
-            Id: res.Id,
-            UserName: res.UserName,
-            AuthorId: res.AuthorId,
-            Comments: res.Comments,
-            Created: new Date(res.Created).toLocaleString(), // Formatting the created date
-            UserLikesJSON:
-              res.UserLikesJSON != "" &&
-              res.UserLikesJSON != null &&
-              res.UserLikesJSON != undefined
-                ? JSON.parse(res.UserLikesJSON)
-                : [], // Default to empty array if null
-            UserCommentsJSON:
-              res.UserCommentsJSON != "" &&
-              res.UserCommentsJSON != null &&
-              res.UserCommentsJSON != undefined
-                ? JSON.parse(res.UserCommentsJSON)
-                : [], // Default to empty array if null
-            userHasLiked: res.userHasLiked,
-            UserProfile: res.UserProfile,
-            // Initialize as false
-          }))
-        );
+        for (var i = 0; i < initialComments.length; i++) {
+          await  sp.web.lists
+              .getByTitle("ARGBlogUserLikes")
+              .items.filter(`BlogsCommentsId eq ${Number(initialComments[i].Id)}`).select("ID,AuthorId,UserName,Like,Created")()
+              .then((result1: any) => {
+                console.log(result1, "ARGBlogUserLikesLikes");
+  
+                for (var j = 0; j < result1.length; j++) {
+                  arrLike = {
+                    "ID": result1[j].Id,
+                    "AuthorId": result1[j].AuthorId,
+                    "UserName": result1[j].UserName,
+                    "Like": result1[j].Like,
+                    "Created": result1[j].Created
+                  }
+                  likeArray.push(arrLike)
+                }
+  
+                let arr = {
+                  Id: initialComments[i].Id,
+                  UserName: initialComments[i].UserName,
+                  AuthorId: initialComments[i].AuthorId,
+                  Comments: initialComments[i].Comments,
+                  Created: new Date(initialComments[i].Created).toLocaleString(), // Formatting the created date
+                  UserLikesJSON: likeArray
+                     , // Default to empty array if null
+                  UserCommentsJSON:
+                    initialComments[i].UserCommentsJSON != "" &&
+                      initialComments[i].UserCommentsJSON != null &&
+                      initialComments[i].UserCommentsJSON != undefined
+                      ? JSON.parse(initialComments[i].UserCommentsJSON)
+                      : [], // Default to empty array if null
+                  userHasLiked: initialComments[i].userHasLiked,
+                  UserProfile: initialComments[i].UserProfile
+                }
+                initialArray.push(arr);
+              })
+  
+          }
+          setComments(initialArray)
+        // setComments(
+        //   initialComments.map((res) => ({
+        //     Id: res.Id,
+        //     UserName: res.UserName,
+        //     AuthorId: res.AuthorId,
+        //     Comments: res.Comments,
+        //     Created: new Date(res.Created).toLocaleString(), // Formatting the created date
+        //     UserLikesJSON:
+        //       res.UserLikesJSON != "" &&
+        //       res.UserLikesJSON != null &&
+        //       res.UserLikesJSON != undefined
+        //         ? JSON.parse(res.UserLikesJSON)
+        //         : [], // Default to empty array if null
+        //     UserCommentsJSON:
+        //       res.UserCommentsJSON != "" &&
+        //       res.UserCommentsJSON != null &&
+        //       res.UserCommentsJSON != undefined
+        //         ? JSON.parse(res.UserCommentsJSON)
+        //         : [], // Default to empty array if null
+        //     userHasLiked: res.userHasLiked,
+        //     UserProfile: res.UserProfile,
+        //     // Initialize as false
+        //   }))
+        // );
  
         // getUserProfilePicture(CurrentUser.Id,sp).then((url) => {
         //   if (url) {
@@ -214,8 +258,9 @@ const BlogDetailsContext = ({ props }: any) => {
         ARGBlogsId: ArrDetails[0].Id,
         UserProfile: CurrentUserProfile,
       })
-      .then((ress: any) => {
+      .then(async (ress: any) => {
         console.log(ress, "ressress");
+        await addActivityLeaderboard(sp,"Comments on Blog");
         const newCommentData1: Comment = {
           Id: ress.data.Id,
           UserName: ress.data.UserName,
@@ -227,7 +272,9 @@ const BlogDetailsContext = ({ props }: any) => {
           userHasLiked: false, // Initialize as false
           UserProfile: ress.data.UserProfile,
         };
+
         setComments((prevComments) => [...prevComments, newCommentData1]);
+      
         setNewComment("");
         setLoading(false);
       });
@@ -253,7 +300,7 @@ const BlogDetailsContext = ({ props }: any) => {
           UserName: CurrentUser.Title, // Replace with actual username
           Like: true,
           // ARGBlogsCommentsId: comment.Id,
-        EventsCommentsId:comment?.Id,
+          BlogsCommentsId:comment?.Id,
           userHasLiked: true,
         })
         .then(async (ress: any) => {
@@ -270,7 +317,7 @@ const BlogDetailsContext = ({ props }: any) => {
           };
  
           updatedComments[commentIndex].UserLikesJSON.push(newLikeJson);
- 
+          await addActivityLeaderboard(sp,"Likes on Blog");
           // Update the corresponding SharePoint list
           await sp.web.lists
             .getByTitle("ARGBlogComments")
@@ -282,8 +329,9 @@ const BlogDetailsContext = ({ props }: any) => {
               userHasLiked: true,
               LikesCount: comment.UserLikesJSON.length,
             })
-            .then(() => {
+            .then(async () => {
               console.log("Updated comment with new like");
+            
               comment.userHasLiked = true;
               setComments(updatedComments);
             });
@@ -301,7 +349,7 @@ const BlogDetailsContext = ({ props }: any) => {
  
           // Remove the like from the comment's UserLikesJSON array
           updatedComments[commentIndex].UserLikesJSON.splice(userLikeIndex, 1);
- 
+          await addActivityLeaderboard(sp,"Unlike on Blog");
           // Update the corresponding SharePoint list
           await sp.web.lists
             .getByTitle("ARGBlogComments")
@@ -313,10 +361,11 @@ const BlogDetailsContext = ({ props }: any) => {
               userHasLiked: false,
               LikesCount: comment.UserLikesJSON.length,
             })
-            .then(() => {
+            .then(async () => {
               console.log("Updated comment after removing like");
               comment.userHasLiked = false;
               setComments(updatedComments);
+             
             });
         });
     }
@@ -565,6 +614,7 @@ const BlogDetailsContext = ({ props }: any) => {
                     replies={comment.UserCommentsJSON}
                     userHasLiked={comment.userHasLiked}
                     CurrentUserProfile={CurrentUserProfile}
+                    Action="Blog"
                     onAddReply={(text) => handleAddReply(index, text)}
                     onLike={() => handleLikeToggle(index)} // Pass like handler
                   />

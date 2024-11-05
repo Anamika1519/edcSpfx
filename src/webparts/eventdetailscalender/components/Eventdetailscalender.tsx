@@ -25,6 +25,7 @@ import context from "../../../GlobalContext/context";
 import UserContext from "../../../GlobalContext/context";
 import AvtarComponents from "../../../CustomJSComponents/AvtarComponents/AvtarComponents";
 import { SPFI } from "@pnp/sp/presets/all";
+import { forEach } from "lodash";
 interface Reply {
   Id: number;
   AuthorId: number;
@@ -54,7 +55,7 @@ interface Comment {
   userHasLiked: boolean; // New property to track if the user liked this comment
   UserProfile: string;
 }
-const EventdetailscalenderContext = ({props}:any) => {
+const EventdetailscalenderContext = ({ props }: any) => {
   const sp: SPFI = getSP();
   console.log(sp, "sp");
   const siteUrl = props.siteUrl;
@@ -66,13 +67,13 @@ const EventdetailscalenderContext = ({props}:any) => {
   const [ArrDetails, setArrDetails]: any[] = useState([]);
   const [CurrentUserProfile, setCurrentUserProfile]: any[] = useState("");
   const [copySuccess, setCopySuccess] = useState('');
-  const [EventId,setId]=useState(0)
+  const [EventId, setId] = useState(0)
   const { useHide }: any = React.useContext(UserContext);
   const { setHide }: any = context;
   const Breadcrumb = [
     {
       "MainComponent": "Home",
-      "MainComponentURl":  `${siteUrl}/SitePages/Dashboard.aspx`
+      "MainComponentURl": `${siteUrl}/SitePages/Dashboard.aspx`
     },
     {
       "ChildComponent": "Events",
@@ -144,50 +145,96 @@ const EventdetailscalenderContext = ({props}:any) => {
     //   setArrDetails(arr);
     // }
   };
-  
+
 
   const ApICallData = async () => {
     debugger;
-    setCurrentUser(await getCurrentUser(sp,siteUrl));
-    setCurrentUserProfile(await getCurrentUserProfile(sp,siteUrl));
+    setCurrentUser(await getCurrentUser(sp, siteUrl));
+    setCurrentUserProfile(await getCurrentUserProfile(sp, siteUrl));
     debugger
     const ids = window.location.search;
     const originalString = ids;
     const idNum = originalString.substring(1);
     setId(Number(idNum))
     let initialComments: any[] = [];
-
-    sp.web.lists
+    let initialArray: any[] = [];
+    let arrLike = {}
+    let likeArray: any[] = []
+   await sp.web.lists
       .getByTitle("ARGEventsComments")
       .items.filter(`EventsMasterId eq ${Number(idNum)}`)()
-      .then((result: any) => {
+      .then(async (result: any) => {
         console.log(result, "ARGEventsComments");
 
         initialComments = result;
-        setComments(
-          initialComments.map((res) => ({
-            Id: res.Id,
-            UserName: res.UserName,
-            AuthorId: res.AuthorId,
-            Comments: res.Comments,
-            Created: new Date(res.Created).toLocaleString(), // Formatting the created date
-            UserLikesJSON:
-              res.UserLikesJSON != "" &&
-              res.UserLikesJSON != null &&
-              res.UserLikesJSON != undefined
-                ? JSON.parse(res.UserLikesJSON)
-                : [], // Default to empty array if null
-            UserCommentsJSON:
-              res.UserCommentsJSON != "" &&
-              res.UserCommentsJSON != null &&
-              res.UserCommentsJSON != undefined
-                ? JSON.parse(res.UserCommentsJSON)
-                : [], // Default to empty array if null
-            userHasLiked: res.userHasLiked,
-            UserProfile: res.UserProfile,
-            // Initialize as false
-          }))
-        );
+
+        //EventsComments
+        for (var i = 0; i < initialComments.length; i++) {
+        await  sp.web.lists
+            .getByTitle("ARGEventsUserLikes")
+            .items.filter(`EventsCommentsId eq ${Number(initialComments[i].Id)}`).select("ID,AuthorId,UserName,Like,Created")()
+            .then((result1: any) => {
+              console.log(result1, "ARGEventsUserLikes");
+
+              for (var j = 0; j < result1.length; j++) {
+                arrLike = {
+                  "ID": result1[j].Id,
+                  "AuthorId": result1[j].AuthorId,
+                  "UserName": result1[j].UserName,
+                  "Like": result1[j].Like,
+                  "Created": result1[j].Created
+                }
+                likeArray.push(arrLike)
+              }
+
+              let arr = {
+                Id: initialComments[i].Id,
+                UserName: initialComments[i].UserName,
+                AuthorId: initialComments[i].AuthorId,
+                Comments: initialComments[i].Comments,
+                Created: new Date(initialComments[i].Created).toLocaleString(), // Formatting the created date
+                UserLikesJSON: likeArray
+                   , // Default to empty array if null
+                UserCommentsJSON:
+                  initialComments[i].UserCommentsJSON != "" &&
+                    initialComments[i].UserCommentsJSON != null &&
+                    initialComments[i].UserCommentsJSON != undefined
+                    ? JSON.parse(initialComments[i].UserCommentsJSON)
+                    : [], // Default to empty array if null
+                userHasLiked: initialComments[i].userHasLiked,
+                UserProfile: initialComments[i].UserProfile
+              }
+              initialArray.push(arr);
+            })
+
+          
+        }
+      
+        setComments(initialArray)
+        // setComments(
+        //   initialComments.map((res) => ({
+        //     Id: res.Id,
+        //     UserName: res.UserName,
+        //     AuthorId: res.AuthorId,
+        //     Comments: res.Comments,
+        //     Created: new Date(res.Created).toLocaleString(), // Formatting the created date
+        //     UserLikesJSON:
+        //       res.UserLikesJSON != "" &&
+        //       res.UserLikesJSON != null &&
+        //       res.UserLikesJSON != undefined
+        //         ? JSON.parse(res.UserLikesJSON)
+        //         : [], // Default to empty array if null
+        //     UserCommentsJSON:
+        //       res.UserCommentsJSON != "" &&
+        //       res.UserCommentsJSON != null &&
+        //       res.UserCommentsJSON != undefined
+        //         ? JSON.parse(res.UserCommentsJSON)
+        //         : [], // Default to empty array if null
+        //     userHasLiked: res.userHasLiked,
+        //     UserProfile: res.UserProfile,
+        //     // Initialize as false
+        //   }))
+        // );
 
         // getUserProfilePicture(CurrentUser.Id,sp).then((url) => {
         //   if (url) {
@@ -253,14 +300,15 @@ const EventdetailscalenderContext = ({props}:any) => {
   // Add a like to a comment
 
   const handleLikeToggle = async (commentIndex: number) => {
+    debugger
     const updatedComments = [...comments];
     const comment = updatedComments[commentIndex];
-  
+
     // Check if the user has already liked the comment
     const userLikeIndex = comment.UserLikesJSON.findIndex(
       (like: Like) => like.UserName === CurrentUser.Title // Replace with actual username property
     );
-  
+
     if (userLikeIndex === -1) {
       // User hasn't liked yet, proceed to add a like
       await sp.web.lists.getByTitle("ARGEventsUserLikes").items.add({
@@ -270,7 +318,7 @@ const EventdetailscalenderContext = ({props}:any) => {
         userHasLiked: true
       }).then(async (ress: any) => {
         console.log(ress, 'Added Like');
-  
+
         // Add the new like to the comment's UserLikesJSON array
         const newLikeJson: Like = {
           ID: ress.data.Id,
@@ -280,9 +328,9 @@ const EventdetailscalenderContext = ({props}:any) => {
           Created: ress.data.Created,
           Count: comment.UserLikesJSON.length + 1
         };
-  
+
         updatedComments[commentIndex].UserLikesJSON.push(newLikeJson);
-  
+
         // Update the corresponding SharePoint list
         await sp.web.lists.getByTitle("ARGEventsComments").items.getById(comment.Id).update({
           UserLikesJSON: JSON.stringify(updatedComments[commentIndex].UserLikesJSON),
@@ -297,13 +345,13 @@ const EventdetailscalenderContext = ({props}:any) => {
     } else {
       // User already liked, proceed to unlike (remove like)
       const userLikeId = comment.UserLikesJSON[userLikeIndex].ID; // Get the ID of the user's like
-  
+
       await sp.web.lists.getByTitle("ARGEventsUserLikes").items.getById(userLikeId).delete().then(async () => {
         console.log('Removed Like');
-  
+
         // Remove the like from the comment's UserLikesJSON array
         updatedComments[commentIndex].UserLikesJSON.splice(userLikeIndex, 1);
-  
+
         // Update the corresponding SharePoint list
         await sp.web.lists.getByTitle("ARGEventsComments").items.getById(comment.Id).update({
           UserLikesJSON: JSON.stringify(updatedComments[commentIndex].UserLikesJSON),
@@ -361,7 +409,7 @@ const EventdetailscalenderContext = ({props}:any) => {
           });
       });
   };
-  const copyToClipboard = (Id:number) => {
+  const copyToClipboard = (Id: number) => {
     const link = `${siteUrl}/SitePages/EventDetailsCalendar.aspx?${Id}`;
     navigator.clipboard.writeText(link)
       .then(() => {
@@ -378,8 +426,7 @@ const EventdetailscalenderContext = ({props}:any) => {
   const AddAttendees = async (Item: any) => {
     let arr = []
     console.log(Item, 'Item');
-    if(Item?.AttendeesId!=null)
-    {
+    if (Item?.AttendeesId != null) {
       // const flatArrayAttendees = Item?.AttendeesId[0];
       // //  const attendees = flatArray(flatArrayAttendees)
       // arr.push(flatArrayAttendees)
@@ -393,20 +440,18 @@ const EventdetailscalenderContext = ({props}:any) => {
           {
             AttendeesId: arr,
           }
-        ).then(res=>
-        {
+        ).then(res => {
           console.log("People Picker field updated successfully!");
           ApICallData()
         }
         )
-        
-        
+
+
       } catch (error) {
         console.log("Error updating People Picker field:", error);
       }
     }
-    else
-    {
+    else {
       // const flatArrayAttendees = Item?.AuthorId;
       // //  const attendees = flatArray(flatArrayAttendees)
       // arr.push(flatArrayAttendees)
@@ -420,19 +465,18 @@ const EventdetailscalenderContext = ({props}:any) => {
           {
             AttendeesId: arr,
           }
-        ).then(res=>
-        {
+        ).then(res => {
           console.log("People Picker field updated successfully!");
           ApiLocalStorageData()
         }
         )
-        
-        
+
+
       } catch (error) {
         console.log("Error updating People Picker field:", error);
       }
     }
-   
+
   }
   const flatArray = (arr: any[]): any[] => {
     return arr.reduce((acc, val) => acc.concat(val), []);
@@ -447,107 +491,107 @@ const EventdetailscalenderContext = ({props}:any) => {
         <VerticalSideBar _context={sp} />
       </div>
       <div className="content-page">
-          <HorizontalNavbar  _context={sp} siteUrl={siteUrl}/>
-        <div className="content" style={{marginLeft: `${!useHide ? '240px' : '80px'}`,marginTop:'1rem'}}>
+        <HorizontalNavbar _context={sp} siteUrl={siteUrl} />
+        <div className="content" style={{ marginLeft: `${!useHide ? '240px' : '80px'}`, marginTop: '1rem' }}>
           <div className="container-fluid  paddb">
-          <div className="row " >
+            <div className="row " >
               <div className="col-lg-3">
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
               </div>
             </div>
             {ArrDetails.length > 0
               ? ArrDetails.map((item: any) => {
-                  const EventGalleryJson =
-                    item.EventGalleryJson == undefined ||
+                const EventGalleryJson =
+                  item.EventGalleryJson == undefined ||
                     item.EventGalleryJson == null
-                      ? ""
-                      : JSON.parse(item.EventGalleryJson);
-                  console.log(EventGalleryJson);
-                  return (
-                    <>
-                      <div className="row mt-4">
+                    ? ""
+                    : JSON.parse(item.EventGalleryJson);
+                console.log(EventGalleryJson);
+                return (
+                  <>
+                    <div className="row mt-4">
                       <p className="d-block mt-2 font-28">
-                          {item.EventName}
-                        </p>
-                        <div className="row mt-2">
-                          <div className="col-md-12 col-xl-12">
-                          <p className="mb-2 mt-1 d-flex eventtextnew" style={{ paddingLeft: '0.5rem',cursor:'pointer' }}>
+                        {item.EventName}
+                      </p>
+                      <div className="row mt-2">
+                        <div className="col-md-12 col-xl-12">
+                          <p className="mb-2 mt-1 d-flex eventtextnew" style={{ paddingLeft: '0.5rem', cursor: 'pointer' }}>
                             <span className="pe-2 text-nowrap mb-0 d-inline-block" >
                               <Calendar size={18} /> {moment(item.Created).format("DD-MMM-YYYY")}  &nbsp;  &nbsp;  &nbsp;|
                             </span>
-                            <span className="text-nowrap mb-0 d-inline-block"   onClick={sendanEmail}>
+                            <span className="text-nowrap mb-0 d-inline-block" onClick={sendanEmail}>
                               <Share size={18} />  Share by email &nbsp;  &nbsp;  &nbsp;|&nbsp;  &nbsp;  &nbsp;
                             </span>
                             <span className="text-nowrap mb-0 d-inline-block" onClick={() => copyToClipboard(item.Id)}>
-                              <Link size={18} />    Copy link &nbsp;  &nbsp;  &nbsp;{copySuccess && <span className="text-success">{copySuccess}</span>} &nbsp;  &nbsp;  |&nbsp;  &nbsp;  
+                              <Link size={18} />    Copy link &nbsp;  &nbsp;  &nbsp;{copySuccess && <span className="text-success">{copySuccess}</span>} &nbsp;  &nbsp;  |&nbsp;  &nbsp;
                             </span>
-                      
-                          <span style={{display:'flex',gap:'0.2rem'}}>
+
+                            <span style={{ display: 'flex', gap: '0.2rem' }}>
                               {
-                                item?.Attendees?.length > 0 && item?.Attendees.map((item1: any,index:0) => {
+                                item?.Attendees?.length > 0 && item?.Attendees.map((item1: any, index: 0) => {
 
                                   return (
                                     <>
-                                      {item1.EMail ? <span style={{ margin: index==0 ? '0 0 0 0' : '0 0 0px -12px' }}><img src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item1.EMail}`} className="attendeesImg"/> </span> :
+                                      {item1.EMail ? <span style={{ margin: index == 0 ? '0 0 0 0' : '0 0 0px -12px' }}><img src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item1.EMail}`} className="attendeesImg" /> </span> :
                                         <span> <AvtarComponents Name={item1.Title} /> </span>
                                       }
                                     </>
                                   )
                                 })
                               }
-                            {item?.Attendees?.length > 0 && (<span>Attending</span>)}  
+                              {item?.Attendees?.length > 0 && (<span>Attending</span>)}
                             </span>
                           </p>
 
                           <p>
-                      
-                     {new Date(item.RegistrationDueDate)>new Date()? (<div className="EventAttendes" onClick={() => AddAttendees(item)}><Users size={14} /> Attend this event
-                     </div> ):(<div className="EventAttendesGray" >! Event Expired
-                     </div>)} 
+
+                            {new Date(item.RegistrationDueDate) > new Date() ? (<div className="EventAttendes" onClick={() => AddAttendees(item)}><Users size={14} /> Attend this event
+                            </div>) : (<div className="EventAttendesGray" >! Event Expired
+                            </div>)}
                           </p>
-                          </div>
                         </div>
                       </div>
-                      <div className="row" style={{ paddingLeft: '0.5rem' }}>
-                        <p
-                          style={{ lineHeight: "22px" }}
-                          className="d-block text-muted mt-2 font-14"
-                        >
-                          {item.Overview}
-                        </p>
-                      </div>
-                      <div className="row internalmedia filterable-content mt-3" style={{ paddingLeft: '0.5rem' }}>
-                        {EventGalleryJson.length > 0 ? (
-                          EventGalleryJson.map((res: any) => {
-                            return (
-                              <div className="col-sm-6 col-xl-3 filter-item all web illustrator">
-                                <div
-                                  className="gal-box"
-                                  style={{ width: "100%" }}
+                    </div>
+                    <div className="row" style={{ paddingLeft: '0.5rem' }}>
+                      <p
+                        style={{ lineHeight: "22px" }}
+                        className="d-block text-muted mt-2 font-14"
+                      >
+                        {item.Overview}
+                      </p>
+                    </div>
+                    <div className="row internalmedia filterable-content mt-3" style={{ paddingLeft: '0.5rem' }}>
+                      {EventGalleryJson.length > 0 ? (
+                        EventGalleryJson.map((res: any) => {
+                          return (
+                            <div className="col-sm-6 col-xl-3 filter-item all web illustrator">
+                              <div
+                                className="gal-box"
+                                style={{ width: "100%" }}
+                              >
+                                <a
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#centermodal"
+                                  className="image-popup mb-2"
+                                  title="Screenshot-1"
                                 >
-                                  <a
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#centermodal"
-                                    className="image-popup mb-2"
-                                    title="Screenshot-1"
-                                  >
-                                    <img
-                                      src={`https://officeindia.sharepoint.com${res.fileUrl}`}
-                                      className="img-fluid imgcssscustom"
-                                      alt="work-thumbnail"
-                                      data-themekey="#"
-                                      style={{ width: "100%", height: "100%" }}
-                                    />
-                                  </a>
-                                </div>
+                                  <img
+                                    src={`https://officeindia.sharepoint.com${res.fileUrl}`}
+                                    className="img-fluid imgcssscustom"
+                                    alt="work-thumbnail"
+                                    data-themekey="#"
+                                    style={{ width: "100%", height: "100%" }}
+                                  />
+                                </a>
                               </div>
-                            );
-                          })
-                        ) : (
-                          <></>
-                        )}
-                      </div>
-                      {/* <div className="row mt-2">
+                            </div>
+                          );
+                        })
+                      ) : (
+                        <></>
+                      )}
+                    </div>
+                    {/* <div className="row mt-2">
                         <p
                           style={{ lineHeight: "22px" }}
                           className="d-block text-muted mt-2 mb-0 font-14"
@@ -559,9 +603,9 @@ const EventdetailscalenderContext = ({props}:any) => {
                           ></div>
                         </p>
                       </div> */}
-                    </>
-                  );
-                })
+                  </>
+                );
+              })
               : null}
             {/* <div className="row">
               {
@@ -575,8 +619,8 @@ const EventdetailscalenderContext = ({props}:any) => {
             </div> */}
             <div className="row" style={{ paddingLeft: '0.5rem' }}>
               <div className="col-md-6">
-                <div className="card" style={{ border: "1px solid #54ade0",borderRadius:'20px',boxShadow:'0 3px 20px #1d26260d' }}>
-                  <div className="card-body" style={{padding:'1rem 0.9rem'}}>
+                <div className="card" style={{ border: "1px solid #54ade0", borderRadius: '20px', boxShadow: '0 3px 20px #1d26260d' }}>
+                  <div className="card-body" style={{ padding: '1rem 0.9rem' }}>
                     {/* New comment input */}
                     <h4 className="mt-0 mb-3 text-dark fw-bold font-16">
                       Comments
@@ -588,7 +632,7 @@ const EventdetailscalenderContext = ({props}:any) => {
                         value={newComment}
                         onChange={(e) => setNewComment(e.target.value)}
                         placeholder="Add a new comment..."
-                        rows={3} style={{borderRadius:'unset'}}
+                        rows={3} style={{ borderRadius: 'unset' }}
                       />
                       <button
                         className="btn btn-primary mt-2"
@@ -632,10 +676,10 @@ const EventdetailscalenderContext = ({props}:any) => {
   );
 };
 
-const Eventdetailscalender : React.FC<IEventdetailscalenderProps> = (props) => {
+const Eventdetailscalender: React.FC<IEventdetailscalenderProps> = (props) => {
   return (
     <Provider>
-      <EventdetailscalenderContext props={props}/>
+      <EventdetailscalenderContext props={props} />
     </Provider>
   );
 };

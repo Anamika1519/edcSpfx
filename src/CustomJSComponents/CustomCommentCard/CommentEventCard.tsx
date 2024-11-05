@@ -55,7 +55,8 @@ export const CommentEventCard: React.FC<{
   const [loading, setLoading] = useState(false); // Loading state for replies
   console.log(Comments, 'Comments');
 
-  const handleAddReply = async () => {
+  const handleAddReply = async (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    e.preventDefault()
     if (newReply.trim() === '') return;
 
     // setLoading(true); // Set loading to true
@@ -64,12 +65,12 @@ export const CommentEventCard: React.FC<{
     setNewReply('');
     setLoading(false); // Reset loading state
   };
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      e.preventDefault(); // Prevent the default form submission
-      handleAddReply();
-    }
-  };
+  // const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  //   if (e.key === "Enter") {
+  //     e.preventDefault(); // Prevent the default form submission
+  //     handleAddReply();
+  //   }
+  // };
 
   return (
     <div className="card team-fedd" style={{ border: '1px solid #54ade0', borderRadius: '20px', boxShadow: '0 3px 20px #1d26260d' }}>
@@ -89,7 +90,7 @@ export const CommentEventCard: React.FC<{
                 {username}
                 {/* </a> */}
               </h5>
-              <p className="text-muted font-12">
+              <p className="text-muted font-12 mt-3">
                 <small>{Created}</small>
               </p>
             </div>
@@ -132,8 +133,8 @@ export const CommentEventCard: React.FC<{
                   </div>
                   <div className="w-100 mt-0">
                     <h6 className="font-14 fw600">{reply.UserName}</h6>
-                    <p className="mb-0 para-width  text-muted ng-binding">{reply.Comments}</p>
-                    <p className="text-muted font-12">
+                    <p className="mb-0 para-width  text-muted ng-binding"  style={{wordBreak:'break-all'}}>{reply.Comments}</p>
+                    <p className="text-muted font-12 mt-3">
                       <small>{moment(reply.Created).format("DD-MMM-YYYY HH:mm")}</small>
                     </p>
 
@@ -151,7 +152,7 @@ export const CommentEventCard: React.FC<{
 
                     <img src={CurrentUserProfile} className="w30 avatar-sm rounded-circle" alt="user" />
                   </div>
-                  <input
+                  {/* <input
                     type="text"
                     className="form-control ht form-control-sm"
                     placeholder="Reply to comment..."
@@ -159,6 +160,20 @@ export const CommentEventCard: React.FC<{
                     onChange={(e) => setNewReply(e.target.value)}
                     onKeyDown={handleKeyDown}
                     disabled={loading}
+                  /> */}
+                   <textarea
+                    className="form-control ht form-control-sm"
+                    placeholder="Reply to comment..."
+                    value={newReply}
+                    onChange={(e) => setNewReply(e.target.value)}
+                    disabled={loading}
+                    rows={3}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault(); // Prevents a new line
+                        handleAddReply(e); // Calls the function to add a reply
+                      }
+                    }}
                   />
                 </div>
 

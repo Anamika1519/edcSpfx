@@ -4,4 +4,6 @@ export interface IProjectsProps {
   environmentMessage: string;
   hasTeamsContext: boolean;
   userDisplayName: string;
+  context: any;
+  siteUrl: string;
 }
