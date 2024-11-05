@@ -183,7 +183,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
       const currentUser = await sp.web.currentUser();
       const userList = await sp.web.lists
         .getByTitle("User Information List")
-        .items.select(
+        .items.select("*",
           "ID",
           "Title",
           "EMail",
@@ -546,6 +546,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
                 {activeTab === "cardView" && (
                   // Card View Content (only displayed when "cardView" is active)
                   <div className="row card-view">
+                    {console.log("usersssitem",usersitem)}
                     {usersitem.map((item) => (
                       <div className="col-lg-4 col-md-6" key={item.Title}>
                         <div
@@ -561,7 +562,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
                                   className="alignright"
                                   onClick={() =>
                                     window.open(
-                                      `https://teams.microsoft.com/l/call/0/0?users=${item.Email}`,
+                                      `https://teams.microsoft.com/l/call/0/0?users=${item.EMail}`,
                                       "_blank"
                                     )
                                   }
@@ -614,6 +615,18 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                   {/* </a> */}
                                 </span>
+                              </p>
+
+                              <p
+                                className="text-muted"
+                                style={{ fontSize: "11px" }}
+                              >
+                                <span data-tooltip={item.WorkPhone}>
+                                  {truncateText( item.WorkPhone != null
+                                      ? item.WorkPhone
+                                      : " NA ", 10)}
+                                </span>
+                                
                               </p>
                               <div
                                 style={{
@@ -940,12 +953,19 @@ const CorporateDirectoryContext = ({ props }: any) => {
                                           {" "}
                                           <img
                                             src={require("../assets/calling.png")}
-                                            alt="Connect" onClick={() =>
+                                            alt="Connect"
+                                            onClick={() =>
                                               window.open(
-                                                "https://teams.microsoft.com",
+                                                `https://teams.microsoft.com/l/call/0/0?users=${item.EMail}`,
                                                 "_blank"
                                               )
                                             }
+                                            //  onClick={() =>
+                                            //   window.open(
+                                            //     "https://teams.microsoft.com",
+                                            //     "_blank"
+                                            //   )
+                                            // }
                                           />
                                         </td>
                                         <td>{item.Title}</td>
@@ -958,8 +978,8 @@ const CorporateDirectoryContext = ({ props }: any) => {
                                             : "NA"}
                                         </td>
                                         <td>
-                                          {item?.MobilePhone != null
-                                            ? item?.MobilePhone
+                                          {item?.WorkPhone != null
+                                            ? item?.WorkPhone
                                             : "NA"}
                                         </td>
                                       </tr>
