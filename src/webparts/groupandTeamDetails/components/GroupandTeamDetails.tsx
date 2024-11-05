@@ -1,9 +1,11 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 
 import CustomBreadcrumb from "../../../CustomJSComponents/CustomBreadcrumb/CustomBreadcrumb";
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPaperPlane } from "@fortawesome/free-solid-svg-icons"
 import VerticalSideBar from "../../verticalSideBar/components/VerticalSideBar";
-
+import { PostComponent } from '../../../CustomJSComponents/SocialFeedPost/PostComponent'
+import classNames from 'classnames'
 import { getSP } from "../loc/pnpjsConfig";
 
 import { SPFI } from "@pnp/sp/presets/all";
@@ -54,6 +56,7 @@ import context from "../../../GlobalContext/context";
 
 import { getGroupTeamDetailsById } from "../../../APISearvice/GroupTeamService";
 import AvtarComponents from "../../../CustomJSComponents/AvtarComponents/AvtarComponents";
+// import { GroupTeamPost } from "./GroupTeamPost";
 
 // Define types for reply and comment structures
 
@@ -134,17 +137,179 @@ const GroupandTeamDetailsContext = ({ props }: any) => {
   const [loading, setLoading] = useState<boolean>(false);
 
   const [ArrDetails, setArrDetails] = useState([]);
-
+  const [GroupData, setGroupData] = useState([]);
+  const [posts, setPosts] = useState([]);
   const [CurrentUserProfile, setCurrentUserProfile]: any[] = useState("");
 
   const [copySuccess, setCopySuccess] = useState("");
 
   const { useHide }: any = React.useContext(UserContext);
-
+  const [activeMainTab, setActiveMainTab] = useState("feed");
+  const [hideCreatePost, setHideCreatePost] = useState(true)
+  const [HideShowPost, setHideShowPost] = useState(false)
   const { setHide }: any = context;
 
   // Load comments from localStorage on mount
+useEffect(() => {
+  getGroup()
+  getpostdata()
+  // ApiLocalStorageData();
+})
+const getGroup = async () => {
+  // debugger
+  const groupData = 
+  
+  await sp.web.lists
+  .getByTitle("ARGGroupandTeam")
+  .items.select("*,Author/Title,Author/ID,GroupName,GroupType,InviteMemebers/Id")
+  .expand("Author,InviteMemebers")
+  .orderBy("Created", false)
+  .getAll()
+  .then((res) => {
+    // debugger
+    console.log("--------group", res);
+    setGroupData(res)
 
+    // // Filter items based on GroupType and InviteMembers
+    //  arr = res.filter(item => 
+    //   // Include public groups or private groups where the current user is in the InviteMembers array
+    //   item.GroupType === "All" || 
+    //   (item.GroupType === "Selected Members" && item.InviteMemebers && item.InviteMemebers.some((member:any) => member.Id === CurrentUser))
+    // );
+  }
+)
+ 
+  .catch((error) => {
+    console.error("Error fetching data: ", error);
+  });
+
+  const ids = window.location.search;
+  //  alert(ids)
+  const originalString = ids;
+  // alert(originalString)
+  const idNum2 :any = originalString.substring(1);
+  // alert(idNum2)
+  const getgroup =   await sp.web.lists
+  .getByTitle("ARGGroupandTeam")
+  .items.getById(idNum2).select("*,InviteMemebers/Id,InviteMemebers/Title,InviteMemebers/EMail,GroupType").expand("InviteMemebers")()
+  .then((res) => {
+    // arr=res;
+    console.log(res , ":response")
+    // debugger
+    console.log("res------",res)
+    setArrDetails(res)
+  })
+  .catch((error) => {
+    console.log("Error fetching data: ", error);
+  });
+}
+const getpostdata =async()=>{
+  console.log("ARGGroupandTeamComments get data")
+  try {
+
+    let newPost: any[] = []
+
+    await sp.web.lists
+
+      .getByTitle("ARGGroupandTeamComments") // SharePoint list name
+
+      .items.select("*,GroupTeamComments/Id,GroupTeamComments/Comments,GroupTeamsImages/Id,GroupTeamLikes/Id,Author/Id,Author/Title")
+
+      .expand("GroupTeamComments,GroupTeamsImages,GroupTeamLikes ,Author").orderBy("Created", false)().then((item: any) => {
+
+        console.log(item, 'ihhh');
+
+        if (item.length > 0) {
+
+          item.map((ele: any) => {
+             console.log(ele, "ele data")
+            let newPosts = {
+
+              Contentpost: ele.Comments,
+
+              SocialFeedImagesJson: ele.GroupTeamImagesJson,
+
+              Created: ele.Created,
+
+              userName: ele.Author?.Title,
+
+              userAvatar: ele.userAvatar,
+
+              likecount: 0,
+
+              commentcount: 0,
+
+              // comments: ele?.SocialFeedCommentsJson != null ? JSON.parse(ele?.SocialFeedCommentsJson) : [],
+
+              Id: ele.Id,
+
+              SocialFeedUserLikesJson: ele?.UserLikesJSON != null ? JSON.parse(ele?.UserLikesJSON) : []
+
+            };
+
+            newPost.push(newPosts)
+
+          }
+
+
+
+          )
+
+          const updatedPosts = [newPost, ...posts];
+
+          setPosts(updatedPosts[0]);
+
+        }
+
+
+
+
+      })
+
+    // setStoredPosts(items.map((item) => item.Title));
+  } catch (error) {
+    console.log("Error fetching posts:", error);
+  }
+}
+console.log(ArrDetails , "ArrDetails")
+
+const CreatePostTab = () => {
+
+  debugger
+
+  setHideCreatePost(true)
+
+  setHideShowPost(false)
+
+}
+const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+
+};
+const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  // const files = Array.from(e.target.files || []); // Ensure files is an array of type File[]
+  // let uploadedImages: any[] = [];
+  // let ImagesIds: any[] = [];
+  // for (const file of files) {
+  //   try {
+  //     // Assuming uploadFileToLibrary is your custom function to upload files
+  //     const uploadedImage = await uploadFileToLibrary(file, sp, "SocialFeedImages");
+
+  //     uploadedImages.push(uploadedImage); // Store uploaded image data
+  //     console.log(uploadedImage, 'Uploaded file data');
+  //   } catch (error) {
+  //     console.log("Error uploading file:", file.name, error);
+  //   }
+  // }
+
+
+
+  // // Set state after uploading all images
+
+  // setImages(flatArray(uploadedImages)); // Store all uploaded images
+
+  // setUploadFile(flatArray(uploadedImages)); // Optional: Track the uploaded file(s) in another state
+
+};
   useEffect(() => {
 
     // const savedComments = localStorage.getItem('comments');
@@ -243,7 +408,7 @@ const GroupandTeamDetailsContext = ({ props }: any) => {
 
  
 
-    setArrDetails(await getGroupTeamDetailsById(sp, Number(idNum)));
+    // setArrDetails(await getGroupTeamDetailsById(sp, Number(idNum)));
 
   };
 
@@ -427,7 +592,7 @@ const GroupandTeamDetailsContext = ({ props }: any) => {
 
         userHasLiked: false,
 
-        GroupandTeamId: ArrDetails[0].Id,
+        // GroupandTeamId: ArrDetails[0].Id,
 
         UserProfile: CurrentUserProfile,
 
@@ -913,7 +1078,7 @@ const GroupandTeamDetailsContext = ({ props }: any) => {
 
   //#endregion
 
-  console.log(ArrDetails, "console.log(ArrDetails)");
+  // console.log(ArrDetails, "console.log(ArrDetails)");
 
   const sendanEmail = () => {
 
@@ -923,339 +1088,634 @@ const GroupandTeamDetailsContext = ({ props }: any) => {
 
   return (
 
-    <div id="wrapper" ref={elementRef}>
+    // <div id="wrapper" ref={elementRef}>
 
-      <div className="app-menu" id="myHeader">
+    //   <div className="app-menu" id="myHeader">
 
-        <VerticalSideBar _context={sp} />
+    //     <VerticalSideBar _context={sp} />
 
-      </div>
+    //   </div>
 
-      <div className="content-page">
+    //   <div className="content-page">
 
-          <HorizontalNavbar  _context={sp} siteUrl={siteUrl}/>
+    //       <HorizontalNavbar  _context={sp} siteUrl={siteUrl}/>
 
-        <div
+    //     <div
 
-          className="content"
+    //       className="content"
 
-          style={{ marginLeft: `${!useHide ? "240px" : "80px"}`, marginTop:'1rem' }}
+    //       style={{ marginLeft: `${!useHide ? "240px" : "80px"}`, marginTop:'1rem' }}
 
-        >
+    //     >
 
-          <div className="container-fluid  paddb">
+    //       <div className="container-fluid  paddb">
 
-            <div className="row">
+    //         <div className="row">
 
-              <div className="col-lg-3">
+    //           <div className="col-lg-3">
 
-                <CustomBreadcrumb Breadcrumb={Breadcrumb} />
+    //             <CustomBreadcrumb Breadcrumb={Breadcrumb} />
 
-              </div>
+    //           </div>
 
-            </div>
+    //         </div>
 
-            {ArrDetails.length > 0
+    //         {ArrDetails.length > 0
 
-              ? ArrDetails.map((item: any) => {
+    //           ? ArrDetails.map((item: any) => {
 
-                  return (
+    //               return (
 
-                    <>
+    //                 <>
 
-                      <div className="row mt-4">
+    //                   <div className="row mt-4">
 
-                        <p className="d-block mt-2 text-dark  font-28">
+    //                     <p className="d-block mt-2 text-dark  font-28">
 
-                          {item.GroupName}
+    //                       {item.GroupName}
 
-                        </p>
+    //                     </p>
 
-                        <div className="row mt-2">
+    //                     <div className="row mt-2">
 
-                          <div className="d-flex">
+    //                       <div className="d-flex">
 
-                            <p className="mb-2 mt-1 newsvg font-14 d-flex">
+    //                         <p className="mb-2 mt-1 newsvg font-14 d-flex">
 
-                              <span className="pe-2 text-nowrap mb-0 d-inline-block" style={{fontSize:'14px'}}>
+    //                           <span className="pe-2 text-nowrap mb-0 d-inline-block" style={{fontSize:'14px'}}>
 
-                                <Calendar size={16} />
+    //                             <Calendar size={16} />
 
-                                {moment(item.Created).format("DD-MMM-YYYY")}
+    //                             {moment(item.Created).format("DD-MMM-YYYY")}
 
-                                &nbsp; &nbsp;|
+    //                             &nbsp; &nbsp;|
 
-                              </span>
+    //                           </span>
 
-                              <span
+    //                           <span
 
-                                className="text-nowrap mb-0 d-inline-block"
+    //                             className="text-nowrap mb-0 d-inline-block"
 
-                                onClick={sendanEmail} style={{fontSize:'14px'}}
+    //                             onClick={sendanEmail} style={{fontSize:'14px'}}
 
-                              >
+    //                           >
 
-                                <Share size={16} /> Share by email &nbsp; 
+    //                             <Share size={16} /> Share by email &nbsp; 
 
-                                &nbsp;|&nbsp;
+    //                             &nbsp;|&nbsp;
 
-                              </span>
+    //                           </span>
 
-                              <span
+    //                           <span
 
-                                className="text-nowrap mb-0 d-inline-block"
+    //                             className="text-nowrap mb-0 d-inline-block"
 
-                                onClick={() => copyToClipboard(item.Id)} style={{fontSize:'14px'}}
+    //                             onClick={() => copyToClipboard(item.Id)} style={{fontSize:'14px'}}
 
-                              >
+    //                           >
 
-                                <Link size={16} /> Copy link &nbsp; &nbsp;
+    //                             <Link size={16} /> Copy link &nbsp; &nbsp;
 
-                                {copySuccess && <span className="text-success">{copySuccess}</span>}
+    //                             {copySuccess && <span className="text-success">{copySuccess}</span>}
 
-                              </span>
-                              <span style={{fontSize:'14px'}}>&nbsp; &nbsp; |{item.GroupType}</span>
-                              <span style={{ display: 'flex', gap: '0.2rem',fontSize:'14px' }}> &nbsp; &nbsp;|
-                              {
-                                item?.InviteMemebers?.length > 0 && item?.InviteMemebers.map((item1: any, index: 0) => {
+    //                           </span>
+    //                           <span style={{fontSize:'14px'}}>&nbsp; &nbsp; |{item.GroupType}</span>
+    //                           <span style={{ display: 'flex', gap: '0.2rem',fontSize:'14px' }}> &nbsp; &nbsp;|
+    //                           {
+    //                             item?.InviteMemebers?.length > 0 && item?.InviteMemebers.map((item1: any, index: 0) => {
 
-                                  return (
-                                    <>
-                                      {item1.EMail ? <span style={{ margin: index == 0 ? '0 0 0 0' : '0 0 0px -12px' }} data-tooltip={item.Title}><img src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item1.EMail}`} className="attendeesImg" /> <span data-tooltip={item.Title}></span></span> :
-                                        <span> <AvtarComponents Name={item1.Title} data-tooltip={item.Title}/> </span>
-                                      }
-                                    </>
-                                  )
-                                })
-                              }
-                            </span>
-                            </p>
+    //                               return (
+    //                                 <>
+    //                                   {item1.EMail ? <span style={{ margin: index == 0 ? '0 0 0 0' : '0 0 0px -12px' }} data-tooltip={item.Title}><img src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item1.EMail}`} className="attendeesImg" /> <span data-tooltip={item.Title}></span></span> :
+    //                                     <span> <AvtarComponents Name={item1.Title} data-tooltip={item.Title}/> </span>
+    //                                   }
+    //                                 </>
+    //                               )
+    //                             })
+    //                           }
+    //                         </span>
+    //                         </p>
 
-                          </div>
+    //                       </div>
 
-                        </div>
+    //                     </div>
 
-                      </div>
+    //                   </div>
 
-                      <div className="row ">
+    //                   <div className="row ">
 
-                        <p
+    //                     <p
 
-                          style={{ lineHeight: "22px" }}
+    //                       style={{ lineHeight: "22px" }}
 
-                          className="d-block text-muted mt-0 font-14"
+    //                       className="d-block text-muted mt-0 font-14"
 
-                        >
+    //                     >
 
-                          {/* {item.GroupName} */}
+    //                       {/* {item.GroupName} */}
 
-                        </p>
+    //                     </p>
 
-                      </div>
+    //                   </div>
 
  
 
-                      <div className="row mt-2">
+    //                   <div className="row mt-2">
 
-                        <p
+    //                     <p
 
-                          style={{ lineHeight: "22px" }}
+    //                       style={{ lineHeight: "22px" }}
 
-                          className="d-block text-muted mt-2 mb-0 font-14"
+    //                       className="d-block text-muted mt-2 mb-0 font-14"
 
-                        >
+    //                     >
 
-                          <div
+    //                       <div
 
-                            dangerouslySetInnerHTML={{
+    //                         dangerouslySetInnerHTML={{
 
-                              __html: item.GroupDescription,
+    //                           __html: item.GroupDescription,
 
-                            }}
+    //                         }}
 
-                          ></div>
+    //                       ></div>
 
-                        </p>
+    //                     </p>
 
-                      </div>
+    //                   </div>
 
-                    </>
+    //                 </>
 
-                  );
+    //               );
 
-                })
+    //             })
 
-              : null}
+    //           : null}
 
-            {/* <div className="row">
+    //         {/* <div className="row">
 
-              {
+    //           {
 
-                ArrDetails.length > 0 ? ArrDetails.map((item: any) => {
+    //             ArrDetails.length > 0 ? ArrDetails.map((item: any) => {
 
-                  return (
+    //               return (
 
-                    <h4>{item.Title}</h4>
+    //                 <h4>{item.Title}</h4>
 
-                  )
+    //               )
 
-                }) : null
+    //             }) : null
 
-              }
-
- 
-
-            </div> */}
-
-            <div className="col-lg-8">
-
-              <div className=" flex-wrap align-items-center justify-content-end mt-3 mb-3 p-0">
-
-                {/* Button to trigger modal */}
-
-                <button
-
-                  type="button"
-
-                  data-bs-toggle="modal"
-
-                  data-bs-target="#discussionModal"
-
-                  className="btn rounded-pill1 btn-secondary waves-effect waves-light"
-
-                >
-
-                  <i className="fe-plus-circle"></i> Add New Post
-
-                </button>
-
-              </div>
+    //           }
 
  
 
-              {/* Bootstrap Modal */}
+    //         </div> */}
 
-              <div
+    //         <div className="col-lg-8">
 
-                className="modal fade bd-example-modal-lg"
+    //           <div className=" flex-wrap align-items-center justify-content-end mt-3 mb-3 p-0">
 
-                id="discussionModal"
+    //             {/* Button to trigger modal */}
 
-                tabIndex={-1}
+    //             <button
 
-                aria-labelledby="exampleModalLabel"
+    //               type="button"
 
-                aria-hidden="true"
+    //               data-bs-toggle="modal"
 
-                data-target=".bd-example-modal-lg"
+    //               data-bs-target="#discussionModal"
 
-              >
+    //               className="btn rounded-pill1 btn-secondary waves-effect waves-light"
 
-                <div className="modal-dialog modal-lg ">
+    //             >
 
-                  <div className="modal-content">
+    //               <i className="fe-plus-circle"></i> Add New Post
 
-                    <div className="modal-header d-block">
+    //             </button>
 
-                      <h5 className="modal-title" id="exampleModalLabel">
+    //           </div>
 
-                        Add a Post
+ 
 
-                      </h5>
+    //           {/* Bootstrap Modal */}
 
-                      <button
+    //           <div
 
-                        type="button"
+    //             className="modal fade bd-example-modal-lg"
 
-                        className="btn-close"
+    //             id="discussionModal"
 
-                        data-bs-dismiss="modal"
+    //             tabIndex={-1}
 
-                        aria-label="Close"
+    //             aria-labelledby="exampleModalLabel"
 
-                      ></button>
+    //             aria-hidden="true"
 
-                    </div>
+    //             data-target=".bd-example-modal-lg"
 
-                    <div className="modal-body">
+    //           >
 
-                      <div className="row" style={{ paddingLeft: "0.5rem" }}>
+    //             <div className="modal-dialog modal-lg ">
 
-                        <div className="col-md-6">
+    //               <div className="modal-content">
 
-                          <div
+    //                 <div className="modal-header d-block">
 
-                            className=""
+    //                   <h5 className="modal-title" id="exampleModalLabel">
 
-                            style={{
+    //                     Add a Post
 
-                              width: "200%",
+    //                   </h5>
+
+    //                   <button
+
+    //                     type="button"
+
+    //                     className="btn-close"
+
+    //                     data-bs-dismiss="modal"
+
+    //                     aria-label="Close"
+
+    //                   ></button>
+
+    //                 </div>
+
+    //                 <div className="modal-body">
+
+    //                   <div className="row" style={{ paddingLeft: "0.5rem" }}>
+
+    //                     <div className="col-md-6">
+
+    //                       <div
+
+    //                         className=""
+
+    //                         style={{
+
+    //                           width: "200%",
 
                              
 
-                            }}
+    //                         }}
 
-                          >
+    //                       >
 
-                            <div
+    //                         <div
 
-                              className="card-body"
+    //                           className="card-body"
 
-                              style={{ padding: "1rem 0.9rem" }}
+    //                           style={{ padding: "1rem 0.9rem" }}
 
-                            >
+    //                         >
 
-                              {/* New comment input */}
+    //                           {/* New comment input */}
 
-                              <h4 className="mt-0 mb-3 text-dark fw-bold font-16">
+    //                           <h4 className="mt-0 mb-3 text-dark fw-bold font-16">
 
-                                Comments
+    //                             Comments
 
-                              </h4>
+    //                           </h4>
 
-                              <div className="mt-3">
+    //                           <div className="mt-3">
+
+    //                             <textarea
+
+    //                               id="example-textarea"
+
+    //                               className="form-control text-dark form-control-light mb-2"
+
+    //                               value={newComment}
+
+    //                               onChange={(e) =>
+
+    //                                 setNewComment(e.target.value)
+
+    //                               }
+
+    //                               placeholder="Add a new comment..."
+
+    //                               rows={3}
+
+    //                               style={{ borderRadius: "unset" }}
+
+    //                             />
+
+    //                             <button
+
+    //                               className="btn btn-primary mt-2"
+
+    //                               onClick={handleAddComment}
+
+    //                               disabled={loading} // Disable button when loading
+
+    //                               data-bs-dismiss="modal"
+
+    //                             >
+
+    //                               {loading ? "Submitting..." : "Add Comment"}{" "}
+
+    //                               {/* Change button text */}
+
+    //                             </button>
+
+    //                           </div>
+
+    //                         </div>
+
+    //                       </div>
+
+    //                     </div>
+
+    //                   </div>
+
+    //                 </div>
+
+    //               </div>
+
+    //             </div>
+
+    //           </div>
+
+    //         </div>
+
+ 
+
+    //         <div className="row" style={{ paddingLeft: "0.5rem" }}>
+
+    //           {comments.map((comment, index) => (
+
+    //             <div className="col-xl-6">
+
+    //               <CommentCard
+
+    //                 key={index}
+
+    //                 commentId={index}
+
+    //                 username={comment.UserName}
+
+    //                 Commenttext={comment.Comments}
+
+    //                 Comments={comments}
+
+    //                 Created={comment.Created}
+
+    //                 likes={comment.UserLikesJSON}
+
+    //                 replies={comment.UserCommentsJSON}
+
+    //                 userHasLiked={comment.userHasLiked}
+
+    //                 CurrentUserProfile={CurrentUserProfile}
+
+    //                 onAddReply={(text) => handleAddReply(index, text)}
+
+    //                 onLike={() => handleLikeToggle(index)} // Pass like handler
+
+    //               />
+
+    //             </div>
+
+    //           ))}
+
+    //         </div>
+
+    //       </div>
+
+    //     </div>
+
+    //   </div>
+
+    // </div>
+    <div id="wrapper" ref={elementRef}>
+
+    <div
+
+      className="app-menu"
+
+      id="myHeader">
+
+      <VerticalSideBar _context={sp} />
+
+    </div>
+
+    <div className="content-page">
+
+        <HorizontalNavbar  _context={sp} siteUrl={siteUrl}/>
+
+      <div className="content" style={{ marginLeft: `${!useHide ? '240px' : '80px'}`, marginTop:'1rem' }}>
+
+        <div className="container-fluid  paddb">
+
+          <div className="row" style={{ paddingLeft: '0.5rem' }}>
+
+            <div className="col-lg-3">
+
+              <CustomBreadcrumb Breadcrumb={Breadcrumb} />
+
+            </div>
+
+          </div>
+
+          <div className="row mt-3">
+
+            <div className="col-md-3 mobile-w1">
+              <div className="row">
+
+                <div style={{ display: 'flex', gap: '1rem' }}>
+
+                  {/* <img src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${currentEmail}`}
+
+                    className="rounded-circlecss img-thumbnail avatar-xl" style={{
+
+                      borderRadius: '5rem', height: '3rem',
+
+                      width: '3rem'
+
+                    }} /> */}
+
+                  <span style={{
+
+                    whiteSpace: 'nowrap',
+
+                    display: 'flex',
+
+                    alignItems: 'center'
+
+                  }}>
+                    {/* {ArrDetails[0].GroupName} */}
+                  
+                  </span>
+
+                </div>
+
+              </div>
+              <div className="row mt-3">
+              {/* {ArrDetails[0].GroupDescription} */}
+                </div>     
+              
+            </div>
+
+            <div className="col-md-6 mobile-w2">
+
+              {activeMainTab === "feed" && (
+
+                <>
+
+                  <div className="card cardcss" style={{ borderRadius: '20px' }}>
+
+                    <div className="post-form">
+
+                      <ul className="navcss nav-tabs nav-bordered">
+
+                        <li className="nav-itemcss">
+
+                          <a className={classNames('nav-linkcss px-4 py-3', { active: hideCreatePost && !HideShowPost })} onClick={CreatePostTab}>Create Post</a>
+
+                        </li>
+
+                        <li className="nav-itemcss">
+
+                          {/* <a className={classNames('nav-linkcss px-4 py-3', { active: HideShowPost && !hideCreatePost })} onClick={ShowPost}>My Post</a> */}
+
+                        </li>
+
+                      </ul>
+
+                      {
+                      hideCreatePost &&
+
+                        <div className="tab-content pt-0">
+
+                          <div className="tab-pane p-3 active show">
+
+                            <div className="border rounded">
+
+                              <form onSubmit={handleSubmit} className="comment-area-box">
 
                                 <textarea
 
-                                  id="example-textarea"
+                                  className="form-control border-0 resize-none textareacss"
 
-                                  className="form-control text-dark form-control-light mb-2"
+                                  placeholder="Write A Post In This Group..."
 
-                                  value={newComment}
+                                  // value={Contentpost}
 
-                                  onChange={(e) =>
+                                  rows={4}
 
-                                    setNewComment(e.target.value)
-
-                                  }
-
-                                  placeholder="Add a new comment..."
-
-                                  rows={3}
-
-                                  style={{ borderRadius: "unset" }}
+                                  // onChange={(e) => setContent(e.target.value)}
 
                                 />
 
-                                <button
+                                <div className="p-2 bg-light d-flex justify-content-between align-items-center">
 
-                                  className="btn btn-primary mt-2"
+                                  {/* <label>
 
-                                  onClick={handleAddComment}
+                                <input
 
-                                  disabled={loading} // Disable button when loading
+                                  type="file"
 
-                                  data-bs-dismiss="modal"
+                                  multiple
 
-                                >
+                                  accept="image/*"
 
-                                  {loading ? "Submitting..." : "Add Comment"}{" "}
+                                  onChange={handleImageChange}
 
-                                  {/* Change button text */}
+                                  style={{ display: 'none' }}
 
-                                </button>
+                                />
 
-                              </div>
+                                Upload Image
+
+                              </label> */}
+
+                                  <label>
+
+                                    <div>
+
+                                      <Link style={{ width: "20px", height: "16px" }} onClick={() => handleImageChange} />
+
+                                      <input
+
+                                        type="file"
+
+                                        multiple
+
+                                        accept="image/*"
+
+                                        onChange={handleImageChange}
+
+                                        className="fs-6 w-50" aria-rowspan={5} style={{ display: 'none' }}
+
+                                      />
+
+                                    </div>
+
+                                  </label>
+
+                                  <div className="image-preview mt-2">
+
+                                    {/* <div className="grid-container">
+
+                                  {SocialFeedImagesJson.map((image: any, index) => {
+
+                                    const imageUrl = mergeAndRemoveDuplicates(siteUrl, image.fileUrl);
+
+                                    const className = index === 0 ? 'large-image' : 'small-image'; // First image as large, rest as small
+
+
+
+                                    return (
+
+                                      <div key={index} className={`grid-item ${className}`}>
+
+                                        <img src={imageUrl} alt={`Social feed ${index}`} />
+
+                                      </div>
+
+                                    );
+
+                                  })}
+
+                                </div> */}
+
+                                    {/* {SocialFeedImagesJson.map((image: any, index) => {
+
+                                      var imageUrl = mergeAndRemoveDuplicates(siteUrl, image.fileUrl)
+
+                                      console.log(imageUrl);
+
+
+
+                                      return (
+
+                                        <><img key={index} src={imageUrl} alt={`preview-${index}`} style={{ width: '100px', marginRight: '10px' }} />
+
+
+
+                                        </>
+
+                                      )
+
+                                    }
+
+
+
+                                    )} */}
+
+                                  </div>
+
+                                  <button type="submit" className="btn btn-sm btn-success font-121">
+
+                                    <FontAwesomeIcon icon={faPaperPlane} /> Post
+
+                                  </button>
+
+                                </div>
+
+                              </form>
 
                             </div>
 
@@ -1263,57 +1723,202 @@ const GroupandTeamDetailsContext = ({ props }: any) => {
 
                         </div>
 
-                      </div>
+                      }
 
                     </div>
+
+                  </div>
+
+                  {posts.length > 0 && hideCreatePost && !HideShowPost &&
+
+                    <div className="feed">
+
+                      {posts.length > 0 ? posts.map((post, index) => (
+
+                        <PostComponent 
+
+                          key={index}
+
+                          sp={sp}
+
+                          siteUrl={siteUrl}
+
+                          // currentUserName={currentUsername}
+
+                          // currentEmail={currentEmail}
+
+                          post={{
+
+                            userName: post.userName,
+
+                            Created: post.Created,
+
+                            Contentpost: post.Contentpost,
+
+                            SocialFeedImagesJson: post.SocialFeedImagesJson,
+
+                            userAvatar: post.userAvatar,
+
+                            likecount: post.likecount,
+
+                            commentcount: post.commentcount,
+
+                            comments: post?.comments != null ? post.comments : [],
+
+                            postId: post.Id,
+
+                            SocialFeedUserLikesJson: post.SocialFeedUserLikesJson
+
+                          }}
+
+
+
+                        />
+
+                      )) : null}
+
+                    </div>
+
+                  }
+
+                  {/* Post Feed */}
+                  
+                  {/* {postsME.length > 0 && !hideCreatePost && HideShowPost &&
+                    <div className="feed">
+                      {postsME.map((post, index) =>
+                      {
+                        console.log(postsME,'postsME');
+                        return(
+                          <PostComponent
+                            key={index}
+                            sp={sp}
+                            siteUrl={siteUrl}
+                            currentUserName={currentUsername}
+                            currentEmail={currentEmail}
+                            post={{
+                              userName: post.userName,
+                              Created: post.Created,
+                              Contentpost: post.Contentpost,
+                              SocialFeedImagesJson: post.SocialFeedImagesJson,
+                              userAvatar: post.userAvatar,
+                              likecount: post.likecount,
+                              commentcount: post.commentcount,
+                              comments: post?.comments != null ? post.comments : [],
+                              postId: post.Id,
+                              SocialFeedUserLikesJson: post.SocialFeedUserLikesJson
+                            }}
+                          />
+                        )
+                      } 
+                     )}
+                    </div>
+
+                  } */}
+
+                </>
+
+              )}
+
+           
+
+            </div>
+
+            <div className="col-md-3 mobile-w3">
+
+              <div className="card mobile-5" style={{ borderRadius: "1rem" }}>
+
+                <div className="card-body pb-3 gheight">
+
+
+
+                  <h4 className="header-title font-16 text-dark fw-bold mb-0" style={{ fontSize: '20px' }}>
+
+                    Group Owner
+
+
+
+                  </h4>
+
+                </div>
+
+              </div>
+
+
+
+              <div className="card mobile-6" style={{ borderRadius: "1rem" }}>
+
+                <div className="card-body pb-3 gheight">
+
+                  <h4 className="header-title font-16 text-dark fw-bold mb-0" style={{ fontSize: '20px' }}>
+
+                    Group you Follow
+
+                  
+                  </h4>
+
+                  <div className="inbox-widget mt-4">
+
+                    {GroupData.map((item: any, index: 0) => (
+
+                      <div
+
+                        key={index}
+
+                        className="d-flex border-bottom heit8 align-items-start w-100 justify-content-between mb-3"
+
+                      >
+
+                        {/* <div className="col-sm-2 ">
+
+                          <a>
+
+                            <img
+
+                              src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${user.EMail}`}
+
+                              className="rounded-circle"
+
+                              width="50"
+
+                              alt={user.name}
+
+                            />
+
+                          </a>
+
+                        </div> */}
+
+                        <div className="col-sm-8">
+
+                          <a>
+
+                            <p className="fw-bold font-14 mb-0 text-dark namcss" style={{ fontSize: '14px' }}>
+
+                              {item.GroupName}
+
+                            </p>
+
+                          </a>
+
+                       
+
+                        </div>
+
+                        <div className="col-sm-2 txtr">
+                        <button>Join</button>
+                          {/* <PlusCircle size={20} color='#008751' /> */}
+
+                        </div>
+
+                      </div>
+
+                    ))}
 
                   </div>
 
                 </div>
 
               </div>
-
-            </div>
-
- 
-
-            <div className="row" style={{ paddingLeft: "0.5rem" }}>
-
-              {comments.map((comment, index) => (
-
-                <div className="col-xl-6">
-
-                  <CommentCard
-
-                    key={index}
-
-                    commentId={index}
-
-                    username={comment.UserName}
-
-                    Commenttext={comment.Comments}
-
-                    Comments={comments}
-
-                    Created={comment.Created}
-
-                    likes={comment.UserLikesJSON}
-
-                    replies={comment.UserCommentsJSON}
-
-                    userHasLiked={comment.userHasLiked}
-
-                    CurrentUserProfile={CurrentUserProfile}
-
-                    onAddReply={(text) => handleAddReply(index, text)}
-
-                    onLike={() => handleLikeToggle(index)} // Pass like handler
-
-                  />
-
-                </div>
-
-              ))}
 
             </div>
 
@@ -1324,6 +1929,8 @@ const GroupandTeamDetailsContext = ({ props }: any) => {
       </div>
 
     </div>
+
+  </div >
 
   );
 

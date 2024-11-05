@@ -183,15 +183,15 @@ const HorizontalNavbar = ({_context,siteUrl}: any) => {
             <div >
               
               <img  src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${currentUserEmail}`}
-                                  className="rounded-circlecss img-thumbnail desktoView 
+                                  className="rounded-circlecss1 img-thumbnail mt-1 me-2 desktoView 
                                   avatar-xl"
                                   alt="profile-image"
-                                  style={{ cursor: "pointer" }}  />
+                                  style={{ cursor: "pointer",width:'40px',height:'40px' }}  />
                                    <img  src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${currentUserEmail}`}
-                                  className="rounded-circlecss img-thumbnail searchcssmobile 
+                                  className="rounded-circlecss1 img-thumbnail searchcssmobile 
                                   avatar-xl"
                                   alt="profile-image"
-                                  style={{ cursor: "pointer" }}  />
+                                  style={{ cursor: "pointer",width:'40px',height:'40px' }} />
              
             </div>
             <div className='dropcssUser desktoView'>

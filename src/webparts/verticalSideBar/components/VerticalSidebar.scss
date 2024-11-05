@@ -19,6 +19,10 @@
      
   height: 300px;
 }
+.rounded-circlecss1{    width: 40px !important;
+  height: 40px !important;
+  margin-top: 2px;
+  margin-right: 5px;}
 .paddb {
   padding: 16px 13px 0px 13px !important;
 }
@@ -473,7 +477,7 @@ a:hover, a:active {
 .sub-menu {
   display: none; /* Hide the submenu by default */
   position: fixed;
-  left: 5rem;
+  left: 4.3rem;
   background-color: var(--blue-color);
   padding: 10px;
   list-style-type: none;

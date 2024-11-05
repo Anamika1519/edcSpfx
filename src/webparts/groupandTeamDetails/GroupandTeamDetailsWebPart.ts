@@ -12,6 +12,7 @@ import * as strings from 'GroupandTeamDetailsWebPartStrings';
 import GroupandTeamDetails from './components/GroupandTeamDetails';
 import { IGroupandTeamDetailsProps } from './components/IGroupandTeamDetailsProps';
 import { getSP } from './loc/pnpjsConfig';
+import SocialFeed from './components/SocialFeed2';
 
 export interface IGroupandTeamDetailsWebPartProps {
   description: string;
@@ -24,7 +25,8 @@ export default class GroupandTeamDetailsWebPart extends BaseClientSideWebPart<IG
 
   public render(): void {
     const element: React.ReactElement<IGroupandTeamDetailsProps> = React.createElement(
-      GroupandTeamDetails,
+      // GroupandTeamDetails,
+      SocialFeed,
       {
         description: this.properties.description,
         isDarkTheme: this._isDarkTheme,
