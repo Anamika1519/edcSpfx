@@ -18,6 +18,7 @@ import { graphfi } from "@pnp/graph";
 import "@pnp/graph/users";
 import "@pnp/graph/photos";
 import { getSP } from '../loc/pnpjsConfig';
+import { FontSizes } from '@fluentui/react';
 interface NavItem {
   Title: string;
   Url: string;
@@ -179,7 +180,7 @@ const VerticalContext = ({ _context }: any) => {
     // backgroundColor: isSidebarOpen ? 'lightblue' : 'lightgray',
     color: isSidebarOpen ? '' : 'white',
     display: isSidebarOpen ? 'block' : 'none',
-    cursor: 'pointer',
+    cursor: 'pointer'
   };
   const dynamicStylecss = {
     // backgroundColor: isSidebarOpen ? 'lightblue' : 'lightgray',
@@ -220,18 +221,18 @@ const VerticalContext = ({ _context }: any) => {
             >
               {/* <div style={{ display: 'flex', alignItems: 'center' }} onClick={() => gotoPage(item.Url,item.ID)}> */}
 
-              <div style={{ display: 'flex', alignItems: 'center' }} onClick={() => gotoPage(item.Url, item.ID)} >
+              <div style={{ display: 'flex', alignItems: 'center' ,lineHeight: '25px'}} onClick={() => gotoPage(item.Url, item.ID)} >
                 <span className="navlink_icon">
                   {/* Render the Feather Icon component if it exists */}
                   {IconComponent && <IconComponent size={18} />}
                   {/* <Airplay color="blue" size={48} />
               <FontAwesomeIcon icon={getIcon(item.Icon)} /> */}
                 </span>
-                <a className="link_name1" style={{ textDecoration: 'none', paddingLeft: '0.5rem' }} target=''
+                <a className="link_name1" style={{ textDecoration: 'unset', paddingLeft: '0.7rem' }} target=''
                 >   <span className={classNames('navlink', {
                   active: item.ID == useActive && !useHide
 
-                })}>{item.Title}</span>
+                })} style={dynamicStyle}>{item.Title}</span>
 
                 </a>
 
@@ -258,7 +259,7 @@ const VerticalContext = ({ _context }: any) => {
 
                 <ul className="sub-menu blank navlinkcss" style={{ background: 'transparent', padding: 'unset', alignItems: 'start', boxShadow: '0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12)' }}>
                   <div style={{
-                    color: '#fff', textDecoration: 'none', background: '#1fb0e5', paddingLeft: '0.5rem',
+                    color: '#fff', textDecoration: 'none', background: '#1fb0e5', paddingLeft: '0.6rem',
                     display: 'flex', height: '40px', alignItems: 'center'
                   }} >
                     <li className='' style={{ background: '#1fb0e5', color: 'white' }} >
@@ -276,7 +277,7 @@ const VerticalContext = ({ _context }: any) => {
                         {/* <li className='test' style={{ paddingBottom: '0.5rem', paddingTop: '0.5rem' }} key={item.ID} onClick={() => gotoPage(item.Url,item.ID)}> */}
                         <a className={classNames('link_name1 ', {
                           active: item.ID == useActive
-                        })} style={{ textDecoration: 'none', paddingLeft: '0.5rem' }} onClick={() => gotoPage(item.Url, item.ID)} >
+                        })} style={{ textDecoration: 'none', paddingLeft: '0.7rem' }} onClick={() => gotoPage(item.Url, item.ID)} >
                           <span style={dynamicStylecss}>{item.Title}</span>
                         </a>
                       </li>
