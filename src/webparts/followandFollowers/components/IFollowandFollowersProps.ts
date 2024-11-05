@@ -4,4 +4,7 @@ export interface IFollowandFollowersProps {
   environmentMessage: string;
   hasTeamsContext: boolean;
   userDisplayName: string;
+  context: any;
+  siteUrl: string;
+
 }

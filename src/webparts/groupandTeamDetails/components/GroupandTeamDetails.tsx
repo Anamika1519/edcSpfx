@@ -73,7 +73,7 @@ interface Reply {
 
 }
 
- 
+
 
 interface Like {
 
@@ -91,7 +91,7 @@ interface Like {
 
 }
 
- 
+
 
 interface Comment {
 
@@ -179,7 +179,7 @@ const GroupandTeamDetailsContext = ({ props }: any) => {
 
       const headerpd = document.getElementById(headerId);
 
- 
+
 
       if (toggle && nav && bodypd && headerpd) {
 
@@ -201,11 +201,11 @@ const GroupandTeamDetailsContext = ({ props }: any) => {
 
     showNavbar("header-toggle", "nav-bar", "body-pd", "header");
 
- 
+
 
     const linkColor = document.querySelectorAll(".nav_link");
 
- 
+
 
     function colorLink(this: HTMLElement) {
 
@@ -219,7 +219,7 @@ const GroupandTeamDetailsContext = ({ props }: any) => {
 
     }
 
- 
+
 
     linkColor.forEach((l) => l.addEventListener("click", colorLink));
 
@@ -229,7 +229,7 @@ const GroupandTeamDetailsContext = ({ props }: any) => {
 
     debugger;
 
- 
+
 
     //Get the Id parameter
 
@@ -241,21 +241,21 @@ const GroupandTeamDetailsContext = ({ props }: any) => {
 
     // const queryString = decryptId(Number(updatedString));
 
- 
+
 
     setArrDetails(await getGroupTeamDetailsById(sp, Number(idNum)));
 
   };
 
- 
+
 
   const ApICallData = async () => {
 
-    setCurrentUser(await getCurrentUser(sp,siteUrl));
+    setCurrentUser(await getCurrentUser(sp, siteUrl));
 
-    setCurrentUserProfile(await getCurrentUserProfile(sp,siteUrl));
+    setCurrentUserProfile(await getCurrentUserProfile(sp, siteUrl));
 
- 
+
 
     let initialComments: any[] = [];
 
@@ -264,72 +264,115 @@ const GroupandTeamDetailsContext = ({ props }: any) => {
     const originalString = ids;
 
     const idNum = originalString.substring(1);
-
-    sp.web.lists
+    let initialArray: any[] = [];
+    let arrLike = {}
+    let likeArray: any[] = []
+    await sp.web.lists
 
       .getByTitle("ARGGroupandTeamComments")
 
       .items.select("*,GroupandTeam/Id")
 
       .expand("GroupandTeam")
-      .filter(`GroupandTeamId eq ${Number(idNum)}`).orderBy("Created",false)()
-      .then((result: any) => {
+      .filter(`GroupandTeamId eq ${Number(idNum)}`).orderBy("Created", false)()
+      .then(async (result: any) => {
 
         console.log(result, "ARGGroupandTeamComments");
 
- 
+
 
         initialComments = result;
 
-        setComments(
+        for (var i = 0; i < initialComments.length; i++) {
+          await sp.web.lists
+            .getByTitle("ARGGroupandTeamUserLikes")
+            .items.filter(`GroupandTeamCommentsId eq ${Number(initialComments[i].Id)}`).select("ID,AuthorId,UserName,Like,Created")()
+            .then((result1: any) => {
+              console.log(result1, "ARGEventsUserLikes");
 
-          initialComments.map((res) => ({
+              for (var j = 0; j < result1.length; j++) {
+                arrLike = {
+                  "ID": result1[j].Id,
+                  "AuthorId": result1[j].AuthorId,
+                  "UserName": result1[j].UserName,
+                  "Like": result1[j].Like,
+                  "Created": result1[j].Created
+                }
+                likeArray.push(arrLike)
+              }
 
-            Id: res.Id,
+              let arr = {
+                Id: initialComments[i].Id,
+                UserName: initialComments[i].UserName,
+                AuthorId: initialComments[i].AuthorId,
+                Comments: initialComments[i].Comments,
+                Created: new Date(initialComments[i].Created).toLocaleString(), // Formatting the created date
+                UserLikesJSON: likeArray
+                , // Default to empty array if null
+                UserCommentsJSON:
+                  initialComments[i].UserCommentsJSON != "" &&
+                    initialComments[i].UserCommentsJSON != null &&
+                    initialComments[i].UserCommentsJSON != undefined
+                    ? JSON.parse(initialComments[i].UserCommentsJSON)
+                    : [], // Default to empty array if null
+                userHasLiked: initialComments[i].userHasLiked,
+                UserProfile: initialComments[i].UserProfile
+              }
+              initialArray.push(arr);
+            })
 
-            UserName: res.UserName,
+        }
+        setComments(initialArray)
 
-            AuthorId: res.AuthorId,
+        // setComments(
 
-            Comments: res.Comments,
+        //   initialComments.map((res) => ({
 
-            Created: new Date(res.Created).toLocaleString(), // Formatting the created date
+        //     Id: res.Id,
 
-            UserLikesJSON:
+        //     UserName: res.UserName,
 
-              res.UserLikesJSON != "" &&
+        //     AuthorId: res.AuthorId,
 
-              res.UserLikesJSON != null &&
+        //     Comments: res.Comments,
 
-              res.UserLikesJSON != undefined
+        //     Created: new Date(res.Created).toLocaleString(), // Formatting the created date
 
-                ? JSON.parse(res.UserLikesJSON)
+        //     UserLikesJSON:
 
-                : [], // Default to empty array if null
+        //       res.UserLikesJSON != "" &&
 
-            UserCommentsJSON:
+        //       res.UserLikesJSON != null &&
 
-              res.UserCommentsJSON != "" &&
+        //       res.UserLikesJSON != undefined
 
-              res.UserCommentsJSON != null &&
+        //         ? JSON.parse(res.UserLikesJSON)
 
-              res.UserCommentsJSON != undefined
+        //         : [], // Default to empty array if null
 
-                ? JSON.parse(res.UserCommentsJSON)
+        //     UserCommentsJSON:
 
-                : [], // Default to empty array if null
+        //       res.UserCommentsJSON != "" &&
 
-            userHasLiked: res.userHasLiked,
+        //       res.UserCommentsJSON != null &&
 
-            UserProfile: res.UserProfile,
+        //       res.UserCommentsJSON != undefined
 
-            // Initialize as false
+        //         ? JSON.parse(res.UserCommentsJSON)
 
-          }))
+        //         : [], // Default to empty array if null
 
-        );
+        //     userHasLiked: res.userHasLiked,
 
- 
+        //     UserProfile: res.UserProfile,
+
+        //     // Initialize as false
+
+        //   }))
+
+        // );
+
+
 
         // getUserProfilePicture(CurrentUser.Id,sp).then((url) => {
 
@@ -349,35 +392,8 @@ const GroupandTeamDetailsContext = ({ props }: any) => {
 
   };
 
- 
 
-  // Load comments from localStorage on component mount
-
-  // useEffect(() => {
-
-  //   const storedComments = localStorage.getItem('comments');
-
-  //   if (storedComments) {
-
-  //     setComments(JSON.parse(storedComments));
-
-  //   }
-
-  // }, []);
-
- 
-
-  // Save comments to localStorage whenever comments state changes
-
-  // useEffect(() => {
-
-  //   localStorage.setItem('comments', JSON.stringify(comments));
-
-  // }, [comments]);
-
- 
-
-  const copyToClipboard = (Id:number) => {
+  const copyToClipboard = (Id: number) => {
 
     const link = `${siteUrl}/SitePages/GroupandTeamDetails.aspx?${Id}`;
 
@@ -409,7 +425,7 @@ const GroupandTeamDetailsContext = ({ props }: any) => {
 
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
- 
+
 
     await sp.web.lists
 
@@ -463,21 +479,21 @@ const GroupandTeamDetailsContext = ({ props }: any) => {
 
         setNewComment("");
 
- 
+
 
         setLoading(false);
 
         const ids = window.location.search;
 
- 
+
 
         const originalString = ids;
 
- 
+
 
         const idNum = originalString.substring(1);
 
- 
+
 
         let a = {
 
@@ -485,7 +501,7 @@ const GroupandTeamDetailsContext = ({ props }: any) => {
 
         };
 
- 
+
 
         const newItem = await sp.web.lists
 
@@ -495,19 +511,19 @@ const GroupandTeamDetailsContext = ({ props }: any) => {
 
           .update(a);
 
- 
+
 
         console.log("Item added successfully:", newItem);
 
       });
 
- 
+
 
     // setComments((prevComments) => [...prevComments, newCommentData]);
 
   };
 
- 
+
 
   // Add a like to a comment
 
@@ -515,15 +531,15 @@ const GroupandTeamDetailsContext = ({ props }: any) => {
 
     const updatedComments = [...comments];
 
- 
+
 
     const comment = updatedComments[commentIndex];
 
- 
+
 
     // Check if the user has already liked the comment
 
- 
+
 
     const userLikeIndex = comment.UserLikesJSON.findIndex(
 
@@ -531,13 +547,13 @@ const GroupandTeamDetailsContext = ({ props }: any) => {
 
     );
 
- 
+
 
     if (userLikeIndex === -1) {
 
       // User hasn't liked yet, proceed to add a like
 
- 
+
 
       await sp.web.lists
 
@@ -547,15 +563,15 @@ const GroupandTeamDetailsContext = ({ props }: any) => {
 
           UserName: CurrentUser.Title, // Replace with actual username
 
- 
+
 
           Like: true,
 
- 
+
 
           GroupandTeamCommentsId: comment.Id,
 
- 
+
 
           userHasLiked: true,
 
@@ -565,47 +581,47 @@ const GroupandTeamDetailsContext = ({ props }: any) => {
 
           console.log(ress, "Added Like");
 
- 
+
 
           // Add the new like to the comment's UserLikesJSON array
 
- 
+
 
           const newLikeJson: Like = {
 
             ID: ress.data.Id,
 
- 
+
 
             AuthorId: ress.data.AuthorId,
 
- 
+
 
             UserName: ress.data.UserName, // Replace with actual username
 
- 
+
 
             like: "yes",
 
- 
+
 
             Created: ress.data.Created,
 
- 
+
 
             Count: comment.UserLikesJSON.length + 1,
 
           };
 
- 
+
 
           updatedComments[commentIndex].UserLikesJSON.push(newLikeJson);
 
- 
+
 
           // Update the corresponding SharePoint comment list
 
- 
+
 
           await sp.web.lists
 
@@ -621,11 +637,11 @@ const GroupandTeamDetailsContext = ({ props }: any) => {
 
               ),
 
- 
+
 
               userHasLiked: true,
 
- 
+
 
               LikesCount: updatedComments[commentIndex].UserLikesJSON.length,
 
@@ -635,31 +651,31 @@ const GroupandTeamDetailsContext = ({ props }: any) => {
 
               console.log("Updated comment with new like");
 
- 
+
 
               comment.userHasLiked = true;
 
- 
+
 
               setComments(updatedComments);
 
- 
+
 
               // Update the total likes for the announcement/news post
 
- 
+
 
               const ids = window.location.search;
 
- 
+
 
               const originalString = ids;
 
- 
+
 
               const idNum = originalString.substring(1); // Extract the ID from query string
 
- 
+
 
               const likeUpdateBody = {
 
@@ -667,7 +683,7 @@ const GroupandTeamDetailsContext = ({ props }: any) => {
 
               };
 
- 
+
 
               const newItem = await sp.web.lists
 
@@ -677,7 +693,7 @@ const GroupandTeamDetailsContext = ({ props }: any) => {
 
                 .update(likeUpdateBody);
 
- 
+
 
               console.log("Like count updated successfully:", newItem);
 
@@ -689,11 +705,11 @@ const GroupandTeamDetailsContext = ({ props }: any) => {
 
       // User already liked, proceed to unlike (remove like)
 
- 
+
 
       const userLikeId = comment.UserLikesJSON[userLikeIndex].ID; // Get the ID of the user's like
 
- 
+
 
       await sp.web.lists
 
@@ -707,19 +723,19 @@ const GroupandTeamDetailsContext = ({ props }: any) => {
 
           console.log("Removed Like");
 
- 
+
 
           // Remove the like from the comment's UserLikesJSON array
 
- 
+
 
           updatedComments[commentIndex].UserLikesJSON.splice(userLikeIndex, 1);
 
- 
+
 
           // Update the corresponding SharePoint comment list
 
- 
+
 
           await sp.web.lists
 
@@ -735,11 +751,11 @@ const GroupandTeamDetailsContext = ({ props }: any) => {
 
               ),
 
- 
+
 
               userHasLiked: false,
 
- 
+
 
               LikesCount: updatedComments[commentIndex].UserLikesJSON.length,
 
@@ -749,31 +765,31 @@ const GroupandTeamDetailsContext = ({ props }: any) => {
 
               console.log("Updated comment after removing like");
 
- 
+
 
               comment.userHasLiked = false;
 
- 
+
 
               setComments(updatedComments);
 
- 
+
 
               // Update the total likes for the announcement/news post
 
- 
+
 
               const ids = window.location.search;
 
- 
+
 
               const originalString = ids;
 
- 
+
 
               const idNum = originalString.substring(1);
 
- 
+
 
               const likeUpdateBody = {
 
@@ -781,7 +797,7 @@ const GroupandTeamDetailsContext = ({ props }: any) => {
 
               };
 
- 
+
 
               const newItem = await sp.web.lists
 
@@ -791,7 +807,7 @@ const GroupandTeamDetailsContext = ({ props }: any) => {
 
                 .update(likeUpdateBody);
 
- 
+
 
               console.log("Like count updated successfully:", newItem);
 
@@ -803,7 +819,7 @@ const GroupandTeamDetailsContext = ({ props }: any) => {
 
   };
 
- 
+
 
   // Add a reply to a comment
 
@@ -815,7 +831,7 @@ const GroupandTeamDetailsContext = ({ props }: any) => {
 
     const updatedComments = [...comments];
 
- 
+
 
     const comment = updatedComments[commentIndex];
 
@@ -889,7 +905,7 @@ const GroupandTeamDetailsContext = ({ props }: any) => {
 
   };
 
- 
+
 
   const Breadcrumb = [
 
@@ -933,13 +949,13 @@ const GroupandTeamDetailsContext = ({ props }: any) => {
 
       <div className="content-page">
 
-          <HorizontalNavbar  _context={sp} siteUrl={siteUrl}/>
+        <HorizontalNavbar _context={sp} siteUrl={siteUrl} />
 
         <div
 
           className="content"
 
-          style={{ marginLeft: `${!useHide ? "240px" : "80px"}`, marginTop:'1rem' }}
+          style={{ marginLeft: `${!useHide ? "240px" : "80px"}`, marginTop: '1rem' }}
 
         >
 
@@ -959,131 +975,131 @@ const GroupandTeamDetailsContext = ({ props }: any) => {
 
               ? ArrDetails.map((item: any) => {
 
-                  return (
+                return (
 
-                    <>
+                  <>
 
-                      <div className="row mt-4">
+                    <div className="row mt-4">
 
-                        <p className="d-block mt-2 text-dark  font-28">
+                      <p className="d-block mt-2 text-dark  font-28">
 
-                          {item.GroupName}
+                        {item.GroupName}
 
-                        </p>
+                      </p>
 
-                        <div className="row mt-2">
+                      <div className="row mt-2">
 
-                          <div className="d-flex">
+                        <div className="d-flex">
 
-                            <p className="mb-2 mt-1 newsvg font-14 d-flex">
+                          <p className="mb-2 mt-1 newsvg font-14 d-flex">
 
-                              <span className="pe-2 text-nowrap mb-0 d-inline-block" style={{fontSize:'14px'}}>
+                            <span className="pe-2 text-nowrap mb-0 d-inline-block" style={{ fontSize: '14px' }}>
 
-                                <Calendar size={16} />
+                              <Calendar size={16} />
 
-                                {moment(item.Created).format("DD-MMM-YYYY")}
+                              {moment(item.Created).format("DD-MMM-YYYY")}
 
-                                &nbsp; &nbsp;|
+                              &nbsp; &nbsp;|
 
-                              </span>
+                            </span>
 
-                              <span
+                            <span
 
-                                className="text-nowrap mb-0 d-inline-block"
+                              className="text-nowrap mb-0 d-inline-block"
 
-                                onClick={sendanEmail} style={{fontSize:'14px'}}
+                              onClick={sendanEmail} style={{ fontSize: '14px' }}
 
-                              >
+                            >
 
-                                <Share size={16} /> Share by email &nbsp; 
+                              <Share size={16} /> Share by email &nbsp;
 
-                                &nbsp;|&nbsp;
+                              &nbsp;|&nbsp;
 
-                              </span>
+                            </span>
 
-                              <span
+                            <span
 
-                                className="text-nowrap mb-0 d-inline-block"
+                              className="text-nowrap mb-0 d-inline-block"
 
-                                onClick={() => copyToClipboard(item.Id)} style={{fontSize:'14px'}}
+                              onClick={() => copyToClipboard(item.Id)} style={{ fontSize: '14px' }}
 
-                              >
+                            >
 
-                                <Link size={16} /> Copy link &nbsp; &nbsp;
+                              <Link size={16} /> Copy link &nbsp; &nbsp;
 
-                                {copySuccess && <span className="text-success">{copySuccess}</span>}
+                              {copySuccess && <span className="text-success">{copySuccess}</span>}
 
-                              </span>
-                              <span style={{fontSize:'14px'}}>&nbsp; &nbsp; |{item.GroupType}</span>
-                              <span style={{ display: 'flex', gap: '0.2rem',fontSize:'14px' }}> &nbsp; &nbsp;|
+                            </span>
+                            <span style={{ fontSize: '14px' }}>&nbsp; &nbsp; |{item.GroupType}</span>
+                            <span style={{ display: 'flex', gap: '0.2rem', fontSize: '14px' }}> &nbsp; &nbsp;|
                               {
                                 item?.InviteMemebers?.length > 0 && item?.InviteMemebers.map((item1: any, index: 0) => {
 
                                   return (
                                     <>
                                       {item1.EMail ? <span style={{ margin: index == 0 ? '0 0 0 0' : '0 0 0px -12px' }} data-tooltip={item.Title}><img src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item1.EMail}`} className="attendeesImg" /> <span data-tooltip={item.Title}></span></span> :
-                                        <span> <AvtarComponents Name={item1.Title} data-tooltip={item.Title}/> </span>
+                                        <span> <AvtarComponents Name={item1.Title} data-tooltip={item.Title} /> </span>
                                       }
                                     </>
                                   )
                                 })
                               }
                             </span>
-                            </p>
-
-                          </div>
+                          </p>
 
                         </div>
 
                       </div>
 
-                      <div className="row ">
+                    </div>
 
-                        <p
+                    <div className="row ">
 
-                          style={{ lineHeight: "22px" }}
+                      <p
 
-                          className="d-block text-muted mt-0 font-14"
+                        style={{ lineHeight: "22px" }}
 
-                        >
+                        className="d-block text-muted mt-0 font-14"
 
-                          {/* {item.GroupName} */}
+                      >
 
-                        </p>
+                        {/* {item.GroupName} */}
 
-                      </div>
+                      </p>
 
- 
+                    </div>
 
-                      <div className="row mt-2">
 
-                        <p
 
-                          style={{ lineHeight: "22px" }}
+                    <div className="row mt-2">
 
-                          className="d-block text-muted mt-2 mb-0 font-14"
+                      <p
 
-                        >
+                        style={{ lineHeight: "22px" }}
 
-                          <div
+                        className="d-block text-muted mt-2 mb-0 font-14"
 
-                            dangerouslySetInnerHTML={{
+                      >
 
-                              __html: item.GroupDescription,
+                        <div
 
-                            }}
+                          dangerouslySetInnerHTML={{
 
-                          ></div>
+                            __html: item.GroupDescription,
 
-                        </p>
+                          }}
 
-                      </div>
+                        ></div>
 
-                    </>
+                      </p>
 
-                  );
+                    </div>
 
-                })
+                  </>
+
+                );
+
+              })
 
               : null}
 
@@ -1131,7 +1147,7 @@ const GroupandTeamDetailsContext = ({ props }: any) => {
 
               </div>
 
- 
+
 
               {/* Bootstrap Modal */}
 
@@ -1191,7 +1207,7 @@ const GroupandTeamDetailsContext = ({ props }: any) => {
 
                               width: "200%",
 
-                             
+
 
                             }}
 
@@ -1275,7 +1291,7 @@ const GroupandTeamDetailsContext = ({ props }: any) => {
 
             </div>
 
- 
+
 
             <div className="row" style={{ paddingLeft: "0.5rem" }}>
 
@@ -1304,7 +1320,7 @@ const GroupandTeamDetailsContext = ({ props }: any) => {
                     userHasLiked={comment.userHasLiked}
 
                     CurrentUserProfile={CurrentUserProfile}
-
+                    Action="Group"
                     onAddReply={(text) => handleAddReply(index, text)}
 
                     onLike={() => handleLikeToggle(index)} // Pass like handler
@@ -1329,7 +1345,7 @@ const GroupandTeamDetailsContext = ({ props }: any) => {
 
 };
 
- 
+
 
 const GroupandTeamDetails: React.FC<IGroupandTeamDetailsProps> = (props) => {
 

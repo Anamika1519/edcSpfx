@@ -12,7 +12,7 @@ import "../../../Assets/Figtree/Figtree-VariableFont_wght.ttf";
 import "bootstrap/dist/css/bootstrap.min.css";
 import CustomBreadcrumb from '../../../CustomJSComponents/CustomBreadcrumb/CustomBreadcrumb'
 import { Link, Plus, PlusCircle, Rss, TrendingUp, User, UserPlus, Users } from 'react-feather'
-import { getCurrentUser, getCurrentUserName, getCurrentUserNameId, getCurrentUserProfileEmail } from '../../../APISearvice/CustomService'
+import { addActivityLeaderboard, getCurrentUser, getCurrentUserName, getCurrentUserNameId, getCurrentUserProfileEmail, getFollow, getFollowing } from '../../../APISearvice/CustomService'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons"
 import classNames from 'classnames'
@@ -49,7 +49,15 @@ const SocialFeedContext = ({ props }: any) => {
   const [UploadedFile, setUploadFile] = useState([])
   const [ImageIds, setImageIds] = useState([])
   const [blogdata, setblogdata] = useState([])
+  const [FollowingUser, setFollowingUsers] = useState<any[]>([]);
+  const [FollowUser, setFollowUsers] = useState<any[]>([]);
   const [usersitem, setUsersArr] = useState<any[]>([]);
+
+  const [followStatus, setFollowStatus] = React.useState<{ [key: number]: boolean }>({}); // Track follow status for each user
+
+  const [followerList, setFollowerList] = React.useState<any[]>([]); // List of users following the current user
+  const [followingList, setFollowingList] = React.useState<any[]>([]); // List of users the current user is following
+
   const [DiscussionData, setDiscussion] = useState([])
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [copySuccess, setCopySuccess] = useState('');
@@ -67,18 +75,92 @@ const SocialFeedContext = ({ props }: any) => {
   }, [props]);
   const getAllAPI = async () => {
     setCurrentEmail(await getCurrentUserProfileEmail(sp))
-   
-   
+
+
     setCurrentUserName(await getCurrentUserName(sp))
     setblogdata(await fetchBlogdatatop(sp))
     setUsersArr(await fetchUserInformationList(sp))
     setDiscussion(await getDiscussion(sp))
     fetchPosts();
+    fetchFollowingList()
+    // setFollowUsers(await getFollow(sp))
+    // setFollowingUsers(await getFollowing(sp))
   
-   
+
+  }
+  // Function to get list of users following the current user
+  const fetchFollowerList = async () => {
+    try {
+      const currentUser = await sp.web.currentUser();
+      const followers = await sp.web.lists.getByTitle("ARGFollows").items
+        .filter(`FollowedId eq ${currentUser.Id}`)
+        .expand("Follower")
+        .select("Follower/Title", "Follower/EMail", "Follower/Department", "Follower/ID")();
+      followers.forEach(element => {
+        checkIfFollower(element);
+      });
+
+      setFollowerList(followers.map(f => f.Follower));
+
+    } catch (error) {
+      console.error("Error fetching followers:", error);
+    }
+  };
+
+  // Function to get list of users the current user is following
+  const fetchFollowingList = async () => {
+    try {
+      const currentUser = await sp.web.currentUser();
+      const followings = await sp.web.lists.getByTitle("ARGFollows").items
+        .filter(`FollowerId eq ${currentUser.Id}`)
+        .expand("Followed")
+        .select("Followed/Title", "Followed/EMail", "Followed/Department", "Followed/ID")();
+      followings.forEach(element => {
+        checkIfFollowing(element);
+      });
+
+      setFollowingList(followings.map(f => f.Followed));
+    } catch (error) {
+      console.error("Error fetching followings:", error);
+    }
+  };
+  const checkIfFollowing = async (item: any) => {
+    try {
+      const currentUser = await sp.web.currentUser();
+      const followRecords = await sp.web.lists.getByTitle("ARGFollows").items
+        .filter(`FollowerId eq ${currentUser.Id} and FollowedId eq ${item.ID}`)();
+
+      setFollowStatus((prevStatus) => ({
+        ...prevStatus,
+        [item.ID]: followRecords.length > 0,
+      }));
+
+      // Update the counts based on follow status
+
+    } catch (error) {
+      console.error("Error checking follow status:", error);
+    }
+  }
+  const checkIfFollower = async (item: any) => {
+    try {
+      const currentUser = await sp.web.currentUser();
+      const followRecords = await sp.web.lists.getByTitle("ARGFollows").items
+        .filter(`FollowerId eq ${currentUser.Id} and FollowedId eq ${item.ID}`)();
+
+      setFollowStatus((prevStatus) => ({
+        ...prevStatus,
+        [item.ID]: followRecords.length > 0,
+      }));
+
+      // Update the counts based on follow status
+
+    } catch (error) {
+      console.error("Error checking follow status:", error);
+    }
   }
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    debugger
     const files = Array.from(e.target.files || []); // Ensure files is an array of type File[]
     let uploadedImages: any[] = [];
     let ImagesIds: any[] = [];
@@ -94,7 +176,7 @@ const SocialFeedContext = ({ props }: any) => {
       }
     }
 
- 
+
 
     // Set state after uploading all images
 
@@ -114,9 +196,9 @@ const SocialFeedContext = ({ props }: any) => {
 
   //#endregion
 
-  console.log(SocialFeedImagesJson, 'SocialFeedImagesJson');
+  console.log(followingList, 'followingList', followerList, 'followerList');
 
- 
+
 
   // [{"Contentpost":"th","SocialFeedImagesJson":[],"Created":"12:54:59 AM","userName":"Jeremy Tomlinson","userAvatar":"https://via.placeholder.com/50","likecount":0,"commentcount":0,"shares":0,"SocialFeedCommentsJson":[],"SocialFeedUserLikes":[]}]
 
@@ -128,7 +210,7 @@ const SocialFeedContext = ({ props }: any) => {
 
   //   setIsSubmitting(true);  // Start submitting
 
- 
+
 
   //   if (Contentpost.trim() || SocialFeedImagesJson.length) {
 
@@ -152,7 +234,7 @@ const SocialFeedContext = ({ props }: any) => {
 
   //     };
 
- 
+
 
   //     const updatedPosts = [newPost, ...posts];
 
@@ -160,7 +242,7 @@ const SocialFeedContext = ({ props }: any) => {
 
   //     localStorage.setItem('posts', JSON.stringify(updatedPosts));
 
- 
+
 
   //     // Clear fields
 
@@ -181,10 +263,10 @@ const SocialFeedContext = ({ props }: any) => {
   // };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-
+    debugger
     e.preventDefault();
 
-    let ImagesIds: any[] = [];
+    let ImagesIdss: any[] = [];
 
     setIsSubmitting(true);  // Start submitting
 
@@ -212,11 +294,11 @@ const SocialFeedContext = ({ props }: any) => {
 
       };
 
- 
 
-      ImagesIds = ImagesIds.concat(SocialFeedImagesJson.map((item: any) => item.ID));
 
-      setImageIds(ImagesIds)
+      ImagesIdss = ImagesIdss.concat(SocialFeedImagesJson.map((item: any) => item.ID));
+
+      setImageIds(ImagesIdss)
 
       try {
 
@@ -225,53 +307,31 @@ const SocialFeedContext = ({ props }: any) => {
         await sp.web.lists.getByTitle('ARGSocialFeed').items.add({
 
           Contentpost: Contentpost,  // Use the Contentpost for the title (or a different field if necessary)
-
           SocialFeedImagesJson: JSON.stringify(SocialFeedImagesJson),  // Store the images as JSON string
-
           UserName: currentUsername,
-
           userAvatar: `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${currentEmail}`,
-
           likecount: 0,
-
           commentcount: 0,
-
-          SocialFeedImagesId: ImageIds
-
- 
-
-          // Shares: 0
-
-        }).then((ele: any) => {
-
+          SocialFeedImagesId: ImagesIdss
+        }).then(async (ele: any) => {
           console.log(ele);
-
- 
-
           newPostss = {
-
             Contentpost,
-
             SocialFeedImagesJson,
-
             Created: new Date().toLocaleTimeString(),
-
             userName: currentUsername,
-
             userAvatar: `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${currentEmail}`,
-
             likecount: 0,
-
             commentcount: 0,
-
             shares: 0,
-
             Id: ele.data.Id
-
           };
 
           const updatedPosts = [newPostss, ...posts];
-
+        
+              await addActivityLeaderboard(sp,"Post By User");
+           console.log(updatedPosts);
+           
           setPosts(updatedPosts);
 
           fetchPosts()
@@ -282,11 +342,11 @@ const SocialFeedContext = ({ props }: any) => {
 
         );
 
- 
+
 
         // If the SharePoint request is successful, update the state and local storage
 
- 
+
 
         // Clear fields
 
@@ -316,8 +376,6 @@ const SocialFeedContext = ({ props }: any) => {
 
   };
 
- 
-
   const ShowPost = () => {
 
     debugger
@@ -343,7 +401,7 @@ const SocialFeedContext = ({ props }: any) => {
 
   const [storedPosts, setStoredPosts] = useState([]);
 
- 
+
 
   // Fetch posts from SharePoint when the component loads
 
@@ -359,9 +417,9 @@ const SocialFeedContext = ({ props }: any) => {
 
         .getByTitle("ARGSocialFeed") // SharePoint list name
 
-        .items.select("*,SocialFeedComments/Id,SocialFeedComments/Comments,SocialFeedImages/Id,SocialFeedUserLikes/Id,Author/Id,Author/Title")
+        .items.select("*,SocialFeedImages/Id,SocialFeedUserLikes/Id,Author/Id,Author/Title")
 
-        .expand("SocialFeedComments,SocialFeedImages,SocialFeedUserLikes,Author").orderBy("Created", false)().then((item: any) => {
+        .expand("SocialFeedImages,SocialFeedUserLikes,Author").orderBy("Created", false)().then((item: any) => {
 
           console.log(item, 'ihhh');
 
@@ -385,7 +443,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                 commentcount: 0,
 
-                // comments: ele?.SocialFeedCommentsJson != null ? JSON.parse(ele?.SocialFeedCommentsJson) : [],
+                comments: ele?.SocialFeedCommentsJson != null ? JSON.parse(ele?.SocialFeedCommentsJson) : [],
 
                 Id: ele.Id,
 
@@ -397,12 +455,12 @@ const SocialFeedContext = ({ props }: any) => {
 
             }
 
- 
+
 
             )
 
             const updatedPosts = [newPost, ...posts];
-
+            console.log(updatedPosts);
             setPosts(updatedPosts[0]);
 
           }
@@ -421,15 +479,15 @@ const SocialFeedContext = ({ props }: any) => {
   const fetchPostsMe = async () => {
     try {
       let newPost: any[] = []
-      console.log(currentId,'currentId["Id"]');
-   
-      const cuurentID= await getCurrentUserNameId(sp);
-          await sp.web.lists
+      console.log(currentId, 'currentId["Id"]');
+
+      const cuurentID = await getCurrentUserNameId(sp);
+      await sp.web.lists
         .getByTitle("ARGSocialFeed") // SharePoint list name
         .items.select("*,SocialFeedComments/Id,SocialFeedComments/Comments,SocialFeedImages/Id,SocialFeedUserLikes/Id,Author/Id,Author/Title")
         .expand("SocialFeedComments,SocialFeedImages,SocialFeedUserLikes,Author").filter(`AuthorId eq ${cuurentID}`).orderBy("Created", false)().then((item: any) => {
           console.log(item, 'ihhhpostsME');
-          
+
           if (item.length > 0) {
             item.map((ele: any) => {
               let newPosts = {
@@ -440,7 +498,7 @@ const SocialFeedContext = ({ props }: any) => {
                 userAvatar: ele.userAvatar,
                 likecount: 0,
                 commentcount: 0,
-                // comments: ele?.SocialFeedCommentsJson != null ? JSON.parse(ele?.SocialFeedCommentsJson) : [],
+                 comments: ele?.SocialFeedCommentsJson != null ? JSON.parse(ele?.SocialFeedCommentsJson) : [],
                 Id: ele.Id,
                 SocialFeedUserLikesJson: ele?.SocialFeedUserLikesJson != null ? JSON.parse(ele?.SocialFeedUserLikesJson) : []
               };
@@ -449,7 +507,10 @@ const SocialFeedContext = ({ props }: any) => {
 
             )
             const updatedPosts = [newPost, ...posts];
+            console.log(updatedPosts,'updatedPosts');
+            
             setPostsME(updatedPosts[0]);
+             console.log(updatedPosts);
           }
 
 
@@ -467,8 +528,8 @@ const SocialFeedContext = ({ props }: any) => {
   };
 
 
-  console.log(postsME,'postsME');
-  
+  console.log(postsME, 'postsME');
+
 
   // Handle input change
 
@@ -478,9 +539,6 @@ const SocialFeedContext = ({ props }: any) => {
 
   };
 
- 
-
-  // Handle form submission and save to SharePoint list
 
   const handlePostSubmit = async () => {
 
@@ -502,7 +560,7 @@ const SocialFeedContext = ({ props }: any) => {
 
           });
 
- 
+
 
         // Refresh the list of posts after adding
 
@@ -540,8 +598,6 @@ const SocialFeedContext = ({ props }: any) => {
 
   ]
 
- 
-
   const copyToClipboard = (Id: number) => {
 
     const link = `${siteUrl}/SitePages/SocialFeed.aspx?${Id}`;
@@ -564,19 +620,17 @@ const SocialFeedContext = ({ props }: any) => {
 
   };
 
- 
-
   const mergeAndRemoveDuplicates = (str: string, str1: string) => {
 
-    debugger;
+  
 
     let url = str1;
 
- 
+
 
     // Find the position of the third occurrence of "/"
 
- 
+
 
     let thirdSlashIndex = url.indexOf(
 
@@ -586,21 +640,21 @@ const SocialFeedContext = ({ props }: any) => {
 
     );
 
- 
+
 
     // Get the substring after the third occurrence of "/"
 
- 
+
 
     let updatedUrl = url.substring(thirdSlashIndex);
 
- 
 
-    console.log("check the url--->>",updatedUrl); // Output: /SocialFeedImages/announcement-5.jpg
 
- 
+    console.log("check the url--->>", updatedUrl); // Output: /SocialFeedImages/announcement-5.jpg
 
-   
+
+
+
 
     return str + updatedUrl; // Concatenate directly if str1 starts with a slash
 
@@ -608,46 +662,80 @@ const SocialFeedContext = ({ props }: any) => {
 
   };
 
- 
-
- 
-
   const GotoNextPageone = (item: any, pagename: string) => {
 
     console.log("item-->>>>", item)
 
- 
+
 
     window.location.href = `${siteUrl}/SitePages/${pagename}.aspx`;
 
   };
 
- 
-
   const handleTabClick = (tab: React.SetStateAction<string>) => {
 
     setActiveMainTab(tab);
-
+    if (tab == "following") {
+      fetchFollowingList()
+    }
+    else {
+      fetchFollowerList()
+    }
   };
-
- 
 
   const truncateText = (text: string, maxLength: number) => {
 
-    if(text!=null)
+    if (text != null) {
 
-    {
+      return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
 
-        return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
 
- 
 
     }
 
-};
+  };
+  const follow = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, itemId: number) => {
+    e.preventDefault();
+    try {
+      const currentUser = await sp.web.currentUser();
+      await sp.web.lists.getByTitle("ARGFollows").items.add({
+        FollowerId: currentUser.Id,
+        FollowedId: itemId
+      });
 
- 
+      setFollowStatus((prevStatus) => ({
+        ...prevStatus,
+        [itemId]: true,
+      }));
 
+      // Increase follower count and decrease unfollower count
+
+    } catch (error) {
+      console.error("Error following:", error);
+    }
+  };
+
+  const unfollow = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, itemId: number) => {
+    e.preventDefault();
+    try {
+      const currentUser = await sp.web.currentUser();
+      const followRecords = await sp.web.lists.getByTitle("ARGFollows").items
+        .filter(`FollowerId eq ${currentUser.Id} and FollowedId eq ${itemId}`)();
+
+      if (followRecords.length > 0) {
+        await sp.web.lists.getByTitle("ARGFollows").items.getById(followRecords[0].Id).delete();
+
+        setFollowStatus((prevStatus) => ({
+          ...prevStatus,
+          [itemId]: false,
+        }));
+
+
+      }
+    } catch (error) {
+      console.error("Error unfollowing:", error);
+    }
+  };
   return (
 
     <div id="wrapper" ref={elementRef}>
@@ -664,9 +752,9 @@ const SocialFeedContext = ({ props }: any) => {
 
       <div className="content-page">
 
-          <HorizontalNavbar  _context={sp} siteUrl={siteUrl}/>
+        <HorizontalNavbar _context={sp} siteUrl={siteUrl}/>
 
-        <div className="content" style={{ marginLeft: `${!useHide ? '240px' : '80px'}`, marginTop:'1rem' }}>
+        <div className="content" style={{ marginLeft: `${!useHide ? '240px' : '80px'}`, marginTop: '1rem' }}>
 
           <div className="container-fluid  paddb">
 
@@ -771,7 +859,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                   </div>
 
- 
+
 
                   <div className='mt-3'>
 
@@ -935,13 +1023,13 @@ const SocialFeedContext = ({ props }: any) => {
 
                                         console.log(imageUrl);
 
- 
+
 
                                         return (
 
                                           <><img key={index} src={imageUrl} alt={`preview-${index}`} style={{ width: '100px', marginRight: '10px' }} />
 
- 
+
 
                                           </>
 
@@ -949,7 +1037,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                                       }
 
- 
+
 
                                       )}
 
@@ -980,6 +1068,7 @@ const SocialFeedContext = ({ props }: any) => {
                     {posts.length > 0 && hideCreatePost && !HideShowPost &&
 
                       <div className="feed">
+
 
                         {posts.length > 0 ? posts.map((post, index) => (
 
@@ -1019,7 +1108,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                             }}
 
- 
+
 
                           />
 
@@ -1032,10 +1121,9 @@ const SocialFeedContext = ({ props }: any) => {
                     {/* Post Feed */}
                     {postsME.length > 0 && !hideCreatePost && HideShowPost &&
                       <div className="feed">
-                        {postsME.map((post, index) =>
-                        {
-                          console.log(postsME,'postsME');
-                          return(
+                        {postsME.map((post, index) => {
+                          console.log(postsME, 'postsME');
+                          return (
                             <PostComponent
                               key={index}
                               sp={sp}
@@ -1056,8 +1144,8 @@ const SocialFeedContext = ({ props }: any) => {
                               }}
                             />
                           )
-                        } 
-                       )}
+                        }
+                        )}
                       </div>
 
                     }
@@ -1070,7 +1158,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                   <div className="row card-view">
 
-                    {usersitem.map((item) => (
+                    {followerList.map((item) => (
 
                       <div className="col-lg-6 col-md-6" key={item.Title}>
 
@@ -1162,7 +1250,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                               </h4>
 
- 
+
 
                               <p
 
@@ -1200,7 +1288,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                                   )}
 
- 
+
 
                                   {/* </a> */}
 
@@ -1208,7 +1296,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                               </p>
 
-                              <div
+                              {/* <div
 
                                 style={{
 
@@ -1246,119 +1334,13 @@ const SocialFeedContext = ({ props }: any) => {
 
                                 </button>
 
-                                <button
+                                <button className="btn btn-light btn-sm waves-effect" 
+                                onClick={(e) => followStatus[item.ID] ? 
+                                unfollow(e, item.ID) : follow(e, item.ID)}>{followStatus[item.ID] ?
+                                 "Unfollow" : "Follow"}</button>
 
-                                  type="button"
 
-                                  className="btn btn-light btn-sm waves-effect"
-
-                                >
-
-                                  Follow
-
-                                </button>
-
-                              </div>
-
-                              <div className="row mt-2">
-
-                                <div className="col-4">
-
-                                  <div className="mt-3">
-
-                                    <h4
-
-                                      className="fw-bold font-14"
-
-                                      style={{
-
-                                        fontSize: "0.80rem",
-
-                                        color: "#343a40",
-
-                                      }}
-
-                                    >
-
-                                      NA {/* {item.posts} */}
-
-                                    </h4>
-
-                                    <p className="mb-0 text-muted text-truncate">
-
-                                      Post
-
-                                    </p>
-
-                                  </div>
-
-                                </div>
-
-                                <div className="col-4">
-
-                                  <div className="mt-3">
-
-                                    <h4
-
-                                      className="fw-bold font-14"
-
-                                      style={{
-
-                                        fontSize: "0.80rem",
-
-                                        color: "#343a40",
-
-                                      }}
-
-                                    >
-
-                                      NA {/* {item.followers} */}
-
-                                    </h4>
-
-                                    <p className="mb-0 text-muted text-truncate">
-
-                                      Followers
-
-                                    </p>
-
-                                  </div>
-
-                                </div>
-
-                                <div className="col-4">
-
-                                  <div className="mt-3">
-
-                                    <h4
-
-                                      className="fw-bold font-14"
-
-                                      style={{
-
-                                        fontSize: "0.80rem",
-
-                                        color: "#343a40",
-
-                                      }}
-
-                                    >
-
-                                      NA {/* {item.followings} */}
-
-                                    </h4>
-
-                                    <p className="mb-0 text-muted text-truncate">
-
-                                      Followings
-
-                                    </p>
-
-                                  </div>
-
-                                </div>
-
-                              </div>
+                              </div> */}
 
                               {/* end row */}
 
@@ -1384,7 +1366,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                   <div className="row card-view">
 
-                    {usersitem.map((item) => (
+                    {followingList.map((item) => (
 
                       <div className="col-lg-6 col-md-6" key={item.Title}>
 
@@ -1476,7 +1458,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                               </h4>
 
- 
+
 
                               <p
 
@@ -1514,7 +1496,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                                   )}
 
- 
+
 
                                   {/* </a> */}
 
@@ -1522,7 +1504,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                               </p>
 
-                              <div
+                              {/* <div
 
                                 style={{
 
@@ -1560,119 +1542,10 @@ const SocialFeedContext = ({ props }: any) => {
 
                                 </button>
 
-                                <button
+                                <button className="btn btn-light btn-sm waves-effect" onClick={(e) => followStatus[item.ID] ? unfollow(e, item.ID) : follow(e, item.ID)}>{followStatus[item.ID] ? "Unfollow" : "Follow"}</button>
 
-                                  type="button"
 
-                                  className="btn btn-light btn-sm waves-effect"
-
-                                >
-
-                                  Follow
-
-                                </button>
-
-                              </div>
-
-                              <div className="row mt-2">
-
-                                <div className="col-4">
-
-                                  <div className="mt-3">
-
-                                    <h4
-
-                                      className="fw-bold font-14"
-
-                                      style={{
-
-                                        fontSize: "0.80rem",
-
-                                        color: "#343a40",
-
-                                      }}
-
-                                    >
-
-                                      NA {/* {item.posts} */}
-
-                                    </h4>
-
-                                    <p className="mb-0 text-muted text-truncate">
-
-                                      Post
-
-                                    </p>
-
-                                  </div>
-
-                                </div>
-
-                                <div className="col-4">
-
-                                  <div className="mt-3">
-
-                                    <h4
-
-                                      className="fw-bold font-14"
-
-                                      style={{
-
-                                        fontSize: "0.80rem",
-
-                                        color: "#343a40",
-
-                                      }}
-
-                                    >
-
-                                      NA {/* {item.followers} */}
-
-                                    </h4>
-
-                                    <p className="mb-0 text-muted text-truncate">
-
-                                      Followers
-
-                                    </p>
-
-                                  </div>
-
-                                </div>
-
-                                <div className="col-4">
-
-                                  <div className="mt-3">
-
-                                    <h4
-
-                                      className="fw-bold font-14"
-
-                                      style={{
-
-                                        fontSize: "0.80rem",
-
-                                        color: "#343a40",
-
-                                      }}
-
-                                    >
-
-                                      NA {/* {item.followings} */}
-
-                                    </h4>
-
-                                    <p className="mb-0 text-muted text-truncate">
-
-                                      Followings
-
-                                    </p>
-
-                                  </div>
-
-                                </div>
-
-                              </div>
+                              </div> */}
 
                               {/* end row */}
 
@@ -1702,7 +1575,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                   <div className="card-body pb-3 gheight">
 
- 
+
 
                     <h4 className="header-title font-16 text-dark fw-bold mb-0" style={{ fontSize: '20px' }}>
 
@@ -1732,7 +1605,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                           <div style={{ margin: '15px 0px 10px 0px', padding: '0px 0px 10px 0px' }} className="d-flex align-items-start border-bottom ng-scope">
 
- 
+
 
                             <TrendingUp size={18} style={{ marginTop: '5px' }} color='#1faee3' /> &nbsp;
 
@@ -1750,7 +1623,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                               </a>
 
- 
+
 
                             </div>
 
@@ -1768,7 +1641,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                 </div>
 
- 
+
 
                 <div className="card mobile-6" style={{ borderRadius: "1rem" }}>
 
@@ -1796,7 +1669,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                     <div className="inbox-widget mt-4">
 
-                      {usersitem.map((user: any, index: 0) => (
+                      {followingList.map((user: any, index: 0) => (
 
                         <div
 
@@ -1818,7 +1691,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                                 width="50"
 
-                                alt={user.name}
+                                alt={user.Title}
 
                               />
 
@@ -1888,7 +1761,7 @@ const SocialFeedContext = ({ props }: any) => {
 
     </div >
 
- 
+
 
   )
 

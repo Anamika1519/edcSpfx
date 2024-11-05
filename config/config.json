@@ -297,6 +297,46 @@
           "manifest": "./src/webparts/followandFollowers/FollowandFollowersWebPart.manifest.json"
         }
       ]
+    },
+    "my-request-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/myRequest/MyRequestWebPart.js",
+          "manifest": "./src/webparts/myRequest/MyRequestWebPart.manifest.json"
+        }
+      ]
+    },
+    "my-approval-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/myApproval/MyApprovalWebPart.js",
+          "manifest": "./src/webparts/myApproval/MyApprovalWebPart.manifest.json"
+        }
+      ]
+    },
+    "business-apps-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/businessApps/BusinessAppsWebPart.js",
+          "manifest": "./src/webparts/businessApps/BusinessAppsWebPart.manifest.json"
+        }
+      ]
+    },
+    "dms-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/dms/DmsWebPart.js",
+          "manifest": "./src/webparts/dms/DmsWebPart.manifest.json"
+        }
+      ]
+    },
+    "dms-admin-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/dmsAdmin/DmsAdminWebPart.js",
+          "manifest": "./src/webparts/dmsAdmin/DmsAdminWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {
@@ -347,6 +387,11 @@
     "ApprovalConfigurationWebPartStrings": "lib/webparts/approvalConfiguration/loc/{locale}.js",
     "ProjectsWebPartStrings": "lib/webparts/projects/loc/{locale}.js",
     "ProjectDetailsWebPartStrings": "lib/webparts/projectDetails/loc/{locale}.js",
-    "FollowandFollowersWebPartStrings": "lib/webparts/followandFollowers/loc/{locale}.js"
+    "FollowandFollowersWebPartStrings": "lib/webparts/followandFollowers/loc/{locale}.js",
+    "MyRequestWebPartStrings": "lib/webparts/myRequest/loc/{locale}.js",
+    "MyApprovalWebPartStrings": "lib/webparts/myApproval/loc/{locale}.js",
+    "BusinessAppsWebPartStrings": "lib/webparts/businessApps/loc/{locale}.js",
+    "DmsWebPartStrings": "lib/webparts/dms/loc/{locale}.js",
+    "DmsAdminWebPartStrings": "lib/webparts/dmsAdmin/loc/{locale}.js"
   }
 }

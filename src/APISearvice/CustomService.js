@@ -168,3 +168,104 @@ export const getCurrentUserProfileEmailForPeople = async (sp) => {
     });
     return user.data.Id; 
 }
+async function getFollowersList(currentUserEmail) {
+    try {
+      const followers = await sp.web.lists.getByTitle("UserConnections").items
+        .filter(`Followed/Email eq '${currentUserEmail}'`)
+        .expand('Follower') // Expand to get full user info
+        .get();
+      return followers;
+    } catch (error) {
+      console.error("Error retrieving followers list:", error);
+    }
+  }
+  async function getFollowingList(currentUserEmail) {
+    try {
+      const following = await sp.web.lists.getByTitle("UserConnections").items
+        .filter(`Follower/Email eq '${currentUserEmail}'`)
+        .expand('Followed') // Expand to get full user info
+        .get();
+      return following;
+    } catch (error) {
+      console.error("Error retrieving following list:", error);
+    }
+  }
+  const followUser = async (itemId) => {
+    e.preventDefault()
+    try {
+      const currentUser = await sp.web.currentUser();
+      await sp.web.lists.getByTitle("Follows").items.add({
+        FollowerId: currentUser.Id,
+        FollowedItemId: itemId,
+      });
+      setIsFollowing(true);
+    } catch (error) {
+      console.error("Error following:", error);
+    }
+  };
+
+  const unfollowUser = async (itemId) => {
+    e.preventDefault()
+    try {
+      const currentUser = await sp.web.currentUser();
+      const followRecords = await sp.web.lists.getByTitle("Follows").items
+        .filter(`FollowerId eq ${currentUser.Id} and FollowedItemId eq ${itemId}`)
+        ();
+
+    } catch (error) {
+      console.error("Error unfollowing:", error);
+    }
+  };
+ export const getFollow=async (sp)=>
+    {
+      let arr=[]
+        try {
+          const currentUser = await sp.web.currentUser();
+          const followRecords = await sp.web.lists.getByTitle("ARGFollows").items
+            .select("Followed/Title","Followed/ID","Followed/EMail","ID").expand("Followed")
+            .filter(`FollowedId eq ${currentUser.Id}`)();
+            console.log(followRecords,'followedRecords');
+            arr=followRecords
+          // Update the counts based on follow status
+        } catch (error) {
+          console.error("Error checking follow status:", error);
+        }
+      return arr;
+    }
+  export  const getFollowing =async (sp)=>
+    {
+      let arr=[]
+      try {
+        const currentUser = await sp.web.currentUser();
+        const followRecords = await sp.web.lists.getByTitle("ARGFollows").items
+        .select("Follower/Title","Follower/ID","Follower/EMail","ID").expand("Follower")
+        .filter(`FollowerId eq ${currentUser.Id}`)()
+         
+          console.log(followRecords,'followRecords');
+          
+          arr=followRecords
+        // Update the counts based on follow status
+      } catch (error) {
+        console.error("Error checking follow status:", error);
+      }
+      return arr;
+    }
+    export const addActivityLeaderboard = async(sp,Action)=>
+    {
+       await sp.web.lists.getByTitle("ARGLeaderboardConfigure").items.filter(`Actions eq '${Action}'`)().then(async (res)=>
+      {
+        if(res.length>0)
+        {
+          await sp.web.lists.getByTitle("ARGLeaderboard").items.add(
+            {
+              Action:Action,
+              Points:res[0].Points
+            }
+          ).then((res)=>
+          {
+             console.log(res,'ews');
+          })
+        }
+      })
+     
+    }

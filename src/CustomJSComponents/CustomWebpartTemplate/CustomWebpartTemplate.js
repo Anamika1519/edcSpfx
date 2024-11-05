@@ -7,6 +7,7 @@ import "../../Assets/Figtree/Figtree-VariableFont_wght.ttf";
 import { Share2 } from 'feather-icons-react';
 import { Bookmark } from 'feather-icons-react';
 import { Calendar } from 'feather-icons-react';
+import {addActivityLeaderboard} from "../../APISearvice/CustomService";
 import { getAnncouncement } from "../../APISearvice/AnnouncementsService";
 import moment from 'moment';
 import { encryptId } from "../../APISearvice/CryptoService";
@@ -48,9 +49,10 @@ const CustomWebpartTemplate = ({ _sp, SiteUrl }) => {
                 : text;
         };
  
-    const gotoAnnouncementDetails = (valurArr) => {
+    const gotoAnnouncementDetails = async (valurArr) => {
         localStorage.setItem("AnnouncementId", valurArr.Id)
         localStorage.setItem("announcementArr", JSON.stringify(valurArr))
+        await addActivityLeaderboard(_sp,"Announcement Click");
         setTimeout(() => {
  
             //   let IdStr=  encryptId(String(valurArr.Id))

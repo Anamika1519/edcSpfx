@@ -130,6 +130,9 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
     setCurrentUserProfile(await getCurrentUserProfile(sp, siteUrl));
 
     let initialComments: any[] = [];
+    let initialArray: any[] = [];
+    let arrLike = {}
+    let likeArray: any[] = []
     const ids = window.location.search;
     const originalString = ids;
     const idNum = originalString.substring(1);
@@ -138,34 +141,74 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
       .items.select("*,DiscussionForum/Id")
       .expand("DiscussionForum")
       .filter(`DiscussionForumId eq ${Number(idNum)}`)()
-      .then((result: any) => {
+      .then(async (result: any) => {
         console.log(result, "ARGDiscussionComments");
 
         initialComments = result;
-        setComments(
-          initialComments.map((res) => ({
-            Id: res.Id,
-            UserName: res.UserName,
-            AuthorId: res.AuthorId,
-            Comments: res.Comments,
-            Created: new Date(res.Created).toLocaleString(), // Formatting the created date
-            UserLikesJSON:
-              res.UserLikesJSON != "" &&
-                res.UserLikesJSON != null &&
-                res.UserLikesJSON != undefined
-                ? JSON.parse(res.UserLikesJSON)
-                : [], // Default to empty array if null
-            UserCommentsJSON:
-              res.UserCommentsJSON != "" &&
-                res.UserCommentsJSON != null &&
-                res.UserCommentsJSON != undefined
-                ? JSON.parse(res.UserCommentsJSON)
-                : [], // Default to empty array if null
-            userHasLiked: res.userHasLiked,
-            UserProfile: res.UserProfile,
-            // Initialize as false
-          }))
-        );
+        for (var i = 0; i < initialComments.length; i++) {
+          await  sp.web.lists
+              .getByTitle("ARGDiscussionUserLikes")
+              .items.filter(`DiscussionForumCommentsId eq ${Number(initialComments[i].Id)}`).select("ID,AuthorId,UserName,Like,Created")()
+              .then((result1: any) => {
+                console.log(result1, "ARGEventsUserLikes");
+  
+                for (var j = 0; j < result1.length; j++) {
+                  arrLike = {
+                    "ID": result1[j].Id,
+                    "AuthorId": result1[j].AuthorId,
+                    "UserName": result1[j].UserName,
+                    "Like": result1[j].Like,
+                    "Created": result1[j].Created
+                  }
+                  likeArray.push(arrLike)
+                }
+  
+                let arr = {
+                  Id: initialComments[i].Id,
+                  UserName: initialComments[i].UserName,
+                  AuthorId: initialComments[i].AuthorId,
+                  Comments: initialComments[i].Comments,
+                  Created: new Date(initialComments[i].Created).toLocaleString(), // Formatting the created date
+                  UserLikesJSON: likeArray
+                     , // Default to empty array if null
+                  UserCommentsJSON:
+                    initialComments[i].UserCommentsJSON != "" &&
+                      initialComments[i].UserCommentsJSON != null &&
+                      initialComments[i].UserCommentsJSON != undefined
+                      ? JSON.parse(initialComments[i].UserCommentsJSON)
+                      : [], // Default to empty array if null
+                  userHasLiked: initialComments[i].userHasLiked,
+                  UserProfile: initialComments[i].UserProfile
+                }
+                initialArray.push(arr);
+              })
+  
+          }
+          setComments(initialArray)
+        // setComments(
+        //   initialComments.map((res) => ({
+        //     Id: res.Id,
+        //     UserName: res.UserName,
+        //     AuthorId: res.AuthorId,
+        //     Comments: res.Comments,
+        //     Created: new Date(res.Created).toLocaleString(), // Formatting the created date
+        //     UserLikesJSON:
+        //       res.UserLikesJSON != "" &&
+        //         res.UserLikesJSON != null &&
+        //         res.UserLikesJSON != undefined
+        //         ? JSON.parse(res.UserLikesJSON)
+        //         : [], // Default to empty array if null
+        //     UserCommentsJSON:
+        //       res.UserCommentsJSON != "" &&
+        //         res.UserCommentsJSON != null &&
+        //         res.UserCommentsJSON != undefined
+        //         ? JSON.parse(res.UserCommentsJSON)
+        //         : [], // Default to empty array if null
+        //     userHasLiked: res.userHasLiked,
+        //     UserProfile: res.UserProfile,
+        //     // Initialize as false
+        //   }))
+        // );
 
         // getUserProfilePicture(CurrentUser.Id,sp).then((url) => {
         //   if (url) {
@@ -393,7 +436,7 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
           <HorizontalNavbar  _context={sp} siteUrl={siteUrl}/>
         <div
           className="content "
-          style={{ marginLeft: `${!useHide ? "240px" : "80px"}`, marginTop: '0.5rem' }}
+          style={{ marginLeft: `${!useHide ? "240px" : "80px"}`, marginTop: '1rem' }}
         >
           <div className="container-fluid  paddb">
             <div className="row" style={{ paddingLeft: "0.5rem" }}>
@@ -440,11 +483,12 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
                               className="text-nowrap mb-0 d-inline-block"
                               onClick={() => copyToClipboard(item.Id)}
                             >
-                              <Link size={14} /> Copy link &nbsp; &nbsp;
+                              <Link size={14} /> Copy link &nbsp; &nbsp;  &nbsp; |  &nbsp;  &nbsp;
                               &nbsp;
                               {copySuccess && <span className="text-success">{copySuccess}</span>}
                             </span>
-                            <span>{item.GroupType}</span>
+                            <span>{item.GroupType} &nbsp; &nbsp;  &nbsp; |  &nbsp;  &nbsp;
+                            &nbsp;</span>
                             <span style={{ display: 'flex', gap: '0.2rem' }}>
                               {
                                 item?.InviteMemebers?.length > 0 && item?.InviteMemebers.map((item1: any, index: 0) => {
@@ -481,7 +525,7 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
                             <div className="col-sm-6 col-xl-3 filter-item all web illustrator">
                               <div
                                 className="gal-box"
-                                style={{ height: "250px" }}
+                               
                               >
                                 <a
                                   data-bs-toggle="modal"
@@ -588,6 +632,7 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
                     replies={comment.UserCommentsJSON}
                     userHasLiked={comment.userHasLiked}
                     CurrentUserProfile={CurrentUserProfile}
+                    Action="Discussion"
                     onAddReply={(text) => handleAddReply(index, text)}
                     onLike={() => handleLikeToggle(index)} // Pass like handler
                   />

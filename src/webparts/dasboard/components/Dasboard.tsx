@@ -28,6 +28,7 @@
   import { encryptId } from "../../../APISearvice/CryptoService";
   import { MessageSquare, ThumbsUp } from "react-feather";
   import moment from "moment";
+import { addActivityLeaderboard } from "../../../APISearvice/CustomService";
 
   const HelloWorldContext = ({ props }: any) => {
     const sp: SPFI = getSP();
@@ -194,6 +195,10 @@
 
     }, []);
 
+    const addActivity=async ()=>
+      { 
+        await addActivityLeaderboard(sp,"Banner Button Clicks");
+      }
     const ApiCall = async () => {
       const galleryItemsone = await fetchMediaGallerydata(sp);
       setGalleryData(galleryItemsone);
@@ -354,7 +359,7 @@
                           <div
                             className="carousel-inner"
                             role="listbox"
-                            style={{ borderRadius: "1rem" }}
+                            style={{ borderRadius: "1rem" }} 
                           >
                             {dynamicbanners.map((item, index) => {
                               const ImageUrl1 =
@@ -366,7 +371,7 @@
                                 <div
                                   key={item.id}
                                   className={`carousel-item ${index === 0 ? "active" : ""
-                                    }`}
+                                    }`} onClick={()=>addActivity()}
                                 >
                                   <img
                                     style={{ width: "100%" }}

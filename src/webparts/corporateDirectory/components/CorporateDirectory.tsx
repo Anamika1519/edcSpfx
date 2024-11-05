@@ -8,16 +8,13 @@ import UserContext from "../../../GlobalContext/context";
 import Provider from "../../../GlobalContext/provider";
 import { useMediaQuery } from "react-responsive";
 import context from "../../../GlobalContext/context";
-import CustomCarousel from "../../../CustomJSComponents/carousel/CustomCarousel";
 import "../../../Assets/Figtree/Figtree-VariableFont_wght.ttf";
-import FeatherIcon from "feather-icons-react";
 import HorizontalNavbar from "../../horizontalNavBar/components/HorizontalNavBar";
 import "./corporate.scss";
 import { SPFI } from "@pnp/sp/presets/all";
 import { ICorporateDirectoryProps } from "./ICorporateDirectoryProps";
 import CustomBreadcrumb from "../../../CustomJSComponents/CustomBreadcrumb/CustomBreadcrumb";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit, faTrashAlt } from "@fortawesome/free-regular-svg-icons";
 import {
   faEllipsisV,
   faFileExport,
@@ -42,18 +39,26 @@ const CorporateDirectoryContext = ({ props }: any) => {
     key: "",
     direction: "ascending",
   });
+  const [followerCount, setFollowerCount] = React.useState(0); // State to track follower count
+  const [unfollowerCount, setUnfollowerCount] = React.useState(0); // State to track unfollower count
+  const [isLoading, setIsLoading] = useState(false);
   const siteUrl = props.siteUrl;
+
   const [filters, setFilters] = React.useState({
     Name: "",
     Email: "",
     EmployeeID: "",
     Department: "",
-    MobilePhone:""
+    MobilePhone: ""
   });
+
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [followStatus, setFollowStatus] = React.useState<{ [key: number]: boolean }>({}); // Track follow status for each user
 
   React.useEffect(() => {
     console.log("This function is called only once", useHide);
     fetchUserInformationList();
+
     const showNavbar = (
       toggleId: string,
       navId: string,
@@ -87,8 +92,84 @@ const CorporateDirectoryContext = ({ props }: any) => {
     }
 
     linkColor.forEach((l) => l.addEventListener("click", colorLink));
+
   }, [useHide]);
+
+  // const checkIfFollowing = async (item: any) => {
+  //   try {
+  //     const currentUser = await sp.web.currentUser();
+  //     const followRecords = await sp.web.lists.getByTitle("ARGFollows").items
+  //       .filter(`FollowerId eq ${currentUser.Id} and FollowedId eq ${item.ID}`)();
+
+  //     setFollowStatus((prevStatus) => ({
+  //       ...prevStatus,
+  //       [item.ID]: followRecords.length > 0,
+  //     }));
+  //     const followersCount = await sp.web.lists.getByTitle("ARGFollows").items
+  //     .filter(`FollowedId eq ${item.ID}`)
+  //     .select("Id")
+  //     .getAll();
+
+  // const followingCount = await sp.web.lists.getByTitle("ARGFollows").items
+  //     .filter(`FollowerId eq ${item.ID}`)
+  //     .select("Id")
+  //     .getAll();
+
+  //     // Update the counts based on follow status
+  //     if (followRecords.length > 0) {
+  //       setFollowerCount((prev) => prev + 1);
+  //     } else {
+  //       setUnfollowerCount((prev) => prev + 1);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error checking follow status:", error);
+  //   }
+  // }
   // Media query to check if the screen width is less than 768px
+
+
+  const checkIfFollowing = async (item: any) => {
+   
+    try {
+      const currentUser = await sp.web.currentUser();
+      const followRecords = await sp.web.lists.getByTitle("ARGFollows").items
+        .filter(`FollowerId eq ${item.ID} and FollowedId eq ${item.ID}`)();
+       
+        
+      setFollowStatus((prevStatus) => ({
+        ...prevStatus,
+        [item.ID]: followRecords.length > 0,
+      }));
+      debugger
+      const followersCount = await sp.web.lists.getByTitle("ARGFollows").items
+        .filter(`FollowedId eq ${item.ID}`)
+        .select("Id")
+        .getAll();
+
+      const followingCount = await sp.web.lists.getByTitle("ARGFollows").items
+        .filter(`FollowerId eq ${item.ID}`)
+        .select("Id")
+        .getAll();
+        item.followersCount=followersCount.length
+        item.followingCount=followingCount.length
+        const postData = await sp.web.lists.getByTitle("ARGSocialFeed").items
+        .filter(`AuthorId eq ${item.ID}`)();
+        if(postData.length>0)
+        {
+          item.postCount=postData.length;
+        }
+        else{
+          item.postCount=0;
+        }
+       
+      setFollowerCount(followersCount.length);
+      setUnfollowerCount(followingCount.length);
+
+    } catch (error) {
+      console.error("Error checking follow status:", error);
+    }
+  };
+
   const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
   const handleSidebarToggle = (bol: boolean) => {
     setIsSidebarOpen((prevState: any) => !prevState);
@@ -98,6 +179,8 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
   const fetchUserInformationList = async () => {
     try {
+      
+      const currentUser = await sp.web.currentUser();
       const userList = await sp.web.lists
         .getByTitle("User Information List")
         .items.select(
@@ -106,12 +189,16 @@ const CorporateDirectoryContext = ({ props }: any) => {
           "EMail",
           "Department",
           "JobTitle",
-          "Picture","MobilePhone"
+          "Picture", "MobilePhone"
         )
-        .filter("EMail ne null")();
+        .filter(`EMail ne null and ID ne ${currentUser.Id}`)();
       console.log(userList, "userList");
 
+      userList.forEach(element => {
+        checkIfFollowing(element);
+      });
       setUsersArr(userList);
+
     } catch (error) {
       console.error("Error fetching users:", error);
     }
@@ -164,15 +251,15 @@ const CorporateDirectoryContext = ({ props }: any) => {
   };
 
   const applyFiltersAndSorting = (data: any[]) => {
-    debugger;
+    
     // Filter data
     const filteredData = data.filter((item) => {
       return (
         (filters.Name === "" ||
           item?.Title.toLowerCase().includes(filters.Name.toLowerCase())) &&
         (filters.Email === "" ||
-          item?.EMail.toLowerCase().includes(filters.Email.toLowerCase()))&&
-        (filters.MobilePhone === '' || item?.MobilePhone.toLowerCase().includes(filters.MobilePhone.toLowerCase())) 
+          item?.EMail.toLowerCase().includes(filters.Email.toLowerCase())) &&
+        (filters.MobilePhone === '' || item?.MobilePhone.toLowerCase().includes(filters.MobilePhone.toLowerCase()))
         // (filters.Department === '' || item?.Department.toLowerCase().includes(filters.Department.toLowerCase()))
       );
     });
@@ -243,13 +330,96 @@ const CorporateDirectoryContext = ({ props }: any) => {
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
+
+  // const follow = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, itemId: number) => {
+  //   e.preventDefault();
+  //   try {
+  //     const currentUser = await sp.web.currentUser();
+  //     await sp.web.lists.getByTitle("ARGFollows").items.add({
+  //       FollowerId: currentUser.Id,
+  //       FollowedId: itemId
+  //     });
+
+  //     setFollowStatus((prevStatus) => ({
+  //       ...prevStatus,
+  //       [itemId]: true,
+  //     }));
+
+  //     // Increase follower count and decrease unfollower count
+  //     setFollowerCount((prev) => prev + 1);
+  //     setUnfollowerCount((prev) => Math.max(prev - 1, 0));
+  //   } catch (error) {
+  //     console.error("Error following:", error);
+  //   }
+  // };
+  const follow = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, itemId: number) => {
+    e.preventDefault();
+    
+    // Start loading state
+    setIsLoading(true);
+    
+    try {
+        const currentUser = await sp.web.currentUser();
+        // Add follow record
+        await sp.web.lists.getByTitle("ARGFollows").items.add({
+            FollowerId: currentUser.Id,
+            FollowedId: itemId
+        });
+
+        // Optimistic UI update
+        setFollowStatus((prevStatus) => ({
+            ...prevStatus,
+            [itemId]: true,
+        }));
+        setFollowerCount((prev) => prev + 1);
+        setUnfollowerCount((prev) => Math.max(prev - 1, 0));
+        fetchUserInformationList()
+    } catch (error) {
+        console.error("Error following:", error);
+        // Show user feedback on error
+        alert("Failed to follow. Please try again.");
+    } finally {
+        // End loading state
+        setIsLoading(false);
+    }
+};
+  const unfollow = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, itemId: number) => {
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      const currentUser = await sp.web.currentUser();
+      const followRecords = await sp.web.lists.getByTitle("ARGFollows").items
+        .filter(`FollowerId eq ${currentUser.Id} and FollowedId eq ${itemId}`)();
+
+      if (followRecords.length > 0) {
+        await sp.web.lists.getByTitle("ARGFollows").items.getById(followRecords[0].Id).delete();
+
+        setFollowStatus((prevStatus) => ({
+          ...prevStatus,
+          [itemId]: false,
+        }));
+
+        // Decrease follower count and increase unfollower count
+        setFollowerCount((prev) => Math.max(prev - 1, 0));
+        setUnfollowerCount((prev) => prev + 1);
+        fetchUserInformationList()
+      }
+    } catch (error) {
+      console.error("Error unfollowing:", error);
+    }
+    finally {
+      // End loading state
+      setIsLoading(false);
+  }
+  };
+
   return (
     <div id="wrapper" ref={elementRef}>
       <div className="app-menu" id="myHeader">
         <VerticalSideBar _context={sp} />
       </div>
       <div className="content-page">
-        <HorizontalNavbar />
+        <HorizontalNavbar _context={sp}/>
         <div
           className="content"
           style={{
@@ -340,9 +510,8 @@ const CorporateDirectoryContext = ({ props }: any) => {
                       >
                         <li className="nav-itemcss">
                           <a
-                            className={`nav-linkss ${
-                              activeTab === "cardView" ? "active" : ""
-                            }`}
+                            className={`nav-linkss ${activeTab === "cardView" ? "active" : ""
+                              }`}
                             aria-selected={activeTab === "cardView"}
                             role="tab"
                             onClick={() => handleTabChange("cardView")}
@@ -352,17 +521,16 @@ const CorporateDirectoryContext = ({ props }: any) => {
                         </li>
                         <li className="nav-itemcss">
                           <a
-                            className={`nav-linkss ${
-                              activeTab === "listView" ? "active" : ""
-                            }`}
+                            className={`nav-linkss ${activeTab === "listView" ? "active" : ""
+                              }`}
                             aria-selected={activeTab === "listView"}
                             role="tab"
                             onClick={() => handleTabChange("listView")}
 
-                            // onClick={() => handleTabChange("listView")}
-                            // className={`nav-link ${
-                            //   activeTab === "listView" ? "active" : ""
-                            // }`}
+                          // onClick={() => handleTabChange("listView")}
+                          // className={`nav-link ${
+                          //   activeTab === "listView" ? "active" : ""
+                          // }`}
                           >
                             List View
                           </a>
@@ -466,12 +634,26 @@ const CorporateDirectoryContext = ({ props }: any) => {
                                 >
                                   Message
                                 </button>
-                                <button
+                                {/* <button
                                   type="button"
                                   className="btn btn-light btn-sm waves-effect"
                                 >
                                   Follow
-                                </button>
+                                </button> */}
+                                <div>
+                                  {/* <button className="btn btn-light btn-sm waves-effect" onClick={(e)=>isFollowing ? unfollow(e,item.Id) : follow(e,item.Id)}>
+                                    {isFollowing ? "Unfollow" : "Follow"}
+                                  </button> */}
+                                  <button
+                                    type="button" className="btn btn-light btn-sm waves-effect" 
+                                    onClick={(e) => followStatus[item.ID] ? unfollow(e, item.ID) : follow(e, item.ID)}
+                                    disabled={isLoading}
+                                  >
+                                    {isLoading ? "Following..." : followStatus[item.ID] ? "Unfollow" : "Follow"}
+                                  </button>
+                                  {/* <button className="btn btn-light btn-sm waves-effect" 
+                                  onClick={(e) => followStatus[item.ID] ? unfollow(e, item.ID) : follow(e, item.ID)}>{followStatus[item.ID] ? "Unfollow" : "Follow"}</button> */}
+                                </div>
                               </div>
                               <div className="row mt-2">
                                 <div className="col-4">
@@ -483,7 +665,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
                                         color: "#343a40",
                                       }}
                                     >
-                                      NA {/* {item.posts} */}
+                                      {item.postCount>0?item.postCount:0} {/* {item.posts} */}
                                     </h4>
                                     <p className="mb-0 text-muted text-truncate">
                                       Post
@@ -499,7 +681,8 @@ const CorporateDirectoryContext = ({ props }: any) => {
                                         color: "#343a40",
                                       }}
                                     >
-                                      NA {/* {item.followers} */}
+                                      {item.followersCount>0 ? item.followersCount : 0}
+                                      {/* {followerCount==0?followerCount:'NA'}  {item.followers} */}
                                     </h4>
                                     <p className="mb-0 text-muted text-truncate">
                                       Followers
@@ -515,7 +698,8 @@ const CorporateDirectoryContext = ({ props }: any) => {
                                         color: "#343a40",
                                       }}
                                     >
-                                      NA {/* {item.followings} */}
+                                     
+                                      {item.followingCount> 0 ? item.followingCount : 0}
                                     </h4>
                                     <p className="mb-0 text-muted text-truncate">
                                       Followings
@@ -767,7 +951,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
                                         <td>{item.Title}</td>
                                         <td>{item.ID}</td>
                                         <td>{item.EMail}</td>
-                                        
+
                                         <td>
                                           {item?.Department != null
                                             ? item?.Department
@@ -790,9 +974,8 @@ const CorporateDirectoryContext = ({ props }: any) => {
                             <nav className="pagination-container">
                               <ul className="pagination">
                                 <li
-                                  className={`page-item ${
-                                    currentPage === 1 ? "disabled" : ""
-                                  }`}
+                                  className={`page-item ${currentPage === 1 ? "disabled" : ""
+                                    }`}
                                 >
                                   <a
                                     className="page-link"
@@ -809,9 +992,8 @@ const CorporateDirectoryContext = ({ props }: any) => {
                                   (_, num) => (
                                     <li
                                       key={num}
-                                      className={`page-item ${
-                                        currentPage === num + 1 ? "active" : ""
-                                      }`}
+                                      className={`page-item ${currentPage === num + 1 ? "active" : ""
+                                        }`}
                                     >
                                       <a
                                         className="page-link"
@@ -825,9 +1007,8 @@ const CorporateDirectoryContext = ({ props }: any) => {
                                   )
                                 )}
                                 <li
-                                  className={`page-item ${
-                                    currentPage === totalPages ? "disabled" : ""
-                                  }`}
+                                  className={`page-item ${currentPage === totalPages ? "disabled" : ""
+                                    }`}
                                 >
                                   <a
                                     className="page-link"
