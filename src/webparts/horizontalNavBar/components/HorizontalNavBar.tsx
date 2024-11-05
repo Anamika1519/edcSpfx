@@ -12,12 +12,14 @@ import { useMediaQuery } from 'react-responsive';
 import { getCurrentUserName, getCurrentUserProfileEmail } from '../../../APISearvice/CustomService';
 import "../../../CustomCss/mainCustom.scss"
 
-const HorizontalNavbar = ({_context,siteUrl}: any) => {
-  const sp: SPFI = getSP();
+const HorizontalNavbar = ({ _context, siteUrl }: any) => {
+
+  console.log(siteUrl, 'siteUrl');
+
   const { useHide }: any = React.useContext(UserContext);
   const elementRef = React.useRef<HTMLDivElement>(null);
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(true);
-  const {  setHide }: any = React.useContext(UserContext);
+  const { setHide }: any = React.useContext(UserContext);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [settingArray, setSettingArray] = useState([]);
   const [commentText, setCommentText] = useState<string>('');
@@ -35,6 +37,8 @@ const HorizontalNavbar = ({_context,siteUrl}: any) => {
   const headerRef = useRef(null); // Reference to the header
   const [isSticky, setIsSticky] = useState(false);
   const scrollContainerRef = useRef(null);
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState([]);
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
@@ -52,12 +56,12 @@ const HorizontalNavbar = ({_context,siteUrl}: any) => {
 
   React.useEffect(() => {
     ApiCall();
- 
-      const scrollContainer = scrollContainerRef.current;
-      if (scrollContainer) {
-        scrollContainer.addEventListener("scroll", handleScroll);
-      }
-    
+
+    const scrollContainer = scrollContainerRef.current;
+    if (scrollContainer) {
+      scrollContainer.addEventListener("scroll", handleScroll);
+    }
+
     const showNavbar = (
       toggleId: string,
       navId: string,
@@ -88,7 +92,7 @@ const HorizontalNavbar = ({_context,siteUrl}: any) => {
         this.classList.add('active');
       }
     }
-   
+
 
     linkColor.forEach(l => l.addEventListener('click', colorLink));
     return () => {
@@ -115,7 +119,7 @@ const HorizontalNavbar = ({_context,siteUrl}: any) => {
   };
   // const imgLogo = require("../assets/useimg.png");
 
-  
+
   const ApiCall = async () => {
     setCurrentUser(await getCurrentUserName(_context))
     setCurrentUserEmail(await getCurrentUserProfileEmail(_context))
@@ -123,7 +127,76 @@ const HorizontalNavbar = ({_context,siteUrl}: any) => {
     // const settingsData = setSettingArray(await getSettingAPI(sp))
     // console.log(settingsData, 'settingsData');
   };
-  console.log(currentUser,siteUrl,'currentUser');
+  console.log(currentUser, siteUrl, 'currentUser');
+
+  const searchAllLists = async (query: string) => {
+    try {
+        const listFieldsMapping: { [key: string]: string } = {
+            "ARGAnnouncementAndNews": "Title",
+            "ARGBlogs": "Title",
+            "ARGDiscussionForum": "Topic",
+            "ARGGroupandTeam": "GroupName",
+            "ARGProject": "ProjectName",
+            "ARGSocialFeed": "ContentPost",
+            "ARGEventMaster": "EventName",
+            "ARGMediaGallery": "Title"
+        };
+
+        const lists = await _context.web.lists();
+        console.log("Lists retrieved:", lists);
+
+        // Log all the keys in listFieldsMapping for comparison
+        console.log("Field Mapping Keys:", Object.keys(listFieldsMapping));
+
+        let searchResults: any[] = [];
+
+        for (const list of lists) {
+            const listTitle = list.Title.trim(); // Normalize by trimming
+            console.log("Checking list title:", listTitle);
+
+            // Use the original case for matching
+            const fieldName = listFieldsMapping[listTitle];
+
+            // Log the resolved fieldName
+            if (fieldName) {
+                console.log(`Field name for "${listTitle}" is "${fieldName}"`);
+                const items = await _context.web.lists.getByTitle(listTitle).items
+                    .top(100)
+                    .select(fieldName)
+                    ();
+
+                // Perform client-side filtering
+                const filteredItems = items.filter((item: any) =>
+                    item[fieldName] && item[fieldName].toLowerCase().includes(query.toLowerCase())
+                );
+
+                searchResults = [...searchResults, ...filteredItems];
+            } 
+        }
+
+        console.log("Search results:", searchResults);
+        return searchResults;
+    } catch (error) {
+        console.error("Error searching lists:", error);
+        return [];
+    }
+};
+
+  const searchKeyPress = async (e: any) => {
+    debugger;
+    if (e.target.value !== "") {
+      e.preventDefault();
+      const searchResults = await searchAllLists(e.target.value);
+      console.log(searchResults),'searchResults';
+      
+      setResults(searchResults);
+    }
+
+  }
+  const handleSearch = async () => {
+    const searchResults = await searchAllLists(query);
+    setResults(searchResults);
+  };
   return (
     // <nav className="navbar container-fluid" style={{ zIndex: '99' }}>
     //   <div className="logo_item">
@@ -152,64 +225,82 @@ const HorizontalNavbar = ({_context,siteUrl}: any) => {
     //     <FontAwesomeIcon className='bx bx-user' icon={faGear} size='lg' />
     //   </div>
     // </nav>
-    <div  style={{ zIndex: '99' }} ref={headerRef}
-    className={isSticky ? "sticky " : "navbar"}
-    id="myHeader">
-    <div className='navcss' style={{marginLeft: `${!useHide ? '240px' : '80px'}`}} >
-      <div className="" onClick={() => handleSidebarToggle(useHide)}>
-        <div className={` ${useHide ? 'sidebar-closedBar' : 'sidebar-openBa'}`} onClick={() => handleSidebarToggle(useHide)}>
-          <div className="" onClick={() => handleSidebarToggle(useHide)}>
-            <Menu size={22} className='desktoView' />
-            <Menu size={80} className='searchcssmobile' />
-          </div>
-        </div>
-      </div>
-      <div className={`navbar_content ${useHide ? 'searchcssmobile sidebar-closedBar' : 'searchcssmobile sidebar-openBa'}`} onClick={() => handleSidebarToggle(useHide)}>
-        <div className="search_bar">
-          <input type="text" placeholder="Search.." className='searchcss desktoView' />
-        </div>
-        <div className="dropdown">
-          <Search className='searchcssmobile' size='80' onClick={toggleSearchDropdown} />
-          <div id="myDropdown" className={`dropdown-content ${issearchOpen ? 'show' : ''}`}>
-            <input type="text" placeholder="Search.." className='searchcss searchcssmobile' />
-          </div>
-        </div>
-        <Maximize className='bx bx-bell desktoView' size='22' onClick={toggleFullscreen} />
-        <Bell className='bx bx-bell desktoView' size='22' />
-        <Moon size='22' className={isDarkMode ? 'bx bx-moon desktoView' : 'bx bx-sun desktoView'} onClick={handleThemeToggle} />
-        <Bell className='bx bx-bell searchcssmobile' size='80' />
-        <div className="dropdown">
-          <div className='d-flex' onClick={toggleDropdown} style={{ gap: '2px', cursor: 'pointer' }}>
-            <div >
-              
-              <img  src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${currentUserEmail}`}
-                                  className="rounded-circlecss img-thumbnail desktoView 
-                                  avatar-xl"
-                                  alt="profile-image"
-                                  style={{ cursor: "pointer" }}  />
-                                   <img  src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${currentUserEmail}`}
-                                  className="rounded-circlecss img-thumbnail searchcssmobile 
-                                  avatar-xl"
-                                  alt="profile-image"
-                                  style={{ cursor: "pointer" }}  />
-             
-            </div>
-            <div className='dropcssUser desktoView'>
-              <div>{currentUser}</div>
-              <div><ChevronDown size={12} /></div>
+    <div style={{ zIndex: '99' }} ref={headerRef}
+      className={isSticky ? "sticky " : "navbar"}
+      id="myHeader">
+      <div className='navcss' style={{ marginLeft: `${!useHide ? '240px' : '80px'}` }} >
+        <div className="" onClick={() => handleSidebarToggle(useHide)}>
+          <div className={` ${useHide ? 'sidebar-closedBar' : 'sidebar-openBa'}`} onClick={() => handleSidebarToggle(useHide)}>
+            <div className="" onClick={() => handleSidebarToggle(useHide)}>
+              <Menu size={22} className='desktoView' />
+              <Menu size={80} className='searchcssmobile' />
             </div>
           </div>
-          <div id="myDropdown" className={`dropdown-content ${isOpen ? 'show' : ''}`}>
-            <a href="#home">Home</a>
-            <a href="#about">About</a>
-            <a href="#contact">Contact</a>
-          </div>
         </div>
-        <Settings className='bx bx-user desktoView' size='22' />
-        <Settings className='bx bx-user searchcssmobile' size='80' />
+        <div className={`navbar_content ${useHide ? 'searchcssmobile sidebar-closedBar' : 'searchcssmobile sidebar-openBa'}`} >
+          <div className="search_bar">
+
+            <input
+              type="text"
+              value={query} className='searchcss desktoView'
+              onChange={(e) => searchKeyPress(e)}
+              placeholder="Search..."
+            />
+          </div>
+          <div className="dropdown">
+            <Search className='searchcssmobile' size='80' onClick={toggleSearchDropdown} />
+
+            <div id="myDropdown" className={`dropdown-content ${issearchOpen ? 'show' : ''}`}>
+
+              <input
+                type="text"
+                value={query} className='searchcss searchcssmobile'
+                onChange={(e) => searchKeyPress(e)}
+                placeholder="Search..."
+              />
+              <ul>
+                {results.length>0&& results.map((item, index) => (
+                  <li key={index}>{item.Title}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+          <Maximize className='bx bx-bell desktoView' size='22' onClick={toggleFullscreen} />
+          <Bell className='bx bx-bell desktoView' size='22' />
+          <Moon size='22' className={isDarkMode ? 'bx bx-moon desktoView' : 'bx bx-sun desktoView'} onClick={handleThemeToggle} />
+          <Bell className='bx bx-bell searchcssmobile' size='80' />
+          <div className="dropdown">
+            <div className='d-flex' onClick={toggleDropdown} style={{ gap: '2px', cursor: 'pointer' }}>
+              <div >
+
+                <img src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${currentUserEmail}`}
+                  className="rounded-circlecss img-thumbnail desktoView 
+                                  avatar-xl"
+                  alt="profile-image"
+                  style={{ cursor: "pointer" }} />
+                <img src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${currentUserEmail}`}
+                  className="rounded-circlecss img-thumbnail searchcssmobile 
+                                  avatar-xl"
+                  alt="profile-image"
+                  style={{ cursor: "pointer" }} />
+
+              </div>
+              <div className='dropcssUser desktoView'>
+                <div>{currentUser}</div>
+                <div><ChevronDown size={12} /></div>
+              </div>
+            </div>
+            <div id="myDropdown" className={`dropdown-content ${isOpen ? 'show' : ''}`}>
+              <a href="#home">Home</a>
+              <a href="#about">About</a>
+              <a href="#contact">Contact</a>
+            </div>
+          </div>
+          <Settings className='bx bx-user desktoView' size='22' />
+          <Settings className='bx bx-user searchcssmobile' size='80' />
+        </div>
       </div>
     </div>
-  </div>
   );
 };
 

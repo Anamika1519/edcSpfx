@@ -337,6 +337,14 @@
           "manifest": "./src/webparts/dmsAdmin/DmsAdminWebPart.manifest.json"
         }
       ]
+    },
+    "notification-details-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/notificationDetails/NotificationDetailsWebPart.js",
+          "manifest": "./src/webparts/notificationDetails/NotificationDetailsWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {
@@ -392,6 +400,7 @@
     "MyApprovalWebPartStrings": "lib/webparts/myApproval/loc/{locale}.js",
     "BusinessAppsWebPartStrings": "lib/webparts/businessApps/loc/{locale}.js",
     "DmsWebPartStrings": "lib/webparts/dms/loc/{locale}.js",
-    "DmsAdminWebPartStrings": "lib/webparts/dmsAdmin/loc/{locale}.js"
+    "DmsAdminWebPartStrings": "lib/webparts/dmsAdmin/loc/{locale}.js",
+    "NotificationDetailsWebPartStrings": "lib/webparts/notificationDetails/loc/{locale}.js"
   }
 }
