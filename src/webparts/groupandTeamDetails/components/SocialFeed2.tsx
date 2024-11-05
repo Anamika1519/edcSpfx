@@ -118,14 +118,14 @@ useEffect(() => {
   getGroup()
 });
 const getGroup = async () => {
-  debugger
+  //debugger
  const ids = window.location.search;
  //  alert(ids)
  const originalString = ids;
  // alert(originalString)
  const idNum2 :any = originalString.substring(1);
  // alert(idNum2)
- const getgroup =   await sp.web.lists
+ const getgroup1 =   await sp.web.lists
  .getByTitle("ARGGroupandTeam")
  .items.getById(idNum2).select("*,InviteMemebers/Id,InviteMemebers/Title,InviteMemebers/EMail,GroupType").expand("InviteMemebers")()
  .then((res) => {
@@ -272,137 +272,7 @@ const getGroup = async () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 
-    e.preventDefault();
-
-    let ImagesIds: any[] = [];
-
-    setIsSubmitting(true);  // Start submitting
-
-    let newPostss: any
-
-    if (Contentpost.trim() || SocialFeedImagesJson.length) {
-
-      const newPost = {
-
-        Contentpost,
-
-        SocialFeedImagesJson,
-
-        Created: new Date().toLocaleTimeString(),
-
-        userName: currentUsername,
-
-        userAvatar: `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${currentEmail}`,
-
-        likecount: 0,
-
-        commentcount: 0,
-
-        shares: 0,
-
-      };
-
- 
-
-      ImagesIds = ImagesIds.concat(SocialFeedImagesJson.map((item: any) => item.ID));
-
-      setImageIds(ImagesIds)
-
-      try {
-
-        // Add the new post to SharePoint List
-
-        await sp.web.lists.getByTitle('ARGSocialFeed').items.add({
-
-          Contentpost: Contentpost,  // Use the Contentpost for the title (or a different field if necessary)
-
-          SocialFeedImagesJson: JSON.stringify(SocialFeedImagesJson),  // Store the images as JSON string
-
-          UserName: currentUsername,
-
-          userAvatar: `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${currentEmail}`,
-
-          likecount: 0,
-
-          commentcount: 0,
-
-          SocialFeedImagesId: ImageIds
-
- 
-
-          // Shares: 0
-
-        }).then((ele: any) => {
-
-          console.log(ele);
-
- 
-
-          newPostss = {
-
-            Contentpost,
-
-            SocialFeedImagesJson,
-
-            Created: new Date().toLocaleTimeString(),
-
-            userName: currentUsername,
-
-            userAvatar: `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${currentEmail}`,
-
-            likecount: 0,
-
-            commentcount: 0,
-
-            shares: 0,
-
-            Id: ele.data.Id
-
-          };
-
-          const updatedPosts = [newPostss, ...posts];
-
-          setPosts(updatedPosts);
-
-          // fetchPosts()
-
-          localStorage.setItem('posts', JSON.stringify(updatedPosts));
-
-        }
-
-        );
-
- 
-
-        // If the SharePoint request is successful, update the state and local storage
-
- 
-
-        // Clear fields
-
-        setContent('');
-
-        setImages([]);
-
-      } catch (error) {
-
-        console.log("Error adding post to SharePoint: ", error);
-
-        //alert("There was an error submitting your post. Please try again.");
-
-      } finally {
-
-        setIsSubmitting(false);  // End submitting
-
-      }
-
-    } else {
-
-      //alert("Please add some content or upload images before submitting.");
-
-      setIsSubmitting(false);
-
-    }
+    e.preventDefault();   
 
   };
 
@@ -410,7 +280,7 @@ const getGroup = async () => {
 
   const ShowPost = () => {
 
-    debugger
+    //debugger
 
     setHideCreatePost(false)
 
@@ -421,7 +291,7 @@ const getGroup = async () => {
 
   const CreatePostTab = () => {
 
-    debugger
+    //debugger
 
     setHideCreatePost(true)
 
@@ -658,7 +528,7 @@ const getGroup = async () => {
 
   const mergeAndRemoveDuplicates = (str: string, str1: string) => {
 
-    debugger;
+    //debugger;
 
     let url = str1;
 
