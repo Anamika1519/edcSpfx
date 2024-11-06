@@ -31,7 +31,11 @@ import {
   GetCategory,
   getChoiceFieldOption,
   getDiscussionComments,
+  getDiscussionFilter,
+  getDiscussionFilterAll,
   getDiscussionForum,
+  getDiscussionMe,
+  getDiscussionMeAll,
   updateItem,
 } from "../../../APISearvice/DiscussionForumService";
 import { encryptId } from "../../../APISearvice/CryptoService";
@@ -93,7 +97,7 @@ const DiscussionForumContext = ({ props }: any) => {
     overview: "",
     FeaturedAnnouncement: false,
   });
-
+  const [DiscussionData, setDiscussion] = useState([])
   const [CategoryData, setCategoryData] = React.useState([]);
   const [showModal, setShowModal] = React.useState(false);
   const [showDocTable, setShowDocTable] = React.useState(false);
@@ -104,6 +108,31 @@ const DiscussionForumContext = ({ props }: any) => {
   const [richTextValues, setRichTextValues] = React.useState<{
     [key: string]: string;
   }>({});
+  const [activeTab, setActiveTab] = useState("home1");
+  const handleTabClick = async (tab: React.SetStateAction<string>) => {
+    setActiveTab(tab);
+    if(tab=="profile11")
+    {
+      FilterDiscussionData("Today")
+    }
+    else if(tab=="profile1")
+    {
+      setAnnouncementData(await getDiscussionMeAll(sp))
+       
+    }
+    else
+    {
+      const announcementArr = await getDiscussionForum(sp);
+      let lengArr: any;
+      for (var i = 0; i < announcementArr.length; i++) {
+        lengArr = await getDiscussionComments(sp, announcementArr[i].ID)
+        console.log(lengArr, 'rrr');
+        announcementArr[i].commentsLength = lengArr.arrLength,
+          announcementArr[i].Users = lengArr.arrUser
+      }
+      setAnnouncementData(announcementArr)
+    }
+  };
 
   React.useEffect(() => {
 
@@ -132,7 +161,10 @@ const DiscussionForumContext = ({ props }: any) => {
       await getChoiceFieldOption(sp, "ARGDiscussionForum", "GroupType")
     );
   };
-
+  const FilterDiscussionData=async (optionFilter: string)=>
+    {
+      setAnnouncementData(await getDiscussionFilterAll(sp,optionFilter))
+    }
   const handleFilterChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     field: string
@@ -1582,6 +1614,65 @@ const DiscussionForumContext = ({ props }: any) => {
                 </div>
               </div>
             </div>
+            <div className="row mt-2">
+              <div className="col-12">
+                <div className="card mb-0">
+                  <div className="card-body">
+                    <div className="row justify-content-between">
+                      <div className="col-md-12">
+                        <div className="d-flex flex-wrap align-items-center justify-content-center">
+                          <ul
+                            className="nav nav-pills navtab-bg float-end"
+                            role="tablist"
+                          >
+                            <li className="nav-item" role="presentation">
+                              <a
+
+                                onClick={() => handleTabClick("home1")}
+                                className={`nav-link ${activeTab === "home1" ? "active" : ""
+                                  }`}
+                                aria-selected={activeTab === "home1"}
+                                role="tab"
+                              >
+                                All
+                              </a>
+                            </li>
+                            <li className="nav-item" role="presentation">
+                              <a
+
+                                onClick={() => handleTabClick("profile1")}
+                                className={`nav-link ${activeTab === "profile1" ? "active" : ""
+                                  }`}
+                                aria-selected={activeTab === "profile1"}
+                                role="tab"
+                                tabIndex={-1}
+                              >
+                                Latest
+                              </a>
+                            </li>
+                            <li className="nav-item" role="presentation">
+                              <a
+
+                                onClick={() => handleTabClick("profile11")}
+                                className={`nav-link ${activeTab === "profile11" ? "active" : ""
+                                  }`}
+                                aria-selected={activeTab === "profile11"}
+                                role="tab"
+                                tabIndex={-1}
+                              >
+                                Trending
+                              </a>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>{" "}
+                {/* end card */}
+              </div>{" "}
+              {/* end col */}
+            </div>
             <div className="card cardCss mt-4">
               <div className="card-body">
                 <div id="cardCollpase4" className="collapse show">
@@ -1751,7 +1842,7 @@ const DiscussionForumContext = ({ props }: any) => {
                                 }}>
                                 {startIndex + index + 1}
                               </td>
-                              <td style={{ minWidth: "180px", maxWidth: "180px" }}>{item.Topic}</td>
+                              <td style={{ minWidth: "180px", maxWidth: "180px",textTransform:'capitalize' }}>{item.Topic}</td>
                               <td style={{ minWidth: "150px", maxWidth: "150px" }}>{item.Overview}</td>
                               <td style={{ minWidth: "100px", maxWidth: "100px" }}>
                                 {item?.DiscussionForumCategory?.CategoryName}

@@ -52,7 +52,7 @@ interface Reply {
 
 }
 
- 
+
 
 interface Like {
 
@@ -70,7 +70,7 @@ interface Like {
 
 }
 
- 
+
 
 interface Comment {
 
@@ -85,6 +85,7 @@ interface Comment {
   Created: string;
 
   UserLikesJSON: Like[];
+  LikesCount: any;
 
   UserCommentsJSON: Reply[];
 
@@ -118,7 +119,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
   const [copySuccess, setCopySuccess] = useState('');
 
-  const [NewsId,setId]=useState(0)
+  const [NewsId, setId] = useState(0)
 
   const { useHide }: any = React.useContext(UserContext);
 
@@ -182,7 +183,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
       const headerpd = document.getElementById(headerId);
 
- 
+
 
       if (toggle && nav && bodypd && headerpd) {
 
@@ -204,11 +205,11 @@ const NewsdetailsContext = ({ props }: any) => {
 
     showNavbar("header-toggle", "nav-bar", "body-pd", "header");
 
- 
+
 
     const linkColor = document.querySelectorAll(".nav_link");
 
- 
+
 
     function colorLink(this: HTMLElement) {
 
@@ -222,7 +223,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
     }
 
- 
+
 
     linkColor.forEach((l) => l.addEventListener("click", colorLink));
 
@@ -242,7 +243,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
     // const queryString = decryptId(Number(updatedString));
 
- 
+
 
     setArrDetails(await getAnnouncementDetailsById(sp, Number(idNum)))
 
@@ -256,27 +257,27 @@ const NewsdetailsContext = ({ props }: any) => {
 
     //   console.log(arr, 'asssmmfmf');
 
- 
+
 
     //   setArrDetails(arr)
 
     // }
 
- 
+
 
   }
 
- 
+
 
   const ApICallData = async () => {
 
     debugger
 
-    setCurrentUser(await getCurrentUser(sp,siteUrl))
+    setCurrentUser(await getCurrentUser(sp, siteUrl))
 
-    setCurrentUserProfile(await getCurrentUserProfile(sp,siteUrl))
+    setCurrentUserProfile(await getCurrentUserProfile(sp, siteUrl))
 
- 
+
 
     let initialComments: any[] = []
 
@@ -287,55 +288,51 @@ const NewsdetailsContext = ({ props }: any) => {
     let arrLike = {}
     let likeArray: any[] = []
     const idNum = originalString.substring(1);
-    sp.web.lists.getByTitle("ARGAnnouncementandNewsComments").items.select("*,AnnouncementAndNews/Id").expand("AnnouncementAndNews").filter(`AnnouncementAndNewsId eq ${Number(idNum)}`).orderBy("Created",false)().then(async (result: any) => {
+    sp.web.lists.getByTitle("ARGAnnouncementandNewsComments").items.select("*,AnnouncementAndNews/Id").expand("AnnouncementAndNews").filter(`AnnouncementAndNewsId eq ${Number(idNum)}`).orderBy("Created", false)().then(async (result: any) => {
       console.log(result, 'ARGAnnouncementandNewsComments');
 
- 
+
 
       initialComments = result;
 
       for (var i = 0; i < initialComments.length; i++) {
-        await  sp.web.lists
-            .getByTitle("ARGAnnouncementandNewsUserLikes")
-            .items.filter(`AnnouncementAndNewsCommentsId eq ${Number(initialComments[i].Id)}`).select("ID,AuthorId,UserName,Like,Created")()
-            .then((result1: any) => {
-              console.log(result1, "ARGEventsUserLikes");
+        await sp.web.lists
+          .getByTitle("ARGAnnouncementandNewsUserLikes")
+          .items.filter(`AnnouncementAndNewsCommentsId eq ${Number(initialComments[i].Id)}`).select("ID,AuthorId,UserName,Like,Created")()
+          .then((result1: any) => {
+            console.log(result1, "ARGEventsUserLikes");
 
-              for (var j = 0; j < result1.length; j++) {
-                arrLike = {
-                  "ID": result1[j].Id,
-                  "AuthorId": result1[j].AuthorId,
-                  "UserName": result1[j].UserName,
-                  "Like": result1[j].Like,
-                  "Created": result1[j].Created
-                }
-                likeArray.push(arrLike)
+            for (var j = 0; j < result1.length; j++) {
+              arrLike = {
+                "ID": result1[j].Id,
+                "AuthorId": result1[j].AuthorId,
+                "UserName": result1[j].UserName,
+                "Like": result1[j].Like,
+                "Created": result1[j].Created
               }
-
-              let arr = {
-                Id: initialComments[i].Id,
-                UserName: initialComments[i].UserName,
-                AuthorId: initialComments[i].AuthorId,
-                Comments: initialComments[i].Comments,
-                Created: new Date(initialComments[i].Created).toLocaleString(), // Formatting the created date
-                UserLikesJSON: likeArray
-                   , // Default to empty array if null
-                UserCommentsJSON:
-                  initialComments[i].UserCommentsJSON != "" &&
-                    initialComments[i].UserCommentsJSON != null &&
-                    initialComments[i].UserCommentsJSON != undefined
-                    ? JSON.parse(initialComments[i].UserCommentsJSON)
-                    : [], // Default to empty array if null
-                userHasLiked: initialComments[i].userHasLiked,
-                UserProfile: initialComments[i].UserProfile
-              }
-              initialArray.push(arr);
-            })
-
-          
-        }
-      
-        setComments(initialArray)
+              likeArray.push(arrLike)
+            }
+            let arr = {
+              Id: initialComments[i].Id,
+              UserName: initialComments[i].UserName,
+              AuthorId: initialComments[i].AuthorId,
+              Comments: initialComments[i].Comments,
+              Created: new Date(initialComments[i].Created).toLocaleString(), // Formatting the created date
+              UserLikesJSON: likeArray
+              , // Default to empty array if null
+              UserCommentsJSON:
+                initialComments[i].UserCommentsJSON != "" &&
+                  initialComments[i].UserCommentsJSON != null &&
+                  initialComments[i].UserCommentsJSON != undefined
+                  ? JSON.parse(initialComments[i].UserCommentsJSON)
+                  : [], // Default to empty array if null
+              userHasLiked: initialComments[i].userHasLiked,
+              UserProfile: initialComments[i].UserProfile
+            }
+            initialArray.push(arr);
+          })
+      }
+      setComments(initialArray)
       // setComments(initialComments.map((res) => ({
 
       //   Id: res.Id,
@@ -360,7 +357,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
       // })))
 
- 
+
 
       // getUserProfilePicture(CurrentUser.Id,sp).then((url) => {
 
@@ -380,7 +377,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
   }
 
- 
+
 
   // Load comments from localStorage on component mount
 
@@ -396,7 +393,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
   // }, []);
 
- 
+
 
   // Save comments to localStorage whenever comments state changes
 
@@ -406,7 +403,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
   // }, [comments]);
 
- 
+
 
   // Add a new comment
 
@@ -418,7 +415,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
- 
+
 
     await sp.web.lists.getByTitle("ARGAnnouncementandNewsComments").items.add({
 
@@ -455,7 +452,7 @@ const NewsdetailsContext = ({ props }: any) => {
         UserLikesJSON: [],
 
         UserCommentsJSON: [],
-
+        LikesCount: 0,
         userHasLiked: false, // Initialize as false
 
         UserProfile: ress.data.UserProfile
@@ -470,153 +467,92 @@ const NewsdetailsContext = ({ props }: any) => {
 
     })
 
- 
+
 
     // setComments((prevComments) => [...prevComments, newCommentData]);
 
- 
+
 
   };
 
- 
+
 
   // Add a like to a comment
 
- 
+
 
   const handleLikeToggle = async (commentIndex: number) => {
+    try {
+      // Create a shallow copy of the comments array to maintain immutability
+      const updatedComments = [...comments];
+      const comment = updatedComments[commentIndex];
 
-    const updatedComments = [...comments];
+      // Find if the current user has already liked the specific comment
+      const userLikeIndex = comment.UserLikesJSON.findIndex(
+        (like: Like) => like.UserName === CurrentUser.Title
+      );
 
-    const comment = updatedComments[commentIndex];
+      if (userLikeIndex === -1) {
+        // User hasn't liked yet, proceed to add a like
+        const response = await sp.web.lists.getByTitle("ARGAnnouncementAndNewsUserLikes").items.add({
+          UserName: CurrentUser.Title,
+          Like: true,
+          AnnouncementAndNewsCommentsId: comment.Id,
+          userHasLiked: true
+        });
 
- 
-
-    // Check if the user has already liked the comment
-
-    const userLikeIndex = comment.UserLikesJSON.findIndex(
-
-      (like: Like) => like.UserName === CurrentUser.Title // Replace with actual username property
-
-    );
-
- 
-
-    if (userLikeIndex === -1) {
-
-      // User hasn't liked yet, proceed to add a like
-
-      await sp.web.lists.getByTitle("ARGAnnouncementAndNewsUserLikes").items.add({
-
-        UserName: CurrentUser.Title, // Replace with actual username
-
-        Like: true,
-
-        AnnouncementAndNewsCommentsId: comment.Id,
-
-        userHasLiked: true
-
-      }).then(async (ress: any) => {
-
-        console.log(ress, 'Added Like');
-
- 
-
-        // Add the new like to the comment's UserLikesJSON array
-
+        // Construct the new like object and add it to UserLikesJSON for the specific comment
         const newLikeJson: Like = {
-
-          ID: ress.data.Id,
-
-          AuthorId: ress.data.AuthorId,
-
-          UserName: ress.data.UserName, // Replace with actual username
-
+          ID: response.data.Id,
+          AuthorId: response.data.AuthorId,
+          UserName: response.data.UserName,
           like: "yes",
-
-          Created: ress.data.Created,
-
+          Created: response.data.Created,
           Count: comment.UserLikesJSON.length + 1
-
         };
 
- 
-
         updatedComments[commentIndex].UserLikesJSON.push(newLikeJson);
+        updatedComments[commentIndex].LikesCount = comment.UserLikesJSON.length; // Update only this comment's LikesCount
 
- 
-
-        // Update the corresponding SharePoint list
-
+        // Update the corresponding SharePoint list for only the specific comment
         await sp.web.lists.getByTitle("ARGAnnouncementandNewsComments").items.getById(comment.Id).update({
-
           UserLikesJSON: JSON.stringify(updatedComments[commentIndex].UserLikesJSON),
-
           userHasLiked: true,
-
-          LikesCount: comment.UserLikesJSON.length
-
-        }).then(() => {
-
-          console.log('Updated comment with new like');
-
-          comment.userHasLiked = true;
-
-          setComments(updatedComments);
-
+          LikesCount: updatedComments[commentIndex].LikesCount
         });
 
-      });
+        updatedComments[commentIndex].userHasLiked = true; // Set like status for this comment only
+        setComments(updatedComments);
 
-    } else {
+      } else {
+        // User already liked, proceed to unlike
+        const userLikeId = comment.UserLikesJSON[userLikeIndex].ID; // Get the ID of the user's like
 
-      // User already liked, proceed to unlike (remove like)
-
-      const userLikeId = comment.UserLikesJSON[userLikeIndex].ID; // Get the ID of the user's like
-
- 
-
-      await sp.web.lists.getByTitle("ARGAnnouncementAndNewsUserLikes").items.getById(userLikeId).delete().then(async () => {
-
-        console.log('Removed Like');
-
- 
+        // Remove the like from the SharePoint list for only the specific comment
+        await sp.web.lists.getByTitle("ARGAnnouncementAndNewsUserLikes").items.getById(userLikeId).delete();
 
         // Remove the like from the comment's UserLikesJSON array
-
         updatedComments[commentIndex].UserLikesJSON.splice(userLikeIndex, 1);
+        updatedComments[commentIndex].LikesCount = comment.UserLikesJSON.length; // Update only this comment's LikesCount
 
- 
-
-        // Update the corresponding SharePoint list
-
+        // Update the corresponding SharePoint list for only the specific comment
         await sp.web.lists.getByTitle("ARGAnnouncementandNewsComments").items.getById(comment.Id).update({
-
           UserLikesJSON: JSON.stringify(updatedComments[commentIndex].UserLikesJSON),
-
           userHasLiked: false,
-
-          LikesCount: comment.UserLikesJSON.length
-
-        }).then(() => {
-
-          console.log('Updated comment after removing like');
-
-          comment.userHasLiked = false;
-
-          setComments(updatedComments);
-
+          LikesCount: updatedComments[commentIndex].LikesCount
         });
 
-      });
-
+        updatedComments[commentIndex].userHasLiked = false; // Set like status for this comment only
+        setComments(updatedComments);
+      }
+    } catch (error) {
+      console.error("Error toggling like:", error);
+      // Optionally show an error message to the user
     }
-
   };
 
- 
 
- 
+
 
   // Add a reply to a comment
 
@@ -628,7 +564,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
     const updatedComments = [...comments];
 
- 
+
 
     const comment = updatedComments[commentIndex];
 
@@ -682,11 +618,11 @@ const NewsdetailsContext = ({ props }: any) => {
 
     })
 
- 
+
 
   };
 
-  const copyToClipboard = (Id:number) => {
+  const copyToClipboard = (Id: number) => {
 
     const link = `${siteUrl}/SitePages/NewsDetails.aspx?${Id}`;
 
@@ -708,19 +644,17 @@ const NewsdetailsContext = ({ props }: any) => {
 
   };
 
-  const sendanEmail =()=>
+  const sendanEmail = () => {
 
-    {
+    window.open("https://outlook.office.com/mail/inbox");
 
-        window.open("https://outlook.office.com/mail/inbox");
 
-   
 
-    }
+  }
 
   return (
 
- <div id="wrapper" ref={elementRef}>
+    <div id="wrapper" ref={elementRef}>
 
       <div
 
@@ -734,9 +668,9 @@ const NewsdetailsContext = ({ props }: any) => {
 
       <div className="content-page">
 
-          <HorizontalNavbar  _context={sp} siteUrl={siteUrl}/>
+        <HorizontalNavbar _context={sp} siteUrl={siteUrl} />
 
-        <div className="content" style={{marginLeft: `${!useHide ? '240px' : '80px'}`,marginTop:'1rem'}}>
+        <div className="content" style={{ marginLeft: `${!useHide ? '240px' : '80px'}`, marginTop: '1rem' }}>
 
           <div className="container-fluid  paddb">
 
@@ -766,9 +700,9 @@ const NewsdetailsContext = ({ props }: any) => {
 
                     <><div className="row mt-4">
 
- 
 
-                      <p  className="d-block mt-2 font-28">
+
+                      <p className="d-block mt-2 font-28">
 
                         {item.Title}
 
@@ -800,11 +734,11 @@ const NewsdetailsContext = ({ props }: any) => {
 
                             </span>
 
- 
+
 
                           </p>
 
-                           {/* {copySuccess && <p>{copySuccess}</p>} */}
+                          {/* {copySuccess && <p>{copySuccess}</p>} */}
 
                         </div>
 
@@ -814,7 +748,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
                       <div className="row">
 
- 
+
 
                         <p style={{ lineHeight: '22px' }} className="d-block text-muted mt-2 font-14">
 
@@ -828,7 +762,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
                         {
 
- 
+
 
                           AnnouncementAndNewsGallaryJSON.length > 0 ?
 
@@ -844,9 +778,11 @@ const NewsdetailsContext = ({ props }: any) => {
 
                                       <img src={`https://officeindia.sharepoint.com${res.fileUrl}`}
 
-                                      className="img-fluid imgcssscustom" alt="work-thumbnail" data-themekey="#" style={{ width: '100%', height: '100%' ,objectFit: 'cover',
+                                        className="img-fluid imgcssscustom" alt="work-thumbnail" data-themekey="#" style={{
+                                          width: '100%', height: '100%', objectFit: 'cover',
 
-                                        borderRadius: '15px' }} />
+                                          borderRadius: '15px'
+                                        }} />
 
                                     </a>
 
@@ -860,11 +796,11 @@ const NewsdetailsContext = ({ props }: any) => {
 
                             : <></>
 
- 
+
 
                         }
 
- 
+
 
                       </div><div className="row mt-2">
 
@@ -944,7 +880,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
                         >
 
- 
+
 
                           {loading ? 'Submitting...' : 'Add Comment'} {/* Change button text */}
 
@@ -956,25 +892,25 @@ const NewsdetailsContext = ({ props }: any) => {
 
                   </div>
 
- 
+
 
                 </div>
 
- 
+
 
               </div>
 
               <div className="row">
 
- 
+
 
                 {/* New comment input */}
 
- 
+
 
                 {comments.map((comment, index) => (
 
- 
+
 
                   <div className="col-xl-6 eventcommm">
 
@@ -1008,7 +944,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
                   </div>
 
- 
+
 
                 ))}
 
@@ -1020,7 +956,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
         </div>
 
- 
+
 
       </div>
 
@@ -1030,7 +966,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
 };
 
- 
+
 
 const NewsDetails: React.FC<INewsDetailsProps> = (props) => {
 

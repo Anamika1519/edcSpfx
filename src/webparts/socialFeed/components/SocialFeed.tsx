@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import HorizontalNavbar from '../../horizontalNavBar/components/HorizontalNavBar'
 import VerticalSideBar from '../../verticalSideBar/components/VerticalSideBar'
 import { ISocialFeedProps } from './ISocialFeedProps'
@@ -11,7 +11,7 @@ import "../../../CustomCss/mainCustom.scss";
 import "../../../Assets/Figtree/Figtree-VariableFont_wght.ttf";
 import "bootstrap/dist/css/bootstrap.min.css";
 import CustomBreadcrumb from '../../../CustomJSComponents/CustomBreadcrumb/CustomBreadcrumb'
-import { Link, Plus, PlusCircle, Rss, TrendingUp, User, UserPlus, Users } from 'react-feather'
+import { Link, MoreVertical, Plus, PlusCircle, Rss, TrendingUp, User, UserPlus, Users } from 'react-feather'
 import { addActivityLeaderboard, getCurrentUser, getCurrentUserName, getCurrentUserNameId, getCurrentUserProfileEmail, getFollow, getFollowing } from '../../../APISearvice/CustomService'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons"
@@ -21,7 +21,7 @@ import { PostComponent } from '../../../CustomJSComponents/SocialFeedPost/PostCo
 import { fetchBlogdatatop } from '../../../APISearvice/BlogService'
 import AvtarComponents from '../../../CustomJSComponents/AvtarComponents/AvtarComponents'
 import { fetchUserInformationList } from '../../../APISearvice/Dasborddetails'
-import { getDiscussion } from '../../../APISearvice/DiscussionForumService'
+import { getDiscussion, getDiscussionFilter } from '../../../APISearvice/DiscussionForumService'
 
 interface Post {
   text: string;
@@ -57,13 +57,13 @@ const SocialFeedContext = ({ props }: any) => {
 
   const [followerList, setFollowerList] = React.useState<any[]>([]); // List of users following the current user
   const [followingList, setFollowingList] = React.useState<any[]>([]); // List of users the current user is following
-
+  const [isMenuOpenshare, setIsMenuOpenshare] = useState(false);
   const [DiscussionData, setDiscussion] = useState([])
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [copySuccess, setCopySuccess] = useState('');
   const [activeMainTab, setActiveMainTab] = useState("feed");
 
-
+  const menuRef = useRef(null);
   useEffect(() => {
     // Load posts from localStorage when the component mounts
     // const storedPosts = JSON.parse(localStorage.getItem('posts') || '[]');
@@ -71,6 +71,17 @@ const SocialFeedContext = ({ props }: any) => {
 
     // setPosts(storedPosts);
     getAllAPI()
+    const handleClickOutside = (event: { target: any; }) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setIsMenuOpenshare(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
 
   }, [props]);
   const getAllAPI = async () => {
@@ -80,13 +91,18 @@ const SocialFeedContext = ({ props }: any) => {
     setCurrentUserName(await getCurrentUserName(sp))
     setblogdata(await fetchBlogdatatop(sp))
     setUsersArr(await fetchUserInformationList(sp))
-    setDiscussion(await getDiscussion(sp))
+
     fetchPosts();
     fetchFollowingList()
+    FilterDiscussionData("Today")
     // setFollowUsers(await getFollow(sp))
     // setFollowingUsers(await getFollowing(sp))
-  
 
+
+  }
+
+  const FilterDiscussionData = async (filterOption: string) => {
+    setDiscussion(await getDiscussionFilter(sp, filterOption))
   }
   // Function to get list of users following the current user
   const fetchFollowerList = async () => {
@@ -328,10 +344,10 @@ const SocialFeedContext = ({ props }: any) => {
           };
 
           const updatedPosts = [newPostss, ...posts];
-        
-              await addActivityLeaderboard(sp,"Post By User");
-           console.log(updatedPosts);
-           
+
+          await addActivityLeaderboard(sp, "Post By User");
+          console.log(updatedPosts);
+
           setPosts(updatedPosts);
 
           fetchPosts()
@@ -498,7 +514,7 @@ const SocialFeedContext = ({ props }: any) => {
                 userAvatar: ele.userAvatar,
                 likecount: 0,
                 commentcount: 0,
-                 comments: ele?.SocialFeedCommentsJson != null ? JSON.parse(ele?.SocialFeedCommentsJson) : [],
+                comments: ele?.SocialFeedCommentsJson != null ? JSON.parse(ele?.SocialFeedCommentsJson) : [],
                 Id: ele.Id,
                 SocialFeedUserLikesJson: ele?.SocialFeedUserLikesJson != null ? JSON.parse(ele?.SocialFeedUserLikesJson) : []
               };
@@ -507,10 +523,10 @@ const SocialFeedContext = ({ props }: any) => {
 
             )
             const updatedPosts = [newPost, ...posts];
-            console.log(updatedPosts,'updatedPosts');
-            
+            console.log(updatedPosts, 'updatedPosts');
+
             setPostsME(updatedPosts[0]);
-             console.log(updatedPosts);
+            console.log(updatedPosts);
           }
 
 
@@ -622,7 +638,7 @@ const SocialFeedContext = ({ props }: any) => {
 
   const mergeAndRemoveDuplicates = (str: string, str1: string) => {
 
-  
+
 
     let url = str1;
 
@@ -661,7 +677,13 @@ const SocialFeedContext = ({ props }: any) => {
     //}
 
   };
-
+  const gotoBlogsDetails = (valurArr: any) => {
+    localStorage.setItem("NewsId", valurArr.Id)
+    localStorage.setItem("NewsArr", JSON.stringify(valurArr))
+    setTimeout(() => {
+      window.location.href = `${siteUrl}/SitePages/BlogDetails.aspx?${valurArr.Id}`;
+    }, 1000);
+  }
   const GotoNextPageone = (item: any, pagename: string) => {
 
     console.log("item-->>>>", item)
@@ -671,7 +693,14 @@ const SocialFeedContext = ({ props }: any) => {
     window.location.href = `${siteUrl}/SitePages/${pagename}.aspx`;
 
   };
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const toggleMenu = (e: any) => {
 
+    e.preventDefault()
+
+    setIsMenuOpen(!isMenuOpen);
+
+  };
   const handleTabClick = (tab: React.SetStateAction<string>) => {
 
     setActiveMainTab(tab);
@@ -752,7 +781,7 @@ const SocialFeedContext = ({ props }: any) => {
 
       <div className="content-page">
 
-        <HorizontalNavbar _context={sp} siteUrl={siteUrl}/>
+        <HorizontalNavbar _context={sp} siteUrl={siteUrl} />
 
         <div className="content" style={{ marginLeft: `${!useHide ? '240px' : '80px'}`, marginTop: '1rem' }}>
 
@@ -860,16 +889,15 @@ const SocialFeedContext = ({ props }: any) => {
                   </div>
 
 
-
                   <div className='mt-3'>
-
+                    <h4>Blogs you Saved</h4>
                     {
 
                       blogdata.length > 0 ? blogdata.map((item: any) => {
 
                         return (
 
-                          <div className="row mt-1" style={{ gap: '0.5rem' }}><div className="col-md-1">
+                          <div className="row mt-1" style={{ gap: '0.5rem' }}><div className="col-md-1" onClick={() => gotoBlogsDetails(item)}>
 
                             <span> <AvtarComponents Name={item.Title} /> </span>
 
@@ -1577,9 +1605,9 @@ const SocialFeedContext = ({ props }: any) => {
 
 
 
-                    <h4 className="header-title font-16 text-dark fw-bold mb-0" style={{ fontSize: '20px' }}>
+                    <h4 className="header-title font-16 text-dark fw-bold mb-0" style={{ fontSize: '20px' }} >
 
-                      Trending Discussion
+                      <span onClick={toggleMenu}> Trending Discussion</span>
 
                       <a
 
@@ -1587,165 +1615,182 @@ const SocialFeedContext = ({ props }: any) => {
 
                         className="font-11 btn btn-primary  waves-effect waves-light view-all"
 
-                        onClick={(e) => GotoNextPageone(e, "DiscussionForum")}
+                        href={`${siteUrl}/SitePages/DiscussionForum.aspx`}
 
                       >
-
                         View All
-
                       </a>
+                      {/* <div className="menu-toggle" onClick={toggleMenu}>
+                        <MoreVertical size={20} />
+                      </div> */}
+                      {isMenuOpen && (
+                        <div className="dropdown-menucsspost">
+                          <div onClick={()=>FilterDiscussionData("Today")} style={{    
+                            fontSize: '0.7rem',
+                            padding: '0.2rem',
+                            color: 'gray'}}>Today</div>
+                          <div style={{    
+                            fontSize: '0.7rem',
+                            padding: '0.2rem',
+                            color: 'gray'}} onClick={()=>FilterDiscussionData("Yesterday")}>Yesterday</div>
+                          <div style={{    
+                            fontSize: '0.7rem',
+                            padding: '0.2rem',
+                            color: 'gray'}} onClick={()=>FilterDiscussionData("Last Week")}>Last Week</div>
+                          <div style={{    
+                            fontSize: '0.7rem',
+                            padding: '0.2rem',
+                            color: 'gray'}} onClick={()=>FilterDiscussionData("Last Month")}>Last Month</div>
+                        </div>
+                      )}
 
-                    </h4>
+                </h4>
 
-                    {
+                {
 
-                      DiscussionData.length > 0 ? DiscussionData.map(x => {
+                  DiscussionData.length > 0 ? DiscussionData.map(x => {
 
-                        return (
+                    return (
 
-                          <div style={{ margin: '15px 0px 10px 0px', padding: '0px 0px 10px 0px' }} className="d-flex align-items-start border-bottom ng-scope">
+                      <div style={{ margin: '15px 0px 10px 0px', padding: '0px 0px 10px 0px' }} className="d-flex align-items-start border-bottom ng-scope">
 
 
 
-                            <TrendingUp size={18} style={{ marginTop: '5px' }} color='#1faee3' /> &nbsp;
+                        <TrendingUp size={18} style={{ marginTop: '5px' }} color='#1faee3' /> &nbsp;
 
-                            <div className="w-100" style={{ fontWeight: '100' }}>
+                        <div className="w-100" style={{ fontWeight: '100' }}>
 
-                              <a className="font-14" style={{ fontSize: '14px' }}>
+                          <a className="font-14" style={{ fontSize: '14px' }}>
 
-                                <strong className="text-dark" style={{ fontWeight: '700' }}>{x?.DiscussionForumCategory?.CategoryName}:</strong> &nbsp;
+                            <strong className="text-dark" style={{ fontWeight: '700' }}>{x?.DiscussionForumCategory?.CategoryName}:</strong> &nbsp;
 
-                                <span className="text-muted" style={{ color: '#6b6b6b' }}>
+                            <span className="text-muted" style={{ color: '#6b6b6b' }}>
 
-                                  {x.Topic}
+                              {x.Topic}
 
-                                </span>
+                            </span>
 
-                              </a>
+                          </a>
 
 
-
-                            </div>
-
-                          </div>
-
-                        )
-
-                      }
-
-                      ) : null
-
-                    }
-
-                  </div>
-
-                </div>
-
-
-
-                <div className="card mobile-6" style={{ borderRadius: "1rem" }}>
-
-                  <div className="card-body pb-3 gheight">
-
-                    <h4 className="header-title font-16 text-dark fw-bold mb-0" style={{ fontSize: '20px' }}>
-
-                      People you Follow
-
-                      <a
-
-                        style={{ float: "right" }}
-
-                        className="font-11 view-all  btn btn-primary  waves-effect waves-light"
-
-                        onClick={(e) => GotoNextPageone(e, 'CorporateDirectory')}
-
-                      >
-
-                        View All
-
-                      </a>
-
-                    </h4>
-
-                    <div className="inbox-widget mt-4">
-
-                      {followingList.map((user: any, index: 0) => (
-
-                        <div
-
-                          key={index}
-
-                          className="d-flex border-bottom heit8 align-items-start w-100 justify-content-between mb-3"
-
-                        >
-
-                          <div className="col-sm-2 ">
-
-                            <a>
-
-                              <img
-
-                                src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${user.EMail}`}
-
-                                className="rounded-circle"
-
-                                width="50"
-
-                                alt={user.Title}
-
-                              />
-
-                            </a>
-
-                          </div>
-
-                          <div className="col-sm-8">
-
-                            <a>
-
-                              <p className="fw-bold font-14 mb-0 text-dark namcss" style={{ fontSize: '14px' }}>
-
-                                {user.Title}| {user.Department != null ? user.Department : 'NA'}
-
-                              </p>
-
-                            </a>
-
-                            <p
-
-                              style={{
-
-                                color: "#6b6b6b",
-
-                                fontWeight: "500", fontSize: '14px'
-
-                              }}
-
-                              className="font-12 namcss"
-
-                            >
-
-                              NA
-
-                              {/* Mob: {user.mobile} */}
-
-                            </p>
-
-                          </div>
-
-                          <div className="col-sm-2 txtr">
-
-                            <PlusCircle size={20} color='#008751' />
-
-                          </div>
 
                         </div>
 
-                      ))}
+                      </div>
+
+                    )
+
+                  }
+
+                  ) : null
+
+                }
+
+              </div>
+
+            </div>
+
+
+
+            <div className="card mobile-6" style={{ borderRadius: "1rem" }}>
+
+              <div className="card-body pb-3 gheight">
+
+                <h4 className="header-title font-16 text-dark fw-bold mb-0" style={{ fontSize: '20px' }}>
+
+                  People you Follow
+
+                  <a
+
+                    style={{ float: "right" }}
+
+                    className="font-11 view-all  btn btn-primary  waves-effect waves-light"
+
+                    onClick={(e) => GotoNextPageone(e, 'CorporateDirectory')}
+
+                  >
+
+                    View All
+
+                  </a>
+
+                </h4>
+
+                <div className="inbox-widget mt-4">
+
+                  {followerList.length > 0 && followerList.map((user: any, index: 0) => (
+
+                    <div
+
+                      key={index}
+
+                      className="d-flex border-bottom heit8 align-items-start w-100 justify-content-between mb-3"
+
+                    >
+
+                      <div className="col-sm-2 ">
+
+                        <a>
+
+                          <img
+
+                            src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${user.EMail}`}
+
+                            className="rounded-circle"
+
+                            width="50"
+
+                            alt={user.Title}
+
+                          />
+
+                        </a>
+
+                      </div>
+
+                      <div className="col-sm-8">
+
+                        <a>
+
+                          <p className="fw-bold font-14 mb-0 text-dark namcss" style={{ fontSize: '14px' }}>
+
+                            {user.Title}| {user.Department != null ? user.Department : 'NA'}
+
+                          </p>
+
+                        </a>
+
+                        <p
+
+                          style={{
+
+                            color: "#6b6b6b",
+
+                            fontWeight: "500", fontSize: '14px'
+
+                          }}
+
+                          className="font-12 namcss"
+
+                        >
+
+                          NA
+
+                          {/* Mob: {user.mobile} */}
+
+                        </p>
+
+                      </div>
+
+                      <div className="col-sm-2 txtr">
+
+                        <PlusCircle size={20} color='#008751' />
+
+                      </div>
 
                     </div>
 
-                  </div>
+                  ))}
 
                 </div>
 
@@ -1758,6 +1803,10 @@ const SocialFeedContext = ({ props }: any) => {
         </div>
 
       </div>
+
+    </div>
+
+      </div >
 
     </div >
 

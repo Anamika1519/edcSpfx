@@ -17,6 +17,7 @@ const CustomWebpartTemplate = ({ _sp, SiteUrl }) => {
     const [AnnouncementData, setAnnouncement] = useState([])
     const [showDropdownId, setShowDropdownId] = React.useState(null);
     const [currentEmail, setEmail] = React.useState('');
+    const [isMenuOpenshare, setIsMenuOpenshare] = useState(false);
     const menuRef = useRef(null);
     useEffect(() => {
         ApIcall()

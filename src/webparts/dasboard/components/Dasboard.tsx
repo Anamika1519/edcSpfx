@@ -29,6 +29,7 @@
   import { MessageSquare, ThumbsUp } from "react-feather";
   import moment from "moment";
 import { addActivityLeaderboard } from "../../../APISearvice/CustomService";
+import { fetchprojectdataTop } from "../../../APISearvice/ProjectsService";
 
   const HelloWorldContext = ({ props }: any) => {
     const sp: SPFI = getSP();
@@ -41,6 +42,7 @@ import { addActivityLeaderboard } from "../../../APISearvice/CustomService";
     const [isSidebarOpen, setIsSidebarOpen] = React.useState(true);
     const { setHide }: any = context;
     const [isDarkMode, setIsDarkMode] = React.useState(false);
+    const [showDropdownId, setShowDropdownId] = React.useState(null);
     React.useEffect(() => {
       console.log("This function is called only once", useHide);
 
@@ -152,7 +154,13 @@ import { addActivityLeaderboard } from "../../../APISearvice/CustomService";
       setActiveTab(tabId);
     };
 
-
+    const toggleDropdown = (itemId: any) => {
+      if (showDropdownId === itemId) {
+        setShowDropdownId(null); // Close the dropdown if already open
+      } else {
+        setShowDropdownId(itemId); // Open the dropdown for the clicked item
+      }
+    };
     const headerRef = useRef(null); // Reference to the header
     const [isSticky, setIsSticky] = useState(false);
     const _sp: SPFI = getSP();
@@ -221,65 +229,10 @@ import { addActivityLeaderboard } from "../../../APISearvice/CustomService";
       setDataofEvent(eventdata);
 
       setUsersArr(await fetchUserInformationList(sp))
+      setProjects(await fetchprojectdataTop(sp))
     };
 
-    const [projects, setProjects] = useState([
-      {
-        id: 1,
-        title: "Project 1",
-        status: "Finished",
-        documents: 1,
-        comments: 0,
-        team: [
-          {
-            name: "Mat Helme",
-            image: require("../../../Assets/ExtraImage/userimg.png"),
-          },
-          {
-            name: "Michael Zenaty",
-            image: require("../../../Assets/ExtraImage/userimg.png"),
-          },
-          {
-            name: "James Anderson",
-            image: require("../../../Assets/ExtraImage/userimg.png"),
-          },
-        ],
-      },
-      {
-        id: 2,
-        title: "Project 2",
-        status: "Ongoing",
-        documents: 1,
-        comments: 0,
-        team: [
-          {
-            name: "Mat Helme",
-            image: require("../../../Assets/ExtraImage/userimg.png"),
-          },
-          {
-            name: "Michael Zenaty",
-            image: require("../../../Assets/ExtraImage/userimg.png"),
-          },
-        ],
-      },
-      {
-        id: 3,
-        title: "Project 3",
-        status: "Ongoing",
-        documents: 1,
-        comments: 0,
-        team: [
-          {
-            name: "Mat Helme",
-            image: require("../../../Assets/ExtraImage/userimg.png"),
-          },
-          {
-            name: "Michael Zenaty",
-            image: require("../../../Assets/ExtraImage/userimg.png"),
-          },
-        ],
-      },
-    ]);
+    const [projects, setProjects] = useState([]);
 
     const siteUrl = props.siteUrl;
   
@@ -290,7 +243,13 @@ import { addActivityLeaderboard } from "../../../APISearvice/CustomService";
 
       }
   };
-
+  const GotoNextPageProject = (item: any) => {
+    console.log("item-->>>>", item);
+    const encryptedId = encryptId(String(item.ID));
+    // sessionStorage.setItem("mediaId", encryptedId);
+    // sessionStorage.setItem("dataID", item.Id)
+    window.location.href = `${siteUrl}/SitePages/ProjectDetails.aspx?${item.ID}`;
+  };
     const GotoNextPage = (item: any) => {
       console.log("item-->>>>", item)
       const encryptedId = encryptId(String(item.ID));
@@ -318,6 +277,7 @@ import { addActivityLeaderboard } from "../../../APISearvice/CustomService";
       const encryptedId = encryptId(String(item.ID));
       window.location.href = `${siteUrl}/SitePages/Announcements.aspx`;
     };
+    
 
     return (
 
@@ -538,7 +498,7 @@ import { addActivityLeaderboard } from "../../../APISearvice/CustomService";
                             <a
                               style={{ float: "right" }}
                               className="font-11 view-all fw-normal btn  rounded-pill waves-effect waves-light"
-                              href="#"
+                               
                             >
                               View All
                             </a>
@@ -945,7 +905,7 @@ import { addActivityLeaderboard } from "../../../APISearvice/CustomService";
                       <h4 className="header-title font-16 text-dark fw-bold mb-0">
                         Projects
                         <a
-                          href="/projects"
+                          href={`${siteUrl}/SitePages/Project.aspx`}
                           className="font-11 view-all fw-normal btn rounded-pill waves-effect waves-light"
                           style={{ float: "right" }}
                         >
@@ -953,52 +913,40 @@ import { addActivityLeaderboard } from "../../../APISearvice/CustomService";
                         </a>
                       </h4>
                       <div className="row mt-2">
-                        {projects.map((project) => (
-                          <div className="col-lg-4" key={project.id}>
+                        {projects.map((project,index) => (
+                          <div className="col-lg-4" key={project.Id}>
                             <div className="card project-box">
                               <div className="card-body">
                                 <div className="dropdown float-end">
                                   <a
-                                    href="#"
+                                     
                                     className="dropdown-toggle card-drop arrow-none"
                                     data-bs-toggle="dropdown"
                                   >
                                     <i className="fe-more-horizontal- m-0 text-muted h3"></i>
                                   </a>
                                   <div className="dropdown-menu dropdown-menu-end">
-                                    <a className="dropdown-item" href="#">
-                                      Delete
-                                    </a>
-                                    <a className="dropdown-item" href="#">
+                                    <a className="dropdown-item"  onClick={() => GotoNextPageProject(project)} >
                                       View Detail
                                     </a>
                                   </div>
                                 </div>
                                 <h4 className="mt-0 mb-1">
                                   <a
-                                    href="#"
+                                     style={{textTransform:'capitalize'}}
                                     className="text-dark fw-bold font-16"
                                   >
-                                    {project.title}
+                                    {project.ProjectName}
                                   </a>
                                 </h4>
-                                <div
-                                  className={
-                                    project.status === "Finished"
-                                      ? "finish mb-2"
-                                      : "ongoing mb-2"
-                                  }
-                                >
-                                  {project.status}
-                                </div>
                                 <p
                                   className="date-color font-12 mb-3"
                                   style={{ color: "#98a6ad" }}
                                 >
-                                  Some description...{" "}
-                                  <a href="#" className="fw-bold text-muted">
+                                 {project.ProjectOverview} 
+                                  {/* <a   className="fw-bold text-muted">
                                     view more
-                                  </a>
+                                  </a> */}
                                 </p>
                                 <p className="mb-1 font-12">
                                   <span
@@ -1006,30 +954,87 @@ import { addActivityLeaderboard } from "../../../APISearvice/CustomService";
                                     className="pe-2 text-nowrap"
                                   >
                                     <i className="fe-file-text text-muted"></i>
-                                    <b>{project.documents}</b> Documents
+                                    <b>{project?.ProjectsDocsId?.length}</b> Documents
                                   </span>
-                                  <span
-                                    style={{ color: "#6e767e" }}
-                                    className="text-nowrap"
-                                  >
-                                    <i className="fe-message-square text-muted"></i>
-                                    <b>{project.comments}</b> Comments
-                                  </span>
+                                 
                                 </p>
                                 <div className="avatar-group mb-2">
-                                  {project.team.map((member, index) => (
-                                    <a
-                                      href="#"
-                                      key={index}
-                                      className="avatar-group-item"
+                                <div
+                                    style={{
+                                      minWidth: "70px",
+                                      maxWidth: "100%"
+                                    }}
+                                  >
+                                    <div style={{display:'flex'}}>
+                                      {project?.TeamMembers?.length>0&&project?.TeamMembers?.map(
+                                        (id: any, idx: any) => {
+                                          if (idx < 3) {
+                                            return (
+                                              <img
+                                                style={{
+                                                  margin:
+                                                    index == 0
+                                                      ? "0 0 0 0"
+                                                      : "0 0 0px -12px",
+                                                }}
+                                                src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+                                                className="rounded-circlecss img-thumbnail avatar-xl"
+                                                alt="profile-image"
+                                              />
+                                            );
+                                          }
+                                        }
+                                      )}
+                                      {
+                                        project?.TeamMembers?.length > 3 &&
+
+                                        <div
+                                          className=""
+                                          onClick={() =>
+                                            toggleDropdown(project.Id)
+                                          }
+                                          key={project.Id}
+                                        >
+
+                                          <div
+                                            style={{
+                                              margin:
+                                                index == 0
+                                                  ? "0 0 0 0"
+                                                  : "0 0 0px -12px",
+                                            }}
+                                            className="rounded-circlecss img-thumbnail avatar-xl"
+                                          >
+                                            +
+                                          </div>
+                                        </div>
+                                      }
+                                    </div>
+                                    <div
+                                      className=""
+                                      style={{ position: "relative" }}
                                     >
-                                      <img
-                                        src={member.image}
-                                        className="rounded-circle avatar-sm"
-                                        alt={member.name}
-                                      />
-                                    </a>
-                                  ))}
+                                      {showDropdownId === project.Id && (
+                                       project?.TeamMembers?.length>0 && project?.TeamMembers?.map(
+                                          (id: any, idx: any) => {
+                                            return (
+                                              <img
+                                                style={{
+                                                  margin:
+                                                    idx == 0
+                                                      ? "0 0 0 0"
+                                                      : "0 0 0px -12px",
+                                                }}
+                                                src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+                                                className="rounded-circlecss img-thumbnail avatar-xl"
+                                                alt="profile-image"
+                                              />
+                                            );
+                                          }
+                                        )
+                                      )}
+                                    </div>
+                                  </div>
                                 </div>
                               </div>
                             </div>

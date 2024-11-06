@@ -16,6 +16,7 @@ const CustomNewsWebpartTemplate = ({ _sp, SiteUrl }) => {
     const [NewsData, setNews] = useState([])
     const [showDropdownId, setShowDropdownId] = useState(null);
     const [currentEmail, setEmail] = useState('');
+    const [isMenuOpenshare, setIsMenuOpenshare] = useState(false);
     const menuRef = useRef(null);
     useEffect(() => {
         ApIcall()

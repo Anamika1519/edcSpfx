@@ -231,7 +231,7 @@ export const getProjectDetailsById = async (_sp, idNum) => {
   let arr = []
   let arr1 = []
  
-  await _sp.web.lists.getByTitle("ARGProject").items.getById(idNum)()
+  await _sp.web.lists.getByTitle("ARGProject").items.getById(idNum).select("*,TeamMembers/Id,TeamMembers/EMail,TeamMembers/Title").expand("TeamMembers")()
   
     .then((res) => {
       console.log("check the data for project id--->>",res)

@@ -9,11 +9,36 @@ import { SPFI } from '@pnp/sp';
 import { getSP } from '../loc/pnpjsConfig';
 import { useRef, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
-import { getCurrentUserName, getCurrentUserProfileEmail } from '../../../APISearvice/CustomService';
+import { addActivityLeaderboard, getCurrentUserName, getCurrentUserProfileEmail } from '../../../APISearvice/CustomService';
 import "../../../CustomCss/mainCustom.scss"
+interface ListFieldsMapping {
+  ARGAnnouncementAndNews: string;
+  ARGBlogs: string;
+  ARGDiscussionForum: string;
+  ARGGroupandTeam: string;
+  ARGProject: string;
+  ARGSocialFeed: string;
+  ARGEventMaster: string;
+  ARGMediaGallery: string;
+}
 
+type ListTitle = keyof ListFieldsMapping;
+
+interface SearchResult {
+  ListTitle: ListTitle;
+  [key: string]: any;
+}
 const HorizontalNavbar = ({ _context, siteUrl }: any) => {
-
+  const listFieldsMapping:  { [key: string]: { fields: string[], pageName: string } }= {
+    ARGAnnouncementAndNews: { fields: ["Title", "Overview", "Description","Id","AnnouncementandNewsTypeMaster/Id", "AnnouncementandNewsTypeMaster/TypeMaster"], pageName: "AnnouncementDetails" },
+    ARGBlogs: { fields: ["Title", "Overview", "Description","Id"], pageName: "BlogDetails" },
+    ARGDiscussionForum: { fields: ["Topic", "Overview", "Description","Id"], pageName: "DiscussionForumDetail" },
+    ARGGroupandTeam: { fields: ["GroupName", "Overview","Id"], pageName: "GroupandTeamDetails" },
+    ARGProject: { fields: ["ProjectName", "ProjectOverview","Id"], pageName: "ProjectDetails" },
+    ARGSocialFeed: { fields: ["Contentpost","Id"], pageName: "SocialFeed" },
+    ARGEventMaster: { fields: ["EventName", "Overview", "EventAgenda","Id"], pageName: "EventDetailsCalendar" },
+    ARGMediaGallery: { fields: ["Title","Id"], pageName: "Mediadetails" }
+  };
   console.log(siteUrl, 'siteUrl');
 
   const { useHide }: any = React.useContext(UserContext);
@@ -29,7 +54,7 @@ const HorizontalNavbar = ({ _context, siteUrl }: any) => {
   const [isOpen, setIsOpen] = React.useState(false);
   const [currentUser, setCurrentUser] = React.useState("")
   const [currentUserEmail, setCurrentUserEmail] = React.useState("")
-
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   // Helper function to generate unique IDs
   const generateId = () => Math.floor(Math.random() * 100000);
   const [issearchOpen, setIsSearchOpen] = React.useState(false);
@@ -129,74 +154,226 @@ const HorizontalNavbar = ({ _context, siteUrl }: any) => {
   };
   console.log(currentUser, siteUrl, 'currentUser');
 
-  const searchAllLists = async (query: string) => {
+  //   const searchAllLists = async (query: string) => {
+
+  //         const listFieldsMapping: { [key: string]: string } = {
+  //             "ARGAnnouncementAndNews": "Title",
+  //             "ARGBlogs": "Title",
+  //             "ARGDiscussionForum": "Topic",
+  //             "ARGGroupandTeam": "GroupName",
+  //             "ARGProject": "ProjectName",
+  //             "ARGSocialFeed": "Contentpost",
+  //             "ARGEventMaster": "EventName",
+  //             "ARGMediaGallery": "Title"
+  //         };
+
+  //         const lists = await _context.web.lists();
+  //         console.log("Lists retrieved:", lists);
+
+  //         // Log all the keys in listFieldsMapping for comparison
+  //         console.log("Field Mapping Keys:", Object.keys(listFieldsMapping));
+
+  //         let searchResults: any[] = [];
+
+  //         for (const list of lists) {
+  //             const listTitle = list.Title.trim(); // Normalize by trimming
+  //             console.log("Checking list title:", listTitle);
+
+  //             // Use the original case for matching
+  //             const fieldName = listFieldsMapping[listTitle];
+
+  //             // Log the resolved fieldName
+  //             if (fieldName) {
+  //                 console.log(`Field name for "${listTitle}" is "${fieldName}"`);
+  //                 const items = await _context.web.lists.getByTitle(listTitle).items
+  //                     .top(100)
+  //                     ();
+
+  //                 // Perform client-side filtering
+  //                 const filteredItems = items.filter((item: any) =>
+  //                     item[fieldName] && item[fieldName].toLowerCase().includes(query.toLowerCase())
+  //                 );
+
+  //                if(filteredItems.length>0)
+  //                {
+  //                 filteredItems[fieldName] = filteredItems[0].item[fieldName]
+
+  //                }
+
+  //                 console.log("filteredItems results:", filteredItems);
+  //                 debugger
+  //               //  searchResults.push(filteredItems)
+
+  //                 searchResults = [...searchResults, ...filteredItems];
+  //                console.log("Search results:", searchResults);
+
+  //             } 
+  //         }
+
+  //         console.log("Search results:", searchResults);
+
+  //         return searchResults;
+
+  // };
+
+
+  // const searchAllLists = async (query: string): Promise<any[]> => {
+  //   try {
+  //     const lists = await _context.web.lists();
+  //     let results: any[] = [];
+
+  //     for (const list of lists) {
+  //       const listTitle = list.Title.trim();
+  //       const fieldNames = listFieldsMapping[listTitle];
+
+  //       if (fieldNames) {
+  //         // Select multiple fields for the current list
+  //         const items = await _context.web.lists.getByTitle(listTitle).items
+  //           .top(100)
+  //           .select(...fieldNames)(); // Use spread syntax to select multiple fields
+
+  //         // Perform client-side filtering
+  //         const filteredItems = items.filter((item: any) =>
+  //           fieldNames.some(field => item[field] && item[field].toLowerCase().includes(query.toLowerCase()))
+  //         );
+
+  //         // Add ListTitle property for display purposes
+  //         filteredItems.forEach((item: any) => {
+  //           item.ListTitle = listTitle;
+            
+  //         });
+
+  //         results = [...results, ...filteredItems];
+  //       }
+  //     }
+
+  //     return results;
+  //   } catch (error) {
+  //     console.error("Error searching lists:", error);
+  //     return [];
+  //   }
+  // };
+  // const searchAllLists = async (query: string): Promise<any[]> => {
+  //   try {
+  //     const lists = await _context.web.lists();
+  //     let results: any[] = [];
+  
+  //     for (const list of lists) {
+  //       const listTitle = list.Title.trim();
+  //       const listMapping = listFieldsMapping[listTitle];
+  
+  //       if (listMapping) {
+  //         const { fields, pageName } = listMapping;
+          
+  //         const items = await _context.web.lists.getByTitle(listTitle).items
+  //           .top(100)
+  //           .select(...fields)();
+  //           console.log(items,'itemsitemsitems');
+            
+  //         // const filteredItems = items.filter((item: any) =>
+  //         //   fields.some(field => item[field] && item[field].toLowerCase().includes(query.toLowerCase()))
+  //         // );
+  //         const filteredItems = items.filter((item: any) =>
+  //           fields.some((field: string | number) => 
+  //             typeof item[field] === 'string' && item[field].toLowerCase().includes(query.toLowerCase())
+  //           )
+  //         );
+  //         filteredItems.forEach((item: any) => {
+  //           item.ListTitle = listTitle;
+  //           item.PageName = pageName; // Set the PageName for each item
+  //         });
+  
+  //         results = [...results, ...filteredItems];
+  //       }
+  //     }
+  
+  //     return results;
+  //   } catch (error) {
+  //     console.error("Error searching lists:", error);
+  //     return [];
+  //   }
+  // };
+
+  const searchAllLists = async (query: string): Promise<any[]> => {
     try {
-        const listFieldsMapping: { [key: string]: string } = {
-            "ARGAnnouncementAndNews": "Title",
-            "ARGBlogs": "Title",
-            "ARGDiscussionForum": "Topic",
-            "ARGGroupandTeam": "GroupName",
-            "ARGProject": "ProjectName",
-            "ARGSocialFeed": "ContentPost",
-            "ARGEventMaster": "EventName",
-            "ARGMediaGallery": "Title"
-        };
-
-        const lists = await _context.web.lists();
-        console.log("Lists retrieved:", lists);
-
-        // Log all the keys in listFieldsMapping for comparison
-        console.log("Field Mapping Keys:", Object.keys(listFieldsMapping));
-
-        let searchResults: any[] = [];
-
-        for (const list of lists) {
-            const listTitle = list.Title.trim(); // Normalize by trimming
-            console.log("Checking list title:", listTitle);
-
-            // Use the original case for matching
-            const fieldName = listFieldsMapping[listTitle];
-
-            // Log the resolved fieldName
-            if (fieldName) {
-                console.log(`Field name for "${listTitle}" is "${fieldName}"`);
-                const items = await _context.web.lists.getByTitle(listTitle).items
-                    .top(100)
-                    .select(fieldName)
-                    ();
-
-                // Perform client-side filtering
-                const filteredItems = items.filter((item: any) =>
-                    item[fieldName] && item[fieldName].toLowerCase().includes(query.toLowerCase())
-                );
-
-                searchResults = [...searchResults, ...filteredItems];
-            } 
+      const lists = await _context.web.lists();
+      let results: any[] = [];
+  
+      for (const list of lists) {
+        const listTitle = list.Title.trim();
+        const listMapping = listFieldsMapping[listTitle];
+  
+        if (listMapping) {
+          const { fields, pageName } = listMapping;
+  
+          // Start building the query
+          let queryBuilder = _context.web.lists.getByTitle(listTitle).items.top(100).select(...fields);
+  
+          // Conditionally expand for the specific list
+          if (listTitle === "ARGAnnouncementAndNews") {
+            queryBuilder = queryBuilder.expand("AnnouncementandNewsTypeMaster");
+          }
+  
+          // Execute the query
+          const items = await queryBuilder();
+  
+          // Filter items based on the search query
+          const filteredItems = items.filter((item: any) =>
+            fields.some(field => 
+              typeof item[field] === 'string' && item[field].toLowerCase().includes(query.toLowerCase()) ||
+              // Check for the expanded lookup field only for the specific list
+              (listTitle === "ARGAnnouncementAndNews" && 
+               item.AnnouncementandNewsTypeMaster && 
+               item.AnnouncementandNewsTypeMaster.TypeMaster && 
+               item.AnnouncementandNewsTypeMaster.TypeMaster.toLowerCase().includes(query.toLowerCase()))
+            )
+          );
+  
+          // Add ListTitle and PageName properties to the filtered items
+          filteredItems.forEach((item: any) => {
+            item.ListTitle = listTitle;
+            item.PageName = pageName; // Add the PageName for each item
+          });
+  
+          // Combine results
+          results = [...results, ...filteredItems];
         }
+      }
+  
+     
 
-        console.log("Search results:", searchResults);
-        return searchResults;
+      return results;
     } catch (error) {
-        console.error("Error searching lists:", error);
-        return [];
+      console.error("Error searching lists:", error);
+      return [];
     }
-};
-
-  const searchKeyPress = async (e: any) => {
-    debugger;
-    if (e.target.value !== "") {
-      e.preventDefault();
-      const searchResults = await searchAllLists(e.target.value);
-      console.log(searchResults),'searchResults';
-      
-      setResults(searchResults);
-    }
-
-  }
-  const handleSearch = async () => {
-    const searchResults = await searchAllLists(query);
-    setResults(searchResults);
   };
+
+  const searchKeyPress = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    const queryText = e.target.value;
+    setQuery(queryText);
+
+    if (queryText && queryText.length > 2) {
+      const searchResults = await searchAllLists(queryText);
+      console.log(searchResults);
+      
+      setSearchResults(searchResults);
+    }
+  };
+  const handleSearchClick = async (result: any) => {
+  
+        await addActivityLeaderboard(_context,"Search Results Click");
+        debugger
+      setTimeout(() => {
+        window.location.href = 
+        result?.AnnouncementandNewsTypeMaster?.TypeMaster=="News"
+        ?
+        `${siteUrl}/SitePages/Newsdetails.aspx?${result.Id}`
+        :`${siteUrl}/SitePages/${result.pageName}.aspx?${result.Id}` 
+           }, 2000);
+
+      };
   return (
     // <nav className="navbar container-fluid" style={{ zIndex: '99' }}>
     //   <div className="logo_item">
@@ -244,6 +421,7 @@ const HorizontalNavbar = ({ _context, siteUrl }: any) => {
               type="text"
               value={query} className='searchcss desktoView'
               onChange={(e) => searchKeyPress(e)}
+              onClick={toggleSearchDropdown}
               placeholder="Search..."
             />
           </div>
@@ -254,15 +432,34 @@ const HorizontalNavbar = ({ _context, siteUrl }: any) => {
 
               <input
                 type="text"
-                value={query} className='searchcss searchcssmobile'
+                value={query}
+                className='searchcss searchcssmobile'
                 onChange={(e) => searchKeyPress(e)}
                 placeholder="Search..."
               />
-              <ul>
-                {results.length>0&& results.map((item, index) => (
-                  <li key={index}>{item.Title}</li>
-                ))}
-              </ul>
+              <div className={searchResults.length > 0?'search-results':''}>
+                
+                <div className={searchResults.length > 0?'scrollbar':''} id={searchResults.length>0?'style-6':''}>
+                {searchResults.length>0&&<span style={{padding:'0.85rem'}}>Found {searchResults.length} results</span>}
+                  {searchResults.length > 0 ? (
+                    searchResults.map((result, index) => (
+                      <div key={index} className="search-result-item">
+                      
+                        <a onClick={()=>handleSearchClick(result)} style={{padding:'0.85rem'}}>
+                        <h4 className='eclipcsss' style={{ fontSize: '0.9rem' }}>{result.Title || result.ProjectName || result.EventName || result.Contentpost}</h4>
+                        {/* {result.Description && <p dangerouslySetInnerHTML={{ __html: result.Description }}></p>} */}
+                        {result.Overview && <p className='eclipcsss' style={{ fontSize: '0.7rem' }}>{result.Overview}</p>}
+                        {result.EventAgenda && <p className='eclipcsss' style={{ fontSize: '0.7rem' }}>{result.EventAgenda}</p>}
+                        </a>
+                      </div>
+                    ))
+                  ) : (
+                   null
+                  )}
+                  <div className="force-overflow"></div>
+                </div>
+              </div>
+
             </div>
           </div>
           <Maximize className='bx bx-bell desktoView' size='22' onClick={toggleFullscreen} />

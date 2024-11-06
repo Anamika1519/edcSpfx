@@ -1,6 +1,6 @@
 import { forEach } from "lodash";
 import Swal from "sweetalert2";
-
+import { DateTime } from "luxon";
 export const getDiscussionForum = async (_sp) => {
     let arr = []
     let str = "Announcements";
@@ -145,6 +145,134 @@ export const getDiscussion = async (_sp) => {
         });
     return arr;
 }
+export const getDiscussionMe = async (_sp) => {
+    let arr = []
+    let currentUser;
+    await _sp.web.currentUser()
+    .then(user => {
+      currentUser = user.Id; // Get the current user's ID
+    })
+    .catch(error => {
+      console.error("Error fetching current user: ", error);
+      return [];
+    });
+    await _sp.web.lists.getByTitle("ARGDiscussionForum").items.select("*,DiscussionForumCategory/Id,DiscussionForumCategory/CategoryName")
+    .expand("DiscussionForumCategory").filter(`Author eq ${currentUser}`).top(3)()
+        .then((res) => {
+            // arr=res;
+
+            arr = res
+        }).catch((error) => {
+            console.log("Error fetching data: ", error);
+        });
+    return arr;
+}
+export const getDiscussionMeAll = async (_sp) => {
+    let arr = []
+    let currentUser;
+    await _sp.web.currentUser()
+    .then(user => {
+      currentUser = user.Id; // Get the current user's ID
+    })
+    .catch(error => {
+      console.error("Error fetching current user: ", error);
+      return [];
+    });
+    await _sp.web.lists.getByTitle("ARGDiscussionForum").items.select("*,DiscussionForumCategory/Id,DiscussionForumCategory/CategoryName")
+    .expand("DiscussionForumCategory").filter(`Author eq ${currentUser}`)()
+        .then((res) => {
+            // arr=res;
+
+            arr = res
+        }).catch((error) => {
+            console.log("Error fetching data: ", error);
+        });
+    return arr;
+}
+export const getDiscussionFilterAll = async (_sp, filterOption) => {
+    let arr = [];
+    let filterQuery = "";
+
+    // Get current date and times for filtering
+    const today = DateTime.now().startOf('day');
+    const yesterday = today.minus({ days: 1 });
+    const lastWeek = today.minus({ weeks: 1 });
+    const lastMonth = today.minus({ months: 1 });
+
+    // Build the filter query based on the selected option
+    switch (filterOption) {
+        case "Today":
+            filterQuery = `Created ge datetime'${today.toISO()}'`;
+            break;
+        case "Yesterday":
+            filterQuery = `Created ge datetime'${yesterday.toISO()}' and Created lt datetime'${today.toISO()}'`;
+            break;
+        case "Last Week":
+            filterQuery = `Created ge datetime'${lastWeek.toISO()}' and Created lt datetime'${today.toISO()}'`;
+            break;
+        case "Last Month":
+            filterQuery = `Created ge datetime'${lastMonth.toISO()}' and Created lt datetime'${today.toISO()}'`;
+            break;
+        default:
+            filterQuery = ""; // No filter
+    }
+
+    await _sp.web.lists.getByTitle("ARGDiscussionForum")
+        .items
+        .select("*,DiscussionForumCategory/Id,DiscussionForumCategory/CategoryName")
+        .expand("DiscussionForumCategory")
+        .filter(filterQuery)
+        ()
+        .then((res) => {
+            arr = res;
+        }).catch((error) => {
+            console.log("Error fetching data: ", error);
+        });
+
+    return arr;
+};
+export const getDiscussionFilter = async (_sp, filterOption) => {
+    let arr = [];
+    let filterQuery = "";
+
+    // Get current date and times for filtering
+    const today = DateTime.now().startOf('day');
+    const yesterday = today.minus({ days: 1 });
+    const lastWeek = today.minus({ weeks: 1 });
+    const lastMonth = today.minus({ months: 1 });
+
+    // Build the filter query based on the selected option
+    switch (filterOption) {
+        case "Today":
+            filterQuery = `Created ge datetime'${today.toISO()}'`;
+            break;
+        case "Yesterday":
+            filterQuery = `Created ge datetime'${yesterday.toISO()}' and Created lt datetime'${today.toISO()}'`;
+            break;
+        case "Last Week":
+            filterQuery = `Created ge datetime'${lastWeek.toISO()}' and Created lt datetime'${today.toISO()}'`;
+            break;
+        case "Last Month":
+            filterQuery = `Created ge datetime'${lastMonth.toISO()}' and Created lt datetime'${today.toISO()}'`;
+            break;
+        default:
+            filterQuery = ""; // No filter
+    }
+
+    await _sp.web.lists.getByTitle("ARGDiscussionForum")
+        .items
+        .select("*,DiscussionForumCategory/Id,DiscussionForumCategory/CategoryName")
+        .expand("DiscussionForumCategory")
+        .filter(filterQuery)
+        .top(3)()
+        .then((res) => {
+            arr = res;
+        }).catch((error) => {
+            console.log("Error fetching data: ", error);
+        });
+
+    return arr;
+};
 export const getDiscussionComments = async (sp, Id) => {
     let arr = [];
     let arrLength = 0

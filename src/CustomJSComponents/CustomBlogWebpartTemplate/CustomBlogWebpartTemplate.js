@@ -17,6 +17,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
     const [currentEmail, setEmail] = useState('');
     const [blogData, setBlogData] = useState('');
     const menuRef = useRef(null);
+    const [isMenuOpenshare, setIsMenuOpenshare] = useState(false);
     useEffect(() => {
         ApIcall()
         const handleClickOutside = (event) => {

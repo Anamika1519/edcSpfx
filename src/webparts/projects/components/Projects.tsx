@@ -23,10 +23,11 @@ import context from "../../../GlobalContext/context";
 import "../../../Assets/Figtree/Figtree-VariableFont_wght.ttf";
 import HorizontalNavbar from "../../horizontalNavBar/components/HorizontalNavBar";
 import { encryptId } from "../../../APISearvice/CryptoService";
-import { Heart, MessageSquare } from "react-feather";
+import { Heart, MessageSquare, Share2 } from "react-feather";
 import CustomBreadcrumb from "../../../CustomJSComponents/CustomBreadcrumb/CustomBreadcrumb";
 import ReactQuill from "react-quill";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import "./Projects.scss";
 // import {
 //   Choicedata,
 //   fetchprojectdata,
@@ -46,6 +47,12 @@ import Swal from "sweetalert2";
 import { faPaperclip } from "@fortawesome/free-solid-svg-icons";
 import { SPFI } from "@pnp/sp/presets/all";
 import { getSP } from "../loc/pnpjsConfig";
+import Multiselect from "multiselect-react-dropdown";
+import { fetchUserInformationList } from "../../../APISearvice/GroupTeamService";
+import {
+  getCurrentUserNameId,
+  getUserProfilePicture,
+} from "../../../APISearvice/CustomService";
 const HelloWorldContext = ({ props }: any) => {
   const sp: SPFI = getSP();
   console.log(sp, "sp");
@@ -120,6 +127,18 @@ const HelloWorldContext = ({ props }: any) => {
   const scrollContainerRef = useRef(null);
   const [CommentsCount, setCommentsCount] = useState(0);
   const [LikeCount, setLikeCount] = useState(0);
+  const [IsinvideHide, setIsinvideHide] = React.useState(false);
+  const [options, setOpions] = useState([]);
+  const [selectedValue, setSelectedValue] = useState([]); // Initialize selectedValue as an array
+  const [userId, setUserId] = useState<any>(-1);
+  const [showDropdownId, setShowDropdownId] = React.useState(null);
+  const toggleDropdown = (itemId: any) => {
+    if (showDropdownId === itemId) {
+      setShowDropdownId(null); // Close the dropdown if already open
+    } else {
+      setShowDropdownId(itemId); // Open the dropdown for the clicked item
+    }
+  };
 
   const handleScroll = () => {
     if (headerRef.current) {
@@ -138,7 +157,6 @@ const HelloWorldContext = ({ props }: any) => {
     if (scrollContainer) {
       scrollContainer.addEventListener("scroll", handleScroll);
       window.addEventListener("scroll", handleScroll);
-     
     }
 
     return () => {
@@ -180,8 +198,10 @@ const HelloWorldContext = ({ props }: any) => {
     startDate: "",
     dueDate: "",
     Budget: "",
+    TeamMembers: "",
     ProjectOverview: "",
   });
+
   const flatArray = (arr: any[]): any[] => {
     return arr.reduce((acc, val) => acc.concat(val), []);
   };
@@ -194,6 +214,7 @@ const HelloWorldContext = ({ props }: any) => {
       [name]: value,
     }));
   };
+
   const handleCancel = () => {
     debugger;
     window.location.href =
@@ -209,9 +230,41 @@ const HelloWorldContext = ({ props }: any) => {
     Budget: any;
     ProjectOverview: any;
   }) => {
-    let arrId=0
+    let arrId = 0;
     try {
-      await sp.web.lists.getByTitle("ARGProject").items.add({
+      await sp.web.lists
+        .getByTitle("ARGProject")
+        .items.add({
+          ProjectName: formData.ProjectName,
+          ProjectPriority: formData.ProjectPriority,
+          ProjectPrivacy: formData.ProjectPrivacy,
+          StartDate: formData.startDate,
+          DueDate: formData.dueDate,
+          Budget: formData.Budget,
+          ProjectOverview: formData.ProjectOverview,
+        })
+        .then((item: any) => {
+          console.log("checking the arrid ---->>>", item);
+          arrId = item.data.Id;
+        });
+
+      console.log("Project data saved successfully.");
+    } catch (error) {
+      console.error("Error saving project data: ", error);
+    }
+    return arrId;
+  };
+
+  const handleFormSubmit = async () => {
+    debugger;
+    if (validateForm()) {
+      // const arrId = await saveProjectData(formData);
+      let postPayload = {};
+
+      const selectedIds =
+        selectedValue.length > 0 ? selectedValue.map((ele) => ele.id) : null;
+
+      postPayload = {
         ProjectName: formData.ProjectName,
         ProjectPriority: formData.ProjectPriority,
         ProjectPrivacy: formData.ProjectPrivacy,
@@ -219,293 +272,189 @@ const HelloWorldContext = ({ props }: any) => {
         DueDate: formData.dueDate,
         Budget: formData.Budget,
         ProjectOverview: formData.ProjectOverview,
-      }).then((item:any)=>
-      {
-        console.log("checking the arrid ---->>>",item)
-        arrId=item.data.Id
- 
-      })
+        TeamMembersId: selectedIds,
 
-      console.log("Project data saved successfully.");
-    } catch (error) {
-      console.error("Error saving project data: ", error);
-    }
-    return arrId
-    
-  };
+        // DiscussionForumCategoryId: Number(formData.category),
+      };
+      const postResult = await addItem(postPayload, sp);
 
-  // const handleFormSubmit = async () => {
-  //   await saveProjectData(formData);
-  //   setFormData({
-  //     ProjectName: "",
-  //     ProjectPriority: "",
-  //     ProjectPrivacy: "",
-  //     startDate: "",
-  //     dueDate: "",
-  //     Budget: "",
-  //     ProjectOverview: "",
-      
-  //   });
+      const arrId = postResult?.data?.ID;
 
-  //   let bannerImageArray: any = {};
-  //   let galleryIds: any[] = [];
-  //   let documentIds: any[] = [];
-  //   let galleryArray: any[] = [];
-  //   let documentArray: any[] = [];
-  //   if (DocumentpostArr[0]?.files?.length > 0) {
-  //     for (const file of DocumentpostArr[0].files) {
-  //       const uploadedDocument = await uploadFileToLibrary(
-  //         file,
-  //         sp,
-  //         "ProjectDocs"
-  //       );
-  //       documentIds = documentIds.concat(
-  //         uploadedDocument.map((item: { ID: any }) => item.ID)
-  //       );
-  //       if (DocumentpostArr1.length > 0) {
-  //         DocumentpostArr1.push(uploadedDocument[0]);
-  //         const updatedData = DocumentpostArr1.filter(
-  //           (item) => item.ID !== 0
-  //         );
-  //         console.log(updatedData, "updatedData");
-  //         documentArray = updatedData;
-  //         // documentArray.push(DocumentpostArr1)
-  //         DocumentpostIdsArr.push(documentIds[0]); //.push(DocumentpostIdsArr)
-  //         documentIds = DocumentpostIdsArr;
-  //       } else {
-  //         documentArray.push(uploadedDocument);
-  //       }
-  //     }
-  //   } else {
-  //     documentIds = DocumentpostIdsArr;
-  //     documentArray = DocumentpostArr1;
-  //   }
-  //   if (documentArray.length > 0) {
-  //     let arsdoc = documentArray.filter((x) => x.ID == 0);
-  //     if (arsdoc.length > 0) {
-  //       for (let i = 0; i < arsdoc.length; i++) {
-  //         documentArray.slice(i, 1);
-  //       }
-  //     }
-  //     console.log(documentIds, "documentIds");
-  //     console.log(galleryIds, "galleryIds");
-  //     // Update Post with Gallery and Document Information
-  //   }
-  //   const updatePayload = {
-  //     ...(galleryIds.length > 0 && {
-  //       DiscussionForumGalleryId: galleryIds,
-
-  //       DiscussionForumGalleryJSON: JSON.stringify(
-  //         flatArray(galleryArray)
-  //       ),
-  //     }),
-  //     ...(documentIds.length > 0 && {
-  //       DiscussionForumDocsId: documentIds,
-  //       DiscussionForumDocsJSON: JSON.stringify(
-  //         flatArray(documentArray)
-  //       ),
-  //     }),
-  //   };
-
-    
-
-  //   console.log("Form submitted.");
-  // };
-
-  // const handleFormSubmit = async () => {
-  //  const arrId= await saveProjectData(formData);
-    
-  //   // Reset form data
-  //   setFormData({
-  //     ProjectName: "",
-  //     ProjectPriority: "",
-  //     ProjectPrivacy: "",
-  //     startDate: "",
-  //     dueDate: "",
-  //     Budget: "",
-  //     ProjectOverview: "",
-  //   });
-
-  //   // let galleryIds = [];
-  //   let galleryIds: any[] = [];
-  //   // let documentIds = [];
-  //   let documentArray = [];
-  //   let documentIds: any[] = [];
-
-    
-
-
-  //   // const postResult = await addItem(formData, sp);
-  //   // const postId = postResult?.data?.ID;
-  
-  //   // Check for document files
-  //   if (DocumentpostArr[0]?.files?.length > 0) {
-  //     for (const file of DocumentpostArr[0].files) {
-  //       try {
-  //         const uploadedDocument = await uploadFileToLibrary(file, sp, "ProjectDocs");
-          
-  //         // Assuming uploadedDocument is an array
-  //         documentIds = documentIds.concat(uploadedDocument.map(item => item.ID));
-  
-  //         if (DocumentpostArr1.length > 0) {
-  //           DocumentpostArr1.push(uploadedDocument[0]);
-  //           const updatedData = DocumentpostArr1.filter(item => item.ID !== 0);
-  //           documentArray = updatedData;
-  //         } else {
-  //           documentArray.push(...uploadedDocument); // Spread operator to avoid nested array
-  //         }
-  //       } catch (error) {
-  //         console.error("Error uploading document:", error);
-  //       }
-  //     }
-  //   } else {
-  //     documentIds = DocumentpostIdsArr; // Use existing IDs
-  //     documentArray = DocumentpostArr1;
-  //   }
-  
-  //   // Remove entries with ID 0
-  //   documentArray = documentArray.filter(doc => doc.ID !== 0);
-    
-  //   console.log(documentIds, "documentIds");
-    
-  //   // Update Post with Gallery and Document Information
-  //   const updatePayload = {
-  //     // ...(galleryIds.length > 0 && {
-  //     //   DiscussionForumGalleryId: galleryIds,
-  //     //   DiscussionForumGalleryJSON: JSON.stringify(flatArray(galleryArray)),
-  //     // }),
-  //     ...(documentIds.length > 0 && {
-  //       ProjectsDocsId: documentIds,
-  //       ProjectsDocsJSON: JSON.stringify(flatArray(documentArray)),
-  //     }),
-  //   };
-
-  //   if (Object.keys(updatePayload).length > 0) {
-  //     const updateResult = await updateItem(updatePayload, sp, arrId);
-  //     console.log("Update Result:", updateResult);
-  //   }
-  
-  //   console.log("Form submitted with payload:", updatePayload);
-
-  // };
-  
-
-  const handleFormSubmit = async () => {
-    const arrId = await saveProjectData(formData);
-
-    // Check if arrId is valid
-    if (!arrId) {
+      // Check if arrId is valid
+      if (!arrId) {
+        console.log(postResult);
         console.error("Failed to save project data, arrId is invalid.");
+        Swal.fire("Error", "ailed to save project data", "error");
         return; // Exit the function if the ID is invalid
-    }
+      }
 
-    // Reset form data
-    setFormData({
-        ProjectName: "",
-        ProjectPriority: "",
-        ProjectPrivacy: "",
-        startDate: "",
-        dueDate: "",
-        Budget: "",
-        ProjectOverview: "",
-    });
+      // Reset form data
 
-    let documentArray: any[] = [];
-    let documentIds: any[] = [];
+      let documentArray: any[] = [];
+      let documentIds: any[] = [];
 
-    // Check for document files
-    if (DocumentpostArr[0]?.files?.length > 0) {
+      // Check for document files
+      if (DocumentpostArr[0]?.files?.length > 0) {
         for (const file of DocumentpostArr[0].files) {
-            try {
-                const uploadedDocument = await uploadFileToLibrary(file, sp, "ProjectDocs");
-                console.log(uploadedDocument, "Uploaded Document");
-                
-                if (Array.isArray(uploadedDocument)) {
-                    documentIds = documentIds.concat(uploadedDocument.map(item => item.ID));
-                    documentArray.push(...uploadedDocument.filter(item => item.ID !== 0));
-                }
-            } catch (error) {
-                console.error("Error uploading document:", error);
+          try {
+            const uploadedDocument = await uploadFileToLibrary(
+              file,
+              sp,
+              "ProjectDocs"
+            );
+            console.log(uploadedDocument, "Uploaded Document");
+
+            if (Array.isArray(uploadedDocument)) {
+              documentIds = documentIds.concat(
+                uploadedDocument.map((item) => item.ID)
+              );
+              documentArray.push(
+                ...uploadedDocument.filter((item) => item.ID !== 0)
+              );
             }
+          } catch (error) {
+            console.error("Error uploading document:", error);
+          }
         }
-    } else {
+      } else {
         documentIds = DocumentpostIdsArr; // Use existing IDs
         documentArray = DocumentpostArr1;
-    }
+      }
 
-    // Prepare update payload for documents
-    const updatePayload = {
+      // Prepare update payload for documents
+      const updatePayload = {
         ...(documentIds.length > 0 && {
-            ProjectsDocsId: documentIds,
-            ProjectsDocsJSON: JSON.stringify(flatArray(documentArray)),
+          ProjectsDocsId: documentIds,
+          ProjectsDocsJSON: JSON.stringify(flatArray(documentArray)),
         }),
-    };
+      };
 
-    // Check if update payload is valid
-    console.log("Update payload before update:", updatePayload);
+      // Check if update payload is valid
+      console.log("Update payload before update:", updatePayload);
 
-    if (Object.keys(updatePayload).length > 0) {
+      if (Object.keys(updatePayload).length > 0) {
         try {
-            const updateResult = await updateItem(updatePayload, sp, arrId);
-            console.log("Update Result:", updateResult);
-            setTimeout(async () => {
+          const updateResult = await updateItem(updatePayload, sp, arrId);
+          console.log("Update Result:", updateResult);
+          Swal.fire("Project added successfully")
+          setTimeout(async () => {
+            // setAnnouncementData(await getGroupTeam(sp));
+            setFormData({
+              ProjectName: "",
+              ProjectPriority: "",
+              ProjectPrivacy: "",
+              startDate: "",
+              dueDate: "",
+              Budget: "",
+              TeamMembers: "",
+              ProjectOverview: "",
+            });
+            window.location.reload(); //forNow
 
-              // setAnnouncementData(await getGroupTeam(sp));
-
-              window.location.reload() //forNow
-
-              dismissModal()
-
-            }, 2000);
-
+            dismissModal();
+          }, 2000);
         } catch (error) {
-            console.error("Error updating item:", error);
+          console.error("Error updating item:", error);
         }
+      } else {
+        Swal.fire("Project added successfully")
+        setTimeout(async () => {
+          // setAnnouncementData(await getGroupTeam(sp));
+          setFormData({
+            ProjectName: "",
+            ProjectPriority: "",
+            ProjectPrivacy: "",
+            startDate: "",
+            dueDate: "",
+            Budget: "",
+            TeamMembers: "",
+            ProjectOverview: "",
+          });
+          window.location.reload(); //forNow
+
+          dismissModal();
+        }, 2000);
+      }
     }
+  };
+  const validateForm = () => {
+    debugger
 
-    console.log("Form submitted with payload:", updatePayload);
-};
+    const {
+      ProjectName,
+      ProjectPriority,
+      ProjectPrivacy,
+      Budget,
+      startDate,
+      dueDate
+    } = formData;
+    let TeamMembersId: any;
+    let valid = true;
 
-
-const dismissModal = () => {
-
-  const modalElement = document.getElementById('discussionModal');
-
-
-
-  // Remove Bootstrap classes and attributes manually
-
-  modalElement.classList.remove('show');
-
-  modalElement.style.display = 'none';
-
-  modalElement.setAttribute('aria-hidden', 'true');
-
-  modalElement.removeAttribute('aria-modal');
-
-  modalElement.removeAttribute('role');
-
-
-
-  // Optionally, remove the backdrop if it was added manually
-
-  const modalBackdrop = document.querySelector('.modal-backdrop');
-
-  if (modalBackdrop) {
-
-    modalBackdrop.remove();
-
-  }
-
-};
-  const ApiCall = async () => {
-    setDataproject(await fetchprojectdata(sp));
-    setChoiceValueOne(await Choicedata(sp));
-    await XYZ(sp)
+    if (!ProjectName) {
+      Swal.fire("Error", "Project Name is required!", "error");
+      valid = false;
+    }
+    else if (!ProjectPriority) {
+      Swal.fire("Error", "Project Priority is required!", "error");
+      valid = false;
+    }
+    else if (!ProjectPrivacy) {
+      Swal.fire("Error", "Project Privacy is required!", "error");
+      valid = false;
+    }
+    else if (!Budget) {
+      Swal.fire("Error", "Budget is required!", "error");
+      valid = false;
+    }
+    else if (!startDate) {
+      Swal.fire("Error", "Start Date is required!", "error");
+      valid = false;
+    }
+    else if (!dueDate) {
+      Swal.fire("Error", "Due Date is required!", "error");
+      valid = false;
+    }
+    else if (selectedValue.length < 0) {
+      Swal.fire("Error", "TeamMember is required!", "error");
+      valid = false;
+    }
+    return valid;
 
   };
 
- 
+  const dismissModal = () => {
+    const modalElement = document.getElementById("discussionModal");
+
+    // Remove Bootstrap classes and attributes manually
+
+    modalElement.classList.remove("show");
+
+    modalElement.style.display = "none";
+
+    modalElement.setAttribute("aria-hidden", "true");
+
+    modalElement.removeAttribute("aria-modal");
+
+    modalElement.removeAttribute("role");
+
+    // Optionally, remove the backdrop if it was added manually
+
+    const modalBackdrop = document.querySelector(".modal-backdrop");
+
+    if (modalBackdrop) {
+      modalBackdrop.remove();
+    }
+  };
+  const ApiCall = async () => {
+    fetchOptions();
+    const res = await getCurrentUserNameId(sp);
+    setUserId(res);
+    setDataproject(await fetchprojectdata(sp));
+    setChoiceValueOne(await Choicedata(sp));
+    await XYZ(sp);
+  };
+
   const handleDelete = (Id: any) => {
     Swal.fire({
       title: "Are you sure?",
@@ -514,7 +463,7 @@ const dismissModal = () => {
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!"
+      confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
         DeleteProjectAPI(sp, Id).then(async () => {
@@ -525,9 +474,10 @@ const dismissModal = () => {
             startDate: "",
             dueDate: "",
             Budget: "",
+            TeamMembers: "",
             ProjectOverview: "",
-        });
-    
+          });
+
           setDataproject(await fetchprojectdata(sp));
           Swal.fire("Deleted!", "Item has been deleted.", "success");
         });
@@ -538,13 +488,6 @@ const dismissModal = () => {
     console.log("View detail action");
   };
 
-  // const [Dataproject, setDataproject] = useState({
-  //   title: "",
-  //   description: "",
-  //   documentsCount: 0,
-  //   commentsCount: 0,
-  //   avatars: [],
-  // });
 
   console.log("ChoiceValueOne data111->>>>>>", Dataproject);
 
@@ -554,7 +497,7 @@ const dismissModal = () => {
     docLib: string
   ) => {
     debugger;
-    console.log("libraryName-->>>>", libraryName)
+    console.log("libraryName-->>>>", libraryName);
     event.preventDefault();
     let uloadDocsFiles: any[] = [];
     let uloadDocsFiles1: any[] = [];
@@ -571,17 +514,23 @@ const dismissModal = () => {
         const docFiles = files.filter(
           (file) =>
             file.type === "application/pdf" ||
+            file.type === "application/Docx" || file.type === "application/Doc" ||
             file.type === "application/msword" ||
-            file.type === "application/xsls" ||
+            file.type === "application/xlsx" ||
             file.type === "text/csv" ||
-            file.type === "text/csv" ||
+            file.type === "application/xlsx" ||
+            file.type === "text/plain" ||
+            file.type === "text/html" ||
+            file.type === "application/xml" ||
+            file.type === "application/vnd.ms-excel" ||
+
             file.type ===
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
             file.type ===
             "application/vnd.openxmlformats-officedocument.presentationml.presentation" ||
             file.type === "text/"
         );
-        console.log("docfiles check--->>>",docFiles)
+        console.log("docfiles check--->>>", docFiles);
 
         if (docFiles.length > 0) {
           const arr = {
@@ -624,7 +573,7 @@ const dismissModal = () => {
             setDocumentpostArr1(uloadDocsFiles1);
           }
         } else {
-          Swal.fire("only docuemnt can be upload");
+          Swal.fire("only document can be upload");
         }
       }
       if (libraryName === "Gallery" || libraryName === "bannerimg") {
@@ -639,13 +588,13 @@ const dismissModal = () => {
             libraryName: libraryName,
             docLib: docLib,
           };
-          console.log("arr-->>>", arr)
+          console.log("arr-->>>", arr);
           if (libraryName === "Gallery") {
             uloadImageFiles.push(arr);
             setImagepostArr(uloadImageFiles);
             if (ImagepostArr1.length > 0) {
               imageVideoFiles.forEach((ele) => {
-                console.log("ele in if-->>>>", ele)
+                console.log("ele in if-->>>>", ele);
                 let arr1 = {
                   ID: 0,
                   Createdby: "",
@@ -660,7 +609,7 @@ const dismissModal = () => {
               setImagepostArr1(ImagepostArr1);
             } else {
               imageVideoFiles.forEach((ele) => {
-                console.log("ele in else-->>>>", ele)
+                console.log("ele in else-->>>>", ele);
                 let arr1 = {
                   ID: 0,
                   Createdby: "",
@@ -676,13 +625,12 @@ const dismissModal = () => {
             }
           } else {
             uloadBannerImageFiles.push(arr);
-            console.log("uloadBannerImageFiles-->>", uloadBannerImageFiles)
+            console.log("uloadBannerImageFiles-->>", uloadBannerImageFiles);
             setBannerImagepostArr(uloadBannerImageFiles);
           }
         } else {
           Swal.fire("only image & video can be upload");
         }
-        
       }
     }
   };
@@ -705,14 +653,53 @@ const dismissModal = () => {
       setShowImgTable(false);
     }
   };
+  const [activeTab, setActiveTab] = useState("home1");
+  const handleTabClick = (tab: React.SetStateAction<string>) => {
+    setActiveTab(tab);
+  };
 
+  const fetchOptions = async () => {
+    try {
+      const items = await fetchUserInformationList(sp);
+
+      console.log(items, "itemsitemsitems");
+
+      const formattedOptions = items.map((item: { Title: any; Id: any }) => ({
+        name: item.Title, // Adjust according to your list schema
+
+        id: item.Id,
+      }));
+
+      setOpions(formattedOptions);
+    } catch (error) {
+      console.error("Error fetching options:", error);
+    }
+  };
+
+  const onSelect = (
+    selectedList: React.SetStateAction<any[]>,
+    selectedItem: any
+  ) => {
+    setSelectedValue(selectedList);
+
+    console.log("Selected item:", selectedItem, "selectedList", selectedList);
+  };
+
+  const onRemove = (
+    selectedList: React.SetStateAction<any[]>,
+    removedItem: any
+  ) => {
+    setSelectedValue(selectedList);
+
+    console.log("Removed item:", removedItem);
+  };
   return (
     <div id="wrapper" ref={elementRef}>
       <div className="app-menu" id="myHeader">
         <VerticalSideBar _context={sp} />
       </div>
       <div className="content-page">
-        <HorizontalNavbar _context={sp} siteUrl={siteUrl}/>
+        <HorizontalNavbar _context={sp} siteUrl={siteUrl} />
         <div
           className="content mt-2"
           style={{ marginLeft: `${!useHide ? "240px" : "80px"}` }}
@@ -851,7 +838,7 @@ const dismissModal = () => {
                                     Private
                                   </label>
                                 </div>
-                                <div className="form-check">
+                                {/* <div className="form-check">
                                   <input
                                     id="ProjectPrivacyTeam"
                                     name="ProjectPrivacy"
@@ -869,7 +856,7 @@ const dismissModal = () => {
                                   >
                                     Team
                                   </label>
-                                </div>
+                                </div> */}
                                 <div className="form-check">
                                   <input
                                     id="ProjectPrivacyPublic"
@@ -953,75 +940,88 @@ const dismissModal = () => {
                           </div>
 
                           <div className="col-lg-6">
-                                <div className="mb-3">
-                                  <div className="d-flex justify-content-between">
-                                    <div>
-                                      <label
-                                        htmlFor="discussionThumbnail"
-                                        className="form-label"
+                            <div className="mb-3">
+                              <div className="d-flex justify-content-between">
+                                <div>
+                                  <label
+                                    htmlFor="discussionThumbnail"
+                                    className="form-label"
+                                  >
+                                    Discussion Document{" "}
+
+                                  </label>
+                                </div>
+                                <div>
+                                  {(DocumentpostArr1.length > 0 &&
+                                    DocumentpostArr1.length == 1 && (
+                                      <a
+                                        onClick={() =>
+                                          setShowModalFunc(true, "docs")
+                                        }
+                                        style={{ fontSize: "0.875rem" }}
                                       >
-                                        Discussion Thumbnail{" "}
-                                        <span className="text-danger">*</span>
-                                      </label>
-                                    </div>
-                                    <div>
-                                      {(DocumentpostArr1.length > 0 &&
-                                        DocumentpostArr1.length == 1 && (
-                                          <a
-                                            onClick={() =>
-                                              setShowModalFunc(true, "docs")
-                                            }
-                                            style={{ fontSize: "0.875rem" }}
-                                          >
-                                            <FontAwesomeIcon
-                                              icon={faPaperclip}
-                                            />{" "}
-                                            {DocumentpostArr1.length} file
-                                            Attached
-                                          </a>
-                                        )) ||
-                                        (DocumentpostArr1.length > 0 &&
-                                          DocumentpostArr1.length > 1 && (
-                                            <a
-                                              onClick={() =>
-                                                setShowModalFunc(true, "docs")
-                                              }
-                                              style={{ fontSize: "0.875rem" }}
-                                            >
-                                              <FontAwesomeIcon
-                                                icon={faPaperclip}
-                                              />{" "}
-                                              {DocumentpostArr1.length} files
-                                              Attached
-                                            </a>
-                                          ))}
-                                    </div>
-                                  </div>
-                                  <input
-                                    type="file"
-                                    id="discussionforumThumbnail"
-                                    name="discussionforumThumbnail"
-                                    className="form-control inputcss"
-                                    multiple
-                                    onChange={(e) =>
-                                      onFileChange(
-                                        e,
-                                        "Docs",
-                                        "DiscussionForumDocs"
-                                      )
-                                    }
-                                  />
+                                        <FontAwesomeIcon icon={faPaperclip} />{" "}
+                                        {DocumentpostArr1.length} file Attached
+                                      </a>
+                                    )) ||
+                                    (DocumentpostArr1.length > 0 &&
+                                      DocumentpostArr1.length > 1 && (
+                                        <a
+                                          onClick={() =>
+                                            setShowModalFunc(true, "docs")
+                                          }
+                                          style={{ fontSize: "0.875rem" }}
+                                        >
+                                          <FontAwesomeIcon icon={faPaperclip} />{" "}
+                                          {DocumentpostArr1.length} files
+                                          Attached
+                                        </a>
+                                      ))}
                                 </div>
                               </div>
+                              <input
+                                type="file"
+                                id="discussionforumThumbnail"
+                                name="discussionforumThumbnail"
+                                className="form-control inputcss"
+                                multiple
+                                onChange={(e) =>
+                                  onFileChange(e, "Docs", "DiscussionForumDocs")
+                                }
+                              />
+                            </div>
+                          </div>
 
+                          {/* {IsinvideHide && ( */}
                           <div className="col-lg-6">
+                            <div className="mb-3">
+                              <label
+                                htmlFor="invitemembers"
+                                className="form-label"
+                              >
+                                Select Members{" "}
+                                <span className="text-danger">*</span>
+                              </label>
+
+                              <Multiselect
+                                options={options}
+                                selectedValues={selectedValue}
+                                onSelect={onSelect}
+                                onRemove={onRemove}
+                                displayValue="name"
+                              />
+                            </div>
+                          </div>
+                          {/* )} */}
+
+                          <div className="col-lg-8">
                             <div className="mb-3">
                               <label
                                 htmlFor="Project Overview"
                                 className="form-label"
                               >
                                 Project Overview{" "}
-                                <span className="text-danger">*</span>
+
                               </label>
                               <textarea
                                 className="form-control inputcss"
@@ -1079,70 +1079,287 @@ const dismissModal = () => {
                 </div>
               </div>
             </div>
-            <div className="row">
-              <div className="container">
-                {/* Map through the projects array and display a card for each */}
-                {Dataproject.length > 0 ? (
-                  <div className="row">
-                    {Dataproject.map((project, index) => (
-                      <div key={index} className="col-lg-3 col-md-6 mb-4">
-                        <div className="card project-box">
-                          <div className="card-body">
-                            <div className="dropdown float-end">
+
+            <div className="row mt-2">
+              <div className="col-12">
+                <div className="card mb-0">
+                  <div className="card-body">
+                    <div className="row justify-content-between">
+                      <div className="col-md-12">
+                        <div className="d-flex flex-wrap align-items-center justify-content-center">
+                          <ul
+                            className="nav nav-pills navtab-bg float-end"
+                            role="tablist"
+                          >
+                            <li className="nav-item" role="presentation">
                               <a
-                                href="#"
-                                className="dropdown-toggle card-drop arrow-none"
-                                data-bs-toggle="dropdown"
-                                aria-expanded="false"
+
+                                onClick={() => handleTabClick("home1")}
+                                className={`nav-link ${activeTab === "home1" ? "active" : ""
+                                  }`}
+                                aria-selected={activeTab === "home1"}
+                                role="tab"
                               >
-                                <i className="fe-more-horizontal- m-0 text-muted h3"></i>
+                                All
                               </a>
-                              <div className="dropdown-menu dropdown-menu-end">
-                                <a
-                                  className="dropdown-item"
-                                  href="#"
-                                  onClick={() => handleDelete(project.Id)}
-                                >
-                                  Delete
-                                </a>
-                                <a
-                                  className="dropdown-item"
-                                  href="#"
-                                  onClick={() => GotoNextPage(project)}
-                                >
-                                  View Detail
-                                </a>
+                            </li>
+                            <li className="nav-item" role="presentation">
+                              <a
+
+                                onClick={() => handleTabClick("profile1")}
+                                className={`nav-link ${activeTab === "profile1" ? "active" : ""
+                                  }`}
+                                aria-selected={activeTab === "profile1"}
+                                role="tab"
+                                tabIndex={-1}
+                              >
+                                Owner
+                              </a>
+                            </li>
+                            <li className="nav-item" role="presentation">
+                              <a
+
+                                onClick={() => handleTabClick("profile11")}
+                                className={`nav-link ${activeTab === "profile11" ? "active" : ""
+                                  }`}
+                                aria-selected={activeTab === "profile11"}
+                                role="tab"
+                                tabIndex={-1}
+                              >
+                                Member
+                              </a>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>{" "}
+                {/* end card */}
+              </div>{" "}
+              {/* end col */}
+            </div>
+
+            {activeTab === "home1" && (
+              <div className="row mt-2">
+                <div className="container">
+                  {/* Map through the projects array and display a card for each */}
+                  {Dataproject.length > 0 ? (
+                    <div className="row">
+                      {Dataproject.map((project, index) => {
+                        console.log("project>>>>>>>>>>>>>", project);
+                        if (project.ProjectPrivacy == "Public") {
+                          return (
+                            <div key={index} className="col-lg-3 col-md-6 mb-4">
+                              <div className="card project-box">
+                                <div className="card-body">
+                                  <div className="dropdown float-end">
+                                    <a
+
+                                      className="dropdown-toggle card-drop arrow-none"
+                                      data-bs-toggle="dropdown"
+                                      aria-expanded="false"
+                                    >
+                                      <i className="fe-more-horizontal- m-0 text-muted h3"></i>
+                                    </a>
+                                    <div className="dropdown-menu dropdown-menu-end">
+                                      <a
+                                        className="dropdown-item"
+
+                                        onClick={() => handleDelete(project.Id)}
+                                      >
+                                        Delete
+                                      </a>
+                                      <a
+                                        className="dropdown-item"
+
+                                        onClick={() => GotoNextPage(project)}
+                                      >
+                                        View Detail
+                                      </a>
+                                    </div>
+                                  </div>
+
+                                  {/* Title */}
+                                  <h4 className="mt-0 mb-1">
+                                    <a onClick={() => GotoNextPage(project)}
+                                      className="text-dark fw-bold font-16">
+                                      {project.ProjectName}
+                                    </a>
+                                  </h4>
+
+
+                                  {/* Description */}
+                                  {/* <p
+                                    style={{ color: "#98a6ad" }}
+                                    className="date-color font-12 mb-3 sp-line-2"
+                                  >
+                                    {project.ProjectOverview} 
+                                    
+                                    <a
+                                      href="javascript:void(0);"
+                                      className="fw-bold text-muted"
+                                      onClick={() => GotoNextPage(project)}
+                                    >
+                                      view more
+                                    </a>
+                                  </p> */}
+
+                                  {/* Task info */}
+                                  <p className="mb-1 font-12">
+                                    <span
+                                      style={{ color: "#6e767e" }}
+                                      className="pe-2 text-nowrap mb-1 d-inline-block"
+                                    >
+                                      <i className="fe-file-text text-muted"></i>
+                                      <b>{project?.ProjectsDocsId?.length}</b> Documents
+                                    </span>
+
+                                  </p>
+                                  <div
+                                    style={{
+                                      minWidth: "70px",
+                                      maxWidth: "100%"
+                                    }}
+                                  >
+                                    <div style={{ display: 'flex' }}>
+                                      {project?.TeamMembers?.map(
+                                        (id: any, idx: any) => {
+                                          if (idx < 3) {
+                                            return (
+                                              <img
+                                                style={{
+                                                  margin:
+                                                    index == 0
+                                                      ? "0 0 0 0"
+                                                      : "0 0 0px -12px",
+                                                }}
+                                                src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+                                                className="rounded-circlecss img-thumbnail avatar-xl"
+                                                alt="profile-image"
+                                              />
+                                            );
+                                          }
+                                        }
+                                      )}
+                                      {
+                                        project?.TeamMembers.length > 3 &&
+
+                                        <div
+                                          className=""
+                                          onClick={() =>
+                                            toggleDropdown(project.Id)
+                                          }
+                                          key={project.Id}
+                                        >
+
+                                          <div
+                                            style={{
+                                              margin:
+                                                index == 0
+                                                  ? "0 0 0 0"
+                                                  : "0 0 0px -12px",
+                                            }}
+                                            className="rounded-circlecss img-thumbnail avatar-xl"
+                                          >
+                                            +
+                                          </div>
+                                        </div>
+                                      }
+                                    </div>
+                                    {showDropdownId === project.Id && (
+                                    <div
+                                      className=""
+                                      style={{
+                                        position: "absolute",
+                                        zIndex: "99",
+                                        background: "#fff",
+                                        padding: "1rem",
+                                        width: "30rem",
+                                      }}
+                                    >
+                                      {showDropdownId === project.Id && (
+                                        project?.TeamMembers?.map(
+                                          (id: any, idx: any) => {
+                                            return (
+                                              <img
+                                                style={{
+                                                  margin:
+                                                    idx == 0
+                                                      ? "0 0 0 0"
+                                                      : "0 0 0px -12px",
+                                                }}
+                                                src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+                                                className="rounded-circlecss img-thumbnail avatar-xl"
+                                                alt="profile-image"
+                                              />
+                                            );
+                                          }
+                                        )
+                                      )}
+                                    </div>
+                                    )}
+                                  </div>
+                                </div>
                               </div>
                             </div>
+                          );
+                        } else if (project?.TeamMembersId?.includes(userId)) {
+                          return (
+                            <div key={index} className="col-lg-3 col-md-6 mb-4">
+                              <div className="card project-box">
+                                <div className="card-body">
+                                  <div className="dropdown float-end">
+                                    <a
 
-                            {/* Title */}
-                            <h4 className="mt-0 mb-1">
-                              <a href="#" className="text-dark fw-bold font-16">
-                                {project.ProjectName || "Untitled Project"}
-                              </a>
-                            </h4>
-                            <div className="finish mb-2">
-                              {project.status || "Finished"}
-                            </div>
+                                      className="dropdown-toggle card-drop arrow-none"
+                                      data-bs-toggle="dropdown"
+                                      aria-expanded="false"
+                                    >
+                                      <i className="fe-more-horizontal- m-0 text-muted h3"></i>
+                                    </a>
+                                    <div className="dropdown-menu dropdown-menu-end">
+                                      <a
+                                        className="dropdown-item"
 
-                            {/* Description */}
-                            <p
-                              style={{ color: "#98a6ad" }}
-                              className="date-color font-12 mb-3 sp-line-2"
-                            >
-                              {project.ProjectOverview ||
-                                "No description available..."}{" "}
-                              <a
-                                href="javascript:void(0);"
-                                className="fw-bold text-muted"
-                                onClick={()=>GotoNextPage(project)}
+                                        onClick={() => handleDelete(project.Id)}
+                                      >
+                                        Delete
+                                      </a>
+                                      <a
+                                        className="dropdown-item"
+
+                                        onClick={() => GotoNextPage(project)}
+                                      >
+                                        View Detail
+                                      </a>
+                                    </div>
+                                  </div>
+
+                                  {/* Title */}
+                                  <h4 className="mt-0 mb-1">
+                                    <a
+                                      onClick={() => GotoNextPage(project)}
+                                      className="text-dark fw-bold font-16"
+                                    >
+                                      {project.ProjectName}
+                                    </a>
+                                  </h4>
+
+
+                                  <p className="mb-1 font-12">
+                              <span
+                                style={{ color: "#6e767e" }}
+                                className="pe-2 text-nowrap mb-1 d-inline-block"
                               >
-                                view more
-                              </a>
+                                <i className="fe-file-text text-muted"></i>
+                                <b>{project?.ProjectsDocsId?.length}</b> Documents
+                              </span>
+                             
                             </p>
 
-                            {/* Task info */}
-                            {/* <p className="mb-1 font-12">
+                                  {/* Task info */}
+                                  {/* <p className="mb-1 font-12">
                               <span
                                 style={{ color: "#6e767e" }}
                                 className="pe-2 text-nowrap mb-1 d-inline-block"
@@ -1158,16 +1375,456 @@ const dismissModal = () => {
                                 <b>{project.commentsCount || 0}</b> Comments
                               </span>
                             </p> */}
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p>Loading projects...</p>
-                )}
+                                  <div
+                                    style={{
+                                      minWidth: "70px",
+                                      maxWidth: "100%",
+                                      position: "relative",
+                                    }}
+                                  >
+                                    <div style={{ display: 'flex' }}>
+                                      {project?.TeamMembers?.map(
+                                        (id: any, idx: any) => {
+                                          if (idx < 3) {
+                                            return (
+                                              <img
+                                                style={{
+                                                  margin:
+                                                    index == 0
+                                                      ? "0 0 0 0"
+                                                      : "0 0 0px -12px",
+                                                }}
+                                                src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+                                                className="rounded-circlecss img-thumbnail avatar-xl"
+                                                alt="profile-image"
+                                              />
+                                            );
+                                          }
+                                        }
+                                      )}
+                                      {
+                                        project?.TeamMembers.length > 3 &&
+
+                                        <div
+                                          className=""
+                                          onClick={() =>
+                                            toggleDropdown(project.Id)
+                                          }
+                                          key={project.Id}
+                                        >
+                                          <div
+                                            style={{
+                                              margin:
+                                                index == 0
+                                                  ? "0 0 0 0"
+                                                  : "0 0 0px -12px",
+                                            }}
+                                            className="rounded-circlecss img-thumbnail avatar-xl"
+                                          >
+                                            +
+                                          </div>
+                                        </div>
+                                      }
+                                    </div>
+                                    {showDropdownId === project.Id && (
+                                        <div
+                                      className=""
+                                      style={{
+                                        position: "absolute",
+                                        zIndex: "99",
+                                        background: "#fff",
+                                        padding: "1rem",
+                                        width: "30rem",
+                                      }}
+                                    >
+                                      {showDropdownId === project.Id && (
+                                        project?.TeamMembers?.map(
+                                          (id: any, idx: any) => {
+                                            return (
+                                              <img
+                                                style={{
+                                                  margin:
+                                                    idx == 0
+                                                      ? "0 0 0 0"
+                                                      : "0 0 0px -12px",
+                                                }}
+                                                src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+                                                className="rounded-circlecss img-thumbnail avatar-xl"
+                                                alt="profile-image"
+                                              />
+                                            );
+                                          }
+                                        )
+                                      )}
+                                    </div>
+                      )}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        }
+
+                        return null;
+                      })}
+                    </div>
+                  ) : (
+                    <p>Loading projects...</p>
+                  )}
+                </div>
               </div>
-            </div>
+            )}
+            {activeTab === "profile1" && (
+              <div className="row mt-2">
+                <div className="container">
+                  {/* Map through the projects array and display a card for each */}
+                  {Dataproject.length > 0 ? (
+                    <div className="row">
+                      {Dataproject.map((project, index) => {
+                        if (project?.AuthorId == userId) {
+                          return (
+                            <div key={index} className="col-lg-3 col-md-6 mb-4">
+                              <div className="card project-box">
+                                <div className="card-body">
+                                  <div className="dropdown float-end">
+                                    <a
+
+                                      className="dropdown-toggle card-drop arrow-none"
+                                      data-bs-toggle="dropdown"
+                                      aria-expanded="false"
+                                    >
+                                      <i className="fe-more-horizontal- m-0 text-muted h3"></i>
+                                    </a>
+                                    <div className="dropdown-menu dropdown-menu-end">
+                                      <a
+                                        className="dropdown-item"
+
+                                        onClick={() => handleDelete(project.Id)}
+                                      >
+                                        Delete
+                                      </a>
+                                      <a
+                                        className="dropdown-item"
+
+                                        onClick={() => GotoNextPage(project)}
+                                      >
+                                        View Detail
+                                      </a>
+                                    </div>
+                                  </div>
+
+                                  {/* Title */}
+                                  <h4 className="mt-0 mb-1">
+                                    <a onClick={() => GotoNextPage(project)}
+
+                                      className="text-dark fw-bold font-16"
+                                    >
+                                      {project.ProjectName}
+                                    </a>
+                                  </h4>
+
+                                  <p className="mb-1 font-12">
+                              <span
+                                style={{ color: "#6e767e" }}
+                                className="pe-2 text-nowrap mb-1 d-inline-block"
+                              >
+                                <i className="fe-file-text text-muted"></i>
+                                <b>{project?.ProjectsDocsId?.length}</b> Documents
+                              </span>
+                             
+                            </p>
+                                  {/* Task info */}
+                                  {/* <p className="mb-1 font-12">
+                              <span
+                                style={{ color: "#6e767e" }}
+                                className="pe-2 text-nowrap mb-1 d-inline-block"
+                              >
+                                <i className="fe-file-text text-muted"></i>
+                                <b>{project.documentsCount || 0}</b> Documents
+                              </span>
+                              <span
+                                style={{ color: "#6e767e" }}
+                                className="text-nowrap mb-1 d-inline-block"
+                              >
+                                <i className="fe-message-square text-muted"></i>
+                                <b>{project.commentsCount || 0}</b> Comments
+                              </span>
+                            </p> */}
+                                  <div
+                                    style={{
+                                      minWidth: "70px",
+                                      maxWidth: "100%",
+                                      position: "relative"
+                                    }}
+                                  >
+                                    <div style={{ display: 'flex' }}>
+                                      {project?.TeamMembers?.map(
+                                        (id: any, idx: any) => {
+                                          if (idx < 3) {
+                                            return (
+                                              <img
+                                                style={{
+                                                  margin:
+                                                    index == 0
+                                                      ? "0 0 0 0"
+                                                      : "0 0 0px -12px",
+                                                }}
+                                                src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+                                                className="rounded-circlecss img-thumbnail avatar-xl"
+                                                alt="profile-image"
+                                              />
+                                            );
+                                          }
+                                        }
+                                      )}
+                                      {
+                                        project?.TeamMembers.length > 3 &&
+
+                                        <div
+                                          className=""
+                                          onClick={() =>
+                                            toggleDropdown(project.Id)
+                                          }
+                                          key={project.Id}
+                                        >
+                                          <div
+                                            style={{
+                                              margin:
+                                                index == 0
+                                                  ? "0 0 0 0"
+                                                  : "0 0 0px -12px",
+                                            }}
+                                            className="rounded-circlecss img-thumbnail avatar-xl"
+                                          >
+                                            +
+                                          </div>
+                                        </div>
+                                      }
+                                    </div>
+                                    {showDropdownId === project.Id && (
+                                    <div
+                                      className=""
+                                      style={{
+                                        position: "absolute",
+                                        zIndex: "99",
+                                        background: "#fff",
+                                        padding: "1rem",
+                                        width: "30rem",
+                                      }}
+                                    >
+                                      {showDropdownId === project.Id && (
+                                        project?.TeamMembers?.map(
+                                          (id: any, idx: any) => {
+                                            return (
+                                              <img
+                                                style={{
+                                                  margin:
+                                                    idx == 0
+                                                      ? "0 0 0 0"
+                                                      : "0 0 0px -12px",
+                                                }}
+                                                src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+                                                className="rounded-circlecss img-thumbnail avatar-xl"
+                                                alt="profile-image"
+                                              />
+                                            );
+                                          }
+                                        )
+                                      )}
+                                    </div>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        }
+                        return null;
+                      })}
+                    </div>
+                  ) : (
+                    <p>Loading projects...</p>
+                  )}
+                </div>
+              </div>
+            )}
+            {activeTab === "profile11" && (
+              <div className="row mt-2">
+                <div className="container">
+                  {/* Map through the projects array and display a card for each */}
+                  {Dataproject.length > 0 ? (
+                    <div className="row">
+                      {Dataproject.map((project, index) => {
+                        if (project?.TeamMembersId?.includes(userId)) {
+                          return (
+                            <div key={index} className="col-lg-3 col-md-6 mb-4">
+                              <div className="card project-box">
+                                <div className="card-body">
+                                  <div className="dropdown float-end">
+                                    <a
+
+                                      className="dropdown-toggle card-drop arrow-none"
+                                      data-bs-toggle="dropdown"
+                                      aria-expanded="false"
+                                    >
+                                      <i className="fe-more-horizontal- m-0 text-muted h3"></i>
+                                    </a>
+                                    <div className="dropdown-menu dropdown-menu-end">
+                                      <a
+                                        className="dropdown-item"
+
+                                        onClick={() => handleDelete(project.Id)}
+                                      >
+                                        Delete
+                                      </a>
+                                      <a
+                                        className="dropdown-item"
+
+                                        onClick={() => GotoNextPage(project)}
+                                      >
+                                        View Detail
+                                      </a>
+                                    </div>
+                                  </div>
+
+                                  {/* Title */}
+                                  <h4 className="mt-0 mb-1">
+                                    <a
+                                      onClick={() => GotoNextPage(project)}
+                                      className="text-dark fw-bold font-16"
+                                    >
+                                      {project.ProjectName ||
+                                        "Untitled Project"}
+                                    </a>
+                                  </h4>
+
+                                  <p className="mb-1 font-12">
+                              <span
+                                style={{ color: "#6e767e" }}
+                                className="pe-2 text-nowrap mb-1 d-inline-block"
+                              >
+                                <i className="fe-file-text text-muted"></i>
+                                <b>{project?.ProjectsDocsId?.length}</b> Documents
+                              </span>
+                             
+                            </p>
+
+                                  {/* Task info */}
+                                  {/* <p className="mb-1 font-12">
+                              <span
+                                style={{ color: "#6e767e" }}
+                                className="pe-2 text-nowrap mb-1 d-inline-block"
+                              >
+                                <i className="fe-file-text text-muted"></i>
+                                <b>{project.documentsCount || 0}</b> Documents
+                              </span>
+                              <span
+                                style={{ color: "#6e767e" }}
+                                className="text-nowrap mb-1 d-inline-block"
+                              >
+                                <i className="fe-message-square text-muted"></i>
+                                <b>{project.commentsCount || 0}</b> Comments
+                              </span>
+                            </p> */}
+                                  <div
+                                    style={{
+                                      minWidth: "70px",
+                                      maxWidth: "100%",
+                                      position: "relative"
+                                    }}
+                                  >
+                                    <div style={{ display: 'flex' }}>
+                                      {project?.TeamMembers?.map(
+                                        (id: any, idx: any) => {
+                                          if (idx < 3) {
+                                            return (
+                                              <img
+                                                style={{
+                                                  margin:
+                                                    index == 0
+                                                      ? "0 0 0 0"
+                                                      : "0 0 0px -12px",
+                                                }}
+                                                src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+                                                className="rounded-circlecss img-thumbnail avatar-xl"
+                                                alt="profile-image"
+                                              />
+                                            );
+                                          }
+                                        }
+                                      )}
+                                      {
+                                        project?.TeamMembers.length > 3 &&
+
+                                        <div
+                                          className=""
+                                          onClick={() =>
+                                            toggleDropdown(project.Id)
+                                          }
+                                          key={project.Id}
+                                        >
+                                          <div
+                                            style={{
+                                              margin:
+                                                index == 0
+                                                  ? "0 0 0 0"
+                                                  : "0 0 0px -12px",
+                                            }}
+                                            className="rounded-circlecss img-thumbnail avatar-xl"
+                                          >
+                                            +
+                                          </div>
+                                        </div>
+                                      }
+                                    </div>
+                                    {showDropdownId === project.Id && (
+                                    <div
+                                      className=""
+                                      style={{
+                                        position: "absolute",
+                                        zIndex: "99",
+                                        background: "#fff",
+                                        padding: "1rem",
+                                        width: "30rem",
+                                      }}
+                                    >
+                                      {showDropdownId === project.Id && (
+                                        project?.TeamMembers?.map(
+                                          (id: any, idx: any) => {
+                                            return (
+                                              <img
+                                                style={{
+                                                  margin:
+                                                    idx == 0
+                                                      ? "0 0 0 0"
+                                                      : "0 0 0px -12px",
+                                                }}
+                                                src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+                                                className="rounded-circlecss img-thumbnail avatar-xl"
+                                                alt="profile-image"
+                                              />
+                                            );
+                                          }
+                                        )
+                                      )}
+                                    </div>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        }
+
+                        return null;
+                      })}
+                    </div>
+                  ) : (
+                    <p>Loading projects...</p>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

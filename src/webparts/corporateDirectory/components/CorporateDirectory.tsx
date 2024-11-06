@@ -53,7 +53,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
   });
 
   const [isFollowing, setIsFollowing] = useState(false);
-  const [followStatus, setFollowStatus] = React.useState<{ [key: number]: boolean }>({}); // Track follow status for each user
+  const [followStatus, setFollowStatus] = useState<any>({}); // Track follow status for each user
 
   React.useEffect(() => {
     console.log("This function is called only once", useHide);
@@ -129,16 +129,24 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
 
   const checkIfFollowing = async (item: any) => {
-   
+
     try {
       const currentUser = await sp.web.currentUser();
       const followRecords = await sp.web.lists.getByTitle("ARGFollows").items
-        .filter(`FollowerId eq ${item.ID} and FollowedId eq ${item.ID}`)();
-       
-        
-      setFollowStatus((prevStatus) => ({
-        ...prevStatus,
-        [item.ID]: followRecords.length > 0,
+        .filter(`FollowerId eq ${item.ID} or FollowedId eq ${item.ID}`)();
+
+      debugger
+      console.log(followRecords);
+      if (followRecords.length) {
+        item.followstatus = true
+      }
+      else {
+        item.followstatus = false
+      }
+
+      setFollowStatus((prevStatus: any) => ({
+
+        [item.ID]: followRecords.length > 0 ? true : false,
       }));
       debugger
       const followersCount = await sp.web.lists.getByTitle("ARGFollows").items
@@ -150,18 +158,17 @@ const CorporateDirectoryContext = ({ props }: any) => {
         .filter(`FollowerId eq ${item.ID}`)
         .select("Id")
         .getAll();
-        item.followersCount=followersCount.length
-        item.followingCount=followingCount.length
-        const postData = await sp.web.lists.getByTitle("ARGSocialFeed").items
+      item.followersCount = followersCount.length
+      item.followingCount = followingCount.length
+      const postData = await sp.web.lists.getByTitle("ARGSocialFeed").items
         .filter(`AuthorId eq ${item.ID}`)();
-        if(postData.length>0)
-        {
-          item.postCount=postData.length;
-        }
-        else{
-          item.postCount=0;
-        }
-       
+      if (postData.length > 0) {
+        item.postCount = postData.length;
+      }
+      else {
+        item.postCount = 0;
+      }
+
       setFollowerCount(followersCount.length);
       setUnfollowerCount(followingCount.length);
 
@@ -179,7 +186,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
   const fetchUserInformationList = async () => {
     try {
-      
+
       const currentUser = await sp.web.currentUser();
       const userList = await sp.web.lists
         .getByTitle("User Information List")
@@ -251,7 +258,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
   };
 
   const applyFiltersAndSorting = (data: any[]) => {
-    
+
     // Filter data
     const filteredData = data.filter((item) => {
       return (
@@ -354,35 +361,35 @@ const CorporateDirectoryContext = ({ props }: any) => {
   // };
   const follow = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, itemId: number) => {
     e.preventDefault();
-    
+
     // Start loading state
     setIsLoading(true);
-    
-    try {
-        const currentUser = await sp.web.currentUser();
-        // Add follow record
-        await sp.web.lists.getByTitle("ARGFollows").items.add({
-            FollowerId: currentUser.Id,
-            FollowedId: itemId
-        });
 
-        // Optimistic UI update
-        setFollowStatus((prevStatus) => ({
-            ...prevStatus,
-            [itemId]: true,
-        }));
-        setFollowerCount((prev) => prev + 1);
-        setUnfollowerCount((prev) => Math.max(prev - 1, 0));
-        fetchUserInformationList()
+    try {
+      const currentUser = await sp.web.currentUser();
+      // Add follow record
+      await sp.web.lists.getByTitle("ARGFollows").items.add({
+        FollowerId: currentUser.Id,
+        FollowedId: itemId
+      });
+
+      // Optimistic UI update
+      setFollowStatus((prevStatus: any) => ({
+        ...prevStatus,
+        [itemId]: true,
+      }));
+      setFollowerCount((prev) => prev + 1);
+      setUnfollowerCount((prev) => Math.max(prev - 1, 0));
+      fetchUserInformationList()
     } catch (error) {
-        console.error("Error following:", error);
-        // Show user feedback on error
-        alert("Failed to follow. Please try again.");
+      console.error("Error following:", error);
+      // Show user feedback on error
+      alert("Failed to follow. Please try again.");
     } finally {
-        // End loading state
-        setIsLoading(false);
+      // End loading state
+      setIsLoading(false);
     }
-};
+  };
   const unfollow = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, itemId: number) => {
     e.preventDefault();
     setIsLoading(true);
@@ -394,7 +401,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
       if (followRecords.length > 0) {
         await sp.web.lists.getByTitle("ARGFollows").items.getById(followRecords[0].Id).delete();
 
-        setFollowStatus((prevStatus) => ({
+        setFollowStatus((prevStatus: any) => ({
           ...prevStatus,
           [itemId]: false,
         }));
@@ -410,16 +417,61 @@ const CorporateDirectoryContext = ({ props }: any) => {
     finally {
       // End loading state
       setIsLoading(false);
-  }
+    }
   };
+  const toggleFollow = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, item: any) => {
+    e.preventDefault();
 
+
+    try {
+      const currentUser = await sp.web.currentUser();
+      const followRecords = await sp.web.lists.getByTitle("ARGFollows").items
+        .filter(`FollowerId eq ${currentUser.Id} and FollowedId eq ${item.ID}`)();
+
+      if (followRecords.length > 0) {
+        // Unfollow logic
+        await sp.web.lists.getByTitle("ARGFollows").items.getById(followRecords[0].Id).delete();
+
+        item.followstatus=true
+        // Update UI state
+        // setFollowStatus((prevStatus: any) => ({
+        //   ...prevStatus,
+        //   [itemId]: false,
+        // }));
+        setFollowerCount((prev) => Math.max(prev - 1, 0));
+        setUnfollowerCount((prev) => prev + 1);
+        fetchUserInformationList()
+      } else {
+        // Follow logic
+        await sp.web.lists.getByTitle("ARGFollows").items.add({
+          FollowerId: currentUser.Id,
+          FollowedId: item.ID
+        });
+        item.followstatus=true
+        // Update UI state
+        // setFollowStatus((prevStatus: any) => ({
+        //   ...prevStatus,
+        //   [itemId]: true,
+        // }));
+        setFollowerCount((prev) => prev + 1);
+        setUnfollowerCount((prev) => Math.max(prev - 1, 0));
+        fetchUserInformationList()
+
+      }
+    } catch (error) {
+      console.error("Error toggling follow status:", error);
+      alert("Failed to toggle follow status. Please try again.");
+    } finally {
+   
+    }
+  };
   return (
     <div id="wrapper" ref={elementRef}>
       <div className="app-menu" id="myHeader">
         <VerticalSideBar _context={sp} />
       </div>
       <div className="content-page">
-        <HorizontalNavbar _context={sp}/>
+        <HorizontalNavbar _context={sp} />
         <div
           className="content"
           style={{
@@ -546,7 +598,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
                 {activeTab === "cardView" && (
                   // Card View Content (only displayed when "cardView" is active)
                   <div className="row card-view">
-                    {console.log("usersssitem",usersitem)}
+                    {console.log("usersssitem", usersitem)}
                     {usersitem.map((item) => (
                       <div className="col-lg-4 col-md-6" key={item.Title}>
                         <div
@@ -622,11 +674,11 @@ const CorporateDirectoryContext = ({ props }: any) => {
                                 style={{ fontSize: "11px" }}
                               >
                                 <span data-tooltip={item.WorkPhone}>
-                                  {truncateText( item.WorkPhone != null
-                                      ? item.WorkPhone
-                                      : " NA ", 10)}
+                                  {truncateText(item.WorkPhone != null
+                                    ? item.WorkPhone
+                                    : " NA ", 10)}
                                 </span>
-                                
+
                               </p>
                               <div
                                 style={{
@@ -647,25 +699,17 @@ const CorporateDirectoryContext = ({ props }: any) => {
                                 >
                                   Message
                                 </button>
-                                {/* <button
-                                  type="button"
-                                  className="btn btn-light btn-sm waves-effect"
-                                >
-                                  Follow
-                                </button> */}
+
                                 <div>
-                                  {/* <button className="btn btn-light btn-sm waves-effect" onClick={(e)=>isFollowing ? unfollow(e,item.Id) : follow(e,item.Id)}>
-                                    {isFollowing ? "Unfollow" : "Follow"}
-                                  </button> */}
-                                  <button
-                                    type="button" className="btn btn-light btn-sm waves-effect" 
-                                    onClick={(e) => followStatus[item.ID] ? unfollow(e, item.ID) : follow(e, item.ID)}
-                                    disabled={isLoading}
+                            
+                                  <button key={item.ID}
+                                    type="button" className="btn btn-light btn-sm"
+                                    onClick={(e) => toggleFollow(e, item)} disabled={isLoading}
+
                                   >
-                                    {isLoading ? "Following..." : followStatus[item.ID] ? "Unfollow" : "Follow"}
+                                   
+                                    {item?.followstatus ? "Unfollow" : "Follow"}
                                   </button>
-                                  {/* <button className="btn btn-light btn-sm waves-effect" 
-                                  onClick={(e) => followStatus[item.ID] ? unfollow(e, item.ID) : follow(e, item.ID)}>{followStatus[item.ID] ? "Unfollow" : "Follow"}</button> */}
                                 </div>
                               </div>
                               <div className="row mt-2">
@@ -678,7 +722,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
                                         color: "#343a40",
                                       }}
                                     >
-                                      {item.postCount>0?item.postCount:0} {/* {item.posts} */}
+                                      {item.postCount > 0 ? item.postCount : 0} {/* {item.posts} */}
                                     </h4>
                                     <p className="mb-0 text-muted text-truncate">
                                       Post
@@ -694,7 +738,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
                                         color: "#343a40",
                                       }}
                                     >
-                                      {item.followersCount>0 ? item.followersCount : 0}
+                                      {item.followersCount > 0 ? item.followersCount : 0}
                                       {/* {followerCount==0?followerCount:'NA'}  {item.followers} */}
                                     </h4>
                                     <p className="mb-0 text-muted text-truncate">
@@ -711,8 +755,8 @@ const CorporateDirectoryContext = ({ props }: any) => {
                                         color: "#343a40",
                                       }}
                                     >
-                                     
-                                      {item.followingCount> 0 ? item.followingCount : 0}
+
+                                      {item.followingCount > 0 ? item.followingCount : 0}
                                     </h4>
                                     <p className="mb-0 text-muted text-truncate">
                                       Followings
@@ -960,12 +1004,12 @@ const CorporateDirectoryContext = ({ props }: any) => {
                                                 "_blank"
                                               )
                                             }
-                                            //  onClick={() =>
-                                            //   window.open(
-                                            //     "https://teams.microsoft.com",
-                                            //     "_blank"
-                                            //   )
-                                            // }
+                                          //  onClick={() =>
+                                          //   window.open(
+                                          //     "https://teams.microsoft.com",
+                                          //     "_blank"
+                                          //   )
+                                          // }
                                           />
                                         </td>
                                         <td>{item.Title}</td>
