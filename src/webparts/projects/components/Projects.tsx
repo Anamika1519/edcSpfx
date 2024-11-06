@@ -1243,7 +1243,7 @@ const HelloWorldContext = ({ props }: any) => {
                                         }
                                       )}
                                       {
-                                        project?.TeamMembers.length > 3 &&
+                                        project?.TeamMembers?.length > 3 &&
 
                                         <div
                                           className=""
@@ -1403,7 +1403,7 @@ const HelloWorldContext = ({ props }: any) => {
                                         }
                                       )}
                                       {
-                                        project?.TeamMembers.length > 3 &&
+                                        project?.TeamMembers?.length > 3 &&
 
                                         <div
                                           className=""
@@ -1578,7 +1578,7 @@ const HelloWorldContext = ({ props }: any) => {
                                         }
                                       )}
                                       {
-                                        project?.TeamMembers.length > 3 &&
+                                        project?.TeamMembers?.length > 3 &&
 
                                         <div
                                           className=""
@@ -1754,7 +1754,7 @@ const HelloWorldContext = ({ props }: any) => {
                                         }
                                       )}
                                       {
-                                        project?.TeamMembers.length > 3 &&
+                                        project?.TeamMembers?.length > 3 &&
 
                                         <div
                                           className=""

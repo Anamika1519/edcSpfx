@@ -269,3 +269,30 @@ async function getFollowersList(currentUserEmail) {
       })
      
     }
+    export const getLeader = async(sp)=>
+      {
+        let arr =[]
+            await sp.web.lists.getByTitle("ARGLeaderboard").items.select("*,Author/ID,Author/Title,Author/EMail").expand("Author").getAll(
+            ).then((res)=>
+            {
+               console.log(res,'ews');
+               arr=res
+            })
+          
+            return arr
+       
+      }
+      export const getLeaderTop = async(sp)=>
+        {
+         let arr =[]
+              await sp.web.lists.getByTitle("ARGLeaderboard").items.select("*,Author/ID,Author/Title,Author/EMail").expand("Author").top(4)(
+              ).then((res)=>
+              {
+                 console.log(res,'getLeaderTop');
+                 arr=res
+              })
+            
+          return arr
+         
+        }
+      

@@ -28,7 +28,7 @@
   import { encryptId } from "../../../APISearvice/CryptoService";
   import { MessageSquare, ThumbsUp } from "react-feather";
   import moment from "moment";
-import { addActivityLeaderboard } from "../../../APISearvice/CustomService";
+import { addActivityLeaderboard, getLeaderTop } from "../../../APISearvice/CustomService";
 import { fetchprojectdataTop } from "../../../APISearvice/ProjectsService";
 
   const HelloWorldContext = ({ props }: any) => {
@@ -114,37 +114,7 @@ import { fetchprojectdataTop } from "../../../APISearvice/ProjectsService";
       },
     ];
 
-    const leaderboard = [
-      {
-        position: 1,
-        name: "Atul Sharma",
-        department: "IT Department",
-        imgSrc: require("../../../Assets/ExtraImage/userimg.png"),
-        points: "10k",
-      },
-      {
-        position: 2,
-        name: "Rohit Sharma",
-        department: "IT Department",
-        imgSrc: require("../../../Assets/ExtraImage/userimg.png"),
-        points: "10k",
-      },
-      {
-        position: 3,
-        name: "Nitin Gupta",
-        department: "IT Department",
-        imgSrc: require("../../../Assets/ExtraImage/userimg.png"),
-        points: "10k",
-      },
-      {
-        position: 4,
-        name: "Nitin Gupta one",
-        department: "IT Department",
-        imgSrc: require("../../../Assets/ExtraImage/userimg.png"),
-        points: "10k",
-      }
-      
-    ];
+    const [leaderboard,setLeaderboard] = useState([]);
 
     const handleTabClick = (
       e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
@@ -223,7 +193,7 @@ import { fetchprojectdataTop } from "../../../APISearvice/ProjectsService";
       // console.log("check--data--of-getNewsone", newsdata);
 
       setDataofNews(newsdata);
-
+      setLeaderboard(await getLeaderTop(sp))
       const eventdata = await fetchEventdataone(sp);
       console.log("event-of-data--cheking", eventdata);
       setDataofEvent(eventdata);
