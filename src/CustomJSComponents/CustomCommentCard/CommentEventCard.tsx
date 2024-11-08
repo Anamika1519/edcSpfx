@@ -48,9 +48,11 @@ export const CommentEventCard: React.FC<{
   replies: Reply[];
   userHasLiked: boolean;
   CurrentUserProfile: string;
+  loadingLike:boolean;
   onAddReply: (text: string) => void;
   onLike: () => void;
-}> = ({ commentId, username, Commenttext, Comments, Created, likes, replies, userHasLiked, CurrentUserProfile, onAddReply, onLike }) => {
+  loadingReply:boolean;
+}> = ({ commentId, username, Commenttext, Comments, Created, likes, replies, userHasLiked, CurrentUserProfile,loadingLike, onAddReply, onLike,loadingReply }) => {
   const [newReply, setNewReply] = useState('');
   const [loading, setLoading] = useState(false); // Loading state for replies
   console.log(Comments, 'Comments');
@@ -99,12 +101,12 @@ export const CommentEventCard: React.FC<{
           <p className="mt-2">{Commenttext}</p>
 
           <div className="mt-0 mb-2 d-flex" style={{ gap: '2rem' }}>
-            <div onClick={onLike} className="btn btn-sm btn-link text-muted ps-0 " style={{
-              fontSize: '0.765625rem',
-              textDecoration: 'unset'
-            }}>
+          <div  onClick={!loading ? onLike : undefined}  className="btn btn-sm btn-link text-muted ps-0" style={{
+              fontSize: '0.765625rem',  pointerEvents: loading ? 'none' : 'auto',  opacity: loading ? 0.5 : 1,
+              textDecoration: 'unset' 
+            }} >
               {
-                likes.length > 0 ? <FontAwesomeIcon icon={faThumbsUp} className="text-primary" fontSize={14} /> : <ThumbsUp size={14} />
+                likes.length > 0 ? <FontAwesomeIcon icon={faThumbsUp} className="text-primary" size='xl' /> : <ThumbsUp size={15} />
               }
               {/* Add heart icon here */}
               {/* <FontAwesomeIcon icon={faHeart} className="text-primary" />  */}
@@ -166,7 +168,7 @@ export const CommentEventCard: React.FC<{
                     placeholder="Reply to comment..."
                     value={newReply}
                     onChange={(e) => setNewReply(e.target.value)}
-                    disabled={loading}
+                    disabled={loadingReply}
                     rows={3}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' && !e.shiftKey) {
@@ -174,6 +176,7 @@ export const CommentEventCard: React.FC<{
                         handleAddReply(e); // Calls the function to add a reply
                       }
                     }}
+                    
                   />
                 </div>
 

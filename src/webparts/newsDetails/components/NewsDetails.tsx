@@ -126,6 +126,8 @@ const NewsdetailsContext = ({ props }: any) => {
   const context = React.useContext(UserContext);
 
   const { setHide }: any = context;
+  const [loadingReply, setLoadingReply] = useState<boolean>(false);
+  const [loadingLike, setLoadingLike] = useState<boolean>(false);
 
   const Breadcrumb = [
 
@@ -303,7 +305,7 @@ const NewsdetailsContext = ({ props }: any) => {
           .items.filter(`AnnouncementAndNewsCommentId eq ${Number(initialComments[i].Id)}`).select("ID,AuthorId,UserName,Like,Created")()
           .then((result1: any) => {
             console.log(result1, "ARGEventsUserLikes");
-            likeArray=[]
+            likeArray = []
             for (var j = 0; j < result1.length; j++) {
               arrLike = {
                 "ID": result1[j].Id,
@@ -320,7 +322,7 @@ const NewsdetailsContext = ({ props }: any) => {
               AuthorId: initialComments[i].AuthorId,
               Comments: initialComments[i].Comments,
               Created: new Date(initialComments[i].Created).toLocaleString(), // Formatting the created date
-              UserLikesJSON: result1.length>0?likeArray:[]
+              UserLikesJSON: result1.length > 0 ? likeArray : []
               , // Default to empty array if null
               UserCommentsJSON:
                 initialComments[i].UserCommentsJSON != "" &&
@@ -484,6 +486,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
 
   const handleLikeToggle = async (commentIndex: number) => {
+    setLoadingLike(true);
     try {
       // Create a shallow copy of the comments array to maintain immutability
       const updatedComments = [...comments];
@@ -547,9 +550,12 @@ const NewsdetailsContext = ({ props }: any) => {
         updatedComments[commentIndex].userHasLiked = false; // Set like status for this comment only
         setComments(updatedComments);
       }
-    } catch (error) {
-      console.error("Error toggling like:", error);
-      // Optionally show an error message to the user
+    }
+    catch (error) {
+      console.error('Error toggling like:', error);
+    }
+    finally {
+      setLoadingLike(false); // Enable the button after the function completes
     }
   };
 
@@ -561,66 +567,74 @@ const NewsdetailsContext = ({ props }: any) => {
   const handleAddReply = async (commentIndex: number, replyText: string) => {
 
     debugger
+    setLoadingReply(true);
+    try {
 
-    if (replyText.trim() === '') return;
+      if (replyText.trim() === '') return;
 
-    const updatedComments = [...comments];
+      const updatedComments = [...comments];
 
 
 
-    const comment = updatedComments[commentIndex];
+      const comment = updatedComments[commentIndex];
 
-    await sp.web.lists.getByTitle("ARGAnnouncementAndNewsUserComments").items.add({
+      await sp.web.lists.getByTitle("ARGAnnouncementAndNewsUserComments").items.add({
 
-      UserName: CurrentUser.Title, // Replace with actual username
+        UserName: CurrentUser.Title, // Replace with actual username
 
-      Comments: replyText,
+        Comments: replyText,
 
-      AnnouncementAndNewsCommentsId: updatedComments[commentIndex].Id,
+        AnnouncementAndNewsCommentsId: updatedComments[commentIndex].Id,
 
-    }).then(async (ress: any) => {
-
-      console.log(ress, 'ressress');
-
-      const newReplyJson = {
-
-        Id: ress.data.Id,
-
-        AuthorId: ress.data.AuthorId,
-
-        UserName: ress.data.UserName, // Replace with actual username
-
-        Comments: ress.data.Comments,
-
-        Created: ress.data.Created,
-
-        UserProfile: CurrentUserProfile
-
-      };
-
-      updatedComments[commentIndex].UserCommentsJSON.push(newReplyJson);
-
-      await sp.web.lists.getByTitle("ARGAnnouncementandNewsComments").items.getById(updatedComments[commentIndex].Id).update({
-
-        // UserLikesJSON: JSON.stringify(updatedComments[commentIndex].UserLikesJSON),
-
-        UserCommentsJSON: JSON.stringify(updatedComments[commentIndex].UserCommentsJSON),
-
-        userHasLiked: updatedComments[commentIndex].userHasLiked,
-
-        CommentsCount: comment.UserCommentsJSON.length + 1
-
-      }).then((ress: any) => {
+      }).then(async (ress: any) => {
 
         console.log(ress, 'ressress');
 
-        setComments(updatedComments);
+        const newReplyJson = {
+
+          Id: ress.data.Id,
+
+          AuthorId: ress.data.AuthorId,
+
+          UserName: ress.data.UserName, // Replace with actual username
+
+          Comments: ress.data.Comments,
+
+          Created: ress.data.Created,
+
+          UserProfile: CurrentUserProfile
+
+        };
+
+        updatedComments[commentIndex].UserCommentsJSON.push(newReplyJson);
+
+        await sp.web.lists.getByTitle("ARGAnnouncementandNewsComments").items.getById(updatedComments[commentIndex].Id).update({
+
+          // UserLikesJSON: JSON.stringify(updatedComments[commentIndex].UserLikesJSON),
+
+          UserCommentsJSON: JSON.stringify(updatedComments[commentIndex].UserCommentsJSON),
+
+          userHasLiked: updatedComments[commentIndex].userHasLiked,
+
+          CommentsCount: comment.UserCommentsJSON.length + 1
+
+        }).then((ress: any) => {
+
+          console.log(ress, 'ressress');
+
+          setComments(updatedComments);
+
+        })
 
       })
 
-    })
-
-
+    }
+    catch (error) {
+      console.error('Error toggling Reply:', error);
+    }
+    finally {
+      setLoadingReply(false); // Enable the button after the function completes
+    }
 
   };
 
@@ -937,11 +951,12 @@ const NewsdetailsContext = ({ props }: any) => {
                       userHasLiked={comment.userHasLiked}
 
                       CurrentUserProfile={CurrentUserProfile}
+                      loadingLike={loadingLike}
 
                       onAddReply={(text) => handleAddReply(index, text)}
 
                       onLike={() => handleLikeToggle(index)} // Pass like handler
-
+                      loadingReply={loadingReply}
                     />
 
                   </div>

@@ -75,6 +75,8 @@ const ProjectDetailsContext = ({ props }: any) => {
   const [isMenuOpenshare, setIsMenuOpenshare] = useState(false);
   const { setHide }: any = context;
   const [showDropdownId, setShowDropdownId] = React.useState(null);
+  const [loadingLike, setLoadingLike] = useState<boolean>(false);
+  const [loadingReply, setLoadingReply] = useState<boolean>(false);
   const toggleDropdown = (itemId: any) => {
     if (showDropdownId === itemId) {
       setShowDropdownId(null); // Close the dropdown if already open
@@ -412,13 +414,15 @@ const ProjectDetailsContext = ({ props }: any) => {
   //   }
   // };
   const handleLikeToggle = async (commentIndex: number) => {
+    setLoadingLike(true);
     const updatedComments = [...comments];
     const comment = updatedComments[commentIndex];
 
     const userLikeIndex = comment.UserLikesJSON.findIndex(
       (like: Like) => like.UserName === CurrentUser.Title
     );
-
+try{
+  
     if (userLikeIndex === -1) {
       // Add a new like
       await sp.web.lists
@@ -467,6 +471,13 @@ const ProjectDetailsContext = ({ props }: any) => {
           setComments(updatedComments);
         });
     }
+  }
+  catch (error) {
+    console.error('Error toggling like:', error);
+  }
+  finally {
+    setLoadingLike(false); // Enable the button after the function completes
+  }
   };
 
   const openDocument = async (e: any, documentId: number) => {
@@ -481,6 +492,8 @@ const ProjectDetailsContext = ({ props }: any) => {
   // Add a reply to a comment
   const handleAddReply = async (commentIndex: number, replyText: string) => {
     debugger;
+    setLoadingReply(true);
+    try {
     if (replyText.trim() === "") return;
     const updatedComments = [...comments];
 
@@ -520,6 +533,13 @@ const ProjectDetailsContext = ({ props }: any) => {
             setComments(updatedComments);
           });
       });
+    }
+    catch (error) {
+      console.error('Error toggling Reply:', error);
+    }
+    finally {
+      setLoadingReply(false); // Enable the button after the function completes
+    }
   };
 
   const Breadcrumb = [
@@ -807,9 +827,11 @@ const ProjectDetailsContext = ({ props }: any) => {
                     replies={comment.UserCommentsJSON}
                     userHasLiked={comment.userHasLiked}
                     CurrentUserProfile={CurrentUserProfile}
+                    loadingLike={loadingLike}
                     Action="Project"
                     onAddReply={(text) => handleAddReply(index, text)}
                     onLike={() => handleLikeToggle(index)} // Pass like handler
+                    loadingReply={loadingReply}
                   />
                 </div>
               ))}

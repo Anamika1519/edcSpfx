@@ -471,7 +471,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
         <VerticalSideBar _context={sp} />
       </div>
       <div className="content-page">
-        <HorizontalNavbar _context={sp} />
+        <HorizontalNavbar _context={sp} siteUrl={siteUrl} />
         <div
           className="content"
           style={{

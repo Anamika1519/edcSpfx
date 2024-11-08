@@ -60,8 +60,12 @@ const SocialFeedContext = ({ props }: any) => {
   const [isMenuOpenshare, setIsMenuOpenshare] = useState(false);
   const [DiscussionData, setDiscussion] = useState([])
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [Loading, setLoading] = useState(false);
+
   const [copySuccess, setCopySuccess] = useState('');
   const [activeMainTab, setActiveMainTab] = useState("feed");
+  const [loadingReply, setLoadingReply] = useState<boolean>(false);
+  const [loadingLike, setLoadingLike] = useState<boolean>(false);
 
   const menuRef = useRef(null);
   useEffect(() => {
@@ -143,14 +147,15 @@ const SocialFeedContext = ({ props }: any) => {
   const checkIfFollowing = async (item: any) => {
     try {
       const currentUser = await sp.web.currentUser();
-      const followRecords = await sp.web.lists.getByTitle("ARGFollows").items
-        .filter(`FollowerId eq ${currentUser.Id} and FollowedId eq ${item.ID}`)();
+      if (item.ID != null && item.ID != undefined) {
+        const followRecords = await sp.web.lists.getByTitle("ARGFollows").items
+          .filter(`FollowerId eq ${currentUser.Id} and FollowedId eq ${item.ID}`)();
 
-      setFollowStatus((prevStatus) => ({
-        ...prevStatus,
-        [item.ID]: followRecords.length > 0,
-      }));
-
+        setFollowStatus((prevStatus) => ({
+          ...prevStatus,
+          [item.ID]: followRecords.length > 0,
+        }));
+      }
       // Update the counts based on follow status
 
     } catch (error) {
@@ -160,14 +165,15 @@ const SocialFeedContext = ({ props }: any) => {
   const checkIfFollower = async (item: any) => {
     try {
       const currentUser = await sp.web.currentUser();
-      const followRecords = await sp.web.lists.getByTitle("ARGFollows").items
-        .filter(`FollowerId eq ${currentUser.Id} and FollowedId eq ${item.ID}`)();
+      if (item.ID != null && item.ID != undefined) {
+        const followRecords = await sp.web.lists.getByTitle("ARGFollows").items
+          .filter(`FollowerId eq ${currentUser.Id} and FollowedId eq ${item.ID}`)();
 
-      setFollowStatus((prevStatus) => ({
-        ...prevStatus,
-        [item.ID]: followRecords.length > 0,
-      }));
-
+        setFollowStatus((prevStatus) => ({
+          ...prevStatus,
+          [item.ID]: followRecords.length > 0,
+        }));
+      }
       // Update the counts based on follow status
 
     } catch (error) {
@@ -281,113 +287,122 @@ const SocialFeedContext = ({ props }: any) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     debugger
     e.preventDefault();
+    setLoading(true);
+    try {
 
-    let ImagesIdss: any[] = [];
+      let ImagesIdss: any[] = [];
 
-    setIsSubmitting(true);  // Start submitting
+      setIsSubmitting(true);  // Start submitting
 
-    let newPostss: any
+      let newPostss: any
 
-    if (Contentpost.trim() || SocialFeedImagesJson.length) {
+      if (Contentpost.trim() || SocialFeedImagesJson.length) {
 
-      const newPost = {
+        const newPost = {
 
-        Contentpost,
+          Contentpost,
 
-        SocialFeedImagesJson,
+          SocialFeedImagesJson,
 
-        Created: new Date().toLocaleTimeString(),
+          Created: new Date().toLocaleTimeString(),
 
-        userName: currentUsername,
+          userName: currentUsername,
 
-        userAvatar: `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${currentEmail}`,
-
-        likecount: 0,
-
-        commentcount: 0,
-
-        shares: 0,
-
-      };
-
-
-
-      ImagesIdss = ImagesIdss.concat(SocialFeedImagesJson.map((item: any) => item.ID));
-
-      setImageIds(ImagesIdss)
-
-      try {
-
-        // Add the new post to SharePoint List
-
-        await sp.web.lists.getByTitle('ARGSocialFeed').items.add({
-
-          Contentpost: Contentpost,  // Use the Contentpost for the title (or a different field if necessary)
-          SocialFeedImagesJson: JSON.stringify(SocialFeedImagesJson),  // Store the images as JSON string
-          UserName: currentUsername,
           userAvatar: `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${currentEmail}`,
+
           likecount: 0,
+
           commentcount: 0,
-          SocialFeedImagesId: ImagesIdss
-        }).then(async (ele: any) => {
-          console.log(ele);
-          newPostss = {
-            Contentpost,
-            SocialFeedImagesJson,
-            Created: new Date().toLocaleTimeString(),
-            userName: currentUsername,
+
+          shares: 0,
+
+        };
+
+
+
+        ImagesIdss = ImagesIdss.concat(SocialFeedImagesJson.map((item: any) => item.ID));
+
+        setImageIds(ImagesIdss)
+
+        try {
+
+          // Add the new post to SharePoint List
+
+          await sp.web.lists.getByTitle('ARGSocialFeed').items.add({
+
+            Contentpost: Contentpost,  // Use the Contentpost for the title (or a different field if necessary)
+            SocialFeedImagesJson: JSON.stringify(SocialFeedImagesJson),  // Store the images as JSON string
+            UserName: currentUsername,
             userAvatar: `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${currentEmail}`,
             likecount: 0,
             commentcount: 0,
-            shares: 0,
-            Id: ele.data.Id
-          };
+            SocialFeedImagesId: ImagesIdss
+          }).then(async (ele: any) => {
+            console.log(ele);
+            newPostss = {
+              Contentpost,
+              SocialFeedImagesJson,
+              Created: new Date().toLocaleTimeString(),
+              userName: currentUsername,
+              userAvatar: `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${currentEmail}`,
+              likecount: 0,
+              commentcount: 0,
+              shares: 0,
+              Id: ele.data.Id
+            };
 
-          const updatedPosts = [newPostss, ...posts];
+            const updatedPosts = [newPostss, ...posts];
 
-          await addActivityLeaderboard(sp, "Post By User");
-          console.log(updatedPosts);
+            await addActivityLeaderboard(sp, "Post By User");
+            console.log(updatedPosts);
 
-          setPosts(updatedPosts);
+            setPosts(updatedPosts);
 
-          fetchPosts()
 
-          localStorage.setItem('posts', JSON.stringify(updatedPosts));
+
+            localStorage.setItem('posts', JSON.stringify(updatedPosts));
+            fetchPosts()
+          }
+
+          );
+
+
+
+          // If the SharePoint request is successful, update the state and local storage
+
+
+
+          // Clear fields
+
+          setContent('');
+
+          setImages([]);
+
+        } catch (error) {
+
+          console.log("Error adding post to SharePoint: ", error);
+
+          //alert("There was an error submitting your post. Please try again.");
+
+        } finally {
+
+          setIsSubmitting(false);  // End submitting
 
         }
 
-        );
+      } else {
 
+        //alert("Please add some content or upload images before submitting.");
 
-
-        // If the SharePoint request is successful, update the state and local storage
-
-
-
-        // Clear fields
-
-        setContent('');
-
-        setImages([]);
-
-      } catch (error) {
-
-        console.log("Error adding post to SharePoint: ", error);
-
-        //alert("There was an error submitting your post. Please try again.");
-
-      } finally {
-
-        setIsSubmitting(false);  // End submitting
+        setIsSubmitting(false);
 
       }
-
-    } else {
-
-      //alert("Please add some content or upload images before submitting.");
-
-      setIsSubmitting(false);
-
+    }
+    catch (error) {
+      console.error('Error toggling Reply:', error);
+    }
+    finally {
+      setLoading(false); // Enable the button after the function completes
     }
 
   };
@@ -785,7 +800,7 @@ const SocialFeedContext = ({ props }: any) => {
 
         <div className="content" style={{ marginLeft: `${!useHide ? '240px' : '80px'}`, marginTop: '1rem' }}>
 
-          <div className="container-fluid  paddb">
+          <div className="container-fluid ">
 
             <div className="row" style={{ paddingLeft: '0.5rem' }}>
 
@@ -957,7 +972,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                               <div className="border rounded">
 
-                                <form onSubmit={handleSubmit} className="comment-area-box">
+                                <form onSubmit={!Loading? handleSubmit:undefined} className="comment-area-box">
 
                                   <textarea
 
@@ -999,7 +1014,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                                       <div>
 
-                                        <Link style={{ width: "20px", height: "16px" }} onClick={() => handleImageChange} />
+                                        <Link style={{ width: "20px", height: "16px" }} onClick={!Loading?() => handleImageChange:undefined} />
 
                                         <input
 
@@ -1073,7 +1088,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                                     <button type="submit" className="btn btn-sm btn-success font-121">
 
-                                      <FontAwesomeIcon icon={faPaperPlane} /> Post
+                                 {!Loading?<><FontAwesomeIcon icon={faPaperPlane} /> Poststing...</>:<><FontAwesomeIcon icon={faPaperPlane} /> Post</>}     
 
                                     </button>
 
@@ -1625,172 +1640,180 @@ const SocialFeedContext = ({ props }: any) => {
                       </div> */}
                       {isMenuOpen && (
                         <div className="dropdown-menucsspost">
-                          <div onClick={()=>FilterDiscussionData("Today")} style={{    
+                          <div onClick={() => FilterDiscussionData("Today")} style={{
                             fontSize: '0.7rem',
                             padding: '0.2rem',
-                            color: 'gray'}}>Today</div>
-                          <div style={{    
+                            color: 'gray'
+                          }}>Today</div>
+                          <div style={{
                             fontSize: '0.7rem',
                             padding: '0.2rem',
-                            color: 'gray'}} onClick={()=>FilterDiscussionData("Yesterday")}>Yesterday</div>
-                          <div style={{    
+                            color: 'gray'
+                          }} onClick={() => FilterDiscussionData("Yesterday")}>Yesterday</div>
+                          <div style={{
                             fontSize: '0.7rem',
                             padding: '0.2rem',
-                            color: 'gray'}} onClick={()=>FilterDiscussionData("Last Week")}>Last Week</div>
-                          <div style={{    
+                            color: 'gray'
+                          }} onClick={() => FilterDiscussionData("Last Week")}>Last Week</div>
+                          <div style={{
                             fontSize: '0.7rem',
                             padding: '0.2rem',
-                            color: 'gray'}} onClick={()=>FilterDiscussionData("Last Month")}>Last Month</div>
+                            color: 'gray'
+                          }} onClick={() => FilterDiscussionData("Last Month")}>Last Month</div>
                         </div>
                       )}
 
-                </h4>
+                    </h4>
 
-                {
+                    {
 
-                  DiscussionData.length > 0 ? DiscussionData.map(x => {
+                      DiscussionData.length > 0 ? DiscussionData.map(x => {
 
-                    return (
+                        return (
 
-                      <div style={{ margin: '15px 0px 10px 0px', padding: '0px 0px 10px 0px' }} className="d-flex align-items-start border-bottom ng-scope">
+                          <div style={{ margin: '15px 0px 10px 0px', padding: '0px 0px 10px 0px' }} className="d-flex align-items-start border-bottom ng-scope">
 
 
 
-                        <TrendingUp size={18} style={{ marginTop: '5px' }} color='#1faee3' /> &nbsp;
+                            <TrendingUp size={18} style={{ marginTop: '5px' }} color='#1faee3' /> &nbsp;
 
-                        <div className="w-100" style={{ fontWeight: '100' }}>
+                            <div className="w-100" style={{ fontWeight: '100' }}>
 
-                          <a className="font-14" style={{ fontSize: '14px' }}>
+                              <a className="font-14" style={{ fontSize: '14px' }}>
 
-                            <strong className="text-dark" style={{ fontWeight: '700' }}>{x?.DiscussionForumCategory?.CategoryName}:</strong> &nbsp;
+                                <strong className="text-dark" style={{ fontWeight: '700' }}>{x?.DiscussionForumCategory?.CategoryName}:</strong> &nbsp;
 
-                            <span className="text-muted" style={{ color: '#6b6b6b' }}>
+                                <span className="text-muted" style={{ color: '#6b6b6b' }}>
 
-                              {x.Topic}
+                                  {x.Topic}
 
-                            </span>
+                                </span>
 
-                          </a>
+                              </a>
 
 
 
-                        </div>
+                            </div>
 
-                      </div>
+                          </div>
 
-                    )
+                        )
 
-                  }
+                      }
 
-                  ) : null
+                      ) : null
 
-                }
+                    }
 
-              </div>
+                  </div>
 
-            </div>
+                </div>
 
 
 
-            <div className="card mobile-6" style={{ borderRadius: "1rem" }}>
+                <div className="card mobile-6" style={{ borderRadius: "1rem" }}>
 
-              <div className="card-body pb-3 gheight">
+                  <div className="card-body pb-3 gheight">
 
-                <h4 className="header-title font-16 text-dark fw-bold mb-0" style={{ fontSize: '20px' }}>
+                    <h4 className="header-title font-16 text-dark fw-bold mb-0" style={{ fontSize: '20px' }}>
 
-                  People you Follow
+                      People you Follow
 
-                  <a
+                      <a
 
-                    style={{ float: "right" }}
+                        style={{ float: "right" }}
 
-                    className="font-11 view-all  btn btn-primary  waves-effect waves-light"
+                        className="font-11 view-all  btn btn-primary  waves-effect waves-light"
 
-                    onClick={(e) => GotoNextPageone(e, 'CorporateDirectory')}
+                        onClick={(e) => GotoNextPageone(e, 'CorporateDirectory')}
 
-                  >
+                      >
 
-                    View All
+                        View All
 
-                  </a>
+                      </a>
 
-                </h4>
+                    </h4>
 
-                <div className="inbox-widget mt-4">
+                    <div className="inbox-widget mt-4">
 
-                  {followerList.length > 0 && followerList.map((user: any, index: 0) => (
+                      {followerList.length > 0 && followerList.map((user: any, index: 0) => (
 
-                    <div
+                        <div
 
-                      key={index}
+                          key={index}
 
-                      className="d-flex border-bottom heit8 align-items-start w-100 justify-content-between mb-3"
-
-                    >
-
-                      <div className="col-sm-2 ">
-
-                        <a>
-
-                          <img
-
-                            src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${user.EMail}`}
-
-                            className="rounded-circle"
-
-                            width="50"
-
-                            alt={user.Title}
-
-                          />
-
-                        </a>
-
-                      </div>
-
-                      <div className="col-sm-8">
-
-                        <a>
-
-                          <p className="fw-bold font-14 mb-0 text-dark namcss" style={{ fontSize: '14px' }}>
-
-                            {user.Title}| {user.Department != null ? user.Department : 'NA'}
-
-                          </p>
-
-                        </a>
-
-                        <p
-
-                          style={{
-
-                            color: "#6b6b6b",
-
-                            fontWeight: "500", fontSize: '14px'
-
-                          }}
-
-                          className="font-12 namcss"
+                          className="d-flex border-bottom heit8 align-items-start w-100 justify-content-between mb-3"
 
                         >
 
-                          NA
+                          <div className="col-sm-2 ">
 
-                          {/* Mob: {user.mobile} */}
+                            <a>
 
-                        </p>
+                              <img
 
-                      </div>
+                                src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${user.EMail}`}
 
-                      <div className="col-sm-2 txtr">
+                                className="rounded-circle"
 
-                        <PlusCircle size={20} color='#008751' />
+                                width="50"
 
-                      </div>
+                                alt={user.Title}
+
+                              />
+
+                            </a>
+
+                          </div>
+
+                          <div className="col-sm-8">
+
+                            <a>
+
+                              <p className="fw-bold font-14 mb-0 text-dark namcss" style={{ fontSize: '14px' }}>
+
+                                {user.Title}| {user.Department != null ? user.Department : 'NA'}
+
+                              </p>
+
+                            </a>
+
+                            <p
+
+                              style={{
+
+                                color: "#6b6b6b",
+
+                                fontWeight: "500", fontSize: '14px'
+
+                              }}
+
+                              className="font-12 namcss"
+
+                            >
+
+                              NA
+
+                              {/* Mob: {user.mobile} */}
+
+                            </p>
+
+                          </div>
+
+                          <div className="col-sm-2 txtr">
+
+                            <PlusCircle size={20} color='#008751' />
+
+                          </div>
+
+                        </div>
+
+                      ))}
 
                     </div>
 
-                  ))}
+                  </div>
 
                 </div>
 
@@ -1801,10 +1824,6 @@ const SocialFeedContext = ({ props }: any) => {
           </div>
 
         </div>
-
-      </div>
-
-    </div>
 
       </div >
 

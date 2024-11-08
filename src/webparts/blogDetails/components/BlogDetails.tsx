@@ -67,6 +67,8 @@ const BlogDetailsContext = ({ props }: any) => {
   const [copySuccess, setCopySuccess] = useState("");
   const { useHide }: any = React.useContext(UserContext);
   const { setHide }: any = context;
+  const [loadingLike, setLoadingLike] = useState<boolean>(false);
+  const [loadingReply, setLoadingReply] = useState<boolean>(false);
   // Load comments from localStorage on mount
   useEffect(() => {
     // const savedComments = localStorage.getItem('comments');
@@ -287,6 +289,7 @@ const BlogDetailsContext = ({ props }: any) => {
  
   // Add a like to a comment
   const handleLikeToggle = async (commentIndex: number) => {
+    setLoadingLike(true);
     const updatedComments = [...comments];
     const comment = updatedComments[commentIndex];
  
@@ -294,7 +297,9 @@ const BlogDetailsContext = ({ props }: any) => {
     const userLikeIndex = comment.UserLikesJSON.findIndex(
       (like: Like) => like.UserName === CurrentUser.Title // Replace with actual username property
     );
- 
+ try
+ {
+  
     if (userLikeIndex === -1) {
       // User hasn't liked yet, proceed to add a like
       await sp.web.lists
@@ -372,11 +377,21 @@ const BlogDetailsContext = ({ props }: any) => {
             });
         });
     }
+    
+  }
+  catch (error) {
+    console.error('Error toggling like:', error);
+  }
+  finally {
+    setLoadingLike(false); // Enable the button after the function completes
+  }
   };
  
   // Add a reply to a comment
   const handleAddReply = async (commentIndex: number, replyText: string) => {
     debugger;
+    setLoadingReply(true);
+    try {
     if (replyText.trim() === "") return;
     const updatedComments = [...comments];
  
@@ -416,7 +431,15 @@ const BlogDetailsContext = ({ props }: any) => {
             setComments(updatedComments);
           });
       });
-  };
+    }
+    catch (error) {
+      console.error('Error toggling Reply:', error);
+    }
+    finally {
+      setLoadingReply(false); // Enable the button after the function completes
+    }
+
+    };
  
   const Breadcrumb = [
     {
@@ -617,9 +640,11 @@ const BlogDetailsContext = ({ props }: any) => {
                     replies={comment.UserCommentsJSON}
                     userHasLiked={comment.userHasLiked}
                     CurrentUserProfile={CurrentUserProfile}
+                    loadingLike={loadingLike}
                     Action="Blog"
                     onAddReply={(text) => handleAddReply(index, text)}
                     onLike={() => handleLikeToggle(index)} // Pass like handler
+                    loadingReply={loadingReply}
                   />
                 </div>
               ))}

@@ -251,25 +251,35 @@ async function getFollowersList(currentUserEmail) {
       }
       return arr;
     }
-    export const addActivityLeaderboard = async(sp,Action)=>
-    {
-       await sp.web.lists.getByTitle("ARGLeaderboardConfigure").items.filter(`Actions eq '${Action}'`)().then(async (res)=>
-      {
-        if(res.length>0)
-        {
-          await sp.web.lists.getByTitle("ARGLeaderboard").items.add(
-            {
-              Action:Action,
-              Points:res[0].Points
-            }
-          ).then((res)=>
+    export const addActivityLeaderboard = async (sp, Action) => {
+      debugger;
+      const trimmedAction = Action.trim();
+      
+      // Retrieve all items, and filter on the client side
+      await sp.web.lists
+        .getByTitle("ARGLeaderboardConfigure")
+        .items.select("Actions", "Points")() // Adjust fields as needed
+        .then(async (res) => {
+          if(res.length>0)
           {
-             console.log(res,'ews');
-          })
-        }
-      })
-     
-    }
+            const matchingItem = res.find(item => item.Actions.trim() === trimmedAction);
+    
+            if (matchingItem) {
+              await sp.web.lists
+                .getByTitle("ARGLeaderboard")
+                .items.add({
+                  Action: trimmedAction,
+                  Points: matchingItem.Points,
+                })
+                .then((res) => {
+                  console.log(res, 'ews');
+                });
+            }
+          }
+          // Filter results by trimming Actions field values
+          
+        });
+    };
     // export const getLeader = async (sp) => {
     //   let arr = [];
     

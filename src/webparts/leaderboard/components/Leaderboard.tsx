@@ -135,7 +135,7 @@ const LeaderboardContext = ({ props }: any) => {
       MainComponentURl: `${siteUrl}/SitePages/Dashboard.aspx`,
     },
     {
-      ChildComponent: "Corporate Directory",
+      ChildComponent: "Leaderboard",
       ChildComponentURl: `${siteUrl}/SitePages/Leaderboard.aspx`,
     },
   ];
@@ -244,7 +244,7 @@ const LeaderboardContext = ({ props }: any) => {
         <VerticalSideBar _context={sp} />
       </div>
       <div className="content-page">
-        <HorizontalNavbar _context={sp} />
+        <HorizontalNavbar _context={sp} siteUrl={siteUrl} />
         <div
           className="content"
           style={{

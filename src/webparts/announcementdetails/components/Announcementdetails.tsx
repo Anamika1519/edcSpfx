@@ -59,6 +59,10 @@ const AnnouncementdetailsContext = ({ props }: any) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
+  const [loadingLike, setLoadingLike] = useState<boolean>(false);
+  const [loadingReply, setLoadingReply] = useState<boolean>(false);
+
+
   const [ArrDetails, setArrDetails] = useState([])
   const [CurrentUserProfile, setCurrentUserProfile]: any[] = useState("")
   const [copySuccess, setCopySuccess] = useState('');
@@ -70,7 +74,7 @@ const AnnouncementdetailsContext = ({ props }: any) => {
     // if (savedComments) {
     //   setComments(JSON.parse(savedComments));
     // }
- 
+
     ApiLocalStorageData()
     ApICallData()
     const showNavbar = (
@@ -261,7 +265,7 @@ const AnnouncementdetailsContext = ({ props }: any) => {
 
   // Add a like to a comment
   const handleLikeToggle = async (commentIndex: number) => {
-
+    setLoadingLike(true);
     const updatedComments = [...comments];
 
     const comment = updatedComments[commentIndex];
@@ -276,174 +280,179 @@ const AnnouncementdetailsContext = ({ props }: any) => {
 
     );
 
+    try {
 
+      if (userLikeIndex === -1) {
 
-    if (userLikeIndex === -1) {
+        // User hasn't liked yet, proceed to add a like
 
-      // User hasn't liked yet, proceed to add a like
+        await sp.web.lists.getByTitle("ARGAnnouncementAndNewsUserLikes").items.add({
 
-      await sp.web.lists.getByTitle("ARGAnnouncementAndNewsUserLikes").items.add({
+          UserName: CurrentUser.Title, // Replace with actual username
 
-        UserName: CurrentUser.Title, // Replace with actual username
+          Like: true,
 
-        Like: true,
+          AnnouncementAndNewsCommentId: comment.Id,
 
-        AnnouncementAndNewsCommentId: comment.Id,
+          userHasLiked: true
 
-        userHasLiked: true
+        }).then(async (ress: any) => {
 
-      }).then(async (ress: any) => {
-
-        console.log(ress, 'Added Like');
-
-
-
-        // Add the new like to the comment's UserLikesJSON array
-
-        const newLikeJson: Like = {
-
-          ID: ress.data.Id,
-
-          AuthorId: ress.data.AuthorId,
-
-          UserName: ress.data.UserName, // Replace with actual username
-
-          like: "yes",
-
-          Created: ress.data.Created,
-
-          Count: comment.UserLikesJSON.length + 1
-
-        };
+          console.log(ress, 'Added Like');
 
 
 
-        updatedComments[commentIndex].UserLikesJSON.push(newLikeJson);
+          // Add the new like to the comment's UserLikesJSON array
 
+          const newLikeJson: Like = {
 
+            ID: ress.data.Id,
 
-        // Update the corresponding SharePoint comment list
+            AuthorId: ress.data.AuthorId,
 
-        await sp.web.lists.getByTitle("ARGAnnouncementandNewsComments").items.getById(comment.Id).update({
+            UserName: ress.data.UserName, // Replace with actual username
 
-          UserLikesJSON: JSON.stringify(updatedComments[commentIndex].UserLikesJSON),
+            like: "yes",
 
-          userHasLiked: true,
+            Created: ress.data.Created,
 
-          LikesCount: updatedComments[commentIndex].UserLikesJSON.length
-
-        }).then(async () => {
-
-          console.log('Updated comment with new like');
-
-          comment.userHasLiked = true;
-
-
-
-
-
-          // Update the total likes for the announcement/news post
-
-          const ids = window.location.search;
-
-          const originalString = ids;
-
-          const idNum = originalString.substring(1); // Extract the ID from query string
-
-          const likeUpdateBody = {
-
-            LikeCounts: updatedComments[commentIndex].UserLikesJSON.length
+            Count: comment.UserLikesJSON.length + 1
 
           };
 
 
 
-          const newItem = await sp.web.lists.getByTitle('ARGAnnouncementAndNews').items.getById(Number(idNum)).update(likeUpdateBody);
-
-          console.log('Like count updated successfully:', newItem);
-
-        });
-        setComments(updatedComments);
-        let notifiedArr = {
-          ContentId: ArrDetails[0].Id,
-          NotifiedUserId: ArrDetails[0].AuthorId,
-          ContentType0: "Like",
-          ContentName: ArrDetails[0].Title,
-          ActionUserId: CurrentUser.Id,
-          DeatilPage: "AnnouncementDetails",
-          ReadStatus: false
-        }
-        const nofiArr = await addNotification(notifiedArr, sp)
-        console.log(nofiArr, 'nofiArr');
-
-      });
-
-    } else {
-
-      // User already liked, proceed to unlike (remove like)
-
-      const userLikeId = comment.UserLikesJSON[userLikeIndex].ID; // Get the ID of the user's like
+          updatedComments[commentIndex].UserLikesJSON.push(newLikeJson);
 
 
 
-      await sp.web.lists.getByTitle("ARGAnnouncementAndNewsUserLikes").items.getById(userLikeId).delete().then(async () => {
+          // Update the corresponding SharePoint comment list
 
-        console.log('Removed Like');
+          await sp.web.lists.getByTitle("ARGAnnouncementandNewsComments").items.getById(comment.Id).update({
 
+            UserLikesJSON: JSON.stringify(updatedComments[commentIndex].UserLikesJSON),
 
+            userHasLiked: true,
 
-        // Remove the like from the comment's UserLikesJSON array
+            LikesCount: updatedComments[commentIndex].UserLikesJSON.length
 
-        updatedComments[commentIndex].UserLikesJSON.splice(userLikeIndex, 1);
+          }).then(async () => {
 
+            console.log('Updated comment with new like');
 
-
-        // Update the corresponding SharePoint comment list
-
-        await sp.web.lists.getByTitle("ARGAnnouncementandNewsComments").items.getById(comment.Id).update({
-
-          UserLikesJSON: JSON.stringify(updatedComments[commentIndex].UserLikesJSON),
-
-          userHasLiked: false,
-
-          LikesCount: updatedComments[commentIndex].UserLikesJSON.length
-
-        }).then(async () => {
-
-          console.log('Updated comment after removing like');
-
-          comment.userHasLiked = false;
+            comment.userHasLiked = true;
 
 
 
 
 
-          // Update the total likes for the announcement/news post
+            // Update the total likes for the announcement/news post
 
-          const ids = window.location.search;
+            const ids = window.location.search;
 
-          const originalString = ids;
+            const originalString = ids;
 
-          const idNum = originalString.substring(1);
+            const idNum = originalString.substring(1); // Extract the ID from query string
 
+            const likeUpdateBody = {
 
+              LikeCounts: updatedComments[commentIndex].UserLikesJSON.length
 
-          const likeUpdateBody = {
-
-            LikeCounts: updatedComments[commentIndex].UserLikesJSON.length
-
-          };
+            };
 
 
 
-          const newItem = await sp.web.lists.getByTitle('ARGAnnouncementAndNews').items.getById(Number(idNum)).update(likeUpdateBody);
+            const newItem = await sp.web.lists.getByTitle('ARGAnnouncementAndNews').items.getById(Number(idNum)).update(likeUpdateBody);
 
-          console.log('Like count updated successfully:', newItem);
+            console.log('Like count updated successfully:', newItem);
+
+          });
           setComments(updatedComments);
+          let notifiedArr = {
+            ContentId: ArrDetails[0].Id,
+            NotifiedUserId: ArrDetails[0].AuthorId,
+            ContentType0: "Like",
+            ContentName: ArrDetails[0].Title,
+            ActionUserId: CurrentUser.Id,
+            DeatilPage: "AnnouncementDetails",
+            ReadStatus: false
+          }
+          const nofiArr = await addNotification(notifiedArr, sp)
+          console.log(nofiArr, 'nofiArr');
+
         });
 
-      });
+      } else {
 
+        // User already liked, proceed to unlike (remove like)
+
+        const userLikeId = comment.UserLikesJSON[userLikeIndex].ID; // Get the ID of the user's like
+
+
+
+        await sp.web.lists.getByTitle("ARGAnnouncementAndNewsUserLikes").items.getById(userLikeId).delete().then(async () => {
+
+          console.log('Removed Like');
+
+
+
+          // Remove the like from the comment's UserLikesJSON array
+
+          updatedComments[commentIndex].UserLikesJSON.splice(userLikeIndex, 1);
+
+
+
+          // Update the corresponding SharePoint comment list
+
+          await sp.web.lists.getByTitle("ARGAnnouncementandNewsComments").items.getById(comment.Id).update({
+
+            UserLikesJSON: JSON.stringify(updatedComments[commentIndex].UserLikesJSON),
+
+            userHasLiked: false,
+
+            LikesCount: updatedComments[commentIndex].UserLikesJSON.length
+
+          }).then(async () => {
+
+            console.log('Updated comment after removing like');
+
+            comment.userHasLiked = false;
+
+
+
+
+
+            // Update the total likes for the announcement/news post
+
+            const ids = window.location.search;
+
+            const originalString = ids;
+
+            const idNum = originalString.substring(1);
+
+
+
+            const likeUpdateBody = {
+
+              LikeCounts: updatedComments[commentIndex].UserLikesJSON.length
+
+            };
+
+
+
+            const newItem = await sp.web.lists.getByTitle('ARGAnnouncementAndNews').items.getById(Number(idNum)).update(likeUpdateBody);
+
+            console.log('Like count updated successfully:', newItem);
+            setComments(updatedComments);
+          });
+
+        });
+
+      }
+    } catch (error) {
+      console.error('Error toggling like:', error);
+    } finally {
+      setLoadingLike(false); // Enable the button after the function completes
     }
 
   };
@@ -452,35 +461,45 @@ const AnnouncementdetailsContext = ({ props }: any) => {
   // Add a reply to a comment
   const handleAddReply = async (commentIndex: number, replyText: string) => {
     debugger
-    if (replyText.trim() === '') return;
-    const updatedComments = [...comments];
+    setLoadingReply(true);
+    try {
 
-    const comment = updatedComments[commentIndex];
-    await sp.web.lists.getByTitle("ARGAnnouncementAndNewsUserComments").items.add({
-      UserName: CurrentUser.Title, // Replace with actual username
-      Comments: replyText,
-      AnnouncementAndNewsCommentsId: updatedComments[commentIndex].Id,
-    }).then(async (ress: any) => {
-      console.log(ress, 'ressress');
-      const newReplyJson = {
-        Id: ress.data.Id,
-        AuthorId: ress.data.AuthorId,
-        UserName: ress.data.UserName, // Replace with actual username
-        Comments: ress.data.Comments,
-        Created: ress.data.Created,
-        UserProfile: CurrentUserProfile
-      };
-      updatedComments[commentIndex].UserCommentsJSON.push(newReplyJson);
-      await sp.web.lists.getByTitle("ARGAnnouncementandNewsComments").items.getById(updatedComments[commentIndex].Id).update({
-        // UserLikesJSON: JSON.stringify(updatedComments[commentIndex].UserLikesJSON),
-        UserCommentsJSON: JSON.stringify(updatedComments[commentIndex].UserCommentsJSON),
-        userHasLiked: updatedComments[commentIndex].userHasLiked,
-        CommentsCount: comment.UserCommentsJSON.length + 1
-      }).then((ress: any) => {
+      if (replyText.trim() === '') return;
+      const updatedComments = [...comments];
+
+      const comment = updatedComments[commentIndex];
+      await sp.web.lists.getByTitle("ARGAnnouncementAndNewsUserComments").items.add({
+        UserName: CurrentUser.Title, // Replace with actual username
+        Comments: replyText,
+        AnnouncementAndNewsCommentsId: updatedComments[commentIndex].Id,
+      }).then(async (ress: any) => {
         console.log(ress, 'ressress');
-        setComments(updatedComments);
+        const newReplyJson = {
+          Id: ress.data.Id,
+          AuthorId: ress.data.AuthorId,
+          UserName: ress.data.UserName, // Replace with actual username
+          Comments: ress.data.Comments,
+          Created: ress.data.Created,
+          UserProfile: CurrentUserProfile
+        };
+        updatedComments[commentIndex].UserCommentsJSON.push(newReplyJson);
+        await sp.web.lists.getByTitle("ARGAnnouncementandNewsComments").items.getById(updatedComments[commentIndex].Id).update({
+          // UserLikesJSON: JSON.stringify(updatedComments[commentIndex].UserLikesJSON),
+          UserCommentsJSON: JSON.stringify(updatedComments[commentIndex].UserCommentsJSON),
+          userHasLiked: updatedComments[commentIndex].userHasLiked,
+          CommentsCount: comment.UserCommentsJSON.length + 1
+        }).then((ress: any) => {
+          console.log(ress, 'ressress');
+          setComments(updatedComments);
+        })
       })
-    })
+    }
+    catch (error) {
+      console.error('Error toggling Reply:', error);
+    }
+    finally {
+      setLoadingReply(false); // Enable the button after the function completes
+    }
 
   };
 
@@ -647,9 +666,11 @@ const AnnouncementdetailsContext = ({ props }: any) => {
                     replies={comment.UserCommentsJSON}
                     userHasLiked={comment.userHasLiked}
                     CurrentUserProfile={CurrentUserProfile}
+                    loadingLike={loadingLike}
                     Action="Announcement"
                     onAddReply={(text) => handleAddReply(index, text)}
                     onLike={() => handleLikeToggle(index)} // Pass like handler
+                    loadingReply={loadingReply}
                   />
                 </div>
 

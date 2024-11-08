@@ -70,6 +70,9 @@ const EventdetailscalenderContext = ({ props }: any) => {
   const [EventId, setId] = useState(0)
   const { useHide }: any = React.useContext(UserContext);
   const { setHide }: any = context;
+  const [loadingLike, setLoadingLike] = useState<boolean>(false);
+  const [loadingReply, setLoadingReply] = useState<boolean>(false);
+
   const Breadcrumb = [
     {
       "MainComponent": "Home",
@@ -304,6 +307,8 @@ const EventdetailscalenderContext = ({ props }: any) => {
 
   const handleLikeToggle = async (commentIndex: number) => {
     debugger
+    setLoadingLike(true);
+    try{
     const updatedComments = [...comments];
     const comment = updatedComments[commentIndex];
 
@@ -367,12 +372,21 @@ const EventdetailscalenderContext = ({ props }: any) => {
         });
       });
     }
+  }
+  catch (error) {
+    console.error('Error toggling like:', error);
+  }
+  finally {
+    setLoadingLike(false); // Enable the button after the function completes
+  }
   };
 
 
   // Add a reply to a comment
   const handleAddReply = async (commentIndex: number, replyText: string) => {
     debugger;
+    setLoadingReply(true);
+    try {
     if (replyText.trim() === "") return;
     const updatedComments = [...comments];
 
@@ -411,6 +425,13 @@ const EventdetailscalenderContext = ({ props }: any) => {
             setComments(updatedComments);
           });
       });
+    }
+    catch (error) {
+      console.error('Error toggling Reply:', error);
+    }
+    finally {
+      setLoadingReply(false); // Enable the button after the function completes
+    }
   };
   const copyToClipboard = (Id: number) => {
     const link = `${siteUrl}/SitePages/EventDetailsCalendar.aspx?${Id}`;
@@ -666,8 +687,10 @@ const EventdetailscalenderContext = ({ props }: any) => {
                     replies={comment.UserCommentsJSON}
                     userHasLiked={comment.userHasLiked}
                     CurrentUserProfile={CurrentUserProfile}
+                    loadingLike={loadingLike}
                     onAddReply={(text) => handleAddReply(index, text)}
                     onLike={() => handleLikeToggle(index)} // Pass like handler
+                    loadingReply={loadingReply}
                   />
                 </div>
               ))}

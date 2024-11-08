@@ -48,10 +48,12 @@ export const CommentCard: React.FC<{
   replies: Reply[];
   userHasLiked: boolean;
   CurrentUserProfile: string;
+  loadingLike:boolean;
   Action: string;
   onAddReply: (text: string) => void;
+  loadingReply:boolean;
   onLike: () => void;
-}> = ({ commentId, username, Commenttext, Comments, Created, likes, replies, userHasLiked, CurrentUserProfile, Action, onAddReply, onLike }) => {
+}> = ({ commentId, username, Commenttext, Comments, Created, likes, replies, userHasLiked, CurrentUserProfile,loadingLike, Action, onAddReply, onLike ,loadingReply}) => {
   const [newReply, setNewReply] = useState('');
   const [loading, setLoading] = useState(false); // Loading state for replies
   console.log(Comments, 'Comments');
@@ -107,10 +109,10 @@ export const CommentCard: React.FC<{
           <p className="mt-2">{Commenttext}</p>
 
           <div className="mt-0 mb-2 d-flex" style={{ gap: '2rem' }}>
-            <div onClick={onLike} className="btn btn-sm btn-link text-muted ps-0" style={{
-              fontSize: '0.765625rem',
-              textDecoration: 'unset'
-            }}>
+            <div  onClick={!loadingLike ? onLike : undefined}  className="btn btn-sm btn-link text-muted ps-0" style={{
+              fontSize: '0.765625rem',  pointerEvents: loadingLike ? 'none' : 'auto',  opacity: loadingLike ? 0.5 : 1,
+              textDecoration: 'unset' 
+            }} >
               {
                 likes.length > 0 ? <FontAwesomeIcon icon={faThumbsUp} className="text-primary" size='xl' /> : <ThumbsUp size={15} />
               }
@@ -165,7 +167,7 @@ export const CommentCard: React.FC<{
                     placeholder="Reply to comment..."
                     value={newReply}
                     onChange={(e) => setNewReply(e.target.value)}
-                    disabled={loading}
+                    disabled={loadingReply}
                     rows={3}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' && !e.shiftKey) {

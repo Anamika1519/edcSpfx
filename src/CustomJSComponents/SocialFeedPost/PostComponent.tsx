@@ -16,6 +16,8 @@ import moment from "moment";
 import Swal from "sweetalert2";
 
 export const PostComponent = ({ post, sp, siteUrl, currentUsername, currentEmail }: any) => {
+    const [loadingReply, setLoadingReply] = useState<boolean>(false);
+    const [loadingLike, setLoadingLike] = useState<boolean>(false);
 
     const [liked, setLiked] = useState(post.userHasLiked);
 
@@ -235,6 +237,8 @@ export const PostComponent = ({ post, sp, siteUrl, currentUsername, currentEmail
     const handleLike = async (e: any, liked: boolean) => {
         debugger
         e.preventDefault();
+        setLoadingLike(true)
+        try {
         const updatedLikeStatus = !liked;
         const updatedLikesCount = updatedLikeStatus ? likesCount + 1 : likesCount - 1;
 
@@ -269,6 +273,13 @@ export const PostComponent = ({ post, sp, siteUrl, currentUsername, currentEmail
                 })
             }
         })
+    }
+    catch (error) {
+      console.error('Error toggling like:', error);
+    }
+    finally {
+      setLoadingLike(false); // Enable the button after the function completes
+    }
     };
 
 
@@ -282,6 +293,8 @@ export const PostComponent = ({ post, sp, siteUrl, currentUsername, currentEmail
 
 
     const handleAddComment = async (e: { preventDefault: () => void; }) => {
+        setLoadingReply(true);
+        try {
         e.preventDefault();
 
         if (newComment.trim()) {
@@ -325,6 +338,13 @@ export const PostComponent = ({ post, sp, siteUrl, currentUsername, currentEmail
                 console.log("Error updating comments in SharePoint: ", error);
             }
         }
+    }
+    catch (error) {
+      console.error('Error toggling Reply:', error);
+    }
+    finally {
+      setLoadingReply(false); // Enable the button after the function completes
+    }
     };
 
 
@@ -417,7 +437,7 @@ export const PostComponent = ({ post, sp, siteUrl, currentUsername, currentEmail
                             fontWeight: '400',
                             color: '#6c757d'
                         }}>
-                            {moment(post.Created).format("ddd/MMM/yyyy")}
+                            {moment(post.Created).fromNow()}
                         </p>
                     </div>
                     {/* Post Content */}
@@ -532,7 +552,7 @@ export const PostComponent = ({ post, sp, siteUrl, currentUsername, currentEmail
             {/* Post Interactions */}
 
             <div className="post-interactions mt-3 mb-3">
-                <div onClick={(e) => handleLike(e, liked)}>
+                <div onClick={!loadingLike?(e) => handleLike(e, liked): undefined}  >
                     {liked ? <FontAwesomeIcon icon={faThumbsUp} fontSize={25} color="#f1556c" /> : <ThumbsUp size={20} color="gray" />}
                     <span>{likesCount} Likes</span>{liked}
                 </div>
@@ -589,6 +609,7 @@ export const PostComponent = ({ post, sp, siteUrl, currentUsername, currentEmail
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}
                     placeholder="Write a comment..."
+                    disabled={loadingReply}
                     onKeyPress={(e) => {
                         if (e.key === 'Enter' && !e.shiftKey) {
                             e.preventDefault(); // Prevents the new line in textarea

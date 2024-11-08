@@ -1199,20 +1199,20 @@ const HelloWorldContext = ({ props }: any) => {
 
 
                                   {/* Description */}
-                                  {/* <p
+                                  <p
                                     style={{ color: "#98a6ad" }}
                                     className="date-color font-12 mb-3 sp-line-2"
                                   >
                                     {project.ProjectOverview} 
                                     
-                                    <a
+                                    {/* <a
                                       href="javascript:void(0);"
                                       className="fw-bold text-muted"
                                       onClick={() => GotoNextPage(project)}
                                     >
                                       view more
-                                    </a>
-                                  </p> */}
+                                    </a> */}
+                                  </p>
 
                                   {/* Task info */}
                                   <p className="mb-1 font-12">
