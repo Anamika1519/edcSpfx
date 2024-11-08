@@ -279,12 +279,13 @@ const HelloWorldContext = ({ props }: any) => {
       const postResult = await addItem(postPayload, sp);
 
       const arrId = postResult?.data?.ID;
+      console.log(arrId);
 
       // Check if arrId is valid
       if (!arrId) {
         console.log(postResult);
         console.error("Failed to save project data, arrId is invalid.");
-        Swal.fire("Error", "ailed to save project data", "error");
+        Swal.fire("Error", "Failed to save project data", "error");
         return; // Exit the function if the ID is invalid
       }
 
@@ -349,14 +350,16 @@ const HelloWorldContext = ({ props }: any) => {
               TeamMembers: "",
               ProjectOverview: "",
             });
-            window.location.reload(); //forNow
-
+            // window.location.reload(); //forNow
+            setDataproject(await fetchprojectdata(sp));
+            setChoiceValueOne(await Choicedata(sp));
             dismissModal();
           }, 2000);
         } catch (error) {
           console.error("Error updating item:", error);
         }
-      } else {
+      }
+      else {
         Swal.fire("Project added successfully")
         setTimeout(async () => {
           // setAnnouncementData(await getGroupTeam(sp));
@@ -370,8 +373,9 @@ const HelloWorldContext = ({ props }: any) => {
             TeamMembers: "",
             ProjectOverview: "",
           });
-          window.location.reload(); //forNow
-
+          // window.location.reload(); //forNow
+          setDataproject(await fetchprojectdata(sp));
+          setChoiceValueOne(await Choicedata(sp));
           dismissModal();
         }, 2000);
       }
@@ -386,11 +390,12 @@ const HelloWorldContext = ({ props }: any) => {
       ProjectPrivacy,
       Budget,
       startDate,
-      dueDate
+      dueDate,
+      ProjectOverview
     } = formData;
     let TeamMembersId: any;
     let valid = true;
-
+    console.log(selectedValue, 'selectedValue');
     if (!ProjectName) {
       Swal.fire("Error", "Project Name is required!", "error");
       valid = false;
@@ -415,8 +420,12 @@ const HelloWorldContext = ({ props }: any) => {
       Swal.fire("Error", "Due Date is required!", "error");
       valid = false;
     }
-    else if (selectedValue.length < 0) {
-      Swal.fire("Error", "TeamMember is required!", "error");
+    else if (selectedValue.length == 0) {
+      Swal.fire("Error", "Team Member is required!", "error");
+      valid = false;
+    }
+    else if (!ProjectOverview) {
+      Swal.fire("Error", "Project Overview is required!", "error");
       valid = false;
     }
     return valid;
@@ -523,7 +532,7 @@ const HelloWorldContext = ({ props }: any) => {
             file.type === "text/html" ||
             file.type === "application/xml" ||
             file.type === "application/vnd.ms-excel" ||
-
+            file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
             file.type ===
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
             file.type ===
@@ -704,9 +713,9 @@ const HelloWorldContext = ({ props }: any) => {
           className="content mt-2"
           style={{ marginLeft: `${!useHide ? "240px" : "80px"}` }}
         >
-          <div className="container-fluid  paddb">
-            <div className="row" style={{ paddingLeft: "0.5rem" }}>
-              <div className="col-lg-3">
+          <div className="container-fluid">
+            <div className="row">
+              <div className="col-lg-4">
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
               </div>
               <div className="col-lg-8">
@@ -947,7 +956,7 @@ const HelloWorldContext = ({ props }: any) => {
                                     htmlFor="discussionThumbnail"
                                     className="form-label"
                                   >
-                                    Discussion Document{" "}
+                                    Discussion Thumbnail{" "}
 
                                   </label>
                                 </div>
@@ -1021,7 +1030,7 @@ const HelloWorldContext = ({ props }: any) => {
                                 className="form-label"
                               >
                                 Project Overview{" "}
-
+                                <span className="text-danger">*</span>
                               </label>
                               <textarea
                                 className="form-control inputcss"
@@ -1080,7 +1089,7 @@ const HelloWorldContext = ({ props }: any) => {
               </div>
             </div>
 
-            <div className="row mt-2">
+            <div className="row mt-3">
               <div className="col-12">
                 <div className="card mb-0">
                   <div className="card-body">
@@ -1142,7 +1151,7 @@ const HelloWorldContext = ({ props }: any) => {
 
             {activeTab === "home1" && (
               <div className="row mt-2">
-                <div className="container">
+                <div className="">
                   {/* Map through the projects array and display a card for each */}
                   {Dataproject.length > 0 ? (
                     <div className="row">
@@ -1214,7 +1223,13 @@ const HelloWorldContext = ({ props }: any) => {
                                       <i className="fe-file-text text-muted"></i>
                                       <b>{project?.ProjectsDocsId?.length}</b> Documents
                                     </span>
-
+                                    <span
+                                      style={{ color: "#6e767e" }}
+                                      className="text-nowrap mb-1 d-inline-block"
+                                    >
+                                      <i className="fe-message-square text-muted"></i>
+                                      <b>{project. CommentsCount || 0}</b> Comments
+                                    </span>
                                   </p>
                                   <div
                                     style={{
@@ -1268,36 +1283,36 @@ const HelloWorldContext = ({ props }: any) => {
                                       }
                                     </div>
                                     {showDropdownId === project.Id && (
-                                    <div
-                                      className=""
-                                      style={{
-                                        position: "absolute",
-                                        zIndex: "99",
-                                        background: "#fff",
-                                        padding: "1rem",
-                                        width: "30rem",
-                                      }}
-                                    >
-                                      {showDropdownId === project.Id && (
-                                        project?.TeamMembers?.map(
-                                          (id: any, idx: any) => {
-                                            return (
-                                              <img
-                                                style={{
-                                                  margin:
-                                                    idx == 0
-                                                      ? "0 0 0 0"
-                                                      : "0 0 0px -12px",
-                                                }}
-                                                src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                                                className="rounded-circlecss img-thumbnail avatar-xl"
-                                                alt="profile-image"
-                                              />
-                                            );
-                                          }
-                                        )
-                                      )}
-                                    </div>
+                                      <div
+                                        className=""
+                                        style={{
+                                          position: "absolute",
+                                          zIndex: "99",
+                                          background: "#fff",
+                                          padding: "1rem",
+                                          width: "30rem",
+                                        }}
+                                      >
+                                        {showDropdownId === project.Id && (
+                                          project?.TeamMembers?.map(
+                                            (id: any, idx: any) => {
+                                              return (
+                                                <img
+                                                  style={{
+                                                    margin:
+                                                      idx == 0
+                                                        ? "0 0 0 0"
+                                                        : "0 0 0px -12px",
+                                                  }}
+                                                  src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+                                                  className="rounded-circlecss img-thumbnail avatar-xl"
+                                                  alt="profile-image"
+                                                />
+                                              );
+                                            }
+                                          )
+                                        )}
+                                      </div>
                                     )}
                                   </div>
                                 </div>
@@ -1348,15 +1363,21 @@ const HelloWorldContext = ({ props }: any) => {
 
 
                                   <p className="mb-1 font-12">
-                              <span
-                                style={{ color: "#6e767e" }}
-                                className="pe-2 text-nowrap mb-1 d-inline-block"
-                              >
-                                <i className="fe-file-text text-muted"></i>
-                                <b>{project?.ProjectsDocsId?.length}</b> Documents
-                              </span>
-                             
-                            </p>
+                                    <span
+                                      style={{ color: "#6e767e" }}
+                                      className="pe-2 text-nowrap mb-1 d-inline-block"
+                                    >
+                                      <i className="fe-file-text text-muted"></i>
+                                      <b>{project?.ProjectsDocsId?.length}</b> Documents
+                                    </span>
+                                    <span
+                                      style={{ color: "#6e767e" }}
+                                      className="text-nowrap mb-1 d-inline-block"
+                                    >
+                                      <i className="fe-message-square text-muted"></i>
+                                      <b>{project. CommentsCount || 0}</b> Comments
+                                    </span>
+                                  </p>
 
                                   {/* Task info */}
                                   {/* <p className="mb-1 font-12">
@@ -1372,7 +1393,7 @@ const HelloWorldContext = ({ props }: any) => {
                                 className="text-nowrap mb-1 d-inline-block"
                               >
                                 <i className="fe-message-square text-muted"></i>
-                                <b>{project.commentsCount || 0}</b> Comments
+                                <b>{project. CommentsCount || 0}</b> Comments
                               </span>
                             </p> */}
                                   <div
@@ -1427,15 +1448,172 @@ const HelloWorldContext = ({ props }: any) => {
                                       }
                                     </div>
                                     {showDropdownId === project.Id && (
+                                      <div
+                                        className=""
+                                        style={{
+                                          position: "absolute",
+                                          zIndex: "99",
+                                          background: "#fff",
+                                          padding: "1rem",
+                                          width: "30rem",
+                                        }}
+                                      >
+                                        {showDropdownId === project.Id && (
+                                          project?.TeamMembers?.map(
+                                            (id: any, idx: any) => {
+                                              return (
+                                                <img
+                                                  style={{
+                                                    margin:
+                                                      idx == 0
+                                                        ? "0 0 0 0"
+                                                        : "0 0 0px -12px",
+                                                  }}
+                                                  src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+                                                  className="rounded-circlecss img-thumbnail avatar-xl"
+                                                  alt="profile-image"
+                                                />
+                                              );
+                                            }
+                                          )
+                                        )}
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        } else if (project?.TeamMembersId?.includes(userId) || project?.AuthorId == userId) {
+                          return (
+                            <div key={index} className="col-lg-3 col-md-6 mb-4">
+                              <div className="card project-box">
+                                <div className="card-body">
+                                  <div className="dropdown float-end">
+                                    <a
+                                      href="#"
+                                      className="dropdown-toggle card-drop arrow-none"
+                                      data-bs-toggle="dropdown"
+                                      aria-expanded="false"
+                                    >
+                                      <i className="fe-more-horizontal- m-0 text-muted h3"></i>
+                                    </a>
+                                    <div className="dropdown-menu dropdown-menu-end">
+                                      <a
+                                        className="dropdown-item"
+                                        href="#"
+                                        onClick={() => handleDelete(project.Id)}
+                                      >
+                                        Delete
+                                      </a>
+                                      <a
+                                        className="dropdown-item"
+                                        href="#"
+                                        onClick={() => GotoNextPage(project)}
+                                      >
+                                        View Detail
+                                      </a>
+                                    </div>
+                                  </div>
+
+                                  {/* Title */}
+                                  <h4 className="mt-0 mb-1">
+                                    <a
+                                      className="text-dark fw-bold font-16"   onClick={() => GotoNextPage(project)}
+                                    >
+                                      {project.ProjectName ||
+                                        "Untitled Project"}
+                                    </a>
+                                  </h4>
+                                  {/* <div className="finish mb-2">
+                                    {project.status || "Finished"}
+                                  </div> */}
+
+                                  {/* Description */}
+                                  <p
+                                    style={{ color: "#98a6ad" }}
+                                    className="date-color font-12 mb-3 sp-line-2"
+                                  >
+                                    {project.ProjectOverview ||
+                                      "No description available..."}{" "}
+                                    {/* <a
+                                      href="javascript:void(0);"
+                                      className="fw-bold text-muted"
+                                      onClick={() => GotoNextPage(project)}
+                                    >
+                                      view more
+                                    </a> */}
+                                  </p>
+
+                                  {/* Task info */}
+                                  <p className="mb-1 font-12">
+                                    <span
+                                      style={{ color: "#6e767e" }}
+                                      className="pe-2 text-nowrap mb-1 d-inline-block"
+                                    >
+                                      <i className="fe-file-text text-muted"></i>
+                                      <b>{project?.ProjectsDocsId?.length}</b> Documents
+                                    </span>
+                                    <span
+                                      style={{ color: "#6e767e" }}
+                                      className="text-nowrap mb-1 d-inline-block"
+                                    >
+                                      <i className="fe-message-square text-muted"></i>
+                                      <b>{project. CommentsCount || 0}</b> Comments
+                                    </span>
+                                  </p>
+                                  <div
+                                    style={{
+                                      minWidth: "70px",
+                                      maxWidth: "40%",
+                                    }}
+                                  >
+                                    <div>
+                                      {project?.TeamMembers?.map(
+                                        (id: any, idx: any) => {
+                                          if (idx < 3) {
+                                            return (
+                                              <img
+                                                style={{
+                                                  margin:
+                                                    index == 0
+                                                      ? "0 0 0 0"
+                                                      : "0 0 0px -12px",
+                                                }}
+                                                src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+                                                className="rounded-circlecss img-thumbnail avatar-xl"
+                                                alt="profile-image"
+                                              />
+                                            );
+                                          }
+                                        }
+                                      )}
+                                      {
+                                        project?.TeamMembers?.length > 3 &&
                                         <div
+                                          className=""
+                                          onClick={() =>
+                                            toggleDropdown(project.Id)
+                                          }
+                                          key={project.Id}
+                                        >
+                                          <div
+                                            style={{
+                                              margin:
+                                                index == 0
+                                                  ? "0 0 0 0"
+                                                  : "0 0 0px -12px",
+                                            }}
+                                            className="rounded-circlecss img-thumbnail avatar-xl"
+                                          >
+                                            +
+                                          </div>
+                                        </div>
+                                      }
+                                    </div>
+                                    <div
                                       className=""
-                                      style={{
-                                        position: "absolute",
-                                        zIndex: "99",
-                                        background: "#fff",
-                                        padding: "1rem",
-                                        width: "30rem",
-                                      }}
+                                      style={{ position: "relative" }}
                                     >
                                       {showDropdownId === project.Id && (
                                         project?.TeamMembers?.map(
@@ -1457,7 +1635,6 @@ const HelloWorldContext = ({ props }: any) => {
                                         )
                                       )}
                                     </div>
-                      )}
                                   </div>
                                 </div>
                               </div>
@@ -1524,15 +1701,21 @@ const HelloWorldContext = ({ props }: any) => {
                                   </h4>
 
                                   <p className="mb-1 font-12">
-                              <span
-                                style={{ color: "#6e767e" }}
-                                className="pe-2 text-nowrap mb-1 d-inline-block"
-                              >
-                                <i className="fe-file-text text-muted"></i>
-                                <b>{project?.ProjectsDocsId?.length}</b> Documents
-                              </span>
-                             
-                            </p>
+                                    <span
+                                      style={{ color: "#6e767e" }}
+                                      className="pe-2 text-nowrap mb-1 d-inline-block"
+                                    >
+                                      <i className="fe-file-text text-muted"></i>
+                                      <b>{project?.ProjectsDocsId?.length}</b> Documents
+                                    </span>
+                                    <span
+                                      style={{ color: "#6e767e" }}
+                                      className="text-nowrap mb-1 d-inline-block"
+                                    >
+                                      <i className="fe-message-square text-muted"></i>
+                                      <b>{project. CommentsCount || 0}</b> Comments
+                                    </span>
+                                  </p>
                                   {/* Task info */}
                                   {/* <p className="mb-1 font-12">
                               <span
@@ -1547,7 +1730,7 @@ const HelloWorldContext = ({ props }: any) => {
                                 className="text-nowrap mb-1 d-inline-block"
                               >
                                 <i className="fe-message-square text-muted"></i>
-                                <b>{project.commentsCount || 0}</b> Comments
+                                <b>{project. CommentsCount || 0}</b> Comments
                               </span>
                             </p> */}
                                   <div
@@ -1602,36 +1785,36 @@ const HelloWorldContext = ({ props }: any) => {
                                       }
                                     </div>
                                     {showDropdownId === project.Id && (
-                                    <div
-                                      className=""
-                                      style={{
-                                        position: "absolute",
-                                        zIndex: "99",
-                                        background: "#fff",
-                                        padding: "1rem",
-                                        width: "30rem",
-                                      }}
-                                    >
-                                      {showDropdownId === project.Id && (
-                                        project?.TeamMembers?.map(
-                                          (id: any, idx: any) => {
-                                            return (
-                                              <img
-                                                style={{
-                                                  margin:
-                                                    idx == 0
-                                                      ? "0 0 0 0"
-                                                      : "0 0 0px -12px",
-                                                }}
-                                                src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                                                className="rounded-circlecss img-thumbnail avatar-xl"
-                                                alt="profile-image"
-                                              />
-                                            );
-                                          }
-                                        )
-                                      )}
-                                    </div>
+                                      <div
+                                        className=""
+                                        style={{
+                                          position: "absolute",
+                                          zIndex: "99",
+                                          background: "#fff",
+                                          padding: "1rem",
+                                          width: "30rem",
+                                        }}
+                                      >
+                                        {showDropdownId === project.Id && (
+                                          project?.TeamMembers?.map(
+                                            (id: any, idx: any) => {
+                                              return (
+                                                <img
+                                                  style={{
+                                                    margin:
+                                                      idx == 0
+                                                        ? "0 0 0 0"
+                                                        : "0 0 0px -12px",
+                                                  }}
+                                                  src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+                                                  className="rounded-circlecss img-thumbnail avatar-xl"
+                                                  alt="profile-image"
+                                                />
+                                              );
+                                            }
+                                          )
+                                        )}
+                                      </div>
                                     )}
                                   </div>
                                 </div>
@@ -1699,15 +1882,21 @@ const HelloWorldContext = ({ props }: any) => {
                                   </h4>
 
                                   <p className="mb-1 font-12">
-                              <span
-                                style={{ color: "#6e767e" }}
-                                className="pe-2 text-nowrap mb-1 d-inline-block"
-                              >
-                                <i className="fe-file-text text-muted"></i>
-                                <b>{project?.ProjectsDocsId?.length}</b> Documents
-                              </span>
-                             
-                            </p>
+                                    <span
+                                      style={{ color: "#6e767e" }}
+                                      className="pe-2 text-nowrap mb-1 d-inline-block"
+                                    >
+                                      <i className="fe-file-text text-muted"></i>
+                                      <b>{project?.ProjectsDocsId?.length}</b> Documents
+                                    </span>
+                                    <span
+                                      style={{ color: "#6e767e" }}
+                                      className="text-nowrap mb-1 d-inline-block"
+                                    >
+                                      <i className="fe-message-square text-muted"></i>
+                                      <b>{project. CommentsCount || 0}</b> Comments
+                                    </span>
+                                  </p>
 
                                   {/* Task info */}
                                   {/* <p className="mb-1 font-12">
@@ -1723,7 +1912,7 @@ const HelloWorldContext = ({ props }: any) => {
                                 className="text-nowrap mb-1 d-inline-block"
                               >
                                 <i className="fe-message-square text-muted"></i>
-                                <b>{project.commentsCount || 0}</b> Comments
+                                <b>{project. CommentsCount || 0}</b> Comments
                               </span>
                             </p> */}
                                   <div
@@ -1778,36 +1967,36 @@ const HelloWorldContext = ({ props }: any) => {
                                       }
                                     </div>
                                     {showDropdownId === project.Id && (
-                                    <div
-                                      className=""
-                                      style={{
-                                        position: "absolute",
-                                        zIndex: "99",
-                                        background: "#fff",
-                                        padding: "1rem",
-                                        width: "30rem",
-                                      }}
-                                    >
-                                      {showDropdownId === project.Id && (
-                                        project?.TeamMembers?.map(
-                                          (id: any, idx: any) => {
-                                            return (
-                                              <img
-                                                style={{
-                                                  margin:
-                                                    idx == 0
-                                                      ? "0 0 0 0"
-                                                      : "0 0 0px -12px",
-                                                }}
-                                                src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                                                className="rounded-circlecss img-thumbnail avatar-xl"
-                                                alt="profile-image"
-                                              />
-                                            );
-                                          }
-                                        )
-                                      )}
-                                    </div>
+                                      <div
+                                        className=""
+                                        style={{
+                                          position: "absolute",
+                                          zIndex: "99",
+                                          background: "#fff",
+                                          padding: "1rem",
+                                          width: "30rem",
+                                        }}
+                                      >
+                                        {showDropdownId === project.Id && (
+                                          project?.TeamMembers?.map(
+                                            (id: any, idx: any) => {
+                                              return (
+                                                <img
+                                                  style={{
+                                                    margin:
+                                                      idx == 0
+                                                        ? "0 0 0 0"
+                                                        : "0 0 0px -12px",
+                                                  }}
+                                                  src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+                                                  className="rounded-circlecss img-thumbnail avatar-xl"
+                                                  alt="profile-image"
+                                                />
+                                              );
+                                            }
+                                          )
+                                        )}
+                                      </div>
                                     )}
                                   </div>
                                 </div>
@@ -1829,6 +2018,7 @@ const HelloWorldContext = ({ props }: any) => {
         </div>
       </div>
     </div>
+
   );
 };
 

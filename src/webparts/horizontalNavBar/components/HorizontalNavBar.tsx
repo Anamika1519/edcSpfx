@@ -9,7 +9,7 @@ import { SPFI } from '@pnp/sp';
 import { getSP } from '../loc/pnpjsConfig';
 import { useRef, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
-import { addActivityLeaderboard, getCurrentUserName, getCurrentUserProfileEmail } from '../../../APISearvice/CustomService';
+import { addActivityLeaderboard, getARGNotificationHistory, getCurrentUserName, getCurrentUserProfileEmail, UpdateNotification } from '../../../APISearvice/CustomService';
 import "../../../CustomCss/mainCustom.scss"
 interface ListFieldsMapping {
   ARGAnnouncementAndNews: string;
@@ -29,15 +29,15 @@ interface SearchResult {
   [key: string]: any;
 }
 const HorizontalNavbar = ({ _context, siteUrl }: any) => {
-  const listFieldsMapping:  { [key: string]: { fields: string[], pageName: string } }= {
-    ARGAnnouncementAndNews: { fields: ["Title", "Overview", "Description","Id","AnnouncementandNewsTypeMaster/Id", "AnnouncementandNewsTypeMaster/TypeMaster"], pageName: "AnnouncementDetails" },
-    ARGBlogs: { fields: ["Title", "Overview", "Description","Id"], pageName: "BlogDetails" },
-    ARGDiscussionForum: { fields: ["Topic", "Overview", "Description","Id"], pageName: "DiscussionForumDetail" },
-    ARGGroupandTeam: { fields: ["GroupName", "Overview","Id"], pageName: "GroupandTeamDetails" },
-    ARGProject: { fields: ["ProjectName", "ProjectOverview","Id"], pageName: "ProjectDetails" },
-    ARGSocialFeed: { fields: ["Contentpost","Id"], pageName: "SocialFeed" },
-    ARGEventMaster: { fields: ["EventName", "Overview", "EventAgenda","Id"], pageName: "EventDetailsCalendar" },
-    ARGMediaGallery: { fields: ["Title","Id"], pageName: "Mediadetails" }
+  const listFieldsMapping: { [key: string]: { fields: string[], pageName: string } } = {
+    ARGAnnouncementAndNews: { fields: ["Title", "Overview", "Description", "Id", "AnnouncementandNewsTypeMaster/Id", "AnnouncementandNewsTypeMaster/TypeMaster"], pageName: "AnnouncementDetails" },
+    ARGBlogs: { fields: ["Title", "Overview", "Description", "Id"], pageName: "BlogDetails" },
+    ARGDiscussionForum: { fields: ["Topic", "Overview", "Description", "Id"], pageName: "DiscussionForumDetail" },
+    ARGGroupandTeam: { fields: ["GroupName", "Overview", "Id"], pageName: "GroupandTeamDetails" },
+    ARGProject: { fields: ["ProjectName", "ProjectOverview", "Id"], pageName: "ProjectDetails" },
+    ARGSocialFeed: { fields: ["Contentpost", "Id"], pageName: "SocialFeed" },
+    ARGEventMaster: { fields: ["EventName", "Overview", "EventAgenda", "Id"], pageName: "EventDetailsCalendar" },
+    ARGMediaGallery: { fields: ["Title", "Id"], pageName: "Mediadetails" }
   };
   console.log(siteUrl, 'siteUrl');
 
@@ -52,6 +52,8 @@ const HorizontalNavbar = ({ _context, siteUrl }: any) => {
   const [replyText, setReplyText] = useState<string>('');
   const [replyingTo, setReplyingTo] = useState<number | null>(null);
   const [isOpen, setIsOpen] = React.useState(false);
+  const [isOpenBell, setIsOpenBell] = React.useState(false);
+
   const [currentUser, setCurrentUser] = React.useState("")
   const [currentUserEmail, setCurrentUserEmail] = React.useState("")
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
@@ -64,10 +66,14 @@ const HorizontalNavbar = ({ _context, siteUrl }: any) => {
   const scrollContainerRef = useRef(null);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
+  const [NotificationArray, setNotificationArray] = useState([]);
+
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
-
+  const toggleDropdownBell = () => {
+    setIsOpenBell(!isOpenBell);
+  };
   const handleScroll = () => {
     if (headerRef.current) {
       const sticky = headerRef.current.offsetTop;
@@ -149,198 +155,59 @@ const HorizontalNavbar = ({ _context, siteUrl }: any) => {
     setCurrentUser(await getCurrentUserName(_context))
     setCurrentUserEmail(await getCurrentUserProfileEmail(_context))
 
-    // const settingsData = setSettingArray(await getSettingAPI(sp))
+    const NotificationArray = setNotificationArray(await getARGNotificationHistory(_context))
     // console.log(settingsData, 'settingsData');
   };
   console.log(currentUser, siteUrl, 'currentUser');
 
-  //   const searchAllLists = async (query: string) => {
-
-  //         const listFieldsMapping: { [key: string]: string } = {
-  //             "ARGAnnouncementAndNews": "Title",
-  //             "ARGBlogs": "Title",
-  //             "ARGDiscussionForum": "Topic",
-  //             "ARGGroupandTeam": "GroupName",
-  //             "ARGProject": "ProjectName",
-  //             "ARGSocialFeed": "Contentpost",
-  //             "ARGEventMaster": "EventName",
-  //             "ARGMediaGallery": "Title"
-  //         };
-
-  //         const lists = await _context.web.lists();
-  //         console.log("Lists retrieved:", lists);
-
-  //         // Log all the keys in listFieldsMapping for comparison
-  //         console.log("Field Mapping Keys:", Object.keys(listFieldsMapping));
-
-  //         let searchResults: any[] = [];
-
-  //         for (const list of lists) {
-  //             const listTitle = list.Title.trim(); // Normalize by trimming
-  //             console.log("Checking list title:", listTitle);
-
-  //             // Use the original case for matching
-  //             const fieldName = listFieldsMapping[listTitle];
-
-  //             // Log the resolved fieldName
-  //             if (fieldName) {
-  //                 console.log(`Field name for "${listTitle}" is "${fieldName}"`);
-  //                 const items = await _context.web.lists.getByTitle(listTitle).items
-  //                     .top(100)
-  //                     ();
-
-  //                 // Perform client-side filtering
-  //                 const filteredItems = items.filter((item: any) =>
-  //                     item[fieldName] && item[fieldName].toLowerCase().includes(query.toLowerCase())
-  //                 );
-
-  //                if(filteredItems.length>0)
-  //                {
-  //                 filteredItems[fieldName] = filteredItems[0].item[fieldName]
-
-  //                }
-
-  //                 console.log("filteredItems results:", filteredItems);
-  //                 debugger
-  //               //  searchResults.push(filteredItems)
-
-  //                 searchResults = [...searchResults, ...filteredItems];
-  //                console.log("Search results:", searchResults);
-
-  //             } 
-  //         }
-
-  //         console.log("Search results:", searchResults);
-
-  //         return searchResults;
-
-  // };
-
-
-  // const searchAllLists = async (query: string): Promise<any[]> => {
-  //   try {
-  //     const lists = await _context.web.lists();
-  //     let results: any[] = [];
-
-  //     for (const list of lists) {
-  //       const listTitle = list.Title.trim();
-  //       const fieldNames = listFieldsMapping[listTitle];
-
-  //       if (fieldNames) {
-  //         // Select multiple fields for the current list
-  //         const items = await _context.web.lists.getByTitle(listTitle).items
-  //           .top(100)
-  //           .select(...fieldNames)(); // Use spread syntax to select multiple fields
-
-  //         // Perform client-side filtering
-  //         const filteredItems = items.filter((item: any) =>
-  //           fieldNames.some(field => item[field] && item[field].toLowerCase().includes(query.toLowerCase()))
-  //         );
-
-  //         // Add ListTitle property for display purposes
-  //         filteredItems.forEach((item: any) => {
-  //           item.ListTitle = listTitle;
-            
-  //         });
-
-  //         results = [...results, ...filteredItems];
-  //       }
-  //     }
-
-  //     return results;
-  //   } catch (error) {
-  //     console.error("Error searching lists:", error);
-  //     return [];
-  //   }
-  // };
-  // const searchAllLists = async (query: string): Promise<any[]> => {
-  //   try {
-  //     const lists = await _context.web.lists();
-  //     let results: any[] = [];
-  
-  //     for (const list of lists) {
-  //       const listTitle = list.Title.trim();
-  //       const listMapping = listFieldsMapping[listTitle];
-  
-  //       if (listMapping) {
-  //         const { fields, pageName } = listMapping;
-          
-  //         const items = await _context.web.lists.getByTitle(listTitle).items
-  //           .top(100)
-  //           .select(...fields)();
-  //           console.log(items,'itemsitemsitems');
-            
-  //         // const filteredItems = items.filter((item: any) =>
-  //         //   fields.some(field => item[field] && item[field].toLowerCase().includes(query.toLowerCase()))
-  //         // );
-  //         const filteredItems = items.filter((item: any) =>
-  //           fields.some((field: string | number) => 
-  //             typeof item[field] === 'string' && item[field].toLowerCase().includes(query.toLowerCase())
-  //           )
-  //         );
-  //         filteredItems.forEach((item: any) => {
-  //           item.ListTitle = listTitle;
-  //           item.PageName = pageName; // Set the PageName for each item
-  //         });
-  
-  //         results = [...results, ...filteredItems];
-  //       }
-  //     }
-  
-  //     return results;
-  //   } catch (error) {
-  //     console.error("Error searching lists:", error);
-  //     return [];
-  //   }
-  // };
 
   const searchAllLists = async (query: string): Promise<any[]> => {
     try {
       const lists = await _context.web.lists();
       let results: any[] = [];
-  
+
       for (const list of lists) {
         const listTitle = list.Title.trim();
         const listMapping = listFieldsMapping[listTitle];
-  
+
         if (listMapping) {
           const { fields, pageName } = listMapping;
-  
+
           // Start building the query
           let queryBuilder = _context.web.lists.getByTitle(listTitle).items.top(100).select(...fields);
-  
+
           // Conditionally expand for the specific list
           if (listTitle === "ARGAnnouncementAndNews") {
             queryBuilder = queryBuilder.expand("AnnouncementandNewsTypeMaster");
           }
-  
+
           // Execute the query
           const items = await queryBuilder();
-  
+
           // Filter items based on the search query
           const filteredItems = items.filter((item: any) =>
-            fields.some(field => 
+            fields.some(field =>
               typeof item[field] === 'string' && item[field].toLowerCase().includes(query.toLowerCase()) ||
               // Check for the expanded lookup field only for the specific list
-              (listTitle === "ARGAnnouncementAndNews" && 
-               item.AnnouncementandNewsTypeMaster && 
-               item.AnnouncementandNewsTypeMaster.TypeMaster && 
-               item.AnnouncementandNewsTypeMaster.TypeMaster.toLowerCase().includes(query.toLowerCase()))
+              (listTitle === "ARGAnnouncementAndNews" &&
+                item.AnnouncementandNewsTypeMaster &&
+                item.AnnouncementandNewsTypeMaster.TypeMaster &&
+                item.AnnouncementandNewsTypeMaster.TypeMaster.toLowerCase().includes(query.toLowerCase()))
             )
           );
-  
+
           // Add ListTitle and PageName properties to the filtered items
           filteredItems.forEach((item: any) => {
             item.ListTitle = listTitle;
             item.PageName = pageName; // Add the PageName for each item
           });
-  
+
           // Combine results
           results = [...results, ...filteredItems];
         }
       }
-  
-     
+
+
 
       return results;
     } catch (error) {
@@ -357,23 +224,33 @@ const HorizontalNavbar = ({ _context, siteUrl }: any) => {
     if (queryText && queryText.length > 2) {
       const searchResults = await searchAllLists(queryText);
       console.log(searchResults);
-      
+
       setSearchResults(searchResults);
     }
   };
   const handleSearchClick = async (result: any) => {
-  
-        await addActivityLeaderboard(_context,"Search Results Click");
-        debugger
-      setTimeout(() => {
-        window.location.href = 
-        result?.AnnouncementandNewsTypeMaster?.TypeMaster=="News"
-        ?
-        `${siteUrl}/SitePages/Newsdetails.aspx?${result.Id}`
-        :`${siteUrl}/SitePages/${result.pageName}.aspx?${result.Id}` 
-           }, 2000);
 
-      };
+    await addActivityLeaderboard(_context, "Search Results Click");
+    debugger
+    setTimeout(() => {
+      window.location.href =
+        result?.AnnouncementandNewsTypeMaster?.TypeMaster == "News"
+          ?
+          `${siteUrl}/SitePages/Newsdetails.aspx?${result.Id}`
+          : `${siteUrl}/SitePages/${result.pageName}.aspx?${result.Id}`
+    }, 2000);
+
+  };
+  const handleNotificationClick = async (result: any) => {
+
+    await UpdateNotification(result.Id,_context);
+    debugger
+    setTimeout(() => {
+     window.location.href=
+           `${siteUrl}/SitePages/${result.ContentPage}.aspx?${result.Id}`
+    }, 2000);
+
+  };
   return (
     // <nav className="navbar container-fluid" style={{ zIndex: '99' }}>
     //   <div className="logo_item">
@@ -437,24 +314,24 @@ const HorizontalNavbar = ({ _context, siteUrl }: any) => {
                 onChange={(e) => searchKeyPress(e)}
                 placeholder="Search..."
               />
-              <div className={searchResults.length > 0?'search-results':''}>
-                
-                <div className={searchResults.length > 0?'scrollbar':''} id={searchResults.length>0?'style-6':''}>
-                {searchResults.length>0&&<span style={{padding:'0.85rem'}}>Found {searchResults.length} results</span>}
+              <div className={searchResults.length > 0 ? 'search-results' : ''}>
+
+                <div className={searchResults.length > 0 ? 'scrollbar' : ''} id={searchResults.length > 0 ? 'style-6' : ''}>
+                  {searchResults.length > 0 && <span style={{ padding: '0.85rem' }}>Found {searchResults.length} results</span>}
                   {searchResults.length > 0 ? (
                     searchResults.map((result, index) => (
                       <div key={index} className="search-result-item">
-                      
-                        <a onClick={()=>handleSearchClick(result)} style={{padding:'0.85rem'}}>
-                        <h4 className='eclipcsss' style={{ fontSize: '0.9rem' }}>{result.Title || result.ProjectName || result.EventName || result.Contentpost}</h4>
-                        {/* {result.Description && <p dangerouslySetInnerHTML={{ __html: result.Description }}></p>} */}
-                        {result.Overview && <p className='eclipcsss' style={{ fontSize: '0.7rem' }}>{result.Overview}</p>}
-                        {result.EventAgenda && <p className='eclipcsss' style={{ fontSize: '0.7rem' }}>{result.EventAgenda}</p>}
+
+                        <a onClick={() => handleSearchClick(result)} style={{ padding: '0.85rem' }}>
+                          <h4 className='eclipcsss' style={{ fontSize: '0.9rem' }}>{result.Title || result.ProjectName || result.EventName || result.Contentpost}</h4>
+                          {/* {result.Description && <p dangerouslySetInnerHTML={{ __html: result.Description }}></p>} */}
+                          {result.Overview && <p className='eclipcsss' style={{ fontSize: '0.7rem' }}>{result.Overview}</p>}
+                          {result.EventAgenda && <p className='eclipcsss' style={{ fontSize: '0.7rem' }}>{result.EventAgenda}</p>}
                         </a>
                       </div>
                     ))
                   ) : (
-                   null
+                    null
                   )}
                   <div className="force-overflow"></div>
                 </div>
@@ -463,9 +340,34 @@ const HorizontalNavbar = ({ _context, siteUrl }: any) => {
             </div>
           </div>
           <Maximize className='bx bx-bell desktoView' size='22' onClick={toggleFullscreen} />
-          <Bell className='bx bx-bell desktoView' size='22' />
+          <Bell className='bx bx-bell desktoView dropcssBell' size='22' onClick={toggleDropdownBell} />
           <Moon size='22' className={isDarkMode ? 'bx bx-moon desktoView' : 'bx bx-sun desktoView'} onClick={handleThemeToggle} />
-          <Bell className='bx bx-bell searchcssmobile' size='80' />
+          <Bell className='bx bx-bell searchcssmobile dropcssBell' size='80' onClick={toggleDropdownBell} />
+          <div id="myDropdownBell" className={`dropdown-content ${isOpenBell ? 'show' : ''}`}>
+            
+            {
+              NotificationArray.length>0&& NotificationArray.map((notify:any)=>
+              {
+                <a className="dropdown-item p-0 notify-item card unread-noti shadow-none mb-1" onClick={() => handleNotificationClick(notify)}>
+                <div className="card-body">
+                  <span className="float-end noti-close-btn text-muted"><i className="mdi mdi-close"></i></span>
+                  <div className="d-flex align-items-center">
+                    <div className="flex-shrink-0">
+                      <div className="notify-icon bg-primary">
+                        <i className="mdi mdi-comment-account-outline"></i>
+                      </div>
+                    </div>
+                    <div className="flex-grow-1 text-truncate ms-2">
+                      <h5 className="noti-item-title fw-semibold font-14">{notify.ContentName} <small className="fw-normal text-muted ms-1">1 min ago</small></h5>
+                      <small className="noti-item-subtitle text-muted">{notify?.ActionUser?.Title} {notify.ContentType} on {notify?.NotifiedUser?.Title}</small>
+                    </div>
+                  </div>
+                </div>
+              </a>
+              })
+            }
+          
+          </div>
           <div className="dropdown">
             <div className='d-flex' onClick={toggleDropdown} style={{ gap: '2px', cursor: 'pointer' }}>
               <div >

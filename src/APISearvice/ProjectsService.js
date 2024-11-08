@@ -4,9 +4,14 @@ import Swal from "sweetalert2";
 export const fetchprojectdata = async (_sp) => {
   let arr = []
 
-  await _sp.web.lists.getByTitle("ARGProject").items.select("*,TeamMembers/ID,TeamMembers/EMail,TeamMembers/Title").expand("TeamMembers").getAll().then((res) => {
+  await _sp.web.lists.getByTitle("ARGProject").items.select("*,TeamMembers/ID,TeamMembers/EMail,TeamMembers/Title").expand("TeamMembers").getAll().then(async (res) => {
     console.log("checking the data of project---->>>", res);
-
+    for (var i = 0; i < res.length; i++) {
+     const ARGProjectComment= await _sp.web.lists.getByTitle("ARGProjectComments").items.filter(`ARGProjectId eq ${res[i].Id}`)();
+     console.log(ARGProjectComment,'ARGProjectComment');
+     
+      res[i].CommentsCount = ARGProjectComment.length
+    }
     //res.filter(x=>x.Category?.Category==str)
     arr = res;
   })
@@ -17,13 +22,13 @@ export const fetchprojectdata = async (_sp) => {
 }
 export const fetchprojectdataTop = async (_sp) => {
   let arr = []
- 
-     await _sp.web.lists.getByTitle("ARGProject").items.select("*,TeamMembers/ID,TeamMembers/EMail,TeamMembers/Title").expand("TeamMembers").top(3)().then((res) => {
-      console.log("checking the data of project---->>>",res);
-   
-      //res.filter(x=>x.Category?.Category==str)
-      arr = res;
-    })
+
+  await _sp.web.lists.getByTitle("ARGProject").items.select("*,TeamMembers/ID,TeamMembers/EMail,TeamMembers/Title").expand("TeamMembers").top(3)().then((res) => {
+    console.log("checking the data of project---->>>", res);
+
+    //res.filter(x=>x.Category?.Category==str)
+    arr = res;
+  })
     .catch((error) => {
       console.error("Error fetching data: ", error);
     });

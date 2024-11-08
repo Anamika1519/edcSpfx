@@ -1,3 +1,4 @@
+import { forEach } from 'lodash';
 import Swal from 'sweetalert2';
 export const getEntity = async (_sp) => {
     let arr =[]
@@ -269,30 +270,280 @@ async function getFollowersList(currentUserEmail) {
       })
      
     }
-    export const getLeader = async(sp)=>
-      {
-        let arr =[]
-            await sp.web.lists.getByTitle("ARGLeaderboard").items.select("*,Author/ID,Author/Title,Author/EMail").expand("Author").getAll(
-            ).then((res)=>
-            {
-               console.log(res,'ews');
-               arr=res
-            })
-          
-            return arr
-       
-      }
-      export const getLeaderTop = async(sp)=>
-        {
-         let arr =[]
-              await sp.web.lists.getByTitle("ARGLeaderboard").items.select("*,Author/ID,Author/Title,Author/EMail").expand("Author").top(4)(
-              ).then((res)=>
-              {
-                 console.log(res,'getLeaderTop');
-                 arr=res
-              })
-            
-          return arr
+    // export const getLeader = async (sp) => {
+    //   let arr = [];
+    
+    //   // Fetching the leaderboard data
+    //   await sp.web.lists
+    //     .getByTitle("ARGLeaderboard")
+    //     .items.select("*,Author/ID,Author/Title,Author/EMail")
+    //     .expand("Author")
+    //     .getAll()
+    //     .then((res) => {
+    //       console.log(res, "Fetched data");
+    
+    //       // Storing the fetched data in the array
+    //       arr = res;
+    //     });
+    
+    //   // Grouping and summing points by AuthorId
+    //   const sumPointsByUser = () => {
+    //     const userPoints = {};
+    
+    //     // Loop through each item in the fetched results
+    //     arr.forEach((item) => {
+    //       const authorId = item.Author.ID; // Author ID
+    //       const points = item.Points; // Points for the action
+    
+    //       // Sum points for each AuthorId
+    //       if (userPoints[authorId]) {
+    //         userPoints[authorId] += points;
+    //       } else {
+    //         userPoints[authorId] = points;
+    //       }
+    //     });
+    
+    //     // Convert the object to an array of users with total points
+    //     return Object.keys(userPoints).map((authorId) => ({
+    //       AuthorId: authorId,
+    //       TotalPoints: userPoints[authorId],
+    //     }));
+    //   };
+    
+    //   // Return the result
+    //   return sumPointsByUser();
+    // };
+    export const getLeader = async (sp) => {
+      let arr = [];
+    
+      // Fetching the leaderboard data
+      await sp.web.lists
+        .getByTitle("ARGLeaderboard")
+        .items.select("*,Author/ID,Author/Title,Author/EMail,Author/Department")
+        .expand("Author")
+        .getAll()
+        .then((res) => {
+          console.log(res, "Fetched data");
+    
+          // Storing the fetched data in the array
+          arr = res;
+        });
+    
+      // Grouping and summing points by AuthorId
+      const sumPointsByUser = async () => {
+        const userPoints = {};
+        const followRecords = await sp.web.lists.getByTitle("ARGLeaderboardRattingLevel").items
+        .getAll()
          
+          console.log(followRecords,'ARGLeaderboardRattingLevel');
+        
+        // Loop through each item in the fetched results
+        arr.forEach((item) => {
+          const authorId = item.Author.ID; // Author ID
+          const points = item.Points; // Points for the action
+          const authorTitle = item.Author.Title; // Author Title
+          const authorEMail = item.Author.EMail; // Author Email
+          const authorDepartment = item.Author.Department; // Author Email
+
+    
+          // Sum points for each AuthorId
+          if (userPoints[authorId]) {
+            userPoints[authorId].TotalPoints += points;
+          } else {
+            userPoints[authorId] = {
+              TotalPoints: points,
+              AuthorTitle: authorTitle,
+              AuthorEMail: authorEMail,
+              AuthorDepartment:authorDepartment
+            };
+          }
+        });
+    
+        for(let i =0;i<followRecords.length;i++)
+          {
+            
+          
+        // Convert the object to an array of users with total points and other details
+        return Object.keys(userPoints).map((authorId) => ({
+          AuthorId: authorId,
+          TotalPoints: userPoints[authorId].TotalPoints,
+          AuthorTitle: userPoints[authorId].AuthorTitle,
+          AuthorEMail: userPoints[authorId].AuthorEMail,
+          AuthorDepartment:userPoints[authorId].AuthorDepartment,
+          AutherRatting:userPoints[authorId].TotalPoints 
+        }));
+      }
+      };
+    
+      // Return the result
+      return sumPointsByUser();
+    };
+  
+    
+
+    export  const GetLeaderboardRattingLevel =async (sp)=>
+      {
+        let arr=[]
+        try {
+          const currentUser = await sp.web.currentUser();
+          const followRecords = await sp.web.lists.getByTitle("ARGLeaderboardRattingLevel").items
+          .getAll()
+           
+            console.log(ARGLeaderboardRattingLevel,'ARGLeaderboardRattingLevel');
+            
+            arr=followRecords
+          // Update the counts based on follow status
+        } catch (error) {
+          console.error("Error checking follow status:", error);
         }
+        return arr;
+      }
+
+
+
+      export const getLeaderTop = async (sp) => {
+        let arr = [];
+        let RATINGSTHRESHOLDS = []
+        // Fetching the leaderboard data from SharePoint
+        await sp.web.lists
+          .getByTitle("ARGLeaderboard")
+          .items.select("*,Author/ID,Author/Title,Author/EMail,Author/Department")
+          .expand("Author")
+          .getAll()
+          .then((res) => {
+            console.log(res, "Fetched data");
       
+            // Storing the fetched data in the array
+            arr = res;
+          });
+       const followRecords = await sp.web.lists.getByTitle("ARGLeaderboardRattingLevel").items.select("Ratting,Points")
+          .getAll()
+           
+            console.log(followRecords,'ARGLeaderboardRattingLevel');
+           
+        // Dynamic threshold settings for ratting
+        followRecords.forEach(element => {
+        let arr1 = 
+            { minPoints: element.Points, rating: element.Ratting }
+            RATINGSTHRESHOLDS.push(arr1) 
+          
+        });
+       
+      
+        // Grouping and summing points by AuthorId
+        const sumPointsByUser = () => {
+          const userPoints = {};
+      
+          // Loop through each item in the fetched results
+          arr.forEach((item) => {
+            const authorId = item.Author.ID; // Author ID
+            const points = item.Points; // Points for the action
+            const authorTitle = item.Author.Title; // Author Title
+            const authorEMail = item.Author.EMail; // Author Email
+            const authorDepartment = item.Author.Department; // Author Email
+
+      
+            // Sum points for each AuthorId
+            if (userPoints[authorId]) {
+              userPoints[authorId].TotalPoints += points;
+            } else {
+              userPoints[authorId] = {
+                TotalPoints: points,
+                AuthorTitle: authorTitle,
+                AuthorEMail: authorEMail,
+                AuthorDepartment: authorDepartment,
+
+              };
+            }
+          });
+      
+          // Adding the Ratting field dynamically based on thresholds
+          return Object.keys(userPoints).map((authorId) => {
+            const totalPoints = userPoints[authorId].TotalPoints;
+            
+            // Determine ratting based on total points dynamically
+            let ratting = 0;
+            for (let i = 0; i < RATINGSTHRESHOLDS.length; i++) {
+              if (totalPoints >= RATINGSTHRESHOLDS[i].minPoints) {
+                ratting = RATINGSTHRESHOLDS[i].rating;
+                break;
+              }
+            }
+      
+            // Return the data with Ratting
+            return {
+              AuthorId: authorId,
+              TotalPoints: totalPoints,
+              AuthorTitle: userPoints[authorId].AuthorTitle,
+              AuthorEMail: userPoints[authorId].AuthorEMail,
+              AuthorDepartment:userPoints[authorId].AuthorDepartment,
+              Ratting: ratting, // Add ratting based on total points
+            };
+          });
+        };
+      
+        // Return the result with total points and ratting
+        return sumPointsByUser();
+      };
+
+      export const addNotification = async (itemData, _sp) => {
+        debugger
+        let resultArr = []
+        try {
+          const newItem = await _sp.web.lists.getByTitle('ARGNotificationHistory').items.add(itemData);
+          debugger
+          console.log('Item added successfully:', newItem);
+          // Swal.fire('Item added successfully', '', 'success');
+      
+          resultArr = newItem
+          // Perform any necessary actions after successful addition
+        } catch (error) {
+          console.log('Error adding item:', error);
+          // Handle errors appropriately
+          resultArr = null
+          Swal.fire(' Cancelled', '', 'error')
+        }
+        return resultArr;
+      };
+      export const UpdateNotification = async (itemId, _sp) => {
+        debugger
+        let resultArr = []
+        try {
+          const newItem = await _sp.web.lists.getByTitle('ARGNotificationHistory').items.getByTitle(itemId).update({
+            ReadStatus:true
+          });
+          debugger
+          console.log('update added successfully:', newItem);
+          // Swal.fire('Item added successfully', '', 'success');
+      
+          resultArr = newItem
+          // Perform any necessary actions after successful addition
+        } catch (error) {
+          console.log('Error adding item:', error);
+          // Handle errors appropriately
+          resultArr = null
+          Swal.fire(' Cancelled', '', 'error')
+        }
+        return resultArr;
+      };
+     export const getARGNotificationHistory =async (sp)=>
+      {
+        debugger
+        let resultArr = []
+        const currentUser = await sp.web.currentUser();
+        try {
+          const newItem = await sp.web.lists.getByTitle('ARGNotificationHistory').items.select("*,NotifiedUser/Id,NotifiedUser/Title,ActionUser/Id,ActionUser/Title").expand("NotifiedUser,ActionUser").filter(`NotifiedUserId eq ${currentUser.Id}`).getAll();
+          debugger
+          console.log('Item added successfully:', newItem);
+          // Swal.fire('Item added successfully', '', 'success');
+      
+          resultArr = newItem
+          // Perform any necessary actions after successful addition
+        } catch (error) {
+          console.log('Error adding item:', error);
+          // Handle errors appropriately
+          resultArr = null
+          Swal.fire(' Cancelled', '', 'error')
+        }
+        return resultArr;
+      }

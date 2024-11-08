@@ -158,7 +158,9 @@ const NewsdetailsContext = ({ props }: any) => {
     //   setComments(JSON.parse(savedComments));
 
     // }
-
+    setInterval(() => {
+      ApICallData()
+    }, 1000)
     ApiLocalStorageData()
 
     ApICallData()
@@ -298,10 +300,10 @@ const NewsdetailsContext = ({ props }: any) => {
       for (var i = 0; i < initialComments.length; i++) {
         await sp.web.lists
           .getByTitle("ARGAnnouncementandNewsUserLikes")
-          .items.filter(`AnnouncementAndNewsCommentsId eq ${Number(initialComments[i].Id)}`).select("ID,AuthorId,UserName,Like,Created")()
+          .items.filter(`AnnouncementAndNewsCommentId eq ${Number(initialComments[i].Id)}`).select("ID,AuthorId,UserName,Like,Created")()
           .then((result1: any) => {
             console.log(result1, "ARGEventsUserLikes");
-
+            likeArray=[]
             for (var j = 0; j < result1.length; j++) {
               arrLike = {
                 "ID": result1[j].Id,
@@ -318,7 +320,7 @@ const NewsdetailsContext = ({ props }: any) => {
               AuthorId: initialComments[i].AuthorId,
               Comments: initialComments[i].Comments,
               Created: new Date(initialComments[i].Created).toLocaleString(), // Formatting the created date
-              UserLikesJSON: likeArray
+              UserLikesJSON: result1.length>0?likeArray:[]
               , // Default to empty array if null
               UserCommentsJSON:
                 initialComments[i].UserCommentsJSON != "" &&
@@ -497,7 +499,7 @@ const NewsdetailsContext = ({ props }: any) => {
         const response = await sp.web.lists.getByTitle("ARGAnnouncementAndNewsUserLikes").items.add({
           UserName: CurrentUser.Title,
           Like: true,
-          AnnouncementAndNewsCommentsId: comment.Id,
+          AnnouncementAndNewsCommentId: comment.Id,
           userHasLiked: true
         });
 

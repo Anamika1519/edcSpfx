@@ -77,6 +77,9 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
     // if (savedComments) {
     //   setComments(JSON.parse(savedComments));
     // }
+    setInterval(() => {
+      ApICallData()
+    }, 1000)
     ApiLocalStorageData();
     ApICallData();
     const showNavbar = (
@@ -151,7 +154,7 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
               .items.filter(`DiscussionForumCommentsId eq ${Number(initialComments[i].Id)}`).select("ID,AuthorId,UserName,Like,Created")()
               .then((result1: any) => {
                 console.log(result1, "ARGEventsUserLikes");
-  
+                likeArray=[]
                 for (var j = 0; j < result1.length; j++) {
                   arrLike = {
                     "ID": result1[j].Id,
@@ -169,7 +172,7 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
                   AuthorId: initialComments[i].AuthorId,
                   Comments: initialComments[i].Comments,
                   Created: new Date(initialComments[i].Created).toLocaleString(), // Formatting the created date
-                  UserLikesJSON: likeArray
+                  UserLikesJSON: result1.length>0?likeArray:[]
                      , // Default to empty array if null
                   UserCommentsJSON:
                     initialComments[i].UserCommentsJSON != "" &&

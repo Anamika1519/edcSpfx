@@ -12,7 +12,7 @@ import Provider from '../../../GlobalContext/provider';
 import HorizontalNavbar from '../../horizontalNavBar/components/HorizontalNavBar';
 // import 'react-comments-section/dist/index.css';
 import { CommentCard } from '../../../CustomJSComponents/CustomCommentCard/CommentCard';
-import { getCurrentUser, getCurrentUserProfile, getUserProfilePicture } from '../../../APISearvice/CustomService';
+import { addNotification, getARGNotificationHistory, getCurrentUser, getCurrentUserProfile, getUserProfilePicture } from '../../../APISearvice/CustomService';
 import { IAnnouncementdetailsProps } from './IAnnouncementdetailsProps';
 import { decryptId } from '../../../APISearvice/CryptoService';
 import { getAnnouncementDetailsById } from '../../../APISearvice/AnnouncementsService';
@@ -70,6 +70,7 @@ const AnnouncementdetailsContext = ({ props }: any) => {
     // if (savedComments) {
     //   setComments(JSON.parse(savedComments));
     // }
+ 
     ApiLocalStorageData()
     ApICallData()
     const showNavbar = (
@@ -104,6 +105,9 @@ const AnnouncementdetailsContext = ({ props }: any) => {
     }
 
     linkColor.forEach((l) => l.addEventListener("click", colorLink));
+    setInterval(() => {
+      getApiData()
+    }, 1000);
   }, []);
   const ApiLocalStorageData = async () => {
     debugger
@@ -112,18 +116,25 @@ const AnnouncementdetailsContext = ({ props }: any) => {
     //Get the Id parameter
     const ids = window.location.search;
     const originalString = ids;
-const idNum = originalString.substring(1);
-   // const queryString = decryptId(Number(updatedString));
+    const idNum = originalString.substring(1);
+    // const queryString = decryptId(Number(updatedString));
 
-    setArrDetails(await getAnnouncementDetailsById(sp,Number(idNum)))
+    setArrDetails(await getAnnouncementDetailsById(sp, Number(idNum)))
 
 
   }
 
   const ApICallData = async () => {
     debugger
-    setCurrentUser(await getCurrentUser(sp,siteUrl))
-    setCurrentUserProfile(await getCurrentUserProfile(sp,siteUrl))
+    const ARGNotificationHistory = await getARGNotificationHistory(sp)
+    console.log(ARGNotificationHistory);
+
+    setCurrentUser(await getCurrentUser(sp, siteUrl))
+    setCurrentUserProfile(await getCurrentUserProfile(sp, siteUrl))
+    getApiData()
+  }
+
+  const getApiData = () => {
     let initialComments: any[] = [];
     let initialArray: any[] = [];
     let arrLike = {}
@@ -132,74 +143,47 @@ const idNum = originalString.substring(1);
     const originalString = ids;
     const idNum = originalString.substring(1);
     sp.web.lists.getByTitle("ARGAnnouncementandNewsComments").items.select("*,AnnouncementAndNews/Id").expand("AnnouncementAndNews").filter(`AnnouncementAndNewsId eq ${Number(idNum)}`)().then(async (result: any) => {
-      console.log(result, 'ARGAnnouncementandNewsComments');
-
       initialComments = result;
       for (var i = 0; i < initialComments.length; i++) {
-        await  sp.web.lists
-            .getByTitle("ARGAnnouncementandNewsUserLikes")
-            .items.filter(`AnnouncementAndNewsCommentsId eq ${Number(initialComments[i].Id)}`).select("ID,AuthorId,UserName,Like,Created")()
-            .then((result1: any) => {
-              console.log(result1, "ARGEventsUserLikes");
-
-              for (var j = 0; j < result1.length; j++) {
-                arrLike = {
-                  "ID": result1[j].Id,
-                  "AuthorId": result1[j].AuthorId,
-                  "UserName": result1[j].UserName,
-                  "Like": result1[j].Like,
-                  "Created": result1[j].Created
-                }
-                likeArray.push(arrLike)
+        await sp.web.lists
+          .getByTitle("ARGAnnouncementandNewsUserLikes")
+          .items.filter(`AnnouncementAndNewsCommentId eq ${Number(initialComments[i].Id)}`).select("ID,AuthorId,UserName,Like,Created")()
+          .then((result1: any) => {
+            console.log(result1, "ARGEventsUserLikes");
+            likeArray = []
+            for (var j = 0; j < result1.length; j++) {
+              arrLike = {
+                "ID": result1[j].Id,
+                "AuthorId": result1[j].AuthorId,
+                "UserName": result1[j].UserName,
+                "Like": result1[j].Like,
+                "Created": result1[j].Created
               }
-
-              let arr = {
-                Id: initialComments[i].Id,
-                UserName: initialComments[i].UserName,
-                AuthorId: initialComments[i].AuthorId,
-                Comments: initialComments[i].Comments,
-                Created: new Date(initialComments[i].Created).toLocaleString(), // Formatting the created date
-                UserLikesJSON: likeArray
-                   , // Default to empty array if null
-                UserCommentsJSON:
-                  initialComments[i].UserCommentsJSON != "" &&
-                    initialComments[i].UserCommentsJSON != null &&
-                    initialComments[i].UserCommentsJSON != undefined
-                    ? JSON.parse(initialComments[i].UserCommentsJSON)
-                    : [], // Default to empty array if null
-                userHasLiked: initialComments[i].userHasLiked,
-                UserProfile: initialComments[i].UserProfile
-              }
-              initialArray.push(arr);
-            })
-
-          
-        }
-      
-        setComments(initialArray)
-      // setComments(initialComments.map((res) => ({
-      //   Id: res.Id,
-      //   UserName: res.UserName,
-      //   AuthorId: res.AuthorId,
-      //   Comments: res.Comments,
-      //   Created: new Date(res.Created).toLocaleString(), // Formatting the created date
-      //   UserLikesJSON: res.UserLikesJSON != "" && res.UserLikesJSON != null && res.UserLikesJSON != undefined ? JSON.parse(res.UserLikesJSON) : [], // Default to empty array if null
-      //   UserCommentsJSON: res.UserCommentsJSON != "" && res.UserCommentsJSON != null && res.UserCommentsJSON != undefined ? JSON.parse(res.UserCommentsJSON) : [], // Default to empty array if null
-      //   userHasLiked: res.userHasLiked,
-      //   UserProfile: res.UserProfile
-      //   // Initialize as false
-      // })))
-
-      // getUserProfilePicture(CurrentUser.Id,sp).then((url) => {
-      //   if (url) {
-      //     console.log("Profile Picture URL:", url);
-      //   } else {
-      //     console.log("No profile picture found.");
-      //   }
-      // });
+              likeArray.push(arrLike)
+            }
+            let arr = {
+              Id: initialComments[i].Id,
+              UserName: initialComments[i].UserName,
+              AuthorId: initialComments[i].AuthorId,
+              Comments: initialComments[i].Comments,
+              Created: new Date(initialComments[i].Created).toLocaleString(), // Formatting the created date
+              UserLikesJSON: result1.length > 0 ? likeArray : []
+              , // Default to empty array if null
+              UserCommentsJSON:
+                initialComments[i].UserCommentsJSON != "" &&
+                  initialComments[i].UserCommentsJSON != null &&
+                  initialComments[i].UserCommentsJSON != undefined
+                  ? JSON.parse(initialComments[i].UserCommentsJSON)
+                  : [], // Default to empty array if null
+              userHasLiked: initialComments[i].userHasLiked,
+              UserProfile: initialComments[i].UserProfile
+            }
+            initialArray.push(arr);
+          })
+      }
+      setComments(initialArray);
     })
   }
-
   // Load comments from localStorage on component mount
   // useEffect(() => {
   //   const storedComments = localStorage.getItem('comments');
@@ -213,7 +197,7 @@ const idNum = originalString.substring(1);
   //   localStorage.setItem('comments', JSON.stringify(comments));
   // }, [comments]);
 
-  const copyToClipboard = (Id:number) => {
+  const copyToClipboard = (Id: number) => {
     const link = `${siteUrl}/SitePages/AnnouncementDetails.aspx?${Id}`;
     navigator.clipboard.writeText(link)
       .then(() => {
@@ -260,7 +244,7 @@ const idNum = originalString.substring(1);
 
       const idNum = originalString.substring(1);
 
-      let a ={
+      let a = {
 
         RepliesCount: 1
 
@@ -282,7 +266,7 @@ const idNum = originalString.substring(1);
 
     const comment = updatedComments[commentIndex];
 
-  
+
 
     // Check if the user has already liked the comment
 
@@ -292,7 +276,7 @@ const idNum = originalString.substring(1);
 
     );
 
-  
+
 
     if (userLikeIndex === -1) {
 
@@ -304,7 +288,7 @@ const idNum = originalString.substring(1);
 
         Like: true,
 
-        AnnouncementAndNewsCommentsId: comment.Id,
+        AnnouncementAndNewsCommentId: comment.Id,
 
         userHasLiked: true
 
@@ -312,7 +296,7 @@ const idNum = originalString.substring(1);
 
         console.log(ress, 'Added Like');
 
-  
+
 
         // Add the new like to the comment's UserLikesJSON array
 
@@ -332,11 +316,11 @@ const idNum = originalString.substring(1);
 
         };
 
-  
+
 
         updatedComments[commentIndex].UserLikesJSON.push(newLikeJson);
 
-  
+
 
         // Update the corresponding SharePoint comment list
 
@@ -354,9 +338,9 @@ const idNum = originalString.substring(1);
 
           comment.userHasLiked = true;
 
-          setComments(updatedComments);
 
-  
+
+
 
           // Update the total likes for the announcement/news post
 
@@ -372,13 +356,25 @@ const idNum = originalString.substring(1);
 
           };
 
-  
+
 
           const newItem = await sp.web.lists.getByTitle('ARGAnnouncementAndNews').items.getById(Number(idNum)).update(likeUpdateBody);
 
           console.log('Like count updated successfully:', newItem);
 
         });
+        setComments(updatedComments);
+        let notifiedArr = {
+          ContentId: ArrDetails[0].Id,
+          NotifiedUserId: ArrDetails[0].AuthorId,
+          ContentType0: "Like",
+          ContentName: ArrDetails[0].Title,
+          ActionUserId: CurrentUser.Id,
+          DeatilPage: "AnnouncementDetails",
+          ReadStatus: false
+        }
+        const nofiArr = await addNotification(notifiedArr, sp)
+        console.log(nofiArr, 'nofiArr');
 
       });
 
@@ -388,19 +384,19 @@ const idNum = originalString.substring(1);
 
       const userLikeId = comment.UserLikesJSON[userLikeIndex].ID; // Get the ID of the user's like
 
-  
+
 
       await sp.web.lists.getByTitle("ARGAnnouncementAndNewsUserLikes").items.getById(userLikeId).delete().then(async () => {
 
         console.log('Removed Like');
 
-        
+
 
         // Remove the like from the comment's UserLikesJSON array
 
         updatedComments[commentIndex].UserLikesJSON.splice(userLikeIndex, 1);
 
-  
+
 
         // Update the corresponding SharePoint comment list
 
@@ -418,9 +414,9 @@ const idNum = originalString.substring(1);
 
           comment.userHasLiked = false;
 
-          setComments(updatedComments);
 
-  
+
+
 
           // Update the total likes for the announcement/news post
 
@@ -430,7 +426,7 @@ const idNum = originalString.substring(1);
 
           const idNum = originalString.substring(1);
 
-  
+
 
           const likeUpdateBody = {
 
@@ -438,12 +434,12 @@ const idNum = originalString.substring(1);
 
           };
 
-  
+
 
           const newItem = await sp.web.lists.getByTitle('ARGAnnouncementAndNews').items.getById(Number(idNum)).update(likeUpdateBody);
 
           console.log('Like count updated successfully:', newItem);
-
+          setComments(updatedComments);
         });
 
       });
@@ -499,33 +495,32 @@ const idNum = originalString.substring(1);
     }
   ]
   //#endregion
-  console.log(ArrDetails,'console.log(ArrDetails)')
-  const sendanEmail =()=>
-    {
-        window.open("https://outlook.office.com/mail/inbox");
-    
-    }
+  console.log(ArrDetails, 'console.log(ArrDetails)')
+  const sendanEmail = () => {
+    window.open("https://outlook.office.com/mail/inbox");
+
+  }
   return (
- <div id="wrapper" ref={elementRef}>
-      <div 
+    <div id="wrapper" ref={elementRef}>
+      <div
         className="app-menu"
         id="myHeader">
         <VerticalSideBar _context={sp} />
       </div>
       <div className="content-page">
-          <HorizontalNavbar  _context={sp} siteUrl={siteUrl}/>
-        <div className="content mt-4" style={{marginLeft: `${!useHide ? '240px' : '80px'}`}}>
+        <HorizontalNavbar _context={sp} siteUrl={siteUrl} />
+        <div className="content mt-4" style={{ marginLeft: `${!useHide ? '240px' : '80px'}` }}>
 
           <div className="container-fluid  paddb">
             <div className="row pt-0">
               <div className="col-lg-3">
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
               </div>
-             
+
             </div>
             {
-              
-              
+
+
               ArrDetails.length > 0 ? ArrDetails.map((item: any) => {
                 const AnnouncementAndNewsGallaryJSON = item.AnnouncementAndNewsGallaryJSON == undefined || item.AnnouncementAndNewsGallaryJSON == null ? ""
                   : JSON.parse(item.AnnouncementAndNewsGallaryJSON);
@@ -533,25 +528,25 @@ const idNum = originalString.substring(1);
                 return (
                   <><div className="row mt-4">
 
-                    <p  className="d-block mt-2 text-dark  font-28">
+                    <p className="d-block mt-2 text-dark  font-28">
                       {item.Title}
                     </p>
                     <div className="row mt-2">
                       <div className="col-md-12 col-xl-12">
-                      <p className="mb-2 mt-1 font-14 d-block">
-                            <span className="pe-2 text-nowrap mb-0 d-inline-block">
-                              <Calendar size={18} /> {moment(item.Created).format("DD-MMM-YYYY")}  &nbsp;  &nbsp;  &nbsp;|
-                            </span>
-                            <span className="text-nowrap mb-0 d-inline-block"  onClick={sendanEmail}>
-                              <Share size={18} />  Share by email &nbsp;  &nbsp;  &nbsp;|&nbsp;  &nbsp;  &nbsp;
-                            </span>
-                            <span className="text-nowrap mb-0 d-inline-block" onClick={() => copyToClipboard(item.Id)}>
-                              <Link size={18} />    Copy link &nbsp;  &nbsp;  &nbsp;
-                              {copySuccess && <span className="text-success">{copySuccess}</span>}
-                            </span>
+                        <p className="mb-2 mt-1 font-14 d-block">
+                          <span className="pe-2 text-nowrap mb-0 d-inline-block">
+                            <Calendar size={18} /> {moment(item.Created).format("DD-MMM-YYYY")}  &nbsp;  &nbsp;  &nbsp;|
+                          </span>
+                          <span className="text-nowrap mb-0 d-inline-block" onClick={sendanEmail}>
+                            <Share size={18} />  Share by email &nbsp;  &nbsp;  &nbsp;|&nbsp;  &nbsp;  &nbsp;
+                          </span>
+                          <span className="text-nowrap mb-0 d-inline-block" onClick={() => copyToClipboard(item.Id)}>
+                            <Link size={18} />    Copy link &nbsp;  &nbsp;  &nbsp;
+                            {copySuccess && <span className="text-success">{copySuccess}</span>}
+                          </span>
 
 
-                          </p>
+                        </p>
 
                       </div>
                     </div>
@@ -652,7 +647,7 @@ const idNum = originalString.substring(1);
                     replies={comment.UserCommentsJSON}
                     userHasLiked={comment.userHasLiked}
                     CurrentUserProfile={CurrentUserProfile}
-                     Action="Announcement"
+                    Action="Announcement"
                     onAddReply={(text) => handleAddReply(index, text)}
                     onLike={() => handleLikeToggle(index)} // Pass like handler
                   />

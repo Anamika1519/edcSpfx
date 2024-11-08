@@ -73,6 +73,9 @@ const BlogDetailsContext = ({ props }: any) => {
     // if (savedComments) {
     //   setComments(JSON.parse(savedComments));
     // }
+    setInterval(() => {
+      ApICallData()
+    }, 1000)
     ApiLocalStorageData();
     ApICallData();
     const showNavbar = (
@@ -147,7 +150,7 @@ const BlogDetailsContext = ({ props }: any) => {
               .items.filter(`BlogsCommentsId eq ${Number(initialComments[i].Id)}`).select("ID,AuthorId,UserName,Like,Created")()
               .then((result1: any) => {
                 console.log(result1, "ARGBlogUserLikesLikes");
-  
+                likeArray=[]
                 for (var j = 0; j < result1.length; j++) {
                   arrLike = {
                     "ID": result1[j].Id,
@@ -165,7 +168,7 @@ const BlogDetailsContext = ({ props }: any) => {
                   AuthorId: initialComments[i].AuthorId,
                   Comments: initialComments[i].Comments,
                   Created: new Date(initialComments[i].Created).toLocaleString(), // Formatting the created date
-                  UserLikesJSON: likeArray
+                  UserLikesJSON: result1.length>0?likeArray:[]
                      , // Default to empty array if null
                   UserCommentsJSON:
                     initialComments[i].UserCommentsJSON != "" &&

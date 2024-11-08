@@ -88,6 +88,9 @@ const ProjectDetailsContext = ({ props }: any) => {
     // if (savedComments) {
     //   setComments(JSON.parse(savedComments));
     // }
+    setInterval(() => {
+      ApICallData()
+    }, 1000)
     ApiLocalStorageData();
     ApICallData();
     const showNavbar = (
@@ -166,70 +169,70 @@ const ProjectDetailsContext = ({ props }: any) => {
         console.log(result, "ARGProjectComments");
 
         initialComments = result;
-        // for (var i = 0; i < initialComments.length; i++) {
-        //   await  sp.web.lists
-        //       .getByTitle("ARGProjectUserLikes")
-        //       .items.filter(`ProjectCommentsId eq ${Number(initialComments[i].Id)}`).select("ID,AuthorId,UserName,Like,Created")()
-        //       .then((result1: any) => {
-        //         console.log(result1, "ARGProjectUserLikesLikes");
+        for (var i = 0; i < initialComments.length; i++) {
+          await sp.web.lists
+            .getByTitle("ARGProjectUserLikes")
+            .items.filter(`ProjectCommentsId eq ${Number(initialComments[i].Id)}`).select("ID,AuthorId,UserName,Like,Created")()
+            .then((result1: any) => {
+              console.log(result1, "ARGProjectUserLikesLikes");
+              []
+              for (var j = 0; j < result1.length; j++) {
+                arrLike = {
+                  "ID": result1[j].Id,
+                  "AuthorId": result1[j].AuthorId,
+                  "UserName": result1[j].UserName,
+                  "Like": result1[j].Like,
+                  "Created": result1[j].Created
+                }
+                likeArray.push(arrLike)
+              }
 
-        //         for (var j = 0; j < result1.length; j++) {
-        //           arrLike = {
-        //             "ID": result1[j].Id,
-        //             "AuthorId": result1[j].AuthorId,
-        //             "UserName": result1[j].UserName,
-        //             "Like": result1[j].Like,
-        //             "Created": result1[j].Created
-        //           }
-        //           likeArray.push(arrLike)
-        //         }
+              let arr = {
+                Id: initialComments[i].Id,
+                UserName: initialComments[i].UserName,
+                AuthorId: initialComments[i].AuthorId,
+                Comments: initialComments[i].Comments,
+                Created: new Date(initialComments[i].Created).toLocaleString(), // Formatting the created date
+                UserLikesJSON: result1.length > 0 ? likeArray : []
+                , // Default to empty array if null
+                UserCommentsJSON:
+                  initialComments[i].UserCommentsJSON != "" &&
+                    initialComments[i].UserCommentsJSON != null &&
+                    initialComments[i].UserCommentsJSON != undefined
+                    ? JSON.parse(initialComments[i].UserCommentsJSON)
+                    : [], // Default to empty array if null
+                userHasLiked: initialComments[i].userHasLiked,
+                UserProfile: initialComments[i].UserProfile
+              }
+              initialArray.push(arr);
+            })
 
-        //         let arr = {
-        //           Id: initialComments[i].Id,
-        //           UserName: initialComments[i].UserName,
-        //           AuthorId: initialComments[i].AuthorId,
-        //           Comments: initialComments[i].Comments,
-        //           Created: new Date(initialComments[i].Created).toLocaleString(), // Formatting the created date
-        //           UserLikesJSON: likeArray
-        //              , // Default to empty array if null
-        //           UserCommentsJSON:
-        //             initialComments[i].UserCommentsJSON != "" &&
-        //               initialComments[i].UserCommentsJSON != null &&
-        //               initialComments[i].UserCommentsJSON != undefined
-        //               ? JSON.parse(initialComments[i].UserCommentsJSON)
-        //               : [], // Default to empty array if null
-        //           userHasLiked: initialComments[i].userHasLiked,
-        //           UserProfile: initialComments[i].UserProfile
-        //         }
-        //         initialArray.push(arr);
-        //       })
-
-        //   }
-        //   setComments(initialArray)
-        setComments(
-          initialComments.map((res) => ({
-            Id: res.Id,
-            UserName: res.UserName,
-            AuthorId: res.AuthorId,
-            Comments: res.Comments,
-            Created: new Date(res.Created).toLocaleString(), // Formatting the created date
-            UserLikesJSON:
-              res.UserLikesJSON != "" &&
-                res.UserLikesJSON != null &&
-                res.UserLikesJSON != undefined
-                ? JSON.parse(res.UserLikesJSON)
-                : [], // Default to empty array if null
-            UserCommentsJSON:
-              res.UserCommentsJSON != "" &&
-                res.UserCommentsJSON != null &&
-                res.UserCommentsJSON != undefined
-                ? JSON.parse(res.UserCommentsJSON)
-                : [], // Default to empty array if null
-            userHasLiked: res.userHasLiked,
-            UserProfile: res.UserProfile,
-            // Initialize as false
-          }))
-        );
+        }
+        setComments(initialArray)
+        // setComments(
+        //   initialComments.map((res) => ({
+        //     Id: res.Id,
+        //     UserName: res.UserName,
+        //     AuthorId: res.AuthorId,
+        //     Comments: res.Comments,
+        //     Created: new Date(res.Created).toLocaleString(), // Formatting the created date
+        //     UserLikesJSON:
+        //       res.UserLikesJSON != "" &&
+        //         res.UserLikesJSON != null &&
+        //         res.UserLikesJSON != undefined
+        //         ? JSON.parse(res.UserLikesJSON)
+        //         : [], // Default to empty array if null
+        //     UserCommentsJSON:
+        //       res.UserCommentsJSON != "" &&
+        //         res.UserCommentsJSON != null &&
+        //         res.UserCommentsJSON != undefined
+        //         ? JSON.parse(res.UserCommentsJSON)
+        //         : [], // Default to empty array if null
+        //     userHasLiked: res.userHasLiked,
+        //     UserProfile: res.UserProfile,
+        //     // Initialize as false
+        //   }))
+        // );
 
         // getUserProfilePicture(CurrentUser.Id,sp).then((url) => {
         //   if (url) {
@@ -548,7 +551,7 @@ const ProjectDetailsContext = ({ props }: any) => {
             marginTop: "1rem",
           }}
         >
-          <div className="container-fluid  paddb">
+          <div className="container-fluid">
             <div className="row ">
               <div className="col-lg-8">
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
@@ -557,7 +560,7 @@ const ProjectDetailsContext = ({ props }: any) => {
 
                 <button
                   onClick={(e) => openModal(e)}
-                  className="btn btn-secondary font-14 "
+                  className="btn btn-secondary font-14 float-end"
                 >
                   <FilePlus /> Open Document
                 </button>
@@ -708,10 +711,10 @@ const ProjectDetailsContext = ({ props }: any) => {
                                 <div>
                                   <div className="">
                                     <p
-                                   
+
                                       onClick={(e) => openDocument(e, res.ID)}
                                     >
-                                    <FileIcon fileType={res.fileType} />  {res?.fileName}
+                                      <FileIcon fileType={res.fileType} />  {res?.fileName}
                                     </p>
                                   </div>
                                 </div>
@@ -750,7 +753,7 @@ const ProjectDetailsContext = ({ props }: any) => {
               }
  
             </div> */}
-            <div className="row mt-4">
+            <div className="row mt-2">
               <div className="col-md-6">
                 <div
                   className="card"
