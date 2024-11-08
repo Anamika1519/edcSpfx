@@ -183,6 +183,9 @@ const SocialFeedContext = ({ props }: any) => {
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     debugger
+    setLoading(true);
+    try
+    {
     const files = Array.from(e.target.files || []); // Ensure files is an array of type File[]
     let uploadedImages: any[] = [];
     let ImagesIds: any[] = [];
@@ -205,7 +208,13 @@ const SocialFeedContext = ({ props }: any) => {
     setImages(flatArray(uploadedImages)); // Store all uploaded images
 
     setUploadFile(flatArray(uploadedImages)); // Optional: Track the uploaded file(s) in another state
-
+  }
+  catch (error) {
+    console.error('Error toggling like:', error);
+  }
+  finally {
+    setLoading(false); // Enable the button after the function completes
+  }
   };
 
   //#region flatArray
@@ -972,7 +981,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                               <div className="border rounded">
 
-                                <form onSubmit={!Loading? handleSubmit:undefined} className="comment-area-box">
+                                <form onSubmit={handleSubmit} className="comment-area-box">
 
                                   <textarea
 
@@ -981,7 +990,7 @@ const SocialFeedContext = ({ props }: any) => {
                                     placeholder="Write something..."
 
                                     value={Contentpost}
-
+                                  
                                     rows={4}
 
                                     onChange={(e) => setContent(e.target.value)}
@@ -1014,7 +1023,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                                       <div>
 
-                                        <Link style={{ width: "20px", height: "16px" }} onClick={!Loading?() => handleImageChange:undefined} />
+                                        <Link style={{ width: "20px", height: "16px" }} onClick={() => handleImageChange} />
 
                                         <input
 
@@ -1086,9 +1095,9 @@ const SocialFeedContext = ({ props }: any) => {
 
                                     </div>
 
-                                    <button type="submit" className="btn btn-sm btn-success font-121">
+                                    <button type="submit" className="btn btn-sm btn-success font-121"   disabled={Loading}>
 
-                                 {!Loading?<><FontAwesomeIcon icon={faPaperPlane} /> Poststing...</>:<><FontAwesomeIcon icon={faPaperPlane} /> Post</>}     
+                                 <FontAwesomeIcon icon={faPaperPlane} /> Post     
 
                                     </button>
 
