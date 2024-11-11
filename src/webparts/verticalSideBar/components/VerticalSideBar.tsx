@@ -164,7 +164,7 @@ const VerticalContext = ({ _context }: any) => {
       window.removeEventListener('click', closeDropdown);
       window.removeEventListener('resize', handleWindowResize);
     };
-  }, []);
+  }, [_context]);
 
   const handleSidebarToggle = (bol: boolean) => {
     setIsSidebarOpen((prevState: any) => !prevState);

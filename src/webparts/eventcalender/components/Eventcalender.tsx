@@ -117,7 +117,7 @@ const EventcalenderContext = ({ props }: any) => {
   useEffect(() => {
     // fetchDynamicdata();
     ApiCall();
-  }, []);
+  }, [props]);
 
   const [dataofevent, setDataofEvent] = useState<any[]>([]);
   const [myEventsList, setMyEventsList] = useState([]);

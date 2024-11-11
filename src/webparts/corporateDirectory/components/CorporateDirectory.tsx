@@ -51,9 +51,10 @@ const CorporateDirectoryContext = ({ props }: any) => {
     Department: "",
     MobilePhone: ""
   });
+  const [loadingUsers, setLoadingUsers] = useState<Record<number, boolean>>({});
+  const [followStatus, setFollowStatus] = useState<Record<number, boolean>>({}); // Track follow status for each user
 
-  const [isFollowing, setIsFollowing] = useState(false);
-  const [followStatus, setFollowStatus] = useState<any>({}); // Track follow status for each user
+  const [isFollowing, setIsFollowing] = useState(false); // Track follow status for each user
 
   React.useEffect(() => {
     console.log("This function is called only once", useHide);
@@ -95,37 +96,142 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
   }, [useHide]);
 
-  // const checkIfFollowing = async (item: any) => {
+
+
+  const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
+  const handleSidebarToggle = (bol: boolean) => {
+    setIsSidebarOpen((prevState: any) => !prevState);
+    setHide(!bol);
+    document.querySelector(".sidebar")?.classList.toggle("close");
+  };
+
+  // const fetchUserInformationList = async () => {
   //   try {
+
   //     const currentUser = await sp.web.currentUser();
-  //     const followRecords = await sp.web.lists.getByTitle("ARGFollows").items
-  //       .filter(`FollowerId eq ${currentUser.Id} and FollowedId eq ${item.ID}`)();
+  //     const userList = await sp.web.lists
+  //       .getByTitle("User Information List")
+  //       .items.select("*",
+  //         "ID",
+  //         "Title",
+  //         "EMail",
+  //         "Department",
+  //         "JobTitle",
+  //         "Picture", "MobilePhone"
+  //       )
+  //       .filter(`EMail ne null and ID ne ${currentUser.Id}`)();
+  //     const initialLoadingStatus: Record<number, boolean> = {};
 
-  //     setFollowStatus((prevStatus) => ({
-  //       ...prevStatus,
-  //       [item.ID]: followRecords.length > 0,
-  //     }));
-  //     const followersCount = await sp.web.lists.getByTitle("ARGFollows").items
-  //     .filter(`FollowedId eq ${item.ID}`)
-  //     .select("Id")
-  //     .getAll();
+  //     // userList.forEach((user) => {
+  //     //   initialFollowStatus[user.ID] = false;  // default follow status
+  //     //   initialLoadingStatus[user.ID] = false; // default loading status
+  //     //   checkIfFollowing(user); // Fetch the follow status for each user
+  //     // });
+  //     const initialFollowStatus: Record<number, boolean> = {};
 
-  // const followingCount = await sp.web.lists.getByTitle("ARGFollows").items
-  //     .filter(`FollowerId eq ${item.ID}`)
-  //     .select("Id")
-  //     .getAll();
+  //     for (const user of userList) {
+  //       const followRecords = await sp.web.lists.getByTitle("ARGFollows").items
+  //         .filter(`FollowerId eq ${currentUser.Id} and FollowedId eq ${user.ID}`)
+  //         ();
 
-  //     // Update the counts based on follow status
-  //     if (followRecords.length > 0) {
-  //       setFollowerCount((prev) => prev + 1);
-  //     } else {
-  //       setUnfollowerCount((prev) => prev + 1);
+  //       // If followRecords exists, set follow status as true for this user
+  //       initialFollowStatus[user.ID] = followRecords.length > 0;
+  //       const followersCount = await sp.web.lists.getByTitle("ARGFollows").items
+  //         .filter(`FollowedId eq ${user.ID}`)
+  //         .select("Id")
+  //         .getAll();
+
+  //       const followingCount = await sp.web.lists.getByTitle("ARGFollows").items
+  //         .filter(`FollowerId eq ${user.ID}`)
+  //         .select("Id")
+  //         .getAll();
+  //       user.followersCount = followersCount.length
+  //       user.followingCount = followingCount.length
+  //       const postData = await sp.web.lists.getByTitle("ARGSocialFeed").items
+  //         .filter(`AuthorId eq ${user.ID}`)();
+  //       if (postData.length > 0) {
+  //         user.postCount = postData.length;
+  //       }
+  //       else {
+  //         user.postCount = 0;
+  //       }
+
+  //       setFollowerCount(followersCount.length);
+  //       setUnfollowerCount(followingCount.length);
   //     }
+
+  //     setFollowStatus(initialFollowStatus);
+  //     setFollowStatus(initialFollowStatus);
+
+  //     setLoadingUsers(initialLoadingStatus);
+  //     setUsersArr(userList);
+
   //   } catch (error) {
-  //     console.error("Error checking follow status:", error);
+  //     console.error("Error fetching users:", error);
   //   }
-  // }
-  // Media query to check if the screen width is less than 768px
+  // };
+  
+  const fetchUserInformationList = async () => {
+    try {
+      const currentUser = await sp.web.currentUser();
+  
+      // Fetch the user list, excluding the current user
+      const userList = await sp.web.lists
+        .getByTitle("User Information List")
+        .items.select("ID", "Title", "EMail", "Department", "JobTitle", "Picture", "MobilePhone")
+        .filter(`EMail ne null and ID ne ${currentUser.Id}`)
+        ();
+  
+      const initialLoadingStatus: Record<number, boolean> = {};
+      const initialFollowStatus: Record<number, boolean> = {};
+  
+      // Function to fetch follow status and post count for each user
+      const fetchUserDetails = async (user: any) => {
+        const followRecords = await sp.web.lists.getByTitle("ARGFollows").items
+          .filter(`FollowerId eq ${currentUser.Id} and FollowedId eq ${user.ID}`)
+          .getAll();
+  
+        initialFollowStatus[user.ID] = followRecords.length > 0;
+  
+        const followersCount = await sp.web.lists.getByTitle("ARGFollows").items
+          .filter(`FollowedId eq ${user.ID}`)
+          .select("Id")
+          .getAll();
+  
+        const followingCount = await sp.web.lists.getByTitle("ARGFollows").items
+          .filter(`FollowerId eq ${user.ID}`)
+          .select("Id")
+          .getAll();
+  
+        user.followersCount = followersCount.length;
+        user.followingCount = followingCount.length;
+  
+        const postData = await sp.web.lists.getByTitle("ARGSocialFeed").items
+          .filter(`AuthorId eq ${user.ID}`)
+          .getAll();
+  
+        user.postCount = postData.length > 0 ? postData.length : 0;
+      };
+  
+      // Fetch details for each user in parallel
+      const userDetailsPromises = userList.map(async (user) => {
+        initialLoadingStatus[user.ID] = true;  // Set loading to true initially
+        await fetchUserDetails(user);  // Fetch the user details (follow status and posts)
+        initialLoadingStatus[user.ID] = false;  // Set loading to false after fetch
+      });
+  
+      // Wait for all user details to be fetched
+      await Promise.all(userDetailsPromises);
+  
+      // Update the state with the fetched data
+      setFollowStatus(initialFollowStatus);
+      setLoadingUsers(initialLoadingStatus);
+      setUsersArr(userList);
+  
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
 
 
   const checkIfFollowing = async (item: any) => {
@@ -174,40 +280,6 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
     } catch (error) {
       console.error("Error checking follow status:", error);
-    }
-  };
-
-  const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
-  const handleSidebarToggle = (bol: boolean) => {
-    setIsSidebarOpen((prevState: any) => !prevState);
-    setHide(!bol);
-    document.querySelector(".sidebar")?.classList.toggle("close");
-  };
-
-  const fetchUserInformationList = async () => {
-    try {
-
-      const currentUser = await sp.web.currentUser();
-      const userList = await sp.web.lists
-        .getByTitle("User Information List")
-        .items.select("*",
-          "ID",
-          "Title",
-          "EMail",
-          "Department",
-          "JobTitle",
-          "Picture", "MobilePhone"
-        )
-        .filter(`EMail ne null and ID ne ${currentUser.Id}`)();
-      console.log(userList, "userList");
-
-      userList.forEach(element => {
-        checkIfFollowing(element);
-      });
-      setUsersArr(userList);
-
-    } catch (error) {
-      console.error("Error fetching users:", error);
     }
   };
 
@@ -338,90 +410,10 @@ const CorporateDirectoryContext = ({ props }: any) => {
     setIsOpen(!isOpen);
   };
 
-  // const follow = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, itemId: number) => {
-  //   e.preventDefault();
-  //   try {
-  //     const currentUser = await sp.web.currentUser();
-  //     await sp.web.lists.getByTitle("ARGFollows").items.add({
-  //       FollowerId: currentUser.Id,
-  //       FollowedId: itemId
-  //     });
 
-  //     setFollowStatus((prevStatus) => ({
-  //       ...prevStatus,
-  //       [itemId]: true,
-  //     }));
-
-  //     // Increase follower count and decrease unfollower count
-  //     setFollowerCount((prev) => prev + 1);
-  //     setUnfollowerCount((prev) => Math.max(prev - 1, 0));
-  //   } catch (error) {
-  //     console.error("Error following:", error);
-  //   }
-  // };
-  const follow = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, itemId: number) => {
-    e.preventDefault();
-
-    // Start loading state
-    setIsLoading(true);
-
-    try {
-      const currentUser = await sp.web.currentUser();
-      // Add follow record
-      await sp.web.lists.getByTitle("ARGFollows").items.add({
-        FollowerId: currentUser.Id,
-        FollowedId: itemId
-      });
-
-      // Optimistic UI update
-      setFollowStatus((prevStatus: any) => ({
-        ...prevStatus,
-        [itemId]: true,
-      }));
-      setFollowerCount((prev) => prev + 1);
-      setUnfollowerCount((prev) => Math.max(prev - 1, 0));
-      fetchUserInformationList()
-    } catch (error) {
-      console.error("Error following:", error);
-      // Show user feedback on error
-      alert("Failed to follow. Please try again.");
-    } finally {
-      // End loading state
-      setIsLoading(false);
-    }
-  };
-  const unfollow = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, itemId: number) => {
-    e.preventDefault();
-    setIsLoading(true);
-    try {
-      const currentUser = await sp.web.currentUser();
-      const followRecords = await sp.web.lists.getByTitle("ARGFollows").items
-        .filter(`FollowerId eq ${currentUser.Id} and FollowedId eq ${itemId}`)();
-
-      if (followRecords.length > 0) {
-        await sp.web.lists.getByTitle("ARGFollows").items.getById(followRecords[0].Id).delete();
-
-        setFollowStatus((prevStatus: any) => ({
-          ...prevStatus,
-          [itemId]: false,
-        }));
-
-        // Decrease follower count and increase unfollower count
-        setFollowerCount((prev) => Math.max(prev - 1, 0));
-        setUnfollowerCount((prev) => prev + 1);
-        fetchUserInformationList()
-      }
-    } catch (error) {
-      console.error("Error unfollowing:", error);
-    }
-    finally {
-      // End loading state
-      setIsLoading(false);
-    }
-  };
   const toggleFollow = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, item: any) => {
     e.preventDefault();
-
+    setLoadingUsers((prev) => ({ ...prev, [item.ID]: true })); // Set loading state for the specific user
 
     try {
       const currentUser = await sp.web.currentUser();
@@ -431,38 +423,24 @@ const CorporateDirectoryContext = ({ props }: any) => {
       if (followRecords.length > 0) {
         // Unfollow logic
         await sp.web.lists.getByTitle("ARGFollows").items.getById(followRecords[0].Id).delete();
-
-        item.followstatus=true
-        // Update UI state
-        // setFollowStatus((prevStatus: any) => ({
-        //   ...prevStatus,
-        //   [itemId]: false,
-        // }));
-        setFollowerCount((prev) => Math.max(prev - 1, 0));
-        setUnfollowerCount((prev) => prev + 1);
-        fetchUserInformationList()
+        setFollowStatus((prev) => ({ ...prev, [item.ID]: false })); // Update follow status
       } else {
         // Follow logic
         await sp.web.lists.getByTitle("ARGFollows").items.add({
           FollowerId: currentUser.Id,
           FollowedId: item.ID
         });
-        item.followstatus=true
-        // Update UI state
-        // setFollowStatus((prevStatus: any) => ({
-        //   ...prevStatus,
-        //   [itemId]: true,
-        // }));
-        setFollowerCount((prev) => prev + 1);
-        setUnfollowerCount((prev) => Math.max(prev - 1, 0));
-        fetchUserInformationList()
-
+        setFollowStatus((prev) => ({ ...prev, [item.ID]: true })); // Update follow status
       }
     } catch (error) {
+      setLoadingUsers((prev) => ({ ...prev, [item.ID]: false })); // End loading state for the specific user
+
       console.error("Error toggling follow status:", error);
       alert("Failed to toggle follow status. Please try again.");
     } finally {
-   
+      fetchUserInformationList()
+      setLoadingUsers((prev) => ({ ...prev, [item.ID]: false })); // End loading state for the specific user
+    
     }
   };
   return (
@@ -508,30 +486,6 @@ const CorporateDirectoryContext = ({ props }: any) => {
                         className="fe-search"
                       ></span>
                     </div>
-
-                    {/* <div className="me-sm-1">
-                      <select
-                        style={{ width: "150px" }}
-                        className="form-select my-1 my-md-0"
-                      >
-                        <option value="Select Entity">Select Entity</option>
-                        <option value="1">Entity 1</option>
-                        <option value="2">Entity 2</option>
-                      </select>
-                    </div>
-
-                    <div className="me-sm-1">
-                      <select
-                        style={{ width: "180px" }}
-                        className="form-select my-1 my-md-0"
-                      >
-                        <option value="Select Department">
-                          Select Department
-                        </option>
-                        <option value="1">Department 1</option>
-                        <option value="2">Department 2</option>
-                      </select>
-                    </div> */}
 
                     <div
                       className="btn btn-secondary waves-effect waves-light"
@@ -701,14 +655,13 @@ const CorporateDirectoryContext = ({ props }: any) => {
                                 </button>
 
                                 <div>
-                            
+
                                   <button key={item.ID}
                                     type="button" className="btn btn-light btn-sm"
-                                    onClick={(e) => toggleFollow(e, item)} disabled={isLoading}
+                                    onClick={(!loadingUsers[item.ID])?(e) => toggleFollow(e, item):undefined} disabled={loadingUsers[item.ID]}
 
                                   >
-                                   
-                                    {item?.followstatus ? "Unfollow" : "Follow"}
+                                    {followStatus[item.ID] ? "Unfollow" : "Follow"}
                                   </button>
                                 </div>
                               </div>

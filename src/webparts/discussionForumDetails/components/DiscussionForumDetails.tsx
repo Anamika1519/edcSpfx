@@ -13,6 +13,7 @@ import HorizontalNavbar from "../../horizontalNavBar/components/HorizontalNavBar
 // import 'react-comments-section/dist/index.css';
 import { CommentCard } from "../../../CustomJSComponents/CustomCommentCard/CommentCard";
 import {
+  addNotification,
   getCurrentUser,
   getCurrentUserProfile,
   getUserProfilePicture,
@@ -79,11 +80,11 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
     // if (savedComments) {
     //   setComments(JSON.parse(savedComments));
     // }
-    setInterval(() => {
-      ApICallData()
-    }, 1000)
+
+
     ApiLocalStorageData();
-    ApICallData();
+    getApiData()
+ApICallData();
     const showNavbar = (
       toggleId: string,
       navId: string,
@@ -116,7 +117,7 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
     }
 
     linkColor.forEach((l) => l.addEventListener("click", colorLink));
-  }, []);
+  }, [props]);
   const ApiLocalStorageData = async () => {
     debugger;
 
@@ -128,11 +129,12 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
 
     setArrDetails(await getDiscussionForumDetailsById(sp, Number(idNum)));
   };
-
-  const ApICallData = async () => {
-    debugger;
-    setCurrentUser(await getCurrentUser(sp, siteUrl));
-    setCurrentUserProfile(await getCurrentUserProfile(sp, siteUrl));
+  
+  //setInterval(() => {
+   // getApiData()
+ // }, 1000)
+  
+  const getApiData = () => {
 
     let initialComments: any[] = [];
     let initialArray: any[] = [];
@@ -151,78 +153,53 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
 
         initialComments = result;
         for (var i = 0; i < initialComments.length; i++) {
-          await  sp.web.lists
-              .getByTitle("ARGDiscussionUserLikes")
-              .items.filter(`DiscussionForumCommentsId eq ${Number(initialComments[i].Id)}`).select("ID,AuthorId,UserName,Like,Created")()
-              .then((result1: any) => {
-                console.log(result1, "ARGEventsUserLikes");
-                likeArray=[]
-                for (var j = 0; j < result1.length; j++) {
-                  arrLike = {
-                    "ID": result1[j].Id,
-                    "AuthorId": result1[j].AuthorId,
-                    "UserName": result1[j].UserName,
-                    "Like": result1[j].Like,
-                    "Created": result1[j].Created
-                  }
-                  likeArray.push(arrLike)
+          await sp.web.lists
+            .getByTitle("ARGDiscussionUserLikes")
+            .items.filter(`DiscussionForumCommentsId eq ${Number(initialComments[i].Id)}`).select("ID,AuthorId,UserName,Like,Created")()
+            .then((result1: any) => {
+              console.log(result1, "ARGEventsUserLikes");
+              likeArray = []
+              for (var j = 0; j < result1.length; j++) {
+                arrLike = {
+                  "ID": result1[j].Id,
+                  "AuthorId": result1[j].AuthorId,
+                  "UserName": result1[j].UserName,
+                  "Like": result1[j].Like,
+                  "Created": result1[j].Created
                 }
-  
-                let arr = {
-                  Id: initialComments[i].Id,
-                  UserName: initialComments[i].UserName,
-                  AuthorId: initialComments[i].AuthorId,
-                  Comments: initialComments[i].Comments,
-                  Created: new Date(initialComments[i].Created).toLocaleString(), // Formatting the created date
-                  UserLikesJSON: result1.length>0?likeArray:[]
-                     , // Default to empty array if null
-                  UserCommentsJSON:
-                    initialComments[i].UserCommentsJSON != "" &&
-                      initialComments[i].UserCommentsJSON != null &&
-                      initialComments[i].UserCommentsJSON != undefined
-                      ? JSON.parse(initialComments[i].UserCommentsJSON)
-                      : [], // Default to empty array if null
-                  userHasLiked: initialComments[i].userHasLiked,
-                  UserProfile: initialComments[i].UserProfile
-                }
-                initialArray.push(arr);
-              })
-  
-          }
-          setComments(initialArray)
-        // setComments(
-        //   initialComments.map((res) => ({
-        //     Id: res.Id,
-        //     UserName: res.UserName,
-        //     AuthorId: res.AuthorId,
-        //     Comments: res.Comments,
-        //     Created: new Date(res.Created).toLocaleString(), // Formatting the created date
-        //     UserLikesJSON:
-        //       res.UserLikesJSON != "" &&
-        //         res.UserLikesJSON != null &&
-        //         res.UserLikesJSON != undefined
-        //         ? JSON.parse(res.UserLikesJSON)
-        //         : [], // Default to empty array if null
-        //     UserCommentsJSON:
-        //       res.UserCommentsJSON != "" &&
-        //         res.UserCommentsJSON != null &&
-        //         res.UserCommentsJSON != undefined
-        //         ? JSON.parse(res.UserCommentsJSON)
-        //         : [], // Default to empty array if null
-        //     userHasLiked: res.userHasLiked,
-        //     UserProfile: res.UserProfile,
-        //     // Initialize as false
-        //   }))
-        // );
+                likeArray.push(arrLike)
+              }
 
-        // getUserProfilePicture(CurrentUser.Id,sp).then((url) => {
-        //   if (url) {
-        //     console.log("Profile Picture URL:", url);
-        //   } else {
-        //     console.log("No profile picture found.");
-        //   }
-        // });
+              let arr = {
+                Id: initialComments[i].Id,
+                UserName: initialComments[i].UserName,
+                AuthorId: initialComments[i].AuthorId,
+                Comments: initialComments[i].Comments,
+                Created: new Date(initialComments[i].Created).toLocaleString(), // Formatting the created date
+                UserLikesJSON: result1.length > 0 ? likeArray : []
+                , // Default to empty array if null
+                UserCommentsJSON:
+                  initialComments[i].UserCommentsJSON != "" &&
+                    initialComments[i].UserCommentsJSON != null &&
+                    initialComments[i].UserCommentsJSON != undefined
+                    ? JSON.parse(initialComments[i].UserCommentsJSON)
+                    : [], // Default to empty array if null
+                userHasLiked: initialComments[i].userHasLiked,
+                UserProfile: initialComments[i].UserProfile
+              }
+              initialArray.push(arr);
+            })
+
+        }
+        setComments(initialArray)
+       
       });
+  }
+  const ApICallData = async () => {
+    debugger;
+    setCurrentUser(await getCurrentUser(sp, siteUrl));
+    setCurrentUserProfile(await getCurrentUserProfile(sp, siteUrl));
+
   };
 
   // Load comments from localStorage on component mount
@@ -231,7 +208,7 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
   //   if (storedComments) {
   //     setComments(JSON.parse(storedComments));
   //   }
-  // }, []);
+  // }, [props]);
 
   // Save comments to localStorage whenever comments state changes
   // useEffect(() => {
@@ -266,7 +243,7 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
         DiscussionForumId: ArrDetails[0].Id,
         UserProfile: CurrentUserProfile,
       })
-      .then((ress: any) => {
+      .then(async (ress: any) => {
         console.log(ress, "ressress");
         const newCommentData1: Comment = {
           Id: ress.data.Id,
@@ -282,6 +259,17 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
         setComments((prevComments) => [...prevComments, newCommentData1]);
         setNewComment("");
         setLoading(false);
+        let notifiedArr = {
+          ContentId: ArrDetails[0].Id,
+          NotifiedUserId: ArrDetails[0].AuthorId,
+          ContentType0: "Comment",
+          ContentName: ArrDetails[0].Title,
+          ActionUserId: CurrentUser.Id,
+          DeatilPage: "DiscussionDetails",
+          ReadStatus: false
+        }
+        const nofiArr = await addNotification(notifiedArr, sp)
+        console.log(nofiArr, 'nofiArr');
       });
 
     // setComments((prevComments) => [...prevComments, newCommentData]);
@@ -297,89 +285,112 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
     const userLikeIndex = comment.UserLikesJSON.findIndex(
       (like: Like) => like.UserName === CurrentUser.Title // Replace with actual username property
     );
-try{
-    if (userLikeIndex === -1) {
-      // User hasn't liked yet, proceed to add a like
+    try {
+      if (userLikeIndex === -1) {
+        // User hasn't liked yet, proceed to add a like
 
-      await sp.web.lists
-        .getByTitle("ARGDiscussionUserLikes")
-        .items.add({
-          UserName: CurrentUser.Title, // Replace with actual username
-          Like: true,
-          DiscussionForumCommentsId: comment?.Id,
-          userHasLiked: true,
-        })
-        .then(async (ress: any) => {
-          console.log(ress, "Added Like");
+        await sp.web.lists
+          .getByTitle("ARGDiscussionUserLikes")
+          .items.add({
+            UserName: CurrentUser.Title, // Replace with actual username
+            Like: true,
+            DiscussionForumCommentsId: comment?.Id,
+            userHasLiked: true,
+          })
+          .then(async (ress: any) => {
+            console.log(ress, "Added Like");
 
-          // Add the new like to the comment's UserLikesJSON array
-          const newLikeJson: Like = {
-            ID: ress.data.Id,
-            AuthorId: ress.data.AuthorId,
-            UserName: ress.data.UserName, // Replace with actual username
-            like: "yes",
-            Created: ress.data.Created,
-            Count: comment.UserLikesJSON.length + 1,
-          };
+            // Add the new like to the comment's UserLikesJSON array
+            const newLikeJson: Like = {
+              ID: ress.data.Id,
+              AuthorId: ress.data.AuthorId,
+              UserName: ress.data.UserName, // Replace with actual username
+              like: "yes",
+              Created: ress.data.Created,
+              Count: comment.UserLikesJSON.length + 1,
+            };
 
-          updatedComments[commentIndex].UserLikesJSON.push(newLikeJson);
+            updatedComments[commentIndex].UserLikesJSON.push(newLikeJson);
 
-          // Update the corresponding SharePoint list
-          await sp.web.lists
-            .getByTitle("ARGDiscussionComments")
-            .items.getById(comment.Id)
-            .update({
-              UserLikesJSON: JSON.stringify(
-                updatedComments[commentIndex].UserLikesJSON
-              ),
-              userHasLiked: true,
-              LikesCount: comment.UserLikesJSON.length,
-            })
-            .then(() => {
-              console.log("Updated comment with new like");
-              comment.userHasLiked = true;
-              setComments(updatedComments);
-            });
-        });
-    } else {
-      // User already liked, proceed to unlike (remove like)
-      const userLikeId = comment.UserLikesJSON[userLikeIndex].ID; // Get the ID of the user's like
+            // Update the corresponding SharePoint list
+            await sp.web.lists
+              .getByTitle("ARGDiscussionComments")
+              .items.getById(comment.Id)
+              .update({
+                UserLikesJSON: JSON.stringify(
+                  updatedComments[commentIndex].UserLikesJSON
+                ),
+                userHasLiked: true,
+                LikesCount: comment.UserLikesJSON.length,
+              })
+              .then(async () => {
+                console.log("Updated comment with new like");
+                comment.userHasLiked = true;
+                setComments(updatedComments);
+                let notifiedArr = {
+                  ContentId: ArrDetails[0].Id,
+                  NotifiedUserId: ArrDetails[0].AuthorId,
+                  ContentType0: "Like",
+                  ContentName: ArrDetails[0].Title,
+                  ActionUserId: CurrentUser.Id,
+                  DeatilPage: "DiscussionDetails",
+                  ReadStatus: false
+                }
+                const nofiArr = await addNotification(notifiedArr, sp)
+                console.log(nofiArr, 'nofiArr');
+              });
+          });
+      } else {
+        // User already liked, proceed to unlike (remove like)
+        const userLikeId = comment.UserLikesJSON[userLikeIndex].ID; // Get the ID of the user's like
 
-      await sp.web.lists
-        .getByTitle("ARGDiscussionUserLikes")
-        .items.getById(userLikeId)
-        .delete()
-        .then(async () => {
-          console.log("Removed Like");
+        await sp.web.lists
+          .getByTitle("ARGDiscussionUserLikes")
+          .items.getById(userLikeId)
+          .delete()
+          .then(async () => {
+            console.log("Removed Like");
 
-          // Remove the like from the comment's UserLikesJSON array
-          updatedComments[commentIndex].UserLikesJSON.splice(userLikeIndex, 1);
+            // Remove the like from the comment's UserLikesJSON array
+            updatedComments[commentIndex].UserLikesJSON.splice(userLikeIndex, 1);
 
-          // Update the corresponding SharePoint list
-          await sp.web.lists
-            .getByTitle("ARGDiscussionComments")
-            .items.getById(comment.Id)
-            .update({
-              UserLikesJSON: JSON.stringify(
-                updatedComments[commentIndex].UserLikesJSON
-              ),
-              userHasLiked: false,
-              LikesCount: comment.UserLikesJSON.length,
-            })
-            .then(() => {
-              console.log("Updated comment after removing like");
-              comment.userHasLiked = false;
-              setComments(updatedComments);
-            });
-        });
+            // Update the corresponding SharePoint list
+            await sp.web.lists
+              .getByTitle("ARGDiscussionComments")
+              .items.getById(comment.Id)
+              .update({
+                UserLikesJSON: JSON.stringify(
+                  updatedComments[commentIndex].UserLikesJSON
+                ),
+                userHasLiked: false,
+                LikesCount: comment.UserLikesJSON.length,
+              })
+              .then(async () => {
+                console.log("Updated comment after removing like");
+                comment.userHasLiked = false;
+                setComments(updatedComments);
+                let notifiedArr = {
+                  ContentId: ArrDetails[0].Id,
+                  NotifiedUserId: ArrDetails[0].AuthorId,
+                  ContentType0: "UnLike",
+                  ContentName: ArrDetails[0].Title,
+                  ActionUserId: CurrentUser.Id,
+                  DeatilPage: "DiscussionDetails",
+                  ReadStatus: false
+                }
+                const nofiArr = await addNotification(notifiedArr, sp)
+                console.log(nofiArr, 'nofiArr');
+              });
+          });
+      }
     }
-  }
-  catch (error) {
-    console.error('Error toggling like:', error);
-  }
-  finally {
-    setLoadingLike(false); // Enable the button after the function completes
-  }
+    catch (error) {
+      setLoadingLike(false);
+      console.error('Error toggling like:', error);
+    }
+    finally {
+      setLoadingLike(false); // Enable the button after the function completes
+    }
   };
 
   // Add a reply to a comment
@@ -387,46 +398,58 @@ try{
     debugger;
     setLoadingReply(true);
     try {
-    if (replyText.trim() === "") return;
-    const updatedComments = [...comments];
+      if (replyText.trim() === "") return;
+      const updatedComments = [...comments];
 
-    const comment = updatedComments[commentIndex];
-    await sp.web.lists
-      .getByTitle("ARGDiscussionUserComments")
-      .items.add({
-        UserName: CurrentUser.Title, // Replace with actual username
-        Comments: replyText,
-        ARGDiscussionCommentsId: updatedComments[commentIndex].Id,
-      })
-      .then(async (ress: any) => {
-        console.log(ress, "ressress");
-        const newReplyJson = {
-          Id: ress.data.Id,
-          AuthorId: ress.data.AuthorId,
-          UserName: ress.data.UserName, // Replace with actual username
-          Comments: ress.data.Comments,
-          Created: ress.data.Created,
-          UserProfile: CurrentUserProfile,
-        };
-        updatedComments[commentIndex].UserCommentsJSON.push(newReplyJson);
-        await sp.web.lists
-          .getByTitle("ARGDiscussionComments")
-          .items.getById(updatedComments[commentIndex].Id)
-          .update({
-            // UserLikesJSON: JSON.stringify(updatedComments[commentIndex].UserLikesJSON),
-            UserCommentsJSON: JSON.stringify(
-              updatedComments[commentIndex].UserCommentsJSON
-            ),
-            userHasLiked: updatedComments[commentIndex].userHasLiked,
-            CommentsCount: comment.UserCommentsJSON.length + 1,
-          })
-          .then((ress: any) => {
-            console.log(ress, "ressress");
-            setComments(updatedComments);
-          });
-      });
+      const comment = updatedComments[commentIndex];
+      await sp.web.lists
+        .getByTitle("ARGDiscussionUserComments")
+        .items.add({
+          UserName: CurrentUser.Title, // Replace with actual username
+          Comments: replyText,
+          ARGDiscussionCommentsId: updatedComments[commentIndex].Id,
+        })
+        .then(async (ress: any) => {
+          console.log(ress, "ressress");
+          const newReplyJson = {
+            Id: ress.data.Id,
+            AuthorId: ress.data.AuthorId,
+            UserName: ress.data.UserName, // Replace with actual username
+            Comments: ress.data.Comments,
+            Created: ress.data.Created,
+            UserProfile: CurrentUserProfile,
+          };
+          updatedComments[commentIndex].UserCommentsJSON.push(newReplyJson);
+          await sp.web.lists
+            .getByTitle("ARGDiscussionComments")
+            .items.getById(updatedComments[commentIndex].Id)
+            .update({
+              // UserLikesJSON: JSON.stringify(updatedComments[commentIndex].UserLikesJSON),
+              UserCommentsJSON: JSON.stringify(
+                updatedComments[commentIndex].UserCommentsJSON
+              ),
+              userHasLiked: updatedComments[commentIndex].userHasLiked,
+              CommentsCount: comment.UserCommentsJSON.length + 1,
+            })
+            .then(async (ress: any) => {
+              console.log(ress, "ressress");
+              setComments(updatedComments);
+              let notifiedArr = {
+                ContentId: ArrDetails[0].Id,
+                NotifiedUserId: ArrDetails[0].AuthorId,
+                ContentType0: "Reply",
+                ContentName: ArrDetails[0].Title,
+                ActionUserId: CurrentUser.Id,
+                DeatilPage: "DiscussionDetails",
+                ReadStatus: false
+              }
+              const nofiArr = await addNotification(notifiedArr, sp)
+              console.log(nofiArr, 'nofiArr');
+            });
+        });
     }
     catch (error) {
+      setLoadingReply(false);
       console.error('Error toggling Reply:', error);
     }
     finally {
@@ -455,7 +478,7 @@ try{
         <VerticalSideBar _context={sp} />
       </div>
       <div className="content-page">
-          <HorizontalNavbar  _context={sp} siteUrl={siteUrl}/>
+        <HorizontalNavbar _context={sp} siteUrl={siteUrl} />
         <div
           className="content "
           style={{ marginLeft: `${!useHide ? "240px" : "80px"}`, marginTop: '1rem' }}
@@ -487,7 +510,7 @@ try{
                         {item.Topic}
                       </p>
                       <div className="row mt-2">
-                        <div className="col-md-12 col-xl-12" style={{width:'100%'}}>
+                        <div className="col-md-12 col-xl-12" style={{ width: '100%' }}>
                           <p className="mb-2 mt-1 d-flex" style={{ fontSize: '14px' }}>
                             <span className="pe-2 text-nowrap mb-0 d-inline-block">
                               <Calendar size={14} />{" "}
@@ -510,7 +533,7 @@ try{
                               {copySuccess && <span className="text-success">{copySuccess}</span>}
                             </span>
                             <span>{item.GroupType} &nbsp; &nbsp;  &nbsp; |  &nbsp;  &nbsp;
-                            &nbsp;</span>
+                              &nbsp;</span>
                             <span style={{ display: 'flex', gap: '0.2rem' }}>
                               {
                                 item?.InviteMemebers?.length > 0 && item?.InviteMemebers.map((item1: any, index: 0) => {
@@ -518,7 +541,7 @@ try{
                                   return (
                                     <>
                                       {item1.EMail ? <span style={{ margin: index == 0 ? '0 0 0 0' : '0 0 0px -12px' }} data-tooltip={item.Title}><img src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item1.EMail}`} className="attendeesImg" /> <span data-tooltip={item.Title}></span></span> :
-                                        <span> <AvtarComponents Name={item1.Title} data-tooltip={item.Title}/> </span>
+                                        <span> <AvtarComponents Name={item1.Title} data-tooltip={item.Title} /> </span>
                                       }
                                     </>
                                   )
@@ -547,7 +570,7 @@ try{
                             <div className="col-sm-6 col-xl-3 filter-item all web illustrator">
                               <div
                                 className="gal-box"
-                               
+
                               >
                                 <a
                                   data-bs-toggle="modal"

@@ -109,10 +109,11 @@ const AnnouncementdetailsContext = ({ props }: any) => {
     }
 
     linkColor.forEach((l) => l.addEventListener("click", colorLink));
-    setInterval(() => {
-      getApiData()
-    }, 1000);
-  }, []);
+   
+  }, [props]);
+  //setInterval(() => {
+   // getApiData()
+ // }, 1000);
   const ApiLocalStorageData = async () => {
     debugger
 
@@ -194,7 +195,7 @@ const AnnouncementdetailsContext = ({ props }: any) => {
   //   if (storedComments) {
   //     setComments(JSON.parse(storedComments));
   //   }
-  // }, []);
+  // }, [props]);
 
   // Save comments to localStorage whenever comments state changes
   // useEffect(() => {
@@ -257,6 +258,17 @@ const AnnouncementdetailsContext = ({ props }: any) => {
       const newItem = await sp.web.lists.getByTitle('ARGAnnouncementAndNews').items.getById(Number(idNum)).update(a);
 
       console.log('Item added successfully:', newItem);
+      let notifiedArr = {
+        ContentId: ArrDetails[0].Id,
+        NotifiedUserId: ArrDetails[0].AuthorId,
+        ContentType0: "AddComment",
+        ContentName: ArrDetails[0].Title,
+        ActionUserId: CurrentUser.Id,
+        DeatilPage: "AnnouncementDetails",
+        ReadStatus: false
+      }
+      const nofiArr = await addNotification(notifiedArr, sp)
+      console.log(nofiArr, 'nofiArr');
     })
 
     // setComments((prevComments) => [...prevComments, newCommentData]);
@@ -444,6 +456,17 @@ const AnnouncementdetailsContext = ({ props }: any) => {
 
             console.log('Like count updated successfully:', newItem);
             setComments(updatedComments);
+            let notifiedArr = {
+              ContentId: ArrDetails[0].Id,
+              NotifiedUserId: ArrDetails[0].AuthorId,
+              ContentType0: "UnLike",
+              ContentName: ArrDetails[0].Title,
+              ActionUserId: CurrentUser.Id,
+              DeatilPage: "AnnouncementDetails",
+              ReadStatus: false
+            }
+            const nofiArr = await addNotification(notifiedArr, sp)
+            console.log(nofiArr, 'nofiArr');
           });
 
         });
@@ -488,9 +511,20 @@ const AnnouncementdetailsContext = ({ props }: any) => {
           UserCommentsJSON: JSON.stringify(updatedComments[commentIndex].UserCommentsJSON),
           userHasLiked: updatedComments[commentIndex].userHasLiked,
           CommentsCount: comment.UserCommentsJSON.length + 1
-        }).then((ress: any) => {
+        }).then(async (ress: any) => {
           console.log(ress, 'ressress');
           setComments(updatedComments);
+          let notifiedArr = {
+            ContentId: ArrDetails[0].Id,
+            NotifiedUserId: ArrDetails[0].AuthorId,
+            ContentType0: "AddReply",
+            ContentName: ArrDetails[0].Title,
+            ActionUserId: CurrentUser.Id,
+            DeatilPage: "AnnouncementDetails",
+            ReadStatus: false
+          }
+          const nofiArr = await addNotification(notifiedArr, sp)
+          console.log(nofiArr, 'nofiArr');
         })
       })
     }

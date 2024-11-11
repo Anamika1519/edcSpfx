@@ -254,7 +254,7 @@
 //             setValues(parseData(initialValues));
 //         }
       
-//     }, []);
+//     }, [props]);
 
 //     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
 //         const { name, value, type, checked, files }: any = e.target;

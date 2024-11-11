@@ -1,0 +1,196 @@
+// .list-group-item.active {
+//     /* background-color: var(--bs-list-group-active-bg); */
+//     border-color: var(--bs-list-group-active-border-color);
+//     color: var(--bs-list-group-active-color);
+//     z-index: 2;
+// }
+// .notification-container {
+//     padding: 20px;
+//   }
+  
+//   .notification-sidebar .list-group-item {
+//     padding: 15px 20px;
+//     font-weight: 600;
+//     color: #555;
+//     background-color: #f7f9fb;
+//     border: none;
+//     border-radius: 10px;
+//     margin-bottom: 10px;
+//   }
+  
+//   .notification-sidebar .list-group-item.active {
+//     background-color: #e6f7ff;
+//     color: #0d6efd;
+//   }
+  
+//   .notification-sidebar .icon {
+//     font-size: 16px;
+//     margin-right: 10px;
+//   }
+  
+//   .notification-content .notification-card {
+//     border-radius: 10px;
+//     border: 1px solid #ddd;
+//   }
+  
+//   .inbox-widget {
+//     padding: 15px;
+//   }
+  
+//   .inbox-item {
+//     display: flex;
+//     align-items: center;
+//     border-bottom: 1px solid #f1f1f1;
+//     padding: 15px 0;
+//   }
+  
+//   .inbox-item:last-child {
+//     border-bottom: none;
+//   }
+  
+//   .inbox-item-img {
+//     margin-right: 15px;
+//   }
+  
+//   .inbox-item-img img {
+//     width: 45px;
+//     height: 45px;
+//   }
+  
+//   .inbox-item-author {
+//     font-weight: 600;
+//     color: #333;
+//     margin: 0;
+//   }
+  
+//   .inbox-item-text {
+//     font-size: 14px;
+//     color: #777;
+//   }
+  
+//   .inbox-item-date a {
+//     font-size: 13px;
+//     color: #0d6efd;
+//   }
+//   .list-group-item.active {
+//     background-color: #f0f0f0; /* Example background color for active state */
+//     color: #007bff; /* Example color for active text */
+//     font-weight: bold;
+//   }
+//   .highlighted {
+//     border: 2px solid #007bff;
+//     box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+//   }  
+
+
+/* Container padding for overall layout */
+.notification-container {
+    padding: 20px;
+  }
+  
+  /* Sidebar styles */
+  .notification-sidebar .list-group-item {
+    padding: 15px 20px;
+    font-weight: 600;
+    color: #555;
+    background-color: #f7f9fb;
+    border: none;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    transition: all 0.3s ease; /* Smooth transition on hover and active state */
+  }
+  
+  /* Active tab styles */
+  .notification-sidebar .list-group-item.active {
+    background-color: #e6f7ff;
+    color: #0d6efd;
+    font-weight: bold;
+  }
+  
+  /* Hover effect for tab links */
+  .notification-sidebar .list-group-item:hover {
+    background-color: #f0f0f0;
+    color: #007bff;
+  }
+  
+  /* Icon size and spacing */
+  .notification-sidebar .icon {
+    font-size: 16px;
+    margin-right: 10px;
+  }
+  
+  /* Content card style */
+  .notification-content .notification-card {
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Inbox widget styling for better spacing */
+  .inbox-widget {
+    padding: 15px;
+  }
+  
+  /* Individual notification item layout */
+  .inbox-item {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #f1f1f1;
+    padding: 15px 0;
+    transition: all 0.3s ease; /* Smooth transition for hover and focus */
+  }
+  
+  /* Remove border on the last notification */
+  .inbox-item:last-child {
+    border-bottom: none;
+  }
+  
+  /* Avatar image styling */
+  .inbox-item-img {
+    margin-right: 15px;
+  }
+  
+  .inbox-item-img img {
+    width: 45px;
+    height: 45px;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+  
+  /* Author name styling */
+  .inbox-item-author {
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+  }
+  
+  /* Notification message text style */
+  .inbox-item-text {
+    font-size: 14px;
+    color: #777;
+  }
+  
+  /* Notification timestamp link styling */
+  .inbox-item-date a {
+    font-size: 13px;
+    color: #0d6efd;
+  }
+  
+  /* Hover effect on notification link */
+  .inbox-item-date a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Styling for active list item */
+  .list-group-item.active {
+    background-color: #f0f0f0;
+    color: #007bff;
+    font-weight: bold;
+  }
+  
+  /* Highlighted state for a notification */
+  .highlighted {
+    border: 2px solid #007bff;
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+  }
+  

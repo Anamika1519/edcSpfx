@@ -231,18 +231,8 @@ const GroupandTeamcontext = ({ props }: any) => {
     sessionStorage.removeItem("announcementId");
 
     ApiCall();
-
-  }, [useHide]);
-
-
-
-  React.useEffect(() => {
-
     addItem;
-
-  }, []);
-
-
+  }, [useHide]);
 
   const ApiCall = async () => {
 

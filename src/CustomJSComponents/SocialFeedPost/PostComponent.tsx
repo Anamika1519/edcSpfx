@@ -3,7 +3,7 @@ import { useState } from "react";
 
 import "../../CustomJSComponents/SocialFeedPost/PostComponent.scss"
 
-import { addActivityLeaderboard, getCurrentUserNameId } from "../../APISearvice/CustomService";
+import { addActivityLeaderboard, addNotification, getCurrentUserNameId } from "../../APISearvice/CustomService";
 
 import { Heart, Menu, MessageSquare, MoreHorizontal, MoreVertical, Share, Share2, ThumbsUp } from "react-feather";
 
@@ -15,7 +15,7 @@ import moment from "moment";
 
 import Swal from "sweetalert2";
 
-export const PostComponent = ({ post, sp, siteUrl, currentUsername, currentEmail }: any) => {
+export const PostComponent = ({ key, sp, siteUrl, currentUsername,CurrentUser, currentEmail, post}: any) => {
     const [loadingReply, setLoadingReply] = useState<boolean>(false);
     const [loadingLike, setLoadingLike] = useState<boolean>(false);
 
@@ -257,8 +257,11 @@ export const PostComponent = ({ post, sp, siteUrl, currentUsername, currentEmail
                     ARGSocialFeedPostsId: postId,
                     userHasLiked: !ele[0].userHasLiked
                 }
-                await sp.web.lists.getByTitle('ARGSocialFeedPostsUserLikes').items.getById(ele[0].Id).update(likePosts).then(async (ele1: any) => {
-                    await addActivityLeaderboard(sp, "Likes on Post");
+                await sp.web.lists.getByTitle('ARGSocialFeedPostsUserLikes').items.getById(ele[0].Id).delete().then(async (ele1: any) => {
+                    console.log(ele1);
+                    
+                    await addActivityLeaderboard(sp, "Unlike on Post");
+                   
                 })
             }
             else {
@@ -269,7 +272,19 @@ export const PostComponent = ({ post, sp, siteUrl, currentUsername, currentEmail
                 let likePostsJson1 = Array.isArray(likePostsJson) ? likePostsJson : [likePostsJson];
                 debugger
                 await sp.web.lists.getByTitle('ARGSocialFeedPostsUserLikes').items.add(likePostsJson).then(async (ele1: any) => {
-                    await addActivityLeaderboard(sp, "Unlike on Post");
+                    console.log(ele1);
+                    await addActivityLeaderboard(sp, "Likes on Post");
+                    let notifiedArr = {
+                        ContentId:ele.data.Id,
+                        NotifiedUserId: ele.data.AuthorId,
+                        ContentType0: "Likes on Post",
+                        ContentName: ele.data.Title,
+                        ActionUserId: CurrentUser.Id,
+                        DeatilPage: "SocialFeed",
+                        ReadStatus: false
+                      }
+                      const nofiArr = await addNotification(notifiedArr, sp)
+                      console.log(nofiArr, 'nofiArr');
                 })
             }
         })

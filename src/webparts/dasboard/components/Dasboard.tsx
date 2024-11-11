@@ -171,7 +171,7 @@ const HelloWorldContext = ({ props }: any) => {
     };
 
 
-  }, []);
+  }, [props]);
 
   const addActivity = async () => {
     await addActivityLeaderboard(sp, "Banner Button Clicks");

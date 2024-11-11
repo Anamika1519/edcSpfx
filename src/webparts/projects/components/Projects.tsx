@@ -165,7 +165,7 @@ const HelloWorldContext = ({ props }: any) => {
         window.removeEventListener("scroll", handleScroll);
       }
     };
-  }, []);
+  }, [props]);
 
   const siteUrl = props.siteUrl;
   const truncateText = (text: string, maxLength: number) => {

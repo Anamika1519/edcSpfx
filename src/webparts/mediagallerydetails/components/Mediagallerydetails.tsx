@@ -81,7 +81,7 @@ const HelloWorldContext = ({props}:any) => {
       let iDs = decryptId(iD);
       callAPI();
     }
-  }, []);
+  }, [props]);
 
   const callAPI = async () => {
     const ID = sessionStorage.getItem("dataID");

@@ -28,6 +28,7 @@ import {
 } from "../../../APISearvice/AnnouncementsService";
 import {
   addItem,
+  get7DaysDiscussionForum,
   GetCategory,
   getChoiceFieldOption,
   getDiscussionComments,
@@ -36,6 +37,7 @@ import {
   getDiscussionForum,
   getDiscussionMe,
   getDiscussionMeAll,
+  getOldDiscussionForum,
   updateItem,
 } from "../../../APISearvice/DiscussionForumService";
 import { encryptId } from "../../../APISearvice/CryptoService";
@@ -111,26 +113,45 @@ const DiscussionForumContext = ({ props }: any) => {
   const [activeTab, setActiveTab] = useState("home1");
   const handleTabClick = async (tab: React.SetStateAction<string>) => {
     setActiveTab(tab);
-    if(tab=="profile11")
-    {
-      FilterDiscussionData("Today")
-    }
-    else if(tab=="profile1")
-    {
-      setAnnouncementData(await getDiscussionMeAll(sp))
-       
-    }
-    else
-    {
+    if (tab == "home1") {
+
       const announcementArr = await getDiscussionForum(sp);
+      let lengArr: any;
+      setAnnouncementData(announcementArr)
+      for (var i = 0; i < announcementArr.length; i++) {
+        lengArr = await getDiscussionComments(sp, announcementArr[i].ID)
+        console.log(lengArr, 'rrr');
+        announcementArr[i].commentsLength = lengArr.arrLength,
+          announcementArr[i].Users = lengArr.arrUser,
+          announcementArr[i].CreatedDate = lengArr.CreatedDate
+      }
+
+    }
+    else if (tab == "lastsevenDays") {
+
+      const announcementArr = await get7DaysDiscussionForum(sp);
       let lengArr: any;
       for (var i = 0; i < announcementArr.length; i++) {
         lengArr = await getDiscussionComments(sp, announcementArr[i].ID)
         console.log(lengArr, 'rrr');
         announcementArr[i].commentsLength = lengArr.arrLength,
           announcementArr[i].Users = lengArr.arrUser
+        announcementArr[i].CreatedDate = lengArr.CreatedDate
       }
       setAnnouncementData(announcementArr)
+    }
+    else {
+      const announcementArr = await getOldDiscussionForum(sp);
+      let lengArr: any;
+      for (var i = 0; i < announcementArr.length; i++) {
+        lengArr = await getDiscussionComments(sp, announcementArr[i].ID)
+        console.log(lengArr, 'rrr');
+        announcementArr[i].commentsLength = lengArr.arrLength,
+          announcementArr[i].Users = lengArr.arrUser,
+          announcementArr[i].CreatedDate = lengArr.CreatedDate
+      }
+
+      setAnnouncementData(announcementArr.sort((a, b) => b.commentsLength - a.commentsLength))
     }
   };
 
@@ -161,10 +182,9 @@ const DiscussionForumContext = ({ props }: any) => {
       await getChoiceFieldOption(sp, "ARGDiscussionForum", "GroupType")
     );
   };
-  const FilterDiscussionData=async (optionFilter: string)=>
-    {
-      setAnnouncementData(await getDiscussionFilterAll(sp,optionFilter))
-    }
+  const FilterDiscussionData = async (optionFilter: string) => {
+    setAnnouncementData(await getDiscussionFilterAll(sp, optionFilter))
+  }
   const handleFilterChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     field: string
@@ -349,10 +369,9 @@ const DiscussionForumContext = ({ props }: any) => {
 
 
 
-  const UserGet =async ()=>
-  {
+  const UserGet = async () => {
     const users = await sp.web.siteUsers();
-    console.log(users,'users')
+    console.log(users, 'users')
   }
 
   // const exportData = currentData.map((item, index) => ({
@@ -392,91 +411,6 @@ const DiscussionForumContext = ({ props }: any) => {
         });
       }
     });
-  };
-
-  const topicPosts = [
-    {
-      ID: 1,
-      Title: "Testing 123",
-      Description: "test for desc....",
-      Category: "Business Reports",
-      Users: [
-        {
-          name: "Mat Helme",
-          avatar: require("../../../Assets/ExtraImage/userimg.png"),
-        },
-        {
-          name: "Michael Zenaty",
-          avatar: require("../../../Assets/ExtraImage/userimg.png"),
-        },
-        {
-          name: "James Anderson",
-          avatar: require("../../../Assets/ExtraImage/userimg.png"),
-        },
-      ],
-      Replies: 6,
-      Views: 2,
-      Activity: "about 9 days ago",
-    },
-    {
-      ID: 2,
-      Title: "Hi SA System Account",
-      Description: "SA System Account SA System Account SA...",
-      Category: "Announcement of Government",
-      Users: [
-        {
-          name: "Mat Helme",
-          avatar: require("../../../Assets/ExtraImage/userimg.png"),
-        },
-        {
-          name: "Michael Zenaty",
-          avatar: require("../../../Assets/ExtraImage/userimg.png"),
-        },
-        {
-          name: "James Anderson",
-          avatar: require("../../../Assets/ExtraImage/userimg.png"),
-        },
-      ],
-      Replies: 4,
-      Views: 0,
-      Activity: "about 13 days ago",
-    },
-    {
-      ID: 1,
-      Title: "Testing 123",
-      Description: "test for desc....",
-      Category: "Business Reports",
-      Users: [
-        { name: "Mat Helme", avatar: "assets/images/users/user-1.jpg" },
-        { name: "Michael Zenaty", avatar: "assets/images/users/user-2.jpg" },
-        { name: "James Anderson", avatar: "assets/images/users/user-3.jpg" },
-      ],
-      Replies: 6,
-      Views: 2,
-      Activity: "about 9 days ago",
-    },
-
-    {
-      ID: 2,
-      Title: "Hi SA System Account",
-      Description: "SA System Account SA System Account SA...",
-      Category: "Announcement of Government",
-      Users: [
-        { name: "Mat Helme", avatar: "assets/images/users/user-1.jpg" },
-        { name: "Michael Zenaty", avatar: "assets/images/users/user-2.jpg" },
-        { name: "James Anderson", avatar: "assets/images/users/user-3.jpg" },
-      ],
-      Replies: 4,
-      Views: 0,
-      Activity: "about 13 days ago",
-    },
-  ];
-
-  const handleChangeCheckBox = (name: string, value: string | boolean) => {
-    setFormData((prevValues) => ({
-      ...prevValues,
-      [name]: value === true ? true : false, // Ensure the correct boolean value is set for checkboxes
-    }));
   };
 
   const onChange = async (name: string, value: string) => {
@@ -1104,6 +1038,7 @@ const DiscussionForumContext = ({ props }: any) => {
             }
 
             setAnnouncementData(await getDiscussionForum(sp));
+            Swal.fire("Item Added successfully", "", "success");
             setTimeout(async () => {
               setFormData({
                 topic: "",
@@ -1115,6 +1050,7 @@ const DiscussionForumContext = ({ props }: any) => {
                 overview: "",
                 FeaturedAnnouncement: false,
               });
+              setSelectedValue([])
               setDocumentpostArr1([]);
               setDocumentpostArr([]);
               setImagepostArr([])
@@ -1234,7 +1170,7 @@ const DiscussionForumContext = ({ props }: any) => {
       </div>
 
       <div className="content-page">
-        <HorizontalNavbar  _context={sp} siteUrl={siteUrl}/>
+        <HorizontalNavbar _context={sp} siteUrl={siteUrl} />
         <div
           className="content"
           style={{
@@ -1504,7 +1440,7 @@ const DiscussionForumContext = ({ props }: any) => {
                                   Invite Members{" "}
                                   <span className="text-danger">*</span>
                                 </label>
-                                
+
                                 <Multiselect
                                   options={options}
                                   selectedValues={selectedValue}
@@ -1640,10 +1576,10 @@ const DiscussionForumContext = ({ props }: any) => {
                             <li className="nav-item" role="presentation">
                               <a
 
-                                onClick={() => handleTabClick("profile1")}
-                                className={`nav-link ${activeTab === "profile1" ? "active" : ""
+                                onClick={() => handleTabClick("lastsevenDays")}
+                                className={`nav-link ${activeTab === "lastsevenDays" ? "active" : ""
                                   }`}
-                                aria-selected={activeTab === "profile1"}
+                                aria-selected={activeTab === "lastsevenDays"}
                                 role="tab"
                                 tabIndex={-1}
                               >
@@ -1653,10 +1589,10 @@ const DiscussionForumContext = ({ props }: any) => {
                             <li className="nav-item" role="presentation">
                               <a
 
-                                onClick={() => handleTabClick("profile11")}
-                                className={`nav-link ${activeTab === "profile11" ? "active" : ""
+                                onClick={() => handleTabClick("OldDays")}
+                                className={`nav-link ${activeTab === "OldDays" ? "active" : ""
                                   }`}
-                                aria-selected={activeTab === "profile11"}
+                                aria-selected={activeTab === "OldDays"}
                                 role="tab"
                                 tabIndex={-1}
                               >
@@ -1802,6 +1738,21 @@ const DiscussionForumContext = ({ props }: any) => {
                           </th>
 
                           <th style={{
+                            minWidth: "50px", maxWidth: "50px", textAlign: "center"
+                          }}>
+                            <div className="d-flex flex-column bd-highlight ">
+                              <div
+                                className="d-flex  pb-2"
+                                style={{ justifyContent: "space-between" }}
+                              >
+                                <span>Replies</span>
+                              </div>
+                              <br />
+                              <div className=" bd-highlight">
+                              </div>
+                            </div>
+                          </th>
+                          <th style={{
                             minWidth: "50px", maxWidth: "50px", borderBottomRightRadius: "10px",
                             borderTopRightRadius: "10px", textAlign: "center"
                           }}>
@@ -1810,7 +1761,7 @@ const DiscussionForumContext = ({ props }: any) => {
                                 className="d-flex  pb-2"
                                 style={{ justifyContent: "space-between" }}
                               >
-                                <span>Replies</span>
+                                <span>Activities</span>
                               </div>
                               <br />
                               <div className=" bd-highlight">
@@ -1842,17 +1793,18 @@ const DiscussionForumContext = ({ props }: any) => {
                                 }}>
                                 {startIndex + index + 1}
                               </td>
-                              <td style={{ minWidth: "180px", maxWidth: "180px",textTransform:'capitalize' }}>{item.Topic}</td>
+                              <td style={{ minWidth: "180px", maxWidth: "180px", textTransform: 'capitalize' }}>{item.Topic}</td>
                               <td style={{ minWidth: "150px", maxWidth: "150px" }}>{item.Overview}</td>
                               <td style={{ minWidth: "100px", maxWidth: "100px" }}>
                                 {item?.DiscussionForumCategory?.CategoryName}
                               </td>
+
                               <td style={{ minWidth: "70px", maxWidth: "70px" }}>
                                 {
-                                  item?.Users?.length > 0 ? item?.Users.map((res: any, index: 0) => {
+                                  item?.InviteMemebers?.length > 0 ? item?.InviteMemebers.map((res: any, index: 0) => {
                                     return (
                                       <img style={{ margin: index == 0 ? '0 0 0 0' : '0 0 0px -12px' }}
-                                        src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${res}`}
+                                        src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${res.EMail}`}
                                         className="rounded-circlecss img-thumbnail avatar-xl"
                                         alt="profile-image" />
                                     )
@@ -1862,6 +1814,9 @@ const DiscussionForumContext = ({ props }: any) => {
                               </td>
                               <td style={{ minWidth: "50px", maxWidth: "50px" }}>
                                 {item.commentsLength}
+                              </td>
+                              <td style={{ minWidth: "70px", maxWidth: "70px" }}>
+                                {moment(item.CreatedDate).fromNow()}
                               </td>
                             </tr>
                           ))

@@ -160,9 +160,7 @@ const NewsdetailsContext = ({ props }: any) => {
     //   setComments(JSON.parse(savedComments));
 
     // }
-    setInterval(() => {
-      ApICallData()
-    }, 1000)
+  
     ApiLocalStorageData()
 
     ApICallData()
@@ -231,8 +229,10 @@ const NewsdetailsContext = ({ props }: any) => {
 
     linkColor.forEach((l) => l.addEventListener("click", colorLink));
 
-  }, []);
-
+  }, [props]);
+  //setInterval(() => {
+   // getApiData()
+ // }, 1000)
   const ApiLocalStorageData = async () => {
 
     debugger
@@ -271,17 +271,8 @@ const NewsdetailsContext = ({ props }: any) => {
 
   }
 
-
-
-  const ApICallData = async () => {
-
-    debugger
-
-    setCurrentUser(await getCurrentUser(sp, siteUrl))
-
-    setCurrentUserProfile(await getCurrentUserProfile(sp, siteUrl))
-
-
+  const getApiData = async () => {
+    
 
     let initialComments: any[] = []
 
@@ -378,6 +369,17 @@ const NewsdetailsContext = ({ props }: any) => {
       // });
 
     })
+  }
+
+  const ApICallData = async () => {
+
+    debugger
+
+    setCurrentUser(await getCurrentUser(sp, siteUrl))
+
+    setCurrentUserProfile(await getCurrentUserProfile(sp, siteUrl))
+
+
 
   }
 
@@ -395,7 +397,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
   //   }
 
-  // }, []);
+  // }, [props]);
 
 
 
@@ -552,7 +554,9 @@ const NewsdetailsContext = ({ props }: any) => {
       }
     }
     catch (error) {
+      setLoadingLike(false);
       console.error('Error toggling like:', error);
+      
     }
     finally {
       setLoadingLike(false); // Enable the button after the function completes
@@ -630,6 +634,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
     }
     catch (error) {
+      setLoadingReply(false); 
       console.error('Error toggling Reply:', error);
     }
     finally {

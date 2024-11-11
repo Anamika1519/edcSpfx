@@ -32,7 +32,7 @@ const CustomWebpartTemplate = ({ _sp, SiteUrl }) => {
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
-    }, [_sp])
+    }, [ _sp, SiteUrl])
  
     const ApIcall = async () => {
         setAnnouncement(await getAnncouncement(_sp))

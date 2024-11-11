@@ -4,6 +4,7 @@ import { getSP } from "../loc/pnpjsConfig";
 import VerticalSideBar from "../../verticalSideBar/components/VerticalSideBar";
 import HorizontalNavbar from "../../horizontalNavBar/components/HorizontalNavBar";
 import {
+  addNotification,
   getCurrentUser,
   getCurrentUserProfile,
   getCurrentUserProfileEmail,
@@ -89,11 +90,10 @@ const EventdetailscalenderContext = ({ props }: any) => {
     // if (savedComments) {
     //   setComments(JSON.parse(savedComments));
     // }
-    setInterval(() => {
-      ApICallData()
-    }, 1000)
+    getApiData()
     ApiLocalStorageData();
-    ApICallData();
+    getApiData()
+ApICallData();
     const showNavbar = (
       toggleId: string,
       navId: string,
@@ -126,9 +126,11 @@ const EventdetailscalenderContext = ({ props }: any) => {
     }
 
     linkColor.forEach((l) => l.addEventListener("click", colorLink));
-  }, []);
+  }, [props]);
 
-
+  //setInterval(() => {
+   // getApiData()
+ // }, 1000)
   const ApiLocalStorageData = async () => {
     debugger;
     debugger
@@ -152,12 +154,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
     // }
   };
 
-
-  const ApICallData = async () => {
-    debugger;
-    setCurrentUser(await getCurrentUser(sp, siteUrl));
-    setCurrentUserProfile(await getCurrentUserProfile(sp, siteUrl));
-    debugger
+  const getApiData = async () => {
     const ids = window.location.search;
     const originalString = ids;
     const idNum = originalString.substring(1);
@@ -250,6 +247,13 @@ const EventdetailscalenderContext = ({ props }: any) => {
         //   }
         // });
       });
+  }
+  const ApICallData = async () => {
+    debugger;
+    setCurrentUser(await getCurrentUser(sp, siteUrl));
+    setCurrentUserProfile(await getCurrentUserProfile(sp, siteUrl));
+    debugger
+   
   };
 
   // Load comments from localStorage on component mount
@@ -258,7 +262,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
   //   if (storedComments) {
   //     setComments(JSON.parse(storedComments));
   //   }
-  // }, []);
+  // }, [props]);
 
   // Save comments to localStorage whenever comments state changes
   // useEffect(() => {
@@ -282,7 +286,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
         EventsMasterId: ArrDetails[0].Id,
         UserProfile: CurrentUserProfile,
       })
-      .then((ress: any) => {
+      .then(async (ress: any) => {
         console.log(ress, "ressress");
         const newCommentData1: Comment = {
           Id: ress.data.Id,
@@ -296,6 +300,17 @@ const EventdetailscalenderContext = ({ props }: any) => {
           UserProfile: ress.data.UserProfile,
         };
         setComments((prevComments) => [...prevComments, newCommentData1]);
+        let notifiedArr = {
+          ContentId: ArrDetails[0].Id,
+          NotifiedUserId: ArrDetails[0].AuthorId,
+          ContentType0: "Comment",
+          ContentName: ArrDetails[0].Title,
+          ActionUserId: CurrentUser.Id,
+          DeatilPage: "EventDetails",
+          ReadStatus: false
+        }
+        const nofiArr = await addNotification(notifiedArr, sp)
+        console.log(nofiArr, 'nofiArr');
         setNewComment("");
         setLoading(false);
       });
@@ -344,10 +359,21 @@ const EventdetailscalenderContext = ({ props }: any) => {
           UserLikesJSON: JSON.stringify(updatedComments[commentIndex].UserLikesJSON),
           userHasLiked: true,
           LikesCount: comment.UserLikesJSON.length
-        }).then(() => {
+        }).then(async () => {
           console.log('Updated comment with new like');
           comment.userHasLiked = true;
           setComments(updatedComments);
+          let notifiedArr = {
+            ContentId: ArrDetails[0].Id,
+            NotifiedUserId: ArrDetails[0].AuthorId,
+            ContentType0: "Like",
+            ContentName: ArrDetails[0].Title,
+            ActionUserId: CurrentUser.Id,
+            DeatilPage: "EventDetails",
+            ReadStatus: false
+          }
+          const nofiArr = await addNotification(notifiedArr, sp)
+          console.log(nofiArr, 'nofiArr');
         });
       });
     } else {
@@ -365,15 +391,27 @@ const EventdetailscalenderContext = ({ props }: any) => {
           UserLikesJSON: JSON.stringify(updatedComments[commentIndex].UserLikesJSON),
           userHasLiked: false,
           LikesCount: comment.UserLikesJSON.length
-        }).then(() => {
+        }).then(async () => {
           console.log('Updated comment after removing like');
           comment.userHasLiked = false;
           setComments(updatedComments);
+          let notifiedArr = {
+            ContentId: ArrDetails[0].Id,
+            NotifiedUserId: ArrDetails[0].AuthorId,
+            ContentType0: "Reply",
+            ContentName: ArrDetails[0].Title,
+            ActionUserId: CurrentUser.Id,
+            DeatilPage: "EventDetails",
+            ReadStatus: false
+          }
+          const nofiArr = await addNotification(notifiedArr, sp)
+          console.log(nofiArr, 'nofiArr');
         });
       });
     }
   }
   catch (error) {
+    setLoadingLike(false);
     console.error('Error toggling like:', error);
   }
   finally {
@@ -420,13 +458,25 @@ const EventdetailscalenderContext = ({ props }: any) => {
             userHasLiked: updatedComments[commentIndex].userHasLiked,
             CommentsCount: comment.UserCommentsJSON.length + 1,
           })
-          .then((ress: any) => {
+          .then(async (ress: any) => {
             console.log(ress, "ressress");
             setComments(updatedComments);
+            let notifiedArr = {
+              ContentId: ArrDetails[0].Id,
+              NotifiedUserId: ArrDetails[0].AuthorId,
+              ContentType0: "Reply",
+              ContentName: ArrDetails[0].Title,
+              ActionUserId: CurrentUser.Id,
+              DeatilPage: "EventDetails",
+              ReadStatus: false
+            }
+            const nofiArr = await addNotification(notifiedArr, sp)
+            console.log(nofiArr, 'nofiArr');
           });
       });
     }
     catch (error) {
+      setLoadingReply(false); 
       console.error('Error toggling Reply:', error);
     }
     finally {

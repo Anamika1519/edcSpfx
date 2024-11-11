@@ -13,6 +13,7 @@ import HorizontalNavbar from "../../horizontalNavBar/components/HorizontalNavBar
 // import 'react-comments-section/dist/index.css';
 import { CommentCard } from "../../../CustomJSComponents/CustomCommentCard/CommentCard";
 import {
+  addNotification,
   getCurrentUser,
   getCurrentUserProfile,
 } from "../../../APISearvice/CustomService";
@@ -90,11 +91,10 @@ const ProjectDetailsContext = ({ props }: any) => {
     // if (savedComments) {
     //   setComments(JSON.parse(savedComments));
     // }
-    setInterval(() => {
-      ApICallData()
-    }, 1000)
+   
     ApiLocalStorageData();
-    ApICallData();
+    getApiData()
+ApICallData();
     const showNavbar = (
       toggleId: string,
       navId: string,
@@ -137,24 +137,11 @@ const ProjectDetailsContext = ({ props }: any) => {
     }
     document.removeEventListener("mousedown", handleClickOutside);
     linkColor.forEach((l) => l.addEventListener("click", colorLink));
-  }, []);
-  const ApiLocalStorageData = async () => {
-    debugger;
-
-    //Get the Id parameter
-    const ids = window.location.search;
-    const originalString = ids;
-    const idNum = originalString.substring(1);
-    // const queryString = decryptId(Number(updatedString));
-
-    setArrDetails(await getProjectDetailsById(sp, Number(idNum)));
-  };
-
-  const ApICallData = async () => {
-    debugger;
-    setCurrentUser(await getCurrentUser(sp, siteUrl));
-    setCurrentUserProfile(await getCurrentUserProfile(sp, siteUrl));
-
+  }, [props]);
+  //setInterval(() => {
+   // getApiData()
+ // }, 1000)
+  const getApiData = async () => {
     let initialComments: any[] = [];
     const ids = window.location.search;
     const originalString = ids;
@@ -244,6 +231,23 @@ const ProjectDetailsContext = ({ props }: any) => {
         //   }
         // });
       });
+  }
+  const ApiLocalStorageData = async () => {
+    debugger;
+
+    //Get the Id parameter
+    const ids = window.location.search;
+    const originalString = ids;
+    const idNum = originalString.substring(1);
+    // const queryString = decryptId(Number(updatedString));
+
+    setArrDetails(await getProjectDetailsById(sp, Number(idNum)));
+  };
+
+  const ApICallData = async () => {
+    debugger;
+    setCurrentUser(await getCurrentUser(sp, siteUrl));
+    setCurrentUserProfile(await getCurrentUserProfile(sp, siteUrl));
   };
 
   const [showModal, setShowModal] = useState(false);
@@ -306,7 +310,7 @@ const ProjectDetailsContext = ({ props }: any) => {
         ARGProjectId: ArrDetails[0].Id,
         UserProfile: CurrentUserProfile,
       })
-      .then((ress: any) => {
+      .then(async (ress: any) => {
         console.log(ress, "ressress");
         const newCommentData1: Comment = {
           Id: ress.data.Id,
@@ -320,6 +324,17 @@ const ProjectDetailsContext = ({ props }: any) => {
           UserProfile: ress.data.UserProfile,
         };
         setComments((prevComments) => [...prevComments, newCommentData1]);
+        let notifiedArr = {
+          ContentId: ArrDetails[0].Id,
+          NotifiedUserId: ArrDetails[0].AuthorId,
+          ContentType0: "Comment",
+          ContentName: ArrDetails[0].Title,
+          ActionUserId: CurrentUser.Id,
+          DeatilPage: "ProjectDetails",
+          ReadStatus: false
+        }
+        const nofiArr = await addNotification(notifiedArr, sp)
+        console.log(nofiArr, 'nofiArr');
         setNewComment("");
         setLoading(false);
       });
@@ -433,7 +448,7 @@ try{
           ProjectCommentsId: comment.Id,
           userHasLiked: true,
         })
-        .then((res: any) => {
+        .then(async (res: any) => {
           const newLikeJson: Like = {
             ID: res.data.Id,
             AuthorId: res.data.AuthorId,
@@ -450,6 +465,17 @@ try{
           };
 
           setComments(updatedComments);
+          let notifiedArr = {
+            ContentId: ArrDetails[0].Id,
+            NotifiedUserId: ArrDetails[0].AuthorId,
+            ContentType0: "Like",
+            ContentName: ArrDetails[0].Title,
+            ActionUserId: CurrentUser.Id,
+            DeatilPage: "ProjectDetails",
+            ReadStatus: false
+          }
+          const nofiArr = await addNotification(notifiedArr, sp)
+          console.log(nofiArr, 'nofiArr');
         });
     } else {
       // Remove the like
@@ -459,7 +485,7 @@ try{
         .getByTitle("ARGProjectUserLikes")
         .items.getById(userLikeId)
         .delete()
-        .then(() => {
+        .then(async () => {
           updatedComments[commentIndex] = {
             ...comment,
             UserLikesJSON: comment.UserLikesJSON.filter(
@@ -469,10 +495,22 @@ try{
           };
 
           setComments(updatedComments);
+          let notifiedArr = {
+            ContentId: ArrDetails[0].Id,
+            NotifiedUserId: ArrDetails[0].AuthorId,
+            ContentType0: "UnLike",
+            ContentName: ArrDetails[0].Title,
+            ActionUserId: CurrentUser.Id,
+            DeatilPage: "ProjectDetails",
+            ReadStatus: false
+          }
+          const nofiArr = await addNotification(notifiedArr, sp)
+          console.log(nofiArr, 'nofiArr');
         });
     }
   }
   catch (error) {
+    setLoadingLike(false);
     console.error('Error toggling like:', error);
   }
   finally {
@@ -528,13 +566,25 @@ try{
             userHasLiked: updatedComments[commentIndex].userHasLiked,
             CommentsCount: comment.UserCommentsJSON.length + 1,
           })
-          .then((ress: any) => {
+          .then(async (ress: any) => {
             console.log(ress, "ressress");
             setComments(updatedComments);
+            let notifiedArr = {
+              ContentId: ArrDetails[0].Id,
+              NotifiedUserId: ArrDetails[0].AuthorId,
+              ContentType0: "Reply",
+              ContentName: ArrDetails[0].Title,
+              ActionUserId: CurrentUser.Id,
+              DeatilPage: "ProjectDetails",
+              ReadStatus: false
+            }
+            const nofiArr = await addNotification(notifiedArr, sp)
+            console.log(nofiArr, 'nofiArr');
           });
       });
     }
     catch (error) {
+      setLoadingReply(false); 
       console.error('Error toggling Reply:', error);
     }
     finally {

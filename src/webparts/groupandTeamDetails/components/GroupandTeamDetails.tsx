@@ -31,6 +31,7 @@ import { CommentCard } from "../../../CustomJSComponents/CustomCommentCard/Comme
 import "../components/GroupandTeamDetails.scss";
  
 import {
+  addNotification,
   getCurrentUser,
   getCurrentUserProfile,
   getUserProfilePicture,
@@ -133,19 +134,12 @@ const GroupandTeamDetailsContext = ({ props }: any) => {
   const [loadingReply, setLoadingReply] = useState<boolean>(false);
  
   useEffect(() => {
-    // const savedComments = localStorage.getItem('comments');
- 
-    // if (savedComments) {
- 
-    //   setComments(JSON.parse(savedComments));
- 
-    // }
-    setInterval(() => {
-      ApICallData()
-    }, 1000)
+
+  
     ApiLocalStorageData();
  
-    ApICallData();
+    getApiData()
+ApICallData();
  
     const showNavbar = (
       toggleId: string,
@@ -190,28 +184,11 @@ const GroupandTeamDetailsContext = ({ props }: any) => {
     }
 
     linkColor.forEach((l) => l.addEventListener("click", colorLink));
-  }, []);
- 
-  const ApiLocalStorageData = async () => {
-    debugger;
-
-    //Get the Id parameter
- 
-    const ids = window.location.search;
- 
-    const originalString = ids;
- 
-    const idNum = originalString.substring(1);
- 
-    // const queryString = decryptId(Number(updatedString));
-
-    setArrDetails(await getGroupTeamDetailsById(sp, Number(idNum)));
-  };
-
-  const ApICallData = async () => {
-    setCurrentUser(await getCurrentUser(sp, siteUrl));
- 
-    setCurrentUserProfile(await getCurrentUserProfile(sp, siteUrl));
+  }, [props]);
+  //setInterval(() => {
+   // getApiData()
+ // }, 1000)
+  const getApiData = async () => {
     let initialComments: any[] = [];
  
     const ids = window.location.search;
@@ -339,6 +316,28 @@ const GroupandTeamDetailsContext = ({ props }: any) => {
  
         // });
       });
+  }
+  const ApiLocalStorageData = async () => {
+    debugger;
+
+    //Get the Id parameter
+ 
+    const ids = window.location.search;
+ 
+    const originalString = ids;
+ 
+    const idNum = originalString.substring(1);
+ 
+    // const queryString = decryptId(Number(updatedString));
+
+    setArrDetails(await getGroupTeamDetailsById(sp, Number(idNum)));
+  };
+
+  const ApICallData = async () => {
+    setCurrentUser(await getCurrentUser(sp, siteUrl));
+ 
+    setCurrentUserProfile(await getCurrentUserProfile(sp, siteUrl));
+    
   };
 
   const copyToClipboard = (Id: number) => {
@@ -431,7 +430,17 @@ const GroupandTeamDetailsContext = ({ props }: any) => {
           .items.getById(Number(idNum))
  
           .update(a);
-
+          let notifiedArr = {
+            ContentId: ArrDetails[0].Id,
+            NotifiedUserId: ArrDetails[0].AuthorId,
+            ContentType0: "Comment",
+            ContentName: ArrDetails[0].Title,
+            ActionUserId: CurrentUser.Id,
+            DeatilPage: "GroupandTeamDetails",
+            ReadStatus: false
+          }
+          const nofiArr = await addNotification(notifiedArr, sp)
+          console.log(nofiArr, 'nofiArr');
         console.log("Item added successfully:", newItem);
       });
 
@@ -534,7 +543,17 @@ try{
                 .items.getById(Number(idNum))
  
                 .update(likeUpdateBody);
-
+                let notifiedArr = {
+                  ContentId: ArrDetails[0].Id,
+                  NotifiedUserId: ArrDetails[0].AuthorId,
+                  ContentType0: "Like",
+                  ContentName: ArrDetails[0].Title,
+                  ActionUserId: CurrentUser.Id,
+                  DeatilPage: "GroupandTeamDetails",
+                  ReadStatus: false
+                }
+                const nofiArr = await addNotification(notifiedArr, sp)
+                console.log(nofiArr, 'nofiArr');
               console.log("Like count updated successfully:", newItem);
             });
         });
@@ -602,7 +621,16 @@ try{
                 .items.getById(Number(idNum))
  
                 .update(likeUpdateBody);
-
+                let notifiedArr = {
+                  ContentId: ArrDetails[0].Id,
+                  NotifiedUserId: ArrDetails[0].AuthorId,
+                  ContentType0: "UnLike",
+                  ContentName: ArrDetails[0].Title,
+                  ActionUserId: CurrentUser.Id,
+                  DeatilPage: "GroupandTeamDetails",
+                  ReadStatus: false
+                }
+                const nofiArr = await addNotification(notifiedArr, sp)
               console.log("Like count updated successfully:", newItem);
             });
         });
@@ -610,6 +638,7 @@ try{
   }
   catch (error) {
     console.error('Error toggling like:', error);
+    setLoadingLike(false);
   }
   finally {
     setLoadingLike(false); // Enable the button after the function completes
@@ -676,14 +705,26 @@ try{
             CommentsCount: comment.UserCommentsJSON.length + 1,
           })
  
-          .then((ress: any) => {
+          .then(async (ress: any) => {
             console.log(ress, "ressress");
  
             setComments(updatedComments);
+            let notifiedArr = {
+              ContentId: ArrDetails[0].Id,
+              NotifiedUserId: ArrDetails[0].AuthorId,
+              ContentType0: "Reply",
+              ContentName: ArrDetails[0].Title,
+              ActionUserId: CurrentUser.Id,
+              DeatilPage: "GroupandTeamDetails",
+              ReadStatus: false
+            }
+            const nofiArr = await addNotification(notifiedArr, sp)
+            console.log(nofiArr, 'nofiArr');
           });
       });
     }
     catch (error) {
+      setLoadingReply(false); 
       console.error('Error toggling Reply:', error);
     }
     finally {

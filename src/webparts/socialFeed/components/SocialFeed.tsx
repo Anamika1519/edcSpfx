@@ -12,7 +12,7 @@ import "../../../Assets/Figtree/Figtree-VariableFont_wght.ttf";
 import "bootstrap/dist/css/bootstrap.min.css";
 import CustomBreadcrumb from '../../../CustomJSComponents/CustomBreadcrumb/CustomBreadcrumb'
 import { Link, MoreVertical, Plus, PlusCircle, Rss, TrendingUp, User, UserPlus, Users } from 'react-feather'
-import { addActivityLeaderboard, getCurrentUser, getCurrentUserName, getCurrentUserNameId, getCurrentUserProfileEmail, getFollow, getFollowing } from '../../../APISearvice/CustomService'
+import { addActivityLeaderboard, addNotification, getCurrentUser, getCurrentUserName, getCurrentUserNameId, getCurrentUserProfileEmail, getFollow, getFollowing } from '../../../APISearvice/CustomService'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons"
 import classNames from 'classnames'
@@ -43,6 +43,8 @@ const SocialFeedContext = ({ props }: any) => {
   const [hideCreatePost, setHideCreatePost] = useState(true)
   const [HideShowPost, setHideShowPost] = useState(false)
   const [currentEmail, setCurrentEmail] = useState("")
+  const [CurrentUser, setCurrentUser] = useState<any>([])
+
   const [currentId, setCurrentID] = useState<any>(0)
 
   const [currentUsername, setCurrentUserName] = useState("")
@@ -90,6 +92,7 @@ const SocialFeedContext = ({ props }: any) => {
   }, [props]);
   const getAllAPI = async () => {
     setCurrentEmail(await getCurrentUserProfileEmail(sp))
+    setCurrentUser(await getCurrentUser(sp))
 
 
     setCurrentUserName(await getCurrentUserName(sp))
@@ -210,6 +213,7 @@ const SocialFeedContext = ({ props }: any) => {
     setUploadFile(flatArray(uploadedImages)); // Optional: Track the uploaded file(s) in another state
   }
   catch (error) {
+    setLoading(false); 
     console.error('Error toggling like:', error);
   }
   finally {
@@ -366,7 +370,17 @@ const SocialFeedContext = ({ props }: any) => {
             console.log(updatedPosts);
 
             setPosts(updatedPosts);
-
+            let notifiedArr = {
+              ContentId:ele.data.Id,
+              NotifiedUserId: ele.data.AuthorId,
+              ContentType0: "Post By User",
+              ContentName: ele.data.Contentpost,
+              ActionUserId: CurrentUser.Id,
+              DeatilPage: "SocialFeed",
+              ReadStatus: false
+            }
+            const nofiArr = await addNotification(notifiedArr, sp)
+            console.log(nofiArr, 'nofiArr');
 
 
             localStorage.setItem('posts', JSON.stringify(updatedPosts));
@@ -388,7 +402,7 @@ const SocialFeedContext = ({ props }: any) => {
           setImages([]);
 
         } catch (error) {
-
+          setIsSubmitting(false); 
           console.log("Error adding post to SharePoint: ", error);
 
           //alert("There was an error submitting your post. Please try again.");
@@ -408,6 +422,7 @@ const SocialFeedContext = ({ props }: any) => {
       }
     }
     catch (error) {
+      setLoading(false);
       console.error('Error toggling Reply:', error);
     }
     finally {
@@ -1133,7 +1148,7 @@ const SocialFeedContext = ({ props }: any) => {
                             siteUrl={siteUrl}
 
                             currentUserName={currentUsername}
-
+                            CurrentUser={CurrentUser}
                             currentEmail={currentEmail}
 
                             post={{

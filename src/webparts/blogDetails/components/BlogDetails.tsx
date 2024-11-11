@@ -14,6 +14,7 @@ import HorizontalNavbar from "../../horizontalNavBar/components/HorizontalNavBar
 import { CommentCard } from "../../../CustomJSComponents/CustomCommentCard/CommentCard";
 import {
   addActivityLeaderboard,
+  addNotification,
   getCurrentUser,
   getCurrentUserProfile
 } from "../../../APISearvice/CustomService";
@@ -75,11 +76,11 @@ const BlogDetailsContext = ({ props }: any) => {
     // if (savedComments) {
     //   setComments(JSON.parse(savedComments));
     // }
-    setInterval(() => {
-      ApICallData()
-    }, 1000)
+  
     ApiLocalStorageData();
-    ApICallData();
+    getApiData()
+ApICallData();
+    getApiData()
     const showNavbar = (
       toggleId: string,
       navId: string,
@@ -112,7 +113,10 @@ const BlogDetailsContext = ({ props }: any) => {
     }
  
     linkColor.forEach((l) => l.addEventListener("click", colorLink));
-  }, []);
+  }, [props]);
+  //setInterval(() => {
+   // getApiData()
+ // }, 1000)
   const ApiLocalStorageData = async () => {
     debugger;
  
@@ -124,115 +128,71 @@ const BlogDetailsContext = ({ props }: any) => {
  
     setArrDetails(await getBlogDetailsById(sp, Number(idNum)));
   };
- 
+ const  getApiData=()=>
+ {
+  let initialComments: any[] = [];
+  const ids = window.location.search;
+  const originalString = ids;
+  const idNum = originalString.substring(1);
+  let initialArray: any[] = [];
+  let arrLike = {}
+  let likeArray: any[] = []
+  sp.web.lists
+    .getByTitle("ARGBlogComments")
+    .items.select("*,ARGBlogs/Id")
+    .expand("ARGBlogs")
+    .filter(`ARGBlogsId eq ${Number(idNum)}`)()
+    .then(async (result: any) => {
+      console.log(result, "ARGBlogComments");
+
+      initialComments = result;
+      for (var i = 0; i < initialComments.length; i++) {
+        await  sp.web.lists
+            .getByTitle("ARGBlogUserLikes")
+            .items.filter(`BlogsCommentsId eq ${Number(initialComments[i].Id)}`).select("ID,AuthorId,UserName,Like,Created")()
+            .then((result1: any) => {
+              console.log(result1, "ARGBlogUserLikesLikes");
+              likeArray=[]
+              for (var j = 0; j < result1.length; j++) {
+                arrLike = {
+                  "ID": result1[j].Id,
+                  "AuthorId": result1[j].AuthorId,
+                  "UserName": result1[j].UserName,
+                  "Like": result1[j].Like,
+                  "Created": result1[j].Created
+                }
+                likeArray.push(arrLike)
+              }
+
+              let arr = {
+                Id: initialComments[i].Id,
+                UserName: initialComments[i].UserName,
+                AuthorId: initialComments[i].AuthorId,
+                Comments: initialComments[i].Comments,
+                Created: new Date(initialComments[i].Created).toLocaleString(), // Formatting the created date
+                UserLikesJSON: result1.length>0?likeArray:[]
+                   , // Default to empty array if null
+                UserCommentsJSON:
+                  initialComments[i].UserCommentsJSON != "" &&
+                    initialComments[i].UserCommentsJSON != null &&
+                    initialComments[i].UserCommentsJSON != undefined
+                    ? JSON.parse(initialComments[i].UserCommentsJSON)
+                    : [], // Default to empty array if null
+                userHasLiked: initialComments[i].userHasLiked,
+                UserProfile: initialComments[i].UserProfile
+              }
+              initialArray.push(arr);
+            })
+
+        }
+        setComments(initialArray);
+    });
+ }
   const ApICallData = async () => {
     debugger;
     setCurrentUser(await getCurrentUser(sp,siteUrl));
     setCurrentUserProfile(await getCurrentUserProfile(sp,siteUrl));
- 
-    let initialComments: any[] = [];
-    const ids = window.location.search;
-    const originalString = ids;
-    const idNum = originalString.substring(1);
-    let initialArray: any[] = [];
-    let arrLike = {}
-    let likeArray: any[] = []
-    sp.web.lists
-      .getByTitle("ARGBlogComments")
-      .items.select("*,ARGBlogs/Id")
-      .expand("ARGBlogs")
-      .filter(`ARGBlogsId eq ${Number(idNum)}`)()
-      .then(async (result: any) => {
-        console.log(result, "ARGBlogComments");
- 
-        initialComments = result;
-        for (var i = 0; i < initialComments.length; i++) {
-          await  sp.web.lists
-              .getByTitle("ARGBlogUserLikes")
-              .items.filter(`BlogsCommentsId eq ${Number(initialComments[i].Id)}`).select("ID,AuthorId,UserName,Like,Created")()
-              .then((result1: any) => {
-                console.log(result1, "ARGBlogUserLikesLikes");
-                likeArray=[]
-                for (var j = 0; j < result1.length; j++) {
-                  arrLike = {
-                    "ID": result1[j].Id,
-                    "AuthorId": result1[j].AuthorId,
-                    "UserName": result1[j].UserName,
-                    "Like": result1[j].Like,
-                    "Created": result1[j].Created
-                  }
-                  likeArray.push(arrLike)
-                }
-  
-                let arr = {
-                  Id: initialComments[i].Id,
-                  UserName: initialComments[i].UserName,
-                  AuthorId: initialComments[i].AuthorId,
-                  Comments: initialComments[i].Comments,
-                  Created: new Date(initialComments[i].Created).toLocaleString(), // Formatting the created date
-                  UserLikesJSON: result1.length>0?likeArray:[]
-                     , // Default to empty array if null
-                  UserCommentsJSON:
-                    initialComments[i].UserCommentsJSON != "" &&
-                      initialComments[i].UserCommentsJSON != null &&
-                      initialComments[i].UserCommentsJSON != undefined
-                      ? JSON.parse(initialComments[i].UserCommentsJSON)
-                      : [], // Default to empty array if null
-                  userHasLiked: initialComments[i].userHasLiked,
-                  UserProfile: initialComments[i].UserProfile
-                }
-                initialArray.push(arr);
-              })
-  
-          }
-          setComments(initialArray)
-        // setComments(
-        //   initialComments.map((res) => ({
-        //     Id: res.Id,
-        //     UserName: res.UserName,
-        //     AuthorId: res.AuthorId,
-        //     Comments: res.Comments,
-        //     Created: new Date(res.Created).toLocaleString(), // Formatting the created date
-        //     UserLikesJSON:
-        //       res.UserLikesJSON != "" &&
-        //       res.UserLikesJSON != null &&
-        //       res.UserLikesJSON != undefined
-        //         ? JSON.parse(res.UserLikesJSON)
-        //         : [], // Default to empty array if null
-        //     UserCommentsJSON:
-        //       res.UserCommentsJSON != "" &&
-        //       res.UserCommentsJSON != null &&
-        //       res.UserCommentsJSON != undefined
-        //         ? JSON.parse(res.UserCommentsJSON)
-        //         : [], // Default to empty array if null
-        //     userHasLiked: res.userHasLiked,
-        //     UserProfile: res.UserProfile,
-        //     // Initialize as false
-        //   }))
-        // );
- 
-        // getUserProfilePicture(CurrentUser.Id,sp).then((url) => {
-        //   if (url) {
-        //     console.log("Profile Picture URL:", url);
-        //   } else {
-        //     console.log("No profile picture found.");
-        //   }
-        // });
-      });
   };
- 
-  // Load comments from localStorage on component mount
-  // useEffect(() => {
-  //   const storedComments = localStorage.getItem('comments');
-  //   if (storedComments) {
-  //     setComments(JSON.parse(storedComments));
-  //   }
-  // }, []);
- 
-  // Save comments to localStorage whenever comments state changes
-  // useEffect(() => {
-  //   localStorage.setItem('comments', JSON.stringify(comments));
-  // }, [comments]);
  
   const copyToClipboard = (Id:number) => {
     const link = `${siteUrl}/SitePages/BlogDetails.aspx?${Id}`;
@@ -279,7 +239,17 @@ const BlogDetailsContext = ({ props }: any) => {
         };
 
         setComments((prevComments) => [...prevComments, newCommentData1]);
-      
+        let notifiedArr = {
+          ContentId: ArrDetails[0].Id,
+          NotifiedUserId: ArrDetails[0].AuthorId,
+          ContentType0: "Comment",
+          ContentName: ArrDetails[0].Title,
+          ActionUserId: CurrentUser.Id,
+          DeatilPage: "BlogDetails",
+          ReadStatus: false
+        }
+        const nofiArr = await addNotification(notifiedArr, sp)
+        console.log(nofiArr, 'nofiArr');
         setNewComment("");
         setLoading(false);
       });
@@ -342,6 +312,17 @@ const BlogDetailsContext = ({ props }: any) => {
             
               comment.userHasLiked = true;
               setComments(updatedComments);
+              let notifiedArr = {
+                ContentId: ArrDetails[0].Id,
+                NotifiedUserId: ArrDetails[0].AuthorId,
+                ContentType0: "Like",
+                ContentName: ArrDetails[0].Title,
+                ActionUserId: CurrentUser.Id,
+                DeatilPage: "BlogDetails",
+                ReadStatus: false
+              }
+              const nofiArr = await addNotification(notifiedArr, sp)
+              console.log(nofiArr, 'nofiArr');
             });
         });
     } else {
@@ -373,13 +354,24 @@ const BlogDetailsContext = ({ props }: any) => {
               console.log("Updated comment after removing like");
               comment.userHasLiked = false;
               setComments(updatedComments);
-             
+              let notifiedArr = {
+                ContentId: ArrDetails[0].Id,
+                NotifiedUserId: ArrDetails[0].AuthorId,
+                ContentType0: "UnLike",
+                ContentName: ArrDetails[0].Title,
+                ActionUserId: CurrentUser.Id,
+                DeatilPage: "BlogDetails",
+                ReadStatus: false
+              }
+              const nofiArr = await addNotification(notifiedArr, sp)
+              console.log(nofiArr, 'nofiArr');
             });
         });
     }
     
   }
   catch (error) {
+    setLoadingReply(false);
     console.error('Error toggling like:', error);
   }
   finally {
@@ -426,13 +418,25 @@ const BlogDetailsContext = ({ props }: any) => {
             userHasLiked: updatedComments[commentIndex].userHasLiked,
             CommentsCount: comment.UserCommentsJSON.length + 1,
           })
-          .then((ress: any) => {
+          .then(async (ress: any) => {
             console.log(ress, "ressress");
             setComments(updatedComments);
+            let notifiedArr = {
+              ContentId: ArrDetails[0].Id,
+              NotifiedUserId: ArrDetails[0].AuthorId,
+              ContentType0: "Reply",
+              ContentName: ArrDetails[0].Title,
+              ActionUserId: CurrentUser.Id,
+              DeatilPage: "BlogDetails",
+              ReadStatus: false
+            }
+            const nofiArr = await addNotification(notifiedArr, sp)
+            console.log(nofiArr, 'nofiArr');
           });
       });
     }
     catch (error) {
+      setLoadingReply(false);
       console.error('Error toggling Reply:', error);
     }
     finally {
