@@ -72,14 +72,15 @@ a{text-decoration: none !important; cursor: pointer;}
 .twolinewrap{
   overflow: hidden;
 text-overflow: ellipsis;
--webkit-line-clamp: 2;
+//-webkit-line-clamp: 2;
 display: -webkit-box;
 -webkit-box-orient: vertical;
 }
+.notification-lists:after{display: none !important;}
 .twolinewrap1{
   overflow: hidden;
 text-overflow: ellipsis;
--webkit-line-clamp: 3;
+//-webkit-line-clamp: 3;
 display: -webkit-box;
 height:63px;
 -webkit-box-orient: vertical;
@@ -1138,7 +1139,7 @@ margin: 10px 0px !important ;
     margin-top: -3px !important;
 }
 .newc{
-  margin-top: 10px !important;
+  margin-top: 5px !important;
 }
   .heightcard {
       height: 160px !important;
@@ -1217,7 +1218,21 @@ margin: .1rem .8rem 0;
     right: 8px;
     top: 17px;
 }
-.newc{margin-top: 10px !important;}
+.newc{margin-top: 5px !important;}
+.newc {
+  background: #d2effa !important;
+  border: none;
+  color: #1fb0e5 !important;
+  display: flex;
+  font-size: 12px !important;
+  height: 18px !important;
+  justify-content: center;
+  line-height: 22px !important;
+  margin-left: 13px;
+  margin-top: 8.5px !important;
+  padding: 0 1px !important;
+  width: 19px !important;
+}
 .border-radius {
   padding-bottom: 12px;
 }
@@ -1510,4 +1525,4 @@ span.navlink.active {
 .nav-pills .nav-link{    border: 1px solid #54ade0 ;
   margin: 0px 5px;
   color: #3c3c3c;
-  font-size: 14px;}
+  font-size: 14px}

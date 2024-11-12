@@ -394,6 +394,8 @@ const HelloWorldContext = ({ props }: any) => {
                     </div>
                   </div>
                 </div>
+              
+              
 
                 <div className="row mt-0">
                   {/* Corporate Directory */}
@@ -457,10 +459,10 @@ const HelloWorldContext = ({ props }: any) => {
                       </div>
                     </div>
                   </div>
-
+                  <div className="col-xl-7 col-lg-7">
                   {/* Upcoming Events */}
                   <div className="card" style={{ borderRadius: "1rem" }}>
-                    <div className="card-body">
+                    <div className="card-body pb-0">
                       <h4
                         className="header-title text-dark fw-bold mb-0"
                         style={{
@@ -504,7 +506,7 @@ const HelloWorldContext = ({ props }: any) => {
                             >
                               <div
                                 style={{ padding: "0px" }}
-                                className="col-sm-3"
+                                className="col-sm-2"
                               >
                                 <div className="icon-1 event me-0">
                                   <h4
@@ -528,7 +530,7 @@ const HelloWorldContext = ({ props }: any) => {
                                   </p>
                                 </div>
                               </div>
-                              <div className="col-sm-9 upcom2">
+                              <div  style={{ padding: "0px" }} className="col-sm-9 upcom2">
                                 <div className="w-100 ps-0 mt-3">
                                   <h4
                                     className=" text-dark font-14 fw-bold"
@@ -555,6 +557,7 @@ const HelloWorldContext = ({ props }: any) => {
                         })}
                       </div>
                     </div>
+                  </div>
                   </div>
 
                   {/* gallery  */}
@@ -663,6 +666,7 @@ const HelloWorldContext = ({ props }: any) => {
                   </div>
                 </div>
               </div>
+           
               <div className="col-xl-3 col-lg-6 tabview2">
                 {/* Profile Info */}
                 <div className="card" style={{ borderRadius: "1rem " }}>
@@ -753,9 +757,9 @@ const HelloWorldContext = ({ props }: any) => {
                 </div>
 
                 {/* Leaderboard  */}
-                <div className="col-xl-7 col-lg-7">
+                <div>
                   <div className="card" style={{ borderRadius: "1rem" }}>
-                    <div className="card-body pb-3 gheight">
+                    <div className="card-body pb-3 gheightl">
                       <h4 className="header-title font-16 text-dark fw-bold mb-0">
                         Leaderboard
                         <a
@@ -766,25 +770,15 @@ const HelloWorldContext = ({ props }: any) => {
                           View All
                         </a>
                       </h4>
-                      <div className="row mt-3 ipadt">
+                      <div  className="d-flex align-items-start  justify-content-between border-radius mb-2">
+                      <div className="row mt-0 ipadt">
                         {leaderboard.length > 0 && leaderboard.slice(0, 4).map((user, index) => (
-                          <div
+                          <div className="row border-bottom heit9"
                             key={index}
-                            className="d-flex border-bottom heit8 align-items-start w-100 justify-content-between border-radius mb-2"
+                           
                           >
-                            <div className="col-sm-1">
-                              <div
-                                className="product-price-tag positiont text-primary rounded-circle newc"
-                                title="Position"
-                              >
-                                {user.position < 10
-                                  ? `0${user.position}`
-                                  : user.position}
-                                {index + 1}
-                              </div>
-                            </div>
-                            <div className="col-sm-1 ps-2">
-                              <img
+                            <div style={{paddingLeft:"0px"}} className="col-sm-2">
+                            <img
                                 className="rounded-circle"
                                 src={
                                   `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${user.AuthorEMail}`
@@ -792,9 +786,12 @@ const HelloWorldContext = ({ props }: any) => {
                                 width="50"
                                 alt={user.AuthorTitle}
                               />
-                            </div>
-                            <div className="col-sm-3">
-                              <div className="w-100 ps-1 pt-0">
+                              </div>
+                          
+                            <div className="col-sm-10 ps-2">
+                              <div className="row">
+                                <div className="col-lg-8">
+                                <div className="w-100 ps-1 pt-0">
                                 <h5 className="inbox-item-text fw-bold font-14 mb-0 text-dark">
                                   {user.AuthorTitle}
                                 </h5>
@@ -805,9 +802,10 @@ const HelloWorldContext = ({ props }: any) => {
                                   {user.AuthorDepartment ? user.AuthorDepartment : 'NA'}
                                 </span>
                               </div>
-                            </div>
-                            <div className="col-sm-4">
-                              <a
+
+                                  </div>
+                                  <div style={{paddingLeft:"0px"}} className="col-lg-4">
+                                  <a
                                 style={{ marginTop: "3px" }}
                                 href="javascript:void(0);"
                                 className="btn btn-sm btn-link text-muted ps-3 pe-0"
@@ -824,8 +822,24 @@ const HelloWorldContext = ({ props }: any) => {
                                     />
                                   ))}
                               </a>
+                                    </div>
+
+                                </div>
+                                <div className="row">
+
+                                <div className="col-sm-3">
+                              <div
+                                className="product-price-tag positiont text-primary rounded-circle newc"
+                                title="Position"
+                              >
+                                {user.position < 10
+                                  ? `0${user.position}`
+                                  : user.position}
+                                {index + 1}
+                              </div>
                             </div>
-                            <div className="col-sm-2">
+
+                            <div className="col-sm-9">
                               <span
                                 style={{
                                   padding: "5px",
@@ -833,15 +847,26 @@ const HelloWorldContext = ({ props }: any) => {
                                   background: "#cce7dc",
                                   fontWeight: "600",
                                   color: "#008751",
+                                  position:"relative",
+                                  top:"-3px",
+                                  width:"100%",
+                                  textAlign:"center",
                                 }}
                                 className="posnew font-12  float-end mt-2 mb-2"
                               >
                                 Points Earned {user.TotalPoints < 1000 ? user.TotalPoints : (user.TotalPoints / 1000).toFixed(1).replace(/\.0$/, '') + 'K'}
                               </span>
                             </div>
+
+                                  </div>
+                             
+                            </div>
+                          
+                           
                           </div>
                         ))}
                       </div>
+                    </div>
                     </div>
                   </div>
                 </div>
@@ -1015,6 +1040,7 @@ const HelloWorldContext = ({ props }: any) => {
         </div>
       </div>
     </div>
+         
   );
 };
 

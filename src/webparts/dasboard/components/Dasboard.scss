@@ -9,7 +9,7 @@
     display: flex !important;
     align-items: flex-end !important;
     text-align: left !important;
-    -webkit-line-clamp: 3;
+    //-webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     display: -webkit-box;
     overflow: hidden;
@@ -59,19 +59,19 @@
     font-size: 16px;
     font-weight: 600;
 }
-
+.gheightl{height: 429px;}
 .newc {
     background: #d2effa !important;
     color: #1fb0e5 !important;
-    width: 32px !important;
-    height: 32px !important;
+    width: 24px !important;
+    height: 24px !important;
     font-size: 16px !important;
     border: none;
-    line-height: 34px !important;
+    line-height: 26px !important;
     margin-top: 8.5px !important;
     padding: 0px 1px !important;
     display: flex;
-    justify-content: center;
+    justify-content: center; margin-left: 15px;
 }
 .announcementner, .carousel1{
     margin-bottom: 10px;
@@ -316,7 +316,7 @@ img, svg {
     font-size: 13px;
     width: 62px;
     line-height: 20px;
-    font-weight: 600;    height: 24px;
+    font-weight: 600;    height: 20px;
 }
 .avatar-group {
     padding-left: 12px;
@@ -335,7 +335,8 @@ img, svg {
     border-radius: 50% !important;
 }
 .projectb{border: none !important;}
-@media(max-width:1600px){
+.heit9 {height: 118px; padding: 21px 0px; margin: auto; width: 98%;}
+@media(max-width:1600px){ 
     .inbox-widget .heit8{    padding: .905rem 0;}
     .event{margin-bottom: 3px;
         margin-top: 13px;}
@@ -350,22 +351,36 @@ img, svg {
 
 @media(max-width:1440px){
     .inbox-widget .heit8 { padding:.625rem 0;}
-    .event{margin-bottom: 4px;
-        margin-top: 13px;}
+    .event{margin-bottom: 0px;
+        margin-top: 8px;}
        
 }
 @media(max-width:1280px)
 {
     .event {
-        margin-bottom: 5px;
-        margin-top: 13px;
+        margin-bottom: 8px;
+        margin-top: 9px;
     }
     .justify-between {
         gap: 6px;
     }
+   
+    .event p{margin-bottom: 0px !important; height: 17px;}
 }
 .rounded-circlecss {
     border-radius: 50% !important;
     height: 2rem !important;
     width: 2rem !important;
   }
+
+  @media(max-width:1200px)
+  {
+  
+    .posnew{top: -6px !important;
+        width: 100%;
+        text-align: center;
+        padding: 3px !important;
+        font-size: 8px !important;
+        right: 0 !important;}
+  
+}

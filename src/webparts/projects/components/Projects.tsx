@@ -1150,7 +1150,7 @@ const HelloWorldContext = ({ props }: any) => {
             </div>
 
             {activeTab === "home1" && (
-              <div className="row mt-2">
+              <div className="row mt-3">
                 <div className="">
                   {/* Map through the projects array and display a card for each */}
                   {Dataproject.length > 0 ? (
@@ -1159,7 +1159,7 @@ const HelloWorldContext = ({ props }: any) => {
                         console.log("project>>>>>>>>>>>>>", project);
                         if (project.ProjectPrivacy == "Public") {
                           return (
-                            <div key={index} className="col-lg-3 col-md-6 mb-4">
+                            <div key={index} className="col-lg-3 col-md-6 mb-0">
                               <div className="card project-box">
                                 <div className="card-body">
                                   <div className="dropdown float-end">
@@ -1173,14 +1173,14 @@ const HelloWorldContext = ({ props }: any) => {
                                     </a>
                                     <div className="dropdown-menu dropdown-menu-end">
                                       <a
-                                        className="dropdown-item"
+                                        className="dropdown-item font-12"
 
                                         onClick={() => handleDelete(project.Id)}
                                       >
                                         Delete
                                       </a>
                                       <a
-                                        className="dropdown-item"
+                                        className="dropdown-item font-12"
 
                                         onClick={() => GotoNextPage(project)}
                                       >
@@ -1190,7 +1190,7 @@ const HelloWorldContext = ({ props }: any) => {
                                   </div>
 
                                   {/* Title */}
-                                  <h4 className="mt-0 mb-1">
+                                  <h4 className="mt-0 mb-1 two-line">
                                     <a onClick={() => GotoNextPage(project)}
                                       className="text-dark fw-bold font-16">
                                       {project.ProjectName}
@@ -1201,7 +1201,7 @@ const HelloWorldContext = ({ props }: any) => {
                                   {/* Description */}
                                   <p
                                     style={{ color: "#98a6ad" }}
-                                    className="date-color font-12 mb-3 sp-line-2"
+                                    className="date-color two-line font-14 mb-3 sp-line-2"
                                   >
                                     {project.ProjectOverview} 
                                     
@@ -1233,11 +1233,10 @@ const HelloWorldContext = ({ props }: any) => {
                                   </p>
                                   <div
                                     style={{
-                                      minWidth: "70px",
-                                      maxWidth: "100%"
+                                     
                                     }}
                                   >
-                                    <div style={{ display: 'flex' }}>
+                                    <div style={{ display: 'flex' }} className="ml20">
                                       {project?.TeamMembers?.map(
                                         (id: any, idx: any) => {
                                           if (idx < 3) {
@@ -1248,6 +1247,7 @@ const HelloWorldContext = ({ props }: any) => {
                                                     index == 0
                                                       ? "0 0 0 0"
                                                       : "0 0 0px -12px",
+                                                         float:"left"
                                                 }}
                                                 src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
                                                 className="rounded-circlecss img-thumbnail avatar-xl"
@@ -1274,8 +1274,9 @@ const HelloWorldContext = ({ props }: any) => {
                                                 index == 0
                                                   ? "0 0 0 0"
                                                   : "0 0 0px -12px",
+                                                     float:"left"
                                             }}
-                                            className="rounded-circlecss img-thumbnail avatar-xl"
+                                            className="rounded-circlecss text-center img-thumbnail avatar-xl"
                                           >
                                             +
                                           </div>
@@ -1303,6 +1304,7 @@ const HelloWorldContext = ({ props }: any) => {
                                                       idx == 0
                                                         ? "0 0 0 0"
                                                         : "0 0 0px -12px",
+                                                           float:"left"
                                                   }}
                                                   src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
                                                   className="rounded-circlecss img-thumbnail avatar-xl"
@@ -1321,7 +1323,7 @@ const HelloWorldContext = ({ props }: any) => {
                           );
                         } else if (project?.TeamMembersId?.includes(userId)) {
                           return (
-                            <div key={index} className="col-lg-3 col-md-6 mb-4">
+                            <div key={index} className="col-lg-3 col-md-6 mb-0">
                               <div className="card project-box">
                                 <div className="card-body">
                                   <div className="dropdown float-end">
@@ -1352,7 +1354,7 @@ const HelloWorldContext = ({ props }: any) => {
                                   </div>
 
                                   {/* Title */}
-                                  <h4 className="mt-0 mb-1">
+                                  <h4 className="mt-0 mb-1 two-line">
                                     <a
                                       onClick={() => GotoNextPage(project)}
                                       className="text-dark fw-bold font-16"
@@ -1398,12 +1400,11 @@ const HelloWorldContext = ({ props }: any) => {
                             </p> */}
                                   <div
                                     style={{
-                                      minWidth: "70px",
-                                      maxWidth: "100%",
+                                     
                                       position: "relative",
                                     }}
                                   >
-                                    <div style={{ display: 'flex' }}>
+                                    <div style={{ display: 'flex' }} className="ml20">
                                       {project?.TeamMembers?.map(
                                         (id: any, idx: any) => {
                                           if (idx < 3) {
@@ -1414,6 +1415,7 @@ const HelloWorldContext = ({ props }: any) => {
                                                     index == 0
                                                       ? "0 0 0 0"
                                                       : "0 0 0px -12px",
+                                                      float:"left"
                                                 }}
                                                 src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
                                                 className="rounded-circlecss img-thumbnail avatar-xl"
@@ -1439,8 +1441,9 @@ const HelloWorldContext = ({ props }: any) => {
                                                 index == 0
                                                   ? "0 0 0 0"
                                                   : "0 0 0px -12px",
+                                                     float:"left"
                                             }}
-                                            className="rounded-circlecss img-thumbnail avatar-xl"
+                                            className="rounded-circlecss text-center img-thumbnail avatar-xl"
                                           >
                                             +
                                           </div>
@@ -1486,7 +1489,7 @@ const HelloWorldContext = ({ props }: any) => {
                           );
                         } else if (project?.TeamMembersId?.includes(userId) || project?.AuthorId == userId) {
                           return (
-                            <div key={index} className="col-lg-3 col-md-6 mb-4">
+                            <div key={index} className="col-lg-3 col-md-6 mb-0">
                               <div className="card project-box">
                                 <div className="card-body">
                                   <div className="dropdown float-end">
@@ -1500,14 +1503,14 @@ const HelloWorldContext = ({ props }: any) => {
                                     </a>
                                     <div className="dropdown-menu dropdown-menu-end">
                                       <a
-                                        className="dropdown-item"
+                                        className="dropdown-item font-12"
                                         href="#"
                                         onClick={() => handleDelete(project.Id)}
                                       >
                                         Delete
                                       </a>
                                       <a
-                                        className="dropdown-item"
+                                        className="dropdown-item font-12"
                                         href="#"
                                         onClick={() => GotoNextPage(project)}
                                       >
@@ -1517,7 +1520,7 @@ const HelloWorldContext = ({ props }: any) => {
                                   </div>
 
                                   {/* Title */}
-                                  <h4 className="mt-0 mb-1">
+                                  <h4 className="mt-0 mb-1 two-line">
                                     <a
                                       className="text-dark fw-bold font-16"   onClick={() => GotoNextPage(project)}
                                     >
@@ -1532,7 +1535,7 @@ const HelloWorldContext = ({ props }: any) => {
                                   {/* Description */}
                                   <p
                                     style={{ color: "#98a6ad" }}
-                                    className="date-color font-12 mb-3 sp-line-2"
+                                    className="date-color two-line font-14 mb-3 sp-line-2"
                                   >
                                     {project.ProjectOverview ||
                                       "No description available..."}{" "}
@@ -1564,11 +1567,10 @@ const HelloWorldContext = ({ props }: any) => {
                                   </p>
                                   <div
                                     style={{
-                                      minWidth: "70px",
-                                      maxWidth: "40%",
+                                     
                                     }}
                                   >
-                                    <div>
+                                    <div className="ml20">
                                       {project?.TeamMembers?.map(
                                         (id: any, idx: any) => {
                                           if (idx < 3) {
@@ -1579,6 +1581,7 @@ const HelloWorldContext = ({ props }: any) => {
                                                     index == 0
                                                       ? "0 0 0 0"
                                                       : "0 0 0px -12px",
+                                                         float:"left"
                                                 }}
                                                 src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
                                                 className="rounded-circlecss img-thumbnail avatar-xl"
@@ -1603,8 +1606,9 @@ const HelloWorldContext = ({ props }: any) => {
                                                 index == 0
                                                   ? "0 0 0 0"
                                                   : "0 0 0px -12px",
+                                                     float:"left"
                                             }}
-                                            className="rounded-circlecss img-thumbnail avatar-xl"
+                                            className="rounded-circlecss text-center img-thumbnail avatar-xl"
                                           >
                                             +
                                           </div>
@@ -1625,6 +1629,7 @@ const HelloWorldContext = ({ props }: any) => {
                                                     idx == 0
                                                       ? "0 0 0 0"
                                                       : "0 0 0px -12px",
+                                                         float:"left"
                                                 }}
                                                 src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
                                                 className="rounded-circlecss img-thumbnail avatar-xl"
@@ -1652,7 +1657,7 @@ const HelloWorldContext = ({ props }: any) => {
               </div>
             )}
             {activeTab === "profile1" && (
-              <div className="row mt-2">
+              <div className="row mt-3">
                 <div className="container">
                   {/* Map through the projects array and display a card for each */}
                   {Dataproject.length > 0 ? (
@@ -1660,7 +1665,7 @@ const HelloWorldContext = ({ props }: any) => {
                       {Dataproject.map((project, index) => {
                         if (project?.AuthorId == userId) {
                           return (
-                            <div key={index} className="col-lg-3 col-md-6 mb-4">
+                            <div key={index} className="col-lg-3 col-md-6 mb-0">
                               <div className="card project-box">
                                 <div className="card-body">
                                   <div className="dropdown float-end">
@@ -1674,14 +1679,14 @@ const HelloWorldContext = ({ props }: any) => {
                                     </a>
                                     <div className="dropdown-menu dropdown-menu-end">
                                       <a
-                                        className="dropdown-item"
+                                        className="dropdown-item font-12"
 
                                         onClick={() => handleDelete(project.Id)}
                                       >
                                         Delete
                                       </a>
                                       <a
-                                        className="dropdown-item"
+                                        className="dropdown-item font-12"
 
                                         onClick={() => GotoNextPage(project)}
                                       >
@@ -1691,7 +1696,7 @@ const HelloWorldContext = ({ props }: any) => {
                                   </div>
 
                                   {/* Title */}
-                                  <h4 className="mt-0 mb-1">
+                                  <h4 className="mt-0 two-line mb-1">
                                     <a onClick={() => GotoNextPage(project)}
 
                                       className="text-dark fw-bold font-16"
@@ -1735,12 +1740,11 @@ const HelloWorldContext = ({ props }: any) => {
                             </p> */}
                                   <div
                                     style={{
-                                      minWidth: "70px",
-                                      maxWidth: "100%",
+                                     
                                       position: "relative"
                                     }}
                                   >
-                                    <div style={{ display: 'flex' }}>
+                                    <div style={{ display: 'flex' }} className="ml20">
                                       {project?.TeamMembers?.map(
                                         (id: any, idx: any) => {
                                           if (idx < 3) {
@@ -1751,6 +1755,7 @@ const HelloWorldContext = ({ props }: any) => {
                                                     index == 0
                                                       ? "0 0 0 0"
                                                       : "0 0 0px -12px",
+                                                         float:"left"
                                                 }}
                                                 src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
                                                 className="rounded-circlecss img-thumbnail avatar-xl"
@@ -1776,8 +1781,10 @@ const HelloWorldContext = ({ props }: any) => {
                                                 index == 0
                                                   ? "0 0 0 0"
                                                   : "0 0 0px -12px",
+                                                     float:"left"
+                                                  
                                             }}
-                                            className="rounded-circlecss img-thumbnail avatar-xl"
+                                            className="rounded-circlecss text-center img-thumbnail avatar-xl"
                                           >
                                             +
                                           </div>
@@ -1805,6 +1812,7 @@ const HelloWorldContext = ({ props }: any) => {
                                                       idx == 0
                                                         ? "0 0 0 0"
                                                         : "0 0 0px -12px",
+                                                           float:"left"
                                                   }}
                                                   src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
                                                   className="rounded-circlecss img-thumbnail avatar-xl"
@@ -1832,7 +1840,7 @@ const HelloWorldContext = ({ props }: any) => {
               </div>
             )}
             {activeTab === "profile11" && (
-              <div className="row mt-2">
+              <div className="row mt-3">
                 <div className="container">
                   {/* Map through the projects array and display a card for each */}
                   {Dataproject.length > 0 ? (
@@ -1840,7 +1848,7 @@ const HelloWorldContext = ({ props }: any) => {
                       {Dataproject.map((project, index) => {
                         if (project?.TeamMembersId?.includes(userId)) {
                           return (
-                            <div key={index} className="col-lg-3 col-md-6 mb-4">
+                            <div key={index} className="col-lg-3 col-md-6 mb-0">
                               <div className="card project-box">
                                 <div className="card-body">
                                   <div className="dropdown float-end">
@@ -1854,14 +1862,14 @@ const HelloWorldContext = ({ props }: any) => {
                                     </a>
                                     <div className="dropdown-menu dropdown-menu-end">
                                       <a
-                                        className="dropdown-item"
+                                        className="dropdown-item font-12"
 
                                         onClick={() => handleDelete(project.Id)}
                                       >
                                         Delete
                                       </a>
                                       <a
-                                        className="dropdown-item"
+                                        className="dropdown-item font-12"
 
                                         onClick={() => GotoNextPage(project)}
                                       >
@@ -1871,7 +1879,7 @@ const HelloWorldContext = ({ props }: any) => {
                                   </div>
 
                                   {/* Title */}
-                                  <h4 className="mt-0 mb-1">
+                                  <h4 className="mt-0 mb-1 two-line">
                                     <a
                                       onClick={() => GotoNextPage(project)}
                                       className="text-dark fw-bold font-16"
@@ -1917,12 +1925,11 @@ const HelloWorldContext = ({ props }: any) => {
                             </p> */}
                                   <div
                                     style={{
-                                      minWidth: "70px",
-                                      maxWidth: "100%",
+                                    
                                       position: "relative"
                                     }}
                                   >
-                                    <div style={{ display: 'flex' }}>
+                                    <div style={{ display: 'flex' }} className="ml20">
                                       {project?.TeamMembers?.map(
                                         (id: any, idx: any) => {
                                           if (idx < 3) {
@@ -1933,6 +1940,7 @@ const HelloWorldContext = ({ props }: any) => {
                                                     index == 0
                                                       ? "0 0 0 0"
                                                       : "0 0 0px -12px",
+                                                         float:"left"
                                                 }}
                                                 src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
                                                 className="rounded-circlecss img-thumbnail avatar-xl"
@@ -1958,6 +1966,7 @@ const HelloWorldContext = ({ props }: any) => {
                                                 index == 0
                                                   ? "0 0 0 0"
                                                   : "0 0 0px -12px",
+                                                     float:"left"
                                             }}
                                             className="rounded-circlecss img-thumbnail avatar-xl"
                                           >
@@ -1987,6 +1996,7 @@ const HelloWorldContext = ({ props }: any) => {
                                                       idx == 0
                                                         ? "0 0 0 0"
                                                         : "0 0 0px -12px",
+                                                           float:"left"
                                                   }}
                                                   src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
                                                   className="rounded-circlecss img-thumbnail avatar-xl"

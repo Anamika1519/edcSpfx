@@ -628,12 +628,7 @@ try{
               </div>
               <div className="col-lg-4">
 
-                <button
-                  onClick={(e) => openModal(e)}
-                  className="btn btn-secondary font-14 float-end"
-                >
-                  <FilePlus /> Open Document
-                </button>
+              
 
               </div>
             </div>
@@ -671,6 +666,7 @@ try{
                               onClick={() => copyToClipboard(item.Id)}
                             >
                               <Link size={14} /> Copy link &nbsp; &nbsp;
+                              &nbsp;|&nbsp; &nbsp; &nbsp;
                               &nbsp;
                               {copySuccess && (
                                 <span className="text-success">
@@ -680,12 +676,11 @@ try{
                             </span>
                             <div
                               style={{
-                                minWidth: "70px",
-                                maxWidth: "100%",
+                              
                                 position: "relative",
                               }}
                             >
-                              <div style={{ display: "flex" }}>
+                              <div style={{ display: "flex", marginTop:"-6px" }}>
                                 {item?.TeamMembers?.map(
                                   (id: any, idx: any) => {
                                     if (idx < 3) {
@@ -696,9 +691,10 @@ try{
                                               index == 0
                                                 ? "0 0 0 0"
                                                 : "0 0 0px -12px",
+                                                 float:"left"
                                           }}
                                           src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                                          className="rounded-circlecss img-thumbnail avatar-xl"
+                                          className="rounded-circlecss pimg text-center img-thumbnail avatar-xl"
                                           alt="profile-image"
                                         />
                                       );
@@ -707,7 +703,7 @@ try{
                                 )}
                                 {item?.TeamMembers?.length > 3 && (
                                   <div
-                                    className=""
+                                    className="pimg"
                                     onClick={() => toggleDropdown(item.Id)}
                                     key={item.Id}
                                   >
@@ -718,8 +714,9 @@ try{
                                           index == 0
                                             ? "0 0 0 0"
                                             : "0 0 0px -12px",
+                                            float:"left"
                                       }}
-                                      className="rounded-circlecss img-thumbnail avatar-xl"
+                                      className="rounded-circlecss  text-center img-thumbnail avatar-xl"
                                     >
                                       +
                                     </div>
@@ -728,7 +725,7 @@ try{
                               </div>
                               {showDropdownId === item.Id && (
                                 <div
-                                  className=""
+                                  className="card"
                                   style={{
                                     position: "absolute",
                                     zIndex: "99",
@@ -741,7 +738,7 @@ try{
                                     item?.TeamMembers?.map(
                                       (id: any, idx: any) => {
                                         return (
-                                          <div className="m-1">
+                                          <div className="m-1 border-bottom pb-2">
                                             <img
                                               style={{}}
                                               src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
@@ -767,6 +764,15 @@ try{
                       >
                         {item.ProjectOverview}
                       </p>
+                      <div className="col-lg-3">
+
+                      <button
+                  onClick={(e) => openModal(e)}
+                  className="btn btn-secondary rounded-pill mt-2 mb-2 font-14"
+                >
+                  <FilePlus /> Open Document
+                </button>
+                </div>
                     </div>
                     <div className="row internalmedia filterable-content mt-3">
                       <Modal show={showModal} onHide={closeModal}>
@@ -780,7 +786,7 @@ try{
                               return (
                                 <div>
                                   <div className="">
-                                    <p
+                                    <p className="font-14"
 
                                       onClick={(e) => openDocument(e, res.ID)}
                                     >

@@ -198,9 +198,9 @@ export const fetchUserInformationList = async (sp) => {
   let arr =[]
   try {
     let currentUser;
-
+ 
     // Fetch the current user
-    await _sp.web.currentUser()
+    await sp.web.currentUser()
       .then(user => {
         currentUser = user.Id; // Get the current user's ID
       })
@@ -210,7 +210,7 @@ export const fetchUserInformationList = async (sp) => {
       });
     const userList = await sp.web.lists.getByTitle("User Information List").items.select("ID", "Title", "EMail", "Department", "JobTitle", "Picture","MobilePhone").filter(`EMail ne null and ID ne ${currentUser}`)();
     console.log(userList, 'userList');
-
+ 
     arr = userList
    
   } catch (error) {

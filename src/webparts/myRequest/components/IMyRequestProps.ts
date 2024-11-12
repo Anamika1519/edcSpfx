@@ -4,4 +4,6 @@ export interface IMyRequestProps {
   environmentMessage: string;
   hasTeamsContext: boolean;
   userDisplayName: string;
+  context: any;
+  siteUrl: string;
 }
