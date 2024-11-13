@@ -113,6 +113,7 @@ const HelloWorldContext = ({ props }: any) => {
   const _sp: SPFI = getSP();
 
   const [Dataproject, setDataproject] = useState<any[]>([]);
+  const [itemsToShow, setItemsToShow] = useState(8); // Initial number of items to show
   const [ChoiceValueOne, setChoiceValueOne] = useState<any[]>([]);
   const [DocumentpostArr, setDocumentpostArr] = React.useState([]);
   const [DocumentpostArr1, setDocumentpostArr1] = React.useState([]);
@@ -702,6 +703,13 @@ const HelloWorldContext = ({ props }: any) => {
 
     console.log("Removed item:", removedItem);
   };
+
+  const loadMore = () => {
+    event.preventDefault()
+    event.stopImmediatePropagation()
+    setItemsToShow(itemsToShow + 8); // Increase the number by 8
+  };
+
   return (
     <div id="wrapper" ref={elementRef}>
       <div className="app-menu" id="myHeader">
@@ -1155,11 +1163,11 @@ const HelloWorldContext = ({ props }: any) => {
                   {/* Map through the projects array and display a card for each */}
                   {Dataproject.length > 0 ? (
                     <div className="row">
-                      {Dataproject.map((project, index) => {
+                      {Dataproject.slice(0, itemsToShow).map((project, index) => {
                         console.log("project>>>>>>>>>>>>>", project);
                         if (project.ProjectPrivacy == "Public") {
                           return (
-                            <div key={index} className="col-lg-3 col-md-6 mb-0">
+                            <div key={index} className="col-lg-4 col-md-6 mb-0">
                               <div className="card project-box">
                                 <div className="card-body">
                                   <div className="dropdown float-end">
@@ -1323,7 +1331,7 @@ const HelloWorldContext = ({ props }: any) => {
                           );
                         } else if (project?.TeamMembersId?.includes(userId)) {
                           return (
-                            <div key={index} className="col-lg-3 col-md-6 mb-0">
+                            <div key={index} className="col-lg-4 col-md-6 mb-0">
                               <div className="card project-box">
                                 <div className="card-body">
                                   <div className="dropdown float-end">
@@ -1489,7 +1497,7 @@ const HelloWorldContext = ({ props }: any) => {
                           );
                         } else if (project?.TeamMembersId?.includes(userId) || project?.AuthorId == userId) {
                           return (
-                            <div key={index} className="col-lg-3 col-md-6 mb-0">
+                            <div key={index} className="col-lg-4 col-md-6 mb-0">
                               <div className="card project-box">
                                 <div className="card-body">
                                   <div className="dropdown float-end">
@@ -1649,6 +1657,13 @@ const HelloWorldContext = ({ props }: any) => {
 
                         return null;
                       })}
+                      {itemsToShow < Dataproject.length && (
+                      <div className="col-12 text-center mt-3">
+                        <button onClick={loadMore} className="btn btn-primary">
+                          Load More
+                        </button>
+                      </div>
+                    )}
                     </div>
                   ) : (
                     <p>Loading projects...</p>
@@ -1662,10 +1677,10 @@ const HelloWorldContext = ({ props }: any) => {
                   {/* Map through the projects array and display a card for each */}
                   {Dataproject.length > 0 ? (
                     <div className="row">
-                      {Dataproject.map((project, index) => {
+                      {Dataproject.slice(0, itemsToShow).map((project, index) => {
                         if (project?.AuthorId == userId) {
                           return (
-                            <div key={index} className="col-lg-3 col-md-6 mb-0">
+                            <div key={index} className="col-lg-4 col-md-6 mb-0">
                               <div className="card project-box">
                                 <div className="card-body">
                                   <div className="dropdown float-end">
@@ -1832,6 +1847,13 @@ const HelloWorldContext = ({ props }: any) => {
                         }
                         return null;
                       })}
+                           {itemsToShow < Dataproject.length && (
+                      <div className="col-12 text-center mt-3">
+                        <button onClick={loadMore} className="btn btn-primary">
+                          Load More 
+                        </button>
+                      </div>
+                    )}
                     </div>
                   ) : (
                     <p>Loading projects...</p>
@@ -1845,10 +1867,10 @@ const HelloWorldContext = ({ props }: any) => {
                   {/* Map through the projects array and display a card for each */}
                   {Dataproject.length > 0 ? (
                     <div className="row">
-                      {Dataproject.map((project, index) => {
+                      {Dataproject.slice(0, itemsToShow).map((project, index) => {
                         if (project?.TeamMembersId?.includes(userId)) {
                           return (
-                            <div key={index} className="col-lg-3 col-md-6 mb-0">
+                            <div key={index} className="col-lg-4 col-md-6 mb-0">
                               <div className="card project-box">
                                 <div className="card-body">
                                   <div className="dropdown float-end">
@@ -2017,6 +2039,13 @@ const HelloWorldContext = ({ props }: any) => {
 
                         return null;
                       })}
+                      {itemsToShow < Dataproject.length && (
+                      <div className="col-12 text-center mt-3">
+                        <button onClick={loadMore} className="btn btn-primary">
+                          Load More 
+                        </button>
+                      </div>
+                    )}
                     </div>
                   ) : (
                     <p>Loading projects...</p>

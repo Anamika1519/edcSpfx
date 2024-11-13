@@ -52,19 +52,19 @@ const NotificationList = ({ NotificationArray, handleNotificationClick }: any) =
     }
     return (
         <div>
-            <div className="flex">
+            <div className="flex pt-1">
                 <div className="row">
                     <div className="col-md-8">
-                        <h5 className="p-1">Notifications</h5>
+                        <h5 className="p-2 text-dark font-16">Notifications</h5>
                     </div>
                     <div className="col-md-4">
-                        <h5 className="p-1" onClick={goToNext}>View All</h5>
+                        <h5 className="p-1 text-dark font-12 pt-3 text-center text-decoration-underline" onClick={goToNext}>Clear All</h5>
                     </div>
                 </div>
             </div>
 
             {NotificationArray.length > 0 ? (
-                <div>
+                <div className='heightlist'>
                     {/* Today Section */}
                     {categorizedNotifications.today.length > 0 && (
                         <div>
@@ -148,9 +148,11 @@ const NotificationList = ({ NotificationArray, handleNotificationClick }: any) =
                                     </div>
                                 </a>
                             ))}
+                            <h5 className="p-1 text-dark text-center text-decoration-underline" onClick={goToNext}>View All</h5>
                         </div>
                     )}
                 </div>
+                
             ) : (
                 <p>No notifications</p>
             )}

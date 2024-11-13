@@ -12,7 +12,13 @@
 .padd-r {
     padding-right: 8px !important;
 }
-
+.dropdown-toggle:after{display: none !important;}
+a.filter-menu-item.dropdown-item{border: 0px solid #ccc !important;}
+#dropdown-basic .dropdown-menu{padding: 0px !important; margin: 0px !important;}
+.filter-menu a{padding: .7rem 1rem !important;}
+.icont svg{position: absolute;
+    right: 16px;
+    top: 15px;}
 .padd-l {
     padding-left: 0px !important;
 }
@@ -109,7 +115,7 @@ button#dropdown-basic {
     background: #fff !important;
     border: 1px solid #1fb0e5 !important;
     color: #000 !important;
-    height: 2.5rem !important;
+    height: 2.6rem !important; margin-left: 5px;
     border-radius: 3px; font-size: 14px;
 }
 a.filter-menu-item.dropdown-item {

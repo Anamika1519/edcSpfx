@@ -249,7 +249,7 @@ const LeaderboardContext = ({ props }: any) => {
           className="content"
           style={{
             marginLeft: `${!useHide ? "240px" : "80px"}`,
-            marginTop: "1.5rem",
+            marginTop: "0.2rem",
           }}
         >
           <div className="container-fluid  paddb">
@@ -310,7 +310,7 @@ const LeaderboardContext = ({ props }: any) => {
                           marginBottom: "unset",
                         }}
                       >
-                        <li className="nav-itemcss">
+                        <li className="nav-itemcss font-14">
                           <a
                             className={`nav-linkss ${activeTab === "cardView" ? "active" : ""
                               }`}
@@ -321,7 +321,7 @@ const LeaderboardContext = ({ props }: any) => {
                             Card View
                           </a>
                         </li>
-                        <li className="nav-itemcss">
+                        <li className="nav-itemcss font-14">
                           <a
                             className={`nav-linkss ${activeTab === "listView" ? "active" : ""
                               }`}
@@ -350,12 +350,14 @@ const LeaderboardContext = ({ props }: any) => {
                   <div className="row card-view">
                     {console.log("usersssitem", usersitem)}
                     {leaderboard.length > 0 && leaderboard.map((item, index) => (
-                      <div className="col-lg-4 col-md-6" key={item.Id}>
+                      <div className="col-lg-3 col-md-4" key={item.Id}>
                         <div
                           style={{ border: "1px solid #54ade0" }}
                           className="text-center card mb-3"
                         >
                           <div className="card-body">
+                          <div className="product-price-tag positiont postion-absolute text-primary rounded-circle newc" title="Position">1</div>
+
                             {/* Card Content */}
                             <div className="pt-2 pb-2">
                               <a style={{ position: "relative" }}>
@@ -380,9 +382,9 @@ const LeaderboardContext = ({ props }: any) => {
                                     fontSize: "20px",
                                   }}
                                 >
-                                  <strong>
-                                    {truncateText(item.AuthorTitle, 15)}
-                                  </strong>
+                               
+                                    {truncateText(item.AuthorTitle, 25)}
+                             
                                 </a>
                               </h4>
  
@@ -393,7 +395,7 @@ const LeaderboardContext = ({ props }: any) => {
  
                                 <span
                                   className="pl-2"
-                                  style={{ color: "pink" }}
+                                  style={{ color: "#1fb0e5" }}
                                 >
                                   {/* <a className="text-pink" > */}
                                   {truncateText(
@@ -413,7 +415,7 @@ const LeaderboardContext = ({ props }: any) => {
                                 <a
                                   style={{ marginTop: "3px" }}
                                   href="javascript:void(0);"
-                                  className="btn btn-sm btn-link text-muted ps-3 pe-0"
+                                  className="btn btn-sm btn-link text-muted ps-0 pe-0"
                                 >
                                   {Array(item.Ratting)
                                     .fill(null)

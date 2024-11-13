@@ -626,11 +626,7 @@ try{
               <div className="col-lg-8">
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
               </div>
-              <div className="col-lg-4">
-
-              
-
-              </div>
+            
             </div>
             {ArrDetails.length > 0
               ? ArrDetails.map((item: any, index) => {
@@ -643,37 +639,56 @@ try{
                 return (
                   <>
                     <div className="row mt-3">
+                      <div className="col-md-3 mobile-w1">
+                        
                       <p className="d-block mt-2 font-28">
+                    
                         {item.ProjectName}
                       </p>
                       <div className="row mt-2">
                         <div className="col-md-12 col-xl-12">
-                          <p className="mb-2 mt-1 newt6 font-14 d-flex">
-                            <span className="pe-2 text-nowrap mb-0 d-inline-block">
+                        <div className="tabcss sameh mb-2 mt-2 me-1 activenew">
+
+                        <button className="opend"
+                  onClick={(e) => openModal(e)}
+                 
+                >
+                  <FilePlus /> Open Document
+                </button>
+                        </div>
+                        <div className="tabcss mb-2 mt-2 me-1 newalign"> <span className="pe-2 text-nowrap mb-0 d-inline-block">
                               <Calendar size={14} />{" "}
                               {moment(item.StartDate).format("DD-MMM-YYYY")}{" "}
-                              &nbsp; &nbsp; &nbsp;|
-                            </span>
+                              
+                            </span>  </div>
+                            <div className="tabcss mb-2 sameh mt-2 me-1 ">
                             <span
                               className="text-nowrap mb-0 d-inline-block"
                               onClick={sendanEmail}
                             >
-                              <Share size={14} /> Share by email &nbsp; &nbsp;
-                              &nbsp;|&nbsp; &nbsp; &nbsp;
+                              <Share size={14} /> Share by email 
                             </span>
+                            </div>
+                            <div className="tabcss sameh mb-3 mt-2 me-1 ">
                             <span
                               className="text-nowrap mb-0 d-inline-block"
                               onClick={() => copyToClipboard(item.Id)}
                             >
-                              <Link size={14} /> Copy link &nbsp; &nbsp;
-                              &nbsp;|&nbsp; &nbsp; &nbsp;
-                              &nbsp;
+                              <Link size={14} /> Copy link 
                               {copySuccess && (
                                 <span className="text-success">
                                   {copySuccess}
                                 </span>
                               )}
                             </span>
+                            </div>
+                          <p  style={{
+                              
+                              margin: "11px",
+                            }}   className="mb-2 mt-1 newt6 font-14">
+                           
+                            
+                            
                             <div
                               style={{
                               
@@ -756,23 +771,17 @@ try{
                           </p>
                         </div>
                       </div>
-                    </div>
-                    <div className="row ">
+                      
+
+
+                      <div className="row ">
                       <p
                         style={{ lineHeight: "22px" }}
                         className="d-block text-muted mt-2 font-14"
                       >
                         {item.ProjectOverview}
                       </p>
-                      <div className="col-lg-3">
-
-                      <button
-                  onClick={(e) => openModal(e)}
-                  className="btn btn-secondary rounded-pill mt-2 mb-2 font-14"
-                >
-                  <FilePlus /> Open Document
-                </button>
-                </div>
+                     
                     </div>
                     <div className="row internalmedia filterable-content mt-3">
                       <Modal show={showModal} onHide={closeModal}>
@@ -815,22 +824,12 @@ try{
                         ></div>
                       </p>
                     </div>
-                  </>
-                );
-              })
-              : null}
-            {/* <div className="row">
-              {
-                ArrDetails.length > 0 ? ArrDetails.map((item: any) => {
-                  return (
-                    <h4>{item.Title}</h4>
-                  )
-                }) : null
-              }
- 
-            </div> */}
-            <div className="row mt-2">
-              <div className="col-md-6">
+
+                      </div>
+
+                      <div className="col-md-6 mobile-w2">
+                      <div className="row mt-2">
+              <div >
                 <div
                   className="card"
                   style={{
@@ -871,7 +870,7 @@ try{
               {/* New comment input */}
 
               {comments.map((comment, index) => (
-                <div className="col-xl-6" style={{ marginTop: "1rem" }}>
+                <div className="col-xl-12" style={{ marginTop: "1rem" }}>
                   <CommentCard
                     key={index}
                     commentId={index}
@@ -892,6 +891,46 @@ try{
                 </div>
               ))}
             </div>
+
+                      </div>
+
+                      <div className="col-md-3 mobile-w3">
+
+                      <div className="card mobile-5 mt-3"  style={{ borderRadius: "22px" }}>
+                        <div className="card-body pb-3 gheight">
+                          <h4 className="header-title font-16 text-dark fw-bold mb-0"  style={{ fontSize: "20px" }}>Project Owner</h4>
+                          <h1 className="text-muted font-14 mt-3"><p className="text-dark font-16 text-center mb-2"> keerti jain</p>
+                          <p className="text-muted font-14 text-center mb-1">Cloud Infrastructure Alchemist</p>
+                          <p className="text-muted font-12 text-center">keertijain@officeindia.onmicrosoft.com  </p>
+                          </h1></div>
+                          </div>
+
+                        
+                      </div>
+
+                      
+
+
+
+                     
+                    
+                    </div>
+                  
+                  </>
+                );
+              })
+              : null}
+            {/* <div className="row">
+              {
+                ArrDetails.length > 0 ? ArrDetails.map((item: any) => {
+                  return (
+                    <h4>{item.Title}</h4>
+                  )
+                }) : null
+              }
+ 
+            </div> */}
+           
           </div>
         </div>
       </div>

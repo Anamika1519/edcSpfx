@@ -1,8 +1,10 @@
 .bg {
-    bottom: 0.5rem;
-    position: absolute;
-    right: -0.5rem;
-  }
+  bottom: 7px;
+  position: absolute;
+  right: 0px;
+}
+.bg img{width: 80%;}
+  
   h4.card-title {
     color: rgb(255, 255, 255) !important;
   }
@@ -17,6 +19,10 @@
     background: #fff;
     color: #1fb0e5 !important;
   }
+  .btn-lightcss svg{
+    vertical-align: text-top !important;
+  }
+
   .card.heightcard {
     background: rgb(18, 168, 222);
     color: rgb(255, 255, 255);
@@ -64,7 +70,7 @@
   
   .dropdown {
     position: relative;
-    display: inline-block;
+    // display: inline-block;
   }
   
   .dropbtn {

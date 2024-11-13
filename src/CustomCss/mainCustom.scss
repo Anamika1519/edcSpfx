@@ -476,9 +476,9 @@ button{border-radius: 0.25rem !important;}
     border-right: var(--ct-theme-border-width) solid #ededed;
     box-shadow: 0 0 1px var(--grey-color-light);
     // width: 260px;
-    -webkit-box-shadow: 4px 0px 33px -9px rgba(204,204,204,1);
--moz-box-shadow: 4px 0px 33px -9px rgba(204,204,204,1);
-box-shadow: 4px 0px 33px -9px rgba(204,204,204,1);
+    -webkit-box-shadow: 4px 0px 11px -9px rgba(204,204,204,1);
+-moz-box-shadow: 4px 0px 11px -9px rgba(204,204,204,1);
+box-shadow: 4px 0px 11px -9px rgba(204,204,204,1);
 }
 .content-page {
   display: flex;

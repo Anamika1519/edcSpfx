@@ -567,12 +567,12 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername,CurrentUser, c
             {/* Post Interactions */}
 
             <div className="post-interactions mt-3 mb-3">
-                <div onClick={!loadingLike?(e) => handleLike(e, liked): undefined}  >
-                    {liked ? <FontAwesomeIcon icon={faThumbsUp} fontSize={25} color="#f1556c" /> : <ThumbsUp size={20} color="gray" />}
+                <div className="likes" onClick={!loadingLike?(e) => handleLike(e, liked): undefined}  >
+                    {liked ? <FontAwesomeIcon icon={faThumbsUp} fontSize={25} color="#1fb0e5" /> : <ThumbsUp size={20} color="gray" />}
                     <span>{likesCount} Likes</span>{liked}
                 </div>
-                <span><MessageSquare size={20} /> {CommentsCount} Comments</span>
-                <div className="post-actions">
+                <span className="likes"><MessageSquare size={20} /> {CommentsCount} Comments</span>
+                <div className="post-actions likes">
                     <div className="menu-toggle" onClick={toggleMenushare}>
                         <Share2 size={20} /> Share
                     </div>
@@ -588,17 +588,18 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername,CurrentUser, c
 
 
             {comments.length > 0 ? comments.map((comment: any, index: React.Key) => (
-                <div className="d-flex align-items-center commentss p-3">
+                <div className="d-flex align-items-start commentss">
                     <div className="flex-shrink-0">
                         <img src={comment.UserImage} alt="user avatar" className="commentsImg" />
                     </div>
-                    <div className="flex-grow-1 ms-4">
-                        <p>
-                            <strong>{comment?.Author?.Title}</strong>  </p>
+                    <div className="flex-grow-1 ms-2">
+                        <p className="mb-1 fw-bold">
+                          {comment?.Author?.Title}  </p>
                         <p style={{
                             fontSize: '0.9rem',
                             fontWeight: '400',
-                            color: '#6c757d'
+                            color: '#6c757d',
+                            marginBottom:'0px'
                         }}>
                             {comment.Comments}
                         </p>

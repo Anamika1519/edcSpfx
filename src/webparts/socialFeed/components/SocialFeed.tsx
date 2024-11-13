@@ -824,7 +824,7 @@ const SocialFeedContext = ({ props }: any) => {
 
         <div className="content" style={{ marginLeft: `${!useHide ? '240px' : '80px'}`, marginTop: '1rem' }}>
 
-          <div className="container-fluid ">
+          <div className="container-fluid paddb">
 
             <div className="row" style={{ paddingLeft: '0.5rem' }}>
 
@@ -841,7 +841,7 @@ const SocialFeedContext = ({ props }: any) => {
               <div className="col-md-3 mobile-w1">
                 <div className="row">
 
-                  <div style={{ display: 'flex', gap: '1rem' }}>
+                  <div style={{ display: 'flex', gap: '0.1rem' }}>
 
                     <img src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${currentEmail}`}
 
@@ -929,7 +929,7 @@ const SocialFeedContext = ({ props }: any) => {
 
 
                   <div className='mt-3'>
-                    <h4>Blogs you Saved</h4>
+                    <h4 className='font-14 mb-3 uppercase'>Blogs you Saved</h4>
                     {
 
                       blogdata.length > 0 ? blogdata.map((item: any) => {
@@ -942,9 +942,9 @@ const SocialFeedContext = ({ props }: any) => {
 
                           </div>
 
-                            <div className="col-md-2">
+                            <div className="col-md-10">
 
-                              <span className="title-ellipsis">{item.Title}</span>
+                              <span className="title-ellipsis font-14">{item.Title}</span>
 
                             </div></div>
 
@@ -1650,7 +1650,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                       <a
 
-                        style={{ float: "right" }}
+                        style={{ float: "right",lineHeight:"21px" }}
 
                         className="font-11 btn btn-primary  waves-effect waves-light view-all"
 
@@ -1745,7 +1745,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                       <a
 
-                        style={{ float: "right" }}
+                        style={{ float: "right",lineHeight:"21px" }}
 
                         className="font-11 view-all  btn btn-primary  waves-effect waves-light"
 

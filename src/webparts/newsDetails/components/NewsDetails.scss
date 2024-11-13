@@ -13,12 +13,15 @@
       border-radius: 50px;
       padding: 0.5rem 1rem;
     }
+    
 
     .btn {
       margin-left: 1rem;
     }
   }
 }
+
+.eventtextnew svg{vertical-align: text-bottom !important;}
 @media (max-width: 768px) {
   .commentCard {
     padding: 0.5rem;

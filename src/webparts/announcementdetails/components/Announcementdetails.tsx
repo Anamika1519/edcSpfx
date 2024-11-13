@@ -586,7 +586,7 @@ const AnnouncementdetailsContext = ({ props }: any) => {
                     </p>
                     <div className="row mt-2">
                       <div className="col-md-12 col-xl-12">
-                        <p className="mb-2 mt-1 font-14 d-block">
+                        <p className="mb-2 mt-1 font-14 d-block eventtextnew">
                           <span className="pe-2 text-nowrap mb-0 d-inline-block">
                             <Calendar size={18} /> {moment(item.Created).format("DD-MMM-YYYY")}  &nbsp;  &nbsp;  &nbsp;|
                           </span>

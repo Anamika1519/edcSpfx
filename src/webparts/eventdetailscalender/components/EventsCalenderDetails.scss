@@ -3,7 +3,7 @@
     height: 1.5rem;
     width: 1.5rem;
 }
-.eventtextnew svg{vertical-align: top !important;width: 14px; }
+.eventtextnew svg{vertical-align: text-bottom !important;width: 14px; }
 .app-menu{padding-top: 0px !important;}
 .EventAttendes {
     cursor: pointer;
@@ -12,9 +12,9 @@
     color: #fff;
     background-color: #008751 !important;
     width: 180px;
-    border-radius: 4px;
+    border-radius: 4px; text-align: center;
 }
-
+.EventAttendes svg{margin-top: -4px; margin-right: 5px; }
 .eventtextnew {
     font-size: 14px;
     color: #6c757d;

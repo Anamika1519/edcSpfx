@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useState } from 'react';
 import UserContext from './context';
+import { Footer } from './Footer';
 
 interface  ProviderProps {
   children: React.ReactNode;
@@ -25,6 +26,7 @@ const Provider: React.FC<ProviderProps> = ({ children }) => {
   return (
     <UserContext.Provider value={{ useHide, setHide,useFullscreen, toggleHide, toggleFullscreen ,setUseId,useId,useActive,setuseActive }}>
       {children}
+      <Footer/>
     </UserContext.Provider>
   );
 };

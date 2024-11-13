@@ -29,7 +29,7 @@ import { encryptId } from "../../../APISearvice/CryptoService";
 import { MessageSquare, ThumbsUp } from "react-feather";
 import moment from "moment";
 import { addActivityLeaderboard, getLeaderTop } from "../../../APISearvice/CustomService";
-import { fetchprojectdataTop } from "../../../APISearvice/ProjectsService";
+import { fertchprojectcomments, fetchprojectdataTop } from "../../../APISearvice/ProjectsService";
 
 const HelloWorldContext = ({ props }: any) => {
   const sp: SPFI = getSP();
@@ -198,11 +198,24 @@ const HelloWorldContext = ({ props }: any) => {
     setDataofEvent(eventdata);
 
     setUsersArr(await fetchUserInformationList(sp))
-    setProjects(await fetchprojectdataTop(sp))
+    // setProjects(await fetchprojectdataTop(sp))
+    
+    async function updateProjects(sp: SPFI) {
+      // Fetch and set projects first
+      const projects = await fetchprojectdataTop(sp);
+      setProjects(projects);
+  
+      // Then fetch and set project comments
+      const projectsComments = await fertchprojectcomments(sp);
+      setProjectscomments(projectsComments);
+  }
+  
+  // Call the function
+  updateProjects(sp);
   };
 
   const [projects, setProjects] = useState([]);
-
+  const [projectscomments, setProjectscomments] = useState([]);
   const siteUrl = props.siteUrl;
 
   const truncateText = (text: string, maxLength: number) => {
@@ -247,7 +260,66 @@ const HelloWorldContext = ({ props }: any) => {
   };
 
   console.log(leaderboard, 'leaderboard');
+	
+  function truncateString(str:any, project:any) {
+    const maxLength = 87; // The number of characters before truncation
+    if (str.length > maxLength) {
+        const truncatedString = str.substring(0, maxLength);
+        return (
+            <>
+                {truncatedString}
+                <button
+                    className="view-more-button"
+                    onClick={() => GotoNextPageProject(project)}
+                    style={{ marginLeft: "5px", color: "blue", border: "none", background: "none", cursor: "pointer" }}
+                >
+                    ...view more
+                </button>
+            </>
+        );
+    }
+    return str;
+}
 
+const [commentsData, setCommentsData] = useState<Record<string, number>>({});
+
+// Function to fetch data for each project ID
+const fetchProjectComments = async (projectId:any) => {
+  try {
+    const response = await _sp.web.lists.getByTitle("ARGProjectComments")
+      .items.filter(`ARGProjectId eq ${projectId}`)();
+     console.log(response , "here is our response")
+    if (response.length > 0) {
+      // Update the state with the fetched comment count
+      return { [projectId]: response[0].CommentsCount || 0 };
+    } else {
+      // If no comments, set to 0
+      return { [projectId]: 0 };
+    }
+  } catch (error) {
+    console.error('Error fetching project comments:', error);
+    return { [projectId]: 0 }; // In case of error, set 0
+  }
+};
+
+useEffect(() => {
+  // Use a function to fetch comments for each project and set the state
+  const fetchCommentsForProjects = async () => {
+    // Create an object to hold all the comment counts
+    const commentCounts:any = {};
+
+    // Fetch comments for all projects
+    for (let project of projects) {
+      const projectComment = await fetchProjectComments(project.ID);
+      commentCounts[project.ID] = projectComment[project.ID];
+    }
+
+    // Once all comments are fetched, update the state at once
+    setCommentsData(commentCounts);
+  };
+
+  fetchCommentsForProjects();
+}, [projects]);
   return (
 
 
@@ -330,7 +402,7 @@ const HelloWorldContext = ({ props }: any) => {
                       className="card announcementner"
                       style={{ borderRadius: "1rem" }}
                     >
-                      <div className="card-body p-3 height">
+                      <div className="card-body height">
                         <h4
                           className="header-title font-8 text-dark fw-bold mb-0"
                           style={{ fontSize: "16px", fontWeight: "bold" }}
@@ -547,7 +619,7 @@ const HelloWorldContext = ({ props }: any) => {
                                   </h4>
                                   <p className=" font-12">
                                     <i className="fe-calendar me-1"></i>
-                                    {moment(formattedDate).format("DD-MMM-YYYY HH:mm")}
+                                    {moment(formattedDate).format("DD-MMM-YYYY")}
                                     {/* Display the full formatted date (22 Jul 2024) */}
                                   </p>
                                 </div>
@@ -610,8 +682,9 @@ const HelloWorldContext = ({ props }: any) => {
                                   />
                                 </div> */}
                                     </span>
+
                                     <span className="tabvtext">
-                                      {item.Title} <br />
+                                     <span className="twolinewrap mb-1 text-dark">  {item.Title} <br /> </span>
                                       <span style={{ paddingTop: "2px" }}>
                                         <i className="fa fa-clock-o"></i>&nbsp;
                                         {moment(item.Created).format("DD-MMM-YYYY HH:mm")}
@@ -770,7 +843,7 @@ const HelloWorldContext = ({ props }: any) => {
                           View All
                         </a>
                       </h4>
-                      <div  className="d-flex align-items-start  justify-content-between border-radius mb-2">
+                      <div  className="d-flex align-items-start pt-1 justify-content-between border-radius mb-2">
                       <div className="row mt-0 ipadt">
                         {leaderboard.length > 0 && leaderboard.slice(0, 4).map((user, index) => (
                           <div className="row border-bottom heit9"
@@ -796,7 +869,7 @@ const HelloWorldContext = ({ props }: any) => {
                                   {user.AuthorTitle}
                                 </h5>
                                 <span
-                                  style={{ color: "#6b6b6b" }}
+                                  style={{ color: "#6b6b6b", lineHeight:"15px", float:"left" }}
                                   className="font-12"
                                 >
                                   {user.AuthorDepartment ? user.AuthorDepartment : 'NA'}
@@ -892,13 +965,13 @@ const HelloWorldContext = ({ props }: any) => {
                     marginBottom: "0px",
                   }}
                 >
-                  <div className="card-body pb-3 paddlright">
+                  <div className="pb-3 paddlright">
                     <h4 className="header-title font-16 text-dark fw-bold mb-0">
                       Projects
                       <a
                         href={`${siteUrl}/SitePages/Project.aspx`}
                         className="font-11 view-all fw-normal btn rounded-pill waves-effect waves-light"
-                        style={{ float: "right" }}
+                        style={{ float: "right", top:"0" }}
                       >
                         View All
                       </a>
@@ -934,7 +1007,7 @@ const HelloWorldContext = ({ props }: any) => {
                                 className="date-color font-12 mb-3"
                                 style={{ color: "#98a6ad" }}
                               >
-                                {project.ProjectOverview}
+                               {truncateString(project.ProjectOverview, project)}
                                 {/* <a   className="fw-bold text-muted">
                                     view more
                                   </a> */}
@@ -944,8 +1017,16 @@ const HelloWorldContext = ({ props }: any) => {
                                   style={{ color: "#6e767e" }}
                                   className="pe-2 text-nowrap"
                                 >
-                                  <i className="fe-file-text text-muted"></i>
-                                  <b>{project?.ProjectsDocsId?.length}</b> Documents
+                                   <img src={require("../assets/projectdoc.png")} style={{ width: "12px" }} /> <b>{project?.ProjectsDocsId?.length}</b> Documents
+                                </span>
+                                <span>
+                                <img src={require("../assets/comment.png")} style={{ width: "12px" }} />
+                                {/* Display fetched comment count */}
+                  {commentsData[project.ID] !== undefined ? (
+                     `${commentsData[project.ID]} Comments`
+                  ) : (
+                    'Loading comments...'
+                  )}
                                 </span>
 
                               </p>

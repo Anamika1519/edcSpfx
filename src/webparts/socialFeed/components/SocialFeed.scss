@@ -367,16 +367,23 @@ a.nav-linkcss.px-4.py-3 {
   /* Occupies the second column */
   grid-row: auto;
   /* Automatic row placement */
+  height: 103px !important;
 }
-
+.small-image img{height: 100% !important; border-radius: 10px; object-fit: cover;}
+.add-comment textarea{height: 44px; border: 1px solid #007bff; border-radius: 3px;}
+.uppercase{text-transform: uppercase;}
+.more-images-overlay{border-radius: 10px;}
+.likes{display: flex;
+  align-items: center;
+  gap: 5px}
 .title-ellipsis {
   display: inline-block;
-  max-width: 100px;
+  max-width: 190px;
   /* Adjust the width based on your layout */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-weight: 600;
+  font-weight: 600; margin-top: 3px;
 }
 
 .rounded-pill {
@@ -450,8 +457,8 @@ a.nav-linkcss.px-4.py-3 {
   padding: 1rem 0.9rem;
 }
 
-.rounded-circlecss {
-  border-radius: 50% !important;
-  height: 6rem !important;
-  width: 6rem !important;
-}
+// .rounded-circlecss {
+//   border-radius: 50% !important;
+//   height: 6rem !important;
+//   width: 6rem !important;
+// }

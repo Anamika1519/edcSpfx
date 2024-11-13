@@ -491,7 +491,7 @@ ApICallData();
                         className="row mt-3"
                        
                       >
-                        <p className="d-block mt-2 font-28" >
+                        <p className="d-block mt-2 mb-0 font-28" >
                           {item.Title}
                         </p>
                         <div className="row mt-2">

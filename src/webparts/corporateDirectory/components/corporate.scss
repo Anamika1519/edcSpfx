@@ -54,13 +54,24 @@
 }
 
 .alignright {
-    height: 1.5rem;
+    height: 1.8rem;
+    left: 4rem;
     margin-left: auto;
-    width: 1.5rem;
     position: absolute;
-    top: 0;
-    left: 8rem;
+    top: 23px;
+    width: 1.8rem;
+    background: #fff;
+    border-radius: 1000px;
 }
+.alignrightpin {
+    height: 1.5rem;
+    right: 1.5rem;
+    
+    position: absolute;
+    top: 18px;
+    width: 1.5rem;
+}
+
 .mtable{margin: 0px !important;}
 .mtable td, .mtable th{font-size: 14px;}
 .mtable tbody tr:nth-of-type(2n) {
@@ -158,7 +169,7 @@ img[title="Badges"] {
     z-index: 2;
     cursor: pointer;
   }
-  
+
   /* Hide the tooltip content by default */
   [data-tooltip]:before,
   [data-tooltip]:after {
@@ -166,6 +177,7 @@ img[title="Badges"] {
     opacity: 0;
     pointer-events: none;
   }
+  a.nav-linkss{font-size: 14px;}
   
   /* Position tooltip above the element */
   [data-tooltip]:before {
@@ -210,7 +222,7 @@ img[title="Badges"] {
     visibility: visible;
     opacity: 1;
   }
-  .rounded-circlecss {
+ .corporate-directory .rounded-circlecss {
     border-radius: 50% !important;
     height: 6rem !important;
     width: 6rem !important;

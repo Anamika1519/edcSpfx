@@ -14,6 +14,30 @@
     width: 100%;
  
    }
+   .rbc-day-slot .rbc-background-event, .rbc-event{
+    
+    border-radius: 2px;
+    box-shadow: none;
+    box-sizing: border-box;
+    font-size: .8125rem;
+    color: #fff;
+    cursor: pointer;
+    margin: 0;
+    padding: 2px 5px;
+    text-align: left;
+    width: 100%;
+   }
+   .rbc-row-segment .rbc-event + .rbc-row-segment .rbc-event{
+background-color: #008751 !important;
+   }
+   .rbc-row-segment .rbc-event + .rbc-row-segment .rbc-event + .rbc-row-segment .rbc-event{
+    background-color: #ffab00 !important;
+       }
+      #carouselExampleCaptions{}
+      .newhimg{height: 230px !important;}
+      .newhimg img{height: 100%; border-radius: 10px;}
+   .rbc-off-range-bg{background: #fff !important;}
+   .rbc-today{background: #fffadf !important;}
    #listView span{color: #6c747d; font-size: 13px; font-weight: 400 !important;}
    #listView p{color: #6c747d;}
 .card {

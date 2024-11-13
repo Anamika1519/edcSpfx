@@ -8,9 +8,23 @@
   // box-shadow: 0 0 1px var(--grey-color-light);
   transition: all 0.5s ease;
 }
+.tabcss {
+  background: #f7fbfc !important;
+  border-radius: 2rem;
+  color: #6b6b6b;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 10px 20px;
+}
+.activenew{background: #fff !important;}
+.newalign svg{vertical-align: text-top !important;}
 .page-title{
   color: #343a40  !important;
 }
+.opend{background: transparent !important;
+  border: 0 !important;
+  padding: 0 !important;}
+  .opend svg{width: 14px;}
 .pt-arr{padding-top: 1px;}
 .pt-arr svg {
   height: .9em;
@@ -69,22 +83,33 @@ a{text-decoration: none !important; cursor: pointer;}
   padding: 0 0;
   width: 80px;
 }
+#myDropdown, #myDropdownBell{transform: translateY(19px) !important; border-radius: 5px;}
 .twolinewrap{
   overflow: hidden;
 text-overflow: ellipsis;
 //-webkit-line-clamp: 2;
 display: -webkit-box;
--webkit-box-orient: vertical;
+-webkit-box-orient: vertical;-webkit-line-clamp: 2;
 }
-.notification-lists:after{display: none !important;}
+.notification-lists .dropdown-toggle:after{display: none !important;}
 .twolinewrap1{
   overflow: hidden;
 text-overflow: ellipsis;
 //-webkit-line-clamp: 3;
 display: -webkit-box;
 height:63px;
+
 -webkit-box-orient: vertical;
+
+-webkit-line-clamp: 3;
 }
+.card-body{
+  padding: 0.8rem !important;
+}
+.heightlist{height: 300px;overflow-y: auto;}
+
+
+
 a:hover, a:active {
   text-decoration: none !important;
 }
@@ -116,8 +141,16 @@ a:hover, a:active {
 .sidebar.close .logo_item{
   width: auto;
 }
-.dropcss a{display: block; text-align: center; font-size: 12px;}
+.dropcss{padding: 0px;}
+.dropcss a{display: block; text-align: center; font-size: 12px; padding: 10px; }
 .text-dark-new{color: #343a40 !important;}
+.newt6 svg{vertical-align: top !important;    margin-top: 1.5px;}
+.btn-close{    width: 25px !important;
+  
+  height: 25px !important;
+  border: 1px solid #ccc !important;
+  min-width: 25px !important;
+  border-radius: 1000px !important;}
 .view-all {
   border-radius: 4px !important;
   float: right;
@@ -1096,7 +1129,7 @@ margin: 10px 0px !important ;
   }
   .view-all {
 
-    top: 18px;
+    top: 13px;
   }
   .sidebar-enable .tabcontentv,.sidebar-enable .tabv{height: 350px !important;}
   .menu_items{max-height: 730px;}
@@ -1133,7 +1166,7 @@ margin: 10px 0px !important ;
   
 .view-all {
 
-  top: 18px;
+  top: 13px;
 }
   .gheight .inbox-item-text {
     margin-top: -3px !important;

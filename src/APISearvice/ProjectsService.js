@@ -20,10 +20,35 @@ export const fetchprojectdata = async (_sp) => {
     });
   return arr;
 }
+let arggroups =[]
 export const fetchprojectdataTop = async (_sp) => {
   let arr = []
+   console.log("first sexcute this and ")
+  await _sp.web.lists.getByTitle("ARGProject").items.select("*,TeamMembers/ID,TeamMembers/EMail,TeamMembers/Title").expand("TeamMembers").orderBy("Modified", false).top(3)().then((res) => {
+    console.log("checking the data of project---->>>", res);
 
-  await _sp.web.lists.getByTitle("ARGProject").items.select("*,TeamMembers/ID,TeamMembers/EMail,TeamMembers/Title").expand("TeamMembers").top(3)().then((res) => {
+    //res.filter(x=>x.Category?.Category==str)
+    arr = res;
+     arggroups = res
+     
+  })
+    .catch((error) => {
+      console.error("Error fetching data: ", error);
+    });
+  return arr;
+  fertchprojectcomments
+}
+export const fertchprojectcomments = async (_sp) => {
+
+  arggroups.forEach(async (item) => {
+      console.log(" here is my items ", item);
+      const ARGProjectComment= await _sp.web.lists.getByTitle("ARGProjectComments").items.filter(`ARGProjectId eq ${item.Id}`)();
+      console.log(ARGProjectComment,'ARGProjectComment');
+      
+      ARGProjectComment.CommentsCount = ARGProjectComment.length
+     
+  })
+  await _sp.web.lists.getByTitle("ARGProject").items.select("*,TeamMembers/ID,TeamMembers/EMail,TeamMembers/Title").expand("TeamMembers").orderBy("Modified", false).top(3)().then((res) => {
     console.log("checking the data of project---->>>", res);
 
     //res.filter(x=>x.Category?.Category==str)

@@ -14,7 +14,9 @@
   display: table;
   width: 100%;
 }
-
+.nav-pills .nav-link.active{
+  background:#1fb0e5;
+}
 #cardCollpase4 .inputcss {
 
   font-size: .8rem !important;

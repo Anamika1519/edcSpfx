@@ -2336,8 +2336,9 @@ const GroupandTeamcontext = ({ props }: any) => {
                       <a key={index}>
 
                         <div className="bg">
+                          <img src={require("../assets/backteam.png")} />
 
-                          {/* Optional background image */}
+                          
 
                         </div>
 

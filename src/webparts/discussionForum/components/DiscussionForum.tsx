@@ -1178,7 +1178,7 @@ const DiscussionForumContext = ({ props }: any) => {
           }}
         >
           <div className="container-fluid paddb">
-            <div className="row" style={{ paddingLeft: "0.5rem" }}>
+            <div className="row">
               <div className="col-lg-6">
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
               </div>

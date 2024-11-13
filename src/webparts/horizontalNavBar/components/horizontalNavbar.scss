@@ -149,10 +149,20 @@
 }
 span.badge.bg-danger.noti-icon-badge {
   position: absolute;
-    right: 0px;
-    top: -12px;
-    border-radius: 50%;
+  right: -4px; border-radius: 1000px;
+  top: -10px;
+  width: 18px;
+  height: 18px;
+  text-align: center;
+  padding: 3px;
+  font-size: 10px;
+  line-height: 13px;
 }
+#myDropdownBell h5{color: #000; font-size: 16px;}
+.carousel-control-next:focus, .carousel-control-next:hover, .carousel-control-prev:focus, .carousel-control-prev:hover{
+  opacity: 1 !important;
+}
+
 .navbar-customs .topbars .nav-links {
   padding: 0 .75rem;
   position: relative;

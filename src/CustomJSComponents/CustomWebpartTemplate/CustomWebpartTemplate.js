@@ -118,7 +118,7 @@ const CustomWebpartTemplate = ({ _sp, SiteUrl }) => {
                                         <div className="col-sm-12">
                                             <p className="mb-2 mt-1 d-block customhead">
                                                 <span style={{ fontWeight: '400' }} className="pe-2 text-nowrap color-new font-12 mb-0 d-inline-block">
-                                                    <Calendar size={12} color="#6b6b6b" strokeWidth={1} className="pl-2" style={{ fontWeight: '400' }} />
+                                                    <Calendar size={12} color="#6b6b6b" strokeWidth={1} className="pl-2" style={{ fontWeight: '400' }} />&nbsp;&nbsp;
                                                     {moment(item.Created).format("DD-MMM-YYYY HH:mm")} &nbsp;  &nbsp;  &nbsp;|
                                                 </span>
                                                 <span style={{ fontWeight: '400' }} className="text-nowrap mb-0 color-new font-12 d-inline-block">

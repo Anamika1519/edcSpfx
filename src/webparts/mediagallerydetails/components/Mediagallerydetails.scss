@@ -15,6 +15,10 @@
     max-width: 100%;
     vertical-align: middle;
 }
+.modal-dialog {min-width: 80% !important; border-radius: 20px !important;}
+.modal-content {min-width: 80% !important; border-radius: 20px !important;}
+.modal-dialog .carousel-item{height: 500px;}
+.modal-dialog .carousel-item img{border-radius: 15px; width: 100% ; height: 100% !important; object-fit: cover !important;}
 .carousel-indicators {
     bottom: 0;
     /* display: flex; */

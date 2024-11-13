@@ -210,10 +210,32 @@ img[title="Badges"] {
     visibility: visible;
     opacity: 1;
   }
-  .rounded-circlecss {
+  .card-view .rounded-circlecss {
     border-radius: 50% !important;
     height: 6rem !important;
     width: 6rem !important;
+}
+.newc{
+    background: #d2effa !important;
+    border: none;
+    border: none;
+    color: #1fb0e5 !important;
+    display: flex;
+    font-size: 16px !important;
+    height: 32px !important;
+    justify-content: center;
+    line-height: 27px !important;
+    margin-left: 5px;
+    margin-top: 16.5px !important;
+    padding: 0 1px !important;
+    width: 32px !important;
+    position: absolute;
+    font-weight: 900;
+}
+img[title=Badges] {
+    height: auto !important;
+    /* margin-right: 5px; */
+    width: auto !important;
 }
 .nav-itemcss
 {

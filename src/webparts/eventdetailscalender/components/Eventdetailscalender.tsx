@@ -589,9 +589,9 @@ ApICallData();
                       </p>
                       <div className="row mt-2">
                         <div className="col-md-12 col-xl-12">
-                          <p className="mb-2 mt-1 d-flex eventtextnew" style={{ paddingLeft: '0.5rem', cursor: 'pointer' }}>
+                          <p className="mb-2 mt-1 d-flex eventtextnew" style={{ cursor: 'pointer' }}>
                             <span className="pe-2 text-nowrap mb-0 d-inline-block" >
-                              <Calendar size={18} /> {moment(item.Created).format("DD-MMM-YYYY")}  &nbsp;  &nbsp;  &nbsp;|
+                            <span style={{paddingTop:'0px'}}>   <Calendar size={18} /> </span> <span>{moment(item.Created).format("DD-MMM-YYYY")} </span>  &nbsp;  &nbsp;  &nbsp;|
                             </span>
                             <span className="text-nowrap mb-0 d-inline-block" onClick={sendanEmail}>
                               <Share size={18} />  Share by email &nbsp;  &nbsp;  &nbsp;|&nbsp;  &nbsp;  &nbsp;
@@ -619,14 +619,14 @@ ApICallData();
 
                           <p>
 
-                            {new Date(item.RegistrationDueDate) > new Date() ? (<div className="EventAttendes" onClick={() => AddAttendees(item)}><Users size={14} /> Attend this event
-                            </div>) : (<div className="EventAttendesGray" >! Event Expired
+                            {new Date(item.RegistrationDueDate) > new Date() ? (<div className="EventAttendes mt-4 rounded-pill" onClick={() => AddAttendees(item)}><Users size={14} /> Attend this event
+                            </div>) : (<div className="EventAttendesGray  mt-4 rounded-pill" >! Event Expired
                             </div>)}
                           </p>
                         </div>
                       </div>
                     </div>
-                    <div className="row" style={{ paddingLeft: '0.5rem' }}>
+                    <div className="row" >
                       <p
                         style={{ lineHeight: "22px" }}
                         className="d-block text-muted mt-2 font-14"
@@ -634,7 +634,7 @@ ApICallData();
                         {item.Overview}
                       </p>
                     </div>
-                    <div className="row internalmedia filterable-content mt-3" style={{ paddingLeft: '0.5rem' }}>
+                    <div className="row internalmedia filterable-content mt-3">
                       {EventGalleryJson.length > 0 ? (
                         EventGalleryJson.map((res: any) => {
                           return (
@@ -691,7 +691,7 @@ ApICallData();
               }
 
             </div> */}
-            <div className="row" style={{ paddingLeft: '0.5rem' }}>
+            <div className="row" >
               <div className="col-md-6">
                 <div className="card" style={{ border: "1px solid #54ade0", borderRadius: '20px', boxShadow: '0 3px 20px #1d26260d' }}>
                   <div className="card-body" style={{ padding: '1rem 0.9rem' }}>
