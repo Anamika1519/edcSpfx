@@ -13,7 +13,7 @@ import { IEventMasterProps } from './IEventMasterProps';
 import { getCurrentUser, getEntity } from '../../../APISearvice/CustomService';
 import { getUrl } from '../../../APISearvice/MediaService';
 import { decryptId, encryptId } from '../../../APISearvice/CryptoService';
-import {addItem, DeleteEntityMasterAPI, getAllEventMaster, getEventByID, updateItem, uploadFile, uploadFileToLibrary} from "../../../APISearvice/Eventmaster";
+import { addItem, DeleteEntityMasterAPI, getAllEventMaster, getEventByID, updateItem, uploadFile, uploadFileToLibrary } from "../../../APISearvice/Eventmaster";
 import "../../../CustomJSComponents/CustomForm/CustomForm.scss";
 import Swal from 'sweetalert2';
 import 'react-quill/dist/quill.snow.css';
@@ -48,6 +48,7 @@ const EntityMastercontext = ({ props }: any) => {
     Overview: '',
     EventDate: '',
     EventAgenda: '',
+    Status: ''
   });
   const [sortConfig, setSortConfig] = React.useState({ key: '', direction: 'ascending' });
 
@@ -139,10 +140,15 @@ const EntityMastercontext = ({ props }: any) => {
     const filteredData = data.filter((item, index) => {
       return (
         (filters.SNo === '' || String(index + 1).includes(filters.SNo)) &&
-        (filters.EventName === '' || item.EventName.toLowerCase().includes(filters.EventName.toLowerCase())) &&
-        (filters.EventDate === '' || item.EventDate.toLowerCase().includes(filters.EventDate.toLowerCase())) &&
-        (filters?.Overview === '' || item?.Overview?.toLowerCase().includes(filters?.Overview?.toLowerCase())) &&
-        (filters.EventAgenda === '' || item.EventAgenda.toLowerCase().includes(filters.EventAgenda.toLowerCase()))
+        (filters.EventName === '' || item.EventName != null && item.EventName.toLowerCase().includes(filters.EventName.toLowerCase())) &&
+
+        (filters.EventDate === '' || item.EventDate != null && item.EventDate.toLowerCase().includes(filters.EventDate.toLowerCase())) &&
+
+        (filters?.Overview === '' || item.Overview != null && item?.Overview?.toLowerCase().includes(filters?.Overview?.toLowerCase())) &&
+
+        (filters.EventAgenda === '' || item.EventAgenda != null && item.EventAgenda.toLowerCase().includes(filters.EventAgenda.toLowerCase())) &&
+
+        (filters.Status === '' || item.Status != null && item.Status.toLowerCase().includes(filters.Status.toLowerCase()))
       );
     });
     const sortedData = filteredData.sort((a, b) => {
@@ -189,15 +195,26 @@ const EntityMastercontext = ({ props }: any) => {
   //#region Download exl file 
   const handleExportClick = () => {
     const exportData = currentData.map((item, index) => ({
-      'S.No.': startIndex + index + 1,
-      'Title': item.Title,
-      'Url': item.Url,
-      
-      'Status': item.Status,
-      'Submitted Date': item.Created,
+      // 'S.No.': startIndex + index + 1,
+      // 'Title': item.Title,
+      // 'Url': item.Url,
+
+      // 'Status': item.Status,
+      // 'Submitted Date': item.Created,
+      "S.No.": startIndex + index + 1,
+
+      EventName: item.EventName,
+
+      EventDate: item.EventDate,
+
+      Status: item.Status,
+
+      Overview: item.Overview,
+
+      "Submitted Date": item.Created,
     }));
 
-    exportToExcel(exportData, 'Announcements');
+    exportToExcel(exportData, 'EventMaster');
   };
   const exportToExcel = (data: any[], fileName: string) => {
     const workbook = XLSX.utils.book_new();
@@ -251,105 +268,106 @@ const EntityMastercontext = ({ props }: any) => {
           text: "Item has been deleted.",
           icon: "success"
         });
-        
+
       }
     })
   }
- const goToAddForm =()=>
- {
-  sessionStorage.removeItem("EventId")
+  const goToAddForm = () => {
+    sessionStorage.removeItem("EventId")
     window.location.href = `${siteUrl}/SitePages/EventMasterForm.aspx`;
- }
+  }
 
- const [isOpenNews, setIsOpenNews] = React.useState(false);
- const toggleDropdownNews = () => {
-   setIsOpenNews(!isOpenNews);
- };
+  const [isOpenNews, setIsOpenNews] = React.useState(false);
+  const toggleDropdownNews = () => {
+    setIsOpenNews(!isOpenNews);
+  };
 
- const handleNewsExportClick = () => {
-  const exportData = currentData.map((item, index) => ({
-    'S.No.': startIndex + index + 1,
-    'EventName': item.EventName,
-    'Overview': item.Overview,
-    'EventDate': item.EventDate,
-    'EventAgenda': item?.EventAgenda,
-  }));
+  const handleNewsExportClick = () => {
+    const exportData = currentData.map((item, index) => ({
+      'S.No.': startIndex + index + 1,
+      'EventName': item.EventName,
+      'Overview': item.Overview,
+      'EventDate': item.EventDate,
+      'EventAgenda': item?.EventAgenda,
+    }));
 
-  exportToExcel(exportData, 'Banner');
-};
- 
+    exportToExcel(exportData, 'Banner');
+  };
+
   return (
 
-<div id="wrapper" ref={elementRef}>
-      <div 
+    <div id="wrapper" ref={elementRef}>
+      <div
         className="app-menu"
         id="myHeader">
         <VerticalSideBar _context={sp} />
       </div>
       <div className="content-page">
-          <HorizontalNavbar  _context={sp} siteUrl={siteUrl}/>
-        <div className="content " style={{marginLeft: `${!useHide ? '240px' : '80px'}`}}> {/* Edit by amjad */}
-        <div className="container-fluid  paddb">
-              <div className="row ">  {/* Edit by amjad */}
-                <div className="col-lg-3">
-                  <CustomBreadcrumb Breadcrumb={Breadcrumb} />
-                </div>
-                <div className="col-lg-9">
-                  <div className="d-flex flex-wrap align-items-center justify-content-end mt-3">
-                    <div className="d-flex flex-wrap align-items-center justify-content-start">
-                      <a href={`${siteUrl}/SitePages/settings.aspx`}>
-                        <button type="button" className="btn btn-secondary me-1 waves-effect waves-light">
-                          <FontAwesomeIcon icon={faArrowLeft} className="me-1" />
-                          Back
-                        </button>
-                      </a>
-                      <a href={`${siteUrl}/SitePages/EventMasterForm.aspx`} onClick={()=>goToAddForm()}>
-                        <button type="button" className="btn btn-primary waves-effect waves-light" style={{ background: '#1fb0e5' }}>
-                          <FontAwesomeIcon icon={faPlusCircle} className="me-1" />
-                          Add
-                        </button>
-                      </a>
-                    </div>
+        <HorizontalNavbar _context={sp} siteUrl={siteUrl} />
+        <div className="content " style={{ marginLeft: `${!useHide ? '240px' : '80px'}` }}> {/* Edit by amjad */}
+          <div className="container-fluid  paddb">
+            <div className="row ">  {/* Edit by amjad */}
+              <div className="col-lg-3">
+                <CustomBreadcrumb Breadcrumb={Breadcrumb} />
+              </div>
+              <div className="col-lg-9">
+                <div className="d-flex flex-wrap align-items-center justify-content-end mt-3">
+                  <div className="d-flex flex-wrap align-items-center justify-content-start">
+                    <a href={`${siteUrl}/SitePages/settings.aspx`}>
+                      <button type="button" className="btn btn-secondary me-1 waves-effect waves-light">
+                        <FontAwesomeIcon icon={faArrowLeft} className="me-1" />
+                        Back
+                      </button>
+                    </a>
+                    <a href={`${siteUrl}/SitePages/EventMasterForm.aspx`} onClick={() => goToAddForm()}>
+                      <button type="button" className="btn btn-primary waves-effect waves-light" style={{ background: '#1fb0e5' }}>
+                        <FontAwesomeIcon icon={faPlusCircle} className="me-1" />
+                        Add
+                      </button>
+                    </a>
                   </div>
                 </div>
               </div>
-              <div className="card cardCss mt-4" >
-                <div className="card-body">
-                  <div id="cardCollpase4" className="collapse show">
-                    <div className="table-responsive pt-0">
-                      <table className="mtable table-centered table-nowrap table-borderless mb-0">
-                        <thead>
-                          <tr>
-                            <th style={{ borderBottomLeftRadius: '10px', minWidth: '50px',
-                               maxWidth: '50px', borderTopLeftRadius: '10px' }}>
-                                  <div className="d-flex pb-2" 
-                                  style={{ justifyContent: 'space-between' }}>
-                               <span>S.No.</span>
-                               <span onClick={() => handleSortChange('SNo')}>
-                                 <FontAwesomeIcon icon={faSort} />
-                               </span>
-                             </div>
-                             <div className="bd-highlight">
-                               <input
-                                 type="text"
-                                 placeholder="index"
-                                 onChange={(e) => handleFilterChange(e, 'SNo')}
-                                 className="inputcss"
-                                 style={{ width: '100%' }}
-                               />
-                             </div>
-                               </th>
-                            <th>
-                               <div className="d-flex flex-column bd-highlight ">
-                                    <div className="d-flex pb-2" style={{ justifyContent: 'space-between' }}>  
-                                      <span >Event Name</span>  <span onClick={() => handleSortChange('EventName')}><FontAwesomeIcon icon={faSort} /> </span></div>
-                                    <div className=" bd-highlight">
-                                      <input type="text" placeholder="Filter by Event Name" onChange={(e) => handleFilterChange(e, 'EventName')}
-                                        className='inputcss' style={{ width: '100%' }} />
-                                    </div>
-                                  </div>
-                            </th>
-                            {/* <th style={{ minWidth: '100px', maxWidth: '100px' }}>Banner Image
+            </div>
+            <div className="card cardCss mt-4" >
+              <div className="card-body">
+                <div id="cardCollpase4" className="collapse show">
+                  <div className="table-responsive pt-0">
+                    <table className="mtable table-centered table-nowrap table-borderless mb-0">
+                      <thead>
+                        <tr>
+                          <th style={{
+                            borderBottomLeftRadius: '10px', minWidth: '50px',
+                            maxWidth: '50px', borderTopLeftRadius: '10px'
+                          }}>
+                            <div className="d-flex pb-2"
+                              style={{ justifyContent: 'space-between' }}>
+                              <span>S.No.</span>
+                              <span onClick={() => handleSortChange('SNo')}>
+                                <FontAwesomeIcon icon={faSort} />
+                              </span>
+                            </div>
+                            <div className="bd-highlight">
+                              <input
+                                type="text"
+                                placeholder="index"
+                                onChange={(e) => handleFilterChange(e, 'SNo')}
+                                className="inputcss"
+                                style={{ width: '100%' }}
+                              />
+                            </div>
+                          </th>
+                          <th>
+                            <div className="d-flex flex-column bd-highlight ">
+                              <div className="d-flex pb-2" style={{ justifyContent: 'space-between' }}>
+                                <span >Event Name</span>  <span onClick={() => handleSortChange('EventName')}><FontAwesomeIcon icon={faSort} /> </span></div>
+                              <div className=" bd-highlight">
+                                <input type="text" placeholder="Filter by Event Name" onChange={(e) => handleFilterChange(e, 'EventName')}
+                                  className='inputcss' style={{ width: '100%' }} />
+                              </div>
+                            </div>
+                          </th>
+                          {/* <th style={{ minWidth: '100px', maxWidth: '100px' }}>Banner Image
                             <div className="d-flex flex-column bd-highlight ">
                                     <div className="d-flex pb-2" style={{ justifyContent: 'space-between' }}>  
                                       <span >Title</span>  <span onClick={() => handleSortChange('Title')}><FontAwesomeIcon icon={faSort} /> </span></div>
@@ -359,155 +377,304 @@ const EntityMastercontext = ({ props }: any) => {
                                     </div>
                                   </div>
                             </th> */}
-                            <th style={{ minWidth: '100px', maxWidth: '100px' }}>
+                          <th style={{ minWidth: '100px', maxWidth: '100px' }}>
                             <div className="d-flex flex-column bd-highlight ">
-                                    <div className="d-flex pb-2" style={{ justifyContent: 'space-between' }}>  
-                                      <span >Event Date</span>  <span onClick={() => handleSortChange('EventDate')}><FontAwesomeIcon icon={faSort} /> </span></div>
-                                    <div className=" bd-highlight">
-                                      <input type="text" placeholder="Filter by EventDate" onChange={(e) => handleFilterChange(e, 'EventDate')}
-                                        className='inputcss' style={{ width: '100%' }} />
-                                    </div>
-                                  </div>
-                            </th>
-                            <th style={{ minWidth: '100px', maxWidth: '100px' }}>
+                              <div className="d-flex pb-2" style={{ justifyContent: 'space-between' }}>
+                                <span >Event Date</span>  <span onClick={() => handleSortChange('EventDate')}><FontAwesomeIcon icon={faSort} /> </span></div>
+                              <div className=" bd-highlight">
+                                <input type="text" placeholder="Filter by EventDate" onChange={(e) => handleFilterChange(e, 'EventDate')}
+                                  className='inputcss' style={{ width: '100%' }} />
+                              </div>
+                            </div>
+                          </th>
+                          <th style={{ minWidth: "100px", maxWidth: "100px" }}>
+
+<div className="d-flex flex-column bd-highlight ">
+
+  <div
+
+    className="d-flex pb-2"
+
+    style={{ justifyContent: "space-between" }}
+
+  >
+
+    <span>Status</span>{" "}
+
+    <span
+
+      onClick={() => handleSortChange("Status")}
+
+    >
+
+      <FontAwesomeIcon icon={faSort} />{" "}
+
+    </span>
+
+  </div>
+
+  <div className=" bd-highlight">
+
+    <input
+
+      type="text"
+
+      placeholder="Filter by Status"
+
+      onChange={(e) =>
+
+        handleFilterChange(e, "Status")
+
+      }
+
+      className="inputcss"
+
+      style={{ width: "100%" }}
+
+    />
+
+  </div>
+
+</div>
+
+</th>
+                          <th style={{ minWidth: '100px', maxWidth: '100px' }}>
                             <div className="d-flex flex-column bd-highlight ">
-                                    <div className="d-flex pb-2" style={{ justifyContent: 'space-between' }}>  
-                                      <span >Overview</span>  <span onClick={() => handleSortChange('Overview')}><FontAwesomeIcon icon={faSort} /> </span></div>
-                                    <div className=" bd-highlight">
-                                      <input type="text" placeholder="Filter by Overview" onChange={(e) => handleFilterChange(e, 'Overview')}
-                                        className='inputcss' style={{ width: '100%' }} />
-                                    </div>
-                                  </div>
-                            </th>
-                            <th style={{ minWidth: '80px', maxWidth: '80px' }}>
+                              <div className="d-flex pb-2" style={{ justifyContent: 'space-between' }}>
+                                <span >Overview</span>  <span onClick={() => handleSortChange('Overview')}><FontAwesomeIcon icon={faSort} /> </span></div>
+                              <div className=" bd-highlight">
+                                <input type="text" placeholder="Filter by Overview" onChange={(e) => handleFilterChange(e, 'Overview')}
+                                  className='inputcss' style={{ width: '100%' }} />
+                              </div>
+                            </div>
+                          </th>
+                          <th style={{ minWidth: '80px', maxWidth: '80px' }}>
                             <div className="d-flex flex-column bd-highlight ">
-                                    <div className="d-flex pb-2" style={{ justifyContent: 'space-between' }}>  
-                                      <span >Event Agenda</span>  <span onClick={() => handleSortChange('EventAgenda')}><FontAwesomeIcon icon={faSort} /> </span></div>
-                                    <div className=" bd-highlight">
-                                      <input type="text" placeholder="Filter by EventAgenda" onChange={(e) => handleFilterChange(e, 'EventAgenda')}
-                                        className='inputcss' style={{ width: '100%' }} />
-                                    </div>
-                                  </div>
-                            </th>
-                            <th style={{ borderBottomRightRadius: '10px', minWidth: '50px', maxWidth: '50px', borderTopRightRadius: '10px' }}>
+                              <div className="d-flex pb-2" style={{ justifyContent: 'space-between' }}>
+                                <span >Event Agenda</span>  <span onClick={() => handleSortChange('EventAgenda')}><FontAwesomeIcon icon={faSort} /> </span></div>
+                              <div className=" bd-highlight">
+                                <input type="text" placeholder="Filter by EventAgenda" onChange={(e) => handleFilterChange(e, 'EventAgenda')}
+                                  className='inputcss' style={{ width: '100%' }} />
+                              </div>
+                            </div>
+                          </th>
+                          <th style={{ borderBottomRightRadius: '10px', minWidth: '50px', maxWidth: '50px', borderTopRightRadius: '10px' }}>
                             <div className="d-flex flex-column bd-highlight pb-2">
-                                  <div className="d-flex  pb-0" style={{ justifyContent: 'space-between' }}>  <span >Action</span> <div className="dropdown">
-                                    <FontAwesomeIcon icon={faEllipsisV} onClick={toggleDropdownNews} />
-                                  </div>
-                                  </div>
-                                  <div className=" bd-highlight">   <div id="myDropdown" className={`dropdown-content ${isOpenNews ? 'showNews' : ''}`}>
-                                    <div onClick={handleExportClick} className="" >
-                                      <FontAwesomeIcon icon={faFileExport} />  Export
-                                    </div>
-                                  </div></div>
-
+                              <div className="d-flex  pb-0" style={{ justifyContent: 'space-between' }}>  <span >Action</span> <div className="dropdown">
+                                <FontAwesomeIcon icon={faEllipsisV} onClick={toggleDropdownNews} />
+                              </div>
+                              </div>
+                              <div className=" bd-highlight">   <div id="myDropdown" className={`dropdown-content ${isOpenNews ? 'showNews' : ''}`}>
+                                <div onClick={handleExportClick} className="" >
+                                  <FontAwesomeIcon icon={faFileExport} />  Export
                                 </div>
-                              </th>
-                          </tr>
-                        </thead>
-                        <tbody >
-                        {currentData.length === 0 ?
-                                (
-                                  <div className="no-results" style={{display:'flex',justifyContent:'center'}}>No results found</div>
-                                ) 
-                                :
-                          currentData.map((item, index) => {
-                           // const ImageUrl = item.BannerImage == undefined || item.BannerImage == null ? "" : JSON.parse(item.BannerImage);
-                            return(
-                              <tr key={index}>
-                                <td style={{ minWidth: '50px', maxWidth: '50px' }}>{index + 1}</td>
-                                <td>{item.EventName}</td>
-                                {/* <td>
-                                  {ImageUrl.serverRelativeUrl != null ?
-                                     <img src={ImageUrl.serverUrl+ ImageUrl.serverRelativeUrl} alt=""  style={{maxHeight:'40px'}} /> : ""
-                                    // <img src="https://officeindia.sharepoint.com/sites/AlRostmani/Shared%20Documents/news.png" alt=""  style={{maxHeight:'40px'}} /> : ""
+                              </div></div>
 
-                                  }
-                                
-                                </td> */}
-                                <td>
-                                  {moment(item.EventDate).format("ddd/MMM/yyyy")}
-                                 
-                                </td>
-                                <td>{item.Overview}</td>
-                                <td style={{ minWidth: '80px', maxWidth: '80px' }}>{item.EventAgenda}</td>
-                                {/* <td style={{ minWidth: '50px', maxWidth: '50px' }} className="ng-binding d-flex">
-                                  <a className="action-icon text-primary" onClick={() => EditBanner(item.ID)}>
-                                    <FontAwesomeIcon icon={faEdit} />
-                                  </a>
-                                  <a className="action-icon text-danger" onClick={() => DeleteBanner(item.ID)}>
-                                    <img src={require('../../../CustomAsset/trash.svg')} style={{ width: '20px', height: '15px' }} />
-                                  </a>
-                                </td> */}
-                                <td style={{ minWidth: '50px', maxWidth: '50px' }} className="ng-binding">
-                                    <div className="d-flex  pb-2" style={{ justifyContent: 'space-around' }}>
-                                      <span > <a className="action-icon text-primary" onClick={() => EditBanner(item.ID)}>
-                                        <FontAwesomeIcon icon={faEdit} fontSize={18}/>
-                                      </a></span>  <span >
-                                        <a className="action-icon text-danger" onClick={() => DeleteBanner(item.ID)}>
-                                          <FontAwesomeIcon icon={faTrashAlt} />
-                                        </a></span></div>
-                                  </td>
-                              </tr>
-                            )
-                          })
-                        }
-                        </tbody>
-                      </table>
+                            </div>
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
 
-                      
-                      <nav className="pagination-container">
-                        <ul className="pagination">
-                          <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+{currentData.length === 0 ? (
+
+  <tr>
+
+    <td colSpan={7} style={{ textAlign: "center" }}>
+
+      No results found
+
+    </td>
+
+  </tr>
+
+) : (
+
+  currentData.map((item, index) => (
+
+    <tr key={index}>
+
+      <td
+
+        style={{ minWidth: "50px", maxWidth: "50px" }}
+
+      >
+
+        {index + 1}
+
+      </td>
+
+      <td>{item.EventName}</td>
+
+
+
+      <td>
+
+        {moment(item.EventDate).format("dd/MM/yyyy")}
+
+      </td>
+
+      
+
+      <td>{item.Status}</td>
+      <td>{item.Overview}</td>
+      <td
+
+        style={{ minWidth: "80px", maxWidth: "80px" }}
+
+      >
+
+        {item.EventAgenda}
+
+      </td>
+
+
+
+      <td
+
+        style={{ minWidth: "50px", maxWidth: "50px" }}
+
+        className="ng-binding"
+
+      >
+
+        <div
+
+          className="d-flex pb-2"
+
+          style={{ justifyContent: "space-around" }}
+
+        >
+
+          <span>
+
+            <a
+
+              className={`action-icon ${item.Status === "Save as draft"
+
+                ? "text-primary"
+
+                : "text-muted"
+
+                }`}
+
+              onClick={
+
+                item.Status === "Save as draft"
+
+                  ? () => EditBanner(item.ID)
+
+                  : null
+
+              }
+
+              style={{
+
+                cursor:
+
+                  item.Status === "Save as draft"
+
+                    ? "pointer"
+
+                    : "not-allowed",
+
+              }}
+
+            >
+
+              <FontAwesomeIcon
+
+                icon={faEdit}
+
+                fontSize={18}
+
+              />
+
+            </a>
+
+          </span>
+
+          <span>
+
+            <a
+
+              className="action-icon text-danger"
+
+              onClick={() => DeleteBanner(item.ID)}
+
+            >
+
+              <FontAwesomeIcon icon={faTrashAlt} />
+
+            </a>
+
+          </span>
+
+        </div>
+
+      </td>
+
+    </tr>
+
+  ))
+
+)}
+  </tbody>
+                    </table>
+
+
+                    <nav className="pagination-container">
+                      <ul className="pagination">
+                        <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                          <a
+                            className="page-link"
+                            onClick={() => handlePageChange(currentPage - 1)}
+                            aria-label="Previous"
+                          >
+                            «
+                          </a>
+                        </li>
+                        {Array.from({ length: totalPages }, (_, num) => (
+                          <li
+                            key={num}
+                            className={`page-item ${currentPage === num + 1 ? 'active' : ''}`}
+                          >
                             <a
                               className="page-link"
-                              onClick={() => handlePageChange(currentPage - 1)}
-                              aria-label="Previous"
+                              onClick={() => handlePageChange(num + 1)}
                             >
-                              «
+                              {num + 1}
                             </a>
                           </li>
-                          {Array.from({ length: totalPages }, (_, num) => (
-                            <li
-                              key={num}
-                              className={`page-item ${currentPage === num + 1 ? 'active' : ''}`}
-                            >
-                              <a
-                                className="page-link"
-                                onClick={() => handlePageChange(num + 1)}
-                              >
-                                {num + 1}
-                              </a>
-                            </li>
-                          ))}
-                          <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-                            <a
-                              className="page-link"
-                              onClick={() => handlePageChange(currentPage + 1)}
-                              aria-label="Next"
-                            >
-                              »
-                            </a>
-                          </li>
-                        </ul>
-                      </nav>
-                    </div>
+                        ))}
+                        <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                          <a
+                            className="page-link"
+                            onClick={() => handlePageChange(currentPage + 1)}
+                            aria-label="Next"
+                          >
+                            »
+                          </a>
+                        </li>
+                      </ul>
+                    </nav>
                   </div>
                 </div>
               </div>
             </div>
-            {/* End table content */}
-            {/* End container */}
           </div>
+          {/* End table content */}
+          {/* End container */}
         </div>
       </div>
+    </div>
   )
 }
 
-const EventMaster : React.FC<IEventMasterProps> = (props) => {
+const EventMaster: React.FC<IEventMasterProps> = (props) => {
   return (
     <Provider>
-      <EntityMastercontext props={props}/>
+      <EntityMastercontext props={props} />
     </Provider>
   );
 }

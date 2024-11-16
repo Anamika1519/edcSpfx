@@ -1,4 +1,4 @@
-import React, { useState } from 'react' 
+import React, { useState } from 'react'
 import { IEventFormProps } from './IEventFormProps';
 import { SPFI } from '@pnp/sp/presets/all';
 import "../../../Assets/Figtree/Figtree-VariableFont_wght.ttf";
@@ -388,14 +388,14 @@ const HelloWorldContext = ({ props }: any) => {
               const updateResult = await updateItem(updatePayload, sp, editID);
               console.log("Update Result:", updateResult);
             }
-            let arr ={
-              ContentID:editID,
-              ContentName:"ARGEventMaster",
-              Status:"Panding",
-              EntityId:Number(formData.EntityId),
-              SourceName:"Event"
-             }
-             await AddContentMaster(sp,arr)
+            let arr = {
+              ContentID: editID,
+              ContentName: "ARGEventMaster",
+              Status: "Panding",
+              EntityId: Number(formData.EntityId),
+              SourceName: "Event"
+            }
+            await AddContentMaster(sp, arr)
             const boolval = await handleClick(editID, "Event", Number(formData.EntityId))
             if (boolval == true) {
               Swal.fire('Item update successfully', '', 'success');
@@ -500,14 +500,14 @@ const HelloWorldContext = ({ props }: any) => {
               const updateResult = await updateItem(updatePayload, sp, postId);
               console.log("Update Result:", updateResult);
             }
-            let arr ={
-              ContentID:postId,
-              ContentName:"ARGEventMaster",
-              Status:"Panding",
-              EntityId:Number(formData.EntityId),
-                 SourceName:"Event"
-             }
-             await AddContentMaster(sp,arr)
+            let arr = {
+              ContentID: postId,
+              ContentName: "ARGEventMaster",
+              Status: "Panding",
+              EntityId: Number(formData.EntityId),
+              SourceName: "Event"
+            }
+            await AddContentMaster(sp, arr)
             const boolval = await handleClick(postId, "Event", Number(formData.EntityId))
             if (boolval == true) {
               Swal.fire('Item add successfully', '', 'success');
@@ -683,13 +683,13 @@ const HelloWorldContext = ({ props }: any) => {
               console.log("Update Result:", updateResult);
             }
           }
-         
-            Swal.fire('Item update successfully', '', 'success');
-            sessionStorage.removeItem("EventId")
-            setTimeout(() => {
-              window.location.href = `${siteUrl}/SitePages/EventMaster.aspx`;
-            }, 2000);
-         
+
+          Swal.fire('Item update successfully', '', 'success');
+          sessionStorage.removeItem("EventId")
+          setTimeout(() => {
+            window.location.href = `${siteUrl}/SitePages/EventMaster.aspx`;
+          }, 2000);
+
 
 
         })
@@ -787,13 +787,13 @@ const HelloWorldContext = ({ props }: any) => {
               console.log("Update Result:", updateResult);
             }
 
-     
-              Swal.fire('Item add successfully in the draft', '', 'success');
-              sessionStorage.removeItem("bannerId")
-              setTimeout(() => {
-                window.location.href = `${siteUrl}/SitePages/EventMaster.aspx`;
-              }, 2000);
-           
+
+            Swal.fire('Item add successfully in the draft', '', 'success');
+            sessionStorage.removeItem("bannerId")
+            setTimeout(() => {
+              window.location.href = `${siteUrl}/SitePages/EventMaster.aspx`;
+            }, 2000);
+
           }
         })
 
@@ -1167,7 +1167,7 @@ const HelloWorldContext = ({ props }: any) => {
         ARGLevelMasterId: rows[i].LevelId,
         ApproverId: userIds,
         ApprovalType: rows[i].selectionType == "All" ? 1 : 0,
-        SourceName:contentName
+        SourceName: contentName
       }
       const addedData = await AddContentLevelMaster(sp, arrPost)
       console.log(addedData);

@@ -1025,21 +1025,21 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
             }
 
-            let arr ={
+            let arr = {
 
-              ContentID:editID,
+              ContentID: editID,
 
-              ContentName:"ARGMediaGallery",
+              ContentName: "ARGMediaGallery",
 
-              Status:"Panding",
+              Status: "Panding",
 
-              EntityId:Number(formData.entity),
+              EntityId: Number(formData.entity),
 
-              SourceName:"Media"
+              SourceName: "Media"
 
-             }
+            }
 
-             await AddContentMaster(sp,arr)
+            await AddContentMaster(sp, arr)
 
             const boolval = await handleClick(editID, "Media", Number(formData.entity))
 
@@ -1191,21 +1191,21 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
             }
 
-            let arr ={
+            let arr = {
 
-              ContentID:postId,
+              ContentID: postId,
 
-              ContentName:"ARGMediaGallery",
+              ContentName: "ARGMediaGallery",
 
-              Status:"Panding",
+              Status: "Panding",
 
-              EntityId:Number(formData.entity),
+              EntityId: Number(formData.entity),
 
-               SourceName:"Media"
+              SourceName: "Media"
 
-             }
+            }
 
-             await AddContentMaster(sp,arr)
+            await AddContentMaster(sp, arr)
 
             const boolval = await handleClick(postId, "Media", Number(formData.entity))
 
@@ -1889,7 +1889,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
         ApprovalType: rows[i].selectionType == "All" ? 1 : 0,
 
-        SourceName:contentName
+        SourceName: contentName
 
       }
 

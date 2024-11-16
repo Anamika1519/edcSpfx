@@ -466,7 +466,7 @@ const AddannouncementContext = ({ props }: any) => {
                 const updateResult = await updateItem(updatePayload, sp, editID);
                 console.log("Update Result:", updateResult);
               }
-             
+
             }
             else {
               // Create Post
@@ -580,26 +580,26 @@ const AddannouncementContext = ({ props }: any) => {
                 console.log("Update Result:", updateResult);
               }
             }
-           // ARGContentMaster
-           let TypeMasterData:any=[] ;
-           const TypeMaster= await getAnnouncementandNewsTypeMaster(sp, Number(formData.Type))
-           let arr ={
-            ContentID:editID,
-            ContentName:"ARGAnnouncementAndNews",
-            Status:"Panding",
-            EntityId:Number(formData.entity),
-            SourceName:TypeMasterData.TypeMaster
-           }
-           await AddContentMaster(sp,arr)
+            // ARGContentMaster
+            let TypeMasterData: any = [];
+            const TypeMaster = await getAnnouncementandNewsTypeMaster(sp, Number(formData.Type))
+            let arr = {
+              ContentID: editID,
+              ContentName: "ARGAnnouncementAndNews",
+              Status: "Panding",
+              EntityId: Number(formData.entity),
+              SourceName: TypeMasterData.TypeMaster
+            }
+            await AddContentMaster(sp, arr)
 
-            const boolval = await handleClick(editID,TypeMasterData.TypeMaster, Number(formData.entity))
+            const boolval = await handleClick(editID, TypeMasterData.TypeMaster, Number(formData.entity))
             if (boolval == true) {
-            Swal.fire('Item update successfully', '', 'success');
-            sessionStorage.removeItem("announcementId")
-            setTimeout(() => {
-              window.location.href = `${siteUrl}/SitePages/Announcementmaster.aspx`;
-            }, 2000);
-          }
+              Swal.fire('Item update successfully', '', 'success');
+              sessionStorage.removeItem("announcementId")
+              setTimeout(() => {
+                window.location.href = `${siteUrl}/SitePages/Announcementmaster.aspx`;
+              }, 2000);
+            }
           }
 
         })
@@ -699,20 +699,20 @@ const AddannouncementContext = ({ props }: any) => {
             //Chhaya Approval code
             setIsAdded(true)
 
-            let TypeMasterData:any=[] ;
-            TypeMasterData  = await getAnnouncementandNewsTypeMaster(sp, Number(formData.Type))
+            let TypeMasterData: any = [];
+            TypeMasterData = await getAnnouncementandNewsTypeMaster(sp, Number(formData.Type))
 
-            let arr ={
-              ContentID:postId,
-              ContentName:"ARGAnnouncementAndNews",
-              Status:"Panding",
-              EntityId:Number(formData.entity),
-              SourceName:TypeMasterData?.TypeMaster
-             }
-             await AddContentMaster(sp,arr)
-            const boolval = await handleClick(postId,TypeMasterData?.TypeMaster,Number(formData.entity))
-           
-            if (boolval==true) {
+            let arr = {
+              ContentID: postId,
+              ContentName: "ARGAnnouncementAndNews",
+              Status: "Panding",
+              EntityId: Number(formData.entity),
+              SourceName: TypeMasterData?.TypeMaster
+            }
+            await AddContentMaster(sp, arr)
+            const boolval = await handleClick(postId, TypeMasterData?.TypeMaster, Number(formData.entity))
+
+            if (boolval == true) {
               Swal.fire('Item added successfully', '', 'success');
               // sessionStorage.removeItem("bannerId")
               setTimeout(() => {
@@ -1454,8 +1454,8 @@ const AddannouncementContext = ({ props }: any) => {
         EntityMasterId: EntityId,
         ARGLevelMasterId: rows[i].LevelId,
         ApproverId: userIds,
-        ApprovalType: rows[i].selectionType=="All"?1:0,
-        SourceName:contentName
+        ApprovalType: rows[i].selectionType == "All" ? 1 : 0,
+        SourceName: contentName
       }
       const addedData = await AddContentLevelMaster(sp, arrPost)
       console.log(addedData);
