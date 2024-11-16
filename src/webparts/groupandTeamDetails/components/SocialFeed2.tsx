@@ -23,13 +23,13 @@ import AvtarComponents from '../../../CustomJSComponents/AvtarComponents/AvtarCo
 import { fetchUserInformationList } from '../../../APISearvice/Dasborddetails'
 import { getDiscussion } from '../../../APISearvice/DiscussionForumService'
 
-let userJobTitle : any
-let userEmail : any
- let userDepartment    :any 
- let userWorkPhone     :any 
- let userOfficeLocation:any
- let GroupName : any 
- let GroupDescription : any 
+let userJobTitle: any
+let userEmail: any
+let userDepartment: any
+let userWorkPhone: any
+let userOfficeLocation: any
+let GroupName: any
+let GroupDescription: any
 interface Post {
   text: string;
   images: string[];
@@ -76,28 +76,28 @@ const SocialFeedContext = ({ props }: any) => {
   }, [props]);
   useEffect(() => {
     getuserprofile()
-  },[]);
+  }, []);
 
-const getuserprofile= async ()=>{
-//alert("hi")
+  const getuserprofile = async () => {
+    //alert("hi")
     try {
       // Fetch the current user's profile properties
       const userProfile = await sp.profiles.myProperties();
-  
+
       // Display a few selected properties
       const userDisplayName = userProfile.DisplayName;
-       userEmail = userProfile.Email;
+      userEmail = userProfile.Email;
       userJobTitle = userProfile.Title; // or use 'JobTitle' if available
-       userDepartment     = userProfile.Department;
-       userWorkPhone          = userProfile.WorkPhone;
-       userOfficeLocation = userProfile.Office;
+      userDepartment = userProfile.Department;
+      userWorkPhone = userProfile.WorkPhone;
+      userOfficeLocation = userProfile.Office;
       console.log("User Name:", userDisplayName);
       console.log("User Email:", userEmail);
       console.log("User Job Title:", userJobTitle);
       console.log("userDepartment ", userDepartment);
       console.log("userWorkPhone:", userWorkPhone);
       console.log("userOfficeLocation:", userOfficeLocation);
-  
+
       // Return data if needed for component display
       return {
         name: userDisplayName,
@@ -107,65 +107,63 @@ const getuserprofile= async ()=>{
     } catch (error) {
       console.error("Error fetching user profile:", error);
     }
-  
-}
+
+  }
 
 
 
 
-useEffect(() => {
-  // alert
-  getGroup()
-});
-const getGroup = async () => {
-  //debugger
- const ids = window.location.search;
- //  alert(ids)
- const originalString = ids;
- // alert(originalString)
- const idNum2 :any = originalString.substring(1);
- // alert(idNum2)
- const getgroup1 =   await sp.web.lists
- .getByTitle("ARGGroupandTeam")
- .items.getById(idNum2).select("*,InviteMemebers/Id,InviteMemebers/Title,InviteMemebers/EMail,GroupType").expand("InviteMemebers")()
- .then((res) => {
-   // arr=res;
-   GroupName = res.GroupName
-   GroupDescription = res.GroupDescription
-   console.log(res , ":response")
-   // debugger
-   console.log("res------",res)
-   setArrDetails(res)
- })
- .catch((error) => {
-   console.log("Error fetching data: ", error);
- });
+  useEffect(() => {
+    // alert
+    getGroup()
+  });
+  const getGroup = async () => {
+    //debugger
+    const ids = window.location.search;
+    //  alert(ids)
+    const originalString = ids;
+    // alert(originalString)
+    const idNum2: any = originalString.substring(1);
+    // alert(idNum2)
+    const getgroup1 = await sp.web.lists
+      .getByTitle("ARGGroupandTeam")
+      .items.getById(idNum2).select("*,InviteMemebers/Id,InviteMemebers/Title,InviteMemebers/EMail,GroupType").expand("InviteMemebers")()
+      .then((res) => {
+        // arr=res;
+        GroupName = res.GroupName
+        GroupDescription = res.GroupDescription
+        console.log(res, ":response")
+        // debugger
+        console.log("res------", res)
+        setArrDetails(res)
+      })
+      .catch((error) => {
+        console.log("Error fetching data: ", error);
+      });
 
- const getAllgroup =   await sp.web.lists
-   .getByTitle("ARGGroupandTeam")
-   .items.select("*,InviteMemebers/Id,InviteMemebers/Title,InviteMemebers/EMail,GroupType").expand("InviteMemebers")()
-   .then((getAllgroup) => {
-     // arr=res;
-     console.log(getAllgroup , ":response")
-     // debugger
-     console.log("getAllgroup------",getAllgroup)
-      setgetAllgroup(getAllgroup)
-   })
-   .catch((error) => {
-     console.log("Error fetching data: ", error);
-   });
-}
+    const getAllgroup = await sp.web.lists
+      .getByTitle("ARGGroupandTeam")
+      .items.select("*,InviteMemebers/Id,InviteMemebers/Title,InviteMemebers/EMail,GroupType").expand("InviteMemebers")()
+      .then((getAllgroup) => {
+        // arr=res;
+        console.log(getAllgroup, ":response")
+        // debugger
+        console.log("getAllgroup------", getAllgroup)
+        setgetAllgroup(getAllgroup)
+      })
+      .catch((error) => {
+        console.log("Error fetching data: ", error);
+      });
+  }
   const getAllAPI = async () => {
     setCurrentEmail(await getCurrentUserProfileEmail(sp))
-   
-   
     setCurrentUserName(await getCurrentUserName(sp))
     setblogdata(await fetchBlogdatatop(sp))
     setUsersArr(await fetchUserInformationList(sp))
     setDiscussion(await getDiscussion(sp))
     fetchPosts();
-  
-   
+
+
   }
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -184,7 +182,7 @@ const getGroup = async () => {
       }
     }
 
- 
+
 
     // Set state after uploading all images
 
@@ -204,9 +202,7 @@ const getGroup = async () => {
 
   //#endregion
 
-  console.log(SocialFeedImagesJson, 'SocialFeedImagesJson');
-
- 
+  //console.log(SocialFeedImagesJson, 'SocialFeedImagesJson');
 
   // [{"Contentpost":"th","SocialFeedImagesJson":[],"Created":"12:54:59 AM","userName":"Jeremy Tomlinson","userAvatar":"https://via.placeholder.com/50","likecount":0,"commentcount":0,"shares":0,"SocialFeedCommentsJson":[],"SocialFeedUserLikes":[]}]
 
@@ -218,7 +214,7 @@ const getGroup = async () => {
 
   //   setIsSubmitting(true);  // Start submitting
 
- 
+
 
   //   if (Contentpost.trim() || SocialFeedImagesJson.length) {
 
@@ -242,7 +238,7 @@ const getGroup = async () => {
 
   //     };
 
- 
+
 
   //     const updatedPosts = [newPost, ...posts];
 
@@ -250,7 +246,7 @@ const getGroup = async () => {
 
   //     localStorage.setItem('posts', JSON.stringify(updatedPosts));
 
- 
+
 
   //     // Clear fields
 
@@ -271,12 +267,14 @@ const getGroup = async () => {
   // };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    
 
-    e.preventDefault();   
+
 
   };
 
- 
+
 
   const ShowPost = () => {
 
@@ -303,7 +301,7 @@ const getGroup = async () => {
 
   const [storedPosts, setStoredPosts] = useState([]);
 
- 
+
 
   // Fetch posts from SharePoint when the component loads
 
@@ -357,7 +355,7 @@ const getGroup = async () => {
 
             }
 
- 
+
 
             )
 
@@ -381,15 +379,15 @@ const getGroup = async () => {
   const fetchPostsMe = async () => {
     try {
       let newPost: any[] = []
-      console.log(currentId,'currentId["Id"]');
-   
-      const cuurentID= await getCurrentUserNameId(sp);
-          await sp.web.lists
+      console.log(currentId, 'currentId["Id"]');
+
+      const cuurentID = await getCurrentUserNameId(sp);
+      await sp.web.lists
         .getByTitle("ARGSocialFeed") // SharePoint list name
         .items.select("*,SocialFeedComments/Id,SocialFeedComments/Comments,SocialFeedImages/Id,SocialFeedUserLikes/Id,Author/Id,Author/Title")
         .expand("SocialFeedComments,SocialFeedImages,SocialFeedUserLikes,Author").filter(`AuthorId eq ${cuurentID}`).orderBy("Created", false)().then((item: any) => {
           console.log(item, 'ihhhpostsME');
-          
+
           if (item.length > 0) {
             item.map((ele: any) => {
               let newPosts = {
@@ -427,8 +425,8 @@ const getGroup = async () => {
   };
 
 
-  console.log(postsME,'postsME');
-  
+  console.log(postsME, 'postsME');
+
 
   // Handle input change
 
@@ -438,7 +436,7 @@ const getGroup = async () => {
 
   };
 
- 
+
 
   // Handle form submission and save to SharePoint list
 
@@ -462,7 +460,7 @@ const getGroup = async () => {
 
           });
 
- 
+
 
         // Refresh the list of posts after adding
 
@@ -500,7 +498,7 @@ const getGroup = async () => {
 
   ]
 
- 
+
 
   const copyToClipboard = (Id: number) => {
 
@@ -524,7 +522,7 @@ const getGroup = async () => {
 
   };
 
- 
+
 
   const mergeAndRemoveDuplicates = (str: string, str1: string) => {
 
@@ -532,11 +530,11 @@ const getGroup = async () => {
 
     let url = str1;
 
- 
+
 
     // Find the position of the third occurrence of "/"
 
- 
+
 
     let thirdSlashIndex = url.indexOf(
 
@@ -546,21 +544,21 @@ const getGroup = async () => {
 
     );
 
- 
+
 
     // Get the substring after the third occurrence of "/"
 
- 
+
 
     let updatedUrl = url.substring(thirdSlashIndex);
 
- 
 
-    console.log("check the url--->>",updatedUrl); // Output: /SocialFeedImages/announcement-5.jpg
 
- 
+    console.log("check the url--->>", updatedUrl); // Output: /SocialFeedImages/announcement-5.jpg
 
-   
+
+
+
 
     return str + updatedUrl; // Concatenate directly if str1 starts with a slash
 
@@ -568,21 +566,21 @@ const getGroup = async () => {
 
   };
 
- 
 
- 
+
+
 
   const GotoNextPageone = (item: any, pagename: string) => {
 
     console.log("item-->>>>", item)
 
- 
+
 
     window.location.href = `${siteUrl}/SitePages/${pagename}.aspx`;
 
   };
 
- 
+
 
   const handleTabClick = (tab: React.SetStateAction<string>) => {
 
@@ -590,23 +588,21 @@ const getGroup = async () => {
 
   };
 
- 
+
 
   const truncateText = (text: string, maxLength: number) => {
 
-    if(text!=null)
+    if (text != null) {
 
-    {
+      return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
 
-        return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
 
- 
 
     }
 
-};
+  };
 
- 
+
 
   return (
 
@@ -624,9 +620,9 @@ const getGroup = async () => {
 
       <div className="content-page">
 
-          <HorizontalNavbar  _context={sp} siteUrl={siteUrl}/>
+        <HorizontalNavbar _context={sp} siteUrl={siteUrl} />
 
-        <div className="content" style={{ marginLeft: `${!useHide ? '240px' : '80px'}`, marginTop:'1rem' }}>
+        <div className="content" style={{ marginLeft: `${!useHide ? '240px' : '80px'}`, marginTop: '1rem' }}>
 
           <div className="container-fluid  paddb">
 
@@ -658,8 +654,8 @@ const getGroup = async () => {
                       }} /> */}
 
                     <span style={{
-                      fontSize:'18px',
-                      color:'black',
+                      fontSize: '18px',
+                      color: 'black',
                       whiteSpace: 'nowrap',
 
                       display: 'flex',
@@ -673,7 +669,7 @@ const getGroup = async () => {
 
                 </div>
 
-             
+
               </div>
 
               <div className="col-md-6 mobile-w2">
@@ -728,7 +724,7 @@ const getGroup = async () => {
 
                                   <div className="p-2 bg-light d-flex justify-content-between align-items-center">
 
-                                   
+
 
                                     <label>
 
@@ -756,7 +752,7 @@ const getGroup = async () => {
 
                                     <div className="image-preview mt-2">
 
-                                     
+
 
                                       {SocialFeedImagesJson.map((image: any, index) => {
 
@@ -764,13 +760,13 @@ const getGroup = async () => {
 
                                         console.log(imageUrl);
 
- 
+
 
                                         return (
 
                                           <><img key={index} src={imageUrl} alt={`preview-${index}`} style={{ width: '100px', marginRight: '10px' }} />
 
- 
+
 
                                           </>
 
@@ -778,7 +774,7 @@ const getGroup = async () => {
 
                                       }
 
- 
+
 
                                       )}
 
@@ -848,7 +844,7 @@ const getGroup = async () => {
 
                             }}
 
- 
+
 
                           />
 
@@ -860,10 +856,9 @@ const getGroup = async () => {
 
                     {postsME.length > 0 && !hideCreatePost && HideShowPost &&
                       <div className="feed">
-                        {postsME.map((post, index) =>
-                        {
-                          console.log(postsME,'postsME');
-                          return(
+                        {postsME.map((post, index) => {
+                          console.log(postsME, 'postsME');
+                          return (
                             <PostComponent
                               key={index}
                               sp={sp}
@@ -884,8 +879,8 @@ const getGroup = async () => {
                               }}
                             />
                           )
-                        } 
-                       )}
+                        }
+                        )}
                       </div>
 
                     }
@@ -989,7 +984,7 @@ const getGroup = async () => {
 
                               </h4>
 
- 
+
 
                               <p
 
@@ -1013,7 +1008,7 @@ const getGroup = async () => {
 
                                 >
 
-                          
+
 
                                   {truncateText(
 
@@ -1027,7 +1022,7 @@ const getGroup = async () => {
 
                                   )}
 
- 
+
 
 
                                 </span>
@@ -1106,7 +1101,7 @@ const getGroup = async () => {
 
                                     >
 
-                                      NA 
+                                      NA
 
                                     </h4>
 
@@ -1138,7 +1133,7 @@ const getGroup = async () => {
 
                                     >
 
-                                      NA 
+                                      NA
 
                                     </h4>
 
@@ -1170,7 +1165,7 @@ const getGroup = async () => {
 
                                     >
 
-                                      NA 
+                                      NA
 
                                     </h4>
 
@@ -1186,19 +1181,19 @@ const getGroup = async () => {
 
                               </div>
 
-                        
+
 
                             </div>
 
-                 
+
 
                           </div>
 
                         </div>
 
-                    
 
-                      </div> 
+
+                      </div>
 
                     ))}
 
@@ -1224,7 +1219,7 @@ const getGroup = async () => {
 
                           <div className="card-body">
 
-           
+
 
                             <div className="pt-2 pb-2">
 
@@ -1302,7 +1297,7 @@ const getGroup = async () => {
 
                               </h4>
 
- 
+
 
                               <p
 
@@ -1339,9 +1334,9 @@ const getGroup = async () => {
 
                                   )}
 
- 
 
-                             
+
+
 
                                 </span>
 
@@ -1419,7 +1414,7 @@ const getGroup = async () => {
 
                                     >
 
-                                      NA 
+                                      NA
 
                                     </h4>
 
@@ -1451,7 +1446,7 @@ const getGroup = async () => {
 
                                     >
 
-                                      NA 
+                                      NA
 
                                     </h4>
 
@@ -1483,7 +1478,7 @@ const getGroup = async () => {
 
                                     >
 
-                                      NA 
+                                      NA
 
                                     </h4>
 
@@ -1502,13 +1497,13 @@ const getGroup = async () => {
 
                             </div>
 
-                          
+
 
                           </div>
 
                         </div>
 
-                    
+
 
                       </div>
 
@@ -1526,7 +1521,7 @@ const getGroup = async () => {
 
                   <div className="card-body pb-3 gheight">
 
- 
+
 
                     <h4 className="header-title font-16 text-dark fw-bold mb-0" style={{ fontSize: '20px' }}>
 
@@ -1547,7 +1542,7 @@ const getGroup = async () => {
                       </a> */}
 
                     </h4>
-{/* 
+                    {/* 
                     {
 
                       DiscussionData.length > 0 ? DiscussionData.map(x => {
@@ -1589,17 +1584,17 @@ const getGroup = async () => {
                       ) : null
 
                     } */}
- <h1 className='text-muted font-14 mt-3'>
-  <p  className='text-dark font-16 text-center mb-2'> {currentUsername}</p>
-  <p className='text-muted font-14 text-center mb-1'>{userJobTitle}</p>
-  <p className='text-muted font-12 text-center'>{userEmail}  </p>
-                      
-                       </h1>
+                    <h1 className='text-muted font-14 mt-3'>
+                      <p className='text-dark font-16 text-center mb-2'> {currentUsername}</p>
+                      <p className='text-muted font-14 text-center mb-1'>{userJobTitle}</p>
+                      <p className='text-muted font-12 text-center'>{userEmail}  </p>
+
+                    </h1>
                   </div>
 
                 </div>
 
- 
+
 
                 <div className="card mobile-6" style={{ borderRadius: "1rem" }}>
 
@@ -1607,7 +1602,7 @@ const getGroup = async () => {
 
                     <h4 className="header-title font-16 text-dark fw-bold mb-0" style={{ fontSize: '20px' }}>
 
-                    Group you can follow
+                      Group you can follow
 
                       {/* <a
 
@@ -1637,7 +1632,7 @@ const getGroup = async () => {
 
                         >
 
-                         {/*  <div className="col-sm-2 ">
+                          {/*  <div className="col-sm-2 ">
 
                             <a>
 
@@ -1669,7 +1664,7 @@ const getGroup = async () => {
 
                             </a>
 
-                       
+
 
                           </div>
 
@@ -1701,7 +1696,7 @@ const getGroup = async () => {
 
     </div >
 
- 
+
 
   )
 

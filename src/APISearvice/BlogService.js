@@ -28,7 +28,7 @@ export const fetchBookmarkBlogdata = async (_sp) => {
       console.error("Error fetching current user: ", error);
       return [];
     });
-
+ 
   await _sp.web.lists.getByTitle("ARGSavedBlogs")
     .items.select("*,BlogId/ID,BlogId/Title,BlogSavedBy/ID,BlogSavedBy/Title,BlogSavedBy/EMail").expand("BlogId,BlogSavedBy")
     .filter(`BlogSavedBy/EMail eq '${currentUser}'`)
@@ -44,7 +44,7 @@ export const fetchBookmarkBlogdata = async (_sp) => {
               console.log("bookmarkarr", res, resnew[i].BlogIdId);
               bookmarkarr.push(res[0])
               //res.filter(x=>x.Category?.Category==str)
-
+ 
             })
             .catch((error) => {
               console.log("Error fetching data: ", error);
@@ -54,6 +54,39 @@ export const fetchBookmarkBlogdata = async (_sp) => {
     })
   console.log("bookmarkarrbookmarkarr", bookmarkarr);
   arr = bookmarkarr;
+  return arr;
+}
+export const fetchPinstatus = async (_sp) => {
+  let bookmarkarrnew = [];
+  let arr = []
+  const initialPinStatus = {};
+  const currentUser = await _sp.web.currentUser();
+  await _sp.web.lists.getByTitle("ARGBlogs")
+    .items.select("*,Author/ID,Author/Title,BookmarkedBy/ID,BookmarkedBy/Title,BookmarkedBy/EMail").expand("Author,BookmarkedBy").orderBy("Created", false).getAll().then(async (res) => {
+      console.log(res);
+      for (let i = 0; i < res.length; i++) {
+        //const initialPinStatus = {};
+ 
+        const pinRecords = await _sp.web.lists.getByTitle("ARGSavedBlogs").items
+          .select("*,BlogId/ID,BlogId/Title,BlogSavedBy/ID,BlogSavedBy/Title,BlogSavedBy/EMail")
+          .expand("BlogId,BlogSavedBy")
+          .filter(`BlogSavedById eq ${currentUser.Id} and BlogIdId eq ${res[i].ID}`)
+          .getAll();
+ 
+        initialPinStatus[res[i].ID] = pinRecords.length > 0;
+        //bookmarkarrnew.push(initialPinStatus)
+        //setPinStatus((prev) => ({ ...prev, initialPinStatus: false }));
+        console.log("initialPinStatus", initialPinStatus,);
+ 
+        //          // });
+      }
+   
+      console.log("bookmarkarrnew", initialPinStatus);
+      arr = initialPinStatus;
+    })
+    .catch((error) => {
+      console.log("Error fetching data: ", error);
+    });
   return arr;
 }
 export const fetchBookmarkID = async (_sp) => {

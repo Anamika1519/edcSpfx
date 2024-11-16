@@ -597,7 +597,7 @@ const EventcalenderContext = ({ props }: any) => {
 
                       >
                         <h3 className="font-16 mb-3 text-dark fw-bold">{`Event for ${currentmonth} Month`}</h3>
-                        <div >
+                        {/* <div >
                           <div >
                           <div style={{padding:'10px'}} className="gal-box">
                           <a style={{float:'left',marginBottom:'15px'}} className="image-popup newhimg span57" >
@@ -625,15 +625,16 @@ const EventcalenderContext = ({ props }: any) => {
       </a>
                             </div>
                             </div>
-                          </div>
-                        <div className="">
+                          </div> */}
+                        {eventDetails?.title !== '' ? (
+                          <div className="">
                           <div className="">
                           <div id="carouselExampleCaptions" className="carousel slide" data-bs-ride="carousel">
                          
                           <div className="carousel-inner">
   <div className="carousel-item active">
   <div style={{padding:'10px'}} className="gal-box">
-  {eventDetails?.title !== '' ? (
+  
     <>
       <a className="image-popup newhimg span57" title={eventDetails.title} href={eventDetails.eventLink}>
         <img src={eventDetails.image} className="d-block w-100" alt={eventDetails.title} />
@@ -667,7 +668,7 @@ const EventcalenderContext = ({ props }: any) => {
         </div>
       </a>
     </>
-  ) : null}
+ 
 </div>
  
      
@@ -733,87 +734,11 @@ const EventcalenderContext = ({ props }: any) => {
   </button> */}
 </div>
 
-
-
-                            {/* <div className="row">
-                              <div
-                                className="col-lg-3"
-                                style={{ width: "100%" }}
-                              >
-                                <button
-                                  className="btn btn-lg font-16 btn-secondary w-100"
-                                  id="btn-new-event"
-                                >
-                                  <i className="fe-plus-circle"></i> Create New
-                                  Event
-                                </button>
-
-                                <div id="external-events">
-                                  <br />
-                                  <p className="text-muted">
-                                    Drag and drop your event or click in the
-                                    calendar
-                                  </p>
-                                  <div
-                                    className="external-event rounded-pill bg-success"
-                                    data-class="bg-success"
-                                  >
-                                    <i className="mdi mdi-checkbox-blank-circle me-2 vertical-middle"></i>
-                                    New Theme Release
-                                  </div>
-                                  <div
-                                    className="external-event rounded-pill bg-info"
-                                    data-class="bg-info"
-                                  >
-                                    <i className="mdi mdi-checkbox-blank-circle me-2 vertical-middle"></i>
-                                    My Event
-                                  </div>
-                                  <div
-                                    className="external-event rounded-pill bg-warning"
-                                    data-class="bg-warning"
-                                  >
-                                    <i className="mdi mdi-checkbox-blank-circle me-2 vertical-middle"></i>
-                                    Meet manager
-                                  </div>
-                                  <div
-                                    className="external-event rounded-pill bg-danger"
-                                    data-class="bg-danger"
-                                  >
-                                    <i className="mdi mdi-checkbox-blank-circle me-2 vertical-middle"></i>
-                                    Create New theme
-                                  </div>
-                                </div>
-
-                                <div className="mt-3 d-none d-xl-block">
-                                  <h5 className="text-center text-dark font-16 fw-bold">
-                                    How It Works ?
-                                  </h5>
-
-                                  <ul className="ps-3">
-                                    <li className="text-muted mb-3">
-                                      It has survived not only five centuries,
-                                      but also the leap into electronic
-                                      typesetting, remaining essentially
-                                      unchanged.
-                                    </li>
-                                    <li className="text-muted mb-3">
-                                      Richard McClintock, a Latin professor at
-                                      Hampden-Sydney College in Virginia, looked
-                                      up one of the more obscure Latin words,
-                                      consectetur, from a Lorem Ipsum passage.
-                                    </li>
-                                    <li className="text-muted mb-3">
-                                      It has survived not only five centuries,
-                                      but also the leap into electronic
-                                      typesetting, remaining essentially
-                                      unchanged.
-                                    </li>
-                                  </ul>
-                                </div>
-                              </div>
-                            </div> */}
                           </div>
+
                         </div>
+
+                      ) : <div></div>}
                       </div>
                       <div
                         className="col-md-9 position-relative p-3"

@@ -175,7 +175,18 @@ export const addItem = async (itemData, _sp) => {
     }
     return resultArr;
 };
+export const fetchTrendingDiscussionBasedOn = async (_sp) => {
+    let arr = []
+    await _sp.web.lists.getByTitle("TrendingDiscussionBasis").items.select("Title").top(1)()
+        .then((res) => {
+            // arr=res;
 
+            arr = res[0]
+        }).catch((error) => {
+            console.log("Error fetching data: ", error);
+        });
+    return arr;
+}
 
 export const getDiscussionForumByID = async (_sp, id) => {
     debugger
@@ -328,7 +339,7 @@ export const getDiscussionFilterAll = async (_sp, filterOption) => {
 
     return arr;
 };
-export const getDiscussionFilter = async (_sp, filterOption) => {
+export const getDiscussionFilter = async (_sp) => {
     let arr = [];
     let filterQuery = "";
 
@@ -337,9 +348,10 @@ export const getDiscussionFilter = async (_sp, filterOption) => {
     const yesterday = today.minus({ days: 1 });
     const lastWeek = today.minus({ weeks: 1 });
     const lastMonth = today.minus({ months: 1 });
-
+    const filtervalue =  await fetchTrendingDiscussionBasedOn(_sp);
+    
     // Build the filter query based on the selected option
-    switch (filterOption) {
+    switch (filtervalue.Title) {
         case "Today":
             filterQuery = `Created ge datetime'${today.toISO()}'`;
             break;
@@ -349,7 +361,7 @@ export const getDiscussionFilter = async (_sp, filterOption) => {
         case "Last Week":
             filterQuery = `Created ge datetime'${lastWeek.toISO()}' and Created lt datetime'${today.toISO()}'`;
             break;
-        case "Last Month":
+        case "Month":
             filterQuery = `Created ge datetime'${lastMonth.toISO()}' and Created lt datetime'${today.toISO()}'`;
             break;
         default:
@@ -362,14 +374,42 @@ export const getDiscussionFilter = async (_sp, filterOption) => {
         .expand("DiscussionForumCategory,Entity,InviteMemebers")
         .filter(filterQuery)
         .top(3)()
-        .then((res) => {
-            arr = res;
+        .then(async (res) => {
+            //arr = res;
+            for (let i = 0; i < res.length > 0; i++) {
+                const comment = await getDiscussionCommentsByID(_sp,res[i].ID)
+                 let arrs = {
+                    Topic:res[i].Topic,
+                    Overview: res[i].Overview,
+                    DiscussionForumCategory:res[i].DiscussionForumCategory,
+                    CommentLength: comment,    
+                 }
+                 arr.push(arrs);
+            }
+            arr.sort((a, b) => b.CommentLength - a.CommentLength);
+       
         }).catch((error) => {
             console.log("Error fetching data: ", error);
         });
 
     return arr;
 };
+export const getDiscussionCommentsByID = async (sp, Id) => {
+    let arr = [];
+    let arrLength = 0
+    let arrUsers = []
+    let CreatedDate = ""
+    await sp.web.lists.getByTitle("ARGDiscussionComments").items.select("*,Author/Id,Author/Title,Author/EMail").expand("Author").filter(`DiscussionForumId eq ${Id}`)().then(res => {
+        debugger
+        let arrs;
+        console.log(res, 'resres');
+
+        arrLength = res.length         
+      
+    }
+    )
+    return arrLength;
+}
 export const getDiscussionComments = async (sp, Id) => {
     let arr = [];
     let arrLength = 0

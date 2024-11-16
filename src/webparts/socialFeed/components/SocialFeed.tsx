@@ -18,10 +18,10 @@ import { faPaperPlane } from "@fortawesome/free-solid-svg-icons"
 import classNames from 'classnames'
 import { uploadFileToLibrary } from '../../../APISearvice/AnnouncementsService'
 import { PostComponent } from '../../../CustomJSComponents/SocialFeedPost/PostComponent'
-import { fetchBlogdatatop } from '../../../APISearvice/BlogService'
+import { fetchBlogdatatop,fetchBookmarkBlogdata } from '../../../APISearvice/BlogService'
 import AvtarComponents from '../../../CustomJSComponents/AvtarComponents/AvtarComponents'
 import { fetchUserInformationList } from '../../../APISearvice/Dasborddetails'
-import { getDiscussion, getDiscussionFilter } from '../../../APISearvice/DiscussionForumService'
+import { getDiscussion, getDiscussionFilter,fetchTrendingDiscussionBasedOn} from '../../../APISearvice/DiscussionForumService'
 
 interface Post {
   text: string;
@@ -96,20 +96,25 @@ const SocialFeedContext = ({ props }: any) => {
 
 
     setCurrentUserName(await getCurrentUserName(sp))
-    setblogdata(await fetchBlogdatatop(sp))
+    //setblogdata(await fetchBlogdatatop(sp))
+    setblogdata(await fetchBookmarkBlogdata(sp))
     setUsersArr(await fetchUserInformationList(sp))
 
     fetchPosts();
     fetchFollowingList()
-    FilterDiscussionData("Today")
+    
+    FilterDiscussionData()
     // setFollowUsers(await getFollow(sp))
     // setFollowingUsers(await getFollowing(sp))
 
 
   }
 
-  const FilterDiscussionData = async (filterOption: string) => {
-    setDiscussion(await getDiscussionFilter(sp, filterOption))
+  
+
+  const FilterDiscussionData = async () => {
+    
+    setDiscussion(await getDiscussionFilter(sp))
   }
   // Function to get list of users following the current user
   const fetchFollowerList = async () => {
@@ -1623,30 +1628,7 @@ const SocialFeedContext = ({ props }: any) => {
                       {/* <div className="menu-toggle" onClick={toggleMenu}>
                         <MoreVertical size={20} />
                       </div> */}
-                      {isMenuOpen && (
-                        <div className="dropdown-menucsspost">
-                          <div onClick={() => FilterDiscussionData("Today")} style={{
-                            fontSize: '0.7rem',
-                            padding: '0.2rem',
-                            color: 'gray'
-                          }}>Today</div>
-                          <div style={{
-                            fontSize: '0.7rem',
-                            padding: '0.2rem',
-                            color: 'gray'
-                          }} onClick={() => FilterDiscussionData("Yesterday")}>Yesterday</div>
-                          <div style={{
-                            fontSize: '0.7rem',
-                            padding: '0.2rem',
-                            color: 'gray'
-                          }} onClick={() => FilterDiscussionData("Last Week")}>Last Week</div>
-                          <div style={{
-                            fontSize: '0.7rem',
-                            padding: '0.2rem',
-                            color: 'gray'
-                          }} onClick={() => FilterDiscussionData("Last Month")}>Last Month</div>
-                        </div>
-                      )}
+                     
 
                     </h4>
 

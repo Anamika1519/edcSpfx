@@ -8,7 +8,7 @@ import { Bookmark } from 'feather-icons-react';
 import { Calendar } from 'feather-icons-react';
 import moment from 'moment';
 import {getCurrentUserProfileEmail} from "../../APISearvice/CustomService";
-import {fetchBlogdata,fetchBookmarkBlogdata} from "../../APISearvice/BlogService"
+import {fetchBlogdata,fetchBookmarkBlogdata,fetchPinstatus} from "../../APISearvice/BlogService"
 const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
     const [copySuccess, setCopySuccess] = useState('');
     const [show, setShow] = useState(false)
@@ -21,6 +21,8 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
     const [activeTab, setActiveTab] = useState("all");
     const [filteredBlogItems, setFilteredBlogItems] = useState('');
     const [Bookmarkblogs, setBookmarkblogs] = useState('');
+    const [Bookmarkstatus, setBookmarkstatus] = useState('');
+   
     useEffect(() => {
         if (activeTab === "all") {
             setFilteredBlogItems(blogData);
@@ -73,6 +75,10 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
     const ApIcall = async () => {
         setEmail(await getCurrentUserProfileEmail(_sp));
         setBlogData(await fetchBlogdata(_sp));
+
+        setBookmarkstatus(await fetchPinstatus(_sp));
+
+
         setActiveTab("Published");
         setBookmarkblogs(await fetchBookmarkBlogdata(_sp));
         // console.log("check data of blogs---",blogData)
@@ -121,7 +127,72 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
             setShowDropdownId(itemId); // Open the dropdown for the clicked item
         }
     };
- 
+    const togglePin = async (e, item) => {
+
+        debugger
+    
+        e.preventDefault();
+    
+        //setLoadingUsers((prev) => ({ ...prev, [item.ID]: true })); // Set loading state for the specific user
+    
+    
+        try {
+    
+          const currentUser = await _sp.web.currentUser();
+    
+          const saveRecords = await _sp.web.lists.getByTitle("ARGSavedBlogs").items
+          .select("*,BlogId/Id")
+            .expand("BlogId")
+            .filter(`BlogSavedById eq ${currentUser.Id} and BlogId/Id eq ${item}`)();
+    
+    
+          if (saveRecords.length > 0) {  
+    
+            // Unpin logic
+    
+            await _sp.web.lists.getByTitle("ARGSavedBlogs").items.getById(saveRecords[0].Id).delete();
+    
+            setBookmarkstatus((prev) => ({ ...prev, [item.ID]: false })); // Update [pin] status
+    
+          } else {
+    
+            // pin logic
+    
+            await _sp.web.lists.getByTitle("ARGSavedBlogs").items.add({
+    
+                BlogSavedById: currentUser.Id,
+    
+                BlogIdId: item
+    
+            }).then(async (ress) => {
+
+                console.log(ress);
+            });
+    
+            setBookmarkstatus((prev) => ({ ...prev, [item.ID]: true })); // Update pin status
+    
+          } 
+    
+        } catch (error) {
+    
+          //setLoadingUsers((prev) => ({ ...prev, [item.ID]: false })); // End loading state for the specific user
+    
+    
+          console.error("Error toggling pin status:", error);
+    
+          alert("Failed to toggle pin status. Please try again.");
+    
+        } finally {
+            ApIcall();
+        //  fetchUserInformationList()
+    
+       //   setLoadingUsers((prev) => ({ ...prev, [item.ID]: false })); // End loading state for the specific user
+    
+        
+    
+        }
+    
+      };
     const sendanEmail =()=>
     {
         window.open("https://outlook.office.com/mail/inbox");
@@ -157,10 +228,10 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                             <p className="mb-2 mt-1 d-block customhead">
                                                 <span style={{ fontWeight: '400' }} className="pe-2 text-nowrap color-new font-12 mb-0 d-inline-block">
                                                     <Calendar size={12} color="#6b6b6b" strokeWidth={1} className="pl-2" style={{ fontWeight: '400' }} />
-                                                    {moment(item.Created).format("DD-MMM-YYYY HH:mm")} &nbsp;  &nbsp;  &nbsp;|
+                                                    {moment(item.Created).format("DD-MMM-YYYY")} &nbsp;  &nbsp;  &nbsp;|
                                                 </span>
                                                 <span style={{ fontWeight: '400' }} className="text-nowrap mb-0 color-new font-12 d-inline-block">
-                                                    Author: <span style={{ color: '#009157', fontWeight: '600' }}>{item.Author.Title} &nbsp;  &nbsp;  &nbsp;|&nbsp;  &nbsp;  &nbsp;
+                                                    Author: <span style={{ color: '#009157', fontWeight: '600' }}>{item.Author.Title} &nbsp;  &nbsp;  &nbsp;
                                                     </span>
  
                                                 </span></p>
@@ -273,6 +344,15 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                                             </div>
                                                         )}
                                                     </div>
+                                                    <img color="#6c757d" width={"20px"} style={{ cursor: "pointer",fontWeight: '400'}}
+
+                                                        //src={require("../../CustomAsset/unbookmark.png")}
+                                                        src={Bookmarkstatus[item.ID]  ? require("../../CustomAsset/unbookmark.png"): require("../../CustomAsset/bookmark.png")}
+   
+                                                        className="alignrightpin"
+                                                        alt="pin"
+                                                        onClick={(e) => togglePin(e, item.Id)}   
+                                                    />
                                                     {/* <Bookmark size={20} color="#6c757d" strokeWidth={2} style={{ fontWeight: '400' }} /> */}
                                                 </div>
                                             </div>
