@@ -7,6 +7,7 @@ import { getSP } from "../loc/pnpjsConfig";
 import { SPFI } from "@pnp/sp";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../../../CustomCss/mainCustom.scss";
+import "../../discussionForum/components/DiscussionForum.scss";
 import "../../verticalSideBar/components/VerticalSidebar.scss";
 import VerticalSideBar from "../../verticalSideBar/components/VerticalSideBar";
 import UserContext from "../../../GlobalContext/context";
@@ -17,14 +18,18 @@ import CustomCarousel from "../../../CustomJSComponents/carousel/CustomCarousel"
 import "../../../Assets/Figtree/Figtree-VariableFont_wght.ttf";
 import FeatherIcon from "feather-icons-react";
 import "./BusinessApps.scss";
+import Swal from "sweetalert2";
 import { Dropdown } from "react-bootstrap";
 // import "../../../APISearvice/MediaDetailsServies"
-import { fetchAutomationDepartment, fetchARGAutomationdata } from "../../../APISearvice/BusinessAppsService";
+import { fetchAutomationCategory, fetchARGAutomationdata, getCategory, addItem } from "../../../APISearvice/BusinessAppsService";
 //import { IMediagalleryProps } from "./IMediagalleryProps";
 import { encryptId } from "../../../APISearvice/CryptoService";
 import HorizontalNavbar from "../../horizontalNavBar/components/HorizontalNavBar";
 import CustomBreadcrumb from "../../../CustomJSComponents/CustomBreadcrumb/CustomBreadcrumb";
 import { Image } from "react-feather";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPaperclip } from '@fortawesome/free-solid-svg-icons';
+import ModalStructure, { ModalSize } from '../../../GlobalContext/ModalStructure';
 
 const HelloWorldContext = ({ props }: any) => {
   const sp: SPFI = getSP();
@@ -35,6 +40,7 @@ const HelloWorldContext = ({ props }: any) => {
   // console.log("This function is called only once", useHide);
   const elementRef = React.useRef<HTMLDivElement>(null);
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(true);
+
   const { setHide }: any = context;
   const [isDarkMode, setIsDarkMode] = React.useState(false);
   React.useEffect(() => {
@@ -87,7 +93,16 @@ const HelloWorldContext = ({ props }: any) => {
   const [mediagallerycategory, setAutomationDepartment] = useState<any[]>([]);
   const [mediagallerydata, setAutomationData] = useState<any[]>([]);
   const [filteredMediaItems, setFilteredMediaItems] = useState<any[]>([]);
-
+  const [CategoryData, setCategoryData] = React.useState([]);
+  const [ImagepostArr1, setImagepostArr1] = React.useState([]);
+  const [ImagepostArr, setImagepostArr] = React.useState([]);
+  const [thumbnailfile, setthumbnailfile] = React.useState<File>();
+  const [showModal, setShowModal] = React.useState(false);
+  const [showModalstr, setShowModalstr] = React.useState(false);
+  const [AppNameErr, setAppNameErr] = useState("");
+  const [CategoryErr, setCategoryErr] = useState("");
+  const [ImageErr, setImageErr] = useState("");
+  const [LinkErr, setLinkErr] = useState("");
   const handleSearchChange = (e: {
     target: { value: React.SetStateAction<string> };
   }) => {
@@ -110,13 +125,13 @@ const HelloWorldContext = ({ props }: any) => {
     } else {
       // Find the selected category based on activeTab
       const selectedCategory = mediagallerycategory.find(
-        (category) => category.DepartmentName.toLowerCase() === activeTab
+        (category) => category.CategoryName.toLowerCase() === activeTab
       );
       { console.log("filteredMediaItemsselectedCategory", filteredMediaItems, activeTab, selectedCategory, mediagallerydata) }
       if (selectedCategory) {
         // Filter items based on the selected category's ID
         const filteredItems = mediagallerydata.filter(
-          (item) => item.ARGAutomationDepartmentId === selectedCategory.ID
+          (item) => item.CategoryId === selectedCategory.ID
         );
         setFilteredMediaItems(filteredItems);
       } else {
@@ -126,10 +141,188 @@ const HelloWorldContext = ({ props }: any) => {
       { console.log("filteredMediaItemsafter", filteredMediaItems) }
     }
   }, [activeTab, mediagallerydata, mediagallerycategory]);
+  const [formData, setFormData] = React.useState({
+    title: "",
+    category: "",
+    redirectionlink: "",
+    image: "",
+    subtitle: "",
+  });
+  const validateForm = () => {
+    debugger
+    const { title, subtitle, image, redirectionlink, category } =
+      formData;
+    setAppNameErr("");
+    setImageErr("");
+    setLinkErr("");
+    setCategoryErr("");
+    //const { description } = richTextValues;
+    let valid = true;
+    if (!title) {
+      setAppNameErr("Appname is required!")
+      //Swal.fire("Error", "title is required!", "error");
+      valid = false;
+    } else if (ImagepostArr1.length == 0) {
+      //Swal.fire("Error", "image is required!", "error");
+      setImageErr("Image is required!")
+      valid = false;
+    }
+    else if (!category) {
+      //Swal.fire("Error", "Category is required!", "error");
+      setCategoryErr("Category is required!")
+      valid = false;
+    } else if (!redirectionlink) {
+      //Swal.fire("Error", "redirectionlink is required!", "error");
+      setLinkErr("Redirection Link is required!")
+      valid = false;
+    }
+
+    return valid;
+  };
+  const handleFormSubmit = async () => {
+    debugger
+    if (validateForm()) {
+      let postPayload = {}
+      const assets = await sp.web.lists.ensureSiteAssetsLibrary();
+      const fileItem = await assets.rootFolder.files.addChunked(thumbnailfile.name, thumbnailfile, data => {
+        console.log(`progress`, data);
+      }, true);
+
+      // bare minimum; probably you'll want other properties as well
+      const img = {
+        "serverRelativeUrl": fileItem.data.ServerRelativeUrl
+      };
+      postPayload = {
+        Title: formData.title,
+        SubTitle: formData.subtitle,
+        Image: JSON.stringify(img),
+        CategoryId: Number(formData.category),
+        RedirectionLink: formData.redirectionlink,
+
+      };
+
+
+      const postResult = await addItem(postPayload, sp);
+      const postId = postResult?.data?.ID;
+      if (!postId) {
+        console.error("Post creation failed.");
+        return;
+      }
+      setTimeout(async () => {
+        setFormData({
+          title: "",
+          category: "",
+          redirectionlink: "",
+          image: "",
+          subtitle: "",
+        });
+        dismissModal()
+      }, 2000);
+      ApiCall()
+    }
+    // if (validateForm()) {
+    //   Swal.fire({
+    //     title: "Do you want to save?",
+    //     showConfirmButton: true,
+    //     showCancelButton: true,
+    //     confirmButtonText: "Save",
+    //     cancelButtonText: "Cancel",
+    //     icon: "warning",
+    //   }).then(async (result) => {
+
+    //     if (result.isConfirmed) {
+
+    //       let bannerImageArray: any = {};
+    //       let galleryIds: any[] = [];
+    //       let documentIds: any[] = [];
+    //       let galleryArray: any[] = [];
+    //       let documentArray: any[] = [];
+
+    //       debugger;
+    //       let postPayload = {}
+    //       // Create Post
+
+
+    //       //const file: File = evt.target.files[0];
+
+    //       // upload to the root folder of site assets in this demo
+    //       const assets = await sp.web.lists.ensureSiteAssetsLibrary();
+    //       const fileItem = await assets.rootFolder.files.addChunked(thumbnailfile.name, thumbnailfile, data => {
+    //         console.log(`progress`, data);
+    //       }, true);
+
+    //       // bare minimum; probably you'll want other properties as well
+    //       const img = {
+    //         "serverRelativeUrl": fileItem.data.ServerRelativeUrl,
+    //       };
+    //       postPayload = {
+    //         Title: formData.title,
+    //         SubTitle: formData.subtitle,
+    //         Image: JSON.stringify(img),
+    //         CategoryId: Number(formData.category),
+    //         RedirectionLink: formData.redirectionlink,
+
+    //       };
+
+
+    //       const postResult = await addItem(postPayload, sp);
+    //       const postId = postResult?.data?.ID;
+    //       if (!postId) {
+    //         console.error("Post creation failed.");
+    //         return;
+    //       }
+    //       // Upload Gallery Images
+    //       // if (ImagepostArr.length > 0) {
+    //       //   for (const file of ImagepostArr[0]?.files) {
+    //       //     const uploadedGalleryImage = await uploadFileToLibrary(
+    //       //       file,
+    //       //       sp,
+    //       //       "DiscussionForumGallery"
+    //       //     );
+    //       //     galleryIds = galleryIds.concat(
+    //       //       uploadedGalleryImage.map((item: { ID: any }) => item.ID)
+    //       //     );
+    //       //     galleryArray.push(uploadedGalleryImage);
+    //       //   }
+    //       // }
+
+    //       setAutomationData(await fetchARGAutomationdata(sp));
+    //       Swal.fire("Item Added successfully", "", "success");
+    //       setTimeout(async () => {
+    //         setFormData({
+    //           title: "",
+    //           category: "",
+    //           redirectionlink: "",
+    //           image: "",
+    //           subtitle: "",
+    //         });
+    //         dismissModal()
+    //       }, 2000);
+    //     }
+    //   });
+
+    // }
+  };
+
+  const dismissModal = () => {
+    setShowModal(false);
+    setShowModalstr(false);
+    // const modalElement = document.getElementById('discussionModal');
+    // modalElement.classList.remove('show');
+    // modalElement.style.display = 'none';
+    // modalElement.setAttribute('aria-hidden', 'true');
+    // modalElement.removeAttribute('aria-modal');
+    // modalElement.removeAttribute('role');
+    // const modalBackdrop = document.querySelector('.modal-backdrop');
+    // if (modalBackdrop) {
+    //   modalBackdrop.remove();
+    // }
+  };
 
   const ApiCall = async () => {
-    const CategoryArr = await fetchAutomationDepartment(sp);
-
+    const CategoryArr = await fetchAutomationCategory(sp);
+    setShowModal(false)
+    setCategoryData(CategoryArr);
     setAutomationDepartment(CategoryArr);
     const GalleryData = await fetchARGAutomationdata(sp);
     console.log("CategoryArrCategoryArr", CategoryArr, "GalleryData", GalleryData)
@@ -164,6 +357,285 @@ const HelloWorldContext = ({ props }: any) => {
     console.log(link, "----link");
     window.location.href = link;
   };
+  const onChange = async (name: string, value: string) => {
+
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+
+    }));
+
+    if (name == "Type") {
+      setCategoryData(await getCategory(sp, Number(value))); // Category
+    }
+
+  };
+  const setShowModalFunc = (bol: boolean, name: string) => {
+    // setShowModal(bol);
+    // setShowImgTable(true);
+
+  };
+
+  const showmodalstructure = (it: boolean) => {
+    debugger
+    setShowModalstr(it)
+  }
+  const onFileChange = async (
+
+    event: React.ChangeEvent<HTMLInputElement>,
+
+    libraryName: string,
+
+    docLib: string
+
+  ) => {
+
+    debugger;
+
+    event.preventDefault();
+    let uloadDocsFiles: any[] = [];
+    let uloadDocsFiles1: any[] = [];
+    let uloadImageFiles: any[] = [];
+    let uloadImageFiles1: any[] = [];
+    let uloadBannerImageFiles: any[] = [];
+    if (event.target.files && event.target.files.length > 0) {
+      const files = Array.from(event.target.files);
+      const thumbnailfile: File = event.target.files[0];
+      setthumbnailfile(thumbnailfile);
+      if (libraryName === "Gallery") {
+        const imageVideoFiles = files.filter(
+          (file) =>
+            file.type.startsWith("image/") || file.type.startsWith("video/")
+        );
+
+        if (imageVideoFiles.length > 0) {
+          const arr = {
+            files: imageVideoFiles,
+            libraryName: libraryName,
+            docLib: docLib,
+          };
+
+          if (libraryName === "Gallery") {
+            uloadImageFiles.push(arr);
+            setImagepostArr(uloadImageFiles);
+            if (ImagepostArr1.length > 0) {
+              imageVideoFiles.forEach((ele) => {
+                let arr1 = {
+                  ID: 0,
+                  Createdby: "",
+                  Modified: "",
+                  fileUrl: "",
+                  fileSize: ele.size,
+                  fileType: ele.type,
+                  fileName: ele.name,
+                };
+                ImagepostArr1.push(arr1);
+              });
+              setImagepostArr1(ImagepostArr1);
+            } else {
+              imageVideoFiles.forEach((ele) => {
+                let arr1 = {
+                  ID: 0,
+                  Createdby: "",
+                  Modified: "",
+                  fileUrl: "",
+                  fileSize: ele.size,
+                  fileType: ele.type,
+                  fileName: ele.name,
+                };
+                uloadImageFiles1.push(arr1);
+              });
+              setImagepostArr1(uloadImageFiles1);
+            }
+          }
+        } else {
+          Swal.fire("only image can be uploaded");
+        }
+      }
+    }
+  };
+  const Businessform = (
+    <div className="modal-dialog modal-lg ">
+      <div className="modal-content">
+        <div className="modal-header">
+          <h5 className="modal-title" id="exampleModalLabel">
+            New Business App
+          </h5>
+        </div>
+        <div className="modal-body">
+          <form className="row">
+            <div className="col-lg-4">
+              <div className="mb-3">
+                <label htmlFor="topic" className="form-label">
+                  Application Name <span className="text-danger">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="title"
+                  name="title"
+                  placeholder="Enter App name"
+                  className="form-control inputcss"
+
+                  value={formData.title}
+                  onChange={(e) =>
+                    onChange(e.target.name, e.target.value)
+                  }
+                />
+                <span   style={{ color: "red" }}> {AppNameErr}</span>
+              </div>
+            </div>
+
+            <div className="col-lg-4">
+              <div className="mb-3">
+                <label htmlFor="category" className="form-label">
+                  Category <span className="text-danger">*</span>
+                </label>
+                <select
+                  className="form-select inputcss"
+                  id="category"
+                  name="category"
+                  value={formData.category}
+                  onChange={(e) =>
+                    onChange(e.target.name, e.target.value)
+                  }
+                >
+                  <option>Select</option>
+                  {CategoryData.map((item, index) => (
+                    <option key={index} value={item.Id}>
+                      {item.CategoryName}
+                    </option>
+                  ))}
+                </select>
+                <span   style={{ color: "red" }}> {CategoryErr}</span>
+              </div>
+            </div>
+
+            <div className="col-lg-4">
+              <div className="mb-3">
+                <div className="d-flex justify-content-between">
+                  <div>
+                    <label
+                      htmlFor="discussionGallery"
+                      className="form-label"
+                    >
+                      Thumbnail{" "}
+                      <span className="text-danger">*</span>
+                    </label>
+                  </div>
+                  <div>
+                    {(ImagepostArr1.length > 0 &&
+                      ImagepostArr1.length == 1 && (
+                        <a
+                          onClick={() =>
+                            setShowModalFunc(true, "Gallery")
+                          }
+                          style={{ fontSize: "0.875rem" }}
+                        >
+                          <FontAwesomeIcon icon={faPaperclip} />{" "}
+                          {ImagepostArr1.length} file Attached
+                        </a>
+                      )) ||
+                      (ImagepostArr1.length > 0 &&
+                        ImagepostArr1.length > 1 && (
+
+                          <a
+
+                            onClick={() =>
+
+                              setShowModalFunc(true, "Gallery")
+
+                            }
+
+                            style={{ fontSize: "0.875rem" }}
+
+                          >
+
+                            <FontAwesomeIcon icon={faPaperclip} />{" "}
+
+                            {ImagepostArr1.length} files Attached
+
+                          </a>
+
+                        ))}
+                  </div>
+                </div>
+                <input
+                  type="file"
+                  id="discussionforumGallery"
+                  name="discussionforumGallery"
+                  className="form-control inputcss"
+                  multiple
+                  onChange={(e) =>
+                    onFileChange(
+                      e,
+                      "Gallery",
+                      "SiteAssets"
+                    )
+                  }
+                />
+                <span  style={{ color: "red" }}> {ImageErr}</span>
+              </div>
+            </div>
+            <div className="col-lg-9">
+              <div className="mb-3">
+                <label htmlFor="overview" className="form-label">
+                  Redirection Link <span className="text-danger">*</span>
+                </label>
+                <textarea
+                  className="form-control inputcss"
+                  id="redirectionlink"
+                  placeholder="Enter Redirection link"
+                  name="redirectionlink"
+                  style={{ height: "90px" }}
+                  value={formData.redirectionlink}
+                  onChange={(e) =>
+                    onChange(e.target.name, e.target.value)
+                  }
+                ></textarea>
+                <span   style={{ color: "red" }}> {LinkErr}</span>
+              </div>
+            </div>
+            <div className="text-center butncss mt-5">
+              <div
+                className="btn btn-success waves-effect waves-light m-1"
+                style={{ fontSize: "0.875rem" }}
+                onClick={handleFormSubmit}
+              >
+                <div
+                  className="d-flex"
+                  style={{
+                    justifyContent: "space-around",
+                    width: "70px",
+                  }}
+                >
+                  <img
+                    src={require("../../../Assets/ExtraImage/checkcircle.svg")}
+                    style={{ width: "1rem" }}
+                    alt="Check"
+                  />{" "}
+                  Submit
+                </div>
+              </div>
+              <button
+                type="button"
+                className="btn btn-light waves-effect waves-light m-1"
+                style={{ fontSize: "0.875rem" }}
+                onClick={dismissModal}
+              >
+                <img
+                  src={require("../../../Assets/ExtraImage/xIcon.svg")}
+                  style={{ width: "1rem" }}
+                  className="me-1"
+                  alt="x"
+                />
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  )
   return (
     <div id="wrapper" ref={elementRef}>
       <div
@@ -179,6 +651,31 @@ const HelloWorldContext = ({ props }: any) => {
               <div className="col-lg-4">
 
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
+
+              </div>
+              <div className="col-lg-6">
+                <div
+                  className="btn btn-success waves-effect waves-light m-1"
+                  style={{ fontSize: "0.875rem" }}
+                  onClick={() => showmodalstructure(true)}
+
+                >
+                  <div
+                    className="d-flex"
+                    style={{
+                      justifyContent: "space-around",
+                      width: "180px",
+                    }}
+                  >
+                    <img
+                      src={require("../../../Assets/ExtraImage/checkcircle.svg")}
+                      style={{ width: "1rem" }}
+                      alt="Check"
+                    />{" "}
+                    Add New Business App
+                  </div>
+                </div>
+                {/* Bootstrap Modal */}
 
               </div>
               {/* <div className="col-lg-8">
@@ -204,6 +701,7 @@ const HelloWorldContext = ({ props }: any) => {
                       <div className="col-md-12">
                         <div className="text-center filter-menu d-flex justify-content-center">
                           {/* Main tabs */}
+
                           <a
                             style={{ textDecoration: 'unset' }}
                             className={`filter-menu-item ${activeTab === "all" ? "active" : ""
@@ -213,24 +711,27 @@ const HelloWorldContext = ({ props }: any) => {
                             All
                           </a>
 
+
                           {visibleCategories.map((category) => (
+
                             <a
                               key={category.ID}
                               style={{ textDecoration: 'unset' }}
                               className={`filter-menu-item ${activeTab ===
-                                (category.DepartmentName
-                                  ? category.DepartmentName.toLowerCase()
+                                (category.CategoryName
+                                  ? category.CategoryName.toLowerCase()
                                   : "")
                                 ? "active"
                                 : ""
                                 }`}
                               onClick={() =>
-                                handleTabClick(category.DepartmentName.toLowerCase(), category.ID)
+                                handleTabClick(category.CategoryName.toLowerCase(), category.ID)
 
                               }
                             >
-                              {category.DepartmentName || "Unknown Category"}
+                              {category.CategoryName || "Unknown Category"}
                             </a>
+
                           ))}
 
                           {/* Dropdown for extra tabs */}
@@ -249,20 +750,20 @@ const HelloWorldContext = ({ props }: any) => {
                                     key={category.ID}
 
                                     className={`filter-menu-item ${activeTab ===
-                                      (category.DepartmentName
-                                        ? category.DepartmentName.toLowerCase()
+                                      (category.CategoryName
+                                        ? category.CategoryName.toLowerCase()
                                         : "")
                                       ? "active"
                                       : ""
                                       }`}
                                     onClick={() =>
                                       handleTabClick(
-                                        category.DepartmentName.toLowerCase(), category.ID
+                                        category.CategoryName.toLowerCase(), category.ID
 
                                       )
                                     }
                                   >
-                                    {category.DepartmentName ||
+                                    {category.CategoryName ||
                                       "Unknown Category"}
                                   </Dropdown.Item>
                                 ))}
@@ -281,11 +782,25 @@ const HelloWorldContext = ({ props }: any) => {
 
               {filteredMediaItems.map((item) => {
                 const imageData = item.Image ? JSON.parse(item.Image) : null;
+                let siteIdAl = '338f2337-8cbb-4cd1-bed1-593e9336cd0e,e2837b3f-b207-41eb-940b-71c74da3d214';
+                let listIDAl = '8dcfeaca-69f6-484b-b1aa-a31085726174';
+
+                let siteId = siteUrl.toLowerCase().includes('alrostmani') ? siteIdAl : '02993535-33e8-44d1-9edf-0d484e642ea1,d9374a3d-ae79-4d2a-8d36-d48f86e3201e';
+                let listID = siteUrl.toLowerCase().includes('alrostmani') ? listIDAl : '729bbd2a-ade1-448b-be41-d9ea695e7407';
+
+                let img1 = imageData && imageData.fileName ? `${siteUrl}/_api/v2.1/sites('${siteId}')/lists('${listID}')/items('${item.ID}')/attachments('${imageData.fileName}')/thumbnails/0/c400x400/content?prefer=noredirect%2Cclosestavailablesize` : ""
+                let img = imageData && imageData.serverRelativeUrl ? `https://officeindia.sharepoint.com${imageData.serverRelativeUrl}`:img1
                 const imageUrl = imageData
                   //? `${siteUrl}/SiteAssets/Lists/ea596702-57db-4833-8023-5dcd2bba46e3/${imageData.fileName}`
-                  ? `${imageData.serverUrl}${imageData.serverRelativeUrl}`
+                  //? `${imageData.serverUrl}${imageData.serverRelativeUrl}`
+                  ? img
                   : require("../assets/userimg.png");
-                { console.log("imageData", imageData, imageUrl,item) } // Fallback if no image
+                { console.log("imageData", imageData, imageUrl, item, siteUrl, img) }
+                // const imageUrl = imageData
+                //   //? `${siteUrl}/SiteAssets/Lists/ea596702-57db-4833-8023-5dcd2bba46e3/${imageData.fileName}`
+                //   ? `${imageData.serverUrl}${imageData.serverRelativeUrl}`
+                //   : require("../assets/userimg.png");
+                // { console.log("imageData", imageData, imageUrl,item) } // Fallback if no image
                 //const arrjson = item.MediaGalleryJSON ? JSON.parse(item.MediaGalleryJSON) : null
                 return (
                   <div className="col-md-6 col-xl-3" >
@@ -293,7 +808,7 @@ const HelloWorldContext = ({ props }: any) => {
                       <div className="card-body" >
                         <div className="row" onClick={() => handleRedirect(item.RedirectionLink)}>
                           <div className="col-4">
-                            <div style={{ background: '#fff',width:'45px',height:'45px' }}
+                            <div style={{ background: '#fff', width: '45px', height: '45px' }}
                               className="avatar-lg d-flex justify-content-center align-items-center rounded-circle bg-soft-primary border-primary border">
                               <img style={{ width: '30px' }} src={imageUrl} />
                             </div>
@@ -301,7 +816,7 @@ const HelloWorldContext = ({ props }: any) => {
                           <div className="col-8 d-flex justify-content-left align-items-center">
                             <div>
 
-                              <p style={{ marginBottom: '0px' }}  className="text-dark mb-156 font-16 text-truncate mt90">{item.Title}</p>
+                              <p style={{ marginBottom: '0px' }} className="text-dark mb-156 font-16 text-truncate mt90">{item.Title}</p>
                               <p className="text-muted mb-0 font-12 text-truncate mt90">{item.SubTitle}</p>
                             </div>
                           </div>
@@ -315,6 +830,18 @@ const HelloWorldContext = ({ props }: any) => {
           </div>
         </div>
       </div>
+      {console.log("showmodalhj", showModalstr)}
+
+      <ModalStructure
+        isModalOpen={showModalstr}
+        modalTitle={"Add New Business"}
+        modalHeader={""}
+        modalBody={Businessform}
+        modalSize={ModalSize.Medium}
+        cancelAction={(refresh?: boolean) => dismissModal()}
+        customModalClass='modalbackgroundcolor'
+      ></ModalStructure>
+
     </div>
 
   );
@@ -324,6 +851,7 @@ const BusinessApps: React.FC<IBusinessAppsProps> = (props) => (
 
   <Provider>
     <HelloWorldContext props={props} />
+
   </Provider>
 
 )

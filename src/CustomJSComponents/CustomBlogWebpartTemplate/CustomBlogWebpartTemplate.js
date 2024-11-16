@@ -8,7 +8,7 @@ import { Bookmark } from 'feather-icons-react';
 import { Calendar } from 'feather-icons-react';
 import moment from 'moment';
 import {getCurrentUserProfileEmail} from "../../APISearvice/CustomService";
-import {fetchBlogdata} from "../../APISearvice/BlogService"
+import {fetchBlogdata,fetchBookmarkBlogdata} from "../../APISearvice/BlogService"
 const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
     const [copySuccess, setCopySuccess] = useState('');
     const [show, setShow] = useState(false)
@@ -18,8 +18,40 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
     const [blogData, setBlogData] = useState('');
     const menuRef = useRef(null);
     const [isMenuOpenshare, setIsMenuOpenshare] = useState(false);
+    const [activeTab, setActiveTab] = useState("all");
+    const [filteredBlogItems, setFilteredBlogItems] = useState('');
+    const [Bookmarkblogs, setBookmarkblogs] = useState('');
     useEffect(() => {
-        ApIcall()
+        if (activeTab === "all") {
+            setFilteredBlogItems(blogData);
+        } else {
+            // Find the selected category based on activeTab
+            const selectedCategory = FilterOptions.find(
+                (category) => category.Name.toLowerCase() === activeTab.toLowerCase()
+            );
+            { console.log("filteredMediaItemsselectedCategory", filteredBlogItems, activeTab, selectedCategory,currentEmail, blogData) }
+            if (selectedCategory) {
+                // Filter items based on the selected category's ID
+                if(selectedCategory.Name == "Bookmarked"){
+                    // const filteredItems = blogData.filter(
+                    //     (item) =>item.BookmarkedBy && item.BookmarkedBy.EMail === currentEmail
+                    // );
+                    console.log("currentEmailcurrentEmail",Bookmarkblogs)
+                    setFilteredBlogItems(Bookmarkblogs);
+                } else {
+                    const filteredItems = blogData.filter(
+                        (item) => item.Status === selectedCategory.Name
+                    );
+                    setFilteredBlogItems(filteredItems);
+                }
+               
+            } else {
+                // If no category matches, show no items
+                setFilteredBlogItems([]);
+            }
+           
+        }
+        { console.log("filteredMediaItemsafter", filteredBlogItems) }
         const handleClickOutside = (event) => {
             if (menuRef.current && !menuRef.current.contains(event.target)) {
                 setIsMenuOpenshare(false);
@@ -31,17 +63,27 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
-    }, [_sp, SiteUrl])
- 
+    }, [_sp, SiteUrl, activeTab, blogData])
+
+    useEffect(() => {
+        ApIcall();
+    }, []);
+    const FilterOptions = [{ id: 1, Name: "Published", name: "Published" }, { id: 2, Name: "Save as Draft", name: "Your Drafts" }, { id: 3, Name: "Bookmarked", name: "Bookmarked" }]
+  
     const ApIcall = async () => {
-        setEmail(getCurrentUserProfileEmail(_sp));
+        setEmail(await getCurrentUserProfileEmail(_sp));
         setBlogData(await fetchBlogdata(_sp));
+        setActiveTab("Published");
+        setBookmarkblogs(await fetchBookmarkBlogdata(_sp));
         // console.log("check data of blogs---",blogData)
         // const dataofblog = await fetchBlogdata(sp);
         // console.log("check the data of blog",dataofblog)
         // setBlogData(dataofblog);
  
     }
+    const handleTabClick = (tab, Id) => {
+        setActiveTab(tab.toLowerCase());
+    };
     const truncateText = (text, maxLength) => {
         if(text!=null)
         {
@@ -86,15 +128,15 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
  
     }
     return (
-        <><div className="row mt-2" style={{ paddingLeft: '0.5rem' }}>
+        <><div className="row mt-4" style={{ paddingLeft: '0.5rem' }}>
             {blogData.length > 0 ?
-                blogData.filter(x => x.FeaturedBlog != false).slice(0, 1).map(item => {
+                blogData.filter(x => x.Status == "Published").slice(0, 1).map(item => {
                     const AnnouncementandNewsBannerImage = item.BlogBannerImage == undefined || item.BlogBannerImage == null ? ""
                         : JSON.parse(item.BlogBannerImage);
                     return (
                         <>
                         <div className="col-lg-5" onClick={() => gotoBlogsDetails(item)}>
-                            <div className="imagemani mt-2 me-2">
+                            <div className="imagemani mt- mb-3 me-2">
                                 <img src={AnnouncementandNewsBannerImage?.serverUrl + AnnouncementandNewsBannerImage?.serverRelativeUrl}
                                     className="d-flex align-self-center me-3 w-100" lt="Generic placeholder image" style={{ objectFit: 'cover' }} />
                             </div>
@@ -103,7 +145,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                 <div className="row" style={{ paddingLeft: '0.5rem' }}>
                                     <div className="col-sm-4 text-left">
                                         <span style={{ padding: '5px', borderRadius: '4px', fontWeight: '500', color: '#009157', background:'rgba(0, 135, 81, 0.20)' }} className=" font-14 float-start mt-2">
-                                            Featured Blog</span>
+                                            Latest Blog</span>
  
                                     </div>
                                     <div className="col-lg-12">
@@ -123,7 +165,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
  
                                                 </span></p>
  
-                                            <div style={{ clear: 'both', height: '4rem' }}>
+                                            <div style={{ clear: 'both'}}>
                                                 <p className="d-block customdescription">{truncateText(item.Overview, 300)}</p>
                                             </div>
                                         </div>
@@ -135,10 +177,51 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                             </div></>)
                 }) : null}
         </div>
-            <div className="tab-content mt-4">
+        <div className="row mt-2">
+                <div className="col-12">
+                    <div className="card mb-0 cardcsss">
+                        <div className="card-body">
+                            <div className="d-flex flex-wrap align-items-center justify-content-center">
+                                <ul
+                                    className="navs nav-pillss navtab-bgs"
+                                    role="tablist"
+                                    style={{
+                                        gap: "5px",
+                                        display: "flex",
+                                        listStyle: "none",
+                                        marginBottom: "unset",
+                                    }}
+                                >
+                                    {console.log("FilterOptions", FilterOptions)}
+                                    {FilterOptions.length > 0 && FilterOptions.map((res) => (
+                                        <li className="nav-itemcss">
+                                            <a
+                                                className={`nav-linkss ${activeTab.toLowerCase() ===
+                                                    (res.Name.toLowerCase()
+                                                        ? res.Name.toLowerCase()
+                                                        : "")
+                                                    ? "active"
+                                                    : ""
+                                                    }`}
+
+                                                //aria-selected={activeTab === "cardView"}
+                                                role="tab"
+                                                onClick={() => handleTabClick(res.Name.toLowerCase(), res.ID)}
+                                            >
+                                                {res.name}
+                                            </a>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div className="tab-content mt-2">
                 <div className="tab-pane show active" id="home1" role="tabpanel">
-                    {blogData.length > 0 ?
-                        blogData.map(item => {
+                    {filteredBlogItems.length > 0 ?
+                        filteredBlogItems.map(item => {
                             const AnnouncementandNewsBannerImage = item.BlogBannerImage == undefined || item.BlogBannerImage == null ? "" : JSON.parse(item.BlogBannerImage);
  
  
@@ -175,7 +258,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                                 </a>
                                             </div>
                                             <div className="col-sm-1">
-                                                <div className="d-flex" style={{ justifyContent: 'space-evenly', cursor: 'pointer' }}>
+                                                <div className="d-flex" style={{ justifyContent: 'end', marginRight:'3px', cursor: 'pointer' }}>
                                                     <div className="" style={{ position: 'relative' }}>
                                                         <div  className="" onClick={() => toggleDropdown(item.Id)} key={item.Id}>
                                                             <Share2 size={20} color="#6c757d" strokeWidth={2} style={{ fontWeight: '400' }} />
@@ -190,7 +273,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                                             </div>
                                                         )}
                                                     </div>
-                                                    <Bookmark size={20} color="#6c757d" strokeWidth={2} style={{ fontWeight: '400' }} />
+                                                    {/* <Bookmark size={20} color="#6c757d" strokeWidth={2} style={{ fontWeight: '400' }} /> */}
                                                 </div>
                                             </div>
  

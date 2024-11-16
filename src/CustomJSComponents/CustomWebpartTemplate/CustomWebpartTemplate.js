@@ -181,7 +181,7 @@ const CustomWebpartTemplate = ({ _sp, SiteUrl }) => {
  
                                             </div>
                                             <div className="col-sm-1">
-                                                <div className="d-flex" style={{ justifyContent: 'space-evenly', cursor: 'pointer' }}>
+                                                <div className="d-flex" style={{ justifyContent: 'end', marginRight:"3px", cursor: 'pointer' }}>
                                                     <div className="" style={{ position: 'relative' }}>
                                                         <div className="" onClick={() => toggleDropdown(item.Id)} key={item.Id}>
                                                             <Share2 size={20} color="#6c757d" strokeWidth={2} style={{ fontWeight: '400' }} />
@@ -196,7 +196,7 @@ const CustomWebpartTemplate = ({ _sp, SiteUrl }) => {
                                                             </div>
                                                         )}
                                                     </div>
-                                                    <Bookmark size={20} color="#6c757d" strokeWidth={2} style={{ fontWeight: '400' }} />
+                                                    {/* <Bookmark size={20} color="#6c757d" strokeWidth={2} style={{ fontWeight: '400' }} /> */}
                                                 </div>
                                             </div>
  
@@ -208,6 +208,7 @@ const CustomWebpartTemplate = ({ _sp, SiteUrl }) => {
                         ) : null}
  
                 </div>
+                <div style={{marginBottom:"50px"}}></div>
             </div></>
  
     )

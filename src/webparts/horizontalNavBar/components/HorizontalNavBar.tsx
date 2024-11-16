@@ -352,43 +352,7 @@ const HorizontalNavbar = ({ _context, siteUrl }: any) => {
 
             <div id="myDropdownBell" className={`dropdown-content  ${isOpenBell ? 'show desktoView' : ''}`} style={{ width: '320px' }}>
 
-              {/* {
-                NotificationArray.length > 0 && NotificationArray.map((notify: any) => {
-                  return (
-                    <div>
-
-                      <div className="flex">
-                        <div className="row">
-                          <div className="col-md-8">
-                            <h5 className='p-1'>Notifications</h5>
-                          </div>
-                          <div className="col-md-4">
-                          <h5 className='p-1'> View All </h5>
-                          </div>
-                        </div>
-                      </div>
-
-                      <a className="dropdown-item p-0 notify-item card unread-noti shadow-none mb-1" onClick={() => handleNotificationClick(notify)}>
-                        <div className="card-body">
-                          <span className="float-end noti-close-btn text-muted"><i className="mdi mdi-close"></i></span>
-                          <div className="d-flex align-items-center">
-                           
-                            <div className="flex-grow-1 text-truncate ms-2">
-                              <h5 className="noti-item-title fw-semibold font-14">{notify.ContentName} <small className="fw-normal text-muted ms-1">{moment(notify.created).fromNow()}</small></h5>
-                              <small className="noti-item-subtitle text-muted">{notify?.ActionUser?.Title} {notify.ContentType} on {notify?.NotifiedUser?.Title}</small>
-                            </div>
-                            <div className="flex-shrink-0">
-                              <div className="notify-icon bg-primary">
-                                <X style={{background:'#fff'}}/>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </a>
-                    </div>
-                  )
-                })
-              } */}
+              
               <NotificationList NotificationArray={NotificationArray} handleNotificationClick={handleNotificationClick} />
 
             </div>
@@ -396,31 +360,12 @@ const HorizontalNavbar = ({ _context, siteUrl }: any) => {
           <Moon size='22' className={isDarkMode ? 'bx bx-moon desktoView' : 'bx bx-sun desktoView'} onClick={handleThemeToggle} />
           <div className="dropdown searchcssmobile ">
             <Bell className='bx bx-bell searchcssmobile dropcssBell' size='80' onClick={toggleDropdownBell} />
-            <div id="myDropdownBell" className={`dropdown-content searchcssmobile ${isOpenBell ? 'show' : ''}`}>
+            {/* <div id="myDropdownBell" className={`dropdown-content searchcssmobile ${isOpenBell ? 'show' : ''}`}>
 
-              {/* {
-                NotificationArray.length > 0 && NotificationArray.map((notify: any) => {
-                  <a className="dropdown-item p-0 notify-item card unread-noti shadow-none mb-1" onClick={() => handleNotificationClick(notify)}>
-                    <div className="card-body">
-                      <span className="float-end noti-close-btn text-muted"><i className="mdi mdi-close"></i></span>
-                      <div className="d-flex align-items-center">
-                        <div className="flex-shrink-0">
-                          <div className="notify-icon bg-primary">
-                            <i className="mdi mdi-comment-account-outline"></i>
-                          </div>
-                        </div>
-                        <div className="flex-grow-1 text-truncate ms-2">
-                          <h5 className="noti-item-title fw-semibold font-14">{notify.ContentName} <small className="fw-normal text-muted ms-1">1 min ago</small></h5>
-                          <small className="noti-item-subtitle text-muted">{notify?.ActionUser?.Title} {notify.ContentType} on {notify?.NotifiedUser?.Title}</small>
-                        </div>
-                      </div>
-                    </div>
-                  </a>
-                })
-              } */}
+              
               <NotificationList NotificationArray={NotificationArray} handleNotificationClick={handleNotificationClick}/>
 
-            </div>
+            </div> */}
           </div>
           <div className="dropdown">
             <div className='d-flex' onClick={toggleDropdown} style={{ gap: '2px', cursor: 'pointer' }}>

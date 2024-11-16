@@ -106,10 +106,13 @@ height:63px;
 .card-body{
   padding: 0.8rem !important;
 }
-.heightlist{height: 300px;overflow-y: auto;}
 
-
-
+#myDropdownBell .heightlist{height: 350px;overflow-y: auto; padding: 10px;}
+#myDropdownBell .heightlist .notify-item
+{border: 0px solid #ccc !important;}
+#myDropdownBell .heightlist .notify-item:nth-child(even)
+{background: #efefef !important;}
+#myDropdownBell .flex {border-bottom: 1px solid #efefef; padding: 10px 10px 0px 10px; }
 a:hover, a:active {
   text-decoration: none !important;
 }
@@ -141,6 +144,11 @@ a:hover, a:active {
 .sidebar.close .logo_item{
   width: auto;
 }
+.postion8{position: fixed; width:25%; }
+.mainevent{border-bottom: 1px solid #ccc; padding: 10px 0px;}
+.mainevent:last-child{border-bottom: 0px !important;}
+
+.footer{background: #d4d4d3; width: 99.6%; bottom: 0px; position: fixed; padding: 4px 10px; text-align: right;}
 .dropcss{padding: 0px;}
 .dropcss a{display: block; text-align: center; font-size: 12px; padding: 10px; }
 .text-dark-new{color: #343a40 !important;}
@@ -1559,3 +1567,4 @@ span.navlink.active {
   margin: 0px 5px;
   color: #3c3c3c;
   font-size: 14px}
+  #myDropdownBell {right: 0rem !important;}

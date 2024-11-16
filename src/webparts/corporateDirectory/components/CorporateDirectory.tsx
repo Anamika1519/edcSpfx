@@ -87,7 +87,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const siteUrl = props.siteUrl;
-
+  const [itemsToShow, setItemsToShow] = useState(8); // Initial number of items to show
 
   const [filters, setFilters] = React.useState({
 
@@ -597,7 +597,13 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
   //#endregion
 
-
+  const handleUserClick = (userID:any , currentStatus:any) => {
+    console.log("currentStatus",currentStatus)
+   
+    sessionStorage.setItem("selectedUserID", userID);
+    sessionStorage.setItem("currentStatus", currentStatus);
+    window.location.href = `${siteUrl}/SitePages/Userprofile.aspx?${userID}`;
+  };
   const handleFilterChange = (
 
     e: React.ChangeEvent<HTMLInputElement>,
@@ -909,6 +915,11 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
   };
 
+  const loadMore = () => {
+    event.preventDefault()
+    event.stopImmediatePropagation()
+    setItemsToShow(itemsToShow + 8); // Increase the number by 8
+  };
 
   return (
 
@@ -1127,7 +1138,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                     {console.log("usersssitem", usersitem,followStatus,pinStatus)}
 
-                    {usersitem.map((item) => (
+                    {usersitem.slice(0, itemsToShow).map((item) => (
 
                       <div className="col-lg-3 col-md-4" key={item.Title}>
 
@@ -1197,7 +1208,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                 <img style={{ cursor: "pointer" }}
 
-                                  src={pinStatus[item.ID]  ? require("../assets/unpin.png"): require("../assets/pin.png")}
+                                  src={pinStatus[item.ID]  ? require("../assets/unpin.png"): require("../assets/noun-pin-7368310.png")}
 
                                   className="alignrightpin"
 
@@ -1214,7 +1225,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                               <h4 className="mt-2 mb-1">
 
-                                <a
+                                <a onClick={() => handleUserClick(item.ID , followStatus[item.ID])}
 
                                   className="text-dark font-16 fw-bold"
 
@@ -1481,7 +1492,13 @@ const CorporateDirectoryContext = ({ props }: any) => {
                       </div> // end col
 
                     ))}
-
+   {itemsToShow < usersitem.length && (
+                      <div className="col-12 text-center mb-3 mt-3">
+                        <button onClick={loadMore} className="btn btn-primary">
+                          Load More 
+                        </button>
+                      </div>
+                    )}
                   </div>
 
                 )}

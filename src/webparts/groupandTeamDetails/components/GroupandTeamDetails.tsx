@@ -543,17 +543,23 @@ try{
                 .items.getById(Number(idNum))
  
                 .update(likeUpdateBody);
-                let notifiedArr = {
-                  ContentId: ArrDetails[0].Id,
-                  NotifiedUserId: ArrDetails[0].AuthorId,
-                  ContentType0: "Like",
-                  ContentName: ArrDetails[0].Title,
-                  ActionUserId: CurrentUser.Id,
-                  DeatilPage: "GroupandTeamDetails",
-                  ReadStatus: false
-                }
-                const nofiArr = await addNotification(notifiedArr, sp)
-                console.log(nofiArr, 'nofiArr');
+                if(CurrentUser.Id!=ArrDetails[0].AuthorId)
+                  {
+                    let notifiedArr = {
+                      ContentId: ArrDetails[0].Id,
+                      NotifiedUserId: ArrDetails[0].AuthorId,
+                      ContentType0: "Like on comment on GroupandTeam",
+                      ContentName: ArrDetails[0].Title,
+                      ActionUserId: CurrentUser.Id,
+                      DeatilPage: "GroupandTeamDetails",
+                      ReadStatus: false,
+                      ContentComment:updatedComments[commentIndex].Comments,
+                      ContentCommentId:updatedComments[commentIndex].Id,
+                      CommentOnReply:""
+                    }
+                    const nofiArr = await addNotification(notifiedArr, sp)
+                    console.log(nofiArr, 'nofiArr');
+                  }
               console.log("Like count updated successfully:", newItem);
             });
         });
@@ -709,17 +715,24 @@ try{
             console.log(ress, "ressress");
  
             setComments(updatedComments);
-            let notifiedArr = {
-              ContentId: ArrDetails[0].Id,
-              NotifiedUserId: ArrDetails[0].AuthorId,
-              ContentType0: "Reply",
-              ContentName: ArrDetails[0].Title,
-              ActionUserId: CurrentUser.Id,
-              DeatilPage: "GroupandTeamDetails",
-              ReadStatus: false
-            }
-            const nofiArr = await addNotification(notifiedArr, sp)
-            console.log(nofiArr, 'nofiArr');
+            
+            if(CurrentUser.Id!=ArrDetails[0].AuthorId)
+              {
+                let notifiedArr = {
+                  ContentId: ArrDetails[0].Id,
+                  NotifiedUserId: ArrDetails[0].AuthorId,
+                  ContentType0: "Reply on comment on GroupandTeam",
+                  ContentName: ArrDetails[0].Title,
+                  ActionUserId: CurrentUser.Id,
+                  DeatilPage: "GroupandTeamDetails",
+                  ReadStatus: false,
+                  ContentComment:updatedComments[commentIndex].Comments,
+                  ContentCommentId:updatedComments[commentIndex].Id,
+                  CommentOnReply:newReplyJson.Comments
+                }
+                const nofiArr = await addNotification(notifiedArr, sp)
+                console.log(nofiArr, 'nofiArr');
+              }
           });
       });
     }

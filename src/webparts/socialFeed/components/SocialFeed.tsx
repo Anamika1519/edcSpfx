@@ -310,39 +310,21 @@ const SocialFeedContext = ({ props }: any) => {
       let newPostss: any
 
       if (Contentpost.trim() || SocialFeedImagesJson.length) {
-
         const newPost = {
-
           Contentpost,
-
           SocialFeedImagesJson,
-
           Created: new Date().toLocaleTimeString(),
-
           userName: currentUsername,
-
           userAvatar: `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${currentEmail}`,
-
           likecount: 0,
-
           commentcount: 0,
-
           shares: 0,
-
         };
-
-
-
         ImagesIdss = ImagesIdss.concat(SocialFeedImagesJson.map((item: any) => item.ID));
-
         setImageIds(ImagesIdss)
-
         try {
-
           // Add the new post to SharePoint List
-
           await sp.web.lists.getByTitle('ARGSocialFeed').items.add({
-
             Contentpost: Contentpost,  // Use the Contentpost for the title (or a different field if necessary)
             SocialFeedImagesJson: JSON.stringify(SocialFeedImagesJson),  // Store the images as JSON string
             UserName: currentUsername,
@@ -365,10 +347,8 @@ const SocialFeedContext = ({ props }: any) => {
             };
 
             const updatedPosts = [newPostss, ...posts];
-
             await addActivityLeaderboard(sp, "Post By User");
             console.log(updatedPosts);
-
             setPosts(updatedPosts);
             let notifiedArr = {
               ContentId:ele.data.Id,
@@ -381,44 +361,24 @@ const SocialFeedContext = ({ props }: any) => {
             }
             const nofiArr = await addNotification(notifiedArr, sp)
             console.log(nofiArr, 'nofiArr');
-
-
             localStorage.setItem('posts', JSON.stringify(updatedPosts));
             fetchPosts()
           }
-
           );
-
-
-
           // If the SharePoint request is successful, update the state and local storage
-
-
-
           // Clear fields
-
           setContent('');
-
           setImages([]);
-
         } catch (error) {
           setIsSubmitting(false); 
           console.log("Error adding post to SharePoint: ", error);
-
           //alert("There was an error submitting your post. Please try again.");
-
         } finally {
-
           setIsSubmitting(false);  // End submitting
-
         }
-
       } else {
-
         //alert("Please add some content or upload images before submitting.");
-
         setIsSubmitting(false);
-
       }
     }
     catch (error) {
@@ -428,7 +388,6 @@ const SocialFeedContext = ({ props }: any) => {
     finally {
       setLoading(false); // Enable the button after the function completes
     }
-
   };
 
   const ShowPost = () => {
@@ -839,6 +798,7 @@ const SocialFeedContext = ({ props }: any) => {
             <div className="row mt-3">
 
               <div className="col-md-3 mobile-w1">
+                <div className='psonew'>
                 <div className="row">
 
                   <div style={{ display: 'flex', gap: '0.1rem' }}>
@@ -959,6 +919,7 @@ const SocialFeedContext = ({ props }: any) => {
 
 
 
+                </div>
                 </div>
               </div>
 
@@ -1279,13 +1240,13 @@ const SocialFeedContext = ({ props }: any) => {
 
                                   }
 
-                                  className="rounded-circlecss img-thumbnail
+                                  className="img-thumbnail
 
                                  avatar-xl"
 
                                   alt="profile-image"
 
-                                  style={{ cursor: "pointer" }}
+                                  style={{ cursor: "pointer", borderRadius:'1000px', width:"6rem", height:'6rem' }}
 
                                 />
 
@@ -1487,13 +1448,13 @@ const SocialFeedContext = ({ props }: any) => {
 
                                   }
 
-                                  className="rounded-circlecss img-thumbnail
+                                  className="rounded-circlecssnew img-thumbnail
 
                                  avatar-xl"
 
                                   alt="profile-image"
 
-                                  style={{ cursor: "pointer" }}
+                                  style={{ cursor: "pointer"}}
 
                                 />
 
@@ -1515,11 +1476,11 @@ const SocialFeedContext = ({ props }: any) => {
 
                                 >
 
-                                  <strong>
+                               
 
                                     {truncateText(item.Title, 15)}
 
-                                  </strong>
+                             
 
                                 </a>
 

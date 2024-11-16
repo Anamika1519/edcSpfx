@@ -925,7 +925,7 @@ const BlogsContext = ({ props }: any) => {
                     <input type="date" className="form-control my-1 my-md-0" id="inputPassword2" placeholder="Search..." />
                   </div> */}
                   <div className="col-lg-8">
-                    <div className="d-flex flex-wrap align-items-center justify-content-end mt-3">
+                    <div className="d-flex flex-wrap align-items-center justify-content-end mt-2">
                       {/* Button to trigger modal */}
                       <button
                         type="button"
@@ -952,7 +952,7 @@ const BlogsContext = ({ props }: any) => {
                             <h5 className="modal-title" id="exampleModalLabel">
                               New Blog
                             </h5>
-                            <button
+                            <button style={{right:'22px', top:'18px'}}
                               type="button"
                               className="btn-close"
                               data-bs-dismiss="modal"
@@ -1316,6 +1316,7 @@ const BlogsContext = ({ props }: any) => {
               </div>
             </div>
             <CustomBlogpartTemplate _sp={sp} SiteUrl={SiteUrl} />
+            <div style={{height:'20px'}}></div>
 
           </div>
         </div>

@@ -109,6 +109,32 @@ export const fetchUserInformationList = async (sp) => {
   }
   return arr;
 };
+export const fetchPinnedUser = async (sp) => {
+  let currentUser;
+  await sp.web.currentUser()
+      .then(user => {
+          currentUser = user.Id; // Get the current user's ID
+      })
+      .catch(error => {
+          console.error("Error fetching current user: ", error);
+          return [];
+      });
+  let arr = []
+  try {
+    const userList = await sp.web.lists.getByTitle("ARGPinned").items
+    .select("*,Pinned/ID,Pinned/Title,Pinned/EMail,Pinned/Department,Pinned/WorkPhone,Pinned/WorkPhone")
+    .expand("Pinned")
+    //.select("ID", "Title", "EMail", "Department", "JobTitle", "Picture")
+    .filter(`PinnedById eq ${currentUser}`)    
+    .top(4)();
+    console.log(userList, 'userList');
+    arr = userList
+    // setUsersArr(userList);
+  } catch (error) {
+    console.log("Error fetching users:", error);
+  }
+  return arr;
+};
 export const fetchComments = async (sp, Id) => {
   debugger
 

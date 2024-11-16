@@ -26,6 +26,7 @@ import AvtarComponents from "../../../CustomJSComponents/AvtarComponents/AvtarCo
 const EventcalenderContext = ({ props }: any) => {
   const sp: SPFI = getSP();
   console.log(sp, "sp");
+  const [itemsToShow, setItemsToShow] = useState(2);
   const [copySuccess, setCopySuccess] = useState("");
   const [show, setShow] = useState(false);
   // const { useHide }: any = React.useContext(UserContext);
@@ -49,6 +50,21 @@ const EventcalenderContext = ({ props }: any) => {
         setCopySuccess('Failed to copy link');
       });
   };
+
+  const [eventDetails, setEventDetails] = useState({
+    Id: '',
+    title: '',
+    start: new Date(),
+    end: new Date(),
+    allDay: false,
+    image: '',
+    Overview:'',
+    Attendees:[],
+    eventLink:''
+  }); // Initialize with a blank object
+  console.log(eventDetails);
+
+
   //#region Breadcrumb
   const Breadcrumb = [
     {
@@ -133,6 +149,10 @@ const EventcalenderContext = ({ props }: any) => {
       start: new Date(event.EventDate),
       end: new Date(new Date(event.EventDate).getTime() + 60 * 60 * 1000), // Assuming 1 hour duration
       allDay: false,
+      image:event.image== undefined || event.image == null ? "" : JSON.parse(event.image),
+      Overview:event.Overview,
+      Attendees:event.Attendees,
+      eventLink:`${SiteUrl}/SitePages/EventDetailsCalendar.aspx?${event.Id}`
     }));
 
     setMyEventsList(events);
@@ -149,6 +169,30 @@ const EventcalenderContext = ({ props }: any) => {
       window.location.href = `${SiteUrl}/SitePages/EventDetailsCalendar.aspx?${valurArr.Id}`;
     }, 1000);
   };
+
+  const handleEventHover = (event:any) => {
+    if (event) {
+      var img1=event.image == undefined || event.image == null ? "" : event.image;
+      if(img1 == null){
+        img1 =''
+ 
+      }
+      setEventDetails({
+        Id: event.Id || '',
+        title: event.title || '',
+        start: event.start || new Date(),
+        end: event.end || new Date(),
+        allDay: event.allDay || false,
+        image: img1.serverRelativeUrl,
+        Overview:event.Overview,
+        Attendees:event.Attendees,
+        eventLink:`${SiteUrl}/SitePages/EventDetailsCalendar.aspx?${event.Id}`
+      });
+     // console.log(event.image);
+    }
+    
+  };
+ 
   const truncateText = (text: string, maxLength: number) => {
     if(text!=null)
     {
@@ -170,7 +214,45 @@ const EventcalenderContext = ({ props }: any) => {
       setShowDropdownId(itemId); // Open the dropdown for the clicked item
     }
   };
+  const loadMore = () => {
+    event.preventDefault()
+    event.stopImmediatePropagation()
+    setItemsToShow(itemsToShow + 2); // Increase the number by 8
+  };
+   
+  const[currentmonth , SetCurrentmonth] = useState<any>("");
+  const[currentmonthevents , SetCurrentmonthevents] = useState<any>([]);
+  useEffect(()=>{
 
+    const currentDate = new Date();
+    
+    const monthNumber = currentDate.getMonth() + 1;
+    
+    const monthNames = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ];
+    const monthName = monthNames[currentDate.getMonth()];
+    SetCurrentmonth(monthName)
+    console.log("Current Month Number:", monthNumber); 
+    console.log("Current Month Name:", monthName); 
+    
+    async function eventthismonth () { 
+       const eventofthismonth = await sp.web.lists.getByTitle("ARGEventMaster").items.select("*")()
+       console.log(eventofthismonth , "eventofthismonth")
+       const filteredData = eventofthismonth.filter((item:any) => {
+        if (item.EventDate) {
+            const eventDate = new Date(item.EventDate);
+            return eventDate.getMonth() + 1 === currentmonth; // getMonth() returns 0-based month, so add 1
+    
+        }
+        return false;
+    });
+    SetCurrentmonthevents(filteredData)
+    console.log(filteredData, "filteredData")
+       }
+       eventthismonth()
+    })
   return (
     <div id="wrapper" ref={elementRef}>
       <div
@@ -288,7 +370,7 @@ const EventcalenderContext = ({ props }: any) => {
                   id="listView"
                   role="tabpanel"
                 >
-                  {dataofevent.map((item) => {
+                   {dataofevent.slice(0, itemsToShow).map((item) => {
                     const ImageUrl1 =
                       item.image == undefined || item.image == null
                         ? ""
@@ -430,8 +512,9 @@ const EventcalenderContext = ({ props }: any) => {
                               <div
                                 className="d-flex"
                                 style={{
-                                  justifyContent: "space-evenly",
+                                  justifyContent: "end",
                                   cursor: "pointer",
+                                  marginRight:"3px"
                                 }}
                               >
                                 <div
@@ -470,12 +553,12 @@ const EventcalenderContext = ({ props }: any) => {
                                     </div>
                                   )}
                                 </div>
-                                <Bookmark
+                                {/* <Bookmark
                                   size={20}
                                   color="#6c757d"
                                   strokeWidth={2}
                                   style={{ fontWeight: "400" }}
-                                />
+                                /> */}
                               </div>
                             </div>
                           </div>
@@ -483,6 +566,13 @@ const EventcalenderContext = ({ props }: any) => {
                       </div>
                     );
                   })}
+                       	 {itemsToShow < dataofevent.length && (
+                   <div className="col-12 text-center mt-3">
+                        <button  onClick={loadMore} className="btn btn-primary">
+                          Load More 
+                        </button>
+                      </div>
+                     )}
                 </div>
                 <div
                   className={`tab-pane fade ${activeTab === "calendarView" ? "show active" : ""
@@ -501,61 +591,146 @@ const EventcalenderContext = ({ props }: any) => {
                   >
                     <div className="row backwhite" style={{ display: "flex" }}>
                       <div
-                        className="col-md-3 p-2"
+                        className="col-md-3"
                       // style={{ border: "1px solid green" }}
 
 
                       >
-                        <div className="btn btn-lg font-16 tn-secondary">
-                          Event This Month
-                        </div>
+                        <h3 className="font-16 mb-3 text-dark fw-bold">{`Event for ${currentmonth} Month`}</h3>
+                        <div >
+                          <div >
+                          <div style={{padding:'10px'}} className="gal-box">
+                          <a style={{float:'left',marginBottom:'15px'}} className="image-popup newhimg span57" >
+        <img  src={require("../assets/ICAEvent.jpg")} className="d-block w-100" />
+      </a>
+      <a href={eventDetails.eventLink}>
+        <div className="gall-info">
+          <h4 className="font-16 mb-2 mt-2 text-dark fw-bold mt-0">Press Releases and Events</h4>
+          <p className="font-14 text-muted">Al Rostamani Group, one of the UAE’s leading conglomerates, has once again demonstrated its steadfast commitment to Emiratisationfollowing its successful participation in the Ru’ya Careers UAE 2024, w...</p>
+          <span style={{ display: 'flex', gap: '0.2rem', alignItems: 'center' }}>
+            
+                      <span  className="">
+                      <img
+                                          src={require("../../../Assets/ExtraImage/userimg.png")}
+                                          className="rounded-circle avatar-xs"
+                                          // alt={attendee.name}
+                                        />
+                      </span>
+                   
+                    <span className="font-12 text-muted">&nbsp;Attending</span>
+                 
+              
+          </span>
+        </div>
+      </a>
+                            </div>
+                            </div>
+                          </div>
                         <div className="">
                           <div className="">
                           <div id="carouselExampleCaptions" className="carousel slide" data-bs-ride="carousel">
-  <div className="carousel-indicators">
+                         
+                          <div className="carousel-inner">
+  <div className="carousel-item active">
+  <div style={{padding:'10px'}} className="gal-box">
+  {eventDetails?.title !== '' ? (
+    <>
+      <a className="image-popup newhimg span57" title={eventDetails.title} href={eventDetails.eventLink}>
+        <img src={eventDetails.image} className="d-block w-100" alt={eventDetails.title} />
+      </a>
+      <a href={eventDetails.eventLink}>
+        <div className="gall-info">
+          <h4 className="font-16 mb-2 mt-2 text-dark fw-bold mt-0">{truncateText(eventDetails.title, 90)}</h4>
+          <p className="font-14 text-muted">{truncateText(eventDetails.Overview, 200)}</p>
+          <span style={{ display: 'flex', gap: '0.2rem', alignItems: 'center' }}>
+            {eventDetails?.Attendees !== undefined && eventDetails?.Attendees.length > 0
+              ? eventDetails.Attendees.map((item1: any, index: any) => (
+                  <React.Fragment key={index}>
+                    {item1.EMail ? (
+                      <span style={{ margin: index === 0 ? '0' : '0 0 0px -12px' }} className="">
+                        <img
+                          src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item1.EMail}`}
+                          className="attendeesImg"
+                          alt={item1.EMail}
+                        />
+                      </span>
+                    ) : (
+                      <span>
+                        <AvtarComponents Name={item1.Title} />
+                      </span>
+                    )}
+                    <span className="font-12 text-muted">&nbsp;Attending</span>
+                  </React.Fragment>
+                ))
+              : null}
+          </span>
+        </div>
+      </a>
+    </>
+  ) : null}
+</div>
+ 
+     
+     
+    </div> </div>
+ 
+  
+  {/* <div className="carousel-indicators">
     <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" className="active" aria-current="true" aria-label="Slide 1"></button>
     <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
     <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
-  </div>
-  <div className="carousel-inner">
-    <div className="carousel-item active">
-    <div className="gal-box">
-      <a className="image-popup newhimg" title="Screenshot of New Partnership Annoucement - Starkgen">
-      <img src={require("../assets/ICAEvent.jpg")} className="d-block w-100" alt="profile-image"/></a>
-      <div className="gall-info">
-            <h4 className="font-16 twolinewrap  mb-2 text-dark fw-bold mt-0">New Partnership Annoucement - Starkgen</h4>
-            <p className="font-14 text-muted">Some representative placeholder content for the first slide.</p>
-           </div></div>
-      
-      
-    </div>
-    <div className="carousel-item">
-    <div className="gal-box">
-      <a className="image-popup newhimg" title="Screenshot of New Partnership Annoucement - Starkgen">
-      <img src={require("../assets/ICAEvent.jpg")} className="d-block w-100" alt="profile-image"/></a>
-      <div className="gall-info">
-            <h4 className="font-16 twolinewrap  mb-2 text-dark fw-bold mt-0">New Partnership Annoucement - Starkgen</h4>
-            <p className="font-14 text-muted">Some representative placeholder content for the first slide.</p>
-           </div></div>
-    </div>
-    <div className="carousel-item">
-    <div className="gal-box">
-      <a className="image-popup newhimg" title="Screenshot of New Partnership Annoucement - Starkgen">
-      <img src={require("../assets/ICAEvent.jpg")} className="d-block w-100" alt="profile-image"/></a>
-      <div className="gall-info">
-            <h4 className="font-16 twolinewrap  mb-2 text-dark fw-bold mt-0">New Partnership Annoucement - Starkgen</h4>
-            <p className="font-14 text-muted">Some representative placeholder content for the first slide.</p>
-           </div></div>
-    </div>
-  </div>
-  <button className="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+  </div> */}
+  {/* <div className="carousel-inner">
+  {currentmonthevents.map((event:any, index:any) => {
+    // Parse the image JSON string
+    let imageUrl = '';
+    if (event.image) {
+      try {
+        const imageObj = JSON.parse(event.image);
+        imageUrl = `${imageObj.serverUrl}${imageObj.serverRelativeUrl}`;
+        console.log("Image URL:", imageUrl);
+      } catch (error) {
+        console.error("Error parsing image JSON:", error);
+      }
+    }
+
+    // return (
+    //   <div
+    //     className={`carousel-item ${index === 0 ? 'active' : ''}`}
+    //     key={event.Id}
+    //   >
+    //     <div className="gal-box">
+    //       <a
+    //         className="image-popup newhimg"
+    //         title={`Screenshot of ${event.EventName}`}
+    //       >
+    //         <img
+    //           src={imageUrl}
+    //           className="d-block w-100"
+    //           alt={event.EventName || "Event image"}
+    //         />
+    //       </a>
+    //       <div className="gall-info">
+    //         <h4 className="font-16 twolinewrap mb-2 text-dark fw-bold mt-0">
+    //           {event.EventName || "No Event Name"}
+    //         </h4>
+    //         <p className="font-14 text-muted">
+    //           {event.Overview || "No overview available."}
+    //         </p>
+    //       </div>
+    //     </div>
+    //   </div>
+    // );
+  })}
+</div> */}
+  {/* <button className="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
     <span className="carousel-control-prev-icon" aria-hidden="true"></span>
     <span className="visually-hidden">Previous</span>
   </button>
   <button className="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
     <span className="carousel-control-next-icon" aria-hidden="true"></span>
     <span className="visually-hidden">Next</span>
-  </button>
+  </button> */}
 </div>
 
 
@@ -644,12 +819,12 @@ const EventcalenderContext = ({ props }: any) => {
                         className="col-md-9 position-relative p-3"
                       // style={{ border: "1px solid red" }}
                       >
-                        <Calendar
+                        <Calendar  style={{paddingTop:'0px'}}
                           localizer={localizer}
                           events={myEventsList}
                           startAccessor="start"
                           endAccessor="end"
-                          onSelectEvent={(event) => gotoNewsDetails(event)}
+                          onSelectEvent={(event) => handleEventHover(event)}
                         // style={{ height: 500 }}
                         />
                       </div>

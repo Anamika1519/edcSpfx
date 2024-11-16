@@ -1,20 +1,86 @@
 import Swal from "sweetalert2";
- 
 export const fetchBlogdata = async (_sp) => {
   let arr = []
- 
+
   await _sp.web.lists.getByTitle("ARGBlogs")
-  .items.select("*,Author/ID,Author/Title").expand("Author").orderBy("Created",false).getAll().then((res) => {
-    console.log(res);
- 
-    //res.filter(x=>x.Category?.Category==str)
-    arr = res;
-  })
+    .items.select("*,Author/ID,Author/Title").expand("Author").orderBy("Created", false).getAll().then((res) => {
+      console.log(res);
+
+      //res.filter(x=>x.Category?.Category==str)
+      arr = res;
+    })
     .catch((error) => {
       console.log("Error fetching data: ", error);
     });
   return arr;
 }
+
+export const fetchBookmarkBlogdata = async (_sp) => {
+  let arr = []
+  let bookmarkarr = [];
+  let currentUser;
+  await _sp.web.currentUser()
+    .then(user => {
+      console.log("user", user);
+      currentUser = user.Email; // Get the current user's Email
+    })
+    .catch(error => {
+      console.error("Error fetching current user: ", error);
+      return [];
+    });
+
+  await _sp.web.lists.getByTitle("ARGSavedBlogs")
+    .items.select("*,BlogId/ID,BlogId/Title,BlogSavedBy/ID,BlogSavedBy/Title,BlogSavedBy/EMail").expand("BlogId,BlogSavedBy")
+    .filter(`BlogSavedBy/EMail eq '${currentUser}'`)
+    .orderBy("Created", false).getAll().then(async (resnew) => {
+      console.log("resnew", resnew);
+      if (resnew.length > 0) {
+        debugger
+        for (let i = 0; i < resnew.length; i++) {
+          await _sp.web.lists.getByTitle("ARGBlogs")
+            .items.select("*,Author/ID,Author/Title").expand("Author")
+            .filter(`ID eq ${resnew[i].BlogIdId}`)
+            .orderBy("Created", false).getAll().then((res) => {
+              console.log("bookmarkarr", res, resnew[i].BlogIdId);
+              bookmarkarr.push(res[0])
+              //res.filter(x=>x.Category?.Category==str)
+
+            })
+            .catch((error) => {
+              console.log("Error fetching data: ", error);
+            });
+        }
+      }
+    })
+  console.log("bookmarkarrbookmarkarr", bookmarkarr);
+  arr = bookmarkarr;
+  return arr;
+}
+export const fetchBookmarkID = async (_sp) => {
+  let arr = []
+  let bookmarkarr = [];
+  let currentUser;
+  await _sp.web.currentUser()
+    .then(user => {
+      console.log("user", user);
+      currentUser = user.Email; // Get the current user's Email
+    })
+    .catch(error => {
+      console.error("Error fetching current user: ", error);
+      return [];
+    });
+
+  await _sp.web.lists.getByTitle("ARGSavedBlogs")
+    .items.select("*,BlogId/ID,BlogId/Title,BlogSavedBy/ID,BlogSavedBy/Title,BlogSavedBy/EMail").expand("BlogId,BlogSavedBy")
+    .filter(`BlogSavedBy/EMail eq '${currentUser}'`)
+    .orderBy("Created", false).getAll().then(async (resnew) => {
+      console.log("resnew", resnew);
+      arr = resnew;
+    })
+  console.log("resnewwwwww", arr);
+  return arr;
+}
+
 export const getBlog = async (_sp) => {
   let arr = []
   let str = "Announcements"
@@ -123,6 +189,28 @@ export const getBlogByID = async (_sp, id) => {
       console.log("Error fetching data: ", error);
     });
   console.log(arr, 'arr');
+  return arr;
+}
+export const getAllBlogsnonselected = async (_sp,Idnum) => {
+  debugger
+  let arr = []
+  let str = "Announcements"
+  await _sp.web.lists.getByTitle("ARGBlogs").items
+  .select("*").expand("")
+  .filter(`ID ne ${Idnum}`)
+  .top(3)
+  .orderBy("Created",true)
+  .getAll()
+    .then((res) => {
+      let resnew= res.slice(0, 3);
+      console.log("getallBlogs excluding",res,resnew);
+
+      //res.filter(x=>x.Category?.Category==str)
+      arr = resnew;
+    })
+    .catch((error) => {
+      console.log("Error fetching data: ", error);
+    });
   return arr;
 }
 export const getBlogDetailsById = async (_sp, idNum) => {

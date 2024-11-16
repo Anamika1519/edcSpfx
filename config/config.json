@@ -345,6 +345,14 @@
           "manifest": "./src/webparts/notificationDetails/NotificationDetailsWebPart.manifest.json"
         }
       ]
+    },
+    "user-profile-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/userProfile/UserProfileWebPart.js",
+          "manifest": "./src/webparts/userProfile/UserProfileWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {
@@ -401,6 +409,7 @@
     "BusinessAppsWebPartStrings": "lib/webparts/businessApps/loc/{locale}.js",
     "DmsWebPartStrings": "lib/webparts/dms/loc/{locale}.js",
     "DmsAdminWebPartStrings": "lib/webparts/dmsAdmin/loc/{locale}.js",
-    "NotificationDetailsWebPartStrings": "lib/webparts/notificationDetails/loc/{locale}.js"
+    "NotificationDetailsWebPartStrings": "lib/webparts/notificationDetails/loc/{locale}.js",
+    "UserProfileWebPartStrings": "lib/webparts/userProfile/loc/{locale}.js"
   }
 }

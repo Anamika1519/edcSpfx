@@ -24,6 +24,7 @@ import {
   fetchUserInformationList,
   getAnncouncementone,
   getNewsone,
+  fetchPinnedUser
 } from "../../../APISearvice/Dasborddetails";
 import { encryptId } from "../../../APISearvice/CryptoService";
 import { MessageSquare, ThumbsUp } from "react-feather";
@@ -141,6 +142,8 @@ const HelloWorldContext = ({ props }: any) => {
   const [dataofnews, setDataofNews] = useState<any[]>([]);
   const [dataofevent, setDataofEvent] = useState<any[]>([]);
   const [usersitem, setUsersArr] = useState<any[]>([]);
+  const [pinUsersitem, setPinUsersArr] = useState<any[]>([]);
+ 
   const scrollContainerRef = useRef(null);
   const handleScroll = () => {
     if (headerRef.current) {
@@ -198,20 +201,22 @@ const HelloWorldContext = ({ props }: any) => {
     setDataofEvent(eventdata);
 
     setUsersArr(await fetchUserInformationList(sp))
+    setPinUsersArr(await fetchPinnedUser(sp))
+    console.log("pin",pinUsersitem)
     // setProjects(await fetchprojectdataTop(sp))
-    
+
     async function updateProjects(sp: SPFI) {
       // Fetch and set projects first
       const projects = await fetchprojectdataTop(sp);
       setProjects(projects);
-  
+
       // Then fetch and set project comments
       const projectsComments = await fertchprojectcomments(sp);
       setProjectscomments(projectsComments);
-  }
-  
-  // Call the function
-  updateProjects(sp);
+    }
+
+    // Call the function
+    updateProjects(sp);
   };
 
   const [projects, setProjects] = useState([]);
@@ -258,68 +263,87 @@ const HelloWorldContext = ({ props }: any) => {
     const encryptedId = encryptId(String(item.ID));
     window.location.href = `${siteUrl}/SitePages/Announcements.aspx`;
   };
-
+  const NavigatetoAnnouncement = (e:any,item: number) => {
+    console.log("NavigatetoAnnouncement-->>>>", item)
+    debugger
+   
+    const encryptedId = encryptId(String(item));
+    window.location.href = `${siteUrl}/SitePages/AnnouncementDetails.aspx?${item}`;
+  };
+  const NavigatetoEvent = (e:any,item: number) => {
+    console.log("NavigatetoEvent-->>>>", item)
+    const encryptedId = encryptId(String(item));
+    window.location.href = `${siteUrl}/SitePages/EventDetailsCalendar.aspx?${item}`;
+  };   
+  const Navigatetonews = (e:any,item: number) => {
+    console.log("Navigatetonews-->>>>", item)
+    const encryptedId = encryptId(String(item));
+    window.location.href = `${siteUrl}/SitePages/NewsDetails.aspx?${item}`;
+  };
   console.log(leaderboard, 'leaderboard');
-	
-  function truncateString(str:any, project:any) {
+
+  function truncateString(str: any, project: any) {
     const maxLength = 87; // The number of characters before truncation
-    if (str.length > maxLength) {
+    if (str)
+    {
+      if (str.length > maxLength) {
         const truncatedString = str.substring(0, maxLength);
         return (
-            <>
-                {truncatedString}
-                <button
-                    className="view-more-button"
-                    onClick={() => GotoNextPageProject(project)}
-                    style={{ marginLeft: "5px", color: "blue", border: "none", background: "none", cursor: "pointer" }}
-                >
-                    ...view more
-                </button>
-            </>
+          <>
+            {truncatedString}
+            <button
+              className="view-more-button text-muted fw-bold"
+              onClick={() => GotoNextPageProject(project)}
+              style={{ marginLeft: "0px", paddingLeft: "0px", border: "none", background: "none", cursor: "pointer" }}
+            >
+              ...view more
+            </button>
+          </>
         );
+      }
     }
     return str;
-}
-
-const [commentsData, setCommentsData] = useState<Record<string, number>>({});
-
-// Function to fetch data for each project ID
-const fetchProjectComments = async (projectId:any) => {
-  try {
-    const response = await _sp.web.lists.getByTitle("ARGProjectComments")
-      .items.filter(`ARGProjectId eq ${projectId}`)();
-     console.log(response , "here is our response")
-    if (response.length > 0) {
-      // Update the state with the fetched comment count
-      return { [projectId]: response[0].CommentsCount || 0 };
-    } else {
-      // If no comments, set to 0
-      return { [projectId]: 0 };
-    }
-  } catch (error) {
-    console.error('Error fetching project comments:', error);
-    return { [projectId]: 0 }; // In case of error, set 0
   }
-};
 
-useEffect(() => {
-  // Use a function to fetch comments for each project and set the state
-  const fetchCommentsForProjects = async () => {
-    // Create an object to hold all the comment counts
-    const commentCounts:any = {};
+  const [commentsData, setCommentsData] = useState<Record<string, number>>({});
 
-    // Fetch comments for all projects
-    for (let project of projects) {
-      const projectComment = await fetchProjectComments(project.ID);
-      commentCounts[project.ID] = projectComment[project.ID];
+  // Function to fetch data for each project ID
+  const fetchProjectComments = async (projectId: any) => {
+    try {
+      const response = await _sp.web.lists.getByTitle("ARGProjectComments")
+        .items.filter(`ARGProjectId eq ${projectId}`)();
+      console.log(response, "here is our response")
+      if (response.length > 0) {
+        // Update the state with the fetched comment count
+        return { [projectId]: response[0].CommentsCount || 0 };
+      } else {
+        // If no comments, set to 0
+        return { [projectId]: 0 };
+      }
+    } catch (error) {
+      console.error('Error fetching project comments:', error);
+      return { [projectId]: 0 }; // In case of error, set 0
     }
-
-    // Once all comments are fetched, update the state at once
-    setCommentsData(commentCounts);
   };
 
-  fetchCommentsForProjects();
-}, [projects]);
+  useEffect(() => {
+    // Use a function to fetch comments for each project and set the state
+    const fetchCommentsForProjects = async () => {
+      // Create an object to hold all the comment counts
+      const commentCounts: any = {};
+
+      // Fetch comments for all projects
+      for (let project of projects) {
+        const projectComment = await fetchProjectComments(project.ID);
+        commentCounts[project.ID] = projectComment[project.ID];
+      }
+
+      // Once all comments are fetched, update the state at once
+      setCommentsData(commentCounts);
+    };
+
+    fetchCommentsForProjects();
+  }, [projects]);
   return (
 
 
@@ -422,6 +446,7 @@ useEffect(() => {
                             <h4
                               className="mb-0 twolinewrap text-dark fw-bold font-14 mt-0"
                               style={{ fontSize: "14px", fontWeight: "bold" }}
+                              onClick={(e) => NavigatetoAnnouncement(e,announcement.ID)}
                             >
                               {announcement.Title}
                             </h4>
@@ -466,8 +491,8 @@ useEffect(() => {
                     </div>
                   </div>
                 </div>
-              
-              
+
+
 
                 <div className="row mt-0">
                   {/* Corporate Directory */}
@@ -485,25 +510,26 @@ useEffect(() => {
                           </a>
                         </h4>
                         <div className="inbox-widget" style={{ marginTop: '1rem' }}>
-                          {usersitem.map((user, index) => (
+                          {pinUsersitem.map((user, index) => (
                             <div
                               key={index}
                               className="d-flex border-bottom heit8 align-items-start w-100 justify-content-between mb-1"
                             >
                               <div className="col-sm-2">
                                 <a href="contacts-profile.html">
-                                  <img
-                                    src={user.Picture != null ? `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${user.EMail}` : require("../assets/users.jpg")}
+                                <img
+                                    // src={user.Picture != null ? `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${user.EMail}` : require("../assets/users.jpg")}
+                                    src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${user.Pinned.EMail}`}
                                     className="rounded-circle"
                                     width="50"
-                                    alt={user.name}
+                                    alt={user.Pinned.Title}
                                   />
                                 </a>
                               </div>
                               <div className="col-sm-8">
                                 <a href="contacts-profile.html">
-                                  <p className="fw-bold font-14 mb-0 text-dark">
-                                    {user.Title} | {user.Department != null ? user.Department : 'NA'}
+                                  <p className="fw-bold font-14 mb-2 text-dark">
+                                  {user.Pinned.Title} | {user.Pinned.EMail != null ? user.Pinned.EMail : 'NA'}
                                   </p>
                                 </a>
                                 <p
@@ -513,13 +539,24 @@ useEffect(() => {
                                   }}
                                   className="font-12"
                                 >
-                                  NA
+                                  {user.Pinned.MobilePhone}
                                   {/* Mob: {user.mobile} */}
                                 </p>
                               </div>
                               <div className="col-sm-2">
-                                <img
+                              <img
                                   src={require("../assets/calling.png")}
+                                  onClick={() =>
+
+                                    window.open(
+
+                                      `https://teams.microsoft.com/l/call/0/0?users=${user.Pinned.EMail}`,
+
+                                      "_blank"
+
+                                    )
+
+                                  }
                                   className="alignright"
                                   alt="call"
                                   width="25"
@@ -532,104 +569,105 @@ useEffect(() => {
                     </div>
                   </div>
                   <div className="col-xl-7 col-lg-7">
-                  {/* Upcoming Events */}
-                  <div className="card" style={{ borderRadius: "1rem" }}>
-                    <div className="card-body pb-0">
-                      <h4
-                        className="header-title text-dark fw-bold mb-0"
-                        style={{
-                          fontSize: "16px",
-                          fontWeight: "bold",
-                        }}
-                      >
-                        Upcoming Events
-                        <a
-
-                          style={{ float: "right" }}
-                          className="font-11 fw-normal btn  rounded-pill waves-effect waves-light view-all"
-                          // href="SitePages/Mediadetails.aspx"
-                          onClick={(e) => GotoNextPage(e)}
+                    {/* Upcoming Events */}
+                    <div className="card" style={{ borderRadius: "1rem" }}>
+                      <div className="card-body pb-0">
+                        <h4
+                          className="header-title text-dark fw-bold mb-0"
+                          style={{
+                            fontSize: "16px",
+                            fontWeight: "bold",
+                          }}
                         >
-                          View All
-                        </a>
-                      </h4>
-                      <div className="mt-0">
-                        {dataofevent.map((event, index) => {
-                          // Parse the EventDate to get the day, month, and year
-                          const eventDate = new Date(event.EventDate);
-                          const formattedDate = eventDate.toLocaleDateString(
-                            "default",
-                            {
-                              day: "2-digit", // To display the day with two digits
-                              month: "short", // To display the abbreviated month (e.g., Jul, Sep)
-                              year: "numeric", // To display the full year (e.g., 2024)
-                            }
-                          );
+                          Upcoming Events
+                          <a
 
-                          return (
-                            <div
-                              key={index}
-                              style={{
-                                padding: "0px 0px 0px 0px",
-                                margin: "auto",
-                                width: "100%",
-                              }}
-                              className="row align-items-start border-bottom mb-0 ng-scope"
-                            >
+                            style={{ float: "right" }}
+                            className="font-11 fw-normal btn  rounded-pill waves-effect waves-light view-all"
+                            // href="SitePages/Mediadetails.aspx"
+                            onClick={(e) => GotoNextPage(e)}
+                          >
+                            View All
+                          </a>
+                        </h4>
+                        <div className="mt-0">
+                          {dataofevent.map((event, index) => {
+                            // Parse the EventDate to get the day, month, and year
+                            const eventDate = new Date(event.EventDate);
+                            const formattedDate = eventDate.toLocaleDateString(
+                              "default",
+                              {
+                                day: "2-digit", // To display the day with two digits
+                                month: "short", // To display the abbreviated month (e.g., Jul, Sep)
+                                year: "numeric", // To display the full year (e.g., 2024)
+                              }
+                            );
+
+                            return (
                               <div
-                                style={{ padding: "0px" }}
-                                className="col-sm-2"
+                                key={index}
+                                style={{
+                                  padding: "0px 0px 0px 0px",
+                                  margin: "auto",
+                                  width: "100%",
+                                }}
+                                className="row align-items-start border-bottom mb-0 ng-scope"
                               >
-                                <div className="icon-1 event me-0">
-                                  <h4
-                                    className="ng-binding"
-                                    style={{ color: "#1fb0e5" }}
-                                  >
-                                    {eventDate.getDate()} {/* Display the day */}
-                                  </h4>
-                                  <p
-                                    className="ng-binding"
-                                    style={{
-                                      backgroundColor: "#1fb0e5",
-                                      color: "white",
-                                    }}
-                                  >
-                                    {eventDate.toLocaleString("default", {
-                                      month: "short",
-                                      year: "numeric",
-                                    })}{" "}
-                                    {/* Display the abbreviated month and year */}
-                                  </p>
+                                <div
+                                  style={{ padding: "0px" }}
+                                  className="col-sm-2"
+                                >
+                                  <div className="icon-1 event me-0">
+                                    <h4
+                                      className="ng-binding"
+                                      style={{ color: "#1fb0e5" }}
+                                    >
+                                      {eventDate.getDate()} {/* Display the day */}
+                                    </h4>
+                                    <p
+                                      className="ng-binding"
+                                      style={{
+                                        backgroundColor: "#1fb0e5",
+                                        color: "white",
+                                      }}
+                                    >
+                                      {eventDate.toLocaleString("default", {
+                                        month: "short",
+                                        year: "numeric",
+                                      })}{" "}
+                                      {/* Display the abbreviated month and year */}
+                                    </p>
+                                  </div>
+                                </div>
+                                <div style={{ padding: "0px" }} className="col-sm-9 upcom2">
+                                  <div className="w-100 ps-0 mt-3">
+                                    <h4
+                                      className=" text-dark font-14 fw-bold"
+                                      style={{
+                                        fontSize: "14px",
+                                        overflow: "hidden",
+                                        textOverflow: "ellipsis",
+                                        display: "-webkit-box",
+                                        WebkitBoxOrient: "vertical",
+                                        WebkitLineClamp: 1
+                                      }}
+                                      onClick={(e) => NavigatetoEvent(e,event.ID)}
+                                    >
+                                      {event.EventName} {/* Event title */}
+                                    </h4>
+                                    <p className=" font-12">
+                                      <i className="fe-calendar me-1"></i>
+                                      {moment(formattedDate).format("DD-MMM-YYYY")}
+                                      {/* Display the full formatted date (22 Jul 2024) */}
+                                    </p>
+                                  </div>
                                 </div>
                               </div>
-                              <div  style={{ padding: "0px" }} className="col-sm-9 upcom2">
-                                <div className="w-100 ps-0 mt-3">
-                                  <h4
-                                    className=" text-dark font-14 fw-bold"
-                                    style={{
-                                      fontSize: "14px",
-                                      overflow: "hidden",
-                                      textOverflow: "ellipsis",
-                                      display: "-webkit-box",
-                                      WebkitBoxOrient: "vertical",
-                                      WebkitLineClamp: 1
-                                    }}
-                                  >
-                                    {event.EventName} {/* Event title */}
-                                  </h4>
-                                  <p className=" font-12">
-                                    <i className="fe-calendar me-1"></i>
-                                    {moment(formattedDate).format("DD-MMM-YYYY")}
-                                    {/* Display the full formatted date (22 Jul 2024) */}
-                                  </p>
-                                </div>
-                              </div>
-                            </div>
-                          );
-                        })}
+                            );
+                          })}
+                        </div>
                       </div>
                     </div>
-                  </div>
                   </div>
 
                   {/* gallery  */}
@@ -684,10 +722,10 @@ useEffect(() => {
                                     </span>
 
                                     <span className="tabvtext">
-                                     <span className="twolinewrap mb-1 text-dark">  {item.Title} <br /> </span>
+                                      <span className="twolinewrap mb-1 text-dark">  {item.Title} <br /> </span>
                                       <span style={{ paddingTop: "2px" }}>
                                         <i className="fa fa-clock-o"></i>&nbsp;
-                                        {moment(item.Created).format("DD-MMM-YYYY HH:mm")}
+                                        {moment(item.Created).format("DD-MMM-YYYY")}
                                       </span>
                                     </span>
                                   </button>
@@ -739,7 +777,7 @@ useEffect(() => {
                   </div>
                 </div>
               </div>
-           
+
               <div className="col-xl-3 col-lg-6 tabview2">
                 {/* Profile Info */}
                 <div className="card" style={{ borderRadius: "1rem " }}>
@@ -810,6 +848,7 @@ useEffect(() => {
                                 fontSize: "16px",
                               }}
                               className="fw-bold font-16 mt-2 mb-2 twolinewrap text-dark"
+                              onClick={(e) => Navigatetonews(e,news.ID)}
                             >
                               {news.Title}
                             </h4>
@@ -843,103 +882,103 @@ useEffect(() => {
                           View All
                         </a>
                       </h4>
-                      <div  className="d-flex align-items-start pt-1 justify-content-between border-radius mb-2">
-                      <div className="row mt-0 ipadt">
-                        {leaderboard.length > 0 && leaderboard.slice(0, 4).map((user, index) => (
-                          <div className="row border-bottom heit9"
-                            key={index}
-                           
-                          >
-                            <div style={{paddingLeft:"0px"}} className="col-sm-2">
-                            <img
-                                className="rounded-circle"
-                                src={
-                                  `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${user.AuthorEMail}`
-                                }
-                                width="50"
-                                alt={user.AuthorTitle}
-                              />
-                              </div>
-                          
-                            <div className="col-sm-10 ps-2">
-                              <div className="row">
-                                <div className="col-lg-8">
-                                <div className="w-100 ps-1 pt-0">
-                                <h5 className="inbox-item-text fw-bold font-14 mb-0 text-dark">
-                                  {user.AuthorTitle}
-                                </h5>
-                                <span
-                                  style={{ color: "#6b6b6b", lineHeight:"15px", float:"left" }}
-                                  className="font-12"
-                                >
-                                  {user.AuthorDepartment ? user.AuthorDepartment : 'NA'}
-                                </span>
+                      <div className="d-flex align-items-start pt-1 justify-content-between border-radius mb-2">
+                        <div className="row mt-0 ipadt">
+                          {leaderboard.length > 0 && leaderboard.slice(0, 3).map((user, index) => (
+                            <div className="row border-bottom heit9"
+                              key={index}
+
+                            >
+                              <div style={{ paddingLeft: "0px" }} className="col-sm-2">
+                                <img
+                                  className="rounded-circle"
+                                  src={
+                                    `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${user.AuthorEMail}`
+                                  }
+                                  width="50"
+                                  alt={user.AuthorTitle}
+                                />
                               </div>
 
-                                  </div>
-                                  <div style={{paddingLeft:"0px"}} className="col-lg-4">
-                                  <a
-                                style={{ marginTop: "3px" }}
-                                href="javascript:void(0);"
-                                className="btn btn-sm btn-link text-muted ps-3 pe-0"
-                              >
-                                {Array(user.Ratting)
-                                  .fill(null)
-                                  .map((_, index) => (
-                                    <img
-                                      key={index}
-                                      src={require("../assets/nounachievement.png")}
-                                      title="Badges"
-                                      alt="badge"
-                                      className="me-0 ipaddw"
-                                    />
-                                  ))}
-                              </a>
+                              <div className="col-sm-10 ps-2">
+                                <div className="row">
+                                  <div className="col-lg-8">
+                                    <div className="w-100 ps-1 pt-0">
+                                      <h5 className="inbox-item-text fw-bold font-14 mb-0 text-dark">
+                                        {user.AuthorTitle}
+                                      </h5>
+                                      <span
+                                        style={{ color: "#6b6b6b", lineHeight: "15px", float: "left" }}
+                                        className="font-12"
+                                      >
+                                        {user.AuthorDepartment ? user.AuthorDepartment : 'NA'}
+                                      </span>
                                     </div>
+
+                                  </div>
+                                  <div style={{ paddingLeft: "0px" }} className="col-lg-4">
+                                    <a
+                                      style={{ marginTop: "3px" }}
+                                      href="javascript:void(0);"
+                                      className="btn btn-sm btn-link text-muted ps-3 pe-0"
+                                    >
+                                      {Array(user.Ratting)
+                                        .fill(null)
+                                        .map((_, index) => (
+                                          <img
+                                            key={index}
+                                            src={require("../assets/nounachievement.png")}
+                                            title="Badges"
+                                            alt="badge"
+                                            className="me-0 ipaddw"
+                                          />
+                                        ))}
+                                    </a>
+                                  </div>
 
                                 </div>
                                 <div className="row">
 
-                                <div className="col-sm-3">
-                              <div
-                                className="product-price-tag positiont text-primary rounded-circle newc"
-                                title="Position"
-                              >
-                                {user.position < 10
-                                  ? `0${user.position}`
-                                  : user.position}
-                                {index + 1}
-                              </div>
-                            </div>
-
-                            <div className="col-sm-9">
-                              <span
-                                style={{
-                                  padding: "5px",
-                                  borderRadius: "4px",
-                                  background: "#cce7dc",
-                                  fontWeight: "600",
-                                  color: "#008751",
-                                  position:"relative",
-                                  top:"-3px",
-                                  width:"100%",
-                                  textAlign:"center",
-                                }}
-                                className="posnew font-12  float-end mt-2 mb-2"
-                              >
-                                Points Earned {user.TotalPoints < 1000 ? user.TotalPoints : (user.TotalPoints / 1000).toFixed(1).replace(/\.0$/, '') + 'K'}
-                              </span>
-                            </div>
-
+                                  <div className="col-sm-3">
+                                    <div
+                                      className="product-price-tag positiont text-primary rounded-circle newc"
+                                      title="Position"
+                                    >
+                                      {user.position < 10
+                                        ? `0${user.position}`
+                                        : user.position}
+                                      {index + 1}
+                                    </div>
                                   </div>
-                             
+
+                                  <div className="col-sm-9">
+                                    <span
+                                      style={{
+                                        padding: "5px",
+                                        borderRadius: "4px",
+                                        background: "#cce7dc",
+                                        fontWeight: "600",
+                                        color: "#008751",
+                                        position: "relative",
+                                        top: "-3px",
+                                        width: "100%",
+                                        textAlign: "center",
+                                      }}
+                                      className="posnew font-12  float-end mt-2 mb-2"
+                                    >
+                                      Points Earned {user.TotalPoints < 1000 ? user.TotalPoints : (user.TotalPoints / 1000).toFixed(1).replace(/\.0$/, '') + 'K'}
+                                    </span>
+                                  </div>
+
+                                </div>
+
+                              </div>
+
+
                             </div>
-                          
-                           
-                          </div>
-                        ))}
+                          ))}
+                        </div>
                       </div>
-                    </div>
                     </div>
                   </div>
                 </div>
@@ -971,7 +1010,7 @@ useEffect(() => {
                       <a
                         href={`${siteUrl}/SitePages/Project.aspx`}
                         className="font-11 view-all fw-normal btn rounded-pill waves-effect waves-light"
-                        style={{ float: "right", top:"0" }}
+                        style={{ float: "right", top: "0" }}
                       >
                         View All
                       </a>
@@ -981,16 +1020,17 @@ useEffect(() => {
                         <div className="col-lg-4" key={project.Id}>
                           <div className="card project-box">
                             <div className="card-body">
-                              <div className="dropdown float-end">
+                              <div className="dropdown mt-3 float-end">
                                 <a
 
                                   className="dropdown-toggle card-drop arrow-none"
                                   data-bs-toggle="dropdown"
                                 >
-                                  <i className="fe-more-horizontal- m-0 text-muted h3"></i>
+                                  <img className="morealign" src={require('../assets/more.png')} />
+
                                 </a>
-                                <div className="dropdown-menu dropdown-menu-end">
-                                  <a className="dropdown-item" onClick={() => GotoNextPageProject(project)} >
+                                <div style={{ padding: "0px", top: "15px", minWidth: "auto", textAlign: "center" }} className="dropdown-menu newheight dropdown-menu-end">
+                                  <a className="dropdown-item font-12" onClick={() => GotoNextPageProject(project)} >
                                     View Detail
                                   </a>
                                 </div>
@@ -1005,9 +1045,9 @@ useEffect(() => {
                               </h4>
                               <p
                                 className="date-color font-12 mb-3"
-                                style={{ color: "#98a6ad" }}
+                                style={{ color: "#98a6ad", height: "36px" }}
                               >
-                               {truncateString(project.ProjectOverview, project)}
+                                {truncateString(project.ProjectOverview, project)}
                                 {/* <a   className="fw-bold text-muted">
                                     view more
                                   </a> */}
@@ -1017,27 +1057,24 @@ useEffect(() => {
                                   style={{ color: "#6e767e" }}
                                   className="pe-2 text-nowrap"
                                 >
-                                   <img src={require("../assets/projectdoc.png")} style={{ width: "12px" }} /> <b>{project?.ProjectsDocsId?.length}</b> Documents
+                                  <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} /> <b>{project?.ProjectsDocsId?.length}</b> Documents
                                 </span>
                                 <span>
-                                <img src={require("../assets/comment.png")} style={{ width: "12px" }} />
-                                {/* Display fetched comment count */}
-                  {commentsData[project.ID] !== undefined ? (
-                     `${commentsData[project.ID]} Comments`
-                  ) : (
-                    'Loading comments...'
-                  )}
+                                  <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />
+                                  {/* Display fetched comment count */}
+                                  {commentsData[project.ID] !== undefined ? (
+                                    `${commentsData[project.ID]} Comments`
+                                  ) : (
+                                    'Loading comments...'
+                                  )}
                                 </span>
 
                               </p>
-                              <div className="avatar-group mb-2">
-                                <div
-                                  style={{
-                                    minWidth: "70px",
-                                    maxWidth: "100%"
-                                  }}
+                              <div className="avatar-group mt-3 mb-2">
+                                <div style={{ display: 'flex' }}
+
                                 >
-                                  <div style={{ display: 'flex' }}>
+                                  <div style={{ display: 'flex' }} >
                                     {project?.TeamMembers?.length > 0 && project?.TeamMembers?.map(
                                       (id: any, idx: any) => {
                                         if (idx < 3) {
@@ -1050,10 +1087,11 @@ useEffect(() => {
                                                     : "0 0 0px -12px",
                                               }}
                                               src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                                              className="rounded-circlecss img-thumbnail avatar-xl"
-                                              alt="profile-image"
+                                              className="rounded-circlecss newminus img-thumbnail avatar-xl"
+                                              alt="profile-image" data-bs-container="#tooltips-container" data-bs-toggle="tooltip" data-bs-placement="bottom" aria-label="Mat Helme" data-bs-original-title="Mat Helme" data-themekey="#"
                                             />
                                           );
+
                                         }
                                       }
                                     )}
@@ -1075,7 +1113,7 @@ useEffect(() => {
                                                 ? "0 0 0 0"
                                                 : "0 0 0px -12px",
                                           }}
-                                          className="rounded-circlecss img-thumbnail avatar-xl"
+                                          className="rounded-circlecss newminus  text-center img-thumbnail avatar-xl"
                                         >
                                           +
                                         </div>
@@ -1098,7 +1136,7 @@ useEffect(() => {
                                                     : "0 0 0px -12px",
                                               }}
                                               src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                                              className="rounded-circlecss img-thumbnail avatar-xl"
+                                              className="rounded-circlecss newminus img-thumbnail avatar-xl"
                                               alt="profile-image"
                                             />
                                           );
@@ -1121,7 +1159,7 @@ useEffect(() => {
         </div>
       </div>
     </div>
-         
+
   );
 };
 

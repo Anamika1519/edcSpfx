@@ -40,18 +40,18 @@ const MediaMastercontext = ({ props }: any) => {
     SubmittedDate: ''
   });
   const [sortConfig, setSortConfig] = React.useState({ key: '', direction: 'ascending' });
-
+ 
   const ApiCall = async () => {
     const mediaArr = await getMedia(sp);
     setmediaData(mediaArr);
   };
-
+ 
   React.useEffect(() => {
     // Usage
     ApiCall();
-
+ 
     console.log('This function is called only once', useHide);
-
+ 
     const showNavbar = (
       toggleId: string,
       navId: string,
@@ -62,7 +62,7 @@ const MediaMastercontext = ({ props }: any) => {
       const nav = document.getElementById(navId);
       const bodypd = document.getElementById(bodyId);
       const headerpd = document.getElementById(headerId);
-
+ 
       if (toggle && nav && bodypd && headerpd) {
         toggle.addEventListener('click', () => {
           nav.classList.toggle('show');
@@ -72,42 +72,42 @@ const MediaMastercontext = ({ props }: any) => {
         });
       }
     };
-
+ 
     showNavbar('header-toggle', 'nav-bar', 'body-pd', 'header');
-
+ 
     const linkColor = document.querySelectorAll('.nav_link');
-
+ 
     function colorLink(this: HTMLElement) {
       if (linkColor) {
         linkColor.forEach(l => l.classList.remove('active'));
         this.classList.add('active');
       }
     }
-
+ 
     linkColor.forEach(l => l.addEventListener('click', colorLink));
   }, [useHide]);
-
+ 
   const handleSidebarToggle = (bol: boolean) => {
     setIsSidebarOpen((prevState) => !prevState);
     useHide(!bol);
     document.querySelector(".sidebar")?.classList.toggle("close");
   };
-
+ 
   // const [currentPage, setCurrentPage] = React.useState(1);
   // const itemsPerPage = 10;
   // const totalPages = Math.ceil(mediaData.length / itemsPerPage);
-
+ 
   // const handlePageChange = (pageNumber: any) => {
   //   if (pageNumber > 0 && pageNumber <= totalPages) {
   //     setCurrentPage(pageNumber);
   //   }
   // };
-
+ 
   // const startIndex = (currentPage - 1) * itemsPerPage;
   // const endIndex = startIndex + itemsPerPage;
   // const currentData = mediaData.slice(startIndex, endIndex);
   // console.log(currentData, 'currentData');
-
+ 
   const siteUrl = props.siteUrl
   const headers = [
     { label: 'S.No.', key: 'ID', style: { width: '5%' } },
@@ -116,7 +116,7 @@ const MediaMastercontext = ({ props }: any) => {
     { label: 'Description', key: 'Description', style: { width: '50%' } },
     { label: 'Date', key: 'SubmittedDate', style: { width: '15%' } },
     { label: 'Action', key: 'Action', style: { width: '15%' } },
-
+ 
   ];
   const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
     setFilters({
@@ -124,7 +124,7 @@ const MediaMastercontext = ({ props }: any) => {
       [field]: e.target.value,
     });
   };
-
+ 
   const handleSortChange = (key: string) => {
     let direction = 'ascending';
     if (sortConfig.key === key && sortConfig.direction === 'ascending') {
@@ -149,13 +149,13 @@ const MediaMastercontext = ({ props }: any) => {
         // Sort by index
         const aIndex = data.indexOf(a);
         const bIndex = data.indexOf(b);
-
+ 
         return sortConfig.direction === 'ascending' ? aIndex - bIndex : bIndex - aIndex;
       } else if (sortConfig.key) {
         // Sort by other keys
         const aValue = a[sortConfig.key] ? a[sortConfig.key].toLowerCase() : '';
         const bValue = b[sortConfig.key] ? b[sortConfig.key].toLowerCase() : '';
-
+ 
         if (aValue < bValue) {
           return sortConfig.direction === 'ascending' ? -1 : 1;
         }
@@ -167,28 +167,28 @@ const MediaMastercontext = ({ props }: any) => {
     });
     return sortedData;
   };
-
+ 
   const filteredAnnouncementData = applyFiltersAndSorting(mediaData);
-
+ 
   const [currentPage, setCurrentPage] = React.useState(1);
   const itemsPerPage = 10;
   const totalPages = Math.ceil(filteredAnnouncementData.length / itemsPerPage);
-
+ 
   const handlePageChange = (pageNumber: any) => {
     if (pageNumber > 0 && pageNumber <= totalPages) {
       setCurrentPage(pageNumber);
     }
   };
-
+ 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentData = filteredAnnouncementData.slice(startIndex, endIndex);
-
-
-  //#region Download exl file 
+ 
+ 
+  //#region Download exl file
   const handleExportClick = () => {
     console.log(currentData, 'currentData');
-
+ 
     const exportData = currentData.map((item, index) => ({
       'S.No.': startIndex + index + 1,
       'Title': item.Title,
@@ -196,7 +196,7 @@ const MediaMastercontext = ({ props }: any) => {
       'Status': item.Status,
       'Submitted Date': item.Created,
     }));
-
+ 
     exportToExcel(exportData, 'MeadiaGallery');
   };
   const exportToExcel = (data: any[], fileName: string) => {
@@ -218,20 +218,20 @@ const MediaMastercontext = ({ props }: any) => {
     }
   ]
   //#endregion
-
-
-  //#region 
+ 
+ 
+  //#region
   const Editmedia = (id: any) => {
     debugger
     // setUseId(id)
-
+ 
     const encryptedId = encryptId(String(id));
     sessionStorage.setItem("mediaId", encryptedId)
     window.location.href = `${siteUrl}/SitePages/MediaGalleryForm.aspx`;
   }
   //#endregion
-
-  //#region 
+ 
+  //#region
   const Deletemedia = (id: any) => {
     Swal.fire({
       title: "Are you sure?",
@@ -249,16 +249,14 @@ const MediaMastercontext = ({ props }: any) => {
           title: "Deleted!",
           text: "Item has been deleted.",
           icon: "success"
-        }).then(async res=>
-        {
-          setmediaData(await  getMedia(sp));
+        }).then(async res => {
+          setmediaData(await getMedia(sp));
         }
-        ).catch(async err=>
-        {
-          setmediaData(await  getMedia(sp));
+        ).catch(async err => {
+          setmediaData(await getMedia(sp));
         }
         )
-
+ 
       }
     })
   }
@@ -271,16 +269,16 @@ const MediaMastercontext = ({ props }: any) => {
     setIsOpen(!isOpen);
   };
   return (
-
- <div id="wrapper" ref={elementRef}>
-      <div 
+ 
+    <div id="wrapper" ref={elementRef}>
+      <div
         className="app-menu"
         id="myHeader">
         <VerticalSideBar _context={sp} />
       </div>
-      <div className="content-page"> 
-          <HorizontalNavbar  _context={sp} siteUrl={siteUrl}/>
-        <div className="content" style={{marginLeft: `${!useHide ? '240px' : '80px'}`, marginTop:'0.6rem'}}>
+      <div className="content-page">
+        <HorizontalNavbar _context={sp} siteUrl={siteUrl} />
+        <div className="content" style={{ marginLeft: `${!useHide ? '240px' : '80px'}`, marginTop: '0.6rem' }}>
           <div className="container-fluid  paddb">
             <div className="row pt-0">
               <div className="col-lg-3">
@@ -313,7 +311,7 @@ const MediaMastercontext = ({ props }: any) => {
                       <thead>
                         <tr>
                           <th style={{ borderBottomLeftRadius: '10px', minWidth: '50px', maxWidth: '50px', borderTopLeftRadius: '10px' }}>
-
+ 
                             <div className="d-flex pb-2"
                               style={{ justifyContent: 'space-between' }}>
                               <span>S.No.</span>
@@ -378,36 +376,87 @@ const MediaMastercontext = ({ props }: any) => {
                                   <FontAwesomeIcon icon={faFileExport} />  Export
                                 </div>
                               </div></div>
-
+ 
                             </div>
                             <div style={{ height: '32px' }}></div>
                           </th>
                         </tr>
                       </thead>
-                      <tbody >
-                        {currentData.length > 0 ? currentData.map((item, index) => {
-                          const ImageUrl = item.Image == undefined || item.Image == null ? "" : JSON.parse(item.Image);
-                          return (
-
-                            <tr key={index}>
-                              <td style={{ minWidth: '50px', maxWidth: '50px' }}>{index + 1}</td>
-                              <td>{item.Title}</td>
-                              <td>{item?.EntityMaster?.Entity}</td>
-                              <td>{item.Status}</td>
-                              <td style={{ minWidth: '80px', maxWidth: '80px' }}>{moment(item.Created).format('L')} </td>
-                              <td style={{ minWidth: '50px', maxWidth: '50px' }} className="ng-binding">
-                                <div className="d-flex  pb-2" style={{ justifyContent: 'space-around' }}>
-                                  <span > <a className="action-icon text-primary" onClick={() => Editmedia(item.ID)}>
-                                    <FontAwesomeIcon icon={faEdit} />
-                                  </a></span>  <span >
-                                    <a className="action-icon text-danger" onClick={() => Deletemedia(item.ID)}>
-                                      <FontAwesomeIcon icon={faTrashAlt} />
-                                    </a></span></div>
-                              </td>
-                            </tr>
-                          )
-                        }) : ""
-                        }
+                      <tbody>
+                        {currentData.length > 0
+                          ? currentData.map((item, index) => {
+                            const ImageUrl =
+                              item.Image == undefined || item.Image == null
+                                ? ""
+                                : JSON.parse(item.Image);
+                            return (
+                              <tr key={index}>
+                                <td
+                                  style={{
+                                    minWidth: "50px",
+                                    maxWidth: "50px",
+                                  }}
+                                >
+                                  {index + 1}
+                                </td>
+                                <td>{item.Title}</td>
+                                <td>{item?.EntityMaster?.Entity}</td>
+                                <td>{item.Status}</td>
+                                <td
+                                  style={{
+                                    minWidth: "80px",
+                                    maxWidth: "80px",
+                                  }}
+                                >
+                                  {moment(item.Created).format("L")}
+                                </td>
+                                <td
+                                  style={{
+                                    minWidth: "50px",
+                                    maxWidth: "50px",
+                                  }}
+                                  className="ng-binding"
+                                >
+                                  <div
+                                    className="d-flex pb-2"
+                                    style={{ justifyContent: "space-around" }}
+                                  >
+                                    {/* Conditionally render the edit button based on status */}
+                                    <span>
+                                      <a
+                                        className={`action-icon ${item.Status === "Save as draft"
+                                            ? "text-primary"
+                                            : "text-muted"
+                                          }`}
+                                        onClick={
+                                          item.Status === "Save as draft"
+                                            ? () => Editmedia(item.ID)
+                                            : null
+                                        }
+                                        style={{
+                                          cursor:
+                                            item.Status === "Save as draft"
+                                              ? "pointer"
+                                              : "not-allowed",
+                                        }}
+                                      >
+                                        <FontAwesomeIcon icon={faEdit} />
+                                      </a>
+                                    </span>
+                                    <span>
+                                      <a
+                                        className="action-icon text-danger"
+                                        onClick={() => Deletemedia(item.ID)}
+                                      >
+                                        <FontAwesomeIcon icon={faTrashAlt} />
+                                      </a>
+                                    </span>
+                                  </div>
+                                </td>
+                              </tr>
+                            );
+                          })
+                          : ""}
                       </tbody>
                     </table>
                     <nav className="pagination-container">
@@ -457,11 +506,11 @@ const MediaMastercontext = ({ props }: any) => {
     </div>
   )
 }
-
+ 
 const MediaMaster: React.FC<IMediaMasterProps> = (props) => (
   <Provider>
     <MediaMastercontext props={props} />
   </Provider>
 );
-
+ 
 export default MediaMaster;

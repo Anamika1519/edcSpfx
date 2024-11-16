@@ -34,6 +34,37 @@ export const getAnncouncementNewsCategory = async (_sp) => {
   return arr;
 }
 
+export const getAnnouncementandNewsTypeMaster = async (_sp,Id) => {
+
+  let arr = []
+
+  let str = "Announcement"
+
+  await _sp.web.lists.getByTitle("AnnouncementandNewTypeMaster").items.getById(Id)()
+
+    .then((res) => {
+
+      console.log(res);
+
+ 
+
+ 
+
+      //res.filter(x=>x.Category?.Category==str)
+
+      arr = res;
+
+    })
+
+    .catch((error) => {
+
+      console.log("Error fetching data: ", error);
+
+    });
+
+  return arr;
+
+}
 export const uploadFileToLibrary = async (file, sp, docLib) => {
   debugger
   let arrFIleData = [];
@@ -244,6 +275,32 @@ export const getAnncouncementByID = async (_sp, id) => {
     });
   console.log(arr, 'arr');
   return arr;
+}
+export const getAllAnnouncementnonselected = async (_sp, Idnum) => {
+  debugger
+  let arr = []
+  let str = "Announcements"
+  await _sp.web.lists.getByTitle("ARGAnnouncementAndNews").items
+    .select("*").expand("")
+    .filter(`ID ne ${Idnum}`)
+    .top(3)
+    .orderBy("Created", true)
+    .getAll()
+    .then((res) => {
+      let resnew= res.slice(0, 3);
+      console.log("getallannouncement excluding", res,resnew);
+
+      //res.filter(x=>x.Category?.Category==str)
+      arr = resnew;
+    })
+    .catch((error) => {
+      console.log("Error fetching data: ", error);
+    });
+  return arr;
+}
+export const TimeFormat = (date) => {
+  let FormatedDate = date;
+  return moment(item.FormatedDate).format("DD-MMM-YYYY");
 }
 export const getAnnouncementDetailsById=async (_sp,idNum)=>
 {

@@ -139,7 +139,7 @@ const HelloWorldContext = ({props}:any) => {
             </div>
 
             <div className="row filterable-content internalmedia mt-1 mb-1">
-              {mediaData.map((item: any, index: number) => (
+               { mediaData!=null&& mediaData.length>0&&mediaData.map((item: any, index: number) => (
                 <div className="col-sm-6 col-xl-3 filter-item all web illustrator" key={index}>
                   <div className="gal-box mb-3" onClick={() => handleImageClick(index)}>
                     <a  className="image-popup">
@@ -165,7 +165,7 @@ const HelloWorldContext = ({props}:any) => {
         </Modal.Header>
         <Modal.Body>
           <Carousel activeIndex={currentImageIndex} onSelect={(selectedIndex) => setCurrentImageIndex(selectedIndex)}>
-            {mediaData.map((item: any, index: number) => (
+            {mediaData!=null&& mediaData.length>0&&mediaData.map((item: any, index: number) => (
               <Carousel.Item key={index}>
                 <img
                   className="d-block w-100"

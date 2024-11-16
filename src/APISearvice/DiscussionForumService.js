@@ -176,6 +176,7 @@ export const addItem = async (itemData, _sp) => {
     return resultArr;
 };
 
+
 export const getDiscussionForumByID = async (_sp, id) => {
     debugger
     let arr = []
@@ -187,27 +188,40 @@ export const getDiscussionForumByID = async (_sp, id) => {
             // const bannerimgobject = res.AnnouncementandNewsBannerImage != "{}" && JSON.parse(res.AnnouncementandNewsBannerImage)
             // console.log(bannerimgobject[0], 'bannerimgobject');
 
-            bannerimg.push(bannerimgobject);
+            //bannerimg.push(bannerimgobject);
             const parsedValues = {
                 Title: res.Title != undefined ? res.Title : "",
                 description: res.Description != undefined ? res.Description : "",
                 //   overview: res.Overview != undefined ? res.Overview : "",
                 //   IsActive: res.IsActive,
                 ID: res.ID,
+                Topic: res.Topic,
+                Overview: res.Overview,
                 // BannerImage: bannerimg,
+                GroupType: res.GroupType,
                 //   TypeMaster: res?.AnnouncementandNewsTypeMaster?.ID != undefined ? res.AnnouncementandNewsTypeMaster?.ID : "",
-                DiscussionForumCategory: res.Category?.ID != undefined ? res.Category?.ID : "",
+                Category: res.DiscussionForumCategory?.ID != undefined ? res.DiscussionForumCategory?.ID : "",
                 Entity: res.Entity?.ID != undefined ? res.Entity?.ID : "",
-                FeaturedAnnouncement: res.FeaturedAnnouncement,
+                //FeaturedAnnouncement: res.FeaturedAnnouncement,
                 DiscussionForumGalleryJSON: res.DiscussionForumGalleryJSON != null ? JSON.parse(res.DiscussionForumGalleryJSON) : "",
                 DiscussionForumDocsJSON: res.DiscussionForumDocsJSON != null ? JSON.parse(res.DiscussionForumDocsJSON) : "",
                 DiscussionForumGalleryId: res.DiscussionForumGalleryId,
                 DiscussionForumDocsId: res.DiscussionForumDocsId,
-                inviteMembers: res?.InviteMemebers?.Title
+                inviteMembers: res?.InviteMemebers.length > 0 ? res?.InviteMemebers.map((ele) => {
+                    return {
+                        id: ele.Id,
+                        name: ele.Title
+                    }
+                }
+                ) : null,
+                inviteMembersIds: res?.InviteMemebers.length > 0 ? res?.InviteMemebers.map((ele) => ele.Id)
+                    : null
                 // other fields as needed
+
             };
 
-            arr.push(parsedValues)
+            arr.push(parsedValues);
+            console.log("arrarrarrarr", arr, parsedValues);
         })
         .catch((error) => {
             console.log("Error fetching data: ", error);

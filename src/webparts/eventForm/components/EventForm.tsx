@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react' 
 import { IEventFormProps } from './IEventFormProps';
 import { SPFI } from '@pnp/sp/presets/all';
 import "../../../Assets/Figtree/Figtree-VariableFont_wght.ttf";
@@ -25,6 +25,9 @@ import { uploadFile, uploadFileToLibrary } from '../../../APISearvice/Announceme
 import { Modal } from 'react-bootstrap';
 import { getSP } from '../loc/pnpjsConfig';
 import HorizontalNavbar from '../../horizontalNavBar/components/HorizontalNavBar';
+import { AddContentLevelMaster, AddContentMaster, getApprovalConfiguration, getLevel } from '../../../APISearvice/ApprovalService';
+import { Delete, PlusCircle } from 'react-feather';
+import Multiselect from 'multiselect-react-dropdown';
 const HelloWorldContext = ({ props }: any) => {
   const sp: SPFI = getSP();
   console.log(sp, 'sp');
@@ -77,7 +80,8 @@ const HelloWorldContext = ({ props }: any) => {
     Overview: "",
   });
   const [richTextValues, setRichTextValues] = React.useState<{ [key: string]: string }>({});
-
+  const [levels, setLevel] = React.useState([]);
+  const [rows, setRows] = React.useState<any>([]);
   //#region Breadcrumb
   const Breadcrumb = [
     {
@@ -145,23 +149,28 @@ const HelloWorldContext = ({ props }: any) => {
     }));
   };
   const onChange = async (name: string, value: any) => {
-    // debugger
-    // if(name=="EventDate")
-    // {
-    //   value=new Date(value);
-    // }
-    // else if(name=="RegistrationDueDate")
-    // {
-    //   value=new Date(value);
-    // }
+    debugger
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
 
-    // if (name == "Type") {
-    //   setCategoryData(await getCategory(sp, Number(value))) // Category
-    // }
+    if (name == "EntityId") {
+      //ARGApprovalConfiguration
+      const rowData: any[] = await getApprovalConfiguration(sp, Number(value)) //baseUrl
+      const initialRows = rowData.map((item: any) => ({
+        id: item.Id,
+        Level: item.Level.Level,
+        LevelId: item.LevelId,
+        approvedUserListupdate: item.Users.map((user: any) => ({
+          id: user.ID,
+          name: user.Title,
+          email: user.EMail
+        })),
+        selectionType: 'All' // default selection type, if any
+      }));
+      setRows(initialRows);
+    }
 
   };
   // Function to fetch or return the initial description value
@@ -214,7 +223,7 @@ const HelloWorldContext = ({ props }: any) => {
       Swal.fire('Error', 'Registration Due Date is required!', 'error');
       valid = false;
     }
-     else if (!EntityId) {
+    else if (!EntityId) {
       Swal.fire('Error', 'Entity is required!', 'error');
       valid = false;
     }
@@ -266,10 +275,11 @@ const HelloWorldContext = ({ props }: any) => {
               Overview: formData.Overview,
               EventAgenda: formData.EventAgenda,
               EntityId: Number(formData.EntityId),
+              Status: "Submitted",
               RegistrationDueDate: RegistrationDueDate,
               EventDate: eventDate,
               AuthorId: currentUser.Id,
-              image:bannerImageArray != "{}" && JSON.stringify(bannerImageArray)
+              image: bannerImageArray != "{}" && JSON.stringify(bannerImageArray)
               // EventThumbnail: EventThumbnailArr != "{}" && JSON.stringify(EventThumbnailArr)
             };
             console.log(postPayload);
@@ -288,27 +298,27 @@ const HelloWorldContext = ({ props }: any) => {
               for (let i = 0; i < EventGalleryArr[0]?.files.length; i++) {
 
                 const uploadedGalleryImage = await uploadFileToLibrary(EventGalleryArr[0]?.files[i], sp, "EventGallery");
-                if(uploadedGalleryImage!=null){
+                if (uploadedGalleryImage != null) {
                   galleryIds = galleryIds.concat(uploadedGalleryImage.map((item: { ID: any }) => item.ID));
                   if (EventGalleryArr1.length > 0) {
-  
+
                     EventGalleryArr1.push(uploadedGalleryImage[0])
                     const updatedData = EventGalleryArr1.filter(item => item.ID !== 0);
                     console.log(updatedData, 'updatedData');
                     galleryArray = updatedData;
-  
-  
+
+
                     EventGalleryArrIdsArrs.push(galleryIds[0]) //galleryIds.push(EventGalleryIdsArr)
                     galleryIds = EventGalleryArrIdsArrs
-  
-  
-  
+
+
+
                   }
                   else {
                     galleryArray.push(uploadedGalleryImage);
                   }
                 }
-              
+
               }
             }
             else {
@@ -327,7 +337,7 @@ const HelloWorldContext = ({ props }: any) => {
                     const updatedData = EventThumbnailArr1.filter(item => item.ID !== 0);
                     console.log(updatedData, 'updatedData');
                     documentArray = updatedData;
-  
+
                     EventThumbnailIdsArr.push(documentIds[0])//.push(EventThumbnailIdsArr)
                     documentIds = EventThumbnailIdsArr
                   }
@@ -358,7 +368,7 @@ const HelloWorldContext = ({ props }: any) => {
                 }
               }
             }
-           
+
             console.log(documentIds, 'documentIds');
             console.log(galleryIds, 'galleryIds');
             // Update Post with Gallery and Document Information
@@ -378,13 +388,23 @@ const HelloWorldContext = ({ props }: any) => {
               const updateResult = await updateItem(updatePayload, sp, editID);
               console.log("Update Result:", updateResult);
             }
+            let arr ={
+              ContentID:editID,
+              ContentName:"ARGEventMaster",
+              Status:"Panding",
+              EntityId:Number(formData.EntityId),
+              SourceName:"Event"
+             }
+             await AddContentMaster(sp,arr)
+            const boolval = await handleClick(editID, "Event", Number(formData.EntityId))
+            if (boolval == true) {
+              Swal.fire('Item update successfully', '', 'success');
+              sessionStorage.removeItem("EventId")
+              setTimeout(() => {
+                window.location.href = `${siteUrl}/SitePages/EventMaster.aspx`;
+              }, 2000);
+            }
           }
-          Swal.fire('Item update successfully', '', 'success');
-          sessionStorage.removeItem("EventId")
-          setTimeout(() => {
-            window.location.href = `${siteUrl}/SitePages/EventMaster.aspx`;
-          }, 2000);
-
 
         })
       }
@@ -411,7 +431,7 @@ const HelloWorldContext = ({ props }: any) => {
 
 
 
-         //   Upload Banner Images
+            //   Upload Banner Images
             if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
               for (const file of BnnerImagepostArr[0].files) {
                 //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
@@ -427,10 +447,11 @@ const HelloWorldContext = ({ props }: any) => {
               Overview: formData.Overview,
               EventAgenda: formData.EventAgenda,
               EntityId: Number(formData.EntityId),
+              Status: "Submitted",
               RegistrationDueDate: RegistrationDueDate,
               EventDate: eventDate,
               AuthorId: currentUser.Id,
-              image:bannerImageArray != "{}" && JSON.stringify(bannerImageArray)
+              image: bannerImageArray != "{}" && JSON.stringify(bannerImageArray)
             };
             console.log(postPayload);
 
@@ -479,11 +500,22 @@ const HelloWorldContext = ({ props }: any) => {
               const updateResult = await updateItem(updatePayload, sp, postId);
               console.log("Update Result:", updateResult);
             }
-            Swal.fire('Item add successfully', '', 'success');
-            sessionStorage.removeItem("bannerId")
-            setTimeout(() => {
-              window.location.href = `${siteUrl}/SitePages/EventMaster.aspx`;
-            }, 2000);
+            let arr ={
+              ContentID:postId,
+              ContentName:"ARGEventMaster",
+              Status:"Panding",
+              EntityId:Number(formData.EntityId),
+                 SourceName:"Event"
+             }
+             await AddContentMaster(sp,arr)
+            const boolval = await handleClick(postId, "Event", Number(formData.EntityId))
+            if (boolval == true) {
+              Swal.fire('Item add successfully', '', 'success');
+              sessionStorage.removeItem("bannerId")
+              setTimeout(() => {
+                window.location.href = `${siteUrl}/SitePages/EventMaster.aspx`;
+              }, 2000);
+            }
           }
         })
 
@@ -492,9 +524,290 @@ const HelloWorldContext = ({ props }: any) => {
 
   }
   //#endregion
+
+  //#region  save as draft
+
+  const handleSaveAsDraft = async () => {
+    if (validateForm()) {
+      if (editForm) {
+        Swal.fire({
+          title: 'Do you want to update?',
+          showConfirmButton: true,
+          showCancelButton: true,
+          confirmButtonText: "Save",
+          cancelButtonText: "Cancel",
+          icon: 'warning'
+        }
+        ).then(async (result) => {
+          console.log(result)
+          if (result.isConfirmed) {
+            //console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
+            debugger
+            let bannerImageArray: any = {};
+            let galleryIds: any[] = [];
+            let documentIds: any[] = [];
+            let galleryArray: any[] = [];
+            let documentArray: any[] = [];
+
+            // formData.FeaturedAnnouncement === "on"?  true :false;
+
+            // Upload Banner Images
+            if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
+              for (const file of BnnerImagepostArr[0].files) {
+                //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
+                bannerImageArray = await uploadFileBanner(file, sp, "Documents", "https://officeindia.sharepoint.com");
+              }
+            }
+            else {
+              bannerImageArray = null
+            }
+            const eventDate = new Date(formData.EventDate).toISOString().split("T")[0];
+            const RegistrationDueDate = new Date(formData.RegistrationDueDate).toISOString().split("T")[0];
+            // update Post
+            const postPayload = {
+              EventName: formData.EventName,
+              Overview: formData.Overview,
+              EventAgenda: formData.EventAgenda,
+              EntityId: Number(formData.EntityId),
+              Status: "Save as draft",
+              RegistrationDueDate: RegistrationDueDate,
+              EventDate: eventDate,
+              AuthorId: currentUser.Id,
+              image: bannerImageArray != "{}" && JSON.stringify(bannerImageArray)
+              // EventThumbnail: EventThumbnailArr != "{}" && JSON.stringify(EventThumbnailArr)
+            };
+            console.log(postPayload);
+
+            const postResult = await updateItem(postPayload, sp, editID);
+            const postId = postResult?.data?.ID;
+            debugger
+            // if (!postId) {
+            //   console.log("Post creation failed.");
+            //   return;
+            // }
+
+            // Upload Gallery Images
+            // Upload Gallery Images
+            if (EventGalleryArr[0]?.files?.length > 0) {
+              for (let i = 0; i < EventGalleryArr[0]?.files.length; i++) {
+
+                const uploadedGalleryImage = await uploadFileToLibrary(EventGalleryArr[0]?.files[i], sp, "EventGallery");
+                if (uploadedGalleryImage != null) {
+                  galleryIds = galleryIds.concat(uploadedGalleryImage.map((item: { ID: any }) => item.ID));
+                  if (EventGalleryArr1.length > 0) {
+
+                    EventGalleryArr1.push(uploadedGalleryImage[0])
+                    const updatedData = EventGalleryArr1.filter(item => item.ID !== 0);
+                    console.log(updatedData, 'updatedData');
+                    galleryArray = updatedData;
+
+
+                    EventGalleryArrIdsArrs.push(galleryIds[0]) //galleryIds.push(EventGalleryIdsArr)
+                    galleryIds = EventGalleryArrIdsArrs
+
+
+
+                  }
+                  else {
+                    galleryArray.push(uploadedGalleryImage);
+                  }
+                }
+
+              }
+            }
+            else {
+              galleryIds = EventGalleryArrIdsArrs
+              galleryArray = EventGalleryArr1;
+            }
+            // Upload Documents
+            if (EventThumbnailArr[0]?.files?.length > 0) {
+              for (let i = 0; i < EventThumbnailArr[0]?.files.length; i++) {
+                const uploadedDocument = await uploadFileToLibrary(EventThumbnailArr[0]?.files[i], sp, "EventThumbnail");
+                if (uploadedDocument != null) {
+                  documentIds = documentIds.concat(uploadedDocument.map((item: { ID: any }) => item.ID));
+                  if (EventThumbnailArr1.length > 0) {
+                    EventThumbnailArr1.push(uploadedDocument[0])
+                    // documentArray.push(EventThumbnailArr1)
+                    const updatedData = EventThumbnailArr1.filter(item => item.ID !== 0);
+                    console.log(updatedData, 'updatedData');
+                    documentArray = updatedData;
+
+                    EventThumbnailIdsArr.push(documentIds[0])//.push(EventThumbnailIdsArr)
+                    documentIds = EventThumbnailIdsArr
+                  }
+                  else {
+                    documentArray.push(uploadedDocument);
+                  }
+                }
+              }
+            }
+            else {
+              documentIds = EventThumbnailIdsArr;
+              documentArray = EventThumbnailArr1;
+            }
+            if (galleryArray.length > 0) {
+              let ars = galleryArray.filter(x => x.ID == 0)
+              if (ars.length > 0) {
+                for (let i = 0; i < ars.length; i++) {
+                  galleryArray.slice(i, 1)
+                }
+              }
+            }
+
+            if (documentArray.length > 0) {
+              let arsdoc = documentArray.filter(x => x.ID == 0)
+              if (arsdoc.length > 0) {
+                for (let i = 0; i < arsdoc.length; i++) {
+                  documentArray.slice(i, 1)
+                }
+              }
+            }
+
+            console.log(documentIds, 'documentIds');
+            console.log(galleryIds, 'galleryIds');
+            // Update Post with Gallery and Document Information
+            const updatePayload = {
+              ...(galleryIds.length > 0 && {
+                EventGalleryId: galleryIds,
+
+                EventGalleryJson: JSON.stringify(flatArray(galleryArray)),
+              }),
+              ...(documentIds.length > 0 && {
+                EventThumbnailId: documentIds,
+                EventThumbnailJson: JSON.stringify(flatArray(documentArray)),
+              }),
+            };
+
+            if (Object.keys(updatePayload).length > 0) {
+              const updateResult = await updateItem(updatePayload, sp, editID);
+              console.log("Update Result:", updateResult);
+            }
+          }
+         
+            Swal.fire('Item update successfully', '', 'success');
+            sessionStorage.removeItem("EventId")
+            setTimeout(() => {
+              window.location.href = `${siteUrl}/SitePages/EventMaster.aspx`;
+            }, 2000);
+         
+
+
+        })
+      }
+      else {
+        Swal.fire({
+          title: 'Do you want to save?',
+          showConfirmButton: true,
+          showCancelButton: true,
+          confirmButtonText: "Save",
+          cancelButtonText: "Cancel",
+          icon: 'warning'
+        }
+        ).then(async (result) => {
+          //console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
+          if (result.isConfirmed) {
+            debugger
+            let bannerImageArray: any = {};
+            let galleryIds: any[] = [];
+            let documentIds: any[] = [];
+            let galleryArray: any[] = [];
+            let documentArray: any[] = [];
+
+            // formData.FeaturedAnnouncement === "on"?  true :false;
+
+
+
+            //   Upload Banner Images
+            if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
+              for (const file of BnnerImagepostArr[0].files) {
+                //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
+                bannerImageArray = await uploadFileBanner(file, sp, "Documents", "https://officeindia.sharepoint.com");
+              }
+            }
+            debugger
+            const eventDate = new Date(formData.EventDate).toISOString().split("T")[0];
+            const RegistrationDueDate = new Date(formData.RegistrationDueDate).toISOString().split("T")[0];
+            // Create Post
+            const postPayload = {
+              EventName: formData.EventName,
+              Overview: formData.Overview,
+              EventAgenda: formData.EventAgenda,
+              EntityId: Number(formData.EntityId),
+              Status: "Save as draft",
+              RegistrationDueDate: RegistrationDueDate,
+              EventDate: eventDate,
+              AuthorId: currentUser.Id,
+              image: bannerImageArray != "{}" && JSON.stringify(bannerImageArray)
+            };
+            console.log(postPayload);
+
+            const postResult = await addItem(postPayload, sp);
+            const postId = postResult?.data?.ID;
+            debugger
+            if (!postId) {
+              console.error("Post creation failed.");
+              return;
+            }
+
+            console.log(EventGalleryArr, 'EventGalleryArr', EventGalleryArr1, 'EventGalleryArr1', EventThumbnailArr1, 'EventThumbnailArr1', EventThumbnailArr, 'EventThumbnailArr');
+
+            // Upload Gallery Images
+            if (EventGalleryArr.length > 0) {
+              for (let i = 0; i < EventGalleryArr[0]?.files.length; i++) {
+                const uploadedGalleryImage = await uploadFileToLibrary(EventGalleryArr[0]?.files[i], sp, "EventGallery");
+
+                galleryIds = galleryIds.concat(uploadedGalleryImage.map((item: { ID: any }) => item.ID));
+                galleryArray.push(uploadedGalleryImage);
+              }
+            }
+
+            // Upload Documents
+            if (EventThumbnailArr.length > 0) {
+              for (let i = 0; i < EventThumbnailArr[0]?.files.length; i++) {
+                const uploadedDocument = await uploadFileToLibrary(EventThumbnailArr[0]?.files[i], sp, "EventThumbnail");
+                documentIds = documentIds.concat(uploadedDocument.map((item: { ID: any }) => item.ID));
+                documentArray.push(uploadedDocument);
+              }
+            }
+
+            // Update Post with Gallery and Document Information
+            const updatePayload = {
+              ...(galleryIds.length > 0 && {
+                EventGalleryId: galleryIds,
+                EventGalleryJson: JSON.stringify(flatArray(galleryArray)),
+              }),
+              ...(documentIds.length > 0 && {
+                EventThumbnailId: documentIds,
+                EventThumbnailJson: JSON.stringify(flatArray(documentArray)),
+              }),
+            };
+
+            if (Object.keys(updatePayload).length > 0) {
+              const updateResult = await updateItem(updatePayload, sp, postId);
+              console.log("Update Result:", updateResult);
+            }
+
+     
+              Swal.fire('Item add successfully in the draft', '', 'success');
+              sessionStorage.removeItem("bannerId")
+              setTimeout(() => {
+                window.location.href = `${siteUrl}/SitePages/EventMaster.aspx`;
+              }, 2000);
+           
+          }
+        })
+
+      }
+    }
+
+  }
+
+  //#endregion save as draft
+
+
   const handleCancel = () => {
     debugger
-    window.location.href =  `${siteUrl}/SitePages/EventMaster.aspx`;
+    window.location.href = `${siteUrl}/SitePages/EventMaster.aspx`;
   }
   //#region flatArray
   const flatArray = (arr: any[]): any[] => {
@@ -505,10 +818,11 @@ const HelloWorldContext = ({ props }: any) => {
 
   //#region ApiCallFunc
   const ApiCallFunc = async () => {
-    setCurrentUser(await getCurrentUser(sp,siteUrl)) //currentUser
+    setCurrentUser(await getCurrentUser(sp, siteUrl)) //currentUser
     setEnityData(await getEntity(sp)) //Entity
-
+    setLevel(await getLevel(sp))
     setBaseUrl(await (getUrl(sp, siteUrl))) //baseUrl
+    await fetchUserInformationList();
     //#region getdataByID
     if (sessionStorage.getItem("EventId") != undefined) {
       const iD = sessionStorage.getItem("EventId")
@@ -516,7 +830,7 @@ const HelloWorldContext = ({ props }: any) => {
       const setEventById = await getEventByID(sp, Number(iDs))
 
       console.log(setEventById, 'setEventById');
-     
+
       if (setEventById.length > 0) {
         debugger
         setEditID(Number(setEventById[0].ID))
@@ -568,7 +882,19 @@ const HelloWorldContext = ({ props }: any) => {
         //   ...prevValues,
         //   [FeaturedAnnouncement]: setEventById[0].FeaturedAnnouncement === "on" ? true : false, // Ensure the correct boolean value is set for checkboxes
         // }));
-
+        const rowData: any[] = await getApprovalConfiguration(sp, Number(setEventById[0].EntityId)) //baseUrl
+        const initialRows = rowData.map((item: any) => ({
+          id: item.Id,
+          Level: item.Level.Level,
+          LevelId: item.LevelId,
+          approvedUserListupdate: item.Users.map((user: any) => ({
+            id: user.ID,
+            name: user.Title,
+            email: user.EMail
+          })),
+          selectionType: 'All' // default selection type, if any
+        }));
+        setRows(initialRows);
 
 
 
@@ -705,7 +1031,7 @@ const HelloWorldContext = ({ props }: any) => {
               setEventGalleryArr1(uloadImageFiles1);
 
             }
-          }else {
+          } else {
             uloadBannerImageFiles.push(arr);
             setBannerImagepostArr(uloadBannerImageFiles);
           }
@@ -775,6 +1101,85 @@ const HelloWorldContext = ({ props }: any) => {
 
 
   //#endregion
+
+  const [usersitem, setUsersArr] = React.useState([]);
+
+  const fetchUserInformationList = async () => {
+    try {
+      const userList = await sp.web.lists
+        .getByTitle("User Information List")
+        .items.select("ID", "Title", "EMail", "Department", "JobTitle", "Picture")
+        .filter("EMail ne null")();
+      setUsersArr(userList);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
+
+  const userOptions = usersitem.map((user: any) => ({
+    id: user.ID,
+    name: user.Title,
+    email: user.EMail
+  }));
+  const handleAddRow = () => {
+    setRows((prevRows: any) => [
+      ...prevRows,
+      {
+        id: Date.now(), // unique ID for the new row
+        Level: "", // default value for the level
+        approvedUserList: userOptions, // empty array for approvers
+        selectionType: "All", // default selection type
+      },
+    ]);
+  };
+
+  const handleUserSelect = (selectedUsers: any, rowId: any) => {
+    setRows((prevRows: any) =>
+      prevRows.map((row: any) =>
+        row.id === rowId
+          ? { ...row, approvedUserListupdate: selectedUsers }
+          : row
+      )
+    );
+  };
+
+  const handleSelectionModeChange = (rowId: any, selectionType: any) => {
+    setRows((prevRows: any) =>
+      prevRows.map((row: any) =>
+        row.id === rowId ? { ...row, selectionType } : row
+      )
+    );
+  };
+
+  const handleRemoveRow = (rowId: any, e: any) => {
+    e.preventDefault();
+    setRows((prevRows: any) => prevRows.filter((row: any) => row.id !== rowId));
+  };
+  const handleClick = async (contentId: number, contentName: any, EntityId: number) => {
+    console.log("Creating approval hierarchy with data:", rows);
+    let boolval = false
+    for (let i = 0; i < rows.length; i++) {
+      const userIds = rows[i].approvedUserListupdate.map((user: any) => user.id);
+      let arrPost = {
+        ContentId: contentId,
+        ContentName: "ARGEventMaster",
+        EntityMasterId: EntityId,
+        ARGLevelMasterId: rows[i].LevelId,
+        ApproverId: userIds,
+        ApprovalType: rows[i].selectionType == "All" ? 1 : 0,
+        SourceName:contentName
+      }
+      const addedData = await AddContentLevelMaster(sp, arrPost)
+      console.log(addedData);
+
+    }
+    boolval = true
+    return boolval;
+    // Process rows data, e.g., submit to server or save to SharePoint list
+    // Add your submit logic here
+  };
+
+
   return (
 
     <div id="wrapper" ref={elementRef}>
@@ -782,8 +1187,8 @@ const HelloWorldContext = ({ props }: any) => {
         <VerticalSideBar _context={sp} />
       </div>
       <div className="content-page newbancss" style={{ marginTop: '-15px' }}> {/* Edit by amjad */}
-          <HorizontalNavbar  _context={sp} siteUrl={siteUrl}/>
-        <div className="content" style={{marginLeft: `${!useHide ? '240px' : '80px'}`, marginTop:'0.8rem'}}> {/* Edit by amjad */}
+        <HorizontalNavbar _context={sp} siteUrl={siteUrl} />
+        <div className="content" style={{ marginLeft: `${!useHide ? '240px' : '80px'}`, marginTop: '0.8rem' }}> {/* Edit by amjad */}
           <div className="container-fluid  paddb">
             <div className="row">
               <div className="col-lg-5">
@@ -1016,6 +1421,11 @@ const HelloWorldContext = ({ props }: any) => {
 
 
                     <div className="text-center butncss">
+                      <div className="btn btn-success waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleSaveAsDraft}>
+                        <div className='d-flex' style={{ justifyContent: 'space-around' }}>
+                          <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} alt="Check" /> Save As Draft
+                        </div>
+                      </div>
                       <div className="btn btn-success waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleFormSubmit}>
                         <div className='d-flex' style={{ justifyContent: 'space-around', width: '70px' }}>
                           <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} alt="Check" /> Submit
@@ -1031,6 +1441,136 @@ const HelloWorldContext = ({ props }: any) => {
                 </div>
               </div>
             </div>
+            {
+              rows != null && rows.length > 0 && (
+                <div className="container mt-2">
+                  <div className="card cardborder p-4">
+                    <div className="font-16">
+                      <strong>Approval Hierarchy</strong>
+                    </div>
+                    <div className="d-flex justify-content-between align-items-center">
+                      <p className="font-14 mb-3 flex-grow-1">
+                        Define approval hierarchy for the documents submitted by Team members in this folder.
+                      </p>
+                      <div className="mt-2 me-1">
+                        <span onClick={handleAddRow} style={{ cursor: 'pointer' }}>
+                          <div className="bi linkpos">
+                            <PlusCircle size={30} color="#008751" />
+                          </div>
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="d-flex flex-column">
+                      <div className="row mb-2">
+                        <div className="col-12 col-md-5">
+                          <label className="form-label">Level</label>
+                        </div>
+                        <div className="col-12 col-md-5">
+                          <label className="form-label">Approver</label>
+                        </div>
+                      </div>
+
+                      {rows.map((row: any) => (
+                        <div className="row mb-2" key={row.id}>
+                          <div className="col-12 col-md-5">
+                            <label htmlFor={`Level-${row.id}`} className="form-label">
+                              Select Level
+                            </label>
+                            <select
+                              className="form-select"
+                              id={`Level-${row.id}`}
+                              name="Level"
+                              value={row.LevelId}
+                              onChange={(e) => {
+                                const selectedLevel = e.target.value;
+                                setRows((prevRows: any) =>
+                                  prevRows.map((r: any) =>
+                                    r.id === row.id
+                                      ? { ...r, LevelId: selectedLevel }
+                                      : r
+                                  )
+                                );
+                              }}
+                            >
+                              <option value="">Select</option>
+                              {levels.map((item: any) => (
+                                <option key={item.Id} value={item.Id}>
+                                  {item.Level}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+
+                          <div className="col-12 col-md-5">
+                            <label htmlFor={`approver-${row.id}`} className="form-label">
+                              Select Approver
+                            </label>
+                            <Multiselect
+                              options={row.approvedUserList}
+                              selectedValues={row.approvedUserListupdate}
+                              onSelect={(selected) => handleUserSelect(selected, row.id)}
+                              onRemove={(selected) => handleUserSelect(selected, row.id)}
+                              displayValue="name"
+                            />
+                          </div>
+
+                          <div className="col-12 col-md-2 d-flex align-items-center" style={{ gap: '10px' }}>
+                            <div className="d-flex align-items-center">
+                              <input
+                                className="form-check-input custom-radio"
+                                type="radio"
+                                name={`selection-${row.id}`}
+                                value="all"
+                                checked={row.selectionType === 'All'}
+                                onChange={() => handleSelectionModeChange(row.id, 'All')}
+                                style={{ marginRight: '5px' }}
+                              />
+                              <label className="form-check-label mb-0" htmlFor={`all-${row.id}`}>
+                                All
+                              </label>
+                            </div>
+
+                            <div className="d-flex align-items-center">
+                              <input
+                                className="form-check-input custom-radio"
+                                type="radio"
+                                name={`selection-${row.id}`}
+                                value="one"
+                                checked={row.selectionType === 'One'}
+                                onChange={() => handleSelectionModeChange(row.id, 'One')}
+                                style={{ marginRight: '5px' }}
+                              />
+                              <label className="form-check-label mb-0" htmlFor={`one-${row.id}`}>
+                                One
+                              </label>
+                            </div>
+
+                            {row.id !== 0 && (
+                              <a onClick={(e) => handleRemoveRow(row.id, e)} style={{ cursor: 'pointer' }}>
+                                <Delete />
+                              </a>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* <div className="text-center butncss">
+                    <div className="btn btn-success" onClick={IsAdded?handleClick:null}>
+                      Create
+                    </div>
+                    <div className="btn btn-light" data-bs-dismiss="modal">
+                      Cancel
+                    </div>
+                  </div> */}
+                  </div>
+                </div>
+              )
+
+              // <ApprovalHierarchy data={ApprovalConfigurationData} levels={levels} usersitem={usersitem} IsAdded={IsAdded}/>
+
+            }
             {/* Modal to display uploaded files */}
             <Modal show={showModal} onHide={() => setShowModal(false)} size='lg' >
               <Modal.Header closeButton>
@@ -1123,3 +1663,4 @@ const EventForm: React.FC<IEventFormProps> = (props) => {
 }
 
 export default EventForm
+

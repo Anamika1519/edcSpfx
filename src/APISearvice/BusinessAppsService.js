@@ -12,10 +12,58 @@ export const fetchAutomationDepartment = async (_sp) => {
       });
     return arr;
   }
+  export const addItem = async (itemData, _sp) => {
+    debugger
+    let resultArr = []
+    try {
+      const newItem = await _sp.web.lists.getByTitle('ARGBusinessApps').items.add(itemData);
+      debugger
+      console.log('Item added successfully:', newItem);
+      // Swal.fire('Item added successfully', '', 'success');
+  
+      resultArr = newItem
+      // Perform any necessary actions after successful addition
+    } catch (error) {
+      console.log('Error adding item:', error);
+      // Handle errors appropriately
+      resultArr = null
+      Swal.fire(' Cancelled', '', 'error')
+    }
+    return resultArr;
+  };
+  export const getCategory = async (_sp, id) => {
+    let arr = []
+    await _sp.web.lists.getByTitle("BusinessAppsCategory").items.select("ID,CategoryName").expand("").filter(`(Active eq 1) and(AnnouncementandNewsTypeMaster/ID eq ${id})`)()
+      .then((res) => {
+        console.log(res);
+        const newArray = res.map(({ ID, CategoryName }) => ({ id: ID, name: CategoryName }));
+        console.log(newArray, 'newArray');
+  
+        arr = newArray;
+      })
+      .catch((error) => {
+        console.log("Error fetching data: ", error);
+      });
+    return arr;
+  }
+  export const fetchAutomationCategory = async (_sp) => {
+    let arr = []
+   
+       await _sp.web.lists.getByTitle("BusinessAppsCategory").items.getAll().then((res) => {
+        console.log(res);
+     
+        //res.filter(x=>x.Category?.Category==str)
+        arr = res;
+      })
+      .catch((error) => {
+        console.log("Error fetching data: ", error);
+      });
+    return arr;
+  }
   export const fetchARGAutomationdata = async (_sp) => {
     let arr = []
    
-       await _sp.web.lists.getByTitle("ARGBusinessApps").items.select("*,ARGAutomationDepartment/Id,ARGAutomationDepartment/DepartmentName").expand("ARGAutomationDepartment").getAll().then((res) => {
+       await _sp.web.lists.getByTitle("ARGBusinessApps").items.select("*,Category/Id,Category/CategoryName").expand("Category").getAll().then((res) => {
         console.log("response-->>>",res);
      
         //res.filter(x=>x.Category?.Category==str)

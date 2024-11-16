@@ -1,16 +1,14 @@
-import { escape } from '@microsoft/sp-lodash-subset';
+import { escape } from "@microsoft/sp-lodash-subset";
 import React, { useState } from "react";
 import VerticalSideBar from "../../verticalSideBar/components/VerticalSideBar";
 import HorizontalNavbar from "../../horizontalNavBar/components/HorizontalNavBar";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../../../CustomCss/mainCustom.scss";
-import "./MyRequest.scss";
+// import "../components/MyApproval.scss";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "../../../CustomJSComponents/CustomTable/CustomTable.scss";
 import "../../verticalSideBar/components/VerticalSidebar.scss";
-import { IMyRequestProps } from "./IMyRequestProps";
 import Provider from "../../../GlobalContext/provider";
-import { getSP } from "../loc/pnpjsConfig";
 import UserContext from "../../../GlobalContext/context";
 import CustomBreadcrumb from "../../../CustomJSComponents/CustomBreadcrumb/CustomBreadcrumb";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -24,7 +22,7 @@ import {
 import "../../../Assets/Figtree/Figtree-VariableFont_wght.ttf";
 import * as XLSX from "xlsx";
 import moment from "moment";
-import { getRequestListsData } from "../../../APISearvice/BusinessAppsService";
+// import { getApprovalListsData } from "../../../APISearvice/AnnouncementsService";
 import {
   addItem,
   GetCategory,
@@ -47,11 +45,16 @@ import "react-quill/dist/quill.snow.css";
 import { SPFI } from "@pnp/sp/presets/all";
 import { fetchUserInformationList } from "../../../APISearvice/GroupTeamService";
 import Multiselect from "multiselect-react-dropdown";
+import { Eye } from "react-feather";
+import { getDataByID, getMyRequest } from "../../../APISearvice/ApprovalService";
+import { getSP } from '../loc/pnpjsConfig';
+import { IMyRequestProps } from "./IMyRequestProps";
+import { getAnncouncementByID } from "../../../APISearvice/AnnouncementsService";
 const MyRequestContext = ({ props }: any) => {
   const sp: SPFI = getSP();
   const { useHide }: any = React.useContext(UserContext);
   const [announcementData, setAnnouncementData] = React.useState([]);
-  const [myRequestsData, setMyRequestsData] = React.useState([]);
+  const [myApprovalsData, setMyApprovalsData] = React.useState([]);
   const elementRef = React.useRef<HTMLDivElement>(null);
   const SiteUrl = props.siteUrl;
   const [newsData, setNewsData] = React.useState([]);
@@ -66,6 +69,7 @@ const MyRequestContext = ({ props }: any) => {
   const [selectedValue, setSelectedValue] = useState([]);
   const [EnityData, setEnityData] = React.useState([]);
   const [options, setOpions] = useState([]);
+  const [approved, setApproved] = useState('yes');
   const [filters, setFilters] = React.useState({
     SNo: "",
     RequestID: "",
@@ -73,20 +77,21 @@ const MyRequestContext = ({ props }: any) => {
     RequestedBy: "",
     RequestedDate: "",
     Status: "",
-    
   });
-
+ 
   const [isOpen, setIsOpen] = React.useState(false);
   const [IsinvideHide, setIsinvideHide] = React.useState(false);
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
-
+ 
   const [sortConfig, setSortConfig] = React.useState({
     key: "",
     direction: "ascending",
   });
-
+ 
+ 
+ 
   const [formData, setFormData] = React.useState({
     topic: "",
     category: "",
@@ -97,7 +102,9 @@ const MyRequestContext = ({ props }: any) => {
     overview: "",
     FeaturedAnnouncement: false,
   });
-  const [DiscussionData, setDiscussion] = useState([])
+  const [approveData, setApproveData] = useState([]);
+  const [isActivedata, setisActivedata] = useState(false)
+  const [DiscussionData, setDiscussion] = useState([]);
   const [CategoryData, setCategoryData] = React.useState([]);
   const [showModal, setShowModal] = React.useState(false);
   const [showDocTable, setShowDocTable] = React.useState(false);
@@ -112,93 +119,101 @@ const MyRequestContext = ({ props }: any) => {
   const handleTabClick = async (tab: React.SetStateAction<string>) => {
     setActiveTab(tab);
     if (tab == "profile11") {
-      FilterDiscussionData("Today")
-    }
-    else if (tab == "profile1") {
-      setAnnouncementData(await getDiscussionMeAll(sp))
-
-    }
-    else {
+      FilterDiscussionData("Today");
+    } else if (tab == "profile1") {
+      setAnnouncementData(await getDiscussionMeAll(sp));
+    } else {
       const announcementArr = await getDiscussionForum(sp);
       let lengArr: any;
       for (var i = 0; i < announcementArr.length; i++) {
-        lengArr = await getDiscussionComments(sp, announcementArr[i].ID)
-        console.log(lengArr, 'rrr');
-        announcementArr[i].commentsLength = lengArr.arrLength,
-          announcementArr[i].Users = lengArr.arrUser
+        lengArr = await getDiscussionComments(sp, announcementArr[i].ID);
+        console.log(lengArr, "rrr");
+        (announcementArr[i].commentsLength = lengArr.arrLength),
+          (announcementArr[i].Users = lengArr.arrUser);
       }
-      setAnnouncementData(announcementArr)
+      setAnnouncementData(announcementArr);
     }
   };
-
+ 
   React.useEffect(() => {
-
     sessionStorage.removeItem("announcementId");
     ApiCall();
-
   }, [useHide]);
-
+ 
   const ApiCall = async () => {
-    const announcementArr = await getDiscussionForum(sp);
-
-    const MyRequestsArr = await getRequestListsData(sp);
-    console.log("MyRequestsArr", MyRequestsArr);
-    setMyRequestsData(MyRequestsArr);
-    let lengArr: any;
-    for (var i = 0; i < announcementArr.length; i++) {
-      lengArr = await getDiscussionComments(sp, announcementArr[i].ID)
-      console.log(lengArr, 'rrr');
-      announcementArr[i].commentsLength = lengArr.arrLength,
-        announcementArr[i].Users = lengArr.arrUser
-    }
-    fetchOptions()
-    // const categorylist = await GetCategory(sp);
-    setCategoryData(await GetCategory(sp));
-    setEnityData(await getEntity(sp)); //Entity
-    setAnnouncementData(announcementArr);
-    const NewsArr = await getNews(sp);
-    setNewsData(NewsArr);
-    setGroupTypeData(
-      await getChoiceFieldOption(sp, "ARGDiscussionForum", "GroupType")
-    );
+ 
+    setMyApprovalsData(await getMyRequest(sp))
+    // const announcementArr = await getDiscussionForum(sp);
+ 
+    // // const MyApprovalsArr = await getApprovalListsData(sp);
+    // // console.log("MyApprovalsArr", MyApprovalsArr);
+    // // setMyApprovalsData(MyApprovalsArr);
+    // let lengArr: any;
+    // for (var i = 0; i < announcementArr.length; i++) {
+    //   lengArr = await getDiscussionComments(sp, announcementArr[i].ID);
+    //   console.log(lengArr, "rrr");
+    //   (announcementArr[i].commentsLength = lengArr.arrLength),
+    //     (announcementArr[i].Users = lengArr.arrUser);
+    // }
+    // fetchOptions();
+    // // const categorylist = await GetCategory(sp);
+    // setCategoryData(await GetCategory(sp));
+    // setEnityData(await getEntity(sp)); //Entity
+    // setAnnouncementData(announcementArr);
+    // const NewsArr = await getNews(sp);
+    // setNewsData(NewsArr);
+    // setGroupTypeData(
+    //   await getChoiceFieldOption(sp, "ARGDiscussionForum", "GroupType")
+    // );
   };
   const FilterDiscussionData = async (optionFilter: string) => {
-    setAnnouncementData(await getDiscussionFilterAll(sp, optionFilter))
-  }
+    setAnnouncementData(await getDiscussionFilterAll(sp, optionFilter));
+  };
   const handleFilterChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     field: string
   ) => {
-    console.log("eee",e)
+    console.log("eee", e);
     setFilters({
       ...filters,
       [field]: e.target.value,
     });
   };
-
+ 
   const applyFiltersAndSorting = (data: any[]) => {
     // Filter data
-    console.log("filters",data,filters,filters.ProcessName,filters.RequestID);
+    console.log(
+      "filters",
+      data,
+      filters,
+      filters.ProcessName,
+      filters.RequestID
+    );
     const filteredData = data.filter((item, index) => {
-      console.log("item.ProcessName",item.ProcessName,item.RequestID,item.Author.Title)
+ 
       return (
         (filters.SNo === "" || String(index + 1).includes(filters.SNo)) &&
         (filters.ProcessName === "" ||
-          item.ProcessName != undefined &&  item.ProcessName.toLowerCase().includes(
-            filters.ProcessName.toLowerCase()
-          )) &&
+          (item.ProcessName != undefined &&
+            item.ProcessName.toLowerCase().includes(
+              filters.ProcessName.toLowerCase()
+            ))) &&
         (filters.RequestID === "" ||
-          item.RequestID != undefined &&  item.RequestID.toLowerCase().includes(
-            filters.RequestID.toLowerCase())) &&
+          (item.RequestID != undefined &&
+            item.RequestID.toLowerCase().includes(
+              filters.RequestID.toLowerCase()
+            ))) &&
         // (filters.ProcessName === "" ||
         //   item.ProcessName.toLowerCase().includes(filters.ProcessName.toLowerCase())) &&
-          (filters.Status === "" ||
-            item.Status.toLowerCase().includes(filters.Status.toLowerCase())) &&
+        (filters.Status === "" ||
+          item.Status.toLowerCase().includes(filters.Status.toLowerCase())) &&
         (filters.RequestedBy === "" ||
-          item?.Author?.Title.toLowerCase().includes(filters.RequestedBy.toLowerCase()))
+          item?.Approver?.Title?.toLowerCase().includes(
+            filters.RequestedBy.toLowerCase()
+          ))
       );
     });
-
+ 
     const sortedData = filteredData.sort((a, b) => {
       if (sortConfig.key === "SNo") {
         // Sort by index
@@ -222,13 +237,18 @@ const MyRequestContext = ({ props }: any) => {
     });
     return sortedData;
   };
-
-  const filteredMyRequestData = applyFiltersAndSorting(myRequestsData);
+ 
+  const filteredMyApprovalData = applyFiltersAndSorting(myApprovalsData);
   const filteredNewsData = applyFiltersAndSorting(newsData);
   const [currentPage, setCurrentPage] = React.useState(1);
   const itemsPerPage = 10;
-  const totalPages = Math.ceil(filteredMyRequestData.length / itemsPerPage);
-
+  const totalPages = Math.ceil(filteredMyApprovalData.length / itemsPerPage);
+ 
+  const [ContentData, setContentData] = React.useState<any>([]);
+  const [currentItem, setCurrentItem] = React.useState<any>([]);
+ 
+ 
+ 
   const handlePageChange = (pageNumber: any) => {
     if (pageNumber > 0 && pageNumber <= totalPages) {
       setCurrentPage(pageNumber);
@@ -236,38 +256,45 @@ const MyRequestContext = ({ props }: any) => {
   };
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentData = filteredMyRequestData.slice(startIndex, endIndex);
+  const currentData = filteredMyApprovalData.slice(startIndex, endIndex);
   const newsCurrentData = filteredNewsData.slice(startIndex, endIndex);
   const [editID, setEditID] = React.useState(null);
   const [ImagepostIdsArr, setImagepostIdsArr] = React.useState([]);
   const siteUrl = props.siteUrl;
-
+ 
   const Breadcrumb = [
     {
       MainComponent: "Home",
       MainComponentURl: `${siteUrl}/SitePages/Dashboard.aspx`,
     },
     {
-      ChildComponent: "My Requests",
+      ChildComponent: "My Request",
       ChildComponentURl: `${siteUrl}/SitePages/MyRequests.aspx`,
     },
   ];
-
+  console.log(announcementData, "announcementData");
+ 
+  const exportToExcel = (data: any[], fileName: string) => {
+    const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+    XLSX.writeFile(workbook, `${fileName}.xlsx`);
+  };
   const fetchOptions = async () => {
     try {
       const items = await fetchUserInformationList(sp);
-      console.log(items, 'itemsitemsitems');
-
-      const formattedOptions = items.map((item: { Title: any; Id: any; }) => ({
+      console.log(items, "itemsitemsitems");
+ 
+      const formattedOptions = items.map((item: { Title: any; Id: any }) => ({
         name: item.Title, // Adjust according to your list schema
         id: item.Id,
       }));
       setOpions(formattedOptions);
     } catch (error) {
-      console.error('Error fetching options:', error);
+      console.error("Error fetching options:", error);
     }
   };
-
+ 
   const handleSortChange = (key: string) => {
     let direction = "ascending";
     if (sortConfig.key === key && sortConfig.direction === "ascending") {
@@ -275,7 +302,7 @@ const MyRequestContext = ({ props }: any) => {
     }
     setSortConfig({ key, direction });
   };
-
+ 
   React.useEffect(() => {
     const showNavbar = (
       toggleId: string,
@@ -287,9 +314,8 @@ const MyRequestContext = ({ props }: any) => {
       const nav = document.getElementById(navId);
       const bodypd = document.getElementById(bodyId);
       const headerpd = document.getElementById(headerId);
-      UserGet()
+      UserGet();
       if (toggle && nav && bodypd && headerpd) {
-
         toggle.addEventListener("click", () => {
           nav.classList.toggle("show");
           toggle.classList.toggle("bx-x");
@@ -298,62 +324,67 @@ const MyRequestContext = ({ props }: any) => {
         });
       }
     };
-
+ 
     showNavbar("header-toggle", "nav-bar", "body-pd", "header");
-
+ 
     const linkColor = document.querySelectorAll(".nav_link");
-
+ 
     function colorLink(this: HTMLElement) {
       if (linkColor) {
         linkColor.forEach((l) => l.classList.remove("active"));
         this.classList.add("active");
       }
     }
-
+ 
     linkColor.forEach((l) => l.addEventListener("click", colorLink));
   }, [useHide]);
-
-
-
+ 
   const UserGet = async () => {
     const users = await sp.web.siteUsers();
-    console.log(users, 'users')
-  }
-
-
-  const handleClick = (id: any) => {
-    console.log(id, "----id");
-    window.location.href = `${SiteUrl}/SitePages/DiscussionForumDetail.aspx?${id}`;
+    console.log(users, "users");
   };
-  const handleRedirect = (link: any) => {
-    console.log(link, "----link");
-    window.location.href = link;
+ 
+  const handleRedirect = async (Item: any) => {
+    // console.log(Item, "----Item");
+    // setCurrentItem(Item)
+    // setContentData(await getDataByID(sp, Item?.ContentId, Item?.ContentName))
+ 
+    // setisActivedata(true)
+    if(Item.ProcessName=="Event")
+    {
+     window.location.href = `${siteUrl}/SitePages/EventDetailsCalendar.aspx?${Item.ContentId}`;
+     
+    }
+   else if(Item.ProcessName=="Media")
+      {
+       window.location.href = `${siteUrl}/SitePages/Mediadeatils.aspx`;
+      }
+      else
+      {
+        window.location.href = `${siteUrl}/SitePages/${Item.ProcessName}Details.aspx?${Item.ContentId}`;
+      }
+     
   };
-
   return (
-
     <div id="wrapper" ref={elementRef}>
       <div className="app-menu" id="myHeader">
         <VerticalSideBar _context={sp} />
       </div>
-
+ 
       <div className="content-page">
         <HorizontalNavbar _context={sp} siteUrl={siteUrl} />
         <div
           className="content"
           style={{
-            marginLeft: `${!useHide ? "240px" : "80px"}`, marginTop: '0.5rem'
-          }}
-        >
+            marginLeft: `${!useHide ? "240px" : "80px"}`,
+            marginTop: "0.5rem",
+          }}>
           <div className="container-fluid paddb">
             <div className="row" style={{ paddingLeft: "0.5rem" }}>
               <div className="col-lg-6">
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
               </div>
-
-
             </div>
-
             <div className="card cardCss mt-4">
               <div className="card-body">
                 <div id="cardCollpase4" className="collapse show">
@@ -364,9 +395,13 @@ const MyRequestContext = ({ props }: any) => {
                     >
                       <thead>
                         <tr>
-                          <th style={{borderBottomLeftRadius: "10px", minWidth: "40px",maxWidth: "40px",
-                            borderTopLeftRadius: "10px",
-                          }}
+                          <th
+                            style={{
+                              borderBottomLeftRadius: "10px",
+                              minWidth: "40px",
+                              maxWidth: "40px",
+                              borderTopLeftRadius: "10px",
+                            }}
                           >
                             <div
                               className="d-flex pb-2"
@@ -394,7 +429,9 @@ const MyRequestContext = ({ props }: any) => {
                                 style={{ justifyContent: "space-between" }}
                               >
                                 <span>Request ID</span>
-                                <span onClick={() => handleSortChange("RequestID")}>
+                                <span
+                                  onClick={() => handleSortChange("RequestID")}
+                                >
                                   <FontAwesomeIcon icon={faSort} />
                                 </span>
                               </div>
@@ -419,7 +456,9 @@ const MyRequestContext = ({ props }: any) => {
                               >
                                 <span>Process Name</span>{" "}
                                 <span
-                                  onClick={() => handleSortChange("ProcessName")}
+                                  onClick={() =>
+                                    handleSortChange("ProcessName")
+                                  }
                                 >
                                   <FontAwesomeIcon icon={faSort} />{" "}
                                 </span>
@@ -445,7 +484,9 @@ const MyRequestContext = ({ props }: any) => {
                               >
                                 <span>Requested By</span>{" "}
                                 <span
-                                  onClick={() => handleSortChange("RequestedBy")}
+                                  onClick={() =>
+                                    handleSortChange("RequestedBy")
+                                  }
                                 >
                                   <FontAwesomeIcon icon={faSort} />{" "}
                                 </span>
@@ -453,35 +494,9 @@ const MyRequestContext = ({ props }: any) => {
                               <div className=" bd-highlight">
                                 <input
                                   type="text"
-                                  placeholder="Filter by Requested By"
+                                  placeholder="Filter by Approver By"
                                   onChange={(e) =>
                                     handleFilterChange(e, "RequestedBy")
-                                  }
-                                  className="inputcss"
-                                  style={{ width: "100%" }}
-                                />
-                              </div>
-                            </div>
-                          </th>
-                          <th style={{ minWidth: "100px", maxWidth: "100px" }}>
-                            <div className="d-flex flex-column bd-highlight ">
-                              <div
-                                className="d-flex  pb-2"
-                                style={{ justifyContent: "space-between" }}
-                              >
-                                <span>Requested Date</span>{" "}
-                                <span
-                                  onClick={() => handleSortChange("RequestedDate")}
-                                >
-                                  <FontAwesomeIcon icon={faSort} />{" "}
-                                </span>
-                              </div>
-                              <div className=" bd-highlight">
-                                <input
-                                  type="text"
-                                  placeholder="Filter by Requested Date"
-                                  onChange={(e) =>
-                                    handleFilterChange(e, "RequestedDate")
                                   }
                                   className="inputcss"
                                   style={{ width: "100%" }}
@@ -515,10 +530,45 @@ const MyRequestContext = ({ props }: any) => {
                               </div>
                             </div>
                           </th>
-                          <th style={{
-                            minWidth: "50px", maxWidth: "50px", borderBottomRightRadius: "10px",
-                            borderTopRightRadius: "10px", textAlign: "center",verticalAlign:"top"
-                          }}>
+                          <th style={{ minWidth: "100px", maxWidth: "100px" }}>
+                            <div className="d-flex flex-column bd-highlight ">
+                              <div
+                                className="d-flex  pb-2"
+                                style={{ justifyContent: "space-between" }}
+                              >
+                                <span>Requested Date</span>{" "}
+                                {/* <span
+                                  onClick={() =>
+                                    handleSortChange("RequestedDate")
+                                  }
+                                >
+                                  <FontAwesomeIcon icon={faSort} />{" "}
+                                </span> */}
+                              </div>
+                              <div className=" bd-highlight">
+                                {/* <input
+                                  type="text"
+                                  placeholder="Filter by Requested Date"
+                                  onChange={(e) =>
+                                    handleFilterChange(e, "RequestedDate")
+                                  }
+                                  className="inputcss"
+                                  style={{ width: "100%" }}
+                                /> */}
+                              </div>
+                            </div>
+                          </th>
+ 
+                          <th
+                            style={{
+                              minWidth: "50px",
+                              maxWidth: "50px",
+                              borderBottomRightRadius: "10px",
+                              borderTopRightRadius: "10px",
+                              textAlign: "center",
+                              verticalAlign: "top",
+                            }}
+                          >
                             <div className="d-flex flex-column bd-highlight ">
                               <div
                                 className="d-flex  pb-2"
@@ -531,8 +581,8 @@ const MyRequestContext = ({ props }: any) => {
                                   <FontAwesomeIcon icon={faSort} />{" "}
                                 </span> */}
                               </div>
-                              <div className=" bd-highlight">
-                                {/* <input
+                              {/* <div className=" bd-highlight">
+                                <input
                                   type="text"
                                   placeholder="Filter by Requested By"
                                   onChange={(e) =>
@@ -540,11 +590,10 @@ const MyRequestContext = ({ props }: any) => {
                                   }
                                   className="inputcss"
                                   style={{ width: "100%" }}
-                                /> */}
-                              </div>
+                                />
+                              </div> */}
                             </div>
                           </th>
-
                         </tr>
                       </thead>
                       <tbody>
@@ -554,38 +603,83 @@ const MyRequestContext = ({ props }: any) => {
                             style={{
                               display: "flex",
                               justifyContent: "center",
-                            }}>
+                            }}
+                          >
                             No results found
                           </div>
                         ) : (
                           currentData.map((item: any, index: number) => (
                             <tr
-                              onClick={() =>  handleRedirect(item.RedirectionLink)}
+                              onClick={() =>
+                                handleRedirect(item.RedirectionLink)
+                              }
                               key={index}
-                              style={{ cursor: "pointer" }}>
-                              <td style={{ minWidth: "40px", maxWidth: "40px", }}>{startIndex + index + 1}</td>
-                              <td style={{ minWidth: "80px", maxWidth: "80px", textTransform: 'capitalize' }}>{item.RequestID}</td>
-                              <td style={{ minWidth: "120px", maxWidth: "120px" }}>{item.ProcessName}</td>
-                              <td style={{ minWidth: "100px", maxWidth: "100px" }}>
-                                {item?.Author?.Title}
+                              style={{ cursor: "pointer" }}
+                            >
+                              <td
+                                style={{ minWidth: "40px", maxWidth: "40px" }}
+                              >
+                                {startIndex + index + 1}
                               </td>
-                              <td style={{ minWidth: "100px", maxWidth: "100px" }}>
-                              {new Date(item?.Created).toLocaleDateString()}
+                              <td
+                                style={{
+                                  minWidth: "80px",
+                                  maxWidth: "80px",
+                                  textTransform: "capitalize",
+                                }}
+                              >
+                                {item.RequestID}
                               </td>
-                              <td style={{ minWidth: "80px", maxWidth: "80px" }}>
+                              <td
+                                style={{ minWidth: "120px", maxWidth: "120px" }}
+                              >
+                                {item.ProcessName}
+                              </td>
+                              <td
+                                style={{ minWidth: "100px", maxWidth: "100px" }}
+                              >
+                                {item?.Approver?.Title}
+                              </td>
+ 
+                              <td
+                                style={{ minWidth: "80px", maxWidth: "80px" }}
+                              >
                                 {item?.Status}
                               </td>
-                              <td style={{ minWidth: "50px", maxWidth: "50px" }} >
-                              {/* <FontAwesomeIcon icon={faEye} />
-                              <FontAwesomeIcon icon="fa-light fa-eye" />
-                              <a href="my-approval-form.html"><i className="fe-eye font-18"></i> </a> */}
-                                <img
-                                 onClick={() => handleRedirect(item.RedirectionLink)}
-                                 style={{ minWidth: "20px", maxWidth: "20px" ,marginLeft:"15px" ,cursor: "pointer"}}
+                              <td
+                                style={{ minWidth: "100px", maxWidth: "100px" }}
+                              >
+                                {new Date(item?.Created).toLocaleDateString()}
+                              </td>
+                              <td
+                                style={{ minWidth: "50px", maxWidth: "50px" }}
+                                className="fe-eye font-18"
+                              >
+                                {/* <a href="my-approval-form.html"><i className="fe-eye font-18"></i> </a> */}
+ 
+                                {/* <img
+                                  onClick={() =>
+                                    handleRedirect(item.RedirectionLink)
+                                  }
+                                  style={{
+                                    minWidth: "20px",
+                                    maxWidth: "20px",
+                                    marginLeft: "15px",
+                                    cursor: "pointer",
+                                  }}
                                   src={require("../assets/eye.png")}
                                   className="fe-eye font-18"
                                   alt={item.Title || "Untitled"}
-                                />
+                                /> */}
+                                <Eye onClick={() =>
+                                  handleRedirect(item)
+                                }
+                                  style={{
+                                    minWidth: "20px",
+                                    maxWidth: "20px",
+                                    marginLeft: "15px",
+                                    cursor: "pointer",
+                                  }} />
                               </td>
                             </tr>
                           ))
@@ -593,13 +687,14 @@ const MyRequestContext = ({ props }: any) => {
                       </tbody>
                     </table>
                   </div>
-
+ 
                   {currentData.length > 0 ? (
                     <nav className="pagination-container">
                       <ul className="pagination">
                         <li
                           className={`page-item ${currentPage === 1 ? "disabled" : ""
-                            }`}>
+                            }`}
+                        >
                           <a
                             className="page-link"
                             onClick={() => handlePageChange(currentPage - 1)}
@@ -622,14 +717,16 @@ const MyRequestContext = ({ props }: any) => {
                             </a>
                           </li>
                         ))}
-
+ 
                         <li
                           className={`page-item ${currentPage === totalPages ? "disabled" : ""
-                            }`}>
+                            }`}
+                        >
                           <a
                             className="page-link"
                             onClick={() => handlePageChange(currentPage + 1)}
-                            aria-label="Next">
+                            aria-label="Next"
+                          >
                             »
                           </a>
                         </li>
@@ -641,13 +738,72 @@ const MyRequestContext = ({ props }: any) => {
                 </div>
               </div>
             </div>
+            {/* {
+            currentItem&& ContentData&& isActivedata == true && (
+                <div className="row">
+                  <div className="col-12">
+                    <div className="card">
+                      <div className="card-body">
+                        <h4 className="header-title mb-0">{ContentData.Title}</h4>
+                        <p className="sub-header">Company/ Department details</p>
+ 
+                        <div className="row">
+                          <div className="col-lg-4">
+                            <div className="mb-3">
+                              <label className="form-label text-dark font-14">Company / Department:</label>
+                              <div><span className="text-muted font-14">{currentItem.EntityName}</span></div>
+                            </div>
+                          </div>
+                          <div className="col-lg-4">
+                            <div className="mb-3">
+                              <label className="form-label text-dark font-14">Date of Request:</label>
+                              <div><span className="text-muted font-14">{currentItem.Created}</span></div>
+                            </div>
+                          </div>
+                          <div className="col-lg-6">
+                            <div className="mb-0">
+                              <label className="form-label text-dark font-14">Content:</label>
+                              <div>
+                                <span className="text-muted font-14">
+                                  {ContentData.Title}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="col-lg-6">
+                            <div className="mb-0">
+                              <label className="form-label text-dark font-14">Overview:</label>
+                              <div>
+                                <span className="text-muted font-14">
+                                  {ContentData.overview}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="card">
+                      <div className="card-body">
+                        <h4 className="header-title mb-0">Description</h4>
+                        <p className="sub-header">
+                          {ContentData.description}
+                        </p>
+ 
+ 
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )} */}
           </div>
         </div>
       </div>
     </div>
   );
 };
-
+ 
+ 
 const MyRequest: React.FC<IMyRequestProps> = (props) => (
   <Provider>
     <MyRequestContext props={props} />

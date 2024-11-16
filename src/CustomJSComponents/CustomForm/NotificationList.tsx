@@ -1,33 +1,35 @@
 import React from 'react';
 import moment from 'moment';
 import { X } from 'react-feather';
-
+ 
 interface Notification {
     Id: string;
     Created: string; // or Date, depending on your data type
     ContentName: string;
+    ContentComment: string;
+ 
     ActionUser?: { Title: string };
     ContentType0: string;
     NotifiedUser?: { Title: string };
 }
-
+ 
 interface CategorizedNotifications {
     today: Notification[];
     yesterday: Notification[];
     earlier: Notification[];
 }
-
+ 
 const NotificationList = ({ NotificationArray, handleNotificationClick }: any) => {
     // Function to categorize notifications
-    
-
+   
+ 
     const categorizeNotifications = (notifications: Notification[]) => {
         const now = moment();
         const categorized: CategorizedNotifications = { today: [], yesterday: [], earlier: [] };
-
+ 
         notifications.forEach((notify) => {
             const createdDate = moment(notify.Created);
-
+ 
             if (createdDate.isSame(now, 'day')) {
                 categorized.today.push(notify);
             } else if (createdDate.isSame(moment().subtract(1, 'day'), 'day')) {
@@ -36,10 +38,10 @@ const NotificationList = ({ NotificationArray, handleNotificationClick }: any) =
                 categorized.earlier.push(notify);
             }
         });
-
+ 
         return categorized;
     };
-
+ 
     // Categorize notifications
     const categorizedNotifications = categorizeNotifications(NotificationArray);
     console.log(categorizedNotifications.yesterday, 'categorizedNotifications.yesterday');
@@ -52,19 +54,19 @@ const NotificationList = ({ NotificationArray, handleNotificationClick }: any) =
     }
     return (
         <div>
-            <div className="flex pt-1">
+            <div className="flex">
                 <div className="row">
                     <div className="col-md-8">
-                        <h5 className="p-2 text-dark font-16">Notifications</h5>
+                        <h5 className="p-1 font-16 text-dark">Notifications</h5>
                     </div>
-                    <div className="col-md-4">
-                        <h5 className="p-1 text-dark font-12 pt-3 text-center text-decoration-underline" onClick={goToNext}>Clear All</h5>
+                    <div style={{textAlign:'right'}} className="col-md-4">
+                        <h5 style={{textDecoration:'underline'}} className="pt-2 font-12" onClick={goToNext}>Close</h5>
                     </div>
                 </div>
             </div>
-
+  <div className="heightlist">
             {NotificationArray.length > 0 ? (
-                <div className='heightlist'>
+                <div>
                     {/* Today Section */}
                     {categorizedNotifications.today.length > 0 && (
                         <div>
@@ -77,15 +79,15 @@ const NotificationList = ({ NotificationArray, handleNotificationClick }: any) =
                                         <div className="d-flex align-items-center">
                                             <div className="flex-grow-1 text-truncate ms-2">
                                                 <h5 className="noti-item-title fw-semibold font-14" style={{ textTransform: 'capitalize' }}>
-                                                    {notify.ContentName}
+                                                {notify.ContentName || notify.ContentComment}
                                                     <small className="fw-normal text-muted ms-1" style={{ textTransform: 'lowercase' }}>{moment(notify.Created).fromNow()}</small>
                                                 </h5>
                                                 <small className="noti-item-subtitle text-muted">{notify?.ActionUser?.Title} {notify.ContentType0} on {notify?.NotifiedUser?.Title}</small>
                                             </div>
                                             <div className="flex-shrink-0">
-                                                <div className="notify-icon bg-primary">
+                                                {/* <div className="notify-icon bg-primary">
                                                     <X style={{ background: '#fff' }} />
-                                                </div>
+                                                </div> */}
                                             </div>
                                         </div>
                                     </div>
@@ -93,7 +95,7 @@ const NotificationList = ({ NotificationArray, handleNotificationClick }: any) =
                             ))}
                         </div>
                     )}
-
+ 
                     {/* Yesterday Section */}
                     {categorizedNotifications.yesterday.length > 0 && (
                         <div>
@@ -106,15 +108,15 @@ const NotificationList = ({ NotificationArray, handleNotificationClick }: any) =
                                         <div className="d-flex align-items-center">
                                             <div className="flex-grow-1 text-truncate ms-2">
                                                 <h5 className="noti-item-title fw-semibold font-14" style={{ textTransform: 'capitalize' }}>
-                                                    {notify.ContentName}
+                                                {notify.ContentName || notify.ContentComment}
                                                     <small className="fw-normal text-muted ms-1">{moment(notify.Created).fromNow()}</small>
                                                 </h5>
                                                 <small className="noti-item-subtitle text-muted">{notify?.ActionUser?.Title} {notify.ContentType0} on {notify?.NotifiedUser?.Title}</small>
                                             </div>
                                             <div className="flex-shrink-0">
-                                                <div className="notify-icon bg-primary">
+                                                {/* <div className="notify-icon bg-primary">
                                                     <X style={{ background: '#fff' }} />
-                                                </div>
+                                                </div> */}
                                             </div>
                                         </div>
                                     </div>
@@ -122,7 +124,7 @@ const NotificationList = ({ NotificationArray, handleNotificationClick }: any) =
                             ))}
                         </div>
                     )}
-
+ 
                     {/* Earlier Section */}
                     {categorizedNotifications.earlier.length > 0 && (
                         <div>
@@ -135,29 +137,29 @@ const NotificationList = ({ NotificationArray, handleNotificationClick }: any) =
                                         <div className="d-flex align-items-center">
                                             <div className="flex-grow-1 text-truncate ms-2">
                                                 <h5 className="noti-item-title fw-semibold font-14" style={{ textTransform: 'capitalize' }}>
-                                                    {notify.ContentName} <small className="fw-normal text-muted ms-1">{moment(notify.Created).fromNow()}</small>
+                                                {notify.ContentName || notify.ContentComment} <small className="fw-normal text-muted ms-1">{moment(notify.Created).fromNow()}</small>
                                                 </h5>
                                                 <small className="noti-item-subtitle text-muted">{notify?.ActionUser?.Title} {notify.ContentType0} on {notify?.NotifiedUser?.Title}</small>
                                             </div>
                                             <div className="flex-shrink-0">
-                                                <div className="notify-icon bg-primary">
+                                                {/* <div className="notify-icon bg-primary">
                                                     <X style={{ background: '#fff' }} />
-                                                </div>
+                                                </div> */}
                                             </div>
                                         </div>
                                     </div>
                                 </a>
                             ))}
-                            <h5 className="p-1 text-dark text-center text-decoration-underline" onClick={goToNext}>View All</h5>
                         </div>
                     )}
                 </div>
-                
             ) : (
                 <p>No notifications</p>
             )}
         </div>
+        <h5 style={{textDecoration:'underline'}} className="p-1 font-12 text-center" onClick={goToNext}>View All</h5>
+        </div>
     );
 };
-
+ 
 export default NotificationList;

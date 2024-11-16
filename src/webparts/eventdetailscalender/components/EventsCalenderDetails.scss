@@ -14,6 +14,7 @@
     width: 180px;
     border-radius: 4px; text-align: center;
 }
+
 .EventAttendes svg{margin-top: -4px; margin-right: 5px; }
 .eventtextnew {
     font-size: 14px;
@@ -31,3 +32,30 @@
     border-radius: 30px; font-size: 14px;
 }
 .eventcommm .nose{padding: 0px !important; margin: 0px !important; }
+.postion8{position: fixed; width:16%;  }
+.mainevent {border-bottom: 1px solid #ccc; padding: 10px 0px;}
+.mainevent:last-child{border-bottom: 0px !important;}
+@media(max-width:1920px)
+{
+    .postion8{width:24%; }
+}
+@media(max-width:1600px)
+{
+    .postion8{width:23%; }
+}
+
+@media(max-width:1440px)
+{
+    .postion8{width:23%; }
+    .internalmedia .gal-box .image-popup {
+        height: 200px !important;
+    }
+}
+@media(max-width:1280px)
+{
+    .postion8{width:24.5%; }
+}
+@media(max-width:1200px)
+{
+    .postion8{width:24%; }
+}

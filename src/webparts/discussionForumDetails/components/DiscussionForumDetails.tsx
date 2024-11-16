@@ -28,6 +28,7 @@ import context from "../../../GlobalContext/context";
 import { IDiscussionForumDetailsProps } from "./IDiscussionForumDetailsProps";
 import { getDiscussionForumDetailsById } from "../../../APISearvice/DiscussionForumService";
 import AvtarComponents from "../../../CustomJSComponents/AvtarComponents/AvtarComponents";
+import { right } from "@popperjs/core";
 // Define types for reply and comment structures
 interface Reply {
   Id: number;
@@ -503,38 +504,53 @@ ApICallData();
                       className="row mt-4"
                       style={{ paddingLeft: "0.5rem" }}
                     >
-                      <p
 
-                        className="d-block mt-2 font-28"
-                      >
-                        {item.Topic}
-                      </p>
-                      <div className="row mt-2">
-                        <div className="col-md-12 col-xl-12" style={{ width: '100%' }}>
-                          <p className="mb-2 mt-1 d-flex" style={{ fontSize: '14px' }}>
-                            <span className="pe-2 text-nowrap mb-0 d-inline-block">
+<div className="col-md-3 mobile-w1">
+
+  <div className="row mt-2">
+  <p
+
+className="d-block mt-2 font-28"
+>
+{item.Topic}
+</p>
+  <div className="tabcss mb-0- mt-2 me-1 newalign"> 
+  <span className="pe-2 text-nowrap mb-0 d-inline-block">
                               <Calendar size={14} />{" "}
                               {moment(item.Created).format("DD-MMM-YYYY")}{" "}
-                              &nbsp; &nbsp; &nbsp;|
+                            
                             </span>
+
+                            </div>
+                            <div className="tabcss mb-0 mt-2 me-1 newalign"> 
                             <span
                               className="text-nowrap mb-0 d-inline-block"
                               onClick={sendanEmail}
                             >
-                              <Share size={14} /> Share by email &nbsp; &nbsp;
-                              &nbsp;|&nbsp; &nbsp; &nbsp;
+                              <Share size={14} /> Share by email 
                             </span>
-                            <span
+        </div>
+
+        <div className="tabcss mb-0 mt-2 me-1 newalign"> 
+        <span
                               className="text-nowrap mb-0 d-inline-block"
                               onClick={() => copyToClipboard(item.Id)}
                             >
-                              <Link size={14} /> Copy link &nbsp; &nbsp;  &nbsp; |  &nbsp;  &nbsp;
-                              &nbsp;
+                              <Link size={14} /> Copy link
+                          
                               {copySuccess && <span className="text-success">{copySuccess}</span>}
                             </span>
-                            <span>{item.GroupType} &nbsp; &nbsp;  &nbsp; |  &nbsp;  &nbsp;
-                              &nbsp;</span>
-                            <span style={{ display: 'flex', gap: '0.2rem' }}>
+          </div>
+          <div className="tabcss mb-0 mt-2 me-1 newalign"> 
+       <span style={{float:'left', marginTop:'-1px', marginRight:'5px'}}><img
+                                  src={require("../assets/public.png")}
+                                 
+                                  alt="Check"
+                                /></span>   <span> {item.GroupType} 
+          &nbsp;</span>
+            </div>
+
+            <span style={{ display: 'flex', gap: '0.2rem' }}>
                               {
                                 item?.InviteMemebers?.length > 0 && item?.InviteMemebers.map((item1: any, index: 0) => {
 
@@ -548,83 +564,27 @@ ApICallData();
                                 })
                               }
                             </span>
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="row " style={{ paddingLeft: "0.5rem" }}>
+
+
+                              
+
+        
+  </div>
+
+  <h4 className="font-14 fw-bold text-dark mb-1 mt-3 uppercase">Discussion Overview</h4>
+  <div className="row ">
                       <p
                         style={{ lineHeight: "22px" }}
-                        className="d-block text-muted mt-2 font-14"
+                        className="d-block text-muted mt-1 font-14"
                       >
                         {item.Overview}
                       </p>
                     </div>
-                    <div
-                      className="row internalmedia filterable-content mt-0"
-                      style={{ paddingLeft: "0.5rem" }}
-                    >
-                      {DiscussionForumGalleryJSON.length > 0 ? (
-                        DiscussionForumGalleryJSON.map((res: any) => {
-                          return (
-                            <div className="col-sm-6 col-xl-3 filter-item all web illustrator">
-                              <div
-                                className="gal-box"
+  </div>
 
-                              >
-                                <a
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#centermodal"
-                                  className="image-popup mb-2"
-                                  title="Screenshot-1"
-                                >
-                                  <img
-                                    src={`https://officeindia.sharepoint.com${res.fileUrl}`}
-                                    className="img-fluid imgcssscustom"
-                                    alt="work-thumbnail"
-                                    data-themekey="#"
-                                    style={{ width: "100%", height: "100%" }}
-                                  />
-                                </a>
-                              </div>
-                            </div>
-                          );
-                        })
-                      ) : (
-                        <></>
-                      )}
-                    </div>
-                    <div
-                      className="row mt-5"
-                      style={{ paddingLeft: "0.5rem" }}
-                    >
-                      <p
-                        style={{ lineHeight: "22px" }}
-                        className="d-block text-muted mt-2 mb-0 font-14"
-                      >
-                        <div
-                          dangerouslySetInnerHTML={{
-                            __html: item.Description,
-                          }}
-                        ></div>
-                      </p>
-                    </div>
-                  </>
-                );
-              })
-              : null}
-            {/* <div className="row">
-              {
-                ArrDetails.length > 0 ? ArrDetails.map((item: any) => {
-                  return (
-                    <h4>{item.Title}</h4>
-                  )
-                }) : null
-              }
- 
-            </div> */}
-            <div className="row mt-4" style={{ paddingLeft: "0.5rem" }}>
-              <div className="col-md-6">
+  <div className="col-md-6 mobile-w2">
+  <div className="row mt-4" style={{ paddingLeft: "0.5rem" }}>
+              <div className="col-md-12">
                 <div
                   className="card"
                   style={{
@@ -665,7 +625,7 @@ ApICallData();
               {/* New comment input */}
 
               {comments.map((comment, index) => (
-                <div className="col-xl-6" style={{ marginTop: "0rem" }}>
+                <div className="col-xl-12" style={{ marginTop: "0rem" }}>
                   <CommentCard
                     key={index}
                     commentId={index}
@@ -686,6 +646,212 @@ ApICallData();
                 </div>
               ))}
             </div>
+
+    </div>
+
+    <div className="col-md-3 mt-4 mobile-w3">
+
+                      <div className="card mobile-5"  style={{ borderRadius: "22px" }}>
+                        <div className="card-body pb-3 gheight">
+                          <h4 className="header-title font-16 text-dark fw-bold mb-0"  style={{ fontSize: "20px" }}>Discussion Owner</h4>
+                            <div style={{textAlign:'center'}} className="mt-2"> <img
+                                  src={require("../assets/member.jpg")}
+                                  style={{width:'4.5rem', height:'4.5rem', borderRadius:'1000px', marginTop:'15px' }}
+                                  alt="Check"
+                                /></div> 
+                          <h1 className="text-muted font-14 mt-2"><p className="text-dark font-16 text-center mb-2"> keerti jain</p>
+                          <p className="text-dark font-14 text-center mb-1">Cloud Infrastructure Alchemist</p>
+                          <p className="text-muted font-12 text-center">keertijain@officeindia.onmicrosoft.com  </p>
+                          </h1></div>
+                          </div>
+                          <div className="card mobile-5"  style={{ borderRadius: "22px" }}>
+                          <div className="card-body pb-3 gheight">
+                          <h4 className="header-title font-16 text-dark fw-bold mb-0"  style={{ fontSize: "20px" }}>Most Liked Replied</h4>
+                                      <div className="mt-2">
+
+                                        <div className="border-bottom-new">
+
+                                      <div className="row">
+                                            <div className="col-lg-2 mt-1">
+                                            <img
+                                  src={require("../assets/member.jpg")}
+                                  style={{width:'2.5rem', height:'2.5rem', borderRadius:'1000px' }}
+                                  alt="Check"
+                                />
+
+                                            </div>
+                                            <div style={{paddingLeft:'15px'}} className="col-lg-10">
+                                              <h3 className="font-16 text-dark mb-1">Mr. john</h3>
+                                              <p className="text-peimary font-12" style={{color:'#1fb0e5'}}>IT Manager</p>
+                                            </div>
+
+                                            </div>
+
+
+                                            </div>
+
+                                            <div className="border-bottom-new">
+
+<div className="row">
+      <div className="col-lg-2 mt-1">
+      <img
+src={require("../assets/member.jpg")}
+style={{width:'2.5rem', height:'2.5rem', borderRadius:'1000px' }}
+alt="Check"
+/>
+
+      </div>
+      <div style={{paddingLeft:'15px'}} className="col-lg-10">
+        <h3 className="font-16 text-dark mb-1">Mr. john</h3>
+        <p className="text-peimary font-12" style={{color:'#1fb0e5'}}>IT Manager</p>
+      </div>
+
+      </div>
+
+
+      </div>
+
+
+      <div className="border-bottom-new">
+
+<div className="row">
+      <div className="col-lg-2 mt-1">
+      <img
+src={require("../assets/member.jpg")}
+style={{width:'2.5rem', height:'2.5rem', borderRadius:'1000px' }}
+alt="Check"
+/>
+
+      </div>
+      <div style={{paddingLeft:'15px'}} className="col-lg-10">
+        <h3 className="font-16 text-dark mb-1">Mr. john</h3>
+        <p className="text-peimary font-12" style={{color:'#1fb0e5'}}>IT Manager</p>
+      </div>
+
+      </div>
+
+
+      </div>
+
+      <div className="border-bottom-new">
+
+<div className="row">
+      <div className="col-lg-2 mt-1">
+      <img
+src={require("../assets/member.jpg")}
+style={{width:'2.5rem', height:'2.5rem', borderRadius:'1000px' }}
+alt="Check"
+/>
+
+      </div>
+      <div style={{paddingLeft:'15px'}} className="col-lg-10">
+        <h3 className="font-16 text-dark mb-1">Mr. john</h3>
+        <p className="text-peimary font-12" style={{color:'#1fb0e5'}}>IT Manager</p>
+      </div>
+
+      </div>
+
+
+      </div>
+
+         <div className="border-bottom-new">
+
+                                      <div className="row">
+                                            <div className="col-lg-2 mt-1">
+                                            <img
+                                  src={require("../assets/member.jpg")}
+                                  style={{width:'2.5rem', height:'2.5rem', borderRadius:'1000px' }}
+                                  alt="Check"
+                                />
+
+                                            </div>
+                                            <div style={{paddingLeft:'15px'}} className="col-lg-10">
+                                              <h3 className="font-16 text-dark mb-1">Mr. john</h3>
+                                              <p className="text-peimary font-12" style={{color:'#1fb0e5'}}>IT Manager</p>
+                                            </div>
+
+                                            </div>
+
+
+                                            </div>
+                                      </div>
+                          
+                            </div>
+
+                            </div>
+                          
+
+                        
+                      </div>
+
+                     
+                      
+                    </div>
+                
+                    {/* <div
+                      className="row internalmedia filterable-content mt-0"
+                      style={{ paddingLeft: "0.5rem" }}
+                    >
+                      {DiscussionForumGalleryJSON.length > 0 ? (
+                        DiscussionForumGalleryJSON.map((res: any) => {
+                          return (
+                            <div className="col-sm-6 col-xl-3 filter-item all web illustrator">
+                              <div
+                                className="gal-box"
+
+                              >
+                                <a
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#centermodal"
+                                  className="image-popup mb-2"
+                                  title="Screenshot-1"
+                                >
+                                  <img
+                                    src={`https://officeindia.sharepoint.com${res.fileUrl}`}
+                                    className="img-fluid imgcssscustom"
+                                    alt="work-thumbnail"
+                                    data-themekey="#"
+                                    style={{ width: "100%", height: "100%" }}
+                                  />
+                                </a>
+                              </div>
+                            </div>
+                          );
+                        })
+                      ) : (
+                        <></>
+                      )}
+                    </div> */}
+                    {/* <div
+                      className="row mt-5"
+                      style={{ paddingLeft: "0.5rem" }}
+                    >
+                      <p
+                        style={{ lineHeight: "22px" }}
+                        className="d-block text-muted mt-2 mb-0 font-14"
+                      >
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: item.Description,
+                          }}
+                        ></div>
+                      </p>
+                    </div> */}
+                  </>
+                );
+              })
+              : null}
+            {/* <div className="row">
+              {
+                ArrDetails.length > 0 ? ArrDetails.map((item: any) => {
+                  return (
+                    <h4>{item.Title}</h4>
+                  )
+                }) : null
+              }
+ 
+            </div> */}
+         
           </div>
         </div>
       </div>

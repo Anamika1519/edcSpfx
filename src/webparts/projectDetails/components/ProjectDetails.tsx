@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import CustomBreadcrumb from "../../../CustomJSComponents/CustomBreadcrumb/CustomBreadcrumb";
 import VerticalSideBar from "../../verticalSideBar/components/VerticalSideBar";
 import { SPFI } from "@pnp/sp/presets/all";
+import Swal from "sweetalert2";
 import "../../../Assets/Figtree/Figtree-VariableFont_wght.ttf";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
@@ -27,7 +28,7 @@ import { getSP } from "../loc/pnpjsConfig";
 import { IProjectDetailsProps } from "./IProjectDetailsProps";
 import { getProjectDetailsById } from "../../../APISearvice/BlogService";
 import "./Projects.scss";
-import { Modal } from "react-bootstrap";
+import { Modal, Card ,Dropdown , Button} from "react-bootstrap";
 import FileIcon from "../../../CustomJSComponents/FileIcon";
 
 // Define types for reply and comment structures
@@ -59,11 +60,16 @@ interface Comment {
   userHasLiked: boolean; // New property to track if the user liked this comment
   UserProfile: string;
 }
+
+let projectname :any = "" 
+let filemanager : any = ""
+const payload: any = {};
 const ProjectDetailsContext = ({ props }: any) => {
   const sp: SPFI = getSP();
   console.log(sp, "sp");
   const siteUrl = props.siteUrl;
   const menuRef = useRef(null);
+  const [projectallfile, setProjectallfiles] = useState([]);
   const elementRef = React.useRef<HTMLDivElement>(null);
   const [CurrentUser, setCurrentUser]: any[] = useState([]);
   const [comments, setComments] = useState<Comment[]>([]);
@@ -241,7 +247,20 @@ ApICallData();
     const idNum = originalString.substring(1);
     // const queryString = decryptId(Number(updatedString));
 
-    setArrDetails(await getProjectDetailsById(sp, Number(idNum)));
+    // setArrDetails(await getProjectDetailsById(sp, Number(idNum)));
+    const projectDetails = await getProjectDetailsById(sp, Number(idNum));
+
+// Step 2: Set the global variable with the project name or other details
+setArrDetails(projectDetails); // Assuming this sets the global state or variable
+
+// Step 3: Use the project name to fetch other details if it's stored in `projectDetails`
+if (projectDetails ) {
+  // Replace `fetchOtherDetailsByProjectName` with your actual function
+  const additionalDetails = await fetchOtherDetailsByProjectName();
+
+  // Do something with the additional details
+  console.log(additionalDetails);
+}
   };
 
   const ApICallData = async () => {
@@ -253,6 +272,7 @@ ApICallData();
   const [showModal, setShowModal] = useState(false);
 
   const openModal = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    getAllFilesForProject()
     e.preventDefault()
     setShowModal(true);
   }
@@ -280,18 +300,24 @@ ApICallData();
       modalBackdrop.remove();
     }
   };
-  const copyToClipboard = (Id: number) => {
-    const link = `${siteUrl}/SitePages/ProjectDetails.aspx?${Id}`;
-    navigator.clipboard
-      .writeText(link)
-      .then(() => {
-        setCopySuccess("Link copied!");
-        setTimeout(() => setCopySuccess(""), 2000); // Clear message after 2 seconds
-      })
-      .catch((err) => {
-        setCopySuccess("Failed to copy link");
-      });
-  };
+
+  const openprojectlibrary = ()=>{
+
+
+
+  }
+  // const copyToClipboard = (Id: number) => {
+  //   const link = `${siteUrl}/SitePages/ProjectDetails.aspx?${Id}`;
+  //   navigator.clipboard
+  //     .writeText(link)
+  //     .then(() => {
+  //       setCopySuccess("Link copied!");
+  //       setTimeout(() => setCopySuccess(""), 2000); // Clear message after 2 seconds
+  //     })
+  //     .catch((err) => {
+  //       setCopySuccess("Failed to copy link");
+  //     });
+  // };
   // Add a new comment
   const handleAddComment = async () => {
     debugger;
@@ -335,6 +361,34 @@ ApICallData();
         }
         const nofiArr = await addNotification(notifiedArr, sp)
         console.log(nofiArr, 'nofiArr');
+        // const handleSubmitFiles = async () => {
+        //   setLoading(true);
+        //   try {
+        //     for (const file of selectedFiles) {
+        //       try {
+        //         alert("f")
+        //         // Upload the file to the document library
+        //         const uploadFolder = sp.web.getFolderByServerRelativePath(`/sites/SPFXDemo/ARGProjectsFiles/${projectname}`);
+        //         const uploadResult = await uploadFolder.files.addChunked(file.name, file);
+             
+        //         const listItem = await uploadResult.file.getItem();
+           
+        //         (payload as any).CommentID=ress.data.Id;
+        //         await listItem.update(payload);
+        //         console.log(uploadResult, 'Uploaded file data');
+        //       } catch (error) {
+        //         console.log("Error uploading file:", file.name, error);
+        //       }
+        //     }
+        //     alert('Files uploaded successfully!');
+        //     setSelectedFiles([]); // Clear the selected files after upload
+        //   } catch (error) {
+        //     console.error('Error uploading files:', error);
+        //   } finally {
+        //     setLoading(false);
+        //   }
+        // };
+        // handleSubmitFiles()
         setNewComment("");
         setLoading(false);
       });
@@ -607,6 +661,268 @@ try{
   const sendanEmail = () => {
     window.open("https://outlook.office.com/mail/inbox");
   };
+
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  // const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   setLoading(true);
+  //   const files = Array.from(e.target.files || []); // Ensure files is an array of type File[]
+
+  //   try {
+  //     // Define allowed MIME types
+  //     const allowedTypes = [
+  //       'image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml', 
+  //       'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 
+  //       'application/pdf', 'application/vnd.ms-excel', 
+  //       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 
+  //       'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+  //       'text/csv', 'text/tsx'
+  //     ];
+
+  //     // Filter only the allowed file types
+  //     let filteredFiles = files.filter(file => allowedTypes.includes(file.type));
+
+  //     if (filteredFiles.length === 0) {
+  //       alert("Only PNG, JPG, SVG, DOC, DOCX, PDF, EXCEL, PPT, CSV, and TSX files are allowed.");
+  //       setLoading(false);
+  //       return;
+  //     }
+
+  //     // Add filtered files to state
+  //     setSelectedFiles(prevFiles => [...prevFiles, ...filteredFiles]);
+  //   } catch (error) {
+  //     console.error('Error handling file input:', error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+  const [error, setError] = useState<string>('');  
+  // Function to remove a file from the selected files array
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    setLoading(true);
+    const files = Array.from(e.target.files || []);  // Ensure files is an array of type File[]
+  
+    try {
+      const allowedTypes = [
+        'image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml', 
+        'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 
+        'application/pdf', 'application/vnd.ms-excel', 
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 
+        'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+        'text/csv', 'text/tsx'
+      ];
+  
+      // Filter valid files based on MIME types
+      const filteredFiles = files.filter(file => allowedTypes.includes(file.type));
+  
+      if (filteredFiles.length === 0) {
+        setError("Only PNG, JPG, SVG, DOC, DOCX, PDF, EXCEL, PPT, CSV, and TSX files are allowed.");
+        setLoading(false);
+        return;
+      }
+  
+      setError('');
+      setSelectedFiles(filteredFiles);
+    } catch (error) {
+      console.error('Error handling file input:', error);
+      setError('An error occurred while processing the files.');
+    } finally {
+      setLoading(false);
+    }
+  };
+  const uploadfileinfolder = async()=>{
+      console.log("hernter here in ")
+    for (const file of selectedFiles) {
+
+      try {
+        console.log(`Uploading file: ${file.name}`);
+        console.log(`filemanager: ${filemanager}`);
+        
+        // Reference the folder by server-relative path
+        const uploadFolder = sp.web.getFolderByServerRelativePath(`${filemanager}`);
+        console.log(uploadFolder , "uplaodfold")
+        // Upload the file using addChunked (use appropriate chunk size if needed)
+        const uploadResult = await uploadFolder.files.addChunked(file.name, file)
+      
+        alert(uploadResult)
+        console.log(`Upload successful for file: ${file.name}`);
+      } catch (error) {
+        console.error(`Error uploading file: ${file.name}`, error);
+      }
+    }
+        
+
+  }
+  const removeFile = (fileName: string) => {
+    setSelectedFiles(prevFiles => prevFiles.filter(file => file.name !== fileName));
+  };
+
+  // Function to upload files to the document library
+
+  const[argcurrentgroupuser, setArgcurrentgroupuser] = useState([])
+
+  const [files, setFiles] = useState([]);
+  async function getAllFilesForProject() {
+    
+    
+    console.log(filemanager, "file manager")
+    const response = await sp.web.getFolderByServerRelativePath(`${filemanager}`).files();
+    console.log(response, "resonse")
+    setFiles(response)
+    function isDocumentLibrary(filemanager:any) {
+      // Check if the URL contains more than two parts after "/sites/"
+      const parts = filemanager.split('/sites/')[1].split('/');
+      return parts.length > 2 && !parts.includes('Forms');
+  }
+  
+  function isSubsite(filemanager:any) {
+      // Check if the URL contains exactly two parts after "/sites/"
+      const parts = filemanager.split('/sites/')[1].split('/');
+      return parts.length === 2;
+  }
+  
+  // Example usage
+  const docLibraryUrl = '/sites/SPFXDemo/ARGProjectsFiles/';
+  const subsiteUrl = '/sites/SPFXDemo/test/test11';
+  
+  console.log(isDocumentLibrary(docLibraryUrl)); // true
+  console.log(isSubsite(docLibraryUrl)); // false
+  
+  console.log(isDocumentLibrary(subsiteUrl)); // false
+  console.log(isSubsite(subsiteUrl)); // true
+  
+    // try {
+
+    //   console.log(projectname , "projectname")
+    //   const response = await sp.web.getFolderByServerRelativePath(`/sites/SPFXDemo/ARGProjectsFiles/${projectname}`).files();
+    //     setProjectallfiles(response)
+    //     console.log(response, "response ")
+    //   console.log('Files in the folder:', response);
+
+    //   return response; // Return or handle the response as needed
+    // } catch (error) {
+    //   console.error('Error fetching files:', error);
+    // }
+    // console.log(projectallfile, "projectallfile")
+  }
+
+
+  async function  fetchOtherDetailsByProjectName() {
+    console.log(projectname, "projectname")
+    const ids = window.location.search;
+    const originalString = ids;
+    const idNum = originalString.substring(1);
+    try {
+     
+        
+      
+      const getargmember = await sp.web.lists.getByTitle('ARGProject').items.filter(`ProjectName eq '${projectname}'`).select("*,TeamMembers/ID,TeamMembers/EMail,TeamMembers/Title").expand("TeamMembers")();
+      console.log(getargmember, "getargmember")
+      const userList = await sp.web.lists.getByTitle("User Information List").items.select("ID", "Title", "EMail", "Department", "JobTitle", "Picture").filter("EMail ne null")();
+      console.log(userList, "userlist")
+      setArgcurrentgroupuser(getargmember)
+    } catch (error) {
+      
+    }
+    if(projectname){
+      const getargmember = await sp.web.lists.getByTitle('ARGProject')
+      console.log(getargmember, "getargmember")
+    }
+   
+  }
+  const handlePreviewFile = (fileUrl:any) => {
+    window.open(fileUrl, '_blank'); // Open the file in a new tab
+  };
+
+const [isPopupVisible, setPopupVisible] = useState(false);
+
+
+
+
+// this is pop up when folder create click 
+const togglePopup  =async () => {
+  const ids = window.location.search;
+const originalString = ids;
+const idNum = originalString.substring(1);
+alert(idNum)
+
+  const getdata :any= await sp.web.lists.getByTitle('ARGProject').items.getById(parseInt(idNum))()
+  console.log(getdata , "get data ")
+
+    if (getdata.FolderInProgress === null || getdata.FolderInProgress === "") {
+    
+      setPopupVisible(!isPopupVisible);
+    } else if (getdata.FolderInProgress === "In Progress") {
+    
+      Swal.fire({
+        title: 'Folder is in progress!',
+        text: 'Please wait until the process is complete.',
+        icon: 'warning',
+        confirmButtonText: 'OK',
+      });
+    } else if (getdata.FolderInProgress === "Completed") {
+
+      Swal.fire({
+        title: 'Folder is already created!',
+        text: 'The folder has already been created.',
+        icon: 'success',
+        confirmButtonText: 'OK',
+      });
+    }
+};
+
+  const [name, setName] = useState('');
+  const [Overview, setOverview] = useState('');
+
+  // Create folder pop up
+  const UpdateItemAndCreateFolder = async (e:any) => {
+    e.preventDefault(); 
+
+
+    if (!name || !Overview) {
+
+      Swal.fire({
+        title: 'Error!',
+        text: 'Please fill in all required fields.',
+        icon: 'error',
+        confirmButtonText: 'OK',
+      });
+    } else {
+    
+      try {
+
+        console.log('Form submitted:', { name, Overview });
+        const ids = window.location.search;
+        const originalString = ids;
+        const idNum = originalString.substring(1);
+        console.log(name, "name" , Overview , "overview")
+        const updatedValues = {
+  
+          ProjectFolderName : name,
+          FolderOverview: Overview,
+          FolderInProgress: "In Progress"
+        };
+    
+     
+         await sp.web.lists.getByTitle('ARGProject').items.getById(parseInt(idNum)).update(updatedValues);
+    
+        Swal.fire({
+          title: 'Success!',
+          text: 'The form was submitted successfully.',
+          icon: 'success',
+          confirmButtonText: 'OK',
+        });
+        setPopupVisible(!isPopupVisible);
+      } catch (error) {
+
+        Swal.fire({
+          title: 'Error!',
+          text: 'Something went wrong. Please try again.',
+          icon: 'error',
+          confirmButtonText: 'OK',
+        });
+      }
+    }
+  };
   return (
     <div id="wrapper" ref={elementRef}>
       <div className="app-menu" id="myHeader">
@@ -622,6 +938,33 @@ try{
           }}
         >
           <div className="container-fluid">
+          {isPopupVisible && (
+        <div className="popup">
+          <div className="popup-content">
+            <button className="close-btn" onClick={togglePopup}>
+              &times; {/* Cross mark */}
+            </button>
+            <h2>Popup Form</h2>
+            <form>
+              <label htmlFor="name">Folder Name:</label>
+              <input  type="text"
+        id="name"
+        name="name"
+        value={name}
+        onChange={(e) => setName(e.target.value)} />
+              <br />
+              <label htmlFor="Overview">Overview:</label>
+              <input  type="email"
+        id="Overview"
+        name="Overview"
+        value={Overview}
+        onChange={(e) => setOverview(e.target.value)} />
+              <br />
+              <button type="submit" onClick={UpdateItemAndCreateFolder}>Submit</button>
+            </form>
+          </div>
+        </div>
+      )}
             <div className="row ">
               <div className="col-lg-8">
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
@@ -636,20 +979,22 @@ try{
                     ? ""
                     : JSON.parse(item.ProjectsDocsJSON);
                 console.log(ProjectsDocsJSON);
+                { projectname = item.ProjectName}
+                {filemanager = item.ProjectFileManager}
                 return (
                   <>
                     <div className="row mt-3">
                       <div className="col-md-3 mobile-w1">
                         
                       <p className="d-block mt-2 font-28">
-                    
+                     
                         {item.ProjectName}
                       </p>
                       <div className="row mt-2">
                         <div className="col-md-12 col-xl-12">
                         <div className="tabcss sameh mb-2 mt-2 me-1 activenew">
 
-                        <button className="opend"
+                        <button type="button" className="opend"
                   onClick={(e) => openModal(e)}
                  
                 >
@@ -670,9 +1015,9 @@ try{
                             </span>
                             </div>
                             <div className="tabcss sameh mb-3 mt-2 me-1 ">
-                            <span
+                            {/* <span
                               className="text-nowrap mb-0 d-inline-block"
-                              onClick={() => copyToClipboard(item.Id)}
+                              onClick={() => openprojectlibrary()}
                             >
                               <Link size={14} /> Copy link 
                               {copySuccess && (
@@ -680,6 +1025,13 @@ try{
                                   {copySuccess}
                                 </span>
                               )}
+                            </span> */}
+                             <span
+                              className="text-nowrap mb-0 d-inline-block"
+                              onClick={togglePopup}
+                            >
+                             Create Folder
+                             
                             </span>
                             </div>
                           <p  style={{
@@ -784,13 +1136,91 @@ try{
                      
                     </div>
                     <div className="row internalmedia filterable-content mt-3">
-                      <Modal show={showModal} onHide={closeModal}>
+                      <Modal show={showModal} onHide={closeModal} className="minw80">
+                        <h3 style={{width:'100%', textAlign:'left',borderBottom:'1px solid #efefef',  padding:'15px', fontSize:'18px'}} className="modal-title">Documents</h3>
+                        <Modal.Header closeButton style={{position:'absolute', right:'0px', borderBottom:'0px solid #ccc'}}>
+                          {/* <Modal.Title> {ProjectsDocsJSON.length} Documents</Modal.Title> */}
+                          <Button variant="success" onClick={() => uploadfileinfolder()}>
+            Upload File
+          </Button>
+          <ul>
+          {selectedFiles.map((file, index) => (
+            <li key={index}>
+              {file.name} 
+              <button onClick={() => removeFile(file.name)} style={{ marginLeft: '10px', color: 'red' }}>❌</button>
+            </li>
+          ))}
+        </ul>
+                          <label>
 
-                        <Modal.Header closeButton>
-                          <Modal.Title> {ProjectsDocsJSON.length} Documents</Modal.Title>
+<div>
+
+  <Link style={{ width: "20px", height: "16px" }} onClick={() => handleImageChange} />
+
+  <input
+
+    type="file"
+
+    multiple
+
+    accept="image/*"
+
+    onChange={handleImageChange}
+
+    className="fs-6 w-50" aria-rowspan={5} style={{ display: 'none' }}
+
+  />
+
+</div>
+
+</label>
                         </Modal.Header>
                         <Modal.Body>
-                          {ProjectsDocsJSON.length > 0 ? (
+                        <div className="file-cards row">
+                          
+          {files.map((file) => (
+            <div className="col-lg-4">
+            <Card key={file.UniqueId} style={{  marginBottom: '10px', height:'82px' }} >
+              <Card.Body>
+                <div className="row">
+                  <div className="col-lg-2">
+                  <img
+                                  src={require("../assets/file.png")}
+                                  style={{width:'40px'  }}
+                                  alt="Check"
+                                />
+
+                  </div>
+
+                  <div style={{paddingLeft:'13px'}} className="col-lg-9">
+                  <Card.Title className="two-line text-dark font-14 mb-1">{file.Name}</Card.Title>
+                  <Card.Text className="text-muted font-12">{file.Length} bytes</Card.Text>
+                  </div>
+            
+              
+                {/* Three dots dropdown menu */}
+                <div className="col-lg-1">
+                <Dropdown align="end">
+                  <Dropdown.Toggle variant="link" id={`dropdown-${file.UniqueId}`} size="sm" className="newaligntext">
+                    &#x22EE; {/* Ellipsis icon */}
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu>
+                    <Dropdown.Item onClick={() => handlePreviewFile(file.ServerRelativeUrl)} style={{fontSize:'12px', textAlign:'center'  }}>
+                      Preview
+                    </Dropdown.Item>
+                    {/* Add more options if needed */}
+                  </Dropdown.Menu>
+                </Dropdown>
+                </div>
+                </div>
+                
+              </Card.Body>
+            </Card>
+            </div>
+          ))}
+        </div>
+                        </Modal.Body>
+                          {/* {ProjectsDocsJSON.length > 0 ? (
                             ProjectsDocsJSON.map((res: any) => {
                               return (
                                 <div>
@@ -807,10 +1237,16 @@ try{
                             })
                           ) : (
                             <></>
-                          )}
+                          )} */}
+                          {/* {projectallfile.length > 0 ? (
+                             projectallfile.map((data)=>{
+                               <h1>{data.Name}</h1>
+                             })
+                          ):(null)
 
-                        </Modal.Body>
-                      </Modal>
+                          } */}
+                        {/* </Modal.Body>*/}
+                      </Modal> 
                     </div>
                     <div className="row mt-2">
                       <p
@@ -853,7 +1289,38 @@ try{
                         rows={3}
                         style={{ borderRadius: "unset" }}
                       />
-                      <button
+                       {/* <ul>
+          {selectedFiles.map((file, index) => (
+            <li key={index}>
+              {file.name} 
+              <button onClick={() => removeFile(file.name)} style={{ marginLeft: '10px', color: 'red' }}>❌</button>
+            </li>
+          ))}
+        </ul> */}
+                          <label>
+
+{/* <div>
+
+  <Link style={{ width: "20px", height: "16px" }} onClick={() => handleImageChange} />
+
+  <input
+
+    type="file"
+
+    multiple
+
+    accept="image/*"
+
+    onChange={handleImageChange}
+
+    className="fs-6 w-50" aria-rowspan={5} style={{ display: 'none' }}
+
+  />
+
+</div> */}
+
+</label>
+                      <button type="button"
                         className="btn btn-primary mt-2"
                         onClick={handleAddComment}
                         disabled={loading} // Disable button when loading
@@ -896,17 +1363,71 @@ try{
 
                       <div className="col-md-3 mobile-w3">
 
-                      <div className="card mobile-5 mt-3"  style={{ borderRadius: "22px" }}>
-                        <div className="card-body pb-3 gheight">
-                          <h4 className="header-title font-16 text-dark fw-bold mb-0"  style={{ fontSize: "20px" }}>Project Owner</h4>
-                          <h1 className="text-muted font-14 mt-3"><p className="text-dark font-16 text-center mb-2"> keerti jain</p>
-                          <p className="text-muted font-14 text-center mb-1">Cloud Infrastructure Alchemist</p>
-                          <p className="text-muted font-12 text-center">keertijain@officeindia.onmicrosoft.com  </p>
-                          </h1></div>
-                          </div>
+<div className="card mobile-5 mt-3"  style={{ borderRadius: "22px" }}>
+  <div className="card-body pb-3 gheight">
+    <h4 className="header-title font-16 text-dark fw-bold mb-0"  style={{ fontSize: "20px" }}>Project Owner</h4>
+    <h1 className="text-muted font-14 mt-3"><p className="text-dark font-16 text-center mb-2"> keerti jain</p>
+    <p className="text-muted font-14 text-center mb-1">Cloud Infrastructure Alchemist</p>
+    <p className="text-muted font-12 text-center">keertijain@officeindia.onmicrosoft.com  </p>
+    </h1></div>
+    </div>
 
-                        
-                      </div>
+<div className="card mobile-5 mt-3"  style={{ borderRadius: "22px" }}>
+  <div className="card-body pb-3 gheight">
+    <h4 className="header-title font-16 text-dark fw-bold mb-0"  style={{ fontSize: "20px" }}>Project Members</h4>
+     {/* {argcurrentgroupuser */}
+{argcurrentgroupuser[0]?.TeamMembers?.length > 0 && argcurrentgroupuser[0]?.TeamMembers?.map(
+(id: any, idx: any) => {
+if (idx ) {
+return (
+<div>
+<img
+// style={{
+//   margin:
+//     index == 0
+//       ? "0 0 0 0"
+//       : "0 0 0px -12px",
+// }}
+src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+className="rounded-circlecss img-thumbnail avatar-xl"
+alt="profile-image"
+/>
+<p>{id?.Title} </p>
+<img
+
+src={require("../assets/calling.png")}
+
+className="alignright"
+
+onClick={() =>
+
+window.open(
+
+`https://teams.microsoft.com/l/call/0/0?users=${id.EMail}`,
+
+"_blank"
+
+)
+
+}
+
+alt="Call"
+
+/>
+</div>
+
+);
+}
+}
+)}
+     {/* } */}
+    
+    </div>
+    
+    </div>
+
+  
+</div>
 
                       
 

@@ -374,7 +374,7 @@ a.nav-linkcss.px-4.py-3 {
 .uppercase{text-transform: uppercase;}
 .more-images-overlay{border-radius: 10px;}
 .likes{display: flex;
-  align-items: center;
+  align-items: center; color: #6b6b6b !important;
   gap: 5px}
 .title-ellipsis {
   display: inline-block;
@@ -385,7 +385,12 @@ a.nav-linkcss.px-4.py-3 {
   text-overflow: ellipsis;
   font-weight: 600; margin-top: 3px;
 }
-
+.psonew{position: fixed; width:13%;}
+.mobile-6{  position: sticky;
+  position: -webkit-sticky; top: 0px; }
+.likes svg{width:18px !important; float: left;}
+.sahrenew{float:left; margin-top: 3px; margin-left: 5px;}
+.rounded-circlecssnew{width: 6rem !important; height: 6rem !important; border-radius: 1000px !important; }
 .rounded-pill {
   float: right;
   height: auto !important;
@@ -413,6 +418,7 @@ a.nav-linkcss.px-4.py-3 {
 @media(max-width:1920px)
 {
   .w186{width: 18.5%;}
+  .psonew{ width:19%;}
 }
 @media(max-width:1280px) {
   .namcss {
@@ -445,13 +451,16 @@ a.nav-linkcss.px-4.py-3 {
 }
 
 .alignright {
-  height: 1.5rem;
-  left: 8rem;
+  background: #fff;
+  border-radius: 1000px;
+  height: 1.8rem;
+  left: 4rem;
   margin-left: auto;
   position: absolute;
-  top: 0;
-  width: 1.5rem;
+  top: 23px;
+  width: 1.8rem;
 }
+
 
 .card-body {
   padding: 1rem 0.9rem;

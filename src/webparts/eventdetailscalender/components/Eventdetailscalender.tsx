@@ -20,7 +20,7 @@ import CustomBreadcrumb from "../../../CustomJSComponents/CustomBreadcrumb/Custo
 import { IEventdetailscalenderProps } from "./IEventdetailscalenderProps";
 import moment from "moment";
 import { Calendar, Share, Link, Users } from "react-feather";
-import { getARGEventMasterDetailsById } from "../../../APISearvice/Eventmaster";
+import { getAllEventMaster, getAllEventMasternonselected, getARGEventMasterDetailsById } from "../../../APISearvice/Eventmaster";
 import "../components/EventsCalenderDetails.scss";
 import context from "../../../GlobalContext/context";
 import UserContext from "../../../GlobalContext/context";
@@ -73,6 +73,8 @@ const EventdetailscalenderContext = ({ props }: any) => {
   const { setHide }: any = context;
   const [loadingLike, setLoadingLike] = useState<boolean>(false);
   const [loadingReply, setLoadingReply] = useState<boolean>(false);
+  const [ArrtopEvents, setArrtopEvents]: any[] = useState([]);
+
 
   const Breadcrumb = [
     {
@@ -93,7 +95,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
     getApiData()
     ApiLocalStorageData();
     getApiData()
-ApICallData();
+    ApICallData();
     const showNavbar = (
       toggleId: string,
       navId: string,
@@ -129,8 +131,8 @@ ApICallData();
   }, [props]);
 
   //setInterval(() => {
-   // getApiData()
- // }, 1000)
+  // getApiData()
+  // }, 1000)
   const ApiLocalStorageData = async () => {
     debugger;
     debugger
@@ -139,7 +141,10 @@ ApICallData();
     const idNum = originalString.substring(1);
     setId(Number(idNum))
     // let arr = [];
-    setArrDetails(await getARGEventMasterDetailsById(sp, Number(idNum)))
+    setArrDetails(await getARGEventMasterDetailsById(sp, Number(idNum)));
+    let Eventsdata = await getAllEventMasternonselected(sp, Number(idNum));
+    setArrtopEvents(Eventsdata);
+    console.log("EventsdataEventsdata", Eventsdata, ArrtopEvents);
     // if (
     //   localStorage.getItem("EventArr") != undefined &&
     //   localStorage.getItem("EventArr") != null &&
@@ -163,7 +168,7 @@ ApICallData();
     let initialArray: any[] = [];
     let arrLike = {}
     let likeArray: any[] = []
-   await sp.web.lists
+    await sp.web.lists
       .getByTitle("ARGEventsComments")
       .items.filter(`EventsMasterId eq ${Number(idNum)}`)()
       .then(async (result: any) => {
@@ -173,12 +178,12 @@ ApICallData();
 
         //EventsComments
         for (var i = 0; i < initialComments.length; i++) {
-        await  sp.web.lists
+          await sp.web.lists
             .getByTitle("ARGEventsUserLikes")
             .items.filter(`EventsCommentsId eq ${Number(initialComments[i].Id)}`).select("ID,AuthorId,UserName,Like,Created")()
             .then((result1: any) => {
               console.log(result1, "ARGEventsUserLikes");
-              likeArray=[]
+              likeArray = []
               for (var j = 0; j < result1.length; j++) {
                 arrLike = {
                   "ID": result1[j].Id,
@@ -196,8 +201,8 @@ ApICallData();
                 AuthorId: initialComments[i].AuthorId,
                 Comments: initialComments[i].Comments,
                 Created: new Date(initialComments[i].Created).toLocaleString(), // Formatting the created date
-                UserLikesJSON: result1.length>0?likeArray:[]
-                   , // Default to empty array if null
+                UserLikesJSON: result1.length > 0 ? likeArray : []
+                , // Default to empty array if null
                 UserCommentsJSON:
                   initialComments[i].UserCommentsJSON != "" &&
                     initialComments[i].UserCommentsJSON != null &&
@@ -210,9 +215,9 @@ ApICallData();
               initialArray.push(arr);
             })
 
-          
+
         }
-      
+
         setComments(initialArray)
         // setComments(
         //   initialComments.map((res) => ({
@@ -253,7 +258,7 @@ ApICallData();
     setCurrentUser(await getCurrentUser(sp, siteUrl));
     setCurrentUserProfile(await getCurrentUserProfile(sp, siteUrl));
     debugger
-   
+
   };
 
   // Load comments from localStorage on component mount
@@ -323,143 +328,77 @@ ApICallData();
   const handleLikeToggle = async (commentIndex: number) => {
     debugger
     setLoadingLike(true);
-    try{
-    const updatedComments = [...comments];
-    const comment = updatedComments[commentIndex];
-
-    // Check if the user has already liked the comment
-    const userLikeIndex = comment.UserLikesJSON.findIndex(
-      (like: Like) => like.UserName === CurrentUser.Title // Replace with actual username property
-    );
-
-    if (userLikeIndex === -1) {
-      // User hasn't liked yet, proceed to add a like
-      await sp.web.lists.getByTitle("ARGEventsUserLikes").items.add({
-        UserName: CurrentUser.Title, // Replace with actual username
-        Like: true,
-        EventsCommentsId: comment.Id,
-        userHasLiked: true
-      }).then(async (ress: any) => {
-        console.log(ress, 'Added Like');
-
-        // Add the new like to the comment's UserLikesJSON array
-        const newLikeJson: Like = {
-          ID: ress.data.Id,
-          AuthorId: ress.data.AuthorId,
-          UserName: ress.data.UserName, // Replace with actual username
-          like: "yes",
-          Created: ress.data.Created,
-          Count: comment.UserLikesJSON.length + 1
-        };
-
-        updatedComments[commentIndex].UserLikesJSON.push(newLikeJson);
-
-        // Update the corresponding SharePoint list
-        await sp.web.lists.getByTitle("ARGEventsComments").items.getById(comment.Id).update({
-          UserLikesJSON: JSON.stringify(updatedComments[commentIndex].UserLikesJSON),
-          userHasLiked: true,
-          LikesCount: comment.UserLikesJSON.length
-        }).then(async () => {
-          console.log('Updated comment with new like');
-          comment.userHasLiked = true;
-          setComments(updatedComments);
-          let notifiedArr = {
-            ContentId: ArrDetails[0].Id,
-            NotifiedUserId: ArrDetails[0].AuthorId,
-            ContentType0: "Like",
-            ContentName: ArrDetails[0].Title,
-            ActionUserId: CurrentUser.Id,
-            DeatilPage: "EventDetails",
-            ReadStatus: false
-          }
-          const nofiArr = await addNotification(notifiedArr, sp)
-          console.log(nofiArr, 'nofiArr');
-        });
-      });
-    } else {
-      // User already liked, proceed to unlike (remove like)
-      const userLikeId = comment.UserLikesJSON[userLikeIndex].ID; // Get the ID of the user's like
-
-      await sp.web.lists.getByTitle("ARGEventsUserLikes").items.getById(userLikeId).delete().then(async () => {
-        console.log('Removed Like');
-
-        // Remove the like from the comment's UserLikesJSON array
-        updatedComments[commentIndex].UserLikesJSON.splice(userLikeIndex, 1);
-
-        // Update the corresponding SharePoint list
-        await sp.web.lists.getByTitle("ARGEventsComments").items.getById(comment.Id).update({
-          UserLikesJSON: JSON.stringify(updatedComments[commentIndex].UserLikesJSON),
-          userHasLiked: false,
-          LikesCount: comment.UserLikesJSON.length
-        }).then(async () => {
-          console.log('Updated comment after removing like');
-          comment.userHasLiked = false;
-          setComments(updatedComments);
-          let notifiedArr = {
-            ContentId: ArrDetails[0].Id,
-            NotifiedUserId: ArrDetails[0].AuthorId,
-            ContentType0: "Reply",
-            ContentName: ArrDetails[0].Title,
-            ActionUserId: CurrentUser.Id,
-            DeatilPage: "EventDetails",
-            ReadStatus: false
-          }
-          const nofiArr = await addNotification(notifiedArr, sp)
-          console.log(nofiArr, 'nofiArr');
-        });
-      });
-    }
-  }
-  catch (error) {
-    setLoadingLike(false);
-    console.error('Error toggling like:', error);
-  }
-  finally {
-    setLoadingLike(false); // Enable the button after the function completes
-  }
-  };
-
-
-  // Add a reply to a comment
-  const handleAddReply = async (commentIndex: number, replyText: string) => {
-    debugger;
-    setLoadingReply(true);
     try {
-    if (replyText.trim() === "") return;
-    const updatedComments = [...comments];
+      const updatedComments = [...comments];
+      const comment = updatedComments[commentIndex];
 
-    const comment = updatedComments[commentIndex];
-    await sp.web.lists
-      .getByTitle("ARGEventsUserComments")
-      .items.add({
-        UserName: CurrentUser.Title, // Replace with actual username
-        Comments: replyText,
-        AnnouncementAndNewsCommentsId: updatedComments[commentIndex].Id,
-      })
-      .then(async (ress: any) => {
-        console.log(ress, "ressress");
-        const newReplyJson = {
-          Id: ress.data.Id,
-          AuthorId: ress.data.AuthorId,
-          UserName: ress.data.UserName, // Replace with actual username
-          Comments: ress.data.Comments,
-          Created: ress.data.Created,
-          UserProfile: CurrentUserProfile,
-        };
-        updatedComments[commentIndex].UserCommentsJSON.push(newReplyJson);
-        await sp.web.lists
-          .getByTitle("ARGEventsComments")
-          .items.getById(updatedComments[commentIndex].Id)
-          .update({
-            // UserLikesJSON: JSON.stringify(updatedComments[commentIndex].UserLikesJSON),
-            UserCommentsJSON: JSON.stringify(
-              updatedComments[commentIndex].UserCommentsJSON
-            ),
-            userHasLiked: updatedComments[commentIndex].userHasLiked,
-            CommentsCount: comment.UserCommentsJSON.length + 1,
-          })
-          .then(async (ress: any) => {
-            console.log(ress, "ressress");
+      // Check if the user has already liked the comment
+      const userLikeIndex = comment.UserLikesJSON.findIndex(
+        (like: Like) => like.UserName === CurrentUser.Title // Replace with actual username property
+      );
+
+      if (userLikeIndex === -1) {
+        // User hasn't liked yet, proceed to add a like
+        await sp.web.lists.getByTitle("ARGEventsUserLikes").items.add({
+          UserName: CurrentUser.Title, // Replace with actual username
+          Like: true,
+          EventsCommentsId: comment.Id,
+          userHasLiked: true
+        }).then(async (ress: any) => {
+          console.log(ress, 'Added Like');
+
+          // Add the new like to the comment's UserLikesJSON array
+          const newLikeJson: Like = {
+            ID: ress.data.Id,
+            AuthorId: ress.data.AuthorId,
+            UserName: ress.data.UserName, // Replace with actual username
+            like: "yes",
+            Created: ress.data.Created,
+            Count: comment.UserLikesJSON.length + 1
+          };
+
+          updatedComments[commentIndex].UserLikesJSON.push(newLikeJson);
+
+          // Update the corresponding SharePoint list
+          await sp.web.lists.getByTitle("ARGEventsComments").items.getById(comment.Id).update({
+            UserLikesJSON: JSON.stringify(updatedComments[commentIndex].UserLikesJSON),
+            userHasLiked: true,
+            LikesCount: comment.UserLikesJSON.length
+          }).then(async () => {
+            console.log('Updated comment with new like');
+            comment.userHasLiked = true;
+            setComments(updatedComments);
+            let notifiedArr = {
+              ContentId: ArrDetails[0].Id,
+              NotifiedUserId: ArrDetails[0].AuthorId,
+              ContentType0: "Like",
+              ContentName: ArrDetails[0].Title,
+              ActionUserId: CurrentUser.Id,
+              DeatilPage: "EventDetails",
+              ReadStatus: false
+            }
+            const nofiArr = await addNotification(notifiedArr, sp)
+            console.log(nofiArr, 'nofiArr');
+          });
+        });
+      } else {
+        // User already liked, proceed to unlike (remove like)
+        const userLikeId = comment.UserLikesJSON[userLikeIndex].ID; // Get the ID of the user's like
+
+        await sp.web.lists.getByTitle("ARGEventsUserLikes").items.getById(userLikeId).delete().then(async () => {
+          console.log('Removed Like');
+
+          // Remove the like from the comment's UserLikesJSON array
+          updatedComments[commentIndex].UserLikesJSON.splice(userLikeIndex, 1);
+
+          // Update the corresponding SharePoint list
+          await sp.web.lists.getByTitle("ARGEventsComments").items.getById(comment.Id).update({
+            UserLikesJSON: JSON.stringify(updatedComments[commentIndex].UserLikesJSON),
+            userHasLiked: false,
+            LikesCount: comment.UserLikesJSON.length
+          }).then(async () => {
+            console.log('Updated comment after removing like');
+            comment.userHasLiked = false;
             setComments(updatedComments);
             let notifiedArr = {
               ContentId: ArrDetails[0].Id,
@@ -473,10 +412,76 @@ ApICallData();
             const nofiArr = await addNotification(notifiedArr, sp)
             console.log(nofiArr, 'nofiArr');
           });
-      });
+        });
+      }
     }
     catch (error) {
-      setLoadingReply(false); 
+      setLoadingLike(false);
+      console.error('Error toggling like:', error);
+    }
+    finally {
+      setLoadingLike(false); // Enable the button after the function completes
+    }
+  };
+
+
+  // Add a reply to a comment
+  const handleAddReply = async (commentIndex: number, replyText: string) => {
+    debugger;
+    setLoadingReply(true);
+    try {
+      if (replyText.trim() === "") return;
+      const updatedComments = [...comments];
+
+      const comment = updatedComments[commentIndex];
+      await sp.web.lists
+        .getByTitle("ARGEventsUserComments")
+        .items.add({
+          UserName: CurrentUser.Title, // Replace with actual username
+          Comments: replyText,
+          AnnouncementAndNewsCommentsId: updatedComments[commentIndex].Id,
+        })
+        .then(async (ress: any) => {
+          console.log(ress, "ressress");
+          const newReplyJson = {
+            Id: ress.data.Id,
+            AuthorId: ress.data.AuthorId,
+            UserName: ress.data.UserName, // Replace with actual username
+            Comments: ress.data.Comments,
+            Created: ress.data.Created,
+            UserProfile: CurrentUserProfile,
+          };
+          updatedComments[commentIndex].UserCommentsJSON.push(newReplyJson);
+          await sp.web.lists
+            .getByTitle("ARGEventsComments")
+            .items.getById(updatedComments[commentIndex].Id)
+            .update({
+              // UserLikesJSON: JSON.stringify(updatedComments[commentIndex].UserLikesJSON),
+              UserCommentsJSON: JSON.stringify(
+                updatedComments[commentIndex].UserCommentsJSON
+              ),
+              userHasLiked: updatedComments[commentIndex].userHasLiked,
+              CommentsCount: comment.UserCommentsJSON.length + 1,
+            })
+            .then(async (ress: any) => {
+              console.log(ress, "ressress");
+              setComments(updatedComments);
+              let notifiedArr = {
+                ContentId: ArrDetails[0].Id,
+                NotifiedUserId: ArrDetails[0].AuthorId,
+                ContentType0: "Reply",
+                ContentName: ArrDetails[0].Title,
+                ActionUserId: CurrentUser.Id,
+                DeatilPage: "EventDetails",
+                ReadStatus: false
+              }
+              const nofiArr = await addNotification(notifiedArr, sp)
+              console.log(nofiArr, 'nofiArr');
+            });
+        });
+    }
+    catch (error) {
+      setLoadingReply(false);
       console.error('Error toggling Reply:', error);
     }
     finally {
@@ -552,8 +557,20 @@ ApICallData();
     }
 
   }
+  
+  const gotoNewsDetails = (valurArr: any) => {
+    debugger;
+    localStorage.setItem("EventId", valurArr.Id);
+    localStorage.setItem("EventArr", JSON.stringify(valurArr));
+    setTimeout(() => {
+      window.location.href = `${siteUrl}/SitePages/EventDetailsCalendar.aspx?${valurArr.Id}`;
+    }, 1000);
+  };
   const flatArray = (arr: any[]): any[] => {
     return arr.reduce((acc, val) => acc.concat(val), []);
+  };
+  const NavigatetoEvents = () => {
+    window.location.href = `${siteUrl}/SitePages/EventCalendar.aspx`;
   };
   async function getUserId(email: string) {
     const user = await sp.web.ensureUser(email);
@@ -568,186 +585,214 @@ ApICallData();
         <HorizontalNavbar _context={sp} siteUrl={siteUrl} />
         <div className="content" style={{ marginLeft: `${!useHide ? '240px' : '80px'}`, marginTop: '1rem' }}>
           <div className="container-fluid  paddb">
-            <div className="row " >
-              <div className="col-lg-3">
-                <CustomBreadcrumb Breadcrumb={Breadcrumb} />
-              </div>
-            </div>
-            {ArrDetails.length > 0
-              ? ArrDetails.map((item: any) => {
-                const EventGalleryJson =
-                  item.EventGalleryJson == undefined ||
-                    item.EventGalleryJson == null
-                    ? ""
-                    : JSON.parse(item.EventGalleryJson);
-                console.log(EventGalleryJson);
-                return (
-                  <>
-                    <div className="row mt-4">
-                      <p className="d-block mt-2 font-28">
-                        {item.EventName}
-                      </p>
-                      <div className="row mt-2">
-                        <div className="col-md-12 col-xl-12">
-                          <p className="mb-2 mt-1 d-flex eventtextnew" style={{ cursor: 'pointer' }}>
-                            <span className="pe-2 text-nowrap mb-0 d-inline-block" >
-                            <span style={{paddingTop:'0px'}}>   <Calendar size={18} /> </span> <span>{moment(item.Created).format("DD-MMM-YYYY")} </span>  &nbsp;  &nbsp;  &nbsp;|
-                            </span>
-                            <span className="text-nowrap mb-0 d-inline-block" onClick={sendanEmail}>
-                              <Share size={18} />  Share by email &nbsp;  &nbsp;  &nbsp;|&nbsp;  &nbsp;  &nbsp;
-                            </span>
-                            <span className="text-nowrap mb-0 d-inline-block" onClick={() => copyToClipboard(item.Id)}>
-                              <Link size={18} />    Copy link &nbsp;  &nbsp;  &nbsp;{copySuccess && <span className="text-success">{copySuccess}</span>} &nbsp;  &nbsp;  |&nbsp;  &nbsp;
-                            </span>
+            <div className="row">
+              <div className="col-lg-8">
 
-                            <span style={{ display: 'flex', gap: '0.2rem' }}>
-                              {
-                                item?.Attendees?.length > 0 && item?.Attendees.map((item1: any, index: 0) => {
+                <div className="row " >
+                  <div className="col-lg-3">
+                    <CustomBreadcrumb Breadcrumb={Breadcrumb} />
+                  </div>
+                </div>
+                {ArrDetails.length > 0
+                  ? ArrDetails.map((item: any) => {
+                    const EventGalleryJson =
+                      item.EventGalleryJson == undefined ||
+                        item.EventGalleryJson == null
+                        ? ""
+                        : JSON.parse(item.EventGalleryJson);
+                    console.log(EventGalleryJson);
+                    return (
+                      <>
+                        <div>
+                          <div className="row">
+                            <div className="col-lg-8">
 
-                                  return (
-                                    <>
-                                      {item1.EMail ? <span style={{ margin: index == 0 ? '0 0 0 0' : '0 0 0px -12px' }}><img src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item1.EMail}`} className="attendeesImg" /> </span> :
-                                        <span> <AvtarComponents Name={item1.Title} /> </span>
-                                      }
-                                    </>
-                                  )
-                                })
-                              }
-                              {item?.Attendees?.length > 0 && (<span>Attending</span>)}
-                            </span>
+                            </div>
+                            <div className="col-lg-4">
+
+
+                            </div>
+                          </div>
+                        </div>
+                        <div className="row mt-4">
+                          <p className="d-block mt-2 font-28">
+                            {item.EventName}
                           </p>
 
-                          <p>
+                          <div className="row mt-2">
 
-                            {new Date(item.RegistrationDueDate) > new Date() ? (<div className="EventAttendes mt-4 rounded-pill" onClick={() => AddAttendees(item)}><Users size={14} /> Attend this event
-                            </div>) : (<div className="EventAttendesGray  mt-4 rounded-pill" >! Event Expired
-                            </div>)}
+                            <div className="col-md-12 col-xl-12">
+                              <p className="mb-2 mt-1 d-flex eventtextnew" style={{ cursor: 'pointer' }}>
+                                <span className="pe-2 text-nowrap mb-0 d-inline-block" >
+                                  <span style={{ paddingTop: '0px' }}>   <Calendar size={18} /> </span> <span>{moment(item.Created).format("DD-MMM-YYYY")} </span>  &nbsp;  &nbsp;  &nbsp;|
+                                </span>
+                                <span className="text-nowrap mb-0 d-inline-block" onClick={sendanEmail}>
+                                  <Share size={18} />  Share by email &nbsp;  &nbsp;  &nbsp;|&nbsp;  &nbsp;  &nbsp;
+                                </span>
+                                <span className="text-nowrap mb-0 d-inline-block" onClick={() => copyToClipboard(item.Id)}>
+                                  <Link size={18} />    Copy link &nbsp;  &nbsp;  &nbsp;{copySuccess && <span className="text-success">{copySuccess}</span>} &nbsp;  &nbsp;  |&nbsp;  &nbsp;
+                                </span>
+
+                                <span style={{ display: 'flex', gap: '0.2rem' }}>
+                                  {
+                                    item?.Attendees?.length > 0 && item?.Attendees.map((item1: any, index: 0) => {
+
+                                      return (
+                                        <>
+                                          {item1.EMail ? <span style={{ margin: index == 0 ? '0 0 0 0' : '0 0 0px -12px' }}><img src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item1.EMail}`} className="attendeesImg" /> </span> :
+                                            <span> <AvtarComponents Name={item1.Title} /> </span>
+                                          }
+                                        </>
+                                      )
+                                    })
+                                  }
+                                  {item?.Attendees?.length > 0 && (<span style={{paddingTop:'3px', paddingLeft:'3px'}}>Attending</span>)}
+                                </span>
+                              </p>
+
+                              <p>
+
+                                {new Date(item.RegistrationDueDate) > new Date() ? (<div className="EventAttendes mt-4 rounded-pill" onClick={() => AddAttendees(item)}><Users size={14} /> Attend this event
+                                </div>) : (<div className="EventAttendesGray  mt-4 rounded-pill" >! Event Expired
+                                </div>)}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="row" >
+                          <p
+                            style={{ lineHeight: "22px" }}
+                            className="d-block text-muted mt-2 font-14"
+                          >
+                            {item.Overview}
                           </p>
+                        </div>
+                        <div className="row internalmedia filterable-content mt-3">
+                          {EventGalleryJson.length > 0 ? (
+                            EventGalleryJson.map((res: any) => {
+                              return (
+                                <div className="col-sm-6 col-xl-4 filter-item all web illustrator">
+                                  <div
+                                    className="gal-box"
+                                    style={{ width: "100%" }}
+                                  >
+                                    <a
+                                      data-bs-toggle="modal"
+                                      data-bs-target="#centermodal"
+                                      className="image-popup mb-2"
+                                      title="Screenshot-1"
+                                    >
+                                      <img
+                                        src={`https://officeindia.sharepoint.com${res.fileUrl}`}
+                                        className="img-fluid imgcssscustom"
+                                        alt="work-thumbnail"
+                                        data-themekey="#"
+                                        style={{ width: "100%", height: "100%" }}
+                                      />
+                                    </a>
+                                  </div>
+                                </div>
+                              );
+                            })
+                          ) : (
+                            <></>
+                          )}
+                        </div>
+
+                      </>
+                    );
+                  })
+                  : null}
+
+                <div className="row" >
+                  <div className="col-md-12">
+                    <div className="card" style={{ border: "1px solid #54ade0", borderRadius: '20px', boxShadow: '0 3px 20px #1d26260d' }}>
+                      <div className="card-body" style={{ padding: '1rem 0.9rem' }}>
+                        {/* New comment input */}
+                        <h4 className="mt-0 mb-3 text-dark fw-bold font-16">
+                          Comments
+                        </h4>
+                        <div className="mt-3">
+                          <textarea
+                            id="example-textarea"
+                            className="form-control text-dark form-control-light mb-2"
+                            value={newComment}
+                            onChange={(e) => setNewComment(e.target.value)}
+                            placeholder="Add a new comment..."
+                            rows={3} style={{ borderRadius: 'unset' }}
+                          />
+                          <button
+                            className="btn btn-primary mt-2"
+                            onClick={handleAddComment}
+                            disabled={loading} // Disable button when loading
+                          >
+                            {loading ? "Submitting..." : "Add Comment"}{" "}
+                            {/* Change button text */}
+                          </button>
                         </div>
                       </div>
                     </div>
-                    <div className="row" >
-                      <p
-                        style={{ lineHeight: "22px" }}
-                        className="d-block text-muted mt-2 font-14"
-                      >
-                        {item.Overview}
-                      </p>
-                    </div>
-                    <div className="row internalmedia filterable-content mt-3">
-                      {EventGalleryJson.length > 0 ? (
-                        EventGalleryJson.map((res: any) => {
-                          return (
-                            <div className="col-sm-6 col-xl-3 filter-item all web illustrator">
-                              <div
-                                className="gal-box"
-                                style={{ width: "100%" }}
-                              >
-                                <a
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#centermodal"
-                                  className="image-popup mb-2"
-                                  title="Screenshot-1"
-                                >
-                                  <img
-                                    src={`https://officeindia.sharepoint.com${res.fileUrl}`}
-                                    className="img-fluid imgcssscustom"
-                                    alt="work-thumbnail"
-                                    data-themekey="#"
-                                    style={{ width: "100%", height: "100%" }}
-                                  />
-                                </a>
-                              </div>
-                            </div>
-                          );
-                        })
-                      ) : (
-                        <></>
-                      )}
-                    </div>
-                    {/* <div className="row mt-2">
-                        <p
-                          style={{ lineHeight: "22px" }}
-                          className="d-block text-muted mt-2 mb-0 font-14"
-                        >
-                          <div
-                            dangerouslySetInnerHTML={{
-                              __html: item.Description,
-                            }}
-                          ></div>
-                        </p>
-                      </div> */}
-                  </>
-                );
-              })
-              : null}
-            {/* <div className="row">
-              {
-                ArrDetails.length > 0 ? ArrDetails.map((item: any) => {
-                  return (
-                    <h4>{item.Title}</h4>
-                  )
-                }) : null
-              }
-
-            </div> */}
-            <div className="row" >
-              <div className="col-md-6">
-                <div className="card" style={{ border: "1px solid #54ade0", borderRadius: '20px', boxShadow: '0 3px 20px #1d26260d' }}>
-                  <div className="card-body" style={{ padding: '1rem 0.9rem' }}>
-                    {/* New comment input */}
-                    <h4 className="mt-0 mb-3 text-dark fw-bold font-16">
-                      Comments
-                    </h4>
-                    <div className="mt-3">
-                      <textarea
-                        id="example-textarea"
-                        className="form-control text-dark form-control-light mb-2"
-                        value={newComment}
-                        onChange={(e) => setNewComment(e.target.value)}
-                        placeholder="Add a new comment..."
-                        rows={3} style={{ borderRadius: 'unset' }}
-                      />
-                      <button
-                        className="btn btn-primary mt-2"
-                        onClick={handleAddComment}
-                        disabled={loading} // Disable button when loading
-                      >
-                        {loading ? "Submitting..." : "Add Comment"}{" "}
-                        {/* Change button text */}
-                      </button>
-                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
-            <div className="row" >
-              {/* New comment input */}
+                <div className="row" >
+                  {/* New comment input */}
 
-              {comments.map((comment, index) => (
-                <div className="col-xl-6 eventcommm">
-                  <CommentEventCard
-                    key={index}
-                    commentId={index}
-                    username={comment.UserName}
-                    Commenttext={comment.Comments}
-                    Comments={comments}
-                    Created={comment.Created}
-                    likes={comment.UserLikesJSON}
-                    replies={comment.UserCommentsJSON}
-                    userHasLiked={comment.userHasLiked}
-                    CurrentUserProfile={CurrentUserProfile}
-                    loadingLike={loadingLike}
-                    onAddReply={(text) => handleAddReply(index, text)}
-                    onLike={() => handleLikeToggle(index)} // Pass like handler
-                    loadingReply={loadingReply}
-                  />
+                  {comments.map((comment, index) => (
+                    <div className="col-xl-12 eventcommm">
+                      <CommentEventCard
+                        key={index}
+                        commentId={index}
+                        username={comment.UserName}
+                        Commenttext={comment.Comments}
+                        Comments={comments}
+                        Created={comment.Created}
+                        likes={comment.UserLikesJSON}
+                        replies={comment.UserCommentsJSON}
+                        userHasLiked={comment.userHasLiked}
+                        CurrentUserProfile={CurrentUserProfile}
+                        loadingLike={loadingLike}
+                        onAddReply={(text) => handleAddReply(index, text)}
+                        onLike={() => handleLikeToggle(index)} // Pass like handler
+                        loadingReply={loadingReply}
+                      />
+                    </div>
+                  ))}
                 </div>
-              ))}
+              </div>
+
+              <div className="col-lg-4">
+                <div className="card mt-4 postion8">
+                  <div className="card-body">
+                    <h4 className="header-title text-dark  fw-bold mb-0">
+                      <span style={{ fontSize: '20px' }}>Upcoming Events</span>  
+                        <a className="font-11 btn btn-primary  waves-effect waves-light view-all cursor-pointer" href="#" onClick={NavigatetoEvents} style={{ float: 'right', lineHeight: '12px' }}>View All</a></h4>
+                    {console.log("ArrtopEvents", ArrtopEvents)}
+                    {ArrtopEvents && ArrtopEvents.map((res: any) => {
+                       return (
+                        <div className="mainevent mt-2">
+                       
+                        <div className="bordernew">
+                          <h3 className="twolinewrap font-14  text-dark fw-bold mb-2 cursor-pointer" style={{ cursor: "pointer" }} onClick={() => gotoNewsDetails(res)}>{res.EventName}</h3>
+                          <p style={{ lineHeight: '20px' }} className="font-12 text-muted twolinewrap">{res.Overview}</p>
+                          <div className="row">
+                            <div className="col-sm-12"> <span style={{ marginTop: "4px" }} className="date-color font-12 float-start  mb-1 ng-binding"><i className="fe-calendar"></i> {moment(res.Created).format("DD-MMM-YYYY")}</span>  &nbsp; &nbsp;| &nbsp; <span className="font-12" style={{ color: '#009157', fontWeight: '600' }}>{res.Entity.Entity}  </span></div>
+
+                          </div>
+                        </div>
+                        </div>
+                       )   
+                    })}
+
+                  </div>
+                </div>
+
+
+              </div>
             </div>
           </div>
         </div>
       </div>
+
     </div>
   );
 };

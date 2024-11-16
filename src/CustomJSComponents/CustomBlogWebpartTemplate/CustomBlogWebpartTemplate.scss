@@ -92,3 +92,25 @@ a:hover
     font-weight: 400;
     text-align: center;
 }
+a.nav-linkss{font-size: 14px;}
+.nav-itemcss
+{
+    margin-bottom: unset;
+    align-items: center;
+    display: flex;
+}
+a.nav-linkss.active {
+    background: #1fb0e5 !important;
+    color: #fff !important;
+    text-decoration: unset;
+    border-radius: 0.5rem;
+    padding: 0.70rem;
+}
+a.nav-linkss {
+    border: 1px solid #1fb0e5;
+    background: #fff !important;
+    text-decoration: unset;
+    color: #000;
+    border-radius: 0.5rem;
+    padding: 0.70rem;
+}

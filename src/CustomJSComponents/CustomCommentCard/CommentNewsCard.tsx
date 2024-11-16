@@ -117,7 +117,7 @@ export const CommentNewsCard: React.FC<{
         </div>
         {/* Render replies */}
         <div style={{ display: 'block' }}>
-          <div className="row">
+          <div className="row commentheight">
             <div className=" ">
               {replies.map((reply, index) => (
                 <div key={index} className="UserReplycss p-2 d-flex " style={{ width: '100%', display: 'flex' }}>
@@ -158,7 +158,7 @@ export const CommentNewsCard: React.FC<{
                     onKeyDown={handleKeyDown}
                     disabled={loading}
                   /> */}
-                    <textarea
+                    <textarea style={{borderRadius:"0px"}}
                     className="form-control ht form-control-sm"
                     placeholder="Reply to comment..."
                     value={newReply}

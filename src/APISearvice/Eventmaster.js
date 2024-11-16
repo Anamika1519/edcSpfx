@@ -14,7 +14,25 @@ export const getAllEventMaster = async (_sp) => {
     });
   return arr;
 }
+export const getAllEventMasternonselected = async (_sp,Idnum) => {
+  debugger
+  let arr = []
+  let str = "Announcements"
+  await _sp.web.lists.getByTitle("ARGEventMaster").items.select("*,Entity/ID,Entity/Entity").expand("Entity").filter(`ID ne ${Idnum}`)
+  .top(3).orderBy("EventDate",true).getAll()
+    .then((res) => {
+      
 
+      let resnew= res.slice(0, 3);
+      console.log("getAllEventMasternonselected",res, resnew);
+      //res.filter(x=>x.Category?.Category==str)
+      arr = resnew;
+    })
+    .catch((error) => {
+      console.log("Error fetching data: ", error);
+    });
+  return arr;
+}
 // export const uploadFileToLibrary = async (file, sp, docLib) => {
 //   debugger
 //   let arrFIleData = [];
@@ -243,8 +261,12 @@ export const getEventByID = async (_sp, id) => {
       console.log(res, ' let arrs=[]');
       const bannerimgobject = res.image != "{}"&& res.image !=null && JSON.parse(res.image)
       console.log(bannerimgobject[0], 'bannerimgobject');
+      if (bannerimgobject != null) {
 
-      bannerimg.push(bannerimgobject);
+        bannerimg.push(bannerimgobject);
+
+      }
+      
       const parsedValues = {
         EventName: res.EventName,
         ID: res.ID,

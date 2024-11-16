@@ -12,9 +12,9 @@ console.log();
         <footer className="footer">
         <div className="container-fluid">
         <div className="row">
-        <div className="col-md-6">
+        <div className="col-md-12">
         {/* <div>{new Date().getFullYear()} © alrostamanigroup </div> */}
-        <div className='float:right'>2024© alrostamanigroup </div>
+        <div className='font-14'>2024 © alrostamanigroup </div>
         </div>
         <div className="col-md-6">
         {/* <div className="d-none d-md-flex gap-4 align-item-center justify-content-md-end footer-links">

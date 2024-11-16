@@ -201,6 +201,8 @@ const HelloWorldContext = ({ props }: any) => {
     Budget: "",
     TeamMembers: "",
     ProjectOverview: "",
+    ProjectFileManager : ""
+  
   });
 
   const flatArray = (arr: any[]): any[] => {
@@ -243,6 +245,7 @@ const HelloWorldContext = ({ props }: any) => {
           DueDate: formData.dueDate,
           Budget: formData.Budget,
           ProjectOverview: formData.ProjectOverview,
+        
         })
         .then((item: any) => {
           console.log("checking the arrid ---->>>", item);
@@ -250,6 +253,9 @@ const HelloWorldContext = ({ props }: any) => {
         });
 
       console.log("Project data saved successfully.");
+
+
+  
     } catch (error) {
       console.error("Error saving project data: ", error);
     }
@@ -274,7 +280,8 @@ const HelloWorldContext = ({ props }: any) => {
         Budget: formData.Budget,
         ProjectOverview: formData.ProjectOverview,
         TeamMembersId: selectedIds,
-
+        // ProjectFileManager : formData.ProjectFileManager,
+        // ProjectStatus: "Ongoing"
         // DiscussionForumCategoryId: Number(formData.category),
       };
       const postResult = await addItem(postPayload, sp);
@@ -283,12 +290,12 @@ const HelloWorldContext = ({ props }: any) => {
       console.log(arrId);
 
       // Check if arrId is valid
-      if (!arrId) {
-        console.log(postResult);
-        console.error("Failed to save project data, arrId is invalid.");
-        Swal.fire("Error", "Failed to save project data", "error");
-        return; // Exit the function if the ID is invalid
-      }
+      // if (!arrId) {
+      //   console.log(postResult);
+      //   console.error("Failed to save project data, arrId is invalid.");
+      //   Swal.fire("Error", "Failed to save project data", "error");
+      //   return; // Exit the function if the ID is invalid
+      // }
 
       // Reset form data
 
@@ -350,6 +357,7 @@ const HelloWorldContext = ({ props }: any) => {
               Budget: "",
               TeamMembers: "",
               ProjectOverview: "",
+              ProjectFileManager: ""
             });
             // window.location.reload(); //forNow
             setDataproject(await fetchprojectdata(sp));
@@ -373,6 +381,7 @@ const HelloWorldContext = ({ props }: any) => {
             Budget: "",
             TeamMembers: "",
             ProjectOverview: "",
+            ProjectFileManager : ""
           });
           // window.location.reload(); //forNow
           setDataproject(await fetchprojectdata(sp));
@@ -387,12 +396,12 @@ const HelloWorldContext = ({ props }: any) => {
 
     const {
       ProjectName,
-      ProjectPriority,
-      ProjectPrivacy,
-      Budget,
+      // ProjectPriority,
+      // ProjectPrivacy,
+      // Budget,
       startDate,
-      dueDate,
-      ProjectOverview
+      // dueDate,
+      // ProjectOverview
     } = formData;
     let TeamMembersId: any;
     let valid = true;
@@ -401,34 +410,34 @@ const HelloWorldContext = ({ props }: any) => {
       Swal.fire("Error", "Project Name is required!", "error");
       valid = false;
     }
-    else if (!ProjectPriority) {
-      Swal.fire("Error", "Project Priority is required!", "error");
-      valid = false;
-    }
-    else if (!ProjectPrivacy) {
-      Swal.fire("Error", "Project Privacy is required!", "error");
-      valid = false;
-    }
-    else if (!Budget) {
-      Swal.fire("Error", "Budget is required!", "error");
-      valid = false;
-    }
+    // else if (!ProjectPriority) {
+    //   Swal.fire("Error", "Project Priority is required!", "error");
+    //   valid = false;
+    // }
+    // else if (!ProjectPrivacy) {
+    //   Swal.fire("Error", "Project Privacy is required!", "error");
+    //   valid = false;
+    // }
+    // else if (!Budget) {
+    //   Swal.fire("Error", "Budget is required!", "error");
+    //   valid = false;
+    // }
     else if (!startDate) {
       Swal.fire("Error", "Start Date is required!", "error");
       valid = false;
     }
-    else if (!dueDate) {
-      Swal.fire("Error", "Due Date is required!", "error");
-      valid = false;
-    }
-    else if (selectedValue.length == 0) {
-      Swal.fire("Error", "Team Member is required!", "error");
-      valid = false;
-    }
-    else if (!ProjectOverview) {
-      Swal.fire("Error", "Project Overview is required!", "error");
-      valid = false;
-    }
+    // else if (!dueDate) {
+    //   Swal.fire("Error", "Due Date is required!", "error");
+    //   valid = false;
+    // }
+    // else if (selectedValue.length == 0) {
+    //   Swal.fire("Error", "Team Member is required!", "error");
+    //   valid = false;
+    // }
+    // else if (!ProjectOverview) {
+    //   Swal.fire("Error", "Project Overview is required!", "error");
+    //   valid = false;
+    // }
     return valid;
 
   };
@@ -486,6 +495,7 @@ const HelloWorldContext = ({ props }: any) => {
             Budget: "",
             TeamMembers: "",
             ProjectOverview: "",
+            ProjectFileManager:""
           });
 
           setDataproject(await fetchprojectdata(sp));
@@ -494,6 +504,45 @@ const HelloWorldContext = ({ props }: any) => {
       }
     });
   };
+  const UpdatProject= (Id:any)=>{
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, Close This Project!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        sp.web.lists.getByTitle("ARGProject").items.getById(Id).update({
+          ProjectStatus: "Close"
+        }).then(async () => {
+          setDataproject(await fetchprojectdata(sp));
+          Swal.fire("Updated!", "Project status has been set to 'Close'.", "success");
+        }).catch((error) => {
+          console.error("Error updating project status:", error);
+          Swal.fire("Error", "There was an issue updating the project status.", "error");
+        });
+        // DeleteProjectAPI(sp, Id).then(async () => {
+        //   // setFormData({
+        //   //   ProjectName: "",
+        //   //   ProjectPriority: "",
+        //   //   ProjectPrivacy: "",
+        //   //   startDate: "",
+        //   //   dueDate: "",
+        //   //   Budget: "",
+        //   //   TeamMembers: "",
+        //   //   ProjectOverview: "",
+        //   //   ProjectFileManager:""
+        //   // });
+
+        //   setDataproject(await fetchprojectdata(sp));
+        //   Swal.fire("Deleted!", "Item has been deleted.", "success");
+        // });
+      }
+    });
+  }
   const handleViewDetail = (id: any) => {
     console.log("View detail action");
   };
@@ -763,7 +812,7 @@ const HelloWorldContext = ({ props }: any) => {
                       </div>
                       <div className="modal-body">
                         <form className="row">
-                          <div className="col-lg-4">
+                          <div className="col-lg-6">
                             <div className="mb-3">
                               <label
                                 htmlFor=" Project Name"
@@ -786,14 +835,14 @@ const HelloWorldContext = ({ props }: any) => {
                             </div>
                           </div>
 
-                          <div className="col-lg-4">
+                          {/* <div className="col-lg-4">
                             <div className="mb-3">
                               <label
                                 htmlFor="Project Priority"
                                 className="form-label"
                               >
                                 Project Priority{" "}
-                                <span className="text-danger">*</span>
+                    
                               </label>
                               <select
                                 className="form-select inputcss"
@@ -805,11 +854,7 @@ const HelloWorldContext = ({ props }: any) => {
                                 }
                               >
                                 <option>Select</option>
-                                {/* {ChoiceValueOne.map((item,index) => (
-                                  <option key={index}  value={item}>
-                                    {item}
-                                  </option>
-                                ))} */}
+                              
                                 {ChoiceValueOne?.map(
                                   (item: any, index: any) => (
                                     <option key={index} value={item}>
@@ -819,16 +864,16 @@ const HelloWorldContext = ({ props }: any) => {
                                 )}
                               </select>
                             </div>
-                          </div>
+                          </div> */}
 
-                          <div className="col-lg-4">
+                          <div className="col-lg-6">
                             <div className="mb-3">
                               <label
                                 htmlFor="Project Privacy"
                                 className="form-label"
                               >
                                 Project Privacy{" "}
-                                <span className="text-danger">*</span>
+                             
                               </label>
                               <div
                                 id="ProjectPrivacy"
@@ -922,7 +967,7 @@ const HelloWorldContext = ({ props }: any) => {
                           <div className="col-lg-4">
                             <div className="mb-3">
                               <label htmlFor="dueDate" className="form-label">
-                                Due Date <span className="text-danger">*</span>
+                                Due Date
                               </label>
                               <input
                                 type="date"
@@ -940,7 +985,7 @@ const HelloWorldContext = ({ props }: any) => {
                           <div className="col-lg-4">
                             <div className="mb-3">
                               <label htmlFor="Budget" className="form-label">
-                                Budget <span className="text-danger">*</span>
+                                Budget
                               </label>
                               <input
                                 type="number"
@@ -956,7 +1001,7 @@ const HelloWorldContext = ({ props }: any) => {
                             </div>
                           </div>
 
-                          <div className="col-lg-6">
+                          <div className="col-lg-4">
                             <div className="mb-3">
                               <div className="d-flex justify-content-between">
                                 <div>
@@ -1010,14 +1055,14 @@ const HelloWorldContext = ({ props }: any) => {
                           </div>
 
                           {/* {IsinvideHide && ( */}
-                          <div className="col-lg-6">
+                          <div className="col-lg-4">
                             <div className="mb-3">
                               <label
                                 htmlFor="invitemembers"
                                 className="form-label"
                               >
                                 Select Members{" "}
-                                <span className="text-danger">*</span>
+                                {/* <span className="text-danger">*</span> */}
                               </label>
 
                               <Multiselect
@@ -1029,6 +1074,29 @@ const HelloWorldContext = ({ props }: any) => {
                               />
                             </div>
                           </div>
+                          {/* <div className="col-lg-4">
+                            <div className="mb-3">
+                              <label
+                                htmlFor="invitemembers"
+                                className="form-label"
+                              >
+                                Project File Master{" "}
+                            
+                              </label>
+                              <input
+                                type="text"
+                                id="ProjectFileManager"
+                                name="ProjectFileManager"
+                                placeholder="Enter Project File Manager URL"
+                                className="form-control inputcss"
+                                value={formData.ProjectFileManager}
+                                onChange={(e) =>
+                                  onChange(e.target.name, e.target.value)
+                                }
+                              />
+                            
+                            </div>
+                          </div> */}
                           {/* )} */}
 
                           <div className="col-lg-8">
@@ -1038,7 +1106,7 @@ const HelloWorldContext = ({ props }: any) => {
                                 className="form-label"
                               >
                                 Project Overview{" "}
-                                <span className="text-danger">*</span>
+                                {/* <span className="text-danger">*</span> */}
                               </label>
                               <textarea
                                 className="form-control inputcss"
@@ -1146,6 +1214,32 @@ const HelloWorldContext = ({ props }: any) => {
                                 Member
                               </a>
                             </li>
+                            <li className="nav-item" role="presentation">
+                              <a
+
+                                onClick={() => handleTabClick("Ongoing")}
+                                className={`nav-link ${activeTab === "Ongoing" ? "active" : ""
+                                  }`}
+                                aria-selected={activeTab === "Ongoing"}
+                                role="tab"
+                                tabIndex={-1}
+                              >
+                                Ongoing Projects
+                              </a>
+                            </li>
+                            <li className="nav-item" role="presentation">
+                              <a
+
+                                onClick={() => handleTabClick("Close")}
+                                className={`nav-link ${activeTab === "Close" ? "active" : ""
+                                  }`}
+                                aria-selected={activeTab === "Close"}
+                                role="tab"
+                                tabIndex={-1}
+                              >
+                                Close Projects
+                              </a>
+                            </li>
                           </ul>
                         </div>
                       </div>
@@ -1177,9 +1271,9 @@ const HelloWorldContext = ({ props }: any) => {
                                       data-bs-toggle="dropdown"
                                       aria-expanded="false"
                                     >
-                                      <i className="fe-more-horizontal- m-0 text-muted h3"></i>
+                                          <img className="morealign" src={require('../assets/more.png')} />
                                     </a>
-                                    <div className="dropdown-menu dropdown-menu-end">
+                                    <div style={{padding:"0px", top:"15px", minWidth:"auto", textAlign:"center"}} className="dropdown-menu newheight dropdown-menu-end">
                                       <a
                                         className="dropdown-item font-12"
 
@@ -1223,20 +1317,20 @@ const HelloWorldContext = ({ props }: any) => {
                                   </p>
 
                                   {/* Task info */}
-                                  <p className="mb-1 font-12">
+                                  <p style={{display:'flex', gap:'10px'}} className="mb-1 font-12">
                                     <span
                                       style={{ color: "#6e767e" }}
                                       className="pe-2 text-nowrap mb-1 d-inline-block"
                                     >
-                                      <i className="fe-file-text text-muted"></i>
-                                      <b>{project?.ProjectsDocsId?.length}</b> Documents
+                                      
+                                      <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} />     <b>{project?.ProjectsDocsId?.length}</b> Documents
                                     </span>
                                     <span
                                       style={{ color: "#6e767e" }}
                                       className="text-nowrap mb-1 d-inline-block"
                                     >
-                                      <i className="fe-message-square text-muted"></i>
-                                      <b>{project. CommentsCount || 0}</b> Comments
+                                      
+                                      <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />  <b>{project. CommentsCount || 0}</b> Comments
                                     </span>
                                   </p>
                                   <div
@@ -1258,7 +1352,7 @@ const HelloWorldContext = ({ props }: any) => {
                                                          float:"left"
                                                 }}
                                                 src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                                                className="rounded-circlecss img-thumbnail avatar-xl"
+                                                className="rounded-circlecssnew img-thumbnail avatar-xl"
                                                 alt="profile-image"
                                               />
                                             );
@@ -1282,9 +1376,12 @@ const HelloWorldContext = ({ props }: any) => {
                                                 index == 0
                                                   ? "0 0 0 0"
                                                   : "0 0 0px -12px",
-                                                     float:"left"
+                                                     float:"left",
+                                                     display:'flex',
+                                                     alignItems:'center',
+                                                     justifyContent:'center'
                                             }}
-                                            className="rounded-circlecss text-center img-thumbnail avatar-xl"
+                                            className="rounded-circlecssnew text-center img-thumbnail avatar-xl"
                                           >
                                             +
                                           </div>
@@ -1315,7 +1412,7 @@ const HelloWorldContext = ({ props }: any) => {
                                                            float:"left"
                                                   }}
                                                   src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                                                  className="rounded-circlecss img-thumbnail avatar-xl"
+                                                  className="rounded-circlecssnew img-thumbnail avatar-xl"
                                                   alt="profile-image"
                                                 />
                                               );
@@ -1341,9 +1438,9 @@ const HelloWorldContext = ({ props }: any) => {
                                       data-bs-toggle="dropdown"
                                       aria-expanded="false"
                                     >
-                                      <i className="fe-more-horizontal- m-0 text-muted h3"></i>
+                                       <img className="morealign" src={require('../assets/more.png')} />
                                     </a>
-                                    <div className="dropdown-menu dropdown-menu-end">
+                                    <div style={{padding:"0px", top:"15px", minWidth:"auto", textAlign:"center"}} className="dropdown-menu newheight dropdown-menu-end">
                                       <a
                                         className="dropdown-item"
 
@@ -1377,15 +1474,15 @@ const HelloWorldContext = ({ props }: any) => {
                                       style={{ color: "#6e767e" }}
                                       className="pe-2 text-nowrap mb-1 d-inline-block"
                                     >
-                                      <i className="fe-file-text text-muted"></i>
-                                      <b>{project?.ProjectsDocsId?.length}</b> Documents
+                                      
+                                      <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} />     <b>{project?.ProjectsDocsId?.length}</b> Documents
                                     </span>
                                     <span
                                       style={{ color: "#6e767e" }}
                                       className="text-nowrap mb-1 d-inline-block"
                                     >
-                                      <i className="fe-message-square text-muted"></i>
-                                      <b>{project. CommentsCount || 0}</b> Comments
+                                      
+                                      <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />   <b>{project. CommentsCount || 0}</b> Comments
                                     </span>
                                   </p>
 
@@ -1426,7 +1523,7 @@ const HelloWorldContext = ({ props }: any) => {
                                                       float:"left"
                                                 }}
                                                 src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                                                className="rounded-circlecss img-thumbnail avatar-xl"
+                                                className="rounded-circlecssnew img-thumbnail avatar-xl"
                                                 alt="profile-image"
                                               />
                                             );
@@ -1449,9 +1546,13 @@ const HelloWorldContext = ({ props }: any) => {
                                                 index == 0
                                                   ? "0 0 0 0"
                                                   : "0 0 0px -12px",
-                                                     float:"left"
+                                                     float:"left",
+                                                     display:'flex',
+                                                     alignItems:'center',
+                                                     justifyContent:'center'
+
                                             }}
-                                            className="rounded-circlecss text-center img-thumbnail avatar-xl"
+                                            className="rounded-circlecssnew text-center img-thumbnail avatar-xl"
                                           >
                                             +
                                           </div>
@@ -1481,7 +1582,7 @@ const HelloWorldContext = ({ props }: any) => {
                                                         : "0 0 0px -12px",
                                                   }}
                                                   src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                                                  className="rounded-circlecss img-thumbnail avatar-xl"
+                                                  className="rounded-circlecssnew img-thumbnail avatar-xl"
                                                   alt="profile-image"
                                                 />
                                               );
@@ -1507,9 +1608,9 @@ const HelloWorldContext = ({ props }: any) => {
                                       data-bs-toggle="dropdown"
                                       aria-expanded="false"
                                     >
-                                      <i className="fe-more-horizontal- m-0 text-muted h3"></i>
+                                       <img className="morealign" src={require('../assets/more.png')} />
                                     </a>
-                                    <div className="dropdown-menu dropdown-menu-end">
+                                    <div style={{padding:"0px", top:"15px", minWidth:"auto", textAlign:"center"}} className="dropdown-menu newheight dropdown-menu-end">
                                       <a
                                         className="dropdown-item font-12"
                                         href="#"
@@ -1557,20 +1658,20 @@ const HelloWorldContext = ({ props }: any) => {
                                   </p>
 
                                   {/* Task info */}
-                                  <p className="mb-1 font-12">
+                                  <p style={{display:'flex', gap:'10px'}} className="mb-1 font-12">
                                     <span
                                       style={{ color: "#6e767e" }}
                                       className="pe-2 text-nowrap mb-1 d-inline-block"
                                     >
-                                      <i className="fe-file-text text-muted"></i>
-                                      <b>{project?.ProjectsDocsId?.length}</b> Documents
+                                      
+                                      <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} /> <b>{project?.ProjectsDocsId?.length}</b> Documents
                                     </span>
                                     <span
                                       style={{ color: "#6e767e" }}
                                       className="text-nowrap mb-1 d-inline-block"
                                     >
-                                      <i className="fe-message-square text-muted"></i>
-                                      <b>{project. CommentsCount || 0}</b> Comments
+                                   
+                                   <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />    <b>{project. CommentsCount || 0}</b> Comments
                                     </span>
                                   </p>
                                   <div
@@ -1592,7 +1693,7 @@ const HelloWorldContext = ({ props }: any) => {
                                                          float:"left"
                                                 }}
                                                 src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                                                className="rounded-circlecss img-thumbnail avatar-xl"
+                                                className="rounded-circlecssnew img-thumbnail avatar-xl"
                                                 alt="profile-image"
                                               />
                                             );
@@ -1614,9 +1715,12 @@ const HelloWorldContext = ({ props }: any) => {
                                                 index == 0
                                                   ? "0 0 0 0"
                                                   : "0 0 0px -12px",
-                                                     float:"left"
+                                                     float:"left",
+                                                     display:'flex',
+                                                     alignItems:'center',
+                                                     justifyContent:'center'
                                             }}
-                                            className="rounded-circlecss text-center img-thumbnail avatar-xl"
+                                            className="circlecssnewnew text-center img-thumbnail avatar-xl"
                                           >
                                             +
                                           </div>
@@ -1640,7 +1744,7 @@ const HelloWorldContext = ({ props }: any) => {
                                                          float:"left"
                                                 }}
                                                 src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                                                className="rounded-circlecss img-thumbnail avatar-xl"
+                                                className="circlecssnew img-thumbnail avatar-xl"
                                                 alt="profile-image"
                                               />
                                             );
@@ -1658,7 +1762,7 @@ const HelloWorldContext = ({ props }: any) => {
                         return null;
                       })}
                       {itemsToShow < Dataproject.length && (
-                      <div className="col-12 text-center mt-3">
+                      <div className="col-12 text-center mb-5 mt-3">
                         <button onClick={loadMore} className="btn btn-primary">
                           Load More
                         </button>
@@ -1690,9 +1794,9 @@ const HelloWorldContext = ({ props }: any) => {
                                       data-bs-toggle="dropdown"
                                       aria-expanded="false"
                                     >
-                                      <i className="fe-more-horizontal- m-0 text-muted h3"></i>
+                                     <img className="morealign" src={require('../assets/more.png')} />
                                     </a>
-                                    <div className="dropdown-menu dropdown-menu-end">
+                                    <div style={{padding:"0px", top:"15px", minWidth:"auto", textAlign:"center"}} className="dropdown-menu newheight dropdown-menu-end">
                                       <a
                                         className="dropdown-item font-12"
 
@@ -1707,11 +1811,18 @@ const HelloWorldContext = ({ props }: any) => {
                                       >
                                         View Detail
                                       </a>
+                                      <a
+                                        className="dropdown-item font-12"
+
+                                        onClick={() => UpdatProject(project.Id)}
+                                      >
+                                        Close Project
+                                      </a>
                                     </div>
                                   </div>
 
                                   {/* Title */}
-                                  <h4 className="mt-0 two-line mb-1">
+                                  <h4 className="mt-0 mb-1 two-line">
                                     <a onClick={() => GotoNextPage(project)}
 
                                       className="text-dark fw-bold font-16"
@@ -1725,14 +1836,14 @@ const HelloWorldContext = ({ props }: any) => {
                                       style={{ color: "#6e767e" }}
                                       className="pe-2 text-nowrap mb-1 d-inline-block"
                                     >
-                                      <i className="fe-file-text text-muted"></i>
-                                      <b>{project?.ProjectsDocsId?.length}</b> Documents
+                                     
+                                     <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} />  <b>{project?.ProjectsDocsId?.length}</b> Documents
                                     </span>
                                     <span
                                       style={{ color: "#6e767e" }}
                                       className="text-nowrap mb-1 d-inline-block"
                                     >
-                                      <i className="fe-message-square text-muted"></i>
+                                    <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />
                                       <b>{project. CommentsCount || 0}</b> Comments
                                     </span>
                                   </p>
@@ -1773,7 +1884,7 @@ const HelloWorldContext = ({ props }: any) => {
                                                          float:"left"
                                                 }}
                                                 src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                                                className="rounded-circlecss img-thumbnail avatar-xl"
+                                                className="circlecssnew img-thumbnail avatar-xl"
                                                 alt="profile-image"
                                               />
                                             );
@@ -1796,7 +1907,10 @@ const HelloWorldContext = ({ props }: any) => {
                                                 index == 0
                                                   ? "0 0 0 0"
                                                   : "0 0 0px -12px",
-                                                     float:"left"
+                                                     float:"left",
+                                                     display:'flex',
+                                                     alignItems:'center',
+                                                     justifyContent:'center'
                                                   
                                             }}
                                             className="rounded-circlecss text-center img-thumbnail avatar-xl"
@@ -1848,7 +1962,7 @@ const HelloWorldContext = ({ props }: any) => {
                         return null;
                       })}
                            {itemsToShow < Dataproject.length && (
-                      <div className="col-12 text-center mt-3">
+                      <div className="col-12 text-center mb-5 mt-3">
                         <button onClick={loadMore} className="btn btn-primary">
                           Load More 
                         </button>
@@ -1863,7 +1977,7 @@ const HelloWorldContext = ({ props }: any) => {
             )}
             {activeTab === "profile11" && (
               <div className="row mt-3">
-                <div className="container">
+                <div className="">
                   {/* Map through the projects array and display a card for each */}
                   {Dataproject.length > 0 ? (
                     <div className="row">
@@ -1880,9 +1994,10 @@ const HelloWorldContext = ({ props }: any) => {
                                       data-bs-toggle="dropdown"
                                       aria-expanded="false"
                                     >
-                                      <i className="fe-more-horizontal- m-0 text-muted h3"></i>
+                                        <img className="morealign" src={require('../assets/more.png')} />
+                                      {/* <i className="fe-more-horizontal- m-0 text-muted h3"></i> */}
                                     </a>
-                                    <div className="dropdown-menu dropdown-menu-end">
+                                    <div style={{padding:"0px", top:"15px", minWidth:"auto", textAlign:"center"}} className="dropdown-menu newheight dropdown-menu-end">
                                       <a
                                         className="dropdown-item font-12"
 
@@ -1901,7 +2016,7 @@ const HelloWorldContext = ({ props }: any) => {
                                   </div>
 
                                   {/* Title */}
-                                  <h4 className="mt-0 mb-1 two-line">
+                                  <h4 className="mt-0 mb-1 circlecssnew">
                                     <a
                                       onClick={() => GotoNextPage(project)}
                                       className="text-dark fw-bold font-16"
@@ -1916,15 +2031,15 @@ const HelloWorldContext = ({ props }: any) => {
                                       style={{ color: "#6e767e" }}
                                       className="pe-2 text-nowrap mb-1 d-inline-block"
                                     >
-                                      <i className="fe-file-text text-muted"></i>
+                                       <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} /> 
                                       <b>{project?.ProjectsDocsId?.length}</b> Documents
                                     </span>
                                     <span
                                       style={{ color: "#6e767e" }}
                                       className="text-nowrap mb-1 d-inline-block"
                                     >
-                                      <i className="fe-message-square text-muted"></i>
-                                      <b>{project. CommentsCount || 0}</b> Comments
+                                      
+                                      <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />   <b>{project. CommentsCount || 0}</b> Comments
                                     </span>
                                   </p>
 
@@ -2040,7 +2155,7 @@ const HelloWorldContext = ({ props }: any) => {
                         return null;
                       })}
                       {itemsToShow < Dataproject.length && (
-                      <div className="col-12 text-center mt-3">
+                      <div className="col-12 text-center mb-5 mt-3">
                         <button onClick={loadMore} className="btn btn-primary">
                           Load More 
                         </button>
@@ -2053,9 +2168,403 @@ const HelloWorldContext = ({ props }: any) => {
                 </div>
               </div>
             )}
+            {activeTab === "Ongoing" && (
+              <div className="row mt-3">
+                <div className="">
+                  {/* Map through the projects array and display a card for each */}
+                  {Dataproject.length > 0 ? (
+                  
+                    <div className="row">
+                      {Dataproject.slice(0, itemsToShow).map((project, index) => {
+                
+                        if (project?.ProjectStatus === "Ongoing") {
+                          return (
+                            <div key={index} className="col-lg-4 col-md-6 mb-0">
+                              <div className="card project-box">
+                                <div className="card-body">
+                                  <div className="dropdown float-end">
+                                    <a
+
+                                      className="dropdown-toggle card-drop arrow-none"
+                                      data-bs-toggle="dropdown"
+                                      aria-expanded="false"
+                                    >
+                                      <img className="morealign" src={require('../assets/more.png')} />
+                                    </a>
+                                    <div style={{padding:"0px", top:"15px", minWidth:"auto", textAlign:"center"}} className="dropdown-menu newheight dropdown-menu-end">
+                                      <a
+                                        className="dropdown-item font-12"
+
+                                        onClick={() => handleDelete(project.Id)}
+                                      >
+                                        Delete
+                                      </a>
+                                      <a
+                                        className="dropdown-item font-12"
+
+                                        onClick={() => GotoNextPage(project)}
+                                      >
+                                        View Detail
+                                      </a>
+                                    </div>
+                                  </div>
+
+                                  {/* Title */}
+                                  <h4 className="mt-0 mb-1 two-line">
+                                    <a
+                                      onClick={() => GotoNextPage(project)}
+                                      className="text-dark fw-bold font-16"
+                                    >
+                                      {project.ProjectName ||
+                                        "Untitled Project"}
+                                    </a>
+                                  </h4>
+
+                                  <p className="mb-1 font-12">
+                                    <span
+                                      style={{ color: "#6e767e" }}
+                                      className="pe-2 text-nowrap mb-1 d-inline-block"
+                                    >
+                                       <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} /> 
+                                      <b>{project?.ProjectsDocsId?.length}</b> Documents
+                                    </span>
+                                    <span
+                                      style={{ color: "#6e767e" }}
+                                      className="text-nowrap mb-1 d-inline-block"
+                                    >
+                                        <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />
+                                      <b>{project. CommentsCount || 0}</b> Comments
+                                    </span>
+                                  </p>
+
+                                  {/* Task info */}
+                                  {/* <p className="mb-1 font-12">
+                              <span
+                                style={{ color: "#6e767e" }}
+                                className="pe-2 text-nowrap mb-1 d-inline-block"
+                              >
+                                <i className="fe-file-text text-muted"></i>
+                                <b>{project.documentsCount || 0}</b> Documents
+                              </span>
+                              <span
+                                style={{ color: "#6e767e" }}
+                                className="text-nowrap mb-1 d-inline-block"
+                              >
+                                <i className="fe-message-square text-muted"></i>
+                                <b>{project. CommentsCount || 0}</b> Comments
+                              </span>
+                            </p> */}
+                                  <div
+                                    style={{
+                                    
+                                      position: "relative"
+                                    }}
+                                  >
+                                    <div style={{ display: 'flex' }} className="ml20">
+                                      {project?.TeamMembers?.map(
+                                        (id: any, idx: any) => {
+                                          if (idx < 3) {
+                                            return (
+                                              <img
+                                                style={{
+                                                  margin:
+                                                    index == 0
+                                                      ? "0 0 0 0"
+                                                      : "0 0 0px -12px",
+                                                         float:"left"
+                                                }}
+                                                src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+                                                className="rounded-circlecss img-thumbnail avatar-xl"
+                                                alt="profile-image"
+                                              />
+                                            );
+                                          }
+                                        }
+                                      )}
+                                      {
+                                        project?.TeamMembers?.length > 3 &&
+
+                                        <div
+                                          className=""
+                                          onClick={() =>
+                                            toggleDropdown(project.Id)
+                                          }
+                                          key={project.Id}
+                                        >
+                                          <div
+                                            style={{
+                                              margin:
+                                                index == 0
+                                                  ? "0 0 0 0"
+                                                  : "0 0 0px -12px",
+                                                     float:"left",
+                                                     display:'flex',
+                                                     alignItems:'center',
+                                                     justifyContent:'center'
+                                            }}
+                                            className="rounded-circlecss img-thumbnail avatar-xl"
+                                          >
+                                            +
+                                          </div>
+                                        </div>
+                                      }
+                                    </div>
+                                    {showDropdownId === project.Id && (
+                                      <div
+                                        className=""
+                                        style={{
+                                          position: "absolute",
+                                          zIndex: "99",
+                                          background: "#fff",
+                                          padding: "1rem",
+                                          width: "30rem",
+                                        }}
+                                      >
+                                        {showDropdownId === project.Id && (
+                                          project?.TeamMembers?.map(
+                                            (id: any, idx: any) => {
+                                              return (
+                                                <img
+                                                  style={{
+                                                    margin:
+                                                      idx == 0
+                                                        ? "0 0 0 0"
+                                                        : "0 0 0px -12px",
+                                                           float:"left"
+                                                  }}
+                                                  src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+                                                  className="rounded-circlecss img-thumbnail avatar-xl"
+                                                  alt="profile-image"
+                                                />
+                                              );
+                                            }
+                                          )
+                                        )}
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        }
+
+                        return null;
+                      })}
+                      {itemsToShow < Dataproject?.length && (
+                      <div className="col-12 text-center mb-5 mt-3">
+                        <button onClick={loadMore} className="btn btn-primary">
+                          Load More 
+                        </button>
+                      </div>
+                    )}
+                    </div>
+                  ) : (
+                    <p>Loading projects...</p>
+                  )}
+                </div>
+              </div>
+            )}
+            {activeTab === "Close" && (
+              <div className="row mt-3">
+                <div className="">
+                  {/* Map through the projects array and display a card for each */}
+                  {Dataproject.length > 0 ? (
+                    <div className="row">
+                      {Dataproject.slice(0, itemsToShow).map((project, index) => {
+                        if (project?.ProjectStatus === "Close") {
+                          return (
+                            <div key={index} className="col-lg-4 col-md-6 mb-0">
+                              <div className="card project-box">
+                                <div className="card-body">
+                                  <div className="dropdown float-end">
+                                    <a
+
+                                      className="dropdown-toggle card-drop arrow-none"
+                                      data-bs-toggle="dropdown"
+                                      aria-expanded="false"
+                                    >
+                                     <img className="morealign" src={require('../assets/more.png')} />
+                                    </a>
+                                    <div style={{padding:"0px", top:"15px", minWidth:"auto", textAlign:"center"}} className="dropdown-menu newheight dropdown-menu-end">
+                                      <a
+                                        className="dropdown-item font-12"
+
+                                        onClick={() => handleDelete(project.Id)}
+                                      >
+                                        Delete
+                                      </a>
+                                      <a
+                                        className="dropdown-item font-12"
+
+                                        onClick={() => GotoNextPage(project)}
+                                      >
+                                        View Detail
+                                      </a>
+                                    </div>
+                                  </div>
+
+                                  {/* Title */}
+                                  <h4 className="mt-0 mb-1 two-line">
+                                    <a
+                                      onClick={() => GotoNextPage(project)}
+                                      className="text-dark fw-bold font-16"
+                                    >
+                                      {project.ProjectName ||
+                                        "Untitled Project"}
+                                    </a>
+                                  </h4>
+
+                                  <p className="mb-1 font-12">
+                                    <span
+                                      style={{ color: "#6e767e" }}
+                                      className="pe-2 text-nowrap mb-1 d-inline-block"
+                                    >
+                                     <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} />
+                                      <b>{project?.ProjectsDocsId?.length}</b> Documents
+                                    </span>
+                                    <span
+                                      style={{ color: "#6e767e" }}
+                                      className="text-nowrap mb-1 d-inline-block"
+                                    >
+                                       <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />
+                                      <b>{project. CommentsCount || 0}</b> Comments
+                                    </span>
+                                  </p>
+
+                                  {/* Task info */}
+                                  {/* <p className="mb-1 font-12">
+                              <span
+                                style={{ color: "#6e767e" }}
+                                className="pe-2 text-nowrap mb-1 d-inline-block"
+                              >
+                                <i className="fe-file-text text-muted"></i>
+                                <b>{project.documentsCount || 0}</b> Documents
+                              </span>
+                              <span
+                                style={{ color: "#6e767e" }}
+                                className="text-nowrap mb-1 d-inline-block"
+                              >
+                                <i className="fe-message-square text-muted"></i>
+                                <b>{project. CommentsCount || 0}</b> Comments
+                              </span>
+                            </p> */}
+                                  <div
+                                    style={{
+                                    
+                                      position: "relative"
+                                    }}
+                                  >
+                                    <div style={{ display: 'flex' }} className="ml20">
+                                      {project?.TeamMembers?.map(
+                                        (id: any, idx: any) => {
+                                          if (idx < 3) {
+                                            return (
+                                              <img
+                                                style={{
+                                                  margin:
+                                                    index == 0
+                                                      ? "0 0 0 0"
+                                                      : "0 0 0px -12px",
+                                                         float:"left"
+                                                }}
+                                                src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+                                                className="rounded-circlecss img-thumbnail avatar-xl"
+                                                alt="profile-image"
+                                              />
+                                            );
+                                          }
+                                        }
+                                      )}
+                                      {
+                                        project?.TeamMembers?.length > 3 &&
+
+                                        <div
+                                          className=""
+                                          onClick={() =>
+                                            toggleDropdown(project.Id)
+                                          }
+                                          key={project.Id}
+                                        >
+                                          <div
+                                            style={{
+                                              margin:
+                                                index == 0
+                                                  ? "0 0 0 0"
+                                                  : "0 0 0px -12px",
+                                                     float:"left",
+                                                     display:'flex',
+                                                     alignItems:'center',
+                                                     justifyContent:'center'
+                                            }}
+                                            className="rounded-circlecss img-thumbnail avatar-xl"
+                                          >
+                                            +
+                                          </div>
+                                        </div>
+                                      }
+                                    </div>
+                                    {showDropdownId === project.Id && (
+                                      <div
+                                        className=""
+                                        style={{
+                                          position: "absolute",
+                                          zIndex: "99",
+                                          background: "#fff",
+                                          padding: "1rem",
+                                          width: "30rem",
+                                        }}
+                                      >
+                                        {showDropdownId === project.Id && (
+                                          project?.TeamMembers?.map(
+                                            (id: any, idx: any) => {
+                                              return (
+                                                <img
+                                                  style={{
+                                                    margin:
+                                                      idx == 0
+                                                        ? "0 0 0 0"
+                                                        : "0 0 0px -12px",
+                                                           float:"left"
+                                                  }}
+                                                  src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+                                                  className="rounded-circlecss img-thumbnail avatar-xl"
+                                                  alt="profile-image"
+                                                />
+                                              );
+                                            }
+                                          )
+                                        )}
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        }
+
+                        return null;
+                      })}
+                      {itemsToShow < Dataproject?.length && (
+                      <div className="col-12 text-center mb-5 mt-3">
+                        <button onClick={loadMore} className="btn btn-primary">
+                          Load More 
+                        </button>
+                      </div>
+                    )}
+                    </div>
+                  ) : (
+                    <p>Loading projects...</p>
+                  )}
+                </div>
+               
+              </div>
+            )}
           </div>
         </div>
       </div>
+      <div style={{height:'50px'}}></div>
     </div>
 
   );

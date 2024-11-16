@@ -275,13 +275,25 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername,CurrentUser, c
                     console.log(ele1);
                     await addActivityLeaderboard(sp, "Likes on Post");
                     let notifiedArr = {
-                        ContentId:ele.data.Id,
-                        NotifiedUserId: ele.data.AuthorId,
+
+                        ContentId:post.postId,
+
+                        NotifiedUserId: post.postAuthorId,
+
                         ContentType0: "Likes on Post",
-                        ContentName: ele.data.Title,
+
+                        ContentName: post.Contentpost,
+
                         ActionUserId: CurrentUser.Id,
+
                         DeatilPage: "SocialFeed",
-                        ReadStatus: false
+
+                        ReadStatus: false,
+
+                        ContentCommentId:postId,
+
+                        ContentComment:post.Contentpost
+
                       }
                       const nofiArr = await addNotification(notifiedArr, sp)
                       console.log(nofiArr, 'nofiArr');
@@ -348,6 +360,39 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername,CurrentUser, c
                             await addActivityLeaderboard(sp, "Comments on Post");
                         setCommentsCount(ele.length)
                         setComments(ele);
+                        if(CurrentUser.Id!=existingPost.AuthorId)
+
+                            {
+
+                        let notifiedArr = {
+
+                            ContentId:postId,
+
+                            NotifiedUserId:existingPost.AuthorId,
+
+                            ContentType0: "Comment on post",
+
+                            ContentName: existingPost.Contentpost,
+
+                            ActionUserId: CurrentUser.Id,
+
+                            DeatilPage: "SocialFeed",
+
+                            ReadStatus: false,
+
+                            ContentCommentId:commentResponse.data.Id,
+
+                            ContentComment:newComment,
+
+                            CommentOnReply: ""
+
+                          }
+
+                          const nofiArr = await addNotification(notifiedArr, sp)
+
+                          console.log(nofiArr, 'nofiArr');
+
+                        }
                     })
             } catch (error) {
                 console.log("Error updating comments in SharePoint: ", error);
@@ -574,7 +619,7 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername,CurrentUser, c
                 <span className="likes"><MessageSquare size={20} /> {CommentsCount} Comments</span>
                 <div className="post-actions likes">
                     <div className="menu-toggle" onClick={toggleMenushare}>
-                        <Share2 size={20} /> Share
+                        <Share2 size={20} /><span className="sahrenew"> Share</span>
                     </div>
                     {isMenuOpenshare && (
                         <div className="dropdown-menucsspost" ref={menuRef}>

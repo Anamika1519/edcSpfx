@@ -92,7 +92,7 @@ export const CommentEventCard: React.FC<{
                 {username}
                 {/* </a> */}
               </h5>
-              <p className="text-muted font-12 mt-3">
+              <p className="text-muted font-12 mt-0">
                 <small>{Created}</small>
               </p>
             </div>
@@ -122,7 +122,7 @@ export const CommentEventCard: React.FC<{
         </div>
         {/* Render replies */}
         <div style={{ display: 'block' }}>
-          <div className="row">
+          <div className="row commentheight">
             <div className=" ">
               {replies.map((reply, index) => (
                 <div key={index} className="UserReplycss p-2 d-flex " style={{ width: '100%', display: 'flex' }}>
@@ -146,7 +146,7 @@ export const CommentEventCard: React.FC<{
               ))}
             </div>
           </div>
-          <div className="row" style={{ display: 'block' }}>
+          <div className="row mt-4" style={{ display: 'block' }}>
             <div className=" align-items-start mt-1">
               <div className="w-100">
                 <div className="d-flex align-items-start">
@@ -163,7 +163,7 @@ export const CommentEventCard: React.FC<{
                     onKeyDown={handleKeyDown}
                     disabled={loading}
                   /> */}
-                   <textarea
+                   <textarea style={{borderRadius:"0px"}}
                     className="form-control ht form-control-sm"
                     placeholder="Reply to comment..."
                     value={newReply}

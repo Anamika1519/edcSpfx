@@ -13,7 +13,7 @@ import "../../verticalSideBar/components/VerticalSidebar.scss";
 import DynamicForm from '../../../CustomJSComponents/CustomForm/DynamicForm';
 import { IAddannouncementProps } from './IAddannouncementProps';
 import { getCategory, getCurrentUser, getEntity, getType } from "../../../APISearvice/CustomService";
-import { addItem, getAnncouncementByID, getUrl, updateItem, uploadFile, uploadFileToLibrary } from '../../../APISearvice/AnnouncementsService';
+import { addItem, getAnncouncementByID, getAnnouncementandNewsTypeMaster, getUrl, updateItem, uploadFile, uploadFileToLibrary } from '../../../APISearvice/AnnouncementsService';
 import { SPFI } from '@pnp/sp/presets/all';
 import Swal from 'sweetalert2';
 import "../components/addannoncement.scss";
@@ -25,6 +25,10 @@ import "../../../CustomJSComponents/CustomForm/CustomForm.scss";
 import { Modal } from 'react-bootstrap';
 import { decryptId } from '../../../APISearvice/CryptoService';
 import HorizontalNavbar from '../../horizontalNavBar/components/HorizontalNavBar';
+import { AddContentLevelMaster, AddContentMaster, getApprovalConfiguration, getLevel } from '../../../APISearvice/ApprovalService';
+import { Delete, PlusCircle } from 'react-feather';
+import Multiselect from 'multiselect-react-dropdown';
+
 interface FormField {
   type: string;
   name: string;
@@ -51,7 +55,7 @@ const AddannouncementContext = ({ props }: any) => {
   const [EnityData, setEnityData] = React.useState([])
   const [CategoryData, setCategoryData] = React.useState([])
   const [TypeData, setTypeData] = React.useState([])
-
+  const [options, setOpions] = React.useState([]);
   const [Url, setBaseUrl] = React.useState("");
   const [showModal, setShowModal] = React.useState(false);
   const [showDocTable, setShowDocTable] = React.useState(false);
@@ -59,6 +63,12 @@ const AddannouncementContext = ({ props }: any) => {
   const [showBannerModal, setShowBannerTable] = React.useState(false);
   const siteUrl = props.siteUrl;
   const [editID, setEditID] = React.useState(null);
+  const [selectedUsers, setSelectedUsers] = React.useState<any[]>([]);
+  const [errorsForUserSelection, setErrorsForUserSelection] = React.useState<{
+    [key: number]: { userSelect?: string };
+  }>({});
+  const [IsAdded, setIsAdded] = React.useState(false);
+
 
   //#region State to hold form data
   const [formData, setFormData] = React.useState({
@@ -86,7 +96,12 @@ const AddannouncementContext = ({ props }: any) => {
   const [DocumentpostIdsArr, setDocumentpostIdsArr] = React.useState([]);
 
   const [editForm, setEditForm] = React.useState(false);
+  const [levels, setLevel] = React.useState([]);
+  const [selectedValue, setSelectedValue] = React.useState([]);
+  const [ApprovalConfigurationData, setApprovalConfiguration] = React.useState([]);
 
+  const [rows, setRows] = React.useState<any>([]);
+  console.log(ApprovalConfigurationData, 'ApprovalConfigurationData');
   //#endregion
   const handleChangeCheckBox = (name: string, value: string | boolean) => {
     setFormData((prevValues) => ({
@@ -151,10 +166,15 @@ const AddannouncementContext = ({ props }: any) => {
 
   //#region ApiCallFunc
   const ApiCallFunc = async () => {
-    setCurrentUser(await getCurrentUser(sp,siteUrl)) //currentUser
+    setLevel(await getLevel(sp))
+    await fetchUserInformationList();
+
+    setCurrentUser(await getCurrentUser(sp, siteUrl)) //currentUser
     setEnityData(await getEntity(sp)) //Entity
     setTypeData(await getType(sp)) // Type
     setBaseUrl(await (getUrl(sp))) //baseUrl
+
+
     //#region getdataByID
     if (sessionStorage.getItem("announcementId") != undefined) {
       const iD = sessionStorage.getItem("announcementId")
@@ -190,7 +210,7 @@ const AddannouncementContext = ({ props }: any) => {
         setDocumentpostIdsArr(setBannerById[0]?.AnnouncementsAndNewsDocsId)
         setImagepostArr1(setBannerById[0].AnnouncementAndNewsGallaryJSON)
         setDocumentpostArr1(setBannerById[0].AnnouncementAndNewsDocsJSON)
-        if (setBannerById[0].BannerImage.length>0) {
+        if (setBannerById[0].BannerImage.length > 0) {
           banneimagearr = setBannerById[0].BannerImage
           console.log(banneimagearr, 'banneimagearr');
 
@@ -206,13 +226,40 @@ const AddannouncementContext = ({ props }: any) => {
         else {
           setFormData(arr)
         }
-
+        const rowData: any[] = await getApprovalConfiguration(sp, Number(setBannerById[0].Entity)) //baseUrl
+        const initialRows = rowData.map((item: any) => ({
+          id: item.Id,
+          Level: item.Level.Level,
+          LevelId: item.LevelId,
+          approvedUserListupdate: item.Users.map((user: any) => ({
+            id: user.ID,
+            name: user.Title,
+            email: user.EMail
+          })),
+          selectionType: 'All' // default selection type, if any
+        }));
+        setRows(initialRows);
 
       }
     }
     //#endregion
   }
   //#endregion
+  const [usersitem, setUsersArr] = React.useState([]);
+
+  const fetchUserInformationList = async () => {
+    try {
+      const userList = await sp.web.lists
+        .getByTitle("User Information List")
+        .items.select("ID", "Title", "EMail", "Department", "JobTitle", "Picture")
+        .filter("EMail ne null")();
+      setUsersArr(userList);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
+
+  // Prepare options for multiselect
 
   // Function to fetch or return the initial description value
   const getDescription = (des: any) => {
@@ -383,17 +430,15 @@ const AddannouncementContext = ({ props }: any) => {
                 documentIds = DocumentpostIdsArr
                 documentArray = DocumentpostArr1
               }
-              if(galleryArray.length>0)
-                {
-              let ars = galleryArray.filter(x => x.ID == 0)
-              if (ars.length > 0) {
-                for (let i = 0; i < ars.length; i++) {
-                  galleryArray.slice(i, 1)
+              if (galleryArray.length > 0) {
+                let ars = galleryArray.filter(x => x.ID == 0)
+                if (ars.length > 0) {
+                  for (let i = 0; i < ars.length; i++) {
+                    galleryArray.slice(i, 1)
+                  }
                 }
               }
-            }
-              if(documentArray.length>0)
-              {
+              if (documentArray.length > 0) {
                 let arsdoc = documentArray.filter(x => x.ID == 0)
                 if (arsdoc.length > 0) {
                   for (let i = 0; i < arsdoc.length; i++) {
@@ -403,7 +448,7 @@ const AddannouncementContext = ({ props }: any) => {
                 console.log(documentIds, 'documentIds');
                 console.log(galleryIds, 'galleryIds');
                 // Update Post with Gallery and Document Information
-                
+
               }
               const updatePayload = {
                 ...(galleryIds.length > 0 && {
@@ -421,6 +466,7 @@ const AddannouncementContext = ({ props }: any) => {
                 const updateResult = await updateItem(updatePayload, sp, editID);
                 console.log("Update Result:", updateResult);
               }
+             
             }
             else {
               // Create Post
@@ -498,24 +544,434 @@ const AddannouncementContext = ({ props }: any) => {
                 documentIds = DocumentpostIdsArr;
                 documentArray = DocumentpostArr1;
               }
-              if(galleryArray.length>0)
-                {
-              let ars = galleryArray.filter(x => x.ID == 0)
-              if (ars.length > 0) {
-                for (let i = 0; i < ars.length; i++) {
-                  galleryArray.slice(i, 1)
+              if (galleryArray.length > 0) {
+                let ars = galleryArray.filter(x => x.ID == 0)
+                if (ars.length > 0) {
+                  for (let i = 0; i < ars.length; i++) {
+                    galleryArray.slice(i, 1)
+                  }
                 }
               }
-            }
-              if(documentArray.length>0)
-                {
-              let arsdoc = documentArray.filter(x => x.ID == 0)
-              if (arsdoc.length > 0) {
-                for (let i = 0; i < arsdoc.length; i++) {
-                  documentArray.slice(i, 1)
+              if (documentArray.length > 0) {
+                let arsdoc = documentArray.filter(x => x.ID == 0)
+                if (arsdoc.length > 0) {
+                  for (let i = 0; i < arsdoc.length; i++) {
+                    documentArray.slice(i, 1)
+                  }
                 }
               }
+              console.log(documentIds, 'documentIds');
+              console.log(galleryIds, 'galleryIds');
+              // Update Post with Gallery and Document Information
+              const updatePayload = {
+                ...(galleryIds.length > 0 && {
+                  AnnouncementAndNewsGallaryId: galleryIds,
+
+                  AnnouncementAndNewsGallaryJSON: JSON.stringify(flatArray(galleryArray)),
+                }),
+                ...(documentIds.length > 0 && {
+                  AnnouncementsAndNewsDocsId: documentIds,
+                  AnnouncementAndNewsDocsJSON: JSON.stringify(flatArray(documentArray)),
+                }),
+              };
+
+              if (Object.keys(updatePayload).length > 0) {
+                const updateResult = await updateItem(updatePayload, sp, editID);
+                console.log("Update Result:", updateResult);
+              }
             }
+           // ARGContentMaster
+           let TypeMasterData:any=[] ;
+           const TypeMaster= await getAnnouncementandNewsTypeMaster(sp, Number(formData.Type))
+           let arr ={
+            ContentID:editID,
+            ContentName:"ARGAnnouncementAndNews",
+            Status:"Panding",
+            EntityId:Number(formData.entity),
+            SourceName:TypeMasterData.TypeMaster
+           }
+           await AddContentMaster(sp,arr)
+
+            const boolval = await handleClick(editID,TypeMasterData.TypeMaster, Number(formData.entity))
+            if (boolval == true) {
+            Swal.fire('Item update successfully', '', 'success');
+            sessionStorage.removeItem("announcementId")
+            setTimeout(() => {
+              window.location.href = `${siteUrl}/SitePages/Announcementmaster.aspx`;
+            }, 2000);
+          }
+          }
+
+        })
+      }
+      else {
+        Swal.fire({
+          title: 'Do you want to save?',
+          showConfirmButton: true,
+          showCancelButton: true,
+          confirmButtonText: "Save",
+          cancelButtonText: "Cancel",
+          icon: 'warning'
+        }
+        ).then(async (result) => {
+          //console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
+          if (result.isConfirmed) {
+            debugger
+            let bannerImageArray: any = {};
+            let galleryIds: any[] = [];
+            let documentIds: any[] = [];
+            let galleryArray: any[] = [];
+            let documentArray: any[] = [];
+
+            // formData.FeaturedAnnouncement === "on"?  true :false;
+
+
+
+            // Upload Banner Images
+            if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
+              for (const file of BnnerImagepostArr[0].files) {
+                //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
+                bannerImageArray = await uploadFile(file, sp, "Documents", "https://officeindia.sharepoint.com");
+              }
+            }
+            debugger
+            // Create Post
+            const postPayload = {
+              Title: formData.title,
+              Overview: formData.overview,
+              Description: richTextValues.description,
+              EntityId: Number(formData.entity),
+              CategoryId: Number(formData.category),
+              AnnouncementandNewsTypeMasterId: Number(formData.Type),
+              FeaturedAnnouncement: formData.FeaturedAnnouncement === true ? true : false,
+              Status: "Submitted",
+              AuthorId: currentUser.Id,
+              AnnouncementandNewsBannerImage: JSON.stringify(bannerImageArray)
+            };
+            console.log(postPayload);
+
+            const postResult = await addItem(postPayload, sp);
+            const postId = postResult?.data?.ID;
+            debugger
+            if (!postId) {
+              console.error("Post creation failed.");
+              return;
+            }
+
+
+            console.log(ImagepostArr, 'ImagepostArr', ImagepostArr1, 'ImagepostArr1', DocumentpostArr1, 'DocumentpostArr1', DocumentpostArr, 'DocumentpostArr');
+
+            // Upload Gallery Images
+            if (ImagepostArr.length > 0) {
+              for (const file of ImagepostArr[0]?.files) {
+                const uploadedGalleryImage = await uploadFileToLibrary(file, sp, "AnnouncementAndNewsGallary");
+
+                galleryIds = galleryIds.concat(uploadedGalleryImage.map((item: { ID: any }) => item.ID));
+                galleryArray.push(uploadedGalleryImage);
+              }
+            }
+
+            // Upload Documents
+            if (DocumentpostArr.length > 0) {
+              for (const file of DocumentpostArr[0]?.files) {
+                const uploadedDocument = await uploadFileToLibrary(file, sp, "ARGAnnouncementAndNewsDocs");
+                documentIds = documentIds.concat(uploadedDocument.map((item: { ID: any }) => item.ID));
+                documentArray.push(uploadedDocument);
+              }
+            }
+
+            // Update Post with Gallery and Document Information
+            const updatePayload = {
+              ...(galleryIds.length > 0 && {
+                AnnouncementAndNewsGallaryId: galleryIds,
+                AnnouncementAndNewsGallaryJSON: JSON.stringify(flatArray(galleryArray)),
+              }),
+              ...(documentIds.length > 0 && {
+                AnnouncementsAndNewsDocsId: documentIds,
+                AnnouncementAndNewsDocsJSON: JSON.stringify(flatArray(documentArray)),
+              }),
+            };
+
+            if (Object.keys(updatePayload).length > 0) {
+              const updateResult = await updateItem(updatePayload, sp, postId);
+              console.log("Update Result:", updateResult);
+            }
+            //Chhaya Approval code
+            setIsAdded(true)
+
+            let TypeMasterData:any=[] ;
+            TypeMasterData  = await getAnnouncementandNewsTypeMaster(sp, Number(formData.Type))
+
+            let arr ={
+              ContentID:postId,
+              ContentName:"ARGAnnouncementAndNews",
+              Status:"Panding",
+              EntityId:Number(formData.entity),
+              SourceName:TypeMasterData?.TypeMaster
+             }
+             await AddContentMaster(sp,arr)
+            const boolval = await handleClick(postId,TypeMasterData?.TypeMaster,Number(formData.entity))
+           
+            if (boolval==true) {
+              Swal.fire('Item added successfully', '', 'success');
+              // sessionStorage.removeItem("bannerId")
+              setTimeout(() => {
+                window.location.href = `${siteUrl}/SitePages/Announcementmaster.aspx`;
+              }, 5000);
+            }
+
+          }
+        })
+
+      }
+    }
+
+  }
+  //#endregion
+
+  // start save as draft
+
+  const handleSaveAsDraft = async () => {
+    if (validateForm()) {
+      if (editForm) {
+        Swal.fire({
+          title: 'Do you want to update?',
+          showConfirmButton: true,
+          showCancelButton: true,
+          confirmButtonText: "Save",
+          cancelButtonText: "Cancel",
+          icon: 'warning'
+        }
+        ).then(async (result) => {
+          console.log(result)
+          if (result.isConfirmed) {
+            //console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
+            debugger
+            let bannerImageArray: any = {};
+            let galleryIds: any[] = [];
+            let documentIds: any[] = [];
+            let galleryArray: any[] = [];
+            let documentArray: any[] = [];
+
+            // formData.FeaturedAnnouncement === "on"?  true :false;
+
+            // Upload Banner Images
+            if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
+              for (const file of BnnerImagepostArr[0].files) {
+                //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
+                bannerImageArray = await uploadFile(file, sp, "Documents", "https://officeindia.sharepoint.com");
+              }
+            }
+            else {
+              bannerImageArray = null
+            }
+            debugger
+            if (bannerImageArray != null) {
+              // Create Post
+              const postPayload = {
+                Title: formData.title,
+                Overview: formData.overview,
+                Description: richTextValues.description,
+                EntityId: Number(formData.entity),
+                CategoryId: Number(formData.category),
+                AnnouncementandNewsTypeMasterId: Number(formData.Type),
+                FeaturedAnnouncement: formData.FeaturedAnnouncement === true ? true : false,
+                Status: "Save as draft",
+                AuthorId: currentUser.Id,
+                AnnouncementandNewsBannerImage: bannerImageArray != "{}" && JSON.stringify(bannerImageArray)
+              };
+              console.log(postPayload);
+
+              const postResult = await updateItem(postPayload, sp, editID);
+              const postId = postResult?.data?.ID;
+              debugger
+              // if (!postId) {
+              //   console.error("Post creation failed.");
+              //   return;
+              // }
+
+              // Upload Gallery Images
+              // Upload Gallery Images
+              if (ImagepostArr[0]?.files?.length > 0) {
+                for (const file of ImagepostArr[0].files) {
+
+                  const uploadedGalleryImage = await uploadFileToLibrary(file, sp, "AnnouncementAndNewsGallary");
+
+                  galleryIds = galleryIds.concat(uploadedGalleryImage.map((item: { ID: any }) => item.ID));
+                  if (ImagepostArr1.length > 0) {
+
+                    ImagepostArr1.push(uploadedGalleryImage[0])
+                    const updatedData = ImagepostArr1.filter(item => item.ID !== 0);
+                    console.log(updatedData, 'updatedData');
+                    galleryArray = updatedData;
+                    //galleryArray.push(ImagepostArr1);
+
+                    ImagepostIdsArr.push(galleryIds[0]) //galleryIds.push(ImagepostIdsArr)
+                    galleryIds = ImagepostIdsArr
+                  }
+                  else {
+                    galleryArray.push(uploadedGalleryImage);
+                  }
+                }
+              }
+              else {
+                galleryIds = ImagepostIdsArr
+                galleryArray = ImagepostArr1;
+              }
+
+              // Upload Documents
+              if (DocumentpostArr[0]?.files?.length > 0) {
+                for (const file of DocumentpostArr[0].files) {
+                  const uploadedDocument = await uploadFileToLibrary(file, sp, "ARGAnnouncementAndNewsDocs");
+                  documentIds = documentIds.concat(uploadedDocument.map((item: { ID: any }) => item.ID));
+                  if (DocumentpostArr1.length > 0) {
+                    DocumentpostArr1.push(uploadedDocument[0])
+                    const updatedData = DocumentpostArr1.filter(item => item.ID !== 0);
+                    console.log(updatedData, 'updatedData');
+                    documentArray = updatedData;
+                    // documentArray.push(DocumentpostArr1)
+                    DocumentpostIdsArr.push(documentIds[0])//.push(DocumentpostIdsArr)
+                    documentIds = DocumentpostIdsArr
+                  }
+                  else {
+                    documentArray.push(uploadedDocument);
+                  }
+
+                }
+              }
+              else {
+                documentIds = DocumentpostIdsArr
+                documentArray = DocumentpostArr1
+              }
+              if (galleryArray.length > 0) {
+                let ars = galleryArray.filter(x => x.ID == 0)
+                if (ars.length > 0) {
+                  for (let i = 0; i < ars.length; i++) {
+                    galleryArray.slice(i, 1)
+                  }
+                }
+              }
+              if (documentArray.length > 0) {
+                let arsdoc = documentArray.filter(x => x.ID == 0)
+                if (arsdoc.length > 0) {
+                  for (let i = 0; i < arsdoc.length; i++) {
+                    documentArray.slice(i, 1)
+                  }
+                }
+                console.log(documentIds, 'documentIds');
+                console.log(galleryIds, 'galleryIds');
+                // Update Post with Gallery and Document Information
+
+              }
+              const updatePayload = {
+                ...(galleryIds.length > 0 && {
+                  AnnouncementAndNewsGallaryId: galleryIds,
+
+                  AnnouncementAndNewsGallaryJSON: JSON.stringify(flatArray(galleryArray)),
+                }),
+                ...(documentIds.length > 0 && {
+                  AnnouncementsAndNewsDocsId: documentIds,
+                  AnnouncementAndNewsDocsJSON: JSON.stringify(flatArray(documentArray)),
+                }),
+              };
+
+              if (Object.keys(updatePayload).length > 0) {
+                const updateResult = await updateItem(updatePayload, sp, editID);
+                console.log("Update Result:", updateResult);
+              }
+            }
+            else {
+              // Create Post
+              const postPayload = {
+                Title: formData.title,
+                Overview: formData.overview,
+                Description: richTextValues.description,
+                EntityId: Number(formData.entity),
+                CategoryId: Number(formData.category),
+                AnnouncementandNewsTypeMasterId: Number(formData.Type),
+                FeaturedAnnouncement: formData.FeaturedAnnouncement === true ? true : false,
+                Status: "Save as draft",
+                AuthorId: currentUser.Id
+              };
+              console.log(postPayload);
+
+              const postResult = await updateItem(postPayload, sp, editID);
+              const postId = postResult?.data?.ID;
+              debugger
+              // if (!postId) {
+              //   console.error("Post creation failed.");
+              //   return;
+              // }
+
+              // Upload Gallery Images
+              // Upload Gallery Images
+              if (ImagepostArr[0]?.files?.length > 0) {
+                for (const file of ImagepostArr[0].files) {
+
+                  const uploadedGalleryImage = await uploadFileToLibrary(file, sp, "AnnouncementAndNewsGallary");
+
+                  galleryIds = galleryIds.concat(uploadedGalleryImage.map((item: { ID: any }) => item.ID));
+                  if (ImagepostArr1.length > 0) {
+
+                    ImagepostArr1.push(uploadedGalleryImage[0])
+                    const updatedData = ImagepostArr1.filter(item => item.ID !== 0);
+                    console.log(updatedData, 'updatedData');
+                    galleryArray = updatedData;
+                    // galleryArray.push(ImagepostArr1);
+
+                    ImagepostIdsArr.push(galleryIds[0]) //galleryIds.push(ImagepostIdsArr)
+                    galleryIds = ImagepostIdsArr
+                  }
+                  else {
+                    galleryArray.push(uploadedGalleryImage);
+                  }
+                }
+              }
+              else {
+                galleryIds = ImagepostIdsArr
+                galleryArray = ImagepostArr1;
+              }
+
+              // Upload Documents
+              if (DocumentpostArr[0]?.files?.length > 0) {
+                for (const file of DocumentpostArr[0].files) {
+                  const uploadedDocument = await uploadFileToLibrary(file, sp, "ARGAnnouncementAndNewsDocs");
+                  documentIds = documentIds.concat(uploadedDocument.map((item: { ID: any }) => item.ID));
+                  if (DocumentpostArr1.length > 0) {
+                    DocumentpostArr1.push(uploadedDocument[0])
+                    const updatedData = DocumentpostArr1.filter(item => item.ID !== 0);
+                    console.log(updatedData, 'updatedData');
+                    documentArray = updatedData;
+                    // documentArray.push(DocumentpostArr1)
+                    DocumentpostIdsArr.push(documentIds[0])//.push(DocumentpostIdsArr)
+                    documentIds = DocumentpostIdsArr
+                  }
+                  else {
+                    documentArray.push(uploadedDocument);
+                  }
+
+                }
+              }
+              else {
+                documentIds = DocumentpostIdsArr;
+                documentArray = DocumentpostArr1;
+              }
+              if (galleryArray.length > 0) {
+                let ars = galleryArray.filter(x => x.ID == 0)
+                if (ars.length > 0) {
+                  for (let i = 0; i < ars.length; i++) {
+                    galleryArray.slice(i, 1)
+                  }
+                }
+              }
+              if (documentArray.length > 0) {
+                let arsdoc = documentArray.filter(x => x.ID == 0)
+                if (arsdoc.length > 0) {
+                  for (let i = 0; i < arsdoc.length; i++) {
+                    documentArray.slice(i, 1)
+                  }
+                }
+              }
               console.log(documentIds, 'documentIds');
               console.log(galleryIds, 'galleryIds');
               // Update Post with Gallery and Document Information
@@ -585,7 +1041,7 @@ const AddannouncementContext = ({ props }: any) => {
               CategoryId: Number(formData.category),
               AnnouncementandNewsTypeMasterId: Number(formData.Type),
               FeaturedAnnouncement: formData.FeaturedAnnouncement === true ? true : false,
-              Status: "Submitted",
+              Status: "Save as draft",
               AuthorId: currentUser.Id,
               AnnouncementandNewsBannerImage: JSON.stringify(bannerImageArray)
             };
@@ -636,7 +1092,7 @@ const AddannouncementContext = ({ props }: any) => {
               const updateResult = await updateItem(updatePayload, sp, postId);
               console.log("Update Result:", updateResult);
             }
-            Swal.fire('Item added successfully', '', 'success');
+            Swal.fire('Item added successfully in draft', '', 'success');
             // sessionStorage.removeItem("bannerId")
             setTimeout(() => {
               window.location.href = `${siteUrl}/SitePages/Announcementmaster.aspx`;
@@ -648,8 +1104,11 @@ const AddannouncementContext = ({ props }: any) => {
     }
 
   }
-  //#endregion
+
+  // end save as draft
+
   //#region flatArray
+
   const flatArray = (arr: any[]): any[] => {
     return arr.reduce((acc, val) => acc.concat(val), []);
   };
@@ -806,7 +1265,7 @@ const AddannouncementContext = ({ props }: any) => {
 
   const handleCancel = () => {
     debugger
-    window.location.href =  `${siteUrl}/SitePages/announcementmaster.aspx`;
+    window.location.href = `${siteUrl}/SitePages/announcementmaster.aspx`;
   }
   const formats = [
     "header", "height", "bold", "italic",
@@ -926,21 +1385,100 @@ const AddannouncementContext = ({ props }: any) => {
     if (name == "Type") {
       setCategoryData(await getCategory(sp, Number(value))) // Category
     }
-
+    if (name == "entity") {
+      //ARGApprovalConfiguration
+      const rowData: any[] = await getApprovalConfiguration(sp, Number(value)) //baseUrl
+      const initialRows = rowData.map((item: any) => ({
+        id: item.Id,
+        Level: item.Level.Level,
+        LevelId: item.LevelId,
+        approvedUserListupdate: item.Users.map((user: any) => ({
+          id: user.ID,
+          name: user.Title,
+          email: user.EMail
+        })),
+        selectionType: 'All' // default selection type, if any
+      }));
+      setRows(initialRows);
+    }
   };
   //#endregion
 
+  const userOptions = usersitem.map((user: any) => ({
+    id: user.ID,
+    name: user.Title,
+    email: user.EMail
+  }));
+  const handleAddRow = () => {
+    setRows((prevRows: any) => [
+      ...prevRows,
+      {
+        id: Date.now(), // unique ID for the new row
+        Level: "", // default value for the level
+        approvedUserList: userOptions, // empty array for approvers
+        selectionType: "All", // default selection type
+      },
+    ]);
+  };
+
+  const handleUserSelect = (selectedUsers: any, rowId: any) => {
+    setRows((prevRows: any) =>
+      prevRows.map((row: any) =>
+        row.id === rowId
+          ? { ...row, approvedUserListupdate: selectedUsers }
+          : row
+      )
+    );
+  };
+
+  const handleSelectionModeChange = (rowId: any, selectionType: any) => {
+    setRows((prevRows: any) =>
+      prevRows.map((row: any) =>
+        row.id === rowId ? { ...row, selectionType } : row
+      )
+    );
+  };
+
+  const handleRemoveRow = (rowId: any, e: any) => {
+    e.preventDefault();
+    setRows((prevRows: any) => prevRows.filter((row: any) => row.id !== rowId));
+  };
+  const handleClick = async (contentId: number, contentName: any, EntityId: number) => {
+    console.log("Creating approval hierarchy with data:", rows);
+    let boolval = false
+    for (let i = 0; i < rows.length; i++) {
+      const userIds = rows[i].approvedUserListupdate.map((user: any) => user.id);
+      let arrPost = {
+        ContentId: contentId,
+        ContentName: "ARGAnnouncementAndNews",
+        EntityMasterId: EntityId,
+        ARGLevelMasterId: rows[i].LevelId,
+        ApproverId: userIds,
+        ApprovalType: rows[i].selectionType=="All"?1:0,
+        SourceName:contentName
+      }
+      const addedData = await AddContentLevelMaster(sp, arrPost)
+      console.log(addedData);
+
+    }
+    boolval = true
+    return boolval;
+    // Process rows data, e.g., submit to server or save to SharePoint list
+    // Add your submit logic here
+  };
+
+
   //#region view
   return (
- <div id="wrapper" ref={elementRef}>
-      <div 
+    <div id="wrapper" ref={elementRef}>
+      <div
         className="app-menu"
         id="myHeader">
         <VerticalSideBar _context={sp} />
       </div>
       <div className="content-page">
-          <HorizontalNavbar  _context={sp} siteUrl={siteUrl}/>
-        <div className="content" style={{marginLeft: `${!useHide ? '240px' : '80px'}`,marginTop:'0rem'}}>
+        <HorizontalNavbar _context={sp} siteUrl={siteUrl} />
+        <div className="content" style={{ marginLeft: `${!useHide ? '240px' : '80px'}`, marginTop: '0rem' }}>
           <div className="container-fluid  paddb">
             <div className="row">
               <div className="col-lg-5">
@@ -1037,7 +1575,6 @@ const AddannouncementContext = ({ props }: any) => {
                         </select>
                       </div>
                     </div>
-
                     <div className="col-lg-4">
                       <div className="mb-3">
 
@@ -1048,10 +1585,7 @@ const AddannouncementContext = ({ props }: any) => {
                             </label>
                           </div>
                           <div>
-
                             <div>
-
-
                               {BnnerImagepostArr[0] != false && BnnerImagepostArr.length > 0 &&
                                 BnnerImagepostArr != undefined ? BnnerImagepostArr.length == 1 &&
                               (<a style={{ fontSize: '0.875rem' }}>
@@ -1142,6 +1676,7 @@ const AddannouncementContext = ({ props }: any) => {
                         />
                       </div>
                     </div>
+
                     <div className="col-lg-3">
                       <div className="mb-3">
                         <label htmlFor="FeaturedAnnouncement" className="form-label">
@@ -1171,14 +1706,12 @@ const AddannouncementContext = ({ props }: any) => {
                           id="overview"
                           placeholder='Enter Overview'
                           name="overview"
-                          style={{ height: "166px" }}
+                          style={{ height: "100px" }}
                           value={formData.overview}
                           onChange={(e) => onChange(e.target.name, e.target.value)}
                         ></textarea>
                       </div>
                     </div>
-
-
 
                     <div className="col-lg-12">
                       <div className="mb-3">
@@ -1201,13 +1734,14 @@ const AddannouncementContext = ({ props }: any) => {
                             style={{ width: '100%', fontSize: '6px', height: '100px' }}
                           />
                         </div>
-
                       </div>
                     </div>
-                 
-
-
-                    <div className="text-center mt-0 butncss">
+                    <div className="text-center" style={{ marginTop: '3rem' }}>
+                      <div className="btn btn-success waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleSaveAsDraft}>
+                        <div className='d-flex' style={{ justifyContent: 'space-around' }}>
+                          <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} alt="Check" /> Save As Draft
+                        </div>
+                      </div>
                       <div className="btn btn-success waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleFormSubmit}>
                         <div className='d-flex' style={{ justifyContent: 'space-around', width: '70px' }}>
                           <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} alt="Check" /> Submit
@@ -1223,6 +1757,136 @@ const AddannouncementContext = ({ props }: any) => {
                 </div>
               </div>
             </div>
+            {
+              rows != null && rows.length > 0 && (
+                <div className="container mt-2">
+                  <div className="card cardborder p-4">
+                    <div className="font-16">
+                      <strong>Approval Hierarchy</strong>
+                    </div>
+                    <div className="d-flex justify-content-between align-items-center">
+                      <p className="font-14 mb-3 flex-grow-1">
+                        Define approval hierarchy for the documents submitted by Team members in this folder.
+                      </p>
+                      <div className="mt-2 me-1">
+                        <span onClick={handleAddRow} style={{ cursor: 'pointer' }}>
+                          <div className="bi linkpos">
+                            <PlusCircle size={30} color="#008751" />
+                          </div>
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="d-flex flex-column">
+                      <div className="row mb-2">
+                        <div className="col-12 col-md-5">
+                          <label className="form-label">Level</label>
+                        </div>
+                        <div className="col-12 col-md-5">
+                          <label className="form-label">Approver</label>
+                        </div>
+                      </div>
+
+                      {rows.map((row: any) => (
+                        <div className="row mb-2" key={row.id}>
+                          <div className="col-12 col-md-5">
+                            <label htmlFor={`Level-${row.id}`} className="form-label">
+                              Select Level
+                            </label>
+                            <select
+                              className="form-select"
+                              id={`Level-${row.id}`}
+                              name="Level"
+                              value={row.LevelId}
+                              onChange={(e) => {
+                                const selectedLevel = e.target.value;
+                                setRows((prevRows: any) =>
+                                  prevRows.map((r: any) =>
+                                    r.id === row.id
+                                      ? { ...r, LevelId: selectedLevel }
+                                      : r
+                                  )
+                                );
+                              }}
+                            >
+                              <option value="">Select</option>
+                              {levels.map((item: any) => (
+                                <option key={item.Id} value={item.Id}>
+                                  {item.Level}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+
+                          <div className="col-12 col-md-5">
+                            <label htmlFor={`approver-${row.id}`} className="form-label">
+                              Select Approver
+                            </label>
+                            <Multiselect
+                              options={row.approvedUserList}
+                              selectedValues={row.approvedUserListupdate}
+                              onSelect={(selected) => handleUserSelect(selected, row.id)}
+                              onRemove={(selected) => handleUserSelect(selected, row.id)}
+                              displayValue="name"
+                            />
+                          </div>
+
+                          <div className="col-12 col-md-2 d-flex align-items-center" style={{ gap: '10px' }}>
+                            <div className="d-flex align-items-center">
+                              <input
+                                className="form-check-input custom-radio"
+                                type="radio"
+                                name={`selection-${row.id}`}
+                                value="all"
+                                checked={row.selectionType === 'All'}
+                                onChange={() => handleSelectionModeChange(row.id, 'All')}
+                                style={{ marginRight: '5px' }}
+                              />
+                              <label className="form-check-label mb-0" htmlFor={`all-${row.id}`}>
+                                All
+                              </label>
+                            </div>
+
+                            <div className="d-flex align-items-center">
+                              <input
+                                className="form-check-input custom-radio"
+                                type="radio"
+                                name={`selection-${row.id}`}
+                                value="one"
+                                checked={row.selectionType === 'One'}
+                                onChange={() => handleSelectionModeChange(row.id, 'One')}
+                                style={{ marginRight: '5px' }}
+                              />
+                              <label className="form-check-label mb-0" htmlFor={`one-${row.id}`}>
+                                One
+                              </label>
+                            </div>
+
+                            {row.id !== 0 && (
+                              <a onClick={(e) => handleRemoveRow(row.id, e)} style={{ cursor: 'pointer' }}>
+                                <Delete />
+                              </a>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* <div className="text-center butncss">
+                    <div className="btn btn-success" onClick={IsAdded?handleClick:null}>
+                      Create
+                    </div>
+                    <div className="btn btn-light" data-bs-dismiss="modal">
+                      Cancel
+                    </div>
+                  </div> */}
+                  </div>
+                </div>
+              )
+
+              // <ApprovalHierarchy data={ApprovalConfigurationData} levels={levels} usersitem={usersitem} IsAdded={IsAdded}/>
+
+            }
             {/* Modal to display uploaded files */}
             <Modal show={showModal} onHide={() => setShowModal(false)} size='lg' >
               <Modal.Header closeButton>

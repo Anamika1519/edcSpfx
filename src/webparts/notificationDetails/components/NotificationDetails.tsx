@@ -138,6 +138,7 @@ const NotificationDetailsContext = ({ props }: any) => {
               <div className="notification-container">
                 <div className="row">
                   <div className="col-xl-3 col-lg-6 notification-sidebar">
+                    <div className="posinfixed">
                     <div className="list-group list-group-flush font-15">
                       <a
 
@@ -161,15 +162,18 @@ const NotificationDetailsContext = ({ props }: any) => {
                         <i className="fe-bell icon"></i> Old Notification
                       </a>
                     </div>
+                    </div>
                   </div>
                   {
                     TodayactiveTab && (
                       <div className="col-xl-9 col-lg-12 notification-content">
-                        <div className="card notification-card" style={{height:'740px'}}>
+                        <div className="card notification-card" >
                           <div className="card-body p-0">
                             <div className="inbox-widget">
                               <div className="simplebar-content">
-                                <h3>Today Notifications</h3> {/* Heading for the active tab */}
+                                <h3 className="font-20">Today Notifications</h3> {/* Heading for the active tab */}
+                                
+
                                 {TodayNotificationArray != null && TodayNotificationArray.length > 0 && TodayNotificationArray.map((notification) => (
                                   <div className="inbox-item" key={notification.Id} style={{ justifyContent: 'space-between' }}>
                                     <div style={{ display: 'flex' }}>
@@ -181,20 +185,22 @@ const NotificationDetailsContext = ({ props }: any) => {
                                       </div>
                                       <div className="inbox-item-details">
                                         <p className="inbox-item-author">{notification.ActionUser.Title}</p>
-                                        <p className="inbox-item-text text-muted">
+                                        <p className="inbox-item-text text-muted mb-1">
                                           {notification.ContentName}
                                         </p>
                                         <small className="noti-item-subtitle text-muted">{notification?.ActionUser?.Title} {notification.ContentType0} on {notification?.NotifiedUser?.Title}</small>
 
                                       </div>
                                     </div>
-                                    <p className="inbox-item-date">
+                                    <p className="inbox-item-date me-3">
                                       <a href="#" className="text-info font-13">
                                         {moment(notification.Created).fromNow()}
                                       </a>
                                     </p>
                                   </div>
                                 ))}
+
+                             
                               </div>
                             </div>
                           </div>
@@ -205,11 +211,12 @@ const NotificationDetailsContext = ({ props }: any) => {
                   {
                     PreviousactiveTab && (
                       <div className="col-xl-9 col-lg-12 notification-content">
-                        <div className="card notification-card" style={{height:'740px'}}>
+                        <div className="card notification-card">
                           <div className="card-body p-0">
                             <div className="inbox-widget">
                               <div className="simplebar-content">
-                                <h3>Previous Notifications</h3> {/* Heading for the active tab */}
+                                <h3 className="font-20">Previous Notifications</h3> {/* Heading for the active tab */}
+                      
                                 {lastSevenDaysNotificationArray != null && lastSevenDaysNotificationArray.length > 0 && lastSevenDaysNotificationArray.map((notification) => (
                                   <div className="inbox-item" key={notification.Id} style={{ justifyContent: 'space-between' }}>
                                     <div style={{ display: 'flex' }}>
@@ -221,20 +228,21 @@ const NotificationDetailsContext = ({ props }: any) => {
                                       </div>
                                       <div className="inbox-item-details">
                                         <p className="inbox-item-author">{notification.ActionUser.Title}</p>
-                                        <p className="inbox-item-text text-muted">
+                                        <p className="inbox-item-text text-muted mb-1">
                                           {notification.ContentName}
                                         </p>
                                         <small className="noti-item-subtitle text-muted">{notification?.ActionUser?.Title} {notification.ContentType0} on {notification?.NotifiedUser?.Title}</small>
 
                                       </div>
                                     </div>
-                                    <p className="inbox-item-date">
+                                    <p className="inbox-item-date me-3">
                                       <a href="#" className="text-info font-13">
                                         {moment(notification.Created).fromNow()}
                                       </a>
                                     </p>
                                   </div>
                                 ))}
+                            
                               </div>
                             </div>
                           </div>
@@ -245,11 +253,13 @@ const NotificationDetailsContext = ({ props }: any) => {
 
                   {
                     OldactiveTab && <div className="col-xl-9 col-lg-12 notification-content">
-                      <div className="card notification-card" style={{height:'740px'}}>
+                      <div className="card notification-card">
                         <div className="card-body p-0">
                           <div className="inbox-widget">
                             <div className="simplebar-content">
-                              <h3>Old Notifications</h3> {/* Heading for the active tab */}
+                              <h3 className="font-20">Old Notifications</h3> {/* Heading for the active tab */}
+                        
+                            
                               {OlderNotificationArray != null && OlderNotificationArray.length > 0 && OlderNotificationArray.map((notification) => (
                                 <div className="inbox-item" key={notification.Id} style={{ justifyContent: 'space-between' }}>
                                   <div style={{ display: 'flex' }}>
@@ -262,14 +272,14 @@ const NotificationDetailsContext = ({ props }: any) => {
                                     </div>
                                     <div className="inbox-item-details">
                                       <p className="inbox-item-author">{notification.ActionUser.Title}</p>
-                                      <p className="inbox-item-text text-muted">
+                                      <p className="inbox-item-text text-muted mb-1">
                                         {notification.ContentName}
                                       </p>
                                       <small className="noti-item-subtitle text-muted">{notification?.ActionUser?.Title} {notification.ContentType0} on {notification?.NotifiedUser?.Title}</small>
 
                                     </div>
                                   </div>
-                                  <p className="inbox-item-date">
+                                  <p className="inbox-item-date me-3">
                                     <a href="#" className="text-info font-13">
                                     {moment(notification.Created).fromNow()}
                                     </a>
@@ -277,6 +287,7 @@ const NotificationDetailsContext = ({ props }: any) => {
                                 </div>
                               ))}
                             </div>
+                       
                           </div>
                         </div>
                       </div>

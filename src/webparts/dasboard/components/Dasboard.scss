@@ -22,8 +22,9 @@
 .paddlright{padding-left: 0px  !important; padding-right:0px !important;}
 .paddlright .view-all{right: 0px !important;}
 .inbox-widget .heit8 .rounded-circle, .border-radius .rounded-circle  {width: 52px; height: 52px; margin-right: 7px;}
-.inbox-widget .heit8 p{ margin-left:15px;}
+.inbox-widget .heit8 p{ text-overflow: ellipsis; overflow: hidden; white-space: nowrap; margin-left:15px;}
 .news-feed p{color:#6c757d;}
+.project-box{height: 193px;}
 .cptext {
     position: absolute;
     left: 0% !important;
@@ -138,8 +139,11 @@
         overflow: hidden;
     }
     .inbox-widget .heit8 {
-        padding: .825rem 0;
+        padding: .52rem 0;
     
+    }
+    .gheightl {
+        height: 438px;
     }
 }
 
@@ -334,10 +338,20 @@ img, svg {
 .rounded-circle {
     border-radius: 50% !important;
 }
+
 .projectb{border: none !important;}
-.heit9 {height: 95px; padding: 8px 0px; margin: auto; width: 98%;}
+.morealign{    position: absolute;
+    width: 16px;
+    right: 6px;}
+.arrow-none:after{display: none !important;}
+.newheight{margin-top: 15px !important;box-shadow: 0 2px 4px -2px rgba(0, 0, 0, 0.16), 0 2px 6px 0 rgba(0, 0, 0, 0.12);}
+.newminus{margin-left: -12px !important;    min-width: 2rem;}
+.newimg1{    float: left;
+    margin: 1px 5px 0px 2px;}
+    .newimg2{ margin: -1px 5px 0px 0px;}
+.heit9 {height: 128px; padding: 32px 0px 32px 0px; margin: auto; width: 98%;}
 @media(max-width:1600px){ 
-    .inbox-widget .heit8{    padding: .905rem 0;}
+    .inbox-widget .heit8{    padding: .75rem 0;}
     .event{margin-bottom: 3px;
         margin-top: 13px;}
         .tabv button{ padding: 11px 10px; }
@@ -346,6 +360,9 @@ img, svg {
         }
         .margint50 {
             margin-top: 12px !important;
+        }
+        .gheightl {
+            height: 442px;
         }
 }
 

@@ -19,6 +19,11 @@
       }
     }
   }
+  .uppercase {
+    text-transform: uppercase;
+}
+.border-bottom-new{border-bottom: 1px solid #efefef; padding: 10px 0px;}
+  .tabcss{padding-top: 15px !important; padding-bottom: 15px !important;}
   @media (max-width: 768px) {
     .commentCard {
       padding: 0.5rem;

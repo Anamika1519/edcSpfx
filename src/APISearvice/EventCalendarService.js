@@ -5,11 +5,22 @@ export const fetchEventdata = async (_sp) => {
        .items.select("*,Attendees/Id,Attendees/Title,Attendees/EMail").expand("Attendees").orderBy("Created",false).getAll().then((res) => {
         console.log(res);
      
-        //res.filter(x=>x.Category?.Category==str)
-        arr = res;
-      })
-      .catch((error) => {
-        console.log("Error fetching data: ", error);
-      });
+    
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); 
+   
+        
+        const filteredEvents = res.filter(event => {
+            const eventDate = new Date(event.EventDate);
+            return eventDate >= today;
+        });
+   
+        console.log(filteredEvents , "filteredEvents");
+          
+           arr = filteredEvents;
+         })
+         .catch((error) => {
+           console.log("Error fetching data: ", error);
+         });
     return arr;
   }

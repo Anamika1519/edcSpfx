@@ -53,7 +53,11 @@ input.form-control.inputcss {
     text-decoration: none;
     display: block;
   }
- 
+  .btn-close {
+    position: absolute;
+    right: 20px !important;
+    top: 20px !important;
+}
   .dropdown-content a:hover {
     background-color: #f1f1f1;
   }
@@ -68,3 +72,5 @@ input.form-control.inputcss {
   {
     height: auto;
   }
+  .eventcommm .nose{padding: 0px !important; margin: 0px !important; }
+  

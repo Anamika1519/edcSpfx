@@ -100,7 +100,7 @@ export const CommentCard: React.FC<{
                 {username}
                 {/* </a> */}
               </h5>
-              <p className="text-muted font-12 mt-3">
+              <p className="text-muted font-12 mt-0">
                 <small>{Created}</small>
               </p>
             </div>
@@ -110,7 +110,7 @@ export const CommentCard: React.FC<{
 
           <div className="mt-0 mb-2 d-flex" style={{ gap: '2rem' }}>
             <div  onClick={!loadingLike ? onLike : undefined}  className="btn btn-sm btn-link text-muted ps-0" style={{
-              fontSize: '0.765625rem',  pointerEvents: loadingLike ? 'none' : 'auto',  opacity: loadingLike ? 0.5 : 1,
+              fontSize: '0.765625rem',display: 'flex', gap:'5px', alignItems:'center',  pointerEvents: loadingLike ? 'none' : 'auto',  opacity: loadingLike ? 0.5 : 1,
               textDecoration: 'unset' 
             }} >
               {
@@ -120,7 +120,7 @@ export const CommentCard: React.FC<{
               {/* <FontAwesomeIcon icon={faHeart} className="text-primary" />  */}
               {` ${likes.length} Likes`}
             </div>
-            <div style={{ display: 'flex', fontSize: '0.765625rem', alignItems: 'center', gap: '0.2rem' }}>
+            <div style={{ display: 'flex', fontSize: '0.765625rem',gap:'5px', alignItems:'center'}}>
               <MessageSquare size={15} />  {replies.length} Replies
             </div>
             {/* <button onClick={onLike} className="btn btn-sm btn-link text-muted ps-0">
@@ -129,8 +129,8 @@ export const CommentCard: React.FC<{
           </div>
         </div>
         {/* Render replies */}
-        <div style={{ display: 'block' }}>
-          <div className="row">
+        <div style={{ display: 'block' }} >
+          <div className="row commentheight">
             <div className=" ">
               {replies.map((reply, index) => (
                 <div key={index} className="UserReplycss p-2 d-flex " style={{ width: '100%', display: 'flex' }}>

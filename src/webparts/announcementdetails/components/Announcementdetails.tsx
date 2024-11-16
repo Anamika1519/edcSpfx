@@ -15,7 +15,7 @@ import { CommentCard } from '../../../CustomJSComponents/CustomCommentCard/Comme
 import { addNotification, getARGNotificationHistory, getCurrentUser, getCurrentUserProfile, getUserProfilePicture } from '../../../APISearvice/CustomService';
 import { IAnnouncementdetailsProps } from './IAnnouncementdetailsProps';
 import { decryptId } from '../../../APISearvice/CryptoService';
-import { getAnnouncementDetailsById } from '../../../APISearvice/AnnouncementsService';
+import { getAllAnnouncementnonselected, getAnnouncementDetailsById, TimeFormat } from '../../../APISearvice/AnnouncementsService';
 import { Calendar, Link, Share } from 'react-feather';
 import moment from 'moment';
 import UserContext from '../../../GlobalContext/context';
@@ -61,7 +61,7 @@ const AnnouncementdetailsContext = ({ props }: any) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingLike, setLoadingLike] = useState<boolean>(false);
   const [loadingReply, setLoadingReply] = useState<boolean>(false);
-
+  const [ArrtopAnnouncements, setArrtopAnnouncements]: any[] = useState([]);
 
   const [ArrDetails, setArrDetails] = useState([])
   const [CurrentUserProfile, setCurrentUserProfile]: any[] = useState("")
@@ -109,11 +109,11 @@ const AnnouncementdetailsContext = ({ props }: any) => {
     }
 
     linkColor.forEach((l) => l.addEventListener("click", colorLink));
-   
+
   }, [props]);
   //setInterval(() => {
-   // getApiData()
- // }, 1000);
+  // getApiData()
+  // }, 1000);
   const ApiLocalStorageData = async () => {
     debugger
 
@@ -124,7 +124,9 @@ const AnnouncementdetailsContext = ({ props }: any) => {
     const idNum = originalString.substring(1);
     // const queryString = decryptId(Number(updatedString));
 
-    setArrDetails(await getAnnouncementDetailsById(sp, Number(idNum)))
+    setArrDetails(await getAnnouncementDetailsById(sp, Number(idNum)));
+    let Announcementsdata = await getAllAnnouncementnonselected(sp, Number(idNum));
+    setArrtopAnnouncements(Announcementsdata);
 
 
   }
@@ -274,7 +276,17 @@ const AnnouncementdetailsContext = ({ props }: any) => {
     // setComments((prevComments) => [...prevComments, newCommentData]);
 
   };
-
+  const NavigatetoEvents = () => {
+    window.location.href = `${siteUrl}/SitePages/Announcements.aspx`;
+  };
+  const gotoNewsDetails = (valurArr: any) => {
+    debugger;
+    localStorage.setItem("EventId", valurArr.Id);
+    localStorage.setItem("EventArr", JSON.stringify(valurArr));
+    setTimeout(() => {
+      window.location.href = `${siteUrl}/SitePages/AnnouncementDetails.aspx?${valurArr.Id}`;
+    }, 1000);
+  };
   // Add a like to a comment
   const handleLikeToggle = async (commentIndex: number) => {
     setLoadingLike(true);
@@ -336,7 +348,37 @@ const AnnouncementdetailsContext = ({ props }: any) => {
 
           updatedComments[commentIndex].UserLikesJSON.push(newLikeJson);
 
+          if (CurrentUser.Id != ArrDetails[0].AuthorId) {
 
+            let notifiedArr = {
+
+              ContentId: ArrDetails[0].Id,
+
+              NotifiedUserId: ArrDetails[0].AuthorId,
+
+              ContentType0: "Like on comment on announcement",
+
+              ContentName: ArrDetails[0].Title,
+
+              ActionUserId: CurrentUser.Id,
+
+              DeatilPage: "AnnouncementDetails",
+
+              ReadStatus: false,
+
+              ContentComment: updatedComments[commentIndex].Comments,
+
+              ContentCommentId: updatedComments[commentIndex].Id,
+
+              CommentOnReply: ""
+
+            }
+
+            const nofiArr = await addNotification(notifiedArr, sp)
+
+            console.log(nofiArr, 'nofiArr');
+
+          }
 
           // Update the corresponding SharePoint comment list
 
@@ -348,7 +390,7 @@ const AnnouncementdetailsContext = ({ props }: any) => {
 
             LikesCount: updatedComments[commentIndex].UserLikesJSON.length
 
-          }).then(async () => {
+          }).then(async (ress) => {
 
             console.log('Updated comment with new like');
 
@@ -514,17 +556,50 @@ const AnnouncementdetailsContext = ({ props }: any) => {
         }).then(async (ress: any) => {
           console.log(ress, 'ressress');
           setComments(updatedComments);
-          let notifiedArr = {
-            ContentId: ArrDetails[0].Id,
-            NotifiedUserId: ArrDetails[0].AuthorId,
-            ContentType0: "AddReply",
-            ContentName: ArrDetails[0].Title,
-            ActionUserId: CurrentUser.Id,
-            DeatilPage: "AnnouncementDetails",
-            ReadStatus: false
+          // let notifiedArr = {
+          //   ContentId: ArrDetails[0].Id,
+          //   NotifiedUserId: ArrDetails[0].AuthorId,
+          //   ContentType0: "AddReply",
+          //   ContentName: ArrDetails[0].Title,
+          //   ActionUserId: CurrentUser.Id,
+          //   DeatilPage: "AnnouncementDetails",
+          //   ReadStatus: false
+          // }
+          // const nofiArr = await addNotification(notifiedArr, sp)
+          // console.log(nofiArr, 'nofiArr');
+          if (CurrentUser.Id != ArrDetails[0].AuthorId) {
+
+            let notifiedArr = {
+
+              ContentId: ArrDetails[0].Id,
+
+              NotifiedUserId: ArrDetails[0].AuthorId,
+
+              ContentType0: "Reply on comment on announcement",
+
+              ContentName: ArrDetails[0].Title,
+
+              ActionUserId: CurrentUser.Id,
+
+              DeatilPage: "AnnouncementDetails",
+
+              ReadStatus: false,
+
+              ContentComment: updatedComments[commentIndex].Comments,
+
+              ContentCommentId: updatedComments[commentIndex].Id,
+
+              CommentOnReply: newReplyJson.Comments
+
+            }
+
+            const nofiArr = await addNotification(notifiedArr, sp)
+
+            console.log(nofiArr, 'nofiArr');
+
           }
-          const nofiArr = await addNotification(notifiedArr, sp)
-          console.log(nofiArr, 'nofiArr');
+
+
         })
       })
     }
@@ -562,87 +637,90 @@ const AnnouncementdetailsContext = ({ props }: any) => {
       </div>
       <div className="content-page">
         <HorizontalNavbar _context={sp} siteUrl={siteUrl} />
-        <div className="content mt-4" style={{ marginLeft: `${!useHide ? '240px' : '80px'}` }}>
+        <div className="content mt-3" style={{ marginLeft: `${!useHide ? '240px' : '80px'}` }}>
 
           <div className="container-fluid  paddb">
-            <div className="row pt-0">
-              <div className="col-lg-3">
-                <CustomBreadcrumb Breadcrumb={Breadcrumb} />
-              </div>
 
-            </div>
-            {
-
-
-              ArrDetails.length > 0 ? ArrDetails.map((item: any) => {
-                const AnnouncementAndNewsGallaryJSON = item.AnnouncementAndNewsGallaryJSON == undefined || item.AnnouncementAndNewsGallaryJSON == null ? ""
-                  : JSON.parse(item.AnnouncementAndNewsGallaryJSON);
-                console.log(AnnouncementAndNewsGallaryJSON);
-                return (
-                  <><div className="row mt-4">
-
-                    <p className="d-block mt-2 text-dark  font-28">
-                      {item.Title}
-                    </p>
-                    <div className="row mt-2">
-                      <div className="col-md-12 col-xl-12">
-                        <p className="mb-2 mt-1 font-14 d-block eventtextnew">
-                          <span className="pe-2 text-nowrap mb-0 d-inline-block">
-                            <Calendar size={18} /> {moment(item.Created).format("DD-MMM-YYYY")}  &nbsp;  &nbsp;  &nbsp;|
-                          </span>
-                          <span className="text-nowrap mb-0 d-inline-block" onClick={sendanEmail}>
-                            <Share size={18} />  Share by email &nbsp;  &nbsp;  &nbsp;|&nbsp;  &nbsp;  &nbsp;
-                          </span>
-                          <span className="text-nowrap mb-0 d-inline-block" onClick={() => copyToClipboard(item.Id)}>
-                            <Link size={18} />    Copy link &nbsp;  &nbsp;  &nbsp;
-                            {copySuccess && <span className="text-success">{copySuccess}</span>}
-                          </span>
-
-
-                        </p>
-
-                      </div>
-                    </div>
+            <div className='row'>
+              <div className='col-lg-8'>
+                <div className="row pt-0">
+                  <div className="col-lg-12">
+                    <CustomBreadcrumb Breadcrumb={Breadcrumb} />
                   </div>
-                    <div className="row ">
 
-                      <p style={{ lineHeight: '22px' }} className="d-block text-muted mt-2 font-14">
-                        {item.Overview}
-                      </p>
-                    </div>
-                    <div className="row internalmedia filterable-content mt-3">
-                      {
+                </div>
+                {
 
 
-                        AnnouncementAndNewsGallaryJSON.length > 0 ?
-                          AnnouncementAndNewsGallaryJSON.map((res: any) => {
-                            return (
-                              <div className="col-sm-6 col-xl-3 filter-item all web illustrator">
-                                <div className="gal-box">
-                                  <a data-bs-toggle="modal" data-bs-target="#centermodal" className="image-popup mb-2" title="Screenshot-1">
-                                    <img src={`https://officeindia.sharepoint.com${res.fileUrl}`} className="img-fluid imgcssscustom"
-                                      alt="work-thumbnail" data-themekey="#" style={{ width: '100%', height: '100%' }} />
-                                  </a>
-                                </div>
-                              </div>
-                            )
-                          })
-                          : <></>
+                  ArrDetails.length > 0 ? ArrDetails.map((item: any) => {
+                    const AnnouncementAndNewsGallaryJSON = item.AnnouncementAndNewsGallaryJSON == undefined || item.AnnouncementAndNewsGallaryJSON == null ? ""
+                      : JSON.parse(item.AnnouncementAndNewsGallaryJSON);
+                    console.log(AnnouncementAndNewsGallaryJSON);
+                    return (
+                      <><div className="row mt-4">
+
+                        <p className="d-block mt-2 text-dark  font-28">
+                          {item.Title}
+                        </p>
+                        <div className="row mt-2">
+                          <div className="col-md-12 col-xl-12">
+                            <p className="mb-2 mt-1 font-14 d-block eventtextnew">
+                              <span className="pe-2 text-nowrap mb-0 d-inline-block">
+                                <Calendar size={18} /> {moment(item.Created).format("DD-MMM-YYYY")}  &nbsp;  &nbsp;  &nbsp;|
+                              </span>
+                              <span className="text-nowrap mb-0 d-inline-block" onClick={sendanEmail}>
+                                <Share size={18} />  Share by email &nbsp;  &nbsp;  &nbsp;|&nbsp;  &nbsp;  &nbsp;
+                              </span>
+                              <span className="text-nowrap mb-0 d-inline-block" onClick={() => copyToClipboard(item.Id)}>
+                                <Link size={18} />    Copy link &nbsp;  &nbsp;  &nbsp;
+                                {copySuccess && <span className="text-success">{copySuccess}</span>}
+                              </span>
 
 
-                      }
+                            </p>
 
-                    </div><div className="row mt-2">
-                      <p style={{ lineHeight: '22px' }} className="d-block text-muted mt-2 mb-0 font-14">
-                        <div
-                          dangerouslySetInnerHTML={{ __html: item.Description }}
-                        ></div>
-                      </p>
-                    </div></>
-                )
-              }) : null
-            }
-            {/* <div className="row">
+                          </div>
+                        </div>
+                      </div>
+                        <div className="row ">
+
+                          <p style={{ lineHeight: '22px' }} className="d-block text-muted mt-2 font-14">
+                            {item.Overview}
+                          </p>
+                        </div>
+                        <div className="row internalmedia filterable-content mt-3">
+                          {
+
+
+                            AnnouncementAndNewsGallaryJSON.length > 0 ?
+                              AnnouncementAndNewsGallaryJSON.map((res: any) => {
+                                return (
+                                  <div className="col-sm-6 col-xl-4 filter-item all web illustrator">
+                                    <div className="gal-box">
+                                      <a data-bs-toggle="modal" data-bs-target="#centermodal" className="image-popup mb-2" title="Screenshot-1">
+                                        <img src={`https://officeindia.sharepoint.com${res.fileUrl}`} className="img-fluid imgcssscustom"
+                                          alt="work-thumbnail" data-themekey="#" style={{ width: '100%', height: '100%' }} />
+                                      </a>
+                                    </div>
+                                  </div>
+                                )
+                              })
+                              : <></>
+
+
+                          }
+
+                        </div><div className="row mt-2">
+                          <p style={{ lineHeight: '22px' }} className="d-block text-muted mt-2 mb-0 font-14">
+                            <div
+                              dangerouslySetInnerHTML={{ __html: item.Description }}
+                            ></div>
+                          </p>
+                        </div></>
+                    )
+                  }) : null
+                }
+                {/* <div className="row">
               {
                 ArrDetails.length > 0 ? ArrDetails.map((item: any) => {
                   return (
@@ -652,64 +730,111 @@ const AnnouncementdetailsContext = ({ props }: any) => {
               }
 
             </div> */}
-            <div className="row" style={{ paddingLeft: '0.5rem' }}>
-              <div className="col-md-6">
-                <div className="card" style={{ border: '1px solid #54ade0', borderRadius: '20px', boxShadow: '0 3px 20px #1d26260d' }}>
-                  <div className="card-body" style={{ padding: '1rem 0.9rem' }}>
-                    {/* New comment input */}
-                    <h4 className="mt-0 mb-3 text-dark fw-bold font-16">Comments</h4>
-                    <div className="mt-3">
-                      <textarea id="example-textarea"
-                        className="form-control text-dark form-control-light mb-2"
-                        value={newComment}
-                        onChange={(e) => setNewComment(e.target.value)}
-                        placeholder="Add a new comment..."
-                        rows={3} style={{ borderRadius: 'unset' }}
-                      />
-                      <button
-                        className="btn btn-primary mt-2"
-                        onClick={handleAddComment}
-                        disabled={loading} // Disable button when loading
-                      >
+                <div className="row mt-2" >
+                  <div className="col-md-12">
+                    <div className="card" style={{ border: '1px solid #54ade0', borderRadius: '20px', boxShadow: '0 3px 20px #1d26260d' }}>
+                      <div className="card-body" style={{ padding: '1rem 0.9rem' }}>
+                        {/* New comment input */}
+                        <h4 className="mt-0 mb-3 text-dark fw-bold font-16">Comments</h4>
+                        <div className="mt-3">
+                          <textarea id="example-textarea"
+                            className="form-control text-dark form-control-light mb-2"
+                            value={newComment}
+                            onChange={(e) => setNewComment(e.target.value)}
+                            placeholder="Add a new comment..."
+                            rows={3} style={{ borderRadius: 'unset' }}
+                          />
+                          <button
+                            className="btn btn-primary mt-2"
+                            onClick={handleAddComment}
+                            disabled={loading} // Disable button when loading
+                          >
 
-                        {loading ? 'Submitting...' : 'Add Comment'} {/* Change button text */}
-                      </button>
+                            {loading ? 'Submitting...' : 'Add Comment'} {/* Change button text */}
+                          </button>
+                        </div>
+                      </div>
                     </div>
+
                   </div>
+
+                </div>
+                <div className="row">
+
+
+                  {/* New comment input */}
+
+                  {comments.map((comment, index) => (
+
+                    <div className="col-xl-12">
+                      <CommentCard
+
+                        key={index}
+
+                        commentId={index}
+
+                        username={comment.UserName}
+
+                        Commenttext={comment.Comments}
+
+                        Comments={comments}
+
+                        Created={comment.Created}
+
+                        likes={comment.UserLikesJSON}
+
+                        replies={comment.UserCommentsJSON}
+
+                        userHasLiked={comment.userHasLiked}
+
+                        CurrentUserProfile={CurrentUserProfile}
+
+                        loadingLike={loadingLike}
+
+                        Action="Announcement"
+
+                        onAddReply={(text) => handleAddReply(index, text)}
+
+                        onLike={() => handleLikeToggle(index)} // Pass like handler
+
+                        loadingReply={loadingReply}
+
+                      />
+                    </div>
+
+                  ))}
                 </div>
 
               </div>
+              <div className="col-lg-4">
+                <div className="card mt-4 postion8">
+                  <div className="card-body">
+                    <h4 className="header-title text-dark  fw-bold mb-0">
+                      <span style={{ fontSize: '20px' }}>Latest Announcement</span>    <a className="font-11 btn btn-primary  waves-effect waves-light view-all cursor-pointer" href="#" onClick={NavigatetoEvents} style={{ float: 'right', lineHeight: '18px' }}>View All</a></h4>
+                    {console.log("Arrtopannouncementt", ArrtopAnnouncements)}
+                    {ArrtopAnnouncements && ArrtopAnnouncements.map((res: any) => {
+                      return (
+                        <div className="mainevent mt-2">
+                          <div className="bordernew" >
+                            <h3 className="twolinewrap font-14  text-dark fw-bold mb-2 cursor-pointer" style={{ cursor: "pointer" }} onClick={() => gotoNewsDetails(res)}>{res.Title}</h3>
+                            <p style={{ lineHeight: '20px' }} className="font-12 text-muted twolinewrap">{res.Overview}</p>
+                            <div className="row">
+                              <div className="col-sm-12"> <span style={{ marginTop: "4px" }} className="date-color font-12 float-start  mb-1 ng-binding"><i className="fe-calendar"></i> {moment(res.Created).format("DD-MMM-YYYY")}</span>  &nbsp; &nbsp; &nbsp; <span className="font-12" style={{ color: '#009157', fontWeight: '600' }}>  </span></div>
 
-            </div>
-            <div className="row" style={{ paddingLeft: '0.5rem' }}>
+                            </div>
+                          </div>
+                        </div>
+                      )
+                    })}
 
-
-              {/* New comment input */}
-
-              {comments.map((comment, index) => (
-
-                <div className="col-xl-6">
-                  <CommentCard
-                    key={index}
-                    commentId={index}
-                    username={comment.UserName}
-                    Commenttext={comment.Comments}
-                    Comments={comments}
-                    Created={comment.Created}
-                    likes={comment.UserLikesJSON}
-                    replies={comment.UserCommentsJSON}
-                    userHasLiked={comment.userHasLiked}
-                    CurrentUserProfile={CurrentUserProfile}
-                    loadingLike={loadingLike}
-                    Action="Announcement"
-                    onAddReply={(text) => handleAddReply(index, text)}
-                    onLike={() => handleLikeToggle(index)} // Pass like handler
-                    loadingReply={loadingReply}
-                  />
+                  </div>
                 </div>
 
-              ))}
+
+              </div>
             </div>
+
+
           </div>
         </div>
 
