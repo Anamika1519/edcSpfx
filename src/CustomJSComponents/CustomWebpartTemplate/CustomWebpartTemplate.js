@@ -84,13 +84,26 @@ const CustomWebpartTemplate = ({ _sp, SiteUrl }) => {
         }
     };
  
-    const sendanEmail = () => {
-        window.open("https://outlook.office.com/mail/inbox");
- 
-    }
- 
+    const sendanEmail = (item) => {
+        // window.open("https://outlook.office.com/mail/inbox");
+      
+         const subject ="Event link-"+ item.EventName;
+         const body = 'Here is the link to the event:'+ `${siteUrl}/SitePages/EventDetailsCalendar.aspx?${item.Id}`;
+      
+        const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      
+        // Open the link to launch the default mail client (like Outlook)
+        window.location.href = mailtoLink;
+       };
+    const [visibleItems, setVisibleItems] = React.useState(2);
+
+    const handleLoadMore = () => {
+        setVisibleItems(prevVisibleItems => prevVisibleItems + 2);
+    };
+    
     return (
-        <><div className="row mt-5">
+        <>
+        <div className="row mt-5">
             {AnnouncementData && AnnouncementData.length > 0 ?
                 AnnouncementData.filter(x => x.FeaturedAnnouncement != false).slice(0, 1).map(item => {
                     const AnnouncementandNewsBannerImage = item.AnnouncementandNewsBannerImage == undefined || item.AnnouncementandNewsBannerImage == null ? ""
@@ -141,75 +154,72 @@ const CustomWebpartTemplate = ({ _sp, SiteUrl }) => {
                 }) : null}
         </div>
             <div className="tab-content mt-4">
-                <div className="tab-pane show active" id="home1" role="tabpanel">
-                    {AnnouncementData && AnnouncementData.length > 0 ?
-                        AnnouncementData.map(item => {
-                            const AnnouncementandNewsBannerImage = item.AnnouncementandNewsBannerImage == undefined || item.AnnouncementandNewsBannerImage == null ? "" : JSON.parse(item.AnnouncementandNewsBannerImage);
- 
- 
-                            return (
-                                <div className="card mb-2 annuncementcard" style={{ cursor: 'pointer' }}>
-                                    <div className="card-body">
-                                        <div className="row align-items-start">
-                                            <div className="col-sm-2">
-                                                <a onClick={() => gotoAnnouncementDetails(item)}>   <div className="imagehright">
-                                                    {/* <img className="d-flex align-self-center me-3 w-100" src={g1} alt="Generic placeholder image" /> */}
-                                                    <img src={AnnouncementandNewsBannerImage?.serverUrl + AnnouncementandNewsBannerImage?.serverRelativeUrl}
-                                                        className="d-flex align-self-center me-3 w-100" lt="Generic placeholder image" style={{ objectFit: 'cover' }} />
-                                                </div>
-                                                </a>
-                                            </div>
-                                            <div className="col-sm-9">
-                                                <div className="row">
-                                                    <div className="col-sm-4 date-color">
-                                                        <span className="font-12 date-color float-start mt-0 mb-1 ng-binding" style={{ color: '#6b6b6b', fontSize: '12px', paddingRight: '0.2rem' }}>
-                                                            <Calendar size={12} color="#6b6b6b" strokeWidth={2} style={{ fontWeight: '400' }} /></span>
- 
-                                                        <span className="font-12 date-color float-start mt-0 mb-1 ng-binding" style={{ color: '#6b6b6b', fontSize: '12px' }}>{moment(item.Created).format("DD-MMM-YYYY HH:mm")}
-                                                            {/* 12-Mar-2024 18:37 */}
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                                <a onClick={() => gotoAnnouncementDetails(item)}> <div className="w-100">
-                                                    <h4 className="mt-0 mb-1 font-16 fw-bold ng-binding" style={{ color: '#343a40', fontSize: '16px' }}>{truncateText(item.Title, 90)}
-                                                    </h4>
-                                                    <p style={{ color: '#6b6b6b', fontSize: '14px', height: '4rem' }} className="mb-2 font-14 ng-binding">
-                                                        {truncateText(item.Overview, 350)}</p>
-                                                    <div className="readmore mb-0">Read more..</div>
-                                                </div>
-                                                </a>
- 
-                                            </div>
-                                            <div className="col-sm-1">
-                                                <div className="d-flex" style={{ justifyContent: 'end', marginRight:"3px", cursor: 'pointer' }}>
-                                                    <div className="" style={{ position: 'relative' }}>
-                                                        <div className="" onClick={() => toggleDropdown(item.Id)} key={item.Id}>
-                                                            <Share2 size={20} color="#6c757d" strokeWidth={2} style={{ fontWeight: '400' }} />
-                                                        </div>
-                                                        {showDropdownId === item.Id && (
-                                                            <div className="dropdown-menu dropcss" isMenuOpenshareref={menuRef}>
-                                                                <a className="dropdown-item dropcssItem" onClick={sendanEmail}>Share by email</a>
-                                                                <a className="dropdown-item dropcssItem" onClick={() => copyToClipboard(item.Id)}>
-                                                                    Copy Link
-                                                                </a>
-                                                                <a>{copySuccess && <span className="text-success">{copySuccess}</span>}</a>
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                    {/* <Bookmark size={20} color="#6c757d" strokeWidth={2} style={{ fontWeight: '400' }} /> */}
-                                                </div>
-                                            </div>
- 
+            <div className="tab-pane show active" id="home1" role="tabpanel">
+        {AnnouncementData && AnnouncementData.length > 0 ?
+            AnnouncementData.slice(0, visibleItems).map(item => {
+                const AnnouncementandNewsBannerImage = item.AnnouncementandNewsBannerImage == undefined || item.AnnouncementandNewsBannerImage == null ? "" : JSON.parse(item.AnnouncementandNewsBannerImage);
+
+                return (
+                    <div className="card mb-2 annuncementcard" style={{ cursor: 'pointer' }}>
+                        <div className="card-body">
+                            <div className="row align-items-start">
+                                <div className="col-sm-2">
+                                    <a onClick={() => gotoAnnouncementDetails(item)}>
+                                        <div className="imagehright">
+                                            <img src={AnnouncementandNewsBannerImage?.serverUrl + AnnouncementandNewsBannerImage?.serverRelativeUrl}
+                                                className="d-flex align-self-center me-3 w-100" alt="Generic placeholder image" style={{ objectFit: 'cover' }} />
+                                        </div>
+                                    </a>
+                                </div>
+                                <div className="col-sm-9">
+                                    <div className="row">
+                                        <div className="col-sm-4 date-color">
+                                            <span className="font-12 date-color float-start mt-0 mb-1 ng-binding" style={{ color: '#6b6b6b', fontSize: '12px', paddingRight: '0.2rem' }}>
+                                                <Calendar size={12} color="#6b6b6b" strokeWidth={2} style={{ fontWeight: '400' }} /></span>
+
+                                            <span className="font-12 date-color float-start mt-0 mb-1 ng-binding" style={{ color: '#6b6b6b', fontSize: '12px' }}>{moment(item.Created).format("DD-MMM-YYYY HH:mm")}</span>
                                         </div>
                                     </div>
+                                    <a onClick={() => gotoAnnouncementDetails(item)}>
+                                        <div className="w-100">
+                                            <h4 className="mt-0 mb-1 font-16 fw-bold ng-binding" style={{ color: '#343a40', fontSize: '16px' }}>{truncateText(item.Title, 90)}</h4>
+                                            <p style={{ color: '#6b6b6b', fontSize: '14px', height: '4rem' }} className="mb-2 font-14 ng-binding">{truncateText(item.Overview, 350)}</p>
+                                            <div className="readmore mb-0">Read more..</div>
+                                        </div>
+                                    </a>
                                 </div>
-                            )
-                        }
-                        ) : null}
- 
-                </div>
+                                <div className="col-sm-1">
+                                    <div className="d-flex" style={{ justifyContent: 'space-evenly', cursor: 'pointer' }}>
+                                        <div className="" style={{ position: 'relative' }}>
+                                            <div className="" onClick={() => toggleDropdown(item.Id)} key={item.Id}>
+                                                <Share2 size={20} color="#6c757d" strokeWidth={2} style={{ fontWeight: '400' }} />
+                                            </div>
+                                            {showDropdownId === item.Id && (
+                                                <div className="dropdown-menu dropcss" isMenuOpenshareref={menuRef}>
+                                                    <a className="dropdown-item dropcssItem" onClick={() => sendanEmail(item)}>Share by email</a>
+                                                    <a className="dropdown-item dropcssItem" onClick={() => copyToClipboard(item.Id)}>Copy Link</a>
+                                                    <a>{copySuccess && <span className="text-success">{copySuccess}</span>}</a>
+                                                </div>
+                                            )}
+                                        </div>
+                                        <Bookmark size={20} color="#6c757d" strokeWidth={2} style={{ fontWeight: '400' }} />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )
+            }) : null}
+        
+        {visibleItems < AnnouncementData.length && (
+            <button onClick={handleLoadMore} className="btn btn-primary mt-3">Load More</button>
+        )}
+    </div>
+            
                 <div style={{marginBottom:"50px"}}></div>
-            </div></>
+            </div>
+            
+            </>
  
     )
 }

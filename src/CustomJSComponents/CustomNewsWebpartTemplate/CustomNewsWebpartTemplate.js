@@ -11,6 +11,7 @@ import moment from 'moment';
 import { getNews } from '../../APISearvice/NewsService';
 import {getCurrentUserProfileEmail} from "../../APISearvice/CustomService";
 const CustomNewsWebpartTemplate = ({ _sp, SiteUrl }) => {
+    
     const [copySuccess, setCopySuccess] = useState('');
     const [show, setShow] = useState(false)
     const [itemsToShow, setItemsToShow] = useState(2); // Initial number of items to show
@@ -77,11 +78,17 @@ const CustomNewsWebpartTemplate = ({ _sp, SiteUrl }) => {
         }
     };
  
-    const sendanEmail =()=>
-    {
-        window.open("https://outlook.office.com/mail/inbox");
- 
-    }
+    const sendanEmail = (item) => {
+        // window.open("https://outlook.office.com/mail/inbox");
+      
+         const subject ="Event link-"+ item.EventName;
+         const body = 'Here is the link to the event:'+ `${siteUrl}/SitePages/EventDetailsCalendar.aspx?${item.Id}`;
+      
+        const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      
+        // Open the link to launch the default mail client (like Outlook)
+        window.location.href = mailtoLink;
+       };
     const loadMore = () => {
         event.preventDefault()
         event.stopImmediatePropagation()
@@ -186,7 +193,7 @@ const CustomNewsWebpartTemplate = ({ _sp, SiteUrl }) => {
                                                         </div>
                                                         {showDropdownId === item.Id && (
                                                             <div className="dropdown-menu dropcss" isMenuOpenshareref={menuRef}>
-                                                                <a className="dropdown-item dropcssItem" onClick={sendanEmail}>Share by email</a>
+                                                                <a className="dropdown-item dropcssItem"onClick={() => sendanEmail(item)}>Share by email</a>
                                                                 <a className="dropdown-item dropcssItem" onClick={() => copyToClipboard(item.Id)}>
                                                                     Copy Link
                                                                 </a>

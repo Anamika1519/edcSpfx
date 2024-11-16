@@ -30,3 +30,26 @@
     font-size: 14px;}
     .ml20{padding-left: 10px; padding-top: 10px;}
     .ml20 img{width: 2.5rem !important; height: 2.5rem !important; border-radius: 1000px !important;}
+
+
+    
+
+    .status-btn {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 14px;
+      text-decoration: none;
+      color: white;
+      cursor: pointer;
+    }
+    
+    .status-ongoing {
+      background-color: #6c757d; /* Grey color for Ongoing */
+    }
+    
+    .status-finished {
+      background-color: #d4edda; /* Light green color for Finished */
+      color: #155724; /* Dark green text */
+      border: 1px solid #c3e6cb; /* Border for Finished */
+    }

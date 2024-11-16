@@ -243,10 +243,11 @@ export const getDiscussionForumByID = async (_sp, id) => {
 export const getDiscussionForumDetailsById = async (_sp, idNum) => {
     let arr = []
     let arr1 = []
-
-    await _sp.web.lists.getByTitle("ARGDiscussionForum").items.getById(idNum)
-        .select("*,DiscussionForumCategory/ID,DiscussionForumCategory/CategoryName,Entity/ID,Entity/Entity,InviteMemebers/Id,InviteMemebers/Title,InviteMemebers/EMail,GroupType").expand("Entity,DiscussionForumCategory,InviteMemebers")()
-        .then((res) => {
+    await _sp.web.lists.getByTitle("ARGDiscussionForum").items.getById(idNum).select("*,DiscussionForumCategory/ID,DiscussionForumCategory/CategoryName,Entity/ID,Entity/Entity,InviteMemebers/Id,InviteMemebers/Title,InviteMemebers/EMail,GroupType,Author/ID,Author/Title,Author/EMail,ARGDiscussionStatus").expand("Entity,DiscussionForumCategory,InviteMemebers,Author")()
+    .then((res) => {
+    // await _sp.web.lists.getByTitle("ARGDiscussionForum").items.getById(idNum)
+    //     .select("*,DiscussionForumCategory/ID,DiscussionForumCategory/CategoryName,Entity/ID,Entity/Entity,InviteMemebers/Id,InviteMemebers/Title,InviteMemebers/EMail,GroupType ,Author/ID,Author/Title,Author/EMail ").expand("Entity,DiscussionForumCategory,InviteMemebers , Author")()
+    //     .then((res) => {
             // arr=res;
             console.log(res, 'hhhjhjh');
 

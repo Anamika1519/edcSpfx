@@ -15,7 +15,7 @@ import moment from "moment";
 
 import Swal from "sweetalert2";
 
-export const PostComponent = ({ key, sp, siteUrl, currentUsername,CurrentUser, currentEmail, post}: any) => {
+export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, currentEmail, post }: any) => {
     const [loadingReply, setLoadingReply] = useState<boolean>(false);
     const [loadingLike, setLoadingLike] = useState<boolean>(false);
 
@@ -239,74 +239,74 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername,CurrentUser, c
         e.preventDefault();
         setLoadingLike(true)
         try {
-        const updatedLikeStatus = !liked;
-        const updatedLikesCount = updatedLikeStatus ? likesCount + 1 : likesCount - 1;
+            const updatedLikeStatus = !liked;
+            const updatedLikesCount = updatedLikeStatus ? likesCount + 1 : likesCount - 1;
 
-        // Optimistically update the UI state
-        setLiked(updatedLikeStatus);
-        setLikesCount(updatedLikesCount);
+            // Optimistically update the UI state
+            setLiked(updatedLikeStatus);
+            setLikesCount(updatedLikesCount);
 
-        // setAuthorId(await getCurrentUserNameId(sp))
-        const postId = post.postId;
-        debugger
-        await sp.web.lists.getByTitle('ARGSocialFeedPostsUserLikes').items.select("*,Author/Id").expand("Author").filter(`ARGSocialFeedPostsId eq ${postId} and AuthorId eq ${authorId}`).top(1)().then(async (ele: any) => {
-            console.log(ele, 'ele');
+            // setAuthorId(await getCurrentUserNameId(sp))
+            const postId = post.postId;
             debugger
-            if (ele.length > 0) {
-                var likePosts = {
-                    ARGSocialFeedPostsId: postId,
-                    userHasLiked: !ele[0].userHasLiked
-                }
-                await sp.web.lists.getByTitle('ARGSocialFeedPostsUserLikes').items.getById(ele[0].Id).delete().then(async (ele1: any) => {
-                    console.log(ele1);
-                    
-                    await addActivityLeaderboard(sp, "Unlike on Post");
-                   
-                })
-            }
-            else {
-                const likePostsJson = {
-                    ARGSocialFeedPostsId: postId,
-                    userHasLiked: true
-                }
-                let likePostsJson1 = Array.isArray(likePostsJson) ? likePostsJson : [likePostsJson];
+            await sp.web.lists.getByTitle('ARGSocialFeedPostsUserLikes').items.select("*,Author/Id").expand("Author").filter(`ARGSocialFeedPostsId eq ${postId} and AuthorId eq ${authorId}`).top(1)().then(async (ele: any) => {
+                console.log(ele, 'ele');
                 debugger
-                await sp.web.lists.getByTitle('ARGSocialFeedPostsUserLikes').items.add(likePostsJson).then(async (ele1: any) => {
-                    console.log(ele1);
-                    await addActivityLeaderboard(sp, "Likes on Post");
-                    let notifiedArr = {
+                if (ele.length > 0) {
+                    var likePosts = {
+                        ARGSocialFeedPostsId: postId,
+                        userHasLiked: !ele[0].userHasLiked
+                    }
+                    await sp.web.lists.getByTitle('ARGSocialFeedPostsUserLikes').items.getById(ele[0].Id).delete().then(async (ele1: any) => {
+                        console.log(ele1);
 
-                        ContentId:post.postId,
+                        await addActivityLeaderboard(sp, "Unlike on Post");
 
-                        NotifiedUserId: post.postAuthorId,
+                    })
+                }
+                else {
+                    const likePostsJson = {
+                        ARGSocialFeedPostsId: postId,
+                        userHasLiked: true
+                    }
+                    let likePostsJson1 = Array.isArray(likePostsJson) ? likePostsJson : [likePostsJson];
+                    debugger
+                    await sp.web.lists.getByTitle('ARGSocialFeedPostsUserLikes').items.add(likePostsJson).then(async (ele1: any) => {
+                        console.log(ele1);
+                        await addActivityLeaderboard(sp, "Likes on Post");
+                        let notifiedArr = {
 
-                        ContentType0: "Likes on Post",
+                            ContentId: post.postId,
 
-                        ContentName: post.Contentpost,
+                            NotifiedUserId: post.postAuthorId,
 
-                        ActionUserId: CurrentUser.Id,
+                            ContentType0: "Likes on Post",
 
-                        DeatilPage: "SocialFeed",
+                            ContentName: post.Contentpost,
 
-                        ReadStatus: false,
+                            ActionUserId: CurrentUser.Id,
 
-                        ContentCommentId:postId,
+                            DeatilPage: "SocialFeed",
 
-                        ContentComment:post.Contentpost
+                            ReadStatus: false,
 
-                      }
-                      const nofiArr = await addNotification(notifiedArr, sp)
-                      console.log(nofiArr, 'nofiArr');
-                })
-            }
-        })
-    }
-    catch (error) {
-      console.error('Error toggling like:', error);
-    }
-    finally {
-      setLoadingLike(false); // Enable the button after the function completes
-    }
+                            ContentCommentId: postId,
+
+                            ContentComment: post.Contentpost
+
+                        }
+                        const nofiArr = await addNotification(notifiedArr, sp)
+                        console.log(nofiArr, 'nofiArr');
+                    })
+                }
+            })
+        }
+        catch (error) {
+            console.error('Error toggling like:', error);
+        }
+        finally {
+            setLoadingLike(false); // Enable the button after the function completes
+        }
     };
 
 
@@ -322,89 +322,87 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername,CurrentUser, c
     const handleAddComment = async (e: { preventDefault: () => void; }) => {
         setLoadingReply(true);
         try {
-        e.preventDefault();
+            e.preventDefault();
 
-        if (newComment.trim()) {
-            const updatedComments = [...comments, { text: newComment, user: "You" }];
-            // Update local state with new comment
-            setComments(updatedComments);
-            setNewComment('');
+            if (newComment.trim()) {
+                const updatedComments = [...comments, { text: newComment, user: "You" }];
+                // Update local state with new comment
+                setComments(updatedComments);
+                setNewComment('');
 
-            try {
-                const postId = post.postId;// Assuming postId is correctly passed as a prop
-                console.log("Post ID:", postId);
+                try {
+                    const postId = post.postId;// Assuming postId is correctly passed as a prop
+                    console.log("Post ID:", postId);
 
-                const existingPost = await sp.web.lists.getByTitle('ARGSocialFeed').items.getById(postId)();
+                    const existingPost = await sp.web.lists.getByTitle('ARGSocialFeed').items.getById(postId)();
 
-                if (!existingPost) {
-                    throw new Error("Post not found");
+                    if (!existingPost) {
+                        throw new Error("Post not found");
+                    }
+                    // Parse existing comments (if any)
+                    const existingComments = existingPost.SocialFeedCommentsJson ? JSON.parse(existingPost.SocialFeedCommentsJson) : [];
+
+                    // Create a new comment object
+
+                    const newComments = [...existingComments, { text: newComment, user: post.userName }];
+
+                    const commentsBody = {
+                        Comments: newComment,  // Assuming Comments is the correct field name
+                        ARGSocialFeedId: postId,
+                        UserImage: `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${currentEmail}`
+                    };
+
+                    const commentResponse = await sp.web.lists.getByTitle('ARGSocialFeedComments').items.add(commentsBody);
+                    console.log('Comment added:', commentResponse);
+                    await sp.web.lists.getByTitle('ARGSocialFeedComments').items.select("*,Author/Id,Author/Title").expand("Author")
+                        .filter(`ARGSocialFeedId eq ${postId}`)().then(async (ele: any) => {
+                            if (ele.length > 0)
+                                await addActivityLeaderboard(sp, "Comments on Post");
+                            setCommentsCount(ele.length)
+                            setComments(ele);
+                            if (CurrentUser.Id != existingPost.AuthorId) {
+
+                                let notifiedArr = {
+
+                                    ContentId: postId,
+
+                                    NotifiedUserId: existingPost.AuthorId,
+
+                                    ContentType0: "Comment on post",
+
+                                    ContentName: existingPost.Contentpost,
+
+                                    ActionUserId: CurrentUser.Id,
+
+                                    DeatilPage: "SocialFeed",
+
+                                    ReadStatus: false,
+
+                                    ContentCommentId: commentResponse.data.Id,
+
+                                    ContentComment: newComment,
+
+                                    CommentOnReply: ""
+
+                                }
+
+                                const nofiArr = await addNotification(notifiedArr, sp)
+
+                                console.log(nofiArr, 'nofiArr');
+
+                            }
+                        })
+                } catch (error) {
+                    console.log("Error updating comments in SharePoint: ", error);
                 }
-                // Parse existing comments (if any)
-                const existingComments = existingPost.SocialFeedCommentsJson ? JSON.parse(existingPost.SocialFeedCommentsJson) : [];
-
-                // Create a new comment object
-
-                const newComments = [...existingComments, { text: newComment, user: post.userName }];
-
-                const commentsBody = {
-                    Comments: newComment,  // Assuming Comments is the correct field name
-                    ARGSocialFeedId: postId,
-                    UserImage: `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${currentEmail}`
-                };
-
-                const commentResponse = await sp.web.lists.getByTitle('ARGSocialFeedComments').items.add(commentsBody);
-                console.log('Comment added:', commentResponse);
-                await sp.web.lists.getByTitle('ARGSocialFeedComments').items.select("*,Author/Id,Author/Title").expand("Author")
-                    .filter(`ARGSocialFeedId eq ${postId}`)().then(async (ele: any) => {
-                        if (ele.length > 0)
-                            await addActivityLeaderboard(sp, "Comments on Post");
-                        setCommentsCount(ele.length)
-                        setComments(ele);
-                        if(CurrentUser.Id!=existingPost.AuthorId)
-
-                            {
-
-                        let notifiedArr = {
-
-                            ContentId:postId,
-
-                            NotifiedUserId:existingPost.AuthorId,
-
-                            ContentType0: "Comment on post",
-
-                            ContentName: existingPost.Contentpost,
-
-                            ActionUserId: CurrentUser.Id,
-
-                            DeatilPage: "SocialFeed",
-
-                            ReadStatus: false,
-
-                            ContentCommentId:commentResponse.data.Id,
-
-                            ContentComment:newComment,
-
-                            CommentOnReply: ""
-
-                          }
-
-                          const nofiArr = await addNotification(notifiedArr, sp)
-
-                          console.log(nofiArr, 'nofiArr');
-
-                        }
-                    })
-            } catch (error) {
-                console.log("Error updating comments in SharePoint: ", error);
             }
         }
-    }
-    catch (error) {
-      console.error('Error toggling Reply:', error);
-    }
-    finally {
-      setLoadingReply(false); // Enable the button after the function completes
-    }
+        catch (error) {
+            console.error('Error toggling Reply:', error);
+        }
+        finally {
+            setLoadingReply(false); // Enable the button after the function completes
+        }
     };
 
 
@@ -466,8 +464,16 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername,CurrentUser, c
             });
     };
 
-    const sendanEmail = () => {
-        window.open("https://outlook.office.com/mail/inbox");
+    const sendanEmail = (item: any) => {
+        // window.open("https://outlook.office.com/mail/inbox");
+
+        const subject = "Event link-" + item.EventName;
+        const body = 'Here is the link to the event:' + `${siteUrl}/SitePages/EventDetailsCalendar.aspx?${item.Id}`;
+
+        const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+        // Open the link to launch the default mail client (like Outlook)
+        window.location.href = mailtoLink;
     };
 
     const handleToggleImages = () => {
@@ -612,7 +618,7 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername,CurrentUser, c
             {/* Post Interactions */}
 
             <div className="post-interactions mt-3 mb-3">
-                <div className="likes" onClick={!loadingLike?(e) => handleLike(e, liked): undefined}  >
+                <div className="likes" onClick={!loadingLike ? (e) => handleLike(e, liked) : undefined}  >
                     {liked ? <FontAwesomeIcon icon={faThumbsUp} fontSize={25} color="#1fb0e5" /> : <ThumbsUp size={20} color="gray" />}
                     <span>{likesCount} Likes</span>{liked}
                 </div>
@@ -623,7 +629,7 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername,CurrentUser, c
                     </div>
                     {isMenuOpenshare && (
                         <div className="dropdown-menucsspost" ref={menuRef}>
-                            <button onClick={(e) => sendanEmail()}>Share by email</button>
+                            <button onClick={(e) => sendanEmail(post)}>Share by email</button>
                             <button onClick={(e) => copyToClipboard(post.postId)}>Copy link</button>
                             {copySuccess && <span className="text-success">{copySuccess}</span>}
                         </div>
@@ -639,12 +645,12 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername,CurrentUser, c
                     </div>
                     <div className="flex-grow-1 ms-2">
                         <p className="mb-1 fw-bold">
-                          {comment?.Author?.Title}  </p>
+                            {comment?.Author?.Title}  </p>
                         <p style={{
                             fontSize: '0.9rem',
                             fontWeight: '400',
                             color: '#6c757d',
-                            marginBottom:'0px'
+                            marginBottom: '0px'
                         }}>
                             {comment.Comments}
                         </p>

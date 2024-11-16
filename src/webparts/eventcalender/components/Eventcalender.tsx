@@ -26,6 +26,7 @@ import AvtarComponents from "../../../CustomJSComponents/AvtarComponents/AvtarCo
 const EventcalenderContext = ({ props }: any) => {
   const sp: SPFI = getSP();
   console.log(sp, "sp");
+  
   const [itemsToShow, setItemsToShow] = useState(2);
   const [copySuccess, setCopySuccess] = useState("");
   const [show, setShow] = useState(false);
@@ -203,10 +204,17 @@ const EventcalenderContext = ({ props }: any) => {
   const [showDropdownId, setShowDropdownId] = useState(null);
   const [currentEmail, setEmail] = useState("");
 
-  const sendanEmail = () => {
-    window.open("https://outlook.office.com/mail/inbox");
-  };
-
+  const sendanEmail = (item:any) => {
+    // window.open("https://outlook.office.com/mail/inbox");
+  
+     const subject ="Event link-"+ item.EventName;
+     const body = 'Here is the link to the event:'+ `${siteUrl}/SitePages/EventDetailsCalendar.aspx?${item.Id}`;
+  
+    const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  
+    // Open the link to launch the default mail client (like Outlook)
+    window.location.href = mailtoLink;
+   };
   const toggleDropdown = (itemId: any) => {
     if (showDropdownId === itemId) {
       setShowDropdownId(null); // Close the dropdown if already open
@@ -537,7 +545,7 @@ const EventcalenderContext = ({ props }: any) => {
                                     <div className="dropdown-menu dropcss">
                                       <a
                                         className="dropdown-item dropcssItem"
-                                        onClick={sendanEmail}
+                                        onClick={() => sendanEmail(item)}
                                       >
                                         Share by email
                                       </a>

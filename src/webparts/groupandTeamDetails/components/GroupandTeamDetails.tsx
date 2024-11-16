@@ -763,9 +763,17 @@ try{
  
   console.log(ArrDetails, "console.log(ArrDetails)");
  
-  const sendanEmail = () => {
-    window.open("https://outlook.office.com/mail/inbox");
-  };
+  const sendanEmail = (item:any) => {
+    // window.open("https://outlook.office.com/mail/inbox");
+  
+     const subject ="Event link-"+ item.EventName;
+     const body = 'Here is the link to the event:'+ `${siteUrl}/SitePages/EventDetailsCalendar.aspx?${item.Id}`;
+  
+    const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  
+    // Open the link to launch the default mail client (like Outlook)
+    window.location.href = mailtoLink;
+   };
  
   return (
     <div id="wrapper" ref={elementRef}>
@@ -810,12 +818,8 @@ try{
                                 {moment(item.Created).format("DD-MMM-YYYY")}
                                 &nbsp; &nbsp;|
                               </span>
-
-                              <span
-                                className="text-nowrap mb-0 d-inline-block"
-                                onClick={sendanEmail}
-                                style={{ fontSize: "14px" }}
-                              >
+                              <span className="text-nowrap mb-0 d-inline-block"  onClick={() => sendanEmail(item)} style={{ fontSize: "14px" }}>
+                              
                                 <Share size={16} /> Share by email &nbsp;
                                 &nbsp;|&nbsp;
                               </span>

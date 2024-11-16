@@ -22,6 +22,8 @@ import { fetchBlogdatatop } from '../../../APISearvice/BlogService'
 import AvtarComponents from '../../../CustomJSComponents/AvtarComponents/AvtarComponents'
 import { fetchUserInformationList } from '../../../APISearvice/Dasborddetails'
 import { getDiscussion } from '../../../APISearvice/DiscussionForumService'
+import { additemtoFollowedGroup, fetchNotFollowedGroupdata } from '../../../APISearvice/GroupTeamService'
+import Swal from 'sweetalert2'
 
 let userJobTitle: any
 let userEmail: any
@@ -141,19 +143,19 @@ const SocialFeedContext = ({ props }: any) => {
         console.log("Error fetching data: ", error);
       });
 
-    const getAllgroup = await sp.web.lists
-      .getByTitle("ARGGroupandTeam")
-      .items.select("*,InviteMemebers/Id,InviteMemebers/Title,InviteMemebers/EMail,GroupType").expand("InviteMemebers")()
-      .then((getAllgroup) => {
-        // arr=res;
-        console.log(getAllgroup, ":response")
-        // debugger
-        console.log("getAllgroup------", getAllgroup)
-        setgetAllgroup(getAllgroup)
-      })
-      .catch((error) => {
-        console.log("Error fetching data: ", error);
-      });
+    // const getAllgroup = await sp.web.lists
+    //   .getByTitle("ARGGroupandTeam")
+    //   .items.select("*,InviteMemebers/Id,InviteMemebers/Title,InviteMemebers/EMail,GroupType").expand("InviteMemebers")()
+    //   .then((getAllgroup) => {
+    //     // arr=res;
+    //     console.log(getAllgroup, ":response")
+    //     // debugger
+    //     console.log("getAllgroup------", getAllgroup)
+    //     setgetAllgroup(getAllgroup)
+    //   })
+    //   .catch((error) => {
+    //     console.log("Error fetching data: ", error);
+    //   });
   }
   const getAllAPI = async () => {
     setCurrentEmail(await getCurrentUserProfileEmail(sp))
@@ -162,10 +164,28 @@ const SocialFeedContext = ({ props }: any) => {
     setUsersArr(await fetchUserInformationList(sp))
     setDiscussion(await getDiscussion(sp))
     fetchPosts();
-
+    setgetAllgroup(await fetchNotFollowedGroupdata(sp));
 
   }
+  const addFollowedGroup = async (item: any) => {
+    const currentUser = await sp.web.currentUser();
+    const Itemdata = {
 
+      GroupIDId: Number(item.ID),
+      FollowedById: currentUser.Id
+    };
+    console.log("Itemdata", Itemdata);
+
+    const postResult = await additemtoFollowedGroup(sp, Itemdata);
+    const postId = postResult?.data?.ID;
+    setgetAllgroup(await fetchNotFollowedGroupdata(sp));
+    Swal.fire("Group followed successfully", "", "success");
+    debugger
+    if (!postId) {
+      console.error("failed.");
+      return;
+    }
+  }
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []); // Ensure files is an array of type File[]
     let uploadedImages: any[] = [];
@@ -1621,7 +1641,7 @@ const SocialFeedContext = ({ props }: any) => {
                     </h4>
 
                     <div className="inbox-widget mt-4">
-
+                    {console.log("getAllgroup", getAllgroup)}
                       {getAllgroup.map((user: any, index: 0) => (
 
                         <div
@@ -1670,7 +1690,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                           <div className="col-sm-2 txtr">
 
-                            <PlusCircle size={20} color='#008751' />
+                            <PlusCircle onClick={() => addFollowedGroup(user)} size={20} color='#008751' />
 
                           </div>
 

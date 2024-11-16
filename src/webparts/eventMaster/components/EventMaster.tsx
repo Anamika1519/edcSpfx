@@ -510,7 +510,7 @@ const EntityMastercontext = ({ props }: any) => {
 
       <td>
 
-        {moment(item.EventDate).format("dd/MM/yyyy")}
+        {moment(item.EventDate).format("DD/MM/yyyy")}
 
       </td>
 

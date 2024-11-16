@@ -352,7 +352,7 @@ export const getProjectDetailsById = async (_sp, idNum) => {
   let arr = []
   let arr1 = []
  
-  await _sp.web.lists.getByTitle("ARGProject").items.getById(idNum).select("*,TeamMembers/Id,TeamMembers/EMail,TeamMembers/Title").expand("TeamMembers")()
+  await _sp.web.lists.getByTitle("ARGProject").items.getById(idNum).select("*, ProjectStatus , TeamMembers/Id,TeamMembers/EMail,TeamMembers/Title, Author/ID,Author/Title,Author/EMail").expand("TeamMembers ,Author")()
   
     .then((res) => {
       console.log("check the data for project id--->>",res)

@@ -1298,7 +1298,26 @@ const HelloWorldContext = ({ props }: any) => {
                                       {project.ProjectName}
                                     </a>
                                   </h4>
+                                  <a>
 
+{
+      project?.ProjectStatus === null 
+      ? null // Don't display anything if ProjectStatus is null
+      : (
+          <a 
+              style={{ 
+                  background: project?.ProjectStatus === 'Close' ? 'red' : 'transparent',
+                  color: project?.ProjectStatus === 'Close' ? 'white' : 'inherit',
+                  padding: '5px',
+                  borderRadius: '4px',
+                  textDecoration: 'none'
+              }}
+          >
+              {project?.ProjectStatus === 'Ongoing' ? 'Ongoing' : 'Close'}
+          </a>
+      )
+}
+</a>
 
                                   {/* Description */}
                                   <p
@@ -2011,6 +2030,13 @@ const HelloWorldContext = ({ props }: any) => {
                                         onClick={() => GotoNextPage(project)}
                                       >
                                         View Detail
+                                      </a>
+                                      <a
+                                        className="dropdown-item font-12"
+
+                                        onClick={() => UpdatProject(project.Id)}
+                                      >
+                                        Close Project
                                       </a>
                                     </div>
                                   </div>

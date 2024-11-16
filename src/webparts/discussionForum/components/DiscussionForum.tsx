@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import VerticalSideBar from "../../verticalSideBar/components/VerticalSideBar";
 import HorizontalNavbar from "../../horizontalNavBar/components/HorizontalNavBar";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { filter } from "lodash";
 import "../../../CustomCss/mainCustom.scss";
 import "../components/DiscussionForum.scss";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
@@ -962,6 +963,7 @@ const DiscussionForumContext = ({ props }: any) => {
                 GroupType: formData.GroupType,
                 DiscussionForumCategoryId: Number(formData.category),
                 InviteMemebersId: selectedIds,
+                ARGDiscussionStatus:"Ongoing",
               };
             }
             else {
@@ -971,7 +973,8 @@ const DiscussionForumContext = ({ props }: any) => {
                 Description: richTextValues.description,
                 EntityId: Number(formData.entity),
                 GroupType: formData.GroupType,
-                DiscussionForumCategoryId: Number(formData.category)
+                DiscussionForumCategoryId: Number(formData.category),
+                                ARGDiscussionStatus : "Ongoing"
               };
             }
 
@@ -1816,7 +1819,8 @@ const DiscussionForumContext = ({ props }: any) => {
                                 {item.commentsLength}
                               </td>
                               <td style={{ minWidth: "70px", maxWidth: "70px" }}>
-                                {moment(item.CreatedDate).fromNow()}
+                                {/* {moment(item.CreatedDate).fromNow()} */}
+                                {moment(item.Created).format("DD-MMM-YYYY")}
                               </td>
                             </tr>
                           ))

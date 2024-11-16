@@ -194,6 +194,7 @@ const VerticalContext = ({ _context }: any) => {
   };
   const gotoPage = (url: string, Id: number) => {
     debugger
+    localStorage.setItem("NavId", "")
     if (url != null) {
       localStorage.setItem("NavId", String(Id))
       setuseActive(Id)
@@ -202,6 +203,100 @@ const VerticalContext = ({ _context }: any) => {
     }
 
   }
+  React.useEffect(()=>{
+    highlightbackground()
+  },[])
+  const highlightbackground = () =>{
+
+   const url = window.location.href; 
+   const matches = url.match(/\/([^\/]+)\.aspx/); 
+  
+   if (matches) {
+    const pageName = matches[1]; // Get the matched page name
+    // alert(pageName); // Alert the matched page name
+
+    if (pageName === 'workbench') {
+        // alert("set workbench");
+        localStorage.setItem("NavId", String(1));
+        setuseActive(1)
+    } else if (pageName === "Dashboard" ) {
+        // alert("set MediaGallery/Mediadetails");
+        localStorage.setItem("NavId", String(1));
+        setuseActive(1)
+    } 
+    else if (pageName === "MediaGallery" || pageName === "Mediadetails") {
+        // alert("set MediaGallery/Mediadetails");
+        localStorage.setItem("NavId", String(2));
+        setuseActive(2)
+    } 
+    
+    else if (pageName === "EventCalendar" || pageName === "EventDetailsCalendar") {
+        // alert("set Event");
+        localStorage.setItem("NavId", String(3));
+        setuseActive(3)
+    } 
+    else if (pageName === "News" || pageName === "NewsDetails") {
+        // alert("set News");
+        localStorage.setItem("NavId", String(4));
+        setuseActive(4)
+    } 
+    else if (pageName === "Announcements" || pageName === "AnnouncementDetails") {
+        // alert("set Announcement");
+        localStorage.setItem("NavId", String(5));
+        setuseActive(5)
+    } 
+    else if (pageName === "CorporateDirectory" ) {
+        // alert("set MediaGallery/Mediadetails");
+        localStorage.setItem("NavId", String(6));
+        setuseActive(6)
+    } 
+    else if (pageName === "SocialFeed") {
+        // alert("set MediaGallery/Mediadetails");
+        localStorage.setItem("NavId", String(8));
+
+    } 
+    else if (pageName === "DiscussionForum" || pageName === "DiscussionForumDetail") {
+        // alert("set MediaGallery/Mediadetails");
+        localStorage.setItem("NavId", String(9));
+        setuseActive(9)
+    } 
+    else if (pageName === "Blogs" || pageName === "BlogDetails") {
+        // alert("set MediaGallery/Mediadetails");
+        localStorage.setItem("NavId", String(10));
+        setuseActive(10)
+    } 
+    else if (pageName === "GroupandTeam" || pageName === "GroupandTeamDetails") {
+        // alert("set MediaGallery/Mediadetails");
+        localStorage.setItem("NavId", String(11));
+        setuseActive(11)
+    } 
+    else if (pageName === "Project" || pageName === "ProjectDetails") {
+      alert(`useactive : ${useActive} `)
+        // alert("set MediaGallery/Mediadetails");
+        localStorage.setItem("NavId", String(12));
+        setuseActive(12)
+    } 
+    else if (
+   
+      pageName === "MediaGalleryMaster" || 
+      pageName === "MediaGalleryForm" || 
+      pageName === "EventMaster" || 
+      pageName === "EventMasterForm" || 
+      pageName === "announcementmaster" || 
+      pageName === "AddAnnouncement" || 
+      pageName === "BannerMaster" || 
+      pageName === "BannerForm"
+  ) {
+      localStorage.setItem("NavId",  String(0));
+      setuseActive(0);
+  } else {
+      localStorage.setItem("NavId", ""); // Clear the NavId if no match is found
+  }
+} else {
+    alert("No matches found in the URL");
+}
+
+}
   const renderNavItems = (items: NavItem[], parentId: number | null = null) => {
     return items
       .filter(item => item.ParentId === parentId)

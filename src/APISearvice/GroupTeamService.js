@@ -19,7 +19,82 @@ import Swal from "sweetalert2";
 //     });
 //   return arr;
 // };
+export const fetchNotFollowedGroupdata = async (_sp) => {
+  let arr = []
+  let bookmarkarr = [];
+  let currentUser;
+  await _sp.web.currentUser()
+    .then(user => {
+      console.log("user", user);
+      currentUser = user.Email; // Get the current user's Email
+    })
+    .catch(error => {
+      console.error("Error fetching current user: ", error);
+      return [];
+    });
 
+  await _sp.web.lists.getByTitle("ARGGroupandTeamFollow")
+    .items.select("*,GroupID/ID,GroupID/Title,FollowedBy/ID,FollowedBy/Title,FollowedBy/EMail").expand("GroupID,FollowedBy")
+    .filter(`FollowedBy/EMail eq '${currentUser}'`)
+    .orderBy("Created", false).getAll().then(async (resnew) => {
+      console.log("resnew", resnew);
+      if (resnew.length > 0) {
+        debugger
+        let filterquery = [];
+        for (let i = 0; i < resnew.length; i++) {
+          filterquery.push(`ID ne ${resnew[i].GroupIDId}`)
+        }
+        let finalquery = filterquery.map((x) => x).join(' and ');
+        console.log("finalqueryfinalquery", finalquery);
+        await _sp.web.lists
+          .getByTitle("ARGGroupandTeam")
+          .items.select("*,Author/Title,Author/ID,GroupName,GroupType,InviteMemebers/Id")
+          .filter(`${finalquery}`)
+          .expand("Author,InviteMemebers")
+          .orderBy("Created", false)
+          .getAll()
+          .then((res) => {
+            console.log("notfolloweddata ALL", res);
+            arr = res
+            // Filter items based on GroupType and InviteMembers
+            // arr = res.filter(item =>
+            // // Include public groups or private groups where the current user is in the InviteMembers array
+            // //item.ID != 5 && item.ID != 18
+            // // &&
+            // (item.GroupType === "All" ||
+            //   (item.GroupType === "Selected Members" && item.InviteMemebers && item.InviteMemebers.some(member => member.Id === currentUser)))
+
+            // );
+
+            //bookmarkarr = arr
+          })
+          .catch((error) => {
+            console.log("Error fetching data: ", error);
+          });
+
+      }
+    })
+  console.log("bookmarkarrbookmarkarr", arr);
+  //arr = bookmarkarr;
+  return arr;
+}
+export const additemtoFollowedGroup = async (_sp, itemData) => {
+  console.log("_sp-->>>>", _sp);
+  // console.log("itemData-->>>>", itemData)
+  let resultArr = [];
+  try {
+    const newItem = await _sp.web.lists
+      .getByTitle("ARGGroupandTeamFollow")
+      .items.add(itemData);
+    console.log("Item added successfully:", newItem);
+    resultArr = newItem;
+  } catch (error) {
+    console.error("Error adding item--->>>>>", error);
+    Swal.fire(" Cancelled", "", "error");
+    resultArr = null;
+  }
+  return resultArr;
+};
 export const getGroupTeam = async (_sp) => {
   let arr = [];
   let currentUser;

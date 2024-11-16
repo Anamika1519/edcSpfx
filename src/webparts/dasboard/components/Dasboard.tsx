@@ -236,6 +236,13 @@ const HelloWorldContext = ({ props }: any) => {
     // sessionStorage.setItem("dataID", item.Id)
     window.location.href = `${siteUrl}/SitePages/ProjectDetails.aspx?${item.ID}`;
   };
+  const GotoNextPageMediaDetails = (item: any) => {
+    console.log("item-->>>>", item);
+    const encryptedId = encryptId(String(item.ID));
+    // sessionStorage.setItem("mediaId", encryptedId);
+    // sessionStorage.setItem("dataID", item.Id)
+    window.location.href = `${siteUrl}/SitePages/MediaDetails.aspx?${item.ID}`;
+  };
   const GotoNextPage = (item: any) => {
     console.log("item-->>>>", item)
     const encryptedId = encryptId(String(item.ID));
@@ -286,7 +293,7 @@ const HelloWorldContext = ({ props }: any) => {
     const maxLength = 87; // The number of characters before truncation
     if (str)
     {
-      if (str.length > maxLength) {
+      if (str &&  str.length > maxLength)  {
         const truncatedString = str.substring(0, maxLength);
         return (
           <>
@@ -433,7 +440,7 @@ const HelloWorldContext = ({ props }: any) => {
                         >
                           Latest Announcement
                           <a
-                            style={{ float: "right" }}
+                            style={{ float: "right",cursor:"pointer" }}
                             className="font-11 fw-normal btn  rounded-pill waves-effect waves-light view-all"
                             onClick={(e) => GotoNextPagefour(e)}
                           >
@@ -445,7 +452,7 @@ const HelloWorldContext = ({ props }: any) => {
                           <div key={index} className="border-bottom mt-2">
                             <h4
                               className="mb-0 twolinewrap text-dark fw-bold font-14 mt-0"
-                              style={{ fontSize: "14px", fontWeight: "bold" }}
+                              style={{ fontSize: "14px", fontWeight: "bold",cursor:"pointer" }}
                               onClick={(e) => NavigatetoAnnouncement(e,announcement.ID)}
                             >
                               {announcement.Title}
@@ -502,7 +509,7 @@ const HelloWorldContext = ({ props }: any) => {
                         <h4 className="header-title font-16 text-dark fw-bold mb-0">
                           Corporate Directory
                           <a
-                            style={{ float: "right" }}
+                            style={{ float: "right" ,cursor:"pointer"}}
                             className="font-11 view-all fw-normal btn  rounded-pill waves-effect waves-light"
                             onClick={(e) => GotoNextPageone(e)}
                           >
@@ -526,7 +533,7 @@ const HelloWorldContext = ({ props }: any) => {
                                   />
                                 </a>
                               </div>
-                              <div className="col-sm-8">
+                              <div style={{ cursor: "pointer" }} className="col-sm-8">
                                 <a href="contacts-profile.html">
                                   <p className="fw-bold font-14 mb-2 text-dark">
                                   {user.Pinned.Title} | {user.Pinned.EMail != null ? user.Pinned.EMail : 'NA'}
@@ -582,7 +589,7 @@ const HelloWorldContext = ({ props }: any) => {
                           Upcoming Events
                           <a
 
-                            style={{ float: "right" }}
+                            style={{ float: "right",cursor:"pointer" }}
                             className="font-11 fw-normal btn  rounded-pill waves-effect waves-light view-all"
                             // href="SitePages/Mediadetails.aspx"
                             onClick={(e) => GotoNextPage(e)}
@@ -649,7 +656,8 @@ const HelloWorldContext = ({ props }: any) => {
                                         textOverflow: "ellipsis",
                                         display: "-webkit-box",
                                         WebkitBoxOrient: "vertical",
-                                        WebkitLineClamp: 1
+                                        WebkitLineClamp: 1,
+                                        cursor:"pointer"
                                       }}
                                       onClick={(e) => NavigatetoEvent(e,event.ID)}
                                     >
@@ -680,7 +688,7 @@ const HelloWorldContext = ({ props }: any) => {
                         <h4 className="header-title text-dark font-16 fw-bold mb-0">
                           Gallery
                           <a
-                            style={{ float: "right" }}
+                            style={{ float: "right",cursor:"pointer" }}
                             className="font-11 fw-normal btn  rounded-pill waves-effect waves-light view-all"
                             onClick={(e) => GotoNextPagethree(e)}
                           >
@@ -763,9 +771,9 @@ const HelloWorldContext = ({ props }: any) => {
                                   <div className="cptext">
                                     <p>
                                       <i className="fa fa-clock-o"></i>&nbsp;
-                                      {item.Created}
+                                      {moment(item.Created).format("DD-MMM-YYYY")}
                                     </p>
-                                    <p>{item.Title}</p>
+                                    <p style={{ cursor: "pointer" }}  onClick={(item) => GotoNextPageMediaDetails(item)}>{item.Title}</p>
                                   </div>
                                 </div>
                               );
@@ -791,7 +799,7 @@ const HelloWorldContext = ({ props }: any) => {
                     >
                       Latest News
                       <a
-                        style={{ float: "right" }}
+                        style={{ float: "right" ,cursor:"pointer"}}
                         className="font-11 fw-normal btn  rounded-pill waves-effect waves-light view-all"
                         onClick={(e) => GotoNextPagetwo(e)}
                       >
@@ -846,6 +854,7 @@ const HelloWorldContext = ({ props }: any) => {
                               style={{
                                 lineHeight: "22px",
                                 fontSize: "16px",
+                                cursor:"pointer"
                               }}
                               className="fw-bold font-16 mt-2 mb-2 twolinewrap text-dark"
                               onClick={(e) => Navigatetonews(e,news.ID)}
@@ -875,7 +884,7 @@ const HelloWorldContext = ({ props }: any) => {
                       <h4 className="header-title font-16 text-dark fw-bold mb-0">
                         Leaderboard
                         <a
-                          style={{ float: "right" }}
+                          style={{ float: "right",cursor:"pointer" }}
                           className="font-11 view-all fw-normal btn  rounded-pill waves-effect waves-light"
 
                         >
@@ -904,7 +913,7 @@ const HelloWorldContext = ({ props }: any) => {
                                 <div className="row">
                                   <div className="col-lg-8">
                                     <div className="w-100 ps-1 pt-0">
-                                      <h5 className="inbox-item-text fw-bold font-14 mb-0 text-dark">
+                                      <h5 style={{ cursor: "pointer" }} className="inbox-item-text fw-bold font-14 mb-0 text-dark">
                                         {user.AuthorTitle}
                                       </h5>
                                       <span
@@ -1010,7 +1019,7 @@ const HelloWorldContext = ({ props }: any) => {
                       <a
                         href={`${siteUrl}/SitePages/Project.aspx`}
                         className="font-11 view-all fw-normal btn rounded-pill waves-effect waves-light"
-                        style={{ float: "right", top: "0" }}
+                        style={{ float: "right", top: "0",cursor:"pointer" }}
                       >
                         View All
                       </a>
@@ -1029,7 +1038,7 @@ const HelloWorldContext = ({ props }: any) => {
                                   <img className="morealign" src={require('../assets/more.png')} />
 
                                 </a>
-                                <div style={{ padding: "0px", top: "15px", minWidth: "auto", textAlign: "center" }} className="dropdown-menu newheight dropdown-menu-end">
+                                <div style={{cursor:"pointer", padding: "0px", top: "15px", minWidth: "auto", textAlign: "center" }} className="dropdown-menu newheight dropdown-menu-end">
                                   <a className="dropdown-item font-12" onClick={() => GotoNextPageProject(project)} >
                                     View Detail
                                   </a>
@@ -1037,7 +1046,7 @@ const HelloWorldContext = ({ props }: any) => {
                               </div>
                               <h4 className="mt-0 mb-1">
                                 <a
-                                  style={{ textTransform: 'capitalize' }}
+                                  style={{ textTransform: 'capitalize',cursor:"pointer" }}
                                   className="text-dark fw-bold font-16" onClick={() => GotoNextPageProject(project)}
                                 >
                                   {project.ProjectName}
@@ -1051,6 +1060,12 @@ const HelloWorldContext = ({ props }: any) => {
                                 {/* <a   className="fw-bold text-muted">
                                     view more
                                   </a> */}
+                              </p>
+                              <p
+                                className="date-color font-12 mb-3"
+                                style={{ color: "#98a6ad" }}
+                              >
+                           {project?.ProjectStatus}
                               </p>
                               <p className="mb-1 font-12">
                                 <span

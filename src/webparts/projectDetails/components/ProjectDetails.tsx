@@ -658,9 +658,17 @@ try{
   ];
   //#endregion
   console.log(ArrDetails, "console.log(ArrDetails)");
-  const sendanEmail = () => {
-    window.open("https://outlook.office.com/mail/inbox");
-  };
+  const sendanEmail = (item:any) => {
+    // window.open("https://outlook.office.com/mail/inbox");
+  
+     const subject ="Event link-"+ item.EventName;
+     const body = 'Here is the link to the event:'+ `${siteUrl}/SitePages/EventDetailsCalendar.aspx?${item.Id}`;
+  
+    const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  
+    // Open the link to launch the default mail client (like Outlook)
+    window.location.href = mailtoLink;
+   };
 
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   // const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -730,28 +738,35 @@ try{
     }
   };
   const uploadfileinfolder = async()=>{
-      console.log("hernter here in ")
-    for (const file of selectedFiles) {
+    console.log("hernter here in ")
+  for (const file of selectedFiles) {
 
-      try {
-        console.log(`Uploading file: ${file.name}`);
-        console.log(`filemanager: ${filemanager}`);
-        
-        // Reference the folder by server-relative path
-        const uploadFolder = sp.web.getFolderByServerRelativePath(`${filemanager}`);
-        console.log(uploadFolder , "uplaodfold")
-        // Upload the file using addChunked (use appropriate chunk size if needed)
-        const uploadResult = await uploadFolder.files.addChunked(file.name, file)
+    try {
+      console.log(`Uploading file: ${file.name}`);
+      console.log(`filemanager: ${filemanager}`);
       
-        alert(uploadResult)
-        console.log(`Upload successful for file: ${file.name}`);
-      } catch (error) {
-        console.error(`Error uploading file: ${file.name}`, error);
+      // Reference the folder by server-relative path
+      const uploadFolder = sp.web.getFolderByServerRelativePath(`${filemanager}`);
+      console.log(uploadFolder , "uplaodfold")
+      // Upload the file using addChunked (use appropriate chunk size if needed)
+      const uploadResult = await uploadFolder.files.addChunked(file.name, file)
+      if(uploadResult){
+        await Swal.fire(
+          'Uploaded!',
+          'The file has been successfully Uploaded.',
+          'success'
+      );
+      setSelectedFiles([])
       }
+      // alert(uploadResult)
+      console.log(`Upload successful for file: ${file.name}`);
+    } catch (error) {
+      console.error(`Error uploading file: ${file.name}`, error);
     }
-        
-
   }
+      
+
+}
   const removeFile = (fileName: string) => {
     setSelectedFiles(prevFiles => prevFiles.filter(file => file.name !== fileName));
   };
@@ -923,6 +938,51 @@ alert(idNum)
       }
     }
   };
+
+  const DeleteFileFromFileMaster =async (fileId:any) =>{
+    try {
+      // Show confirmation alert using Swal
+      const result = await Swal.fire({
+          title: 'Are you sure?',
+          text: 'Do you really want to delete this file? This action cannot be undone.',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#d33',
+          cancelButtonColor: '#3085d6',
+          confirmButtonText: 'Yes, delete it!',
+          cancelButtonText: 'Cancel',
+      });
+
+      // Check if user confirmed
+      if (result.isConfirmed) {
+          // Delete the file
+          await sp.web.getFileById(fileId).delete();
+          
+          // Success alert
+          await Swal.fire(
+              'Deleted!',
+              'The file has been deleted successfully.',
+              'success'
+          );
+          getAllFilesForProject()
+      } else {
+          // Optionally handle the cancel action
+          await Swal.fire(
+              'Cancelled',
+              'The file was not deleted.',
+              'info'
+          );
+      }
+  } catch (error) {
+      console.error('Error deleting file:', error);
+      // Show error alert
+      await Swal.fire(
+          'Error!',
+          'There was an error deleting the file.',
+          'error'
+      );
+  }
+  }
   return (
     <div id="wrapper" ref={elementRef}>
       <div className="app-menu" id="myHeader">
@@ -973,6 +1033,18 @@ alert(idNum)
             </div>
             {ArrDetails.length > 0
               ? ArrDetails.map((item: any, index) => {
+                if (item.ProjectStatus === "Close") {
+                  var div = document.querySelector('.col-md-6.mobile-w2') as HTMLElement;
+                  if (div) {
+                      div.style.pointerEvents = 'none';
+                      div.style.opacity = '0.5'; // Optional: Makes the div look disabled
+                  } else {
+                      console.error("Element not found: .col-md-6.mobile-w2");
+                  }
+              }
+              
+              
+              
                 const ProjectsDocsJSON =
                   item.ProjectsDocsJSON == undefined ||
                     item.ProjectsDocsJSON == null
@@ -1007,10 +1079,7 @@ alert(idNum)
                               
                             </span>  </div>
                             <div className="tabcss mb-2 sameh mt-2 me-1 ">
-                            <span
-                              className="text-nowrap mb-0 d-inline-block"
-                              onClick={sendanEmail}
-                            >
+                            <span className="text-nowrap mb-0 d-inline-block"  onClick={() => sendanEmail(item)} >
                               <Share size={14} /> Share by email 
                             </span>
                             </div>
@@ -1364,36 +1433,37 @@ alert(idNum)
                       <div className="col-md-3 mobile-w3">
 
 <div className="card mobile-5 mt-3"  style={{ borderRadius: "22px" }}>
-  <div className="card-body pb-3 gheight">
-    <h4 className="header-title font-16 text-dark fw-bold mb-0"  style={{ fontSize: "20px" }}>Project Owner</h4>
-    <h1 className="text-muted font-14 mt-3"><p className="text-dark font-16 text-center mb-2"> keerti jain</p>
-    <p className="text-muted font-14 text-center mb-1">Cloud Infrastructure Alchemist</p>
-    <p className="text-muted font-12 text-center">keertijain@officeindia.onmicrosoft.com  </p>
-    </h1></div>
+<div className="card-body pb-3 gheight">
+                          {}
+                          <h4 className="header-title font-16 text-dark fw-bold mb-0"  style={{ fontSize: "20px" }}>Project Owner</h4>
+                          <h1 className="text-muted font-14 mt-3"><p className="text-dark font-16 text-center mb-2"> {item.Author.Title}</p>
+                          {/* <p className="text-muted font-14 text-center mb-1">Cloud Infrastructure Alchemist</p> */}
+                          <p className="text-muted font-12 text-center">{item.Author.EMail} </p>
+                          </h1></div>
     </div>
 
 <div className="card mobile-5 mt-3"  style={{ borderRadius: "22px" }}>
   <div className="card-body pb-3 gheight">
     <h4 className="header-title font-16 text-dark fw-bold mb-0"  style={{ fontSize: "20px" }}>Project Members</h4>
      {/* {argcurrentgroupuser */}
-{argcurrentgroupuser[0]?.TeamMembers?.length > 0 && argcurrentgroupuser[0]?.TeamMembers?.map(
-(id: any, idx: any) => {
-if (idx ) {
-return (
-<div>
+     {argcurrentgroupuser[0]?.TeamMembers?.length > 0 && argcurrentgroupuser[0]?.TeamMembers?.map(
+  (id: any, idx: any) => {
+    if (idx ) {
+      return (
+        <div>
 <img
-// style={{
-//   margin:
-//     index == 0
-//       ? "0 0 0 0"
-//       : "0 0 0px -12px",
-// }}
-src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-className="rounded-circlecss img-thumbnail avatar-xl"
-alt="profile-image"
-/>
-<p>{id?.Title} </p>
-<img
+          // style={{
+          //   margin:
+          //     index == 0
+          //       ? "0 0 0 0"
+          //       : "0 0 0px -12px",
+          // }}
+          src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+          className="rounded-circlecss img-thumbnail avatar-xl"
+          alt="profile-image"
+        />
+        <p>{id?.Title} </p>
+        <img
 
 src={require("../assets/calling.png")}
 
@@ -1401,24 +1471,24 @@ className="alignright"
 
 onClick={() =>
 
-window.open(
+  window.open(
 
-`https://teams.microsoft.com/l/call/0/0?users=${id.EMail}`,
+    `https://teams.microsoft.com/l/call/0/0?users=${id.EMail}`,
 
-"_blank"
+    "_blank"
 
-)
+  )
 
 }
 
 alt="Call"
 
 />
-</div>
-
-);
-}
-}
+        </div>
+        
+      );
+    }
+  }
 )}
      {/* } */}
     

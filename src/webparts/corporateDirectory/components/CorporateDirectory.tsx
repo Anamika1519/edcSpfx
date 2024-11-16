@@ -47,7 +47,18 @@ import * as XLSX from "xlsx";
 import "../../announcementmaster/components/announcementMaster.scss";
 
 import "../../../CustomJSComponents/CustomTable/CustomTable.scss";
+import { WebPartContext } from "@microsoft/sp-webpart-base";
+import { MSGraphClientV3  } from "@microsoft/sp-http";
+import { toLower } from "lodash";
 
+export interface IUserItem {
+  displayName: string;
+  mail: string;
+  userPrincipalName: string;
+  jobTitle: string;
+  mobilePhone: string;
+  companyName: string;    
+}
 const CorporateDirectoryContext = ({ props }: any) => {
 
   const sp: SPFI = getSP();
@@ -99,7 +110,9 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
     Department: "",
 
-    MobilePhone: ""
+    MobilePhone: "",
+
+    companyName:""
 
   });
 
@@ -333,16 +346,41 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
       // Fetch the user list, excluding the current user
 
-      const userList = await sp.web.lists
+      const userListSP = await sp.web.lists
 
         .getByTitle("User Information List")
+        .items
+        .select("ID", "Title", "EMail", "Department", "JobTitle", "Picture", "MobilePhone","WorkPhone","Name")
 
-        .items.select("ID", "Title", "EMail", "Department", "JobTitle", "Picture", "MobilePhone","WorkPhone")
-
-        .filter(`EMail ne null and ID ne ${currentUser.Id}`)
+        .filter(`EMail ne null and ID ne ${currentUser.Id}`) // content tyep eq person
 
         ();
 
+      // console.log("userList",userListSP);
+      // let currentWPContext:WebPartContext=props.props.context;  
+      let currentWPContext:WebPartContext=props.context;  
+      // console.log("props",props);
+      const msgraphClient:MSGraphClientV3=await currentWPContext.msGraphClientFactory.getClient('3');
+      const m265userList= await msgraphClient.api("users")
+          .version("v1.0")
+          .select("displayName,mail,jobTitle,mobilePhone,companyName,userPrincipalName")
+          .get();
+      // console.log("m265userList",m265userList);
+
+      //Adding dummy companies to users for testing
+      //m265userList.value=m265userList.value.map((m:any)=>{let x=m; x['companyName']='dunnycommpany'; return x;});
+     
+     let userList:any[]=[];
+
+     userList=userListSP.map(usr=>{
+         let musrs=  m265userList.value.filter((usr1:any)=>{ return toLower(usr1.mail)==toLower(usr.EMail)});
+         if(musrs.length>0)
+         {
+          usr['companyName']=musrs[0]['companyName'];
+         }
+         else usr['companyName']='NA';
+         return usr;
+     })
   
 
       const initialLoadingStatus: Record<number, boolean> = {};
@@ -655,10 +693,10 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
           item?.EMail.toLowerCase().includes(filters.Email.toLowerCase())) &&
 
-        (filters.MobilePhone === '' || item?.MobilePhone.toLowerCase().includes(filters.MobilePhone.toLowerCase()))
+          (filters.MobilePhone === '' || item?.MobilePhone.toLowerCase().includes(filters.MobilePhone.toLowerCase()))   &&
 
-        // (filters.Department === '' || item?.Department.toLowerCase().includes(filters.Department.toLowerCase()))
-
+          (filters.companyName === '' || ((item?.companyName)?item?.companyName.toLowerCase().includes(filters.companyName.toLowerCase()):false))
+  
       );
 
     });
@@ -759,7 +797,8 @@ const CorporateDirectoryContext = ({ props }: any) => {
       Email: item.EMail,
 
       Department: item?.Department != null ? item?.Department : "NA",
-      WorkPhone:item?.WorkPhone
+      WorkPhone:item?.WorkPhone,
+      Entity: item?.companyName != null ? item?.companyName : "NA",
 
     }));
 
@@ -1302,13 +1341,23 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                               >
 
-                                <span data-tooltip={item.WorkPhone}>
+                                <span data-tooltip={item.companyName}>
 
-                                  {truncateText(item.WorkPhone != null
+                                  {/* {truncateText(item.WorkPhone != null
 
                                     ? item.WorkPhone
 
-                                    : " NA ", 10)}
+                                    : " NA ", 10)} */}
+                                                        {
+                                  // truncateText(item.WorkPhone != null
+
+                                  //   ? item.WorkPhone
+
+                                  truncateText(item.companyName != null
+
+                                    ? item.companyName
+
+                                    : " NA ", 25)}
 
                                 </span>
 
@@ -1747,7 +1796,79 @@ const CorporateDirectoryContext = ({ props }: any) => {
                                     </div>
 
                                   </th>
+                                  <th
 
+style={{
+
+  minWidth: "100px",
+
+  maxWidth: "100px",
+
+}}
+
+>
+
+<div className="d-flex flex-column bd-highlight ">
+
+  <div
+
+    className="d-flex  pb-2"
+
+    style={{
+
+      justifyContent: "space-between",
+
+    }}
+
+  >
+
+    {" "}
+
+    <span>Entity</span>{" "}
+
+    <span
+
+      onClick={() =>
+
+        handleSortChange("companyName")
+
+      }
+
+    >
+
+      <FontAwesomeIcon icon={faSort} />{" "}
+
+    </span>
+
+  </div>
+
+  <div className=" bd-highlight">
+
+    {" "}
+
+    <input
+
+      type="text"
+
+      placeholder="Filter by Entity"
+
+      onChange={(e) =>
+
+        handleFilterChange(e, "companyName")
+
+      }
+
+      className="inputcss"
+
+      style={{ width: "100%" }}
+
+    />
+
+  </div>
+
+</div>
+
+</th>
                                   <th
 
                                     style={{
@@ -1983,7 +2104,15 @@ const CorporateDirectoryContext = ({ props }: any) => {
                                         <td>{item.ID}</td>
 
                                         <td>{item.EMail}</td>
+                                        <td>
+                                        {item?.companyName != null
 
+                                          ? item?.companyName
+
+                                          : "NA"}
+
+
+                                        </td>
 
                                         <td>
 

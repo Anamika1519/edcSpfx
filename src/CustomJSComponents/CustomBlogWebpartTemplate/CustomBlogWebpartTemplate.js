@@ -10,6 +10,7 @@ import moment from 'moment';
 import {getCurrentUserProfileEmail} from "../../APISearvice/CustomService";
 import {fetchBlogdata,fetchBookmarkBlogdata,fetchPinstatus} from "../../APISearvice/BlogService"
 const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
+    const [itemsToShow, setItemsToShow] = useState(2); 
     const [copySuccess, setCopySuccess] = useState('');
     const [show, setShow] = useState(false)
     const [NewsData, setNews] = useState([])
@@ -193,11 +194,22 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
         }
     
       };
-    const sendanEmail =()=>
-    {
-        window.open("https://outlook.office.com/mail/inbox");
- 
-    }
+      const sendanEmail = (item) => {
+        // window.open("https://outlook.office.com/mail/inbox");
+      
+         const subject ="Event link-"+ item.EventName;
+         const body = 'Here is the link to the event:'+ `${siteUrl}/SitePages/EventDetailsCalendar.aspx?${item.Id}`;
+      
+        const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      
+        // Open the link to launch the default mail client (like Outlook)
+        window.location.href = mailtoLink;
+       };
+    const loadMore = () => {
+        event.preventDefault()
+        event.stopImmediatePropagation()
+        setItemsToShow(itemsToShow + 2); // Increase the number by 8
+      };
     return (
         <><div className="row mt-4" style={{ paddingLeft: '0.5rem' }}>
             {blogData.length > 0 ?
@@ -292,7 +304,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
             <div className="tab-content mt-2">
                 <div className="tab-pane show active" id="home1" role="tabpanel">
                     {filteredBlogItems.length > 0 ?
-                        filteredBlogItems.map(item => {
+                         filteredBlogItems.slice(0, itemsToShow).map(item => {
                             const AnnouncementandNewsBannerImage = item.BlogBannerImage == undefined || item.BlogBannerImage == null ? "" : JSON.parse(item.BlogBannerImage);
  
  
@@ -336,7 +348,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                                         </div>
                                                         {showDropdownId === item.Id && (
                                                             <div className="dropdown-menu dropcss" isMenuOpenshareref={menuRef}>
-                                                                <a className="dropdown-item dropcssItem" onClick={sendanEmail}>Share by email</a>
+                                                                <a className="dropdown-item dropcssItem" onClick={() => sendanEmail(item)}>Share by email</a>
                                                                 <a className="dropdown-item dropcssItem" onClick={() => copyToClipboard(item.Id)}>
                                                                     Copy Link
                                                                 </a>
@@ -365,6 +377,13 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                         ) : null}
  
                 </div>
+                {itemsToShow < blogData.length && (
+                      <div className="col-12 text-center mt-3">
+                        <button onClick={loadMore} className="btn btn-primary">
+                          Load More
+                        </button>
+                      </div>
+                    )}
             </div></>
  
     )

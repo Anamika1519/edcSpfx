@@ -470,9 +470,17 @@ const BlogDetailsContext = ({ props }: any) => {
   ];
   //#endregion
   console.log(ArrDetails, "console.log(ArrDetails)");
-  const sendanEmail = () => {
-    window.open("https://outlook.office.com/mail/inbox");
-  };
+  const sendanEmail = (item:any) => {
+    // window.open("https://outlook.office.com/mail/inbox");
+  
+     const subject ="Event link-"+ item.EventName;
+     const body = 'Here is the link to the event:'+ `${siteUrl}/SitePages/EventDetailsCalendar.aspx?${item.Id}`;
+  
+    const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  
+    // Open the link to launch the default mail client (like Outlook)
+    window.location.href = mailtoLink;
+   };
   return (
     <div id="wrapper" ref={elementRef}>
       <div className="app-menu" id="myHeader">
@@ -517,10 +525,7 @@ const BlogDetailsContext = ({ props }: any) => {
                                   {moment(item.Created).format("DD-MMM-YYYY")}{" "}
                                   &nbsp; &nbsp; &nbsp;|
                                 </span>
-                                <span
-                                  className="text-nowrap mb-0 d-inline-block"
-                                  onClick={sendanEmail}
-                                >
+                                <span className="text-nowrap mb-0 d-inline-block"  onClick={() => sendanEmail(item)} >
                                   <Share size={14} /> Share by email &nbsp; &nbsp;
                                   &nbsp;|&nbsp; &nbsp; &nbsp;
                                 </span>
