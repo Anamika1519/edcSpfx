@@ -858,7 +858,7 @@ const togglePopup  =async () => {
   const ids = window.location.search;
 const originalString = ids;
 const idNum = originalString.substring(1);
-alert(idNum)
+//alert(idNum)
 
   const getdata :any= await sp.web.lists.getByTitle('ARGProject').items.getById(parseInt(idNum))()
   console.log(getdata , "get data ")
@@ -1209,9 +1209,9 @@ alert(idNum)
                         <h3 style={{width:'100%', textAlign:'left',borderBottom:'1px solid #efefef',  padding:'15px', fontSize:'18px'}} className="modal-title">Documents</h3>
                         <Modal.Header closeButton style={{position:'absolute', right:'0px', borderBottom:'0px solid #ccc'}}>
                           {/* <Modal.Title> {ProjectsDocsJSON.length} Documents</Modal.Title> */}
-                          <Button variant="success" onClick={() => uploadfileinfolder()}>
+                          {/* <Button variant="success" onClick={() => uploadfileinfolder()}>
             Upload File
-          </Button>
+          </Button> */}
           <ul>
           {selectedFiles.map((file, index) => (
             <li key={index}>
@@ -1243,6 +1243,9 @@ alert(idNum)
 </div>
 
 </label>
+<Button variant="success" onClick={() => uploadfileinfolder()}>
+            Upload File
+          </Button>
                         </Modal.Header>
                         <Modal.Body>
                         <div className="file-cards row">
@@ -1459,7 +1462,7 @@ alert(idNum)
           //       : "0 0 0px -12px",
           // }}
           src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-          className="rounded-circlecss img-thumbnail avatar-xl"
+          className="rounded-circlecss6 img-thumbnail avatar-xl"
           alt="profile-image"
         />
         <p>{id?.Title} </p>

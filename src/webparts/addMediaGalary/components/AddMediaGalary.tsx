@@ -1876,7 +1876,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
       const userIds = rows[i].approvedUserListupdate.map((user: any) => user.id);
 
       let arrPost = {
-
+        LevelSequence:i+1,
         ContentId: contentId,
 
         ContentName: "ARGMediaGallery",

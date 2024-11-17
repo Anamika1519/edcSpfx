@@ -356,8 +356,10 @@ const LeaderboardContext = ({ props }: any) => {
                           className="text-center card mb-3"
                         >
                           <div className="card-body">
-                          <div className="product-price-tag positiont postion-absolute text-primary rounded-circle newc" title="Position">1</div>
-
+                          <div className="product-price-tag positiont postion-absolute text-primary rounded-circle newc" title="Position">{item.position < 10
+                                        ? `0${item.position}`
+                                        : item.position}
+                                      {index + 1}</div>
                             {/* Card Content */}
                             <div className="pt-2 pb-2">
                               <a style={{ position: "relative" }}>

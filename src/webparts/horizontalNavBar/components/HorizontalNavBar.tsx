@@ -13,6 +13,10 @@ import { addActivityLeaderboard, getARGNotificationHistory, getCurrentUserName, 
 import "../../../CustomCss/mainCustom.scss"
 import moment from 'moment';
 import NotificationList from '../../../CustomJSComponents/CustomForm/NotificationList';
+import { result } from 'lodash';
+
+import { ListTitleTiSearchCategoryMapping } from './IHorizontalNavBarProps';
+
 interface ListFieldsMapping {
   ARGAnnouncementAndNews: string;
   ARGBlogs: string;
@@ -59,6 +63,7 @@ const HorizontalNavbar = ({ _context, siteUrl }: any) => {
   const [currentUser, setCurrentUser] = React.useState("")
   const [currentUserEmail, setCurrentUserEmail] = React.useState("")
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  const [groupedSearchResults, setGroupedSearchResults] = useState<any>({});
   // Helper function to generate unique IDs
   const generateId = () => Math.floor(Math.random() * 100000);
   const [issearchOpen, setIsSearchOpen] = React.useState(false);
@@ -69,7 +74,25 @@ const HorizontalNavbar = ({ _context, siteUrl }: any) => {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [NotificationArray, setNotificationArray] = useState([]);
+  function groupByFn(array: any, keyGetter: any) {
 
+    return array.reduce((result: any, currentItem: any) => {
+
+      const key = keyGetter(currentItem);
+
+      if (!result[key]) {
+
+        result[key] = [];
+
+      }
+
+      result[key].push(currentItem);
+
+      return result;
+
+    }, {});
+
+  }
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
@@ -225,9 +248,15 @@ const HorizontalNavbar = ({ _context, siteUrl }: any) => {
 
     if (queryText && queryText.length > 2) {
       const searchResults = await searchAllLists(queryText);
-      console.log(searchResults);
+      let grped = groupByFn(searchResults, (res: any) => res.ListTitle)
+
+      console.log("grped results", grped);
+      //console.log(searchResults);
 
       setSearchResults(searchResults);
+      setGroupedSearchResults(grped);
+
+      console.log("grouped resuls after fncall", groupedSearchResults);
     }
   };
   const handleSearchClick = async (result: any) => {
@@ -320,16 +349,41 @@ const HorizontalNavbar = ({ _context, siteUrl }: any) => {
 
                 <div className={searchResults.length > 0 ? 'scrollbar' : ''} id={searchResults.length > 0 ? 'style-6' : ''}>
                   {searchResults.length > 0 && <span style={{ padding: '0.85rem' }}>Found {searchResults.length} results</span>}
+                  {console.log("grped searchResults dropfown", groupedSearchResults)}
                   {searchResults.length > 0 ? (
-                    searchResults.map((result, index) => (
-                      <div key={index} className="search-result-item">
+                                        Object.keys(groupedSearchResults).map((grpreskey: any, grpind: number) => (
 
-                        <a onClick={() => handleSearchClick(result)} style={{ padding: '0.85rem' }}>
-                          <h4 className='eclipcsss' style={{ fontSize: '0.9rem' }}>{result.Title || result.ProjectName || result.EventName || result.Contentpost}</h4>
-                          {/* {result.Description && <p dangerouslySetInnerHTML={{ __html: result.Description }}></p>} */}
-                          {result.Overview && <p className='eclipcsss' style={{ fontSize: '0.7rem' }}>{result.Overview}</p>}
-                          {result.EventAgenda && <p className='eclipcsss' style={{ fontSize: '0.7rem' }}>{result.EventAgenda}</p>}
-                        </a>
+
+
+                                          <div>
+                    
+                                            <div key={grpind}>{ListTitleTiSearchCategoryMapping[grpreskey]}({groupedSearchResults[grpreskey].length})</div>
+                    
+                                            {
+                    
+                                              groupedSearchResults[grpreskey].map((result: any, index: any) => (
+                    
+                                                <div key={index} className="search-result-item">
+                    
+                                                  <a onClick={() => handleSearchClick(result)} style={{ padding: '0.85rem' }}>
+                    
+                                                    <h4 className='eclipcsss' style={{ fontSize: '0.9rem' }}>{result.Title || result.ProjectName || result.EventName || result.Contentpost}</h4>
+                    
+                                                    {/* {result.Description && <p dangerouslySetInnerHTML={{ __html: result.Description }}></p>} */}
+                    
+                                                    {result.Overview && <p className='eclipcsss' style={{ fontSize: '0.7rem' }}>{result.Overview}</p>}
+                    
+                                                    {result.EventAgenda && <p className='eclipcsss' style={{ fontSize: '0.7rem' }}>{result.EventAgenda}</p>}
+                    
+                                                  </a>
+                    
+                                                </div>
+                    
+                    
+                    
+                                              ))
+                    
+                                            }
                       </div>
                     ))
                   ) : (
@@ -352,7 +406,7 @@ const HorizontalNavbar = ({ _context, siteUrl }: any) => {
 
             <div id="myDropdownBell" className={`dropdown-content  ${isOpenBell ? 'show desktoView' : ''}`} style={{ width: '320px' }}>
 
-              
+
               <NotificationList NotificationArray={NotificationArray} handleNotificationClick={handleNotificationClick} />
 
             </div>

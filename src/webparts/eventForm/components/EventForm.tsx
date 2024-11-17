@@ -1161,6 +1161,7 @@ const HelloWorldContext = ({ props }: any) => {
     for (let i = 0; i < rows.length; i++) {
       const userIds = rows[i].approvedUserListupdate.map((user: any) => user.id);
       let arrPost = {
+        LevelSequence:i+1,
         ContentId: contentId,
         ContentName: "ARGEventMaster",
         EntityMasterId: EntityId,

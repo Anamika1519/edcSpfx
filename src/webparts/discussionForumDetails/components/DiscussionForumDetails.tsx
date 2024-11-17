@@ -21,8 +21,8 @@ import {
 } from "../../../APISearvice/CustomService";
 // import { IAnnouncementdetailsProps } from './IAnnouncementdetailsProps';
 import { decryptId } from "../../../APISearvice/CryptoService";
-import { Calendar, Link, Share ,FilePlus } from "react-feather";
-import { Modal, Card ,Dropdown , Button} from "react-bootstrap";
+import { Calendar, Link, Share, FilePlus } from "react-feather";
+import { Modal, Card, Dropdown, Button } from "react-bootstrap";
 import moment from "moment";
 import UserContext from "../../../GlobalContext/context";
 import context from "../../../GlobalContext/context";
@@ -63,10 +63,10 @@ interface Comment {
   userHasLiked: boolean; // New property to track if the user liked this comment
   UserProfile: string;
 }
-let filemanager :any =""
-let commentCount:any;
-let likeCount:any;
-let isClosed=false;
+let filemanager: any = ""
+let commentCount: any;
+let likeCount: any;
+let isClosed = false;
 const DiscussionForumDetailsContext = ({ props }: any) => {
   const sp: SPFI = getSP();
   console.log(sp, "sp");
@@ -93,7 +93,7 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
 
     ApiLocalStorageData();
     getApiData()
-ApICallData();
+    ApICallData();
     const showNavbar = (
       toggleId: string,
       navId: string,
@@ -138,11 +138,11 @@ ApICallData();
 
     setArrDetails(await getDiscussionForumDetailsById(sp, Number(idNum)));
   };
-  
+
   //setInterval(() => {
-   // getApiData()
- // }, 1000)
-  
+  // getApiData()
+  // }, 1000)
+
   const getApiData = () => {
 
     let initialComments: any[] = [];
@@ -201,7 +201,7 @@ ApICallData();
 
         }
         setComments(initialArray)
-       
+
       });
   }
   const ApICallData = async () => {
@@ -275,7 +275,8 @@ ApICallData();
           ContentName: ArrDetails[0].Title,
           ActionUserId: CurrentUser.Id,
           DeatilPage: "DiscussionDetails",
-          ReadStatus: false
+          ReadStatus: false,
+          
         }
         const nofiArr = await addNotification(notifiedArr, sp)
         console.log(nofiArr, 'nofiArr');
@@ -343,7 +344,12 @@ ApICallData();
                   ContentName: ArrDetails[0].Title,
                   ActionUserId: CurrentUser.Id,
                   DeatilPage: "DiscussionDetails",
-                  ReadStatus: false
+                  ReadStatus: false,
+                  ContentComment: updatedComments[commentIndex].Comments,
+
+                  ContentCommentId: updatedComments[commentIndex].Id,
+
+                  CommentOnReply: ""
                 }
                 const nofiArr = await addNotification(notifiedArr, sp)
                 console.log(nofiArr, 'nofiArr');
@@ -385,7 +391,8 @@ ApICallData();
                   ContentName: ArrDetails[0].Title,
                   ActionUserId: CurrentUser.Id,
                   DeatilPage: "DiscussionDetails",
-                  ReadStatus: false
+                  ReadStatus: false,
+                  
                 }
                 const nofiArr = await addNotification(notifiedArr, sp)
                 console.log(nofiArr, 'nofiArr');
@@ -450,7 +457,12 @@ ApICallData();
                 ContentName: ArrDetails[0].Title,
                 ActionUserId: CurrentUser.Id,
                 DeatilPage: "DiscussionDetails",
-                ReadStatus: false
+                ReadStatus: false,
+                ContentComment: updatedComments[commentIndex].Comments,
+
+                ContentCommentId: updatedComments[commentIndex].Id,
+
+                CommentOnReply: newReplyJson.Comments
               }
               const nofiArr = await addNotification(notifiedArr, sp)
               console.log(nofiArr, 'nofiArr');
@@ -478,24 +490,24 @@ ApICallData();
   ];
   //#endregion
   console.log(ArrDetails, "console.log(ArrDetails)");
-  const sendanEmail = (item:any) => {
+  const sendanEmail = (item: any) => {
     // window.open("https://outlook.office.com/mail/inbox");
-  
-     const subject ="Event link-"+ item.EventName;
-     const body = 'Here is the link to the event:'+ `${siteUrl}/SitePages/EventDetailsCalendar.aspx?${item.Id}`;
-  
+
+    const subject = "Event link-" + item.EventName;
+    const body = 'Here is the link to the event:' + `${siteUrl}/SitePages/EventDetailsCalendar.aspx?${item.Id}`;
+
     const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-  
+
     // Open the link to launch the default mail client (like Outlook)
     window.location.href = mailtoLink;
-   };
+  };
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [showDropdownId, setShowDropdownId] = React.useState(null);
   // const [files, setFiles] = useState([]);
 
 
   const [showModal, setShowModal] = useState(false);
-  const [error, setError] = useState<string>('');  
+  const [error, setError] = useState<string>('');
   // open modal for all file 
   const openModal = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     getAllFilesForProject()
@@ -506,26 +518,26 @@ ApICallData();
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setLoading(true);
     const files = Array.from(e.target.files || []);  // Ensure files is an array of type File[]
-  
+
     try {
       const allowedTypes = [
-        'image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml', 
-        'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 
-        'application/pdf', 'application/vnd.ms-excel', 
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 
+        'image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml',
+        'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'application/pdf', 'application/vnd.ms-excel',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
         'text/csv', 'text/tsx'
       ];
-  
+
       // Filter valid files based on MIME types
       const filteredFiles = files.filter(file => allowedTypes.includes(file.type));
-  
+
       if (filteredFiles.length === 0) {
         setError("Only PNG, JPG, SVG, DOC, DOCX, PDF, EXCEL, PPT, CSV, and TSX files are allowed.");
         setLoading(false);
         return;
       }
-  
+
       setError('');
       setSelectedFiles(filteredFiles);
     } catch (error) {
@@ -535,27 +547,27 @@ ApICallData();
       setLoading(false);
     }
   };
-  const uploadfileinfolder = async()=>{
-      console.log("hernter here in ")
+  const uploadfileinfolder = async () => {
+    console.log("hernter here in ")
     for (const file of selectedFiles) {
 
       try {
         console.log(`Uploading file: ${file.name}`);
         console.log(`filemanager: ${filemanager}`);
-        
+
         // Reference the folder by server-relative path
         const uploadFolder = sp.web.getFolderByServerRelativePath(`${filemanager}`);
-        console.log(uploadFolder , "uplaodfold")
+        console.log(uploadFolder, "uplaodfold")
         // Upload the file using addChunked (use appropriate chunk size if needed)
         const uploadResult = await uploadFolder.files.addChunked(file.name, file)
-        if(uploadResult){
+        if (uploadResult) {
           await Swal.fire(
             'Uploaded!',
             'The file has been successfully Uploaded.',
             'success'
-        );
-        setSelectedFiles([])
-        // getAllFilesForProject()
+          );
+          setSelectedFiles([])
+          // getAllFilesForProject()
         }
         // alert(uploadResult)
         console.log(`Upload successful for file: ${file.name}`);
@@ -563,7 +575,7 @@ ApICallData();
         console.error(`Error uploading file: ${file.name}`, error);
       }
     }
-        
+
 
   }
   const removeFile = (fileName: string) => {
@@ -572,45 +584,45 @@ ApICallData();
 
   // Function to upload files to the document library
 
-  const[argcurrentgroupuser, setArgcurrentgroupuser] = useState([])
+  const [argcurrentgroupuser, setArgcurrentgroupuser] = useState([])
 
   const [files, setFiles] = useState([]);
   async function getAllFilesForProject() {
-    
-    
+
+
     console.log(filemanager, "file manager")
     const response = await sp.web.getFolderByServerRelativePath(`${filemanager}`).files();
     console.log(response, "resonse")
     setFiles(response)
-    
+
   }
 
 
 
-  const handlePreviewFile = (fileUrl:any) => {
+  const handlePreviewFile = (fileUrl: any) => {
     window.open(fileUrl, '_blank'); // Open the file in a new tab
   };
 
-const [isPopupVisible, setPopupVisible] = useState(false);
+  const [isPopupVisible, setPopupVisible] = useState(false);
 
 
 
 
-// this is pop up when folder create click 
-const togglePopup  =async () => {
-  const ids = window.location.search;
-const originalString = ids;
-const idNum = originalString.substring(1);
-alert(idNum)
+  // this is pop up when folder create click 
+  const togglePopup = async () => {
+    const ids = window.location.search;
+    const originalString = ids;
+    const idNum = originalString.substring(1);
+    alert(idNum)
 
-  const getdata :any= await sp.web.lists.getByTitle('ARGDiscussionForum').items.getById(parseInt(idNum))()
-  console.log(getdata , "get data ")
+    const getdata: any = await sp.web.lists.getByTitle('ARGDiscussionForum').items.getById(parseInt(idNum))()
+    console.log(getdata, "get data ")
 
     if (getdata.DiscussionInProgress === null || getdata.DiscussionInProgress === "") {
-    
+
       setPopupVisible(!isPopupVisible);
     } else if (getdata.DiscussionInProgress === "In Progress") {
-    
+
       Swal.fire({
         title: 'Folder is in progress!',
         text: 'Please wait until the process is complete.',
@@ -626,14 +638,14 @@ alert(idNum)
         confirmButtonText: 'OK',
       });
     }
-};
+  };
 
   const [name, setName] = useState('');
   const [Overview, setOverview] = useState('');
 
   // Create folder pop up
-  const UpdateItemAndCreateFolder = async (e:any) => {
-    e.preventDefault(); 
+  const UpdateItemAndCreateFolder = async (e: any) => {
+    e.preventDefault();
 
 
     if (!name || !Overview) {
@@ -645,24 +657,24 @@ alert(idNum)
         confirmButtonText: 'OK',
       });
     } else {
-    
+
       try {
 
         console.log('Form submitted:', { name, Overview });
         const ids = window.location.search;
         const originalString = ids;
         const idNum = originalString.substring(1);
-        console.log(name, "name" , Overview , "overview")
+        console.log(name, "name", Overview, "overview")
         const updatedValues = {
-  
-          DiscussionFolderName : name,
+
+          DiscussionFolderName: name,
           DiscussionOverview: Overview,
           DiscussionInProgress: "In Progress"
         };
-    
-     
-         await sp.web.lists.getByTitle('ARGDiscussionForum').items.getById(parseInt(idNum)).update(updatedValues);
-    
+
+
+        await sp.web.lists.getByTitle('ARGDiscussionForum').items.getById(parseInt(idNum)).update(updatedValues);
+
         Swal.fire({
           title: 'Success!',
           text: 'The form was submitted successfully.',
@@ -681,124 +693,124 @@ alert(idNum)
       }
     }
   };
-  const DeleteFileFromFileMaster =async (fileId:any) =>{
+  const DeleteFileFromFileMaster = async (fileId: any) => {
     try {
       // Show confirmation alert using Swal
       const result = await Swal.fire({
-          title: 'Are you sure?',
-          text: 'Do you really want to delete this file? This action cannot be undone.',
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#d33',
-          cancelButtonColor: '#3085d6',
-          confirmButtonText: 'Yes, delete it!',
-          cancelButtonText: 'Cancel',
+        title: 'Are you sure?',
+        text: 'Do you really want to delete this file? This action cannot be undone.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'Cancel',
       });
 
       // Check if user confirmed
       if (result.isConfirmed) {
-          // Delete the file
-          const data=await sp.web.getFileById(fileId).delete();
-          // Success alert
-          await Swal.fire(
-              'Deleted!',
-              'The file has been deleted successfully.',
-              'success'
-          );
-          getAllFilesForProject()
+        // Delete the file
+        const data = await sp.web.getFileById(fileId).delete();
+        // Success alert
+        await Swal.fire(
+          'Deleted!',
+          'The file has been deleted successfully.',
+          'success'
+        );
+        getAllFilesForProject()
       } else {
-          // Optionally handle the cancel action
-          await Swal.fire(
-              'Cancelled',
-              'The file was not deleted.',
-              'info'
-          );
+        // Optionally handle the cancel action
+        await Swal.fire(
+          'Cancelled',
+          'The file was not deleted.',
+          'info'
+        );
       }
-  } catch (error) {
+    } catch (error) {
       console.error('Error deleting file:', error);
       // Show error alert
       await Swal.fire(
-          'Error!',
-          'There was an error deleting the file.',
-          'error'
+        'Error!',
+        'There was an error deleting the file.',
+        'error'
       );
-  }
+    }
   }
 
   // Fetch comment And likes Count 
-  const [commentData,setCommentData]=useState([]);
-  console.log("commentData",commentData);
-  const getImpressionCountDetails=()=>{
-    let cCount=0;
-    let lCount=0;
+  const [commentData, setCommentData] = useState([]);
+  console.log("commentData", commentData);
+  const getImpressionCountDetails = () => {
+    let cCount = 0;
+    let lCount = 0;
 
-    commentData.forEach((comment)=>{
-      if(comment.CommentsCount === null){
+    commentData.forEach((comment) => {
+      if (comment.CommentsCount === null) {
         cCount++;
-      }else{
-        cCount+=comment.CommentsCount;
+      } else {
+        cCount += comment.CommentsCount;
       }
-      if(comment.LikesCount !== null){
-        lCount+=comment.LikesCount;
+      if (comment.LikesCount !== null) {
+        lCount += comment.LikesCount;
       }
     })
-    commentCount=cCount;
-    likeCount=lCount;
-    console.log("commentCount",cCount);
-    console.log("likeCount",lCount);
+    commentCount = cCount;
+    likeCount = lCount;
+    console.log("commentCount", cCount);
+    console.log("likeCount", lCount);
   }
   getImpressionCountDetails();
 
-  const UpdateDiscussion= (Id:any,authorId:any,discussionStatus:any)=>{
-    console.log("Author Id",authorId);
-    console.log("currentUserDetails",CurrentUser)
-    console.log("discussionStatus",discussionStatus)
-    if(authorId === CurrentUser.Id){
-      if(discussionStatus === "Close"){
+  const UpdateDiscussion = (Id: any, authorId: any, discussionStatus: any) => {
+    console.log("Author Id", authorId);
+    console.log("currentUserDetails", CurrentUser)
+    console.log("discussionStatus", discussionStatus)
+    if (authorId === CurrentUser.Id) {
+      if (discussionStatus === "Close") {
         Swal.fire("Discussion Already Closed");
-      }else{ 
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, Close This Discussion!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        sp.web.lists.getByTitle("ARGDiscussionForum").items.getById(Id).update({
-          ARGDiscussionStatus: "Close"
-        }).then(async () => {
-          // setDataproject(await fetchprojectdata(sp));
-          Swal.fire("Updated!", "Discussion status has been set to 'Close'.", "success");
-          getDiscussionForumDetailsById(Id)
-        }).catch((error) => {
-          console.error("Error updating project status:", error);
-          Swal.fire("Error", "There was an issue updating the Discussion status.", "error");
+      } else {
+        Swal.fire({
+          title: "Are you sure?",
+          text: "You won't be able to revert this!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, Close This Discussion!",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            sp.web.lists.getByTitle("ARGDiscussionForum").items.getById(Id).update({
+              ARGDiscussionStatus: "Close"
+            }).then(async () => {
+              // setDataproject(await fetchprojectdata(sp));
+              Swal.fire("Updated!", "Discussion status has been set to 'Close'.", "success");
+              getDiscussionForumDetailsById(Id)
+            }).catch((error) => {
+              console.error("Error updating project status:", error);
+              Swal.fire("Error", "There was an issue updating the Discussion status.", "error");
+            });
+            // DeleteProjectAPI(sp, Id).then(async () => {
+            //   // setFormData({
+            //   //   ProjectName: "",
+            //   //   ProjectPriority: "",
+            //   //   ProjectPrivacy: "",
+            //   //   startDate: "",
+            //   //   dueDate: "",
+            //   //   Budget: "",
+            //   //   TeamMembers: "",
+            //   //   ProjectOverview: "",
+            //   //   ProjectFileManager:""
+            //   // });
+
+            //   setDataproject(await fetchprojectdata(sp));
+            //   Swal.fire("Deleted!", "Item has been deleted.", "success");
+            // });
+          }
         });
-        // DeleteProjectAPI(sp, Id).then(async () => {
-        //   // setFormData({
-        //   //   ProjectName: "",
-        //   //   ProjectPriority: "",
-        //   //   ProjectPrivacy: "",
-        //   //   startDate: "",
-        //   //   dueDate: "",
-        //   //   Budget: "",
-        //   //   TeamMembers: "",
-        //   //   ProjectOverview: "",
-        //   //   ProjectFileManager:""
-        //   // });
- 
-        //   setDataproject(await fetchprojectdata(sp));
-        //   Swal.fire("Deleted!", "Item has been deleted.", "success");
-        // });
       }
-    });
-  }
-  }else{
-    Swal.fire("Access Denied", "You don't have access to close this discussion.", "warning");
-  }
+    } else {
+      Swal.fire("Access Denied", "You don't have access to close this discussion.", "warning");
+    }
   }
   return (
     <div id="wrapper" ref={elementRef}>
@@ -812,43 +824,43 @@ alert(idNum)
           style={{ marginLeft: `${!useHide ? "240px" : "80px"}`, marginTop: '1rem' }}
         >
           <div className="container-fluid  paddb">
-          {isPopupVisible && (
-        <div className="popup">
-          <div className="popup-content">
-            <button className="close-btn" onClick={togglePopup}>
-              &times; {/* Cross mark */}
-            </button>
-            <h2>Popup Form</h2>
-            <form>
-              <label htmlFor="name">Folder Name:</label>
-              <input  type="text"
-        id="name"
-        name="name"
-        value={name}
-        onChange={(e) => setName(e.target.value)} />
-              <br />
-              <label htmlFor="Overview">Overview:</label>
-              <input  type="email"
-        id="Overview"
-        name="Overview"
-        value={Overview}
-        onChange={(e) => setOverview(e.target.value)} />
-              <br />
-              <button type="submit" onClick={UpdateItemAndCreateFolder}>Submit</button>
-            </form>
-          </div>
-        </div>
-      )}
+            {isPopupVisible && (
+              <div className="popup">
+                <div className="popup-content">
+                  <button className="close-btn" onClick={togglePopup}>
+                    &times; {/* Cross mark */}
+                  </button>
+                  <h2>Popup Form</h2>
+                  <form>
+                    <label htmlFor="name">Folder Name:</label>
+                    <input type="text"
+                      id="name"
+                      name="name"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)} />
+                    <br />
+                    <label htmlFor="Overview">Overview:</label>
+                    <input type="email"
+                      id="Overview"
+                      name="Overview"
+                      value={Overview}
+                      onChange={(e) => setOverview(e.target.value)} />
+                    <br />
+                    <button type="submit" onClick={UpdateItemAndCreateFolder}>Submit</button>
+                  </form>
+                </div>
+              </div>
+            )}
             <div className="row" style={{ paddingLeft: "0.5rem" }}>
               <div className="col-lg-3">
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
               </div>
             </div>
             {ArrDetails.length > 0
-              ? ArrDetails.map((item: any , index:any) => {
+              ? ArrDetails.map((item: any, index: any) => {
                 if (item.ARGDiscussionStatus === "Close") {
-                  isClosed=true
-              }
+                  isClosed = true
+                }
                 const DiscussionForumGalleryJSON =
                   item.DiscussionForumGalleryJSON == undefined ||
                     item.DiscussionForumGalleryJSON == null
@@ -1146,7 +1158,7 @@ alt="Check"
                      
                       
                     </div> */}
-                
+
                     {/* <div
                       className="row internalmedia filterable-content mt-0"
                       style={{ paddingLeft: "0.5rem" }}
@@ -1196,16 +1208,16 @@ alt="Check"
                         ></div>
                       </p>
                     </div> */}
-                     <div className="row mt-3">
-            <div className="col-md-3 mobile-w1">
-                        
-                      <p className="d-block mt-2 font-28">
-                    
-                        {item.Topic}
-                      </p>
-                      <div className="row mt-2">
-                        <div className="col-md-12 col-xl-12">
-                        {/* <div className="tabcss sameh mb-2 mt-2 me-1 activenew">
+                    <div className="row mt-3">
+                      <div className="col-md-3 mobile-w1">
+
+                        <p className="d-block mt-2 font-28">
+
+                          {item.Topic}
+                        </p>
+                        <div className="row mt-2">
+                          <div className="col-md-12 col-xl-12">
+                            {/* <div className="tabcss sameh mb-2 mt-2 me-1 activenew">
 
                         <button className="opend"
                           onClick={(e) => openModal(e)}
@@ -1214,48 +1226,48 @@ alt="Check"
                           <FilePlus /> Open Document
                         </button>
                         </div> */}
-                        <div className="tabcss mb-2 mt-2 me-1 newalign"> 
-                          <span className="pe-2 text-nowrap mb-0 d-inline-block"
-                          onClick={(e:any) => openModal(e)}>
-                          <FilePlus /> Open Document
-                          </span>  
-                        </div>
-                        <div className="tabcss mb-2 mt-2 me-1 newalign"> 
-                          <span className="pe-2 text-nowrap mb-0 d-inline-block">
-                              <Calendar size={14} />{" "}
-                              {moment(item.Created).format("DD-MMM-YYYY")}{" "}
-                              
-                          </span>  
-                        </div>
-                        <div className="tabcss mb-2 sameh mt-2 me-1 ">
-                        <span className="text-nowrap mb-0 d-inline-block"  onClick={() => sendanEmail(item)} >
-                              <Share size={14} /> Share by email 
-                            </span>
-                        </div>
-                        <div className="tabcss mb-2 sameh mt-2 me-1 ">
-                            <span
-                              className="text-nowrap mb-0 d-inline-block"
-                              onClick={togglePopup}
-                            >
-                              <FilePlus size={14} /> Create Folder 
-                            </span>
-                        </div>
-                        <div className="tabcss mb-2 sameh mt-2 me-1 ">
-                            <span
-                              className="text-nowrap mb-0 d-inline-block"
-                            > 
-                            {item.GroupType}
-                            </span>
-                        </div>
-                        <div className="tabcss mb-2 sameh mt-2 me-1 ">
-                            <span
-                              className="text-nowrap mb-0 d-inline-block"
-                              onClick={()=>UpdateDiscussion(item.Id,item.Author.ID,item.ARGDiscussionStatus)}
-                            > 
-                            Close Discussion
-                            </span>
-                        </div>
-                        {/* <div className="tabcss sameh mb-3 mt-2 me-1 ">
+                            <div className="tabcss mb-2 mt-2 me-1 newalign">
+                              <span className="pe-2 text-nowrap mb-0 d-inline-block"
+                                onClick={(e: any) => openModal(e)}>
+                                <FilePlus /> Open Document
+                              </span>
+                            </div>
+                            <div className="tabcss mb-2 mt-2 me-1 newalign">
+                              <span className="pe-2 text-nowrap mb-0 d-inline-block">
+                                <Calendar size={14} />{" "}
+                                {moment(item.Created).format("DD-MMM-YYYY")}{" "}
+
+                              </span>
+                            </div>
+                            <div className="tabcss mb-2 sameh mt-2 me-1 ">
+                              <span className="text-nowrap mb-0 d-inline-block" onClick={() => sendanEmail(item)} >
+                                <Share size={14} /> Share by email
+                              </span>
+                            </div>
+                            <div className="tabcss mb-2 sameh mt-2 me-1 ">
+                              <span
+                                className="text-nowrap mb-0 d-inline-block"
+                                onClick={togglePopup}
+                              >
+                                <FilePlus size={14} /> Create Folder
+                              </span>
+                            </div>
+                            <div className="tabcss mb-2 sameh mt-2 me-1 ">
+                              <span
+                                className="text-nowrap mb-0 d-inline-block"
+                              >
+                                {item.GroupType}
+                              </span>
+                            </div>
+                            <div className="tabcss mb-2 sameh mt-2 me-1 ">
+                              <span
+                                className="text-nowrap mb-0 d-inline-block"
+                                onClick={() => UpdateDiscussion(item.Id, item.Author.ID, item.ARGDiscussionStatus)}
+                              >
+                                Close Discussion
+                              </span>
+                            </div>
+                            {/* <div className="tabcss sameh mb-3 mt-2 me-1 ">
                             <span
                               className="text-nowrap mb-0 d-inline-block"
                               onClick={() => copyToClipboard(item.Id)}
@@ -1268,108 +1280,108 @@ alt="Check"
                               )}
                             </span>
                         </div> */}
-                          <p  style={{
-                              
+                            <p style={{
+
                               margin: "11px",
-                            }}   className="mb-2 mt-1 newt6 font-14">
-                           
-                            
-                            
-                            <div
-                              style={{
-                              
-                                position: "relative",
-                              }}
-                            >
-                              <div style={{ display: "flex", marginTop:"-6px" }}>
-                                {item?.InviteMemebers?.map(
-                                  (id: any, idx: any) => {
-                                    if (idx < 3) {
-                                      return (
-                                        <img
-                                          style={{
-                                            margin:
-                                              index == 0
-                                                ? "0 0 0 0"
-                                                : "0 0 0px -12px",
-                                                 float:"left"
-                                          }}
-                                          src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                                          className="rounded-circlecss pimg text-center img-thumbnail avatar-xl"
-                                          alt="profile-image"
-                                        />
-                                      );
+                            }} className="mb-2 mt-1 newt6 font-14">
+
+
+
+                              <div
+                                style={{
+
+                                  position: "relative",
+                                }}
+                              >
+                                <div style={{ display: "flex", marginTop: "-6px" }}>
+                                  {item?.InviteMemebers?.map(
+                                    (id: any, idx: any) => {
+                                      if (idx < 3) {
+                                        return (
+                                          <img
+                                            style={{
+                                              margin:
+                                                index == 0
+                                                  ? "0 0 0 0"
+                                                  : "0 0 0px -12px",
+                                              float: "left"
+                                            }}
+                                            src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+                                            className="rounded-circlecss pimg text-center img-thumbnail avatar-xl"
+                                            alt="profile-image"
+                                          />
+                                        );
+                                      }
                                     }
-                                  }
-                                )}
-                                {item?.InviteMemebers?.length > 3 && (
-                                  <div
-                                    className="pimg"
-                                    // onClick={() => toggleDropdown(item.Id)}
-                                    key={item.Id}
-                                  >
+                                  )}
+                                  {item?.InviteMemebers?.length > 3 && (
                                     <div
-                                      style={{
-                                        textAlign: "center",
-                                        margin:
-                                          index == 0
-                                            ? "0 0 0 0"
-                                            : "0 0 0px -12px",
-                                            float:"left"
-                                      }}
-                                      className="rounded-circlecss  text-center img-thumbnail avatar-xl"
+                                      className="pimg"
+                                      // onClick={() => toggleDropdown(item.Id)}
+                                      key={item.Id}
                                     >
-                                      +
+                                      <div
+                                        style={{
+                                          textAlign: "center",
+                                          margin:
+                                            index == 0
+                                              ? "0 0 0 0"
+                                              : "0 0 0px -12px",
+                                          float: "left"
+                                        }}
+                                        className="rounded-circlecss  text-center img-thumbnail avatar-xl"
+                                      >
+                                        +
+                                      </div>
                                     </div>
+                                  )}
+                                </div>
+                                {showDropdownId === item.Id && (
+                                  <div
+                                    className="card"
+                                    style={{
+                                      position: "absolute",
+                                      zIndex: "99",
+                                      background: "#fff",
+                                      padding: "1rem",
+                                      width: "30rem",
+                                    }}
+                                  >
+                                    {showDropdownId === item.Id &&
+                                      item?.InviteMemebers?.map(
+                                        (id: any, idx: any) => {
+                                          return (
+                                            <div className="m-1 border-bottom pb-2">
+                                              <img
+                                                style={{}}
+                                                src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+                                                className="rounded-circlecss img-thumbnail avatar-xl"
+                                                alt="profile-image"
+                                              />{" "}
+                                              {id?.EMail}
+                                            </div>
+                                          );
+                                        }
+                                      )}
                                   </div>
                                 )}
                               </div>
-                              {showDropdownId === item.Id && (
-                                <div
-                                  className="card"
-                                  style={{
-                                    position: "absolute",
-                                    zIndex: "99",
-                                    background: "#fff",
-                                    padding: "1rem",
-                                    width: "30rem",
-                                  }}
-                                >
-                                  {showDropdownId === item.Id &&
-                                    item?.InviteMemebers?.map(
-                                      (id: any, idx: any) => {
-                                        return (
-                                          <div className="m-1 border-bottom pb-2">
-                                            <img
-                                              style={{}}
-                                              src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                                              className="rounded-circlecss img-thumbnail avatar-xl"
-                                              alt="profile-image"
-                                            />{" "}
-                                            {id?.EMail}
-                                          </div>
-                                        );
-                                      }
-                                    )}
-                                </div>
-                              )}
-                            </div>
-                          </p>
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                      
 
 
-                      <div className="row ">
-                      <p
-                        style={{ lineHeight: "22px" }}
-                        className="d-block text-muted mt-2 font-14"
-                      >
-                        {item.Overview}
-                      </p>
-                     
-                    </div>
-                    {/* <div className="row internalmedia filterable-content mt-3">
+
+                        <div className="row ">
+                          <p
+                            style={{ lineHeight: "22px" }}
+                            className="d-block text-muted mt-2 font-14"
+                          >
+                            {item.Overview}
+                          </p>
+
+                        </div>
+                        {/* <div className="row internalmedia filterable-content mt-3">
                       <Modal show={showModal} onHide={closeModal}>
 
                         <Modal.Header closeButton>
@@ -1399,47 +1411,47 @@ alt="Check"
                       </Modal>
                     </div> */}
                         <Modal show={showModal} onHide={closeModal} className="minw80">
-                      <h3 style={{width:'100%', textAlign:'left',borderBottom:'1px solid #efefef',  padding:'15px', fontSize:'18px'}} className="modal-title">Documents</h3>
-                        <Modal.Header closeButton style={{position:'absolute', right:'0px', borderBottom:'0px solid #ccc'}}>
-                          {/* <Modal.Title> {ProjectsDocsJSON.length} Documents</Modal.Title> */}
-                          <Button variant="success" onClick={() => uploadfileinfolder()}>
-            Upload File
-          </Button>
-          <ul>
-          {selectedFiles.map((file, index) => (
-            <li key={index}>
-              {file.name} 
-              <button onClick={() => removeFile(file.name)} style={{ marginLeft: '10px', color: 'red' }}>❌</button>
-            </li>
-          ))}
-        </ul>
-        <label>
+                          <h3 style={{ width: '100%', textAlign: 'left', borderBottom: '1px solid #efefef', padding: '15px', fontSize: '18px' }} className="modal-title">Documents</h3>
+                          <Modal.Header closeButton style={{ position: 'absolute', right: '0px', borderBottom: '0px solid #ccc' }}>
+                            {/* <Modal.Title> {ProjectsDocsJSON.length} Documents</Modal.Title> */}
+                            <Button variant="success" onClick={() => uploadfileinfolder()}>
+                              Upload File
+                            </Button>
+                            <ul>
+                              {selectedFiles.map((file, index) => (
+                                <li key={index}>
+                                  {file.name}
+                                  <button onClick={() => removeFile(file.name)} style={{ marginLeft: '10px', color: 'red' }}>❌</button>
+                                </li>
+                              ))}
+                            </ul>
+                            <label>
 
-<div>
+                              <div>
 
-  <Link style={{ width: "20px", height: "16px" }} onClick={() => handleImageChange} />
+                                <Link style={{ width: "20px", height: "16px" }} onClick={() => handleImageChange} />
 
-  <input
+                                <input
 
-    type="file"
+                                  type="file"
 
-    multiple
+                                  multiple
 
-    accept="image/*"
+                                  accept="image/*"
 
-    onChange={handleImageChange}
+                                  onChange={handleImageChange}
 
-    className="fs-6 w-50" aria-rowspan={5} style={{ display: 'none' }}
+                                  className="fs-6 w-50" aria-rowspan={5} style={{ display: 'none' }}
 
-  />
+                                />
 
-</div>
+                              </div>
 
-</label>
-                        </Modal.Header>
-                        <Modal.Body>
-                        <div className="file-cards">
-          {/* {files.map((file) => (
+                            </label>
+                          </Modal.Header>
+                          <Modal.Body>
+                            <div className="file-cards">
+                              {/* {files.map((file) => (
             <Card key={file.UniqueId}style={{  marginBottom: '10px', height:'82px' }}>
               <Card.Body>
                 <Card.Title>{file.Name}</Card.Title>
@@ -1459,51 +1471,51 @@ alt="Check"
               </Card.Body>
             </Card>
           ))} */}
-               {files.map((file) => (
-            <div className="col-lg-4">
-            <Card key={file.UniqueId} style={{  marginBottom: '10px', height:'82px' }} >
-              <Card.Body>
-                <div className="row">
-                  <div className="col-lg-2">
-                  <img
-                                  src={require("../assets/file.png")}
-                                  style={{width:'40px'  }}
-                                  alt="Check"
-                                />
+                              {files.map((file) => (
+                                <div className="col-lg-4">
+                                  <Card key={file.UniqueId} style={{ marginBottom: '10px', height: '82px' }} >
+                                    <Card.Body>
+                                      <div className="row">
+                                        <div className="col-lg-2">
+                                          <img
+                                            src={require("../assets/file.png")}
+                                            style={{ width: '40px' }}
+                                            alt="Check"
+                                          />
 
-                  </div>
+                                        </div>
 
-                  <div style={{paddingLeft:'13px'}} className="col-lg-9">
-                  <Card.Title className="two-line text-dark font-14 mb-1">{file.Name}</Card.Title>
-                  <Card.Text className="text-muted font-12">{file.Length} bytes</Card.Text>
-                  </div>
-            
-              
-                {/* Three dots dropdown menu */}
-                <div className="col-lg-1">
-                <Dropdown align="end">
-                  <Dropdown.Toggle variant="link" id={`dropdown-${file.UniqueId}`} size="sm" className="newaligntext">
-                    &#x22EE; {/* Ellipsis icon */}
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu>
-                    <Dropdown.Item onClick={() => handlePreviewFile(file.ServerRelativeUrl)} style={{fontSize:'12px', textAlign:'center'  }}>
-                      Preview
-                    </Dropdown.Item>
-                    <Dropdown.Item onClick={() => DeleteFileFromFileMaster(file.UniqueId)} style={{fontSize:'12px', textAlign:'center'  }}>
-                      Delete File
-                    </Dropdown.Item>
-                    {/* Add more options if needed */}
-                  </Dropdown.Menu>
-                </Dropdown>
-                </div>
-                </div>
-                
-              </Card.Body>
-            </Card>
-            </div>
-          ))}
-        </div>
-                        </Modal.Body>
+                                        <div style={{ paddingLeft: '13px' }} className="col-lg-9">
+                                          <Card.Title className="two-line text-dark font-14 mb-1">{file.Name}</Card.Title>
+                                          <Card.Text className="text-muted font-12">{file.Length} bytes</Card.Text>
+                                        </div>
+
+
+                                        {/* Three dots dropdown menu */}
+                                        <div className="col-lg-1">
+                                          <Dropdown align="end">
+                                            <Dropdown.Toggle variant="link" id={`dropdown-${file.UniqueId}`} size="sm" className="newaligntext">
+                                              &#x22EE; {/* Ellipsis icon */}
+                                            </Dropdown.Toggle>
+                                            <Dropdown.Menu>
+                                              <Dropdown.Item onClick={() => handlePreviewFile(file.ServerRelativeUrl)} style={{ fontSize: '12px', textAlign: 'center' }}>
+                                                Preview
+                                              </Dropdown.Item>
+                                              <Dropdown.Item onClick={() => DeleteFileFromFileMaster(file.UniqueId)} style={{ fontSize: '12px', textAlign: 'center' }}>
+                                                Delete File
+                                              </Dropdown.Item>
+                                              {/* Add more options if needed */}
+                                            </Dropdown.Menu>
+                                          </Dropdown>
+                                        </div>
+                                      </div>
+
+                                    </Card.Body>
+                                  </Card>
+                                </div>
+                              ))}
+                            </div>
+                          </Modal.Body>
                           {/* {ProjectsDocsJSON.length > 0 ? (
                             ProjectsDocsJSON.map((res: any) => {
                               return (
@@ -1529,114 +1541,114 @@ alt="Check"
                           ):(null)
 
                           } */}
-                        {/* </Modal.Body>*/}
-                      </Modal> 
-                    <div className="row mt-2">
-                      <p
-                        style={{ lineHeight: "22px" }}
-                        className="d-block text-muted mt-2 mb-0 font-14"
-                      >
-                        <div
-                          dangerouslySetInnerHTML={{
-                            __html: item.Description,
-                          }}
-                        ></div>
-                      </p>
-                    </div>
+                          {/* </Modal.Body>*/}
+                        </Modal>
+                        <div className="row mt-2">
+                          <p
+                            style={{ lineHeight: "22px" }}
+                            className="d-block text-muted mt-2 mb-0 font-14"
+                          >
+                            <div
+                              dangerouslySetInnerHTML={{
+                                __html: item.Description,
+                              }}
+                            ></div>
+                          </p>
+                        </div>
 
-            </div>
-            <div className="col-md-6 mobile-w2"   style={{
-                pointerEvents: isClosed ? 'none' : 'auto',
-                opacity: isClosed ? 0.5 : 1,
-                 }}>
-              <div className="row mt-2">
-                <div >
-                  <div
-                    className="card"
-                    style={{
-                      border: "1px solid #54ade0",
-                      borderRadius: "20px",
-                      boxShadow: "0 3px 20px #1d26260d",
-                    }}
-                  >
-                    <div className="card-body" style={{ padding: "1rem 0.9rem" }}>
-                      {/* New comment input */}
-                      <h4 className="mt-0 mb-3 text-dark fw-bold font-16">
-                        Comments
-                      </h4>
-                      <div className="mt-3">
-                        <textarea
-                          id="example-textarea"
-                          className="form-control text-dark form-control-light mb-2"
-                          value={newComment}
-                          onChange={(e) => setNewComment(e.target.value)}
-                          placeholder="Add a new comment..."
-                          rows={3}
-                          style={{ borderRadius: "unset" }}
-                        />
-                        <button
-                          className="btn btn-primary mt-2"
-                          onClick={handleAddComment}
-                          disabled={loading} // Disable button when loading
-                        >
-                          {loading ? "Submitting..." : "Add Comment"}{" "}
-                          {/* Change button text */}
-                        </button>
                       </div>
-                    </div>
-                  
-                  </div>
-                </div>
-              </div>
-              <div className="row ">
-                  {/* New comment input */}
+                      <div className="col-md-6 mobile-w2" style={{
+                        pointerEvents: isClosed ? 'none' : 'auto',
+                        opacity: isClosed ? 0.5 : 1,
+                      }}>
+                        <div className="row mt-2">
+                          <div >
+                            <div
+                              className="card"
+                              style={{
+                                border: "1px solid #54ade0",
+                                borderRadius: "20px",
+                                boxShadow: "0 3px 20px #1d26260d",
+                              }}
+                            >
+                              <div className="card-body" style={{ padding: "1rem 0.9rem" }}>
+                                {/* New comment input */}
+                                <h4 className="mt-0 mb-3 text-dark fw-bold font-16">
+                                  Comments
+                                </h4>
+                                <div className="mt-3">
+                                  <textarea
+                                    id="example-textarea"
+                                    className="form-control text-dark form-control-light mb-2"
+                                    value={newComment}
+                                    onChange={(e) => setNewComment(e.target.value)}
+                                    placeholder="Add a new comment..."
+                                    rows={3}
+                                    style={{ borderRadius: "unset" }}
+                                  />
+                                  <button
+                                    className="btn btn-primary mt-2"
+                                    onClick={handleAddComment}
+                                    disabled={loading} // Disable button when loading
+                                  >
+                                    {loading ? "Submitting..." : "Add Comment"}{" "}
+                                    {/* Change button text */}
+                                  </button>
+                                </div>
+                              </div>
 
-                  {comments.map((comment, index) => (
-                    <div className="col-xl-12" style={{ marginTop: "1rem" }}>
-                      <CommentCard
-                        key={index}
-                        commentId={index}
-                        username={comment.UserName}
-                        Commenttext={comment.Comments}
-                        Comments={comments}
-                        Created={comment.Created}
-                        likes={comment.UserLikesJSON}
-                        replies={comment.UserCommentsJSON}
-                        userHasLiked={comment.userHasLiked}
-                        CurrentUserProfile={CurrentUserProfile}
-                        loadingLike={loadingLike}
-                        Action="Discussion"
-                        onAddReply={(text) => handleAddReply(index, text)}
-                        onLike={() => handleLikeToggle(index)} // Pass like handler
-                        loadingReply={loadingReply}
-                      />
-                    </div>
-                  ))}
-              </div>
-            </div>
-            <div className="col-md-3 mobile-w3">
+                            </div>
+                          </div>
+                        </div>
+                        <div className="row ">
+                          {/* New comment input */}
 
-                      <div className="card mobile-5 mt-3"  style={{ borderRadius: "22px" }}>
-                        <div className="card-body pb-3 gheight">
-                          <h4 className="header-title font-16 text-dark fw-bold mb-0"  style={{ fontSize: "20px" }}>Discussion Owner</h4>
-                          <h1 className="text-muted font-14 mt-3"><p className="text-dark font-16 text-center mb-2">{item.Author.Title}</p>
-                          <p className="text-muted font-14 text-center mb-1">Cloud Infrastructure Alchemist</p>
-                          <p className="text-muted font-12 text-center">{item.Author.EMail}</p>
-                          </h1></div>
+                          {comments.map((comment, index) => (
+                            <div className="col-xl-12" style={{ marginTop: "1rem" }}>
+                              <CommentCard
+                                key={index}
+                                commentId={index}
+                                username={comment.UserName}
+                                Commenttext={comment.Comments}
+                                Comments={comments}
+                                Created={comment.Created}
+                                likes={comment.UserLikesJSON}
+                                replies={comment.UserCommentsJSON}
+                                userHasLiked={comment.userHasLiked}
+                                CurrentUserProfile={CurrentUserProfile}
+                                loadingLike={loadingLike}
+                                Action="Discussion"
+                                onAddReply={(text) => handleAddReply(index, text)}
+                                onLike={() => handleLikeToggle(index)} // Pass like handler
+                                loadingReply={loadingReply}
+                              />
+                            </div>
+                          ))}
+                        </div>
                       </div>
+                      <div className="col-md-3 mobile-w3">
+
+                        <div className="card mobile-5 mt-3" style={{ borderRadius: "22px" }}>
+                          <div className="card-body pb-3 gheight">
+                            <h4 className="header-title font-16 text-dark fw-bold mb-0" style={{ fontSize: "20px" }}>Discussion Owner</h4>
+                            <h1 className="text-muted font-14 mt-3"><p className="text-dark font-16 text-center mb-2">{item.Author.Title}</p>
+                              <p className="text-muted font-14 text-center mb-1">Cloud Infrastructure Alchemist</p>
+                              <p className="text-muted font-12 text-center">{item.Author.EMail}</p>
+                            </h1></div>
+                        </div>
 
                         {/* Impression code */}
-                        <div className="card mobile-5 mt-3"  style={{ borderRadius: "22px" }}>
-                        <div className="card-body pb-3 gheight">
-                          <h4 className="header-title font-16 text-dark fw-bold mb-0"  style={{ fontSize: "20px" }}>Impression Count</h4>
-                          <h1 className="text-muted font-14 mt-3">
-                            {/* <p className="text-dark font-16 text-center mb-2">{item.Author.Title}</p> */}
-                          <p className="text-muted font-14 text-center mb-1">Total Comments {commentCount}</p>
-                          <p className="text-muted font-12 text-center">Total Like {likeCount}</p>
-                          </h1></div>
-                        </div>  
-            </div>                     
-        </div>
+                        <div className="card mobile-5 mt-3" style={{ borderRadius: "22px" }}>
+                          <div className="card-body pb-3 gheight">
+                            <h4 className="header-title font-16 text-dark fw-bold mb-0" style={{ fontSize: "20px" }}>Impression Count</h4>
+                            <h1 className="text-muted font-14 mt-3">
+                              {/* <p className="text-dark font-16 text-center mb-2">{item.Author.Title}</p> */}
+                              <p className="text-muted font-14 text-center mb-1">Total Comments {commentCount}</p>
+                              <p className="text-muted font-12 text-center">Total Like {likeCount}</p>
+                            </h1></div>
+                        </div>
+                      </div>
+                    </div>
                   </>
                 );
               })
@@ -1651,7 +1663,7 @@ alt="Check"
               }
  
             </div> */}
-         
+
           </div>
         </div>
       </div>
