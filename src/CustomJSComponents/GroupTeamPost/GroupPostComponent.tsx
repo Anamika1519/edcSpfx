@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { useState } from "react";
 
-import "../../CustomJSComponents/SocialFeedPost/PostComponent.scss"
+import "../GroupTeamPost/GroupPostComponent.scss"
 
 import { addActivityLeaderboard, addNotification, getCurrentUserNameId } from "../../APISearvice/CustomService";
 
@@ -15,54 +15,33 @@ import moment from "moment";
 
 import Swal from "sweetalert2";
 
-export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, currentEmail, post }: any) => {
+export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, currentEmail, post }: any) => {
     const [loadingReply, setLoadingReply] = useState<boolean>(false);
     const [loadingLike, setLoadingLike] = useState<boolean>(false);
-
     const [liked, setLiked] = useState(post.userHasLiked);
-
     const [likesCount, setLikesCount] = useState(post.likecount || 0);
-
     const [CommentsCount, setCommentsCount] = useState(post.commentcount || 0);
-    const [gcomments, setGComments] = useState(post.gcomments || []);
-   
     const [posts, setPosts] = useState([post]);
-
     const [comments, setComments] = useState(post.comments || []);
-
+    const [gcomments, setGComments] = useState(post.gcomments || []);
     const [SocialFeedImagesJson, setImages] = useState([]);
-
     const [authorId, setAuthorId] = useState(0);
-
     const [editedContent, setEditedContent] = useState(post.Contentpost);
-
     const [newComment, setNewComment] = useState('');
-
     const [isEditing, setIsEditing] = useState(false);
-
     const isPostAuthor = post.userName === currentUsername;
-
     const [copySuccess, setCopySuccess] = useState('');
-
     const [showMore, setShowMore] = useState(false);
     const menuRef = useRef(null);
-    useEffect(() => {
 
+    useEffect(() => {
         GetId()
         if (typeof (post.SocialFeedImagesJson) == 'string') {
-
             if (post.SocialFeedImagesJson != null && post.SocialFeedImagesJson != undefined && post.SocialFeedImagesJson != "") {
-
                 setImages(JSON.parse(post.SocialFeedImagesJson))
-
             }
         }
-        // const initializeData = async () => {
-        //     const userId = await getCurrentUserNameId(sp);
-        //     setAuthorId(userId);
-        //     fetchInitialLikeData(userId);
-        // };
-        // initializeData();
+
         const handleClickOutside = (event: { target: any; }) => {
             if (menuRef.current && !menuRef.current.contains(event.target)) {
                 setIsMenuOpenshare(false);
@@ -76,19 +55,22 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
         };
 
     }, [post, sp, siteUrl])
-    useEffect(()=>{
+
+
+    useEffect(() => {
         initializeData();
-    },[]);
+    }, []);
+
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const [isMenuOpenshare, setIsMenuOpenshare] = useState(false);
-
 
     const initializeData = async () => {
         const userId = await getCurrentUserNameId(sp);
         setAuthorId(userId);
         fetchInitialLikeData(userId);
     };
+
     const toggleMenu = (e: any) => {
 
         e.preventDefault()
@@ -107,23 +89,14 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
 
 
     const GetId = async () => {
-
         setAuthorId(await getCurrentUserNameId(sp))
-
-        // fetchInitialLikeData();
-
     }
 
 
 
     const handleEditClick = (e: any) => {
-
-
-
         setIsMenuOpen(!isMenuOpen);
-
         setIsEditing(true);
-
     };
 
 
@@ -171,55 +144,30 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
     const fetchInitialLikeData = async (userId: number) => {
 
         const postId = post.postId;
-
-
-
         await sp.web.lists.getByTitle('ARGSocialFeedPostsUserLikes').items.select("*,Author/Id").expand("Author")
-
             .filter(`ARGSocialFeedPostsId eq ${postId} and AuthorId eq ${userId}`)().then(async (ele: any) => {
-
                 if (ele.length > 0)
-
                     setLiked(ele[0].userHasLiked);
-
                 // setLikesCount(ele.length);
-
             })
-
-
 
         await sp.web.lists.getByTitle('ARGSocialFeedPostsUserLikes').items.select("*,Author/Id").expand("Author")
-
             .filter(`ARGSocialFeedPostsId eq ${postId} and userHasLiked eq 1`)().then(async (ele: any) => {
-
                 if (ele.length > 0)
-
                     setLikesCount(ele.length);
-
             })
-
-
 
         await sp.web.lists.getByTitle('ARGSocialFeedComments').items.select("*,Author/Id").expand("Author")
-
             .filter(`ARGSocialFeedId eq ${postId}`)().then(async (ele: any) => {
-
                 if (ele.length > 0)
-
                     setCommentsCount(ele.length);
-
             })
 
         await sp.web.lists.getByTitle('ARGSocialFeedComments').items.select("*,Author/Id,Author/Title").expand("Author")
-
             .filter(`ARGSocialFeedId eq ${postId}`)().then(async (ele: any) => {
-
                 if (ele.length > 0)
-
                     setComments(ele);
-
             })
-       
 
     };
 
@@ -251,24 +199,15 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
                     setGComments(ele);
             })
 
-
-
     };
 
     const fetchPosts = async () => {
-
         try {
-
             const fetchedPosts = await sp.web.lists.getByTitle('ARGSocialFeed').items.getAll();
-
             setPosts(fetchedPosts);
-
         } catch (error) {
-
             console.error("Error fetching posts:", error);
-
         }
-
     };
 
     const handleLike = async (e: any, liked: boolean) => {
@@ -312,25 +251,13 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
                         console.log(ele1);
                         await addActivityLeaderboard(sp, "Likes on Post");
                         let notifiedArr = {
-
-                            ContentId: post.postId,
-
-                            NotifiedUserId: post.postAuthorId,
-
+                            ContentId: ele.data.Id,
+                            NotifiedUserId: ele.data.AuthorId,
                             ContentType0: "Likes on Post",
-
-                            ContentName: post.Contentpost,
-
+                            ContentName: ele.data.Title,
                             ActionUserId: CurrentUser.Id,
-
                             DeatilPage: "SocialFeed",
-
-                            ReadStatus: false,
-
-                            ContentCommentId: postId,
-
-                            ContentComment: post.Contentpost
-
+                            ReadStatus: false
                         }
                         const nofiArr = await addNotification(notifiedArr, sp)
                         console.log(nofiArr, 'nofiArr');
@@ -397,37 +324,6 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
                                 await addActivityLeaderboard(sp, "Comments on Post");
                             setCommentsCount(ele.length)
                             setComments(ele);
-                            if (CurrentUser.Id != existingPost.AuthorId) {
-
-                                let notifiedArr = {
-
-                                    ContentId: postId,
-
-                                    NotifiedUserId: existingPost.AuthorId,
-
-                                    ContentType0: "Comment on post",
-
-                                    ContentName: existingPost.Contentpost,
-
-                                    ActionUserId: CurrentUser.Id,
-
-                                    DeatilPage: "SocialFeed",
-
-                                    ReadStatus: false,
-
-                                    ContentCommentId: commentResponse.data.Id,
-
-                                    ContentComment: newComment,
-
-                                    CommentOnReply: ""
-
-                                }
-
-                                const nofiArr = await addNotification(notifiedArr, sp)
-
-                                console.log(nofiArr, 'nofiArr');
-
-                            }
                         })
                 } catch (error) {
                     console.log("Error updating comments in SharePoint: ", error);
@@ -501,16 +397,8 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
             });
     };
 
-    const sendanEmail = (item: any) => {
-       
-        // window.open("https://outlook.office365.com/mail/deeplink/compose?subject=Share%20Info&body=");
-        const subject = "Event link-" + item.EventName;
-        const body = 'Here is the link to the event:' + `${siteUrl}/SitePages/EventDetailsCalendar.aspx?${item.Id}`;
-
-        const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-
-        // Open the link to launch the default mail client (like Outlook)
-        window.location.href = mailtoLink;
+    const sendanEmail = () => {
+        window.open("https://outlook.office365.com/mail/deeplink/compose?subject=Share%20Info&body=");
     };
 
     const handleToggleImages = () => {
@@ -587,7 +475,7 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
                             const className = index === 0 ? "large-image" : "small-image";
                             // Check if the current image is the third one and if there are more than 3 images
                             const isThirdImage = index === 2 && SocialFeedImagesJson.length > 3 && !showMore;
-                            return (
+                            return (image.fileType === "image/jpeg" ?
                                 <div
                                     key={index}
                                     className={`grid-item ${className}`}
@@ -623,6 +511,16 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
                                         </div>
                                     )}
                                 </div>
+                                : <div
+                                    key={index}                                  
+                                    style={{ position: "relative" }}
+                                >
+                                    {/* Render the file */}
+                                    <a target="_blank" href={imageUrl} style={{fontSize:'16px'}}>{image.fileName}</a>
+                                    <br />
+
+
+                                </div>
                             );
                         })}
                     </div>
@@ -639,6 +537,8 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
                         </div>
                     )}
                 </div>
+
+                
 
                 {/* <div className="grid-container">
                     {SocialFeedImagesJson.map((image: any, index) => {
@@ -662,11 +562,11 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
                 <span className="likes"><MessageSquare size={20} /> {CommentsCount} Comments</span>
                 <div className="post-actions likes">
                     <div className="menu-toggle" onClick={toggleMenushare}>
-                        <Share2 size={20} /><span className="sahrenew"> Share</span>
+                        <Share2 size={20} /> Share
                     </div>
                     {isMenuOpenshare && (
                         <div className="dropdown-menucsspost" ref={menuRef}>
-                            <button onClick={(e) => sendanEmail(post)}>Share by email</button>
+                            <button onClick={(e) => sendanEmail()}>Share by email</button>
                             <button onClick={(e) => copyToClipboard(post.postId)}>Copy link</button>
                             {copySuccess && <span className="text-success">{copySuccess}</span>}
                         </div>
@@ -675,7 +575,7 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
             </div>
 
 
-            {comments.length > 0 ? comments.map((comment: any, index: React.Key) => (
+            {gcomments.length > 0 ? gcomments.map((comment: any, index: React.Key) => (
                 <div className="d-flex align-items-start commentss">
                     <div className="flex-shrink-0">
                         <img src={comment.UserImage} alt="user avatar" className="commentsImg" />

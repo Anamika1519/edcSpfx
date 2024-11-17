@@ -13,6 +13,8 @@ import GroupandTeamDetails from './components/GroupandTeamDetails';
 import { IGroupandTeamDetailsProps } from './components/IGroupandTeamDetailsProps';
 import { getSP } from './loc/pnpjsConfig';
 import SocialFeed from './components/SocialFeed2';
+// import { ISocialFeedProps } from './components/ISocialFeedProps'; './components/ISocialFeedProps';
+
 
 export interface IGroupandTeamDetailsWebPartProps {
   description: string;

@@ -16,7 +16,10 @@ export const fetchMediaGallerycategory = async (_sp) => {
 export const fetchMediaGallerydata = async (_sp) => {
     let arr = []
    
-       await _sp.web.lists.getByTitle("ARGMediaGallery").items.select("*,MediaGalleryCategory/Id,MediaGalleryCategory/CategoryName").expand("MediaGalleryCategory").getAll().then((res) => {
+       await _sp.web.lists.getByTitle("ARGMediaGallery").items.select("*,MediaGalleryCategory/Id,MediaGalleryCategory/CategoryName")
+       .expand("MediaGalleryCategory")
+       .filter("Status eq 'Approved'")
+       ().then((res) => {
         console.log("response-->>>",res);
      
         //res.filter(x=>x.Category?.Category==str)

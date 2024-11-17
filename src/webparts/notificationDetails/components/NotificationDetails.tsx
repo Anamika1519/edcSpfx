@@ -64,7 +64,7 @@ const NotificationDetailsContext = ({ props }: any) => {
   const [TodayactiveTab, setTodayactiveTab] = useState(true);
 
   const [PreviousactiveTab, setPreviousactiveTab] = useState(false);
-
+  getTodayNotificationList();
   const handleTodayactiveTab = () => {
     setTodayactiveTab(true);
     setOldactiveTab(false);

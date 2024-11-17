@@ -119,13 +119,13 @@ export const getGroupTeam = async (_sp) => {
     .getAll()
     .then((res) => {
       console.log("--------group", res);
-
+      arr = res;
       // Filter items based on GroupType and InviteMembers
-      arr = res.filter(item => 
-        // Include public groups or private groups where the current user is in the InviteMembers array
-        item.GroupType === "All" || 
-        (item.GroupType === "Selected Members" && item.InviteMemebers && item.InviteMemebers.some(member => member.Id === currentUser))
-      );
+      // arr = res.filter(item => 
+      //   // Include public groups or private groups where the current user is in the InviteMembers array
+      //   item.GroupType === "All" || 
+      //   (item.GroupType === "Selected Members" && item.InviteMemebers && item.InviteMemebers.some(member => member.Id === currentUser))
+      // );
     })
     .catch((error) => {
       console.error("Error fetching data: ", error);
@@ -171,6 +171,27 @@ export const addItem = async (_sp, itemData) => {
     // Perform any necessary actions after successful addition
   } catch (error) {
     console.error("Error adding item--->>>>>", error);
+    Swal.fire(" Cancelled", "", "error");
+    // Handle errors appropriately
+    resultArr = null;
+  }
+  return resultArr;
+};
+export const updateGroupFollowItem = async (itemData, _sp, id) => {
+  let resultArr = [];
+  debugger
+  try {
+    const newItem = await _sp.web.lists
+      .getByTitle("ARGGroupandTeam")
+      .items.getById(id)
+      .update(itemData);
+    Swal.fire("Item update successfully", "", "success");
+    window.location.reload();
+    resultArr = newItem;
+    console.log("itemData------>>>>", itemData)
+    // Perform any necessary actions after successful addition
+  } catch (error) {
+    console.error("Error adding item:", error);
     Swal.fire(" Cancelled", "", "error");
     // Handle errors appropriately
     resultArr = null;

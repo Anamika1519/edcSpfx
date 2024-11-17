@@ -23,7 +23,7 @@ import Provider from '../../../GlobalContext/provider';
 
 import "../../../CustomJSComponents/CustomTable/CustomTable.scss";
 
-import { DeleteAnnouncementAPI, getAnncouncement } from '../../../APISearvice/AnnouncementsService';
+import { DeleteAnnouncementAPI, getAnncouncement, getAnncouncementMaster } from '../../../APISearvice/AnnouncementsService';
 
 import { IAnnouncementmasterProps } from './IAnnouncementmasterProps';
 
@@ -39,7 +39,7 @@ import { decryptId, encryptId } from "../../../APISearvice/CryptoService";
 
 import { Tab, Tabs } from 'react-bootstrap';
 
-import { getNews } from '../../../APISearvice/NewsService';
+import { getNews, getNewsMaster } from '../../../APISearvice/NewsService';
 
 import "../components/announcementMaster.scss";
 
@@ -837,11 +837,11 @@ const Announcementmastercontext = ({ props }: any) => {
 
   const ApiCall = async () => {
 
-    const announcementArr = await getAnncouncement(sp);
+    const announcementArr = await getAnncouncementMaster(sp);
 
     setAnnouncementData(announcementArr);
 
-    const NewsArr = await getNews(sp);
+    const NewsArr = await getNewsMaster(sp);
 
     setNewsData(NewsArr);
 

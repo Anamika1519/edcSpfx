@@ -274,7 +274,7 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
           ContentType0: "Comment",
           ContentName: ArrDetails[0].Title,
           ActionUserId: CurrentUser.Id,
-          DeatilPage: "DiscussionDetails",
+          DeatilPage: "DiscussionForumDetail",
           ReadStatus: false,
           
         }

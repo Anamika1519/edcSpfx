@@ -363,99 +363,96 @@ export const GetLeaderboardRattingLevel = async (sp) => {
 export const getLeaderTop = async (sp) => {
   let arr = [];
   let RATINGSTHRESHOLDS = [];
+
   // Fetching the leaderboard data from SharePoint
   await sp.web.lists
     .getByTitle("ARGLeaderboard")
-    .items.select("*,Author/ID,Author/Title,Author/EMail,Author/Department,Created")   
+    .items.select("*,Author/ID,Author/Title,Author/EMail,Author/Department,Created")
     .expand("Author")
     .getAll()
     .then((res) => {
       console.log(res, "Fetched data");
-
       // Storing the fetched data in the array
       arr = res;
     });
-  const followRecords = await sp.web.lists.getByTitle("ARGLeaderboardRattingLevel").items.select("Ratting,Points")
-    .getAll()
 
-  console.log(followRecords, 'ARGLeaderboardRattingLevel');
+  const followRecords = await sp.web.lists
+    .getByTitle("ARGLeaderboardRattingLevel")
+    .items.select("Ratting,Points")
+    .getAll();
 
-  // Dynamic threshold settings for ratting
-  followRecords.forEach(element => {
-    let arr1 =
-      { minPoints: element.Points, rating: element.Ratting }
-    RATINGSTHRESHOLDS.push(arr1)
+  console.log(followRecords, "ARGLeaderboardRattingLevel");
 
+  // Dynamic threshold settings for rating
+  followRecords.forEach((element) => {
+    let arr1 = { minPoints: element.Points, rating: element.Ratting };
+    RATINGSTHRESHOLDS.push(arr1);
   });
-
 
   // Grouping and summing points by AuthorId
- // Grouping and summing points by AuthorId
-const sumPointsByUser = async () => {
-  const userPoints = {};
-  const followRecords = await sp.web.lists.getByTitle("ARGLeaderboardRattingLevel").items.getAll();
+  const sumPointsByUser = () => {
+    const userPoints = {};
 
-  console.log(followRecords, 'ARGLeaderboardRattingLevel');
+    // Get current date
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth(); // 0-11 (January is 0)
+    const currentYear = currentDate.getFullYear();
 
-  // Get current date and calculate the previous month
-  const currentDate = new Date();
-  const currentMonth = currentDate.getMonth(); // 0-11 (January is 0)
-  const previousMonth = currentMonth === 0 ? 11 : currentMonth - 1; // Handle December to January transition
-  const previousMonthYear = currentMonth === 0 ? currentDate.getFullYear() - 1 : currentDate.getFullYear();
+    // Filter records for the current month
+    const currentMonthRecords = arr.filter((record) => {
+      const recordDate = new Date(record.Created); // Assuming `Created` is the date field
+      return (
+        recordDate.getMonth() === currentMonth &&
+        recordDate.getFullYear() === currentYear
+      );
+    });
 
-  // Filter records for the previous month
-  const previousMonthRecords = followRecords.filter((record) => {
-    const recordDate = new Date(record.Created); // Assuming `Created` is the date field
-    return (
-      recordDate.getMonth() === previousMonth &&
-      recordDate.getFullYear() === previousMonthYear
-    );
-  });
-
-  if (previousMonthRecords.length === 0) {
-    console.log("No leaderboard is available");
-    alert("No leaderboard is available");
-    return []; // No data for the previous month
-  }
-
-  // Loop through each item in the filtered results
-  previousMonthRecords.forEach((item) => {
-    const authorId = item.Author.ID; // Author ID
-    const points = item.Points; // Points for the action
-    const authorTitle = item.Author.Title; // Author Title
-    const authorEMail = item.Author.EMail; // Author Email
-    const authorDepartment = item.Author.Department; // Author Department
-
-    // Sum points for each AuthorId
-    if (userPoints[authorId]) {
-      userPoints[authorId].TotalPoints += points;
-    } else {
-      userPoints[authorId] = {
-        TotalPoints: points,
-        AuthorTitle: authorTitle,
-        AuthorEMail: authorEMail,
-        AuthorDepartment: authorDepartment,
-      };
+    if (currentMonthRecords.length === 0) {
+      console.log("No leaderboard is available");
+      alert("No leaderboard is available");
+      return []; // No data for the current month
     }
-  });
 
-  // Convert the object to an array of users with total points and other details
-  return Object.keys(userPoints).map((authorId) => ({
-    AuthorId: authorId,
-    TotalPoints: userPoints[authorId].TotalPoints,
-    AuthorTitle: userPoints[authorId].AuthorTitle,
-    AuthorEMail: userPoints[authorId].AuthorEMail,
-    AuthorDepartment: userPoints[authorId].AuthorDepartment,
-    AutherRatting: userPoints[authorId].TotalPoints,
-  }));
-};
-userList.sort((a, b) => b.TotalPoints - a.TotalPoints);
+    // Loop through each item in the filtered results
+    currentMonthRecords.forEach((item) => {
+      const authorId = item.Author.ID; // Author ID
+      const points = item.Points; // Points for the action
+      const authorTitle = item.Author.Title; // Author Title
+      const authorEMail = item.Author.EMail; // Author Email
+      const authorDepartment = item.Author.Department; // Author Department
 
-return userList; 
-  // Return the result with total points and ratting
+      // Sum points for each AuthorId
+      if (userPoints[authorId]) {
+        userPoints[authorId].TotalPoints += points;
+      } else {
+        userPoints[authorId] = {
+          TotalPoints: points,
+          AuthorTitle: authorTitle,
+          AuthorEMail: authorEMail,
+          AuthorDepartment: authorDepartment,
+        };
+      }
+    });
+
+    // Convert the object to an array of users with total points and other details
+    const userList = Object.keys(userPoints).map((authorId) => ({
+      AuthorId: authorId,
+      TotalPoints: userPoints[authorId].TotalPoints,
+      AuthorTitle: userPoints[authorId].AuthorTitle,
+      AuthorEMail: userPoints[authorId].AuthorEMail,
+      AuthorDepartment: userPoints[authorId].AuthorDepartment,
+      AutherRatting: userPoints[authorId].TotalPoints,
+    }));
+
+    // Sort users by TotalPoints in descending order
+    userList.sort((a, b) => b.TotalPoints - a.TotalPoints);
+
+    return userList;
+  };
+
+  // Return the result with total points and rating, sorted by points
   return sumPointsByUser();
 };
-
 export const addNotification = async (itemData, _sp) => {
   debugger
   let resultArr = []

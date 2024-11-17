@@ -271,7 +271,7 @@ const VerticalContext = ({ _context }: any) => {
         setuseActive(11)
     } 
     else if (pageName === "Project" || pageName === "ProjectDetails") {
-      alert(`useactive : ${useActive} `)
+      //alert(`useactive : ${useActive} `)
         // alert("set MediaGallery/Mediadetails");
         localStorage.setItem("NavId", String(12));
         setuseActive(12)

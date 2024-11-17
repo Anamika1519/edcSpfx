@@ -66,6 +66,8 @@ import {
 
   getType,
 
+  updateGroupFollowItem,
+
   updateItem,
 
 } from "../../../APISearvice/GroupTeamService";
@@ -96,6 +98,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
   const [groupsData, setGroupsData] = React.useState([]);
 
+  const [tempgroupsData, settempGroupsData] = React.useState([]);
 
 
   const elementRef = React.useRef<HTMLDivElement>(null);
@@ -195,6 +198,7 @@ const GroupandTeamcontext = ({ props }: any) => {
   const SiteUrl = props.siteUrl;
 
   const [CategoryData, setCategoryData] = React.useState([]);
+  const [activeTab, setActiveTab] = useState("allgroups");
 
   const [showModal, setShowModal] = React.useState(false);
 
@@ -234,6 +238,66 @@ const GroupandTeamcontext = ({ props }: any) => {
     addItem;
   }, [useHide]);
 
+  const [isToggled, setIsToggled] = useState(false);
+
+  const handleFollow = async (groupItem: any, e: any, value: string) => {
+    debugger;
+    e.stopPropagation();
+    let updatedFollowers;
+    let existingFollowers:any = groupItem.GroupFollowersId || [];
+    if (value === "follow") {
+      document.getElementById(value + groupItem.Id).innerText = "Unfollow";
+      document.getElementById(value+groupItem.Id).classList.remove('btn-blue');
+      document.getElementById(value+groupItem.Id).classList.add('btn-red');
+      updatedFollowers = [...existingFollowers, currentUser.Id];
+      const updatedata = {
+        GroupFollowersId: updatedFollowers
+      }
+      const updateResult = await updateGroupFollowItem(updatedata, sp,groupItem.Id);
+     
+    }
+    else if (value === "unfollow") {
+      document.getElementById(value + groupItem.Id).innerText = "follow";
+      document.getElementById(value+groupItem.Id).classList.remove('btn-red');
+      document.getElementById(value+groupItem.Id).classList.add('btn-blue');
+     let indexToRemove= existingFollowers.indexOf(currentUser.Id);
+      if (indexToRemove > -1) {
+        existingFollowers.splice(indexToRemove, 1);
+      }
+      updatedFollowers = existingFollowers;
+      const updatedata = {
+        GroupFollowersId: updatedFollowers
+      }
+      const updateResult = await updateGroupFollowItem(updatedata, sp, groupItem.Id);
+      
+    }
+  }
+  const handleTabClick = async (tab: React.SetStateAction<string>) => {
+    setActiveTab(tab);
+    debugger;
+    if (tab === "allgroups") {
+      setGroupsData(await getGroupTeam(sp));
+    } else if (tab === "groupsyoucreated") {
+      const res = groupsData.filter(item =>
+        // Include public groups or private groups where the current user is in the InviteMembers array
+        item.Author.Title == currentUser.Title);
+      setGroupsData(res);
+      if(res.length<0){
+        const res = tempgroupsData.filter(item =>
+          // Include public groups or private groups where the current user is in the InviteMembers array
+          item.Author.Title == currentUser.Title);
+        setGroupsData(res);
+      }
+    }
+    else if (tab === "groupsyoufollow") {
+
+      const res = groupsData.filter(item =>
+        // Include public groups or private groups where the current user is in the InviteMembers array
+        item.GroupFollowersId == currentUser.Id);
+      setGroupsData(res);
+    }
+    settempGroupsData(await getGroupTeam(sp));
+  };
   const ApiCall = async () => {
 
     // await addItem(sp);
@@ -241,7 +305,7 @@ const GroupandTeamcontext = ({ props }: any) => {
     // await getGroupTeam(sp);
 
     fetchOptions()
-
+    setCurrentUser(await getCurrentUser(sp, siteUrl));
     const announcementArr = await getGroupTeam(sp);
 
     // const categorylist = await GetCategory(sp);
@@ -1021,7 +1085,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
               debugger;
 
-            
+
 
 
 
@@ -1457,6 +1521,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
             let postPayload: any = {}
             if (formData.GroupType != "All") {
+              debugger
               postPayload = {
 
                 GroupName: formData.GroupName,
@@ -1639,6 +1704,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
             setGroupsData(await getGroupTeam(sp));
 
+            settempGroupsData(await getGroupTeam(sp));
             // sessionStorage.removeItem("bannerId");
 
             setTimeout(async () => {
@@ -1749,7 +1815,22 @@ const GroupandTeamcontext = ({ props }: any) => {
 
   };
 
+  const renderContent = (groupItem: any) => {
+    if (groupItem.GroupFollowersId === null) {
+      return <div id={"follow" + groupItem.ID}
+      onClick={(e) => handleFollow(groupItem, e, "follow")}
+       className="btn-light font-14 rounded-pill text-primary waves-effect fw-bold waves-light btn-lightcss btn-blue">
+        Follow
+      </div>
 
+    } else {
+      return <div id={"unfollow" + groupItem.ID}
+      onClick={(e) => handleFollow(groupItem, e, "unfollow")} 
+      className="btn-light font-14 rounded-pill text-primary waves-effect fw-bold waves-light btn-lightcss btn-red">
+        UnFollow
+      </div>
+    }
+  };
 
   const siteUrl = props.siteUrl;
 
@@ -1791,7 +1872,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
       <div className="content-page">
 
-          <HorizontalNavbar  _context={sp} siteUrl={siteUrl}/>
+        <HorizontalNavbar _context={sp} siteUrl={siteUrl} />
 
         <div
 
@@ -2151,7 +2232,7 @@ const GroupandTeamcontext = ({ props }: any) => {
                                   <span className="text-danger">*</span>
 
                                 </label>
-                              
+
                                 <Multiselect
 
                                   options={options}
@@ -2305,67 +2386,231 @@ const GroupandTeamcontext = ({ props }: any) => {
 
             </div>
 
-            <div className="row mt-4">
+            <div className="col-12">
+              <div className="card mb-0">
+                <div className="card-body">
+                  <div className="row justify-content-between">
+                    <div className="col-md-12">
+                      <div className="d-flex flex-wrap align-items-center justify-content-center">
+                        <ul className="nav nav-pills navtab-bg float-end" role="tablist">
+                          <li className="nav-item" role="presentation">
+                            <a onClick={() => handleTabClick("allgroups")}
+                              className={`nav-link ${activeTab === "allgroups" ? "active" : ""
+                                }`}
+                              aria-selected={activeTab === "allgroups"} role="tab">All</a>
+                          </li>
+                          <li className="nav-item" role="presentation">
+                            <a onClick={() => handleTabClick("groupsyoucreated")}
+                              className={`nav-link ${activeTab === "groupsyoucreated" ? "active" : ""
+                                }`}
+                              aria-selected={activeTab === "groupsyoucreated"} role="tab" tabIndex={-1}>Groups You Created</a>
+                          </li>
+                          <li className="nav-item" role="presentation">
+                            <a onClick={() => handleTabClick("groupsyoufollow")}
+                              className={`nav-link ${activeTab === "groupsyoufollow" ? "active" : ""
+                                }`}
+                              aria-selected={activeTab === "groupsyoufollow"} role="tab" tabIndex={-1}>Groups You Follow</a>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-              {groupsData.map((groupItem: any, index: number) => (
 
-                <div
+            {activeTab === "allgroups" && (
+              <div className="row mt-4">
 
-                  key={index}
-
-                  className="col-lg-6 col-xl-3 position-relative ng-scope" onClick={() => handleClick(groupItem.ID)}
-
-                >
+                {groupsData.map((groupItem: any, index: number) => (
 
                   <div
 
-                    style={{ background: "#12a8de", color: "#fff" }}
+                    key={index}
 
-                    className="card heightcard"
+                    className="col-lg-6 col-xl-3 position-relative ng-scope" onClick={() => handleClick(groupItem.ID)}
 
                   >
 
-                    <div className="btn-light font-12 rounded-pill text-primary waves-effect fw-bold waves-light btn-lightcss">
+                    <div
 
-                      <Users size={16} /> Follow Group
+                      style={{ background: "#12a8de", color: "#fff" }}
 
-                    </div>
+                      className="card heightcard"
 
-                    <div className="card-body">
+                    >
 
-                      <a key={index}>
 
-                        <div className="bg">
-                          <img src={require("../assets/backteam.png")} />
 
-                          
 
-                        </div>
 
-                        <h4
 
-                          style={{ lineHeight: "26px", width: "79%", float: "left", color: "#fff", textTransform: 'capitalize' }}
 
-                          className="card-title fw-bold font-20 mb-1 mt-0"
+                      <div>{renderContent(groupItem)}</div>
+                      <div className="card-body">
 
-                        >
+                        <a key={index}>
 
-                          {groupItem.GroupName} ({groupItem.GroupType})
+                          <div className="bg">
+                            <img src={require("../assets/backteam.png")} />
 
-                        </h4>
 
-                      </a>
+
+                          </div>
+
+                          <h4
+
+                            style={{ lineHeight: "26px", float: "left", color: "#fff", textTransform: 'capitalize' }}
+
+                            className="card-title fw-bold font-20 mb-1 mt-0"
+
+                          >
+
+                            {groupItem.GroupName} ({groupItem.GroupType})
+
+                          </h4>
+
+                        </a>
+
+                      </div>
 
                     </div>
 
                   </div>
 
-                </div>
+                ))}
 
-              ))}
+              </div>
+            )}
 
-            </div>
+            {activeTab === "groupsyoucreated" && (
+              <div className="row mt-4">
 
+                {groupsData.map((groupItem: any, index: number) => (
+
+                  <div
+
+                    key={index}
+
+                    className="col-lg-6 col-xl-3 position-relative ng-scope" onClick={() => handleClick(groupItem.ID)}
+
+                  >
+
+                    <div
+
+                      style={{ background: "#12a8de", color: "#fff" }}
+
+                      className="card heightcard"
+
+                    >
+
+
+
+
+
+
+                      <div>{renderContent(groupItem)}</div>
+
+                      <div className="card-body">
+
+                        <a key={index}>
+
+                          <div className="bg">
+                            <img src={require("../assets/backteam.png")} />
+
+
+
+                          </div>
+
+                          <h4
+
+                            style={{ lineHeight: "26px", float: "left", color: "#fff", textTransform: 'capitalize' }}
+
+                            className="card-title fw-bold font-20 mb-1 mt-0"
+
+                          >
+
+                            {groupItem.GroupName} ({groupItem.GroupType})
+
+                          </h4>
+
+                        </a>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                ))}
+
+              </div>
+            )}
+
+            {activeTab === "groupsyoufollow" && (
+              <div className="row mt-4">
+
+                {groupsData.map((groupItem: any, index: number) => (
+
+                  <div
+
+                    key={index}
+
+                    className="col-lg-6 col-xl-3 position-relative ng-scope" onClick={() => handleClick(groupItem.ID)}
+
+                  >
+
+                    <div
+
+                      style={{ background: "#12a8de", color: "#fff" }}
+
+                      className="card heightcard"
+
+                    >
+
+
+
+
+                      <div>{renderContent(groupItem)}</div>
+
+
+
+                      <div className="card-body">
+
+                        <a key={index}>
+
+                          <div className="bg">
+                            <img src={require("../assets/backteam.png")} />
+
+
+
+                          </div>
+
+                          <h4
+
+                            style={{ lineHeight: "26px", float: "left", color: "#fff", textTransform: 'capitalize' }}
+
+                            className="card-title fw-bold font-20 mb-1 mt-0"
+
+                          >
+
+                            {groupItem.GroupName} ({groupItem.GroupType})
+
+                          </h4>
+
+                        </a>
+                       
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                ))}
+
+              </div>
+            )}
           </div>
 
         </div>

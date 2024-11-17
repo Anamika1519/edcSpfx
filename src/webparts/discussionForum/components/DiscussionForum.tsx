@@ -99,7 +99,11 @@ const DiscussionForumContext = ({ props }: any) => {
     description: "",
     overview: "",
     FeaturedAnnouncement: false,
+    discussiongallery:"",
+    discussiondocument:"",
+    privateorpublic:"",
   });
+  
   const [DiscussionData, setDiscussion] = useState([])
   const [CategoryData, setCategoryData] = React.useState([]);
   const [showModal, setShowModal] = React.useState(false);
@@ -578,12 +582,16 @@ const DiscussionForumContext = ({ props }: any) => {
     if (!topic) {
       Swal.fire("Error", "Topic is required!", "error");
       valid = false;
-    } else if (!entity) {
+    } else if (!category) {
+      Swal.fire("Error", "Category is required!", "error");
+      valid = false;
+    }
+    else if (!entity) {
       Swal.fire("Error", "Entity is required!", "error");
       valid = false;
     }
     else if (!category) {
-      Swal.fire("Error", "Category is required!", "error");
+      Swal.fire("Error", "Entity is required!", "error");
       valid = false;
     }
 
@@ -916,6 +924,9 @@ const DiscussionForumContext = ({ props }: any) => {
                 description: "",
                 overview: "",
                 FeaturedAnnouncement: false,
+                discussiongallery:"",
+                discussiondocument:"",
+                privateorpublic:"",
               });
 
               setDocumentpostArr1([]);
@@ -1052,6 +1063,9 @@ const DiscussionForumContext = ({ props }: any) => {
                 description: "",
                 overview: "",
                 FeaturedAnnouncement: false,
+                discussiongallery:"",
+                discussiondocument:"",
+                privateorpublic:"",
               });
               setSelectedValue([])
               setDocumentpostArr1([]);

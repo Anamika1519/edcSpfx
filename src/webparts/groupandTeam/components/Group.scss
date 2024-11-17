@@ -3,11 +3,65 @@
   position: absolute;
   right: 0px;
 }
+.toggle-switch {
+  width: 50px;
+  height: 25px;
+  background-color: #ccc;
+  border-radius: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.toggle-switch .switch {
+  width: 20px;
+  height: 20px;
+  background-color: white;
+  border-radius: 50%;
+  transition: transform 0.3s ease;
+}
+
+.toggle-switch .on {
+  background-color: green;
+}
+
+.toggle-switch .on .switch {
+  transform: translateX(25px);
+}
+
+.toggle-switch .off {
+  background-color: red;
+}
+
+.toggle-switch .off .switch {
+  transform: translateX(0);
+}
+
 .bg img{width: 80%;}
   
   h4.card-title {
     color: rgb(255, 255, 255) !important;
   }
+  .btn-lightcss {
+    position: absolute;
+    bottom: 15px;
+    left: 14px;
+    text-align: left;
+    padding: 6px 12px;
+    height: 37px;
+    line-height: 27px;
+    background: #fff;
+    color: white !important;
+  }
+  .btn-blue{
+    background-color: blue !important;
+  }
+.btn-red{
+  background-color: red !important;
+}
   .btn-lightcss {
     position: absolute;
     bottom: 15px;

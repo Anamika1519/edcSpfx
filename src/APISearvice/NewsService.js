@@ -4,6 +4,24 @@ export const getNews = async (_sp) => {
   let arr = []
      let str ="News"
      await _sp.web.lists.getByTitle("ARGAnnouncementAndNews")
+     .items.select("*,AnnouncementandNewsTypeMaster/Id,AnnouncementandNewsTypeMaster/TypeMaster,Category/Id,Category/Category,Author/ID,Author/Title").expand("AnnouncementandNewsTypeMaster,Category,Author")
+     .filter(`AnnouncementandNewsTypeMaster/TypeMaster eq '${str}' and Status eq 'Approved'`).orderBy("Created",false)
+     ()
+     .then((res) => {
+      console.log(res);
+   
+      //res.filter(x=>x.Category?.Category==str)
+      arr = res;
+    })
+    .catch((error) => {
+      console.log("Error fetching data: ", error);
+    });
+  return arr;
+}
+export const getNewsMaster = async (_sp) => {
+  let arr = []
+     let str ="News"
+     await _sp.web.lists.getByTitle("ARGAnnouncementAndNews")
      .items.select("*,AnnouncementandNewsTypeMaster/Id,AnnouncementandNewsTypeMaster/TypeMaster,Category/Id,Category/Category,Author/ID,Author/Title").expand("AnnouncementandNewsTypeMaster,Category,Author").filter(`AnnouncementandNewsTypeMaster/TypeMaster eq '${str}'`).orderBy("Created",false).getAll()
      .then((res) => {
       console.log(res);
@@ -16,7 +34,6 @@ export const getNews = async (_sp) => {
     });
   return arr;
 }
-
 export const uploadFileToLibrary = async (file, sp, docLib) => {
   debugger
   let arrFIleData = [];
