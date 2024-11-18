@@ -482,7 +482,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
         } else {
 
-          Swal.fire("only document can be upload");
+          Swal.fire("only document can be uploaded");
 
         }
 
@@ -993,15 +993,15 @@ const GroupandTeamcontext = ({ props }: any) => {
 
         Swal.fire({
 
-          title: "Do you want to update?",
+          title: "Are you sure you want to create group?",
 
           showConfirmButton: true,
 
           showCancelButton: true,
 
-          confirmButtonText: "Save",
+          confirmButtonText: "Yes",
 
-          cancelButtonText: "Cancel",
+          cancelButtonText: "No",
 
           icon: "warning",
 
@@ -1425,7 +1425,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
             }
 
-            Swal.fire("Item update successfully", "", "success");
+            Swal.fire("Congratulations! You are IN: Join the conversation with Group Members", "", "success");
 
             setFormData([]);
 
@@ -1451,15 +1451,15 @@ const GroupandTeamcontext = ({ props }: any) => {
 
         Swal.fire({
 
-          title: "Do you want to save?",
+          title: "Are you sure you want to create group?",
 
           showConfirmButton: true,
 
           showCancelButton: true,
 
-          confirmButtonText: "Save",
+          confirmButtonText: "Yes",
 
-          cancelButtonText: "Cancel",
+          cancelButtonText: "No",
 
           icon: "warning",
 
@@ -1694,7 +1694,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
             }
 
-            Swal.fire("Item added successfully", "", "success");
+            Swal.fire("Congratulations! Groups created successfully", "", "success");
 
             setFormData([]);
 
@@ -1842,13 +1842,13 @@ const GroupandTeamcontext = ({ props }: any) => {
 
       MainComponent: "Home",
 
-      MainComponentURl: `${siteUrl}SitePages/Dashboard.aspx`,
+      MainComponentURl: `${siteUrl}/SitePages/Dashboard.aspx`,
 
     },
 
     {
 
-      ChildComponent: "Group and Team",
+      ChildComponent: "Groups",
 
       ChildComponentURl: `${siteUrl}/SitePages/GroupandTeam.aspx`,
 
@@ -2282,7 +2282,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
                                 rows={3}
 
-                                style={{ height: '60px' }}
+                                style={{ height: '120px' }}
 
                                 value={formData.GroupDescription}
 
@@ -2334,7 +2334,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
                                 />{" "}
 
-                                Submit
+                                Create
 
                               </div>
 
@@ -2467,7 +2467,8 @@ const GroupandTeamcontext = ({ props }: any) => {
 
                           >
 
-                            {groupItem.GroupName} ({groupItem.GroupType})
+<p style={{ lineHeight: '20px' }} className="font-12 text-muted twolinewrap">
+{groupItem.GroupName}</p> ({groupItem.GroupType})
 
                           </h4>
 
@@ -2531,7 +2532,8 @@ const GroupandTeamcontext = ({ props }: any) => {
 
                           >
 
-                            {groupItem.GroupName} ({groupItem.GroupType})
+<p style={{ lineHeight: '20px' }} className="font-12 text-muted twolinewrap">
+{groupItem.GroupName}</p> ({groupItem.GroupType})
 
                           </h4>
 
@@ -2595,7 +2597,8 @@ const GroupandTeamcontext = ({ props }: any) => {
 
                           >
 
-                            {groupItem.GroupName} ({groupItem.GroupType})
+<p style={{ lineHeight: '20px' }} className="font-12 text-muted twolinewrap">
+{groupItem.GroupName}</p> ({groupItem.GroupType})
 
                           </h4>
 

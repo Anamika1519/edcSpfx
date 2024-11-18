@@ -102,8 +102,22 @@ const VerticalContext = ({ _context }: any) => {
     //   setNavItems(arr);
     // }
     // else {
-    await _context.web.lists.getByTitle("ARGSidebarNavigation").items.orderBy('Order',true).getAll().then((res: any) => {
-      console.log(res, 'res');
+      const currentUser = await _context.web.currentUser();
+
+      // Get groups for the current user
+      const userGroups = await _context.web.currentUser.groups();
+  
+      console.log("userGroups",userGroups);
+      let grptitle:String[]=[];
+      for(var i=0;i<userGroups.length;i++)
+      {
+        grptitle.push(userGroups[i].Title.toLowerCase());
+      }
+  
+      console.log('%c Start',"background-color:red");
+  
+      await _context.web.lists.getByTitle("ARGSidebarNavigation").items.select("Title,Url,Icon,ParentId,ID,EnableAudienceTargeting,Audience/Title").expand("Audience").getAll().then((res: any) => {
+      console.log('%c res',"background-color:red",res);
       const items: NavItem[] = res.map((item: any) => {
         return {
           Title: item.Title,
@@ -114,7 +128,15 @@ const VerticalContext = ({ _context }: any) => {
         };
       });
       // localStorage.setItem('Navitems', JSON.stringify(items))
-      setNavItems(res);
+     // setNavItems(res);
+      let securednavitems= res.filter((nav:any)=>
+        {
+           return (!nav.EnableAudienceTargeting || ( nav.EnableAudienceTargeting && nav.Audience && nav.Audience.some((nv1:any)=>{  return grptitle.includes(nv1.Title.toLowerCase()); }  ) )  )
+        } 
+      )
+
+      // setNavItems(res);
+      setNavItems(securednavitems);
       return items;
     });
     // }
