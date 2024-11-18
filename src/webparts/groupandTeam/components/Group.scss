@@ -57,22 +57,23 @@
     color: white !important;
   }
   .btn-blue{
-    background-color: blue !important;
+    // background-color: blue !important;
   }
-.btn-red{
-  background-color: red !important;
-}
+
   .btn-lightcss {
     position: absolute;
     bottom: 15px;
     left: 14px;
     text-align: left;
-    padding: 6px 12px;
+    padding: 10px 12px;
     height: 37px;
     line-height: 27px;
     background: #fff;
     color: #1fb0e5 !important;
   }
+  // .btn-red{
+  //   color: red !important;
+  // }
   .btn-lightcss svg{
     vertical-align: text-top !important;
   }

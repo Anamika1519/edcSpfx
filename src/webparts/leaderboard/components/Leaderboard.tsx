@@ -24,6 +24,10 @@ import "../../../CustomJSComponents/CustomTable/CustomTable.scss";
 import { ILeaderboardProps } from './ILeaderboardProps';
 import { getSP } from "../loc/pnpjsConfig";
 import { getLeaderTop } from "../../../APISearvice/CustomService";
+
+import { MSGraphClientV3 } from '@microsoft/sp-http-msgraph';
+import { WebPartContext } from "@microsoft/sp-webpart-base";
+import { toLower } from "lodash";
 const LeaderboardContext = ({ props }: any) => {
   const sp: SPFI = getSP();
   console.log(sp, "sp");
@@ -43,21 +47,23 @@ const LeaderboardContext = ({ props }: any) => {
   const [isLoading, setIsLoading] = useState(false);
   const siteUrl = props.siteUrl;
   const [leaderboard, setLeaderboard] = useState([]);
+  const [CurrentUserEnityData, setCurrentUserEnityData] = React.useState([]);
   const [filters, setFilters] = React.useState({
     AuthorTitle: "",
     AuthorEMail: "",
     AuthorId: "",
     AuthorDepartment: ""
   });
- 
+
   const [isFollowing, setIsFollowing] = useState(false);
   const [followStatus, setFollowStatus] = useState<any>({}); // Track follow status for each user
- 
+
   React.useEffect(() => {
- 
+
     console.log("This function is called only once", useHide);
     fetchUserInformationList();
- 
+    fetchCurrentUserEntity();
+
     const showNavbar = (
       toggleId: string,
       navId: string,
@@ -68,7 +74,7 @@ const LeaderboardContext = ({ props }: any) => {
       const nav = document.getElementById(navId);
       const bodypd = document.getElementById(bodyId);
       const headerpd = document.getElementById(headerId);
- 
+
       if (toggle && nav && bodypd && headerpd) {
         toggle.addEventListener("click", () => {
           nav.classList.toggle("show");
@@ -78,56 +84,121 @@ const LeaderboardContext = ({ props }: any) => {
         });
       }
     };
- 
+
     showNavbar("header-toggle", "nav-bar", "body-pd", "header");
- 
+
     const linkColor = document.querySelectorAll(".nav_link");
- 
+
     function colorLink(this: HTMLElement) {
       if (linkColor) {
         linkColor.forEach((l) => l.classList.remove("active"));
         this.classList.add("active");
       }
     }
- 
+
     linkColor.forEach((l) => l.addEventListener("click", colorLink));
- 
+
   }, [useHide]);
- 
+
   const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
   const handleSidebarToggle = (bol: boolean) => {
     setIsSidebarOpen((prevState: any) => !prevState);
     setHide(!bol);
     document.querySelector(".sidebar")?.classList.toggle("close");
   };
- 
+
   const fetchUserInformationList = async () => {
     try {
- 
+      // Fetch the leaderboard as before
       setLeaderboard(await getLeaderTop(sp))
- 
- 
- 
+
+      const currentUser = await sp.web.currentUser();
+      const userListSP = await sp.web.lists
+
+        .getByTitle("User Information List")
+        .items
+        .select("ID", "Title", "EMail", "Department", "JobTitle", "Picture", "MobilePhone","WorkPhone","Name")
+
+        .filter(`EMail ne null and ID ne ${currentUser.Id}`) // content tyep eq person
+
+        ();
+      
+      // Retrieve the current logged-in user's data using the /me endpoint
+     // console.log("userList",userListSP);
+      // let currentWPContext:WebPartContext=props.props.context;  
+      let currentWPContext:WebPartContext=props.context;  
+      // console.log("props",props);
+      const msgraphClient:MSGraphClientV3=await currentWPContext.msGraphClientFactory.getClient('3');
+      const m265userList= await msgraphClient.api("users")
+          .version("v1.0")
+          .select("displayName,mail,jobTitle,mobilePhone,companyName,userPrincipalName")
+          .get();
+      // console.log("m265userList",m265userList);
+
+      //Adding dummy companies to users for testing
+      //m265userList.value=m265userList.value.map((m:any)=>{let x=m; x['companyName']='dunnycommpany'; return x;});
+     
+     let userList:any[]=[];
+
+     userList=userListSP.map(usr=>{
+         let musrs=  m265userList.value.filter((usr1:any)=>{ return toLower(usr1.mail)==toLower(usr.EMail)});
+         if(musrs.length>0)
+         {
+          usr['companyName']=musrs[0]['companyName'];
+         }
+         else usr['companyName']='NA';
+         return usr;
+     })
+  
     } catch (error) {
       console.error("Error fetching users:", error);
     }
   };
- 
+
+  const GetEntity = async (_sp: SPFI) => {
+    let arr: any[] = []
+    try {
+      // Fetch the leaderboard as before
+      //const leaderboardData = await getLeaderTop(sp);
+
+      // Retrieve the current logged-in user's data using the /me endpoint
+      const currentWPContext: WebPartContext = props.context;
+      const msgraphClient: MSGraphClientV3 = await currentWPContext.msGraphClientFactory.getClient('3');
+      const currentUserData = await msgraphClient.api("/me")
+        .version("v1.0")
+        .select("displayName,mail,jobTitle,mobilePhone,companyName,userPrincipalName")
+        .get();
+
+      // Log the current user data
+      console.log("Current User Data: ", currentUserData);
+
+      // Set the leaderboard and current user info as separate states
+      //setLeaderboard(leaderboardData);
+      //setCurrentUser(currentUserData);  // Assuming you have a setCurrentUser function
+
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+    return arr;
+  }
+  
+
+
   const [activeTab, setActiveTab] = useState<
     "cardView" | "listView" | "calendarView"
   >("cardView");
- 
+
   const handleTabChange = (tab: "cardView" | "listView" | "calendarView") => {
     setActiveTab(tab);
   };
- 
+
   // Function to truncate text
   const truncateText = (text: string, maxLength: number) => {
     return text.length > maxLength
       ? text.substring(0, maxLength) + "..."
       : text;
   };
- 
+
   //#region Breadcrumb
   const Breadcrumb = [
     {
@@ -140,7 +211,7 @@ const LeaderboardContext = ({ props }: any) => {
     },
   ];
   //#endregion
- 
+
   const handleFilterChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     field: string
@@ -150,7 +221,7 @@ const LeaderboardContext = ({ props }: any) => {
       [field]: e.target.value,
     });
   };
- 
+
   const handleSortChange = (key: string) => {
     let direction = "ascending";
     if (sortConfig.key === key && sortConfig.direction === "ascending") {
@@ -158,9 +229,9 @@ const LeaderboardContext = ({ props }: any) => {
     }
     setSortConfig({ key, direction });
   };
- 
+
   const applyFiltersAndSorting = (data: any[]) => {
- 
+
     // Filter data
     const filteredData = data.filter((item) => {
       return (
@@ -169,16 +240,22 @@ const LeaderboardContext = ({ props }: any) => {
         (filters.AuthorEMail === "" ||
           item?.AuthorEMail.toLowerCase().includes(filters.AuthorEMail.toLowerCase())) &&
         (filters.AuthorDepartment === '' || item?.AuthorDepartment.toLowerCase().includes(filters.AuthorDepartment.toLowerCase()))
-        // (filters.Department === '' || item?.Department.toLowerCase().includes(filters.Department.toLowerCase()))
+          // (filters.Department === '' || item?.Department.toLowerCase().includes(filters.Department.toLowerCase()))
+
+         /*  (filters.Name === "" ||
+
+            item?.Title.toLowerCase().includes(filters.Name.toLowerCase())) &&
+
+        (filters.companyName === '' || ((item?.companyName) ? item?.companyName.toLowerCase().includes(filters.companyName.toLowerCase()) : false)) */
       );
     });
- 
+
     const sortedData = filteredData.sort((a, b) => {
       if (sortConfig.key === "SNo") {
         // Sort by index
         const aIndex = data.indexOf(a);
         const bIndex = data.indexOf(b);
- 
+
         return sortConfig.direction === "ascending"
           ? aIndex - bIndex
           : bIndex - aIndex;
@@ -186,7 +263,7 @@ const LeaderboardContext = ({ props }: any) => {
         // Sort by other keys
         const aValue = a[sortConfig.key] ? a[sortConfig.key].toLowerCase() : "";
         const bValue = b[sortConfig.key] ? b[sortConfig.key].toLowerCase() : "";
- 
+
         if (aValue < bValue) {
           return sortConfig.direction === "ascending" ? -1 : 1;
         }
@@ -198,24 +275,24 @@ const LeaderboardContext = ({ props }: any) => {
     });
     return sortedData;
   };
- 
+
   const filteredEmployeeData = applyFiltersAndSorting(leaderboard);
- 
+
   const [currentPage, setCurrentPage] = React.useState(1);
   const itemsPerPage = 10;
   const totalPages = Math.ceil(filteredEmployeeData.length / itemsPerPage);
- 
+
   const handlePageChange = (pageNumber: any) => {
     if (pageNumber > 0 && pageNumber <= totalPages) {
       setCurrentPage(pageNumber);
     }
   };
- 
+
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentData = filteredEmployeeData.slice(startIndex, endIndex);
   const [isOpenNews, setIsOpenNews] = React.useState(false);
- 
+
   const handleNewsExportClick = () => {
     const exportData = currentData.map((item, index) => ({
       Name: item.Title,
@@ -223,10 +300,10 @@ const LeaderboardContext = ({ props }: any) => {
       Email: item.EMail,
       Department: item?.Department != null ? item?.Department : "NA",
     }));
- 
+
     exportToExcel(exportData, "Employe List");
   };
- 
+
   const exportToExcel = (data: any[], fileName: string) => {
     const workbook = XLSX.utils.book_new();
     const worksheet = XLSX.utils.json_to_sheet(data);
@@ -237,7 +314,30 @@ const LeaderboardContext = ({ props }: any) => {
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
- 
+
+  const fetchCurrentUserEntity = async () => {
+    try {
+
+      const CurrentUser = await sp.web.currentUser();
+      console.log("Current User", CurrentUser);
+
+      const msGraphClient: MSGraphClientV3 = await props.context.msGraphClientFactory.getClient("3");
+      const m265userList = await msGraphClient.api("me")
+        .version("v1.0")
+        .select("displayName,mail,jobTitle,mobilePhone,companyName,userPrincipalName")
+        .get();
+
+      const currentUser = m265userList.value.find((user: { userPrincipalName: any; }) => user.userPrincipalName === props.context.pageContext.user.loginName);
+      console.log("Current User Data:", currentUser);
+      if (currentUser) {
+        console.log("Current User Data:", currentUser);
+        // Update leaderboard or handle any other logic related to the current user
+      }
+    } catch (error) {
+      console.error("Error fetching current user data:", error);
+    }
+  };
+
   return (
     <div id="wrapper" ref={elementRef}>
       <div className="app-menu" id="myHeader">
@@ -257,7 +357,7 @@ const LeaderboardContext = ({ props }: any) => {
               <div className="col-lg-5">
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
               </div>
- 
+
               <div className="col-lg-7">
                 <div className="d-flex flex-wrap align-items-center justify-content-end mt-3">
                   <form className="d-flex flex-wrap align-items-center justify-content-start">
@@ -281,8 +381,8 @@ const LeaderboardContext = ({ props }: any) => {
                         className="fe-search"
                       ></span>
                     </div>
- 
- 
+
+
                     <div
                       className="btn btn-secondary waves-effect waves-light"
                       data-bs-toggle="modal"
@@ -328,7 +428,7 @@ const LeaderboardContext = ({ props }: any) => {
                             aria-selected={activeTab === "listView"}
                             role="tab"
                             onClick={() => handleTabChange("listView")}
- 
+
                           // onClick={() => handleTabChange("listView")}
                           // className={`nav-link ${
                           //   activeTab === "listView" ? "active" : ""
@@ -356,19 +456,19 @@ const LeaderboardContext = ({ props }: any) => {
                           className="text-center card mb-3"
                         >
                           <div className="card-body">
-                          <div className="product-price-tag positiont postion-absolute text-primary rounded-circle newc" title="Position">{item.position < 10
-                                        ? `0${item.position}`
-                                        : item.position}
-                                      {index + 1}</div>
+                            <div className="product-price-tag positiont postion-absolute text-primary rounded-circle newc" title="Position">{item.position < 10
+                              ? `0${item.position}`
+                              : item.position}
+                              {index + 1}</div>
                             {/* Card Content */}
                             <div className="pt-2 pb-2">
                               <a style={{ position: "relative" }}>
- 
+
                                 <img
                                   src={
- 
+
                                     `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item.AuthorEMail}`
- 
+
                                   }
                                   className="rounded-circlecss img-thumbnail
                                   avatar-xl"
@@ -384,17 +484,17 @@ const LeaderboardContext = ({ props }: any) => {
                                     fontSize: "20px",
                                   }}
                                 >
-                               
-                                    {truncateText(item.AuthorTitle, 25)}
-                             
+
+                                  {truncateText(item.AuthorTitle, 25)}
+
                                 </a>
                               </h4>
- 
+
                               <p
                                 className="text-muted"
                                 style={{ fontSize: "14px" }}
                               >
- 
+
                                 <span
                                   className="pl-2"
                                   style={{ color: "#1fb0e5" }}
@@ -406,7 +506,7 @@ const LeaderboardContext = ({ props }: any) => {
                                       : " NA ",
                                     10
                                   )}
- 
+
                                   {/* </a> */}
                                 </span>
                               </p>
@@ -449,9 +549,9 @@ const LeaderboardContext = ({ props }: any) => {
                                   Points Earned {item.TotalPoints < 1000 ? item.TotalPoints : (item.TotalPoints / 1000).toFixed(1).replace(/\.0$/, '') + 'K'}
                                 </span>
                               </p>
- 
- 
- 
+
+
+
                               {/* end row */}
                             </div>
                             {/* end .padding */}
@@ -462,7 +562,7 @@ const LeaderboardContext = ({ props }: any) => {
                     ))}
                   </div>
                 )}
- 
+
                 {activeTab === "listView" && (
                   // List View Content (only displayed when "listView" is active)
                   <div className="list-view">
@@ -476,153 +576,104 @@ const LeaderboardContext = ({ props }: any) => {
                             >
                               <thead>
                                 <tr>
-                                  <th>
-                                    Connect
-                                    <div style={{ height: "47px" }}></div>
-                                  </th>
+                                  <th style={{ verticalAlign: 'top' }}>Sr. No</th> {/* Header for Sr. No */}
                                   <th>
                                     <div className="d-flex flex-column bd-highlight ">
-                                      <div
-                                        className="d-flex pb-2"
-                                        style={{
-                                          justifyContent: "space-between",
-                                        }}
-                                      >
-                                        {" "}
-                                        <span>Name</span>{" "}
-                                        <span
-                                          onClick={() =>
-                                            handleSortChange("AuthorTitle")
-                                          }
-                                        >
-                                          <FontAwesomeIcon icon={faSort} />{" "}
+                                      <div className="d-flex pb-2" style={{ justifyContent: "space-between" }}>
+                                        <span>Name</span>
+                                        <span onClick={() => handleSortChange("AuthorTitle")}>
+                                          <FontAwesomeIcon icon={faSort} />
                                         </span>
                                       </div>
-                                      <div className=" bd-highlight">
+                                      <div className="bd-highlight">
                                         <input
                                           type="text"
                                           placeholder="Filter by Name"
-                                          onChange={(e) =>
-                                            handleFilterChange(e, "AuthorTitle")
-                                          }
+                                          onChange={(e) => handleFilterChange(e, "AuthorTitle")}
                                           className="inputcss"
                                           style={{ width: "100%" }}
                                         />
                                       </div>
                                     </div>
                                   </th>
-                                  <th
-                                    style={{
-                                      minWidth: "100px",
-                                      maxWidth: "100px",
-                                    }}
-                                  >
+                                  <th style={{ verticalAlign: 'top' }}>Points</th>
+
+                                  {/* <th>
                                     <div className="d-flex flex-column bd-highlight ">
-                                      <div
-                                        className="d-flex  pb-2"
-                                        style={{
-                                          justifyContent: "space-between",
-                                        }}
-                                      >
-                                        {" "}
-                                        <span>Employee ID</span>{" "}
-                                        <span
-                                          onClick={() =>
-                                            handleSortChange("AuthorId")
-                                          }
-                                        >
-                                          <FontAwesomeIcon icon={faSort} />{" "}
+                                      <div className="d-flex pb-2" style={{ justifyContent: "space-between" }}>
+                                        <span>Employee ID</span>
+                                        <span onClick={() => handleSortChange("AuthorId")}>
+                                          <FontAwesomeIcon icon={faSort} />
                                         </span>
                                       </div>
-                                      <div className=" bd-highlight">
-                                        {" "}
+                                      <div className="bd-highlight">
                                         <input
                                           type="text"
                                           placeholder="Filter by Employee ID"
-                                          onChange={(e) =>
-                                            handleFilterChange(e, "AuthorId")
-                                          }
+                                          onChange={(e) => handleFilterChange(e, "AuthorId")}
                                           className="inputcss"
                                           style={{ width: "100%" }}
                                         />
                                       </div>
                                     </div>
-                                  </th>
-                                  <th
-                                    style={{
-                                      minWidth: "100px",
-                                      maxWidth: "100px",
-                                    }}
-                                  >
+                                  </th> */}
+                                  <th>
                                     <div className="d-flex flex-column bd-highlight ">
-                                      <div
-                                        className="d-flex  pb-2"
-                                        style={{
-                                          justifyContent: "space-between",
-                                        }}
-                                      >
-                                        {" "}
-                                        <span>Email</span>{" "}
-                                        <span
-                                          onClick={() =>
-                                            handleSortChange("AuthorEMail")
-                                          }
-                                        >
-                                          <FontAwesomeIcon icon={faSort} />{" "}
+                                      <div className="d-flex pb-2" style={{ justifyContent: "space-between" }}>
+                                        <span>Email</span>
+                                        <span onClick={() => handleSortChange("AuthorEMail")}>
+                                          <FontAwesomeIcon icon={faSort} />
                                         </span>
                                       </div>
-                                      <div className=" bd-highlight">
-                                        {" "}
+                                      <div className="bd-highlight">
                                         <input
                                           type="text"
                                           placeholder="Filter by Email"
-                                          onChange={(e) =>
-                                            handleFilterChange(e, "AuthorEMail")
-                                          }
+                                          onChange={(e) => handleFilterChange(e, "AuthorEMail")}
                                           className="inputcss"
                                           style={{ width: "100%" }}
                                         />
                                       </div>
                                     </div>
                                   </th>
-                                  <th
-                                    style={{
-                                      minWidth: "100px",
-                                      maxWidth: "100px",
-                                    }}
-                                  >
+                                  <th>
                                     <div className="d-flex flex-column bd-highlight ">
-                                      <div
-                                        className="d-flex  pb-2"
-                                        style={{
-                                          justifyContent: "space-between",
-                                        }}
-                                      >
-                                        {" "}
-                                        <span>Department</span>{" "}
-                                        <span
-                                          onClick={() =>
-                                            handleSortChange("AuthorDepartment")
-                                          }
-                                        >
-                                          <FontAwesomeIcon icon={faSort} />{" "}
+                                      <div className="d-flex pb-2" style={{ justifyContent: "space-between" }}>
+                                        <span>Department</span>
+                                        <span onClick={() => handleSortChange("AuthorDepartment")}>
+                                          <FontAwesomeIcon icon={faSort} />
                                         </span>
                                       </div>
-                                      <div className=" bd-highlight">
-                                        {" "}
+                                      <div className="bd-highlight">
                                         <input
                                           type="text"
                                           placeholder="Filter by Department"
-                                          onChange={(e) =>
-                                            handleFilterChange(e, "AuthorDepartment")
-                                          }
+                                          onChange={(e) => handleFilterChange(e, "AuthorDepartment")}
                                           className="inputcss"
                                           style={{ width: "100%" }}
                                         />
                                       </div>
                                     </div>
                                   </th>
- 
+                                  <th>
+                                    <div className="d-flex flex-column bd-highlight ">
+                                      <div className="d-flex pb-2" style={{ justifyContent: "space-between" }}>
+                                        <span>Entity</span>
+                                        <span onClick={() => handleSortChange("AuthorDepartment")}>
+                                          <FontAwesomeIcon icon={faSort} />
+                                        </span>
+                                      </div>
+                                      <div className="bd-highlight">
+                                        <input
+                                          type="text"
+                                          placeholder="Filter by Entity"
+                                          onChange={(e) => handleFilterChange(e, "AuthorDepartment")}
+                                          className="inputcss"
+                                          style={{ width: "100%" }}
+                                        />
+                                      </div>
+                                    </div>
+                                  </th>
                                 </tr>
                               </thead>
                               <tbody>
@@ -637,36 +688,47 @@ const LeaderboardContext = ({ props }: any) => {
                                     No results found
                                   </div>
                                 ) : (
-                                  currentData.map(
-                                    (item: any, index: number) => (
-                                      <tr key={index}>
-                                        <td
-                                          style={{
-                                            minWidth: "50px",
-                                            maxWidth: "50px",
-                                          }}
-                                        >
-                                          {" "}
- 
-                                        </td>
-                                        <td>{item.AuthorTitle}</td>
-                                        <td>{item.Id}</td>
-                                        <td>{item.AuthorEMail}</td>
- 
-                                        <td>
-                                          {item?.AuthorDepartment != null
-                                            ? item?.AuthorDepartment
-                                            : "NA"}
-                                        </td>
- 
-                                      </tr>
-                                    )
-                                  )
+                                  currentData.map((item: any, index: number) => (
+                                    <tr key={index}>
+                                      {/* Sr. No Column */}
+                                      <td
+                                        style={{
+                                          minWidth: "50px",
+                                          maxWidth: "50px",
+                                        }}
+                                      >
+                                        {index + 1} {/* Serial number starts from 1 */}
+                                      </td>
+                                      <td>{item.AuthorTitle}</td>
+                                      {/* Points column with formatting */}
+                                      <td style={{ verticalAlign: 'top' }}>
+                                        {item.TotalPoints < 1000 ?
+                                          item.TotalPoints :
+                                          (item.TotalPoints / 1000).toFixed(1).replace(/\.0$/, '') + 'K'}
+                                      </td>
+                                      {/* <td>{item.Id}</td> */}
+                                      <td>{item.AuthorEMail}</td>
+                                      <td>
+                                        {item?.AuthorDepartment != null ? item?.AuthorDepartment : "NA"}
+                                      </td>
+                                      <td>
+                                        {item?.companyName != null
+
+                                          ? item?.companyName
+
+                                          : "NA"}
+
+
+                                      </td>
+
+                                    </tr>
+                                  ))
                                 )}
                               </tbody>
+
                             </table>
                           </div>
- 
+
                           {currentData.length > 0 ? (
                             <nav className="pagination-container">
                               <ul className="pagination">
@@ -739,7 +801,7 @@ const LeaderboardContext = ({ props }: any) => {
     </div>
   );
 };
- 
+
 const Leaderboard: React.FC<ILeaderboardProps> = (props) => {
   return (
     <Provider>
@@ -747,6 +809,9 @@ const Leaderboard: React.FC<ILeaderboardProps> = (props) => {
     </Provider>
   );
 };
- 
+
 export default Leaderboard;
- 
+function setCurrentUser(currentUserData: any) {
+  throw new Error("Function not implemented.");
+}
+

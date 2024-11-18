@@ -24,7 +24,17 @@
 .inbox-widget .heit8 .rounded-circle, .border-radius .rounded-circle  {width: 52px; height: 52px; margin-right: 7px;}
 .inbox-widget .heit8 p{ text-overflow: ellipsis; overflow: hidden; white-space: nowrap; margin-left:15px;}
 .news-feed p{color:#6c757d;}
-.project-box{height: 193px;}
+.project-box{height: 225px;}
+.finish {
+    font-size: 11px;
+    line-height: 19px;
+    padding: 1px 10px;
+    display: inline-block;
+    border-radius: 5px;
+    background: rgba(0, 135, 81, 0.20) !important;
+    color: #008751;
+    font-weight: 500;
+}
 .cptext {
     position: absolute;
     left: 0% !important;
@@ -110,6 +120,14 @@
 .pb-2 {
     padding-bottom: .75rem !important;
 }
+.para8{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+
 .card-body {
     -webkit-box-flex: 1;
     -ms-flex: 1 1 auto;

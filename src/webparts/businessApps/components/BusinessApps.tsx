@@ -653,7 +653,7 @@ const HelloWorldContext = ({ props }: any) => {
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
 
               </div>
-              <div className="col-lg-6">
+              {/* <div className="col-lg-6">
                 <div
                   className="btn btn-success waves-effect waves-light m-1"
                   style={{ fontSize: "0.875rem" }}
@@ -675,9 +675,9 @@ const HelloWorldContext = ({ props }: any) => {
                     Add New Business App
                   </div>
                 </div>
-                {/* Bootstrap Modal */}
+             
 
-              </div>
+              </div> */}
               {/* <div className="col-lg-8">
                   <div className="d-flex flex-wrap align-items-center justify-content-end mt-3">
                     <form className="d-flex align-items-center justify-content-start">
@@ -699,7 +699,7 @@ const HelloWorldContext = ({ props }: any) => {
                   <div className="card-body">
                     <div className="row">
                       <div className="col-md-12">
-                        <div className="text-center filter-menu d-flex justify-content-center">
+                        <div style={{gap:'5px'}} className="text-center filter-menu d-flex justify-content-center">
                           {/* Main tabs */}
 
                           <a
@@ -807,17 +807,17 @@ const HelloWorldContext = ({ props }: any) => {
                     <div className="widget-rounded-circle card" >
                       <div className="card-body" >
                         <div className="row" onClick={() => handleRedirect(item.RedirectionLink)}>
-                          <div className="col-4">
+                          <div className="col-3">
                             <div style={{ background: '#fff', width: '45px', height: '45px' }}
                               className="avatar-lg d-flex justify-content-center align-items-center rounded-circle bg-soft-primary border-primary border">
                               <img style={{ width: '30px' }} src={imageUrl} />
                             </div>
                           </div>
-                          <div className="col-8 d-flex justify-content-left align-items-center">
+                          <div className="col-9 d-flex justify-content-left align-items-center">
                             <div>
 
-                              <p style={{ marginBottom: '0px' }} className="text-dark mb-156 font-16 text-truncate mt90">{item.Title}</p>
-                              <p className="text-muted mb-0 font-12 text-truncate mt90">{item.SubTitle}</p>
+                              <p style={{ marginBottom: '0px' }} className="text-dark mb-156 font-16  mt90">{item.Title}</p>
+                              <p className="text-muted mb-0 font-12  mt90">{item.SubTitle}</p>
                             </div>
                           </div>
                         </div>

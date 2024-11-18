@@ -2386,7 +2386,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
             </div>
 
-            <div className="col-12">
+            <div className="col-12 mt-3">
               <div className="card mb-0">
                 <div className="card-body">
                   <div className="row justify-content-between">

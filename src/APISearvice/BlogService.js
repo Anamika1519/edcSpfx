@@ -224,6 +224,50 @@ export const getBlogByID = async (_sp, id) => {
   console.log(arr, 'arr');
   return arr;
 }
+export const getBlogsByID = async (_sp, id) => {
+  debugger
+  let arr = []
+  let arrs = []
+  let bannerimg = []
+  await _sp.web.lists.getByTitle("ARGBlogs").items.getById(id).select("*,Author/ID,Author/Title,Entity/ID,Entity/Entity").expand("Author,Entity")()
+      .then((res) => {
+          console.log(res, ' let arrs=[]');
+           const bannerimgobject = res.BlogBannerImage != "{}" && JSON.parse(res.BlogBannerImage)
+           console.log(bannerimgobject[0], 'bannerimgobject');
+
+          bannerimg.push(bannerimgobject);
+          const parsedValues = {
+              Title: res.Title != undefined ? res.Title : "",
+              description: res.Description != undefined ? res.Description : "",
+              //   overview: res.Overview != undefined ? res.Overview : "",
+              //   IsActive: res.IsActive,
+              ID: res.ID,
+              Topic: res.Title,
+              Overview: res.Overview,
+               BannerImage: bannerimg,
+              //GroupType: res.GroupType,
+              //   TypeMaster: res?.AnnouncementandNewsTypeMaster?.ID != undefined ? res.AnnouncementandNewsTypeMaster?.ID : "",
+              //Category: res.DiscussionForumCategory?.ID != undefined ? res.DiscussionForumCategory?.ID : "",
+              Entity: res.Entity?.ID != undefined ? res.Entity?.ID : "",
+              //FeaturedAnnouncement: res.FeaturedAnnouncement,
+              BlogGalleryJSON: res.BlogGalleryJSON != null ? JSON.parse(res.BlogGalleryJSON) : "",
+              BlogDocsJSON: res.BlogDocsJSON != null ? JSON.parse(res.BlogDocsJSON) : "",
+              BlogGalleryId: res.BlogGalleryId,
+              BlogsDocsId: res.BlogsDocsId,
+             
+              // other fields as needed
+
+          };
+
+          arr.push(parsedValues);
+          console.log("arrarrarrarr", arr, parsedValues);
+      })
+      .catch((error) => {
+          console.log("Error fetching data: ", error);
+      });
+  console.log(arr, 'arr');
+  return arr;
+}
 export const getAllBlogsnonselected = async (_sp,Idnum) => {
   debugger
   let arr = []

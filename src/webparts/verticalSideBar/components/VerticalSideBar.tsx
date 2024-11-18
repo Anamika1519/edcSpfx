@@ -102,7 +102,7 @@ const VerticalContext = ({ _context }: any) => {
     //   setNavItems(arr);
     // }
     // else {
-    await _context.web.lists.getByTitle("ARGSidebarNavigation").items.getAll().then((res: any) => {
+    await _context.web.lists.getByTitle("ARGSidebarNavigation").items.orderBy('Order',true).getAll().then((res: any) => {
       console.log(res, 'res');
       const items: NavItem[] = res.map((item: any) => {
         return {

@@ -766,8 +766,8 @@ try{
   const sendanEmail = (item:any) => {
     // window.open("https://outlook.office.com/mail/inbox");
   
-     const subject ="Event link-"+ item.EventName;
-     const body = 'Here is the link to the event:'+ `${siteUrl}/SitePages/EventDetailsCalendar.aspx?${item.Id}`;
+     const subject ="Group link-"+ item.GroupName;
+     const body = 'Here is the link to the group:'+ `${siteUrl}/SitePages/GroupandTeamDetails.aspx?${item.Id}`;
   
     const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   

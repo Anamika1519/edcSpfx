@@ -661,8 +661,8 @@ try{
   const sendanEmail = (item:any) => {
     // window.open("https://outlook.office.com/mail/inbox");
   
-     const subject ="Event link-"+ item.EventName;
-     const body = 'Here is the link to the event:'+ `${siteUrl}/SitePages/EventDetailsCalendar.aspx?${item.Id}`;
+     const subject ="Project link-"+ item.ProjectName;
+     const body = 'Here is the link to the Project:'+ `${siteUrl}/SitePages/ProjectDetails.aspx?${item.Id}`;
   
     const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   
@@ -1207,7 +1207,7 @@ const idNum = originalString.substring(1);
                     <div className="row internalmedia filterable-content mt-3">
                       <Modal show={showModal} onHide={closeModal} className="minw80">
                         <h3 style={{width:'100%', textAlign:'left',borderBottom:'1px solid #efefef',  padding:'15px', fontSize:'18px'}} className="modal-title">Documents</h3>
-                        <Modal.Header closeButton style={{position:'absolute', right:'0px', borderBottom:'0px solid #ccc'}}>
+                        <Modal.Header closeButton style={{position:'absolute', display:'flex', gap:'20px', top:'-6px', right:'0px', borderBottom:'0px solid #ccc'}}>
                           {/* <Modal.Title> {ProjectsDocsJSON.length} Documents</Modal.Title> */}
                           {/* <Button variant="success" onClick={() => uploadfileinfolder()}>
             Upload File
@@ -1447,13 +1447,13 @@ const idNum = originalString.substring(1);
 
 <div className="card mobile-5 mt-3"  style={{ borderRadius: "22px" }}>
   <div className="card-body pb-3 gheight">
-    <h4 className="header-title font-16 text-dark fw-bold mb-0"  style={{ fontSize: "20px" }}>Project Members</h4>
+    <h4 className="header-title font-16 text-dark fw-bold mb-2"  style={{ fontSize: "20px" }}>Project Members</h4>
      {/* {argcurrentgroupuser */}
      {argcurrentgroupuser[0]?.TeamMembers?.length > 0 && argcurrentgroupuser[0]?.TeamMembers?.map(
   (id: any, idx: any) => {
     if (idx ) {
       return (
-        <div>
+        <div className="projectmemeber">
 <img
           // style={{
           //   margin:

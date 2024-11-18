@@ -11,6 +11,26 @@
     -webkit-box-orient: vertical; 
     -webkit-line-clamp: 2;
     }
+    .ongoing{
+      background:#6c757d!important;
+      border-radius: 5px;
+      color: #fff;
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 500;
+      line-height: 19px;
+      padding: 1px 10px;
+    }
+    .finish {
+      background: rgba(0, 135, 81, .2) !important;
+      border-radius: 5px;
+      color: #008751;
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 500;
+      line-height: 19px;
+      padding: 1px 10px;
+  }
     .date-color{height: 38px;}
     .morealign{    position: absolute;
       width: 16px;

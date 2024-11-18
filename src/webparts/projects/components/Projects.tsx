@@ -1298,16 +1298,17 @@ const HelloWorldContext = ({ props }: any) => {
                                       {project.ProjectName}
                                     </a>
                                   </h4>
+                               
                                   <a>
 
 {
       project?.ProjectStatus === null 
       ? null // Don't display anything if ProjectStatus is null
       : (
-          <a 
+          <a className="ongoing mb-3"
               style={{ 
-                  background: project?.ProjectStatus === 'Close' ? 'red' : 'transparent',
-                  color: project?.ProjectStatus === 'Close' ? 'white' : 'inherit',
+                  background: project?.ProjectStatus === 'Close' ? '#008751' : '#cce7dc',
+                  color: project?.ProjectStatus === 'Close' ? '#008751' : '#cce7dc',
                   padding: '5px',
                   borderRadius: '4px',
                   textDecoration: 'none'
@@ -2245,6 +2246,8 @@ const HelloWorldContext = ({ props }: any) => {
                                         "Untitled Project"}
                                     </a>
                                   </h4>
+
+                                  
 
                                   <p className="mb-1 font-12">
                                     <span

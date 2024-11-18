@@ -239,8 +239,8 @@ const HelloWorldContext = ({ props }: any) => {
   const GotoNextPageMediaDetails = (item: any) => {
     console.log("item-->>>>", item);
     const encryptedId = encryptId(String(item.ID));
-    // sessionStorage.setItem("mediaId", encryptedId);
-    // sessionStorage.setItem("dataID", item.Id)
+     sessionStorage.setItem("mediaId", encryptedId);
+     sessionStorage.setItem("dataID", item.Id)
     window.location.href = `${siteUrl}/SitePages/MediaDetails.aspx?${item.ID}`;
   };
   const GotoNextPage = (item: any) => {
@@ -773,7 +773,7 @@ const HelloWorldContext = ({ props }: any) => {
                                       <i className="fa fa-clock-o"></i>&nbsp;
                                       {moment(item.Created).format("DD-MMM-YYYY")}
                                     </p>
-                                    <p style={{ cursor: "pointer" }}  onClick={(item) => GotoNextPageMediaDetails(item)}>{item.Title}</p>
+                                    <p style={{ cursor: "pointer" }}  onClick={() => GotoNextPageMediaDetails(item)}>{item.Title}</p>
                                   </div>
                                 </div>
                               );
@@ -1052,22 +1052,23 @@ const HelloWorldContext = ({ props }: any) => {
                                   {project.ProjectName}
                                 </a>
                               </h4>
+                              <div
+                                className="finish  mb-3"
+                                
+                              >
+                           {project?.ProjectStatus}
+                              </div>
                               <p
-                                className="date-color font-12 mb-3"
-                                style={{ color: "#98a6ad", height: "36px" }}
+                                className="date-color para8 font-12 mb-3"
+                                style={{ color: "#98a6ad", height: "30px",}}
                               >
                                 {truncateString(project.ProjectOverview, project)}
                                 {/* <a   className="fw-bold text-muted">
                                     view more
                                   </a> */}
                               </p>
-                              <p
-                                className="date-color font-12 mb-3"
-                                style={{ color: "#98a6ad" }}
-                              >
-                           {project?.ProjectStatus}
-                              </p>
-                              <p className="mb-1 font-12">
+                            
+                              <p style={{display:'flex', gap:'10px'}} className="mb-1 mt-2 font-12">
                                 <span
                                   style={{ color: "#6e767e" }}
                                   className="pe-2 text-nowrap"

@@ -604,7 +604,7 @@ const EventcalenderContext = ({ props }: any) => {
 
 
                       >
-                        <h3 className="font-16 mb-3 text-dark fw-bold">{`Event for ${currentmonth} Month`}</h3>
+                        <h3 className="font-16 mb-3 mt-4 text-dark fw-bold">{`Event for ${currentmonth} Month`}</h3>
                         {/* <div >
                           <div >
                           <div style={{padding:'10px'}} className="gal-box">
@@ -637,7 +637,7 @@ const EventcalenderContext = ({ props }: any) => {
                         {eventDetails?.title !== '' ? (
                           <div className="">
                           <div className="">
-                          <div id="carouselExampleCaptions" className="carousel slide" data-bs-ride="carousel">
+                          <div  id="carouselExampleCaptions" className="carousel slide" data-bs-ride="carousel">
                          
                           <div className="carousel-inner">
   <div className="carousel-item active">
@@ -746,7 +746,27 @@ const EventcalenderContext = ({ props }: any) => {
 
                         </div>
 
-                      ) : <div></div>}
+                      ) : <div>
+                        
+                        
+                        
+                         <div >
+                          <div style={{height:'425px'}}>
+                          <div style={{padding:'10px', height:'420px', display:'flex', justifyContent:'center', alignItems:'center'}} className="gal-box">
+                        
+      <a href={eventDetails.eventLink}>
+        <div className="gall-info">
+          <h4 className="font-20 mb-2 mt-2 text-dark fw-bold mt-0">Previews</h4>
+         
+        
+        </div>
+      </a>
+                            </div>
+                            </div>
+                          </div>
+                        
+                        
+                        </div>}
                       </div>
                       <div
                         className="col-md-9 position-relative p-3"

@@ -16,19 +16,31 @@
     .dropdown-toggle:after{
       display: none !important;
     }
+    .projectmemeber{display: flex; border-bottom: 1px solid #efefef;   gap:5px; position: relative;align-items: center;
+      font-size: 14px;}
+      .projectmemeber:last-child{border-bottom: 0px solid #efefef; padding: 10px 0px; }
     .minw80 .modal-dialog{min-width: 65% !important;}
     .minw80 .moday-body{max-height: 470px;  overflow-y: auto;}
     .newaligntext{padding: 0px; min-width: auto !important;}
     .newaligntext button{padding: 0px; min-width: auto !important;}
 
-    
+    .newaligntext div{
+      min-width: auto;
+      padding: 0px 20px;
+    }
 
 
   /* Popup.css */
 .popup-container {
   position: relative;
 }
-
+.rounded-circlecss6{    width: 40px;
+  height: 40px;
+  border-radius: 1000px;}
+  .alignright{    position: absolute;
+    right: 0;
+    top: 13;
+}
 .open-popup-btn {
   padding: 10px 20px;
   background-color: #007bff;
@@ -52,6 +64,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 999999;
 }
 
 .popup-content {

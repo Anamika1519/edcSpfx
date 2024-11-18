@@ -274,7 +274,7 @@ button:hover {
     background-color: rgba(0, 0, 0, 0.5); /* Overlay */
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: center;z-index: 99999;
   }
   
   .popup-content {
@@ -287,16 +287,27 @@ button:hover {
   }
   
   .close-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 24px;
+    background: 0 0;
     border: none;
-    background: none;
     color: #333;
     cursor: pointer;
+    font-size: 24px;
+    position: absolute;
+    right: 10px;
+    top: 15px;
+    min-width: 35px;
+    height: 35px;
+    border: 1px solid #efefef;
+    width: 30px;
+    border-radius: 1000px !important;
+    text-align: center;
+    padding: 0;
   }
-  
+  .minw80 .modal-dialog{min-width: 65% !important;}
+    .minw80 .moday-body{max-height: 470px;  overflow-y: auto;}
+    .newaligntext{padding: 0px; min-width: auto !important;}
+    .newaligntext button{padding: 0px; min-width: auto !important;}
+    .widtsvg svg{width: 18px !important;}
   .close-btn:hover {
     color: red;
   }

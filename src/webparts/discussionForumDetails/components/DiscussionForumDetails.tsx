@@ -493,8 +493,8 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
   const sendanEmail = (item: any) => {
     // window.open("https://outlook.office.com/mail/inbox");
 
-    const subject = "Event link-" + item.EventName;
-    const body = 'Here is the link to the event:' + `${siteUrl}/SitePages/EventDetailsCalendar.aspx?${item.Id}`;
+    const subject = "Dicussion link-" + item.Topic;
+    const body = 'Here is the link to the Dicussion:' + `${siteUrl}/SitePages/DiscussionForumDetail.aspx?${item.Id}`;
 
     const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
@@ -830,7 +830,7 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
                   <button className="close-btn" onClick={togglePopup}>
                     &times; {/* Cross mark */}
                   </button>
-                  <h2>Popup Form</h2>
+                  <h2 className="font-16 text-dark mb-3">Popup Form</h2>
                   <form>
                     <label htmlFor="name">Folder Name:</label>
                     <input type="text"
@@ -1227,7 +1227,7 @@ alt="Check"
                         </button>
                         </div> */}
                             <div className="tabcss mb-2 mt-2 me-1 newalign">
-                              <span className="pe-2 text-nowrap mb-0 d-inline-block"
+                              <span className="pe-2 widtsvg text-nowrap mb-0 d-inline-block"
                                 onClick={(e: any) => openModal(e)}>
                                 <FilePlus /> Open Document
                               </span>
@@ -1412,9 +1412,31 @@ alt="Check"
                     </div> */}
                         <Modal show={showModal} onHide={closeModal} className="minw80">
                           <h3 style={{ width: '100%', textAlign: 'left', borderBottom: '1px solid #efefef', padding: '15px', fontSize: '18px' }} className="modal-title">Documents</h3>
-                          <Modal.Header closeButton style={{ position: 'absolute', right: '0px', borderBottom: '0px solid #ccc' }}>
+                          <Modal.Header closeButton style={{ position: 'absolute', right: '0px', display:'flex', gap:'10px', top:'-6px', borderBottom: '0px solid #ccc' }}>
                             {/* <Modal.Title> {ProjectsDocsJSON.length} Documents</Modal.Title> */}
-                            <Button variant="success" onClick={() => uploadfileinfolder()}>
+                            <label>
+
+<div>
+
+  <Link style={{ width: "20px", height: "16px" }} onClick={() => handleImageChange} />
+
+  <input
+
+    type="file"
+
+    multiple
+
+    accept="image/*"
+
+    onChange={handleImageChange}
+
+    className="fs-6 w-50" aria-rowspan={5} style={{ display: 'none' }}
+
+  />
+
+</div>
+
+</label>      <Button variant="success" onClick={() => uploadfileinfolder()}>
                               Upload File
                             </Button>
                             <ul>
@@ -1425,32 +1447,10 @@ alt="Check"
                                 </li>
                               ))}
                             </ul>
-                            <label>
-
-                              <div>
-
-                                <Link style={{ width: "20px", height: "16px" }} onClick={() => handleImageChange} />
-
-                                <input
-
-                                  type="file"
-
-                                  multiple
-
-                                  accept="image/*"
-
-                                  onChange={handleImageChange}
-
-                                  className="fs-6 w-50" aria-rowspan={5} style={{ display: 'none' }}
-
-                                />
-
-                              </div>
-
-                            </label>
+                           
                           </Modal.Header>
                           <Modal.Body>
-                            <div className="file-cards">
+                          <div className="file-cards row">
                               {/* {files.map((file) => (
             <Card key={file.UniqueId}style={{  marginBottom: '10px', height:'82px' }}>
               <Card.Body>

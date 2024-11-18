@@ -902,7 +902,7 @@ const BlogsContext = ({ props }: any) => {
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
               </div>
               <div className="col-lg-9">
-                <div className="d-flex flex-wrap align-items-center justify-content-end mt-3 mb-3">
+                <div className="d-flex flex-wrap align-items-center justify-content-end mt-0 mb-3">
                   {/* <div style={{ width: '310px' }}>
                     <label style={{ float: 'left', textAlign: 'right', width: '150px' }} className="me-2 mt-1" >Select Category</label>
                     <select style={{ float: 'left', width: '130px' }} className="form-select me-1">
@@ -954,7 +954,7 @@ const BlogsContext = ({ props }: any) => {
                             </h5>
                             <button style={{right:'22px', top:'18px'}}
                               type="button"
-                              className="btn-close"
+                              className="btn-close newclose1"
                               data-bs-dismiss="modal"
                               aria-label="Close"
                             ></button>

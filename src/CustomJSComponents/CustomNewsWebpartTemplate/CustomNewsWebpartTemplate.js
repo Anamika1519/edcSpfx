@@ -81,8 +81,8 @@ const CustomNewsWebpartTemplate = ({ _sp, SiteUrl }) => {
     const sendanEmail = (item) => {
         // window.open("https://outlook.office.com/mail/inbox");
       
-         const subject ="Event link-"+ item.EventName;
-         const body = 'Here is the link to the event:'+ `${siteUrl}/SitePages/EventDetailsCalendar.aspx?${item.Id}`;
+         const subject ="Event link-"+ item.Title;
+         const body = 'Here is the link to the event:'+ `${siteUrl}/SitePages/NewsDetails.aspx?${item.Id}`;
       
         const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
       

@@ -353,6 +353,22 @@
           "manifest": "./src/webparts/userProfile/UserProfileWebPart.manifest.json"
         }
       ]
+    },
+    "commingsoon-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/commingsoon/CommingsoonWebPart.js",
+          "manifest": "./src/webparts/commingsoon/CommingsoonWebPart.manifest.json"
+        }
+      ]
+    },
+    "business-app-master-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/businessAppMaster/BusinessAppMasterWebPart.js",
+          "manifest": "./src/webparts/businessAppMaster/BusinessAppMasterWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {
@@ -410,6 +426,8 @@
     "DmsWebPartStrings": "lib/webparts/dms/loc/{locale}.js",
     "DmsAdminWebPartStrings": "lib/webparts/dmsAdmin/loc/{locale}.js",
     "NotificationDetailsWebPartStrings": "lib/webparts/notificationDetails/loc/{locale}.js",
-    "UserProfileWebPartStrings": "lib/webparts/userProfile/loc/{locale}.js"
+    "UserProfileWebPartStrings": "lib/webparts/userProfile/loc/{locale}.js",
+    "CommingsoonWebPartStrings": "lib/webparts/commingsoon/loc/{locale}.js",
+    "BusinessAppMasterWebPartStrings": "lib/webparts/businessAppMaster/loc/{locale}.js"
   }
 }

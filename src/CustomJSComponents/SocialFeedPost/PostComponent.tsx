@@ -504,8 +504,8 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
     const sendanEmail = (item: any) => {
        
         // window.open("https://outlook.office365.com/mail/deeplink/compose?subject=Share%20Info&body=");
-        const subject = "Event link-" + item.EventName;
-        const body = 'Here is the link to the event:' + `${siteUrl}/SitePages/EventDetailsCalendar.aspx?${item.Id}`;
+        const subject = "Post link-" + item.Contentpost;
+        const body = 'Here is the link to the Post:' + `${siteUrl}/SitePages/GroupandTeamDetails.aspx?${item.Id}`;
 
         const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 

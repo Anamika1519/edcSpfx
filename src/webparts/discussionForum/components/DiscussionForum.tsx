@@ -51,6 +51,11 @@ import "react-quill/dist/quill.snow.css";
 import { SPFI } from "@pnp/sp/presets/all";
 import { fetchUserInformationList } from "../../../APISearvice/GroupTeamService";
 import Multiselect from "multiselect-react-dropdown";
+import { MSGraphClientV3 } from "@microsoft/sp-http";
+import { WebPartContext } from "@microsoft/sp-webpart-base";
+import context from "react-bootstrap/esm/AccordionContext";
+
+
 const DiscussionForumContext = ({ props }: any) => {
   const sp: SPFI = getSP();
   const { useHide }: any = React.useContext(UserContext);
@@ -68,6 +73,7 @@ const DiscussionForumContext = ({ props }: any) => {
   const [DocumentpostIdsArr, setDocumentpostIdsArr] = React.useState([]);
   const [selectedValue, setSelectedValue] = useState([]);
   const [EnityData, setEnityData] = React.useState([]);
+  const [CurrentUserEnityData, setCurrentUserEnityData] = React.useState([]);
   const [options, setOpions] = useState([]);
   const [filters, setFilters] = React.useState({
     SNo: "",
@@ -99,11 +105,7 @@ const DiscussionForumContext = ({ props }: any) => {
     description: "",
     overview: "",
     FeaturedAnnouncement: false,
-    discussiongallery:"",
-    discussiondocument:"",
-    privateorpublic:"",
   });
-  
   const [DiscussionData, setDiscussion] = useState([])
   const [CategoryData, setCategoryData] = React.useState([]);
   const [showModal, setShowModal] = React.useState(false);
@@ -186,7 +188,44 @@ const DiscussionForumContext = ({ props }: any) => {
     setGroupTypeData(
       await getChoiceFieldOption(sp, "ARGDiscussionForum", "GroupType")
     );
+    // Fetch the leaderboard as before
+
+
+    // Set the leaderboard and current user info as separate states
+    
+    setCurrentUserEnityData(await GetEntity(sp));
+
+    // Assuming you have a setCurrentUser function
+
   };
+
+  const GetEntity = async (_sp: SPFI) => {
+    let arr: any[] = []
+    try {
+      // Fetch the leaderboard as before
+      //const leaderboardData = await getLeaderTop(sp);
+
+      // Retrieve the current logged-in user's data using the /me endpoint
+      const currentWPContext: WebPartContext = props.context;
+      const msgraphClient: MSGraphClientV3 = await currentWPContext.msGraphClientFactory.getClient('3');
+      const currentUserData = await msgraphClient.api("/me")
+        .version("v1.0")
+        .select("displayName,mail,jobTitle,mobilePhone,companyName,userPrincipalName")
+        .get();
+
+      // Log the current user data
+      console.log("Current User Data: ", currentUserData);
+
+      // Set the leaderboard and current user info as separate states
+      //setLeaderboard(leaderboardData);
+      //setCurrentUser(currentUserData);  // Assuming you have a setCurrentUser function
+
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+    return arr;
+  }
+
   const FilterDiscussionData = async (optionFilter: string) => {
     setAnnouncementData(await getDiscussionFilterAll(sp, optionFilter))
   }
@@ -582,16 +621,12 @@ const DiscussionForumContext = ({ props }: any) => {
     if (!topic) {
       Swal.fire("Error", "Topic is required!", "error");
       valid = false;
-    } else if (!category) {
-      Swal.fire("Error", "Category is required!", "error");
-      valid = false;
-    }
-    else if (!entity) {
+    } else if (!entity) {
       Swal.fire("Error", "Entity is required!", "error");
       valid = false;
     }
     else if (!category) {
-      Swal.fire("Error", "Entity is required!", "error");
+      Swal.fire("Error", "Category is required!", "error");
       valid = false;
     }
 
@@ -924,9 +959,6 @@ const DiscussionForumContext = ({ props }: any) => {
                 description: "",
                 overview: "",
                 FeaturedAnnouncement: false,
-                discussiongallery:"",
-                discussiondocument:"",
-                privateorpublic:"",
               });
 
               setDocumentpostArr1([]);
@@ -974,7 +1006,7 @@ const DiscussionForumContext = ({ props }: any) => {
                 GroupType: formData.GroupType,
                 DiscussionForumCategoryId: Number(formData.category),
                 InviteMemebersId: selectedIds,
-                ARGDiscussionStatus:"Ongoing",
+                ARGDiscussionStatus: "Ongoing",
               };
             }
             else {
@@ -985,7 +1017,7 @@ const DiscussionForumContext = ({ props }: any) => {
                 EntityId: Number(formData.entity),
                 GroupType: formData.GroupType,
                 DiscussionForumCategoryId: Number(formData.category),
-                                ARGDiscussionStatus : "Ongoing"
+                ARGDiscussionStatus: "Ongoing"
               };
             }
 
@@ -1063,9 +1095,6 @@ const DiscussionForumContext = ({ props }: any) => {
                 description: "",
                 overview: "",
                 FeaturedAnnouncement: false,
-                discussiongallery:"",
-                discussiondocument:"",
-                privateorpublic:"",
               });
               setSelectedValue([])
               setDocumentpostArr1([]);
@@ -1293,7 +1322,11 @@ const DiscussionForumContext = ({ props }: any) => {
                                   onChange(e.target.name, e.target.value)
                                 }
                               >
-                                <option value="">Select</option>
+                                <option value=""> {CurrentUserEnityData.map((item, index) => (item?.companyName != null
+
+                                  ? item?.companyName
+
+                                  : "NA"))}</option>
                                 {EnityData.map((item, index) => (
                                   <option key={index} value={item.id}>
                                     {item.name}

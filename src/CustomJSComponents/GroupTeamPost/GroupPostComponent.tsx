@@ -397,8 +397,16 @@ export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentU
             });
     };
 
-    const sendanEmail = () => {
-        window.open("https://outlook.office365.com/mail/deeplink/compose?subject=Share%20Info&body=");
+    const sendanEmail = (item: any) => {
+       
+        // window.open("https://outlook.office365.com/mail/deeplink/compose?subject=Share%20Info&body=");
+        const subject = "Post link-" + item.Contentpost;
+        const body = 'Here is the link to the Post:' + `${siteUrl}/SitePages/GroupandTeamDetails.aspx?${item.Id}`;
+
+        const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+        // Open the link to launch the default mail client (like Outlook)
+        window.location.href = mailtoLink;
     };
 
     const handleToggleImages = () => {
@@ -566,7 +574,7 @@ export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentU
                     </div>
                     {isMenuOpenshare && (
                         <div className="dropdown-menucsspost" ref={menuRef}>
-                            <button onClick={(e) => sendanEmail()}>Share by email</button>
+                            <button onClick={(e) => sendanEmail(post)}>Share by email</button>
                             <button onClick={(e) => copyToClipboard(post.postId)}>Copy link</button>
                             {copySuccess && <span className="text-success">{copySuccess}</span>}
                         </div>

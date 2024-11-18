@@ -18,11 +18,13 @@ import { faPaperPlane } from "@fortawesome/free-solid-svg-icons"
 import classNames from 'classnames'
 import { uploadFileToLibrary } from '../../../APISearvice/AnnouncementsService'
 import { PostComponent } from '../../../CustomJSComponents/SocialFeedPost/PostComponent'
-import { fetchBlogdatatop,fetchBookmarkBlogdata } from '../../../APISearvice/BlogService'
+import { fetchBlogdatatop, fetchBookmarkBlogdata } from '../../../APISearvice/BlogService'
 import AvtarComponents from '../../../CustomJSComponents/AvtarComponents/AvtarComponents'
 import { fetchUserInformationList } from '../../../APISearvice/Dasborddetails'
-import { getDiscussion, getDiscussionFilter,fetchTrendingDiscussionBasedOn} from '../../../APISearvice/DiscussionForumService'
-
+import { getDiscussion, getDiscussionFilter, fetchTrendingDiscussionBasedOn } from '../../../APISearvice/DiscussionForumService'
+import { WebPartContext } from "@microsoft/sp-webpart-base";
+import { MSGraphClientV3 } from "@microsoft/sp-http";
+import { toLower } from "lodash";
 interface Post {
   text: string;
   images: string[];
@@ -68,15 +70,15 @@ const SocialFeedContext = ({ props }: any) => {
   const [activeMainTab, setActiveMainTab] = useState("feed");
   const [loadingReply, setLoadingReply] = useState<boolean>(false);
   const [loadingLike, setLoadingLike] = useState<boolean>(false);
-
+  const [Currentusercompany, setCurrentusercompany] = useState("");
   const menuRef = useRef(null);
   useEffect(() => {
     // Load posts from localStorage when the component mounts
     // const storedPosts = JSON.parse(localStorage.getItem('posts') || '[]');
     // console.log(storedPosts);
-
+    fetchUserInformationList();
     // setPosts(storedPosts);
-    getAllAPI()
+    getAllAPI();
     const handleClickOutside = (event: { target: any; }) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
         setIsMenuOpenshare(false);
@@ -98,22 +100,88 @@ const SocialFeedContext = ({ props }: any) => {
     setCurrentUserName(await getCurrentUserName(sp))
     //setblogdata(await fetchBlogdatatop(sp))
     setblogdata(await fetchBookmarkBlogdata(sp))
-    setUsersArr(await fetchUserInformationList(sp))
+    //setUsersArr(await fetchUserInformationList(sp))
 
     fetchPosts();
     fetchFollowingList()
-    
+
     FilterDiscussionData()
     // setFollowUsers(await getFollow(sp))
     // setFollowingUsers(await getFollowing(sp))
 
 
   }
+  const fetchUserInformationList = async () => {
+    try {
+      const currentUser = await sp.web.currentUser();
+      let FollowedIds: any[] = [];
+      const followRecords = await sp.web.lists.getByTitle("ARGFollows").items
+        .filter(`FollowerId eq ${currentUser.Id}`)
+        .getAll().then((x) => {
+          for (let i = 0; i < x.length; i++) {
+            FollowedIds.push(`ID ne ${x[i].FollowedId}`)
+          }
+        });
+      let finalquery = FollowedIds.map((x) => x).join(' and ');
+      const userListSP = await sp.web.lists
+        .getByTitle("User Information List")
+        .items
+        .select("ID", "Title", "EMail", "Department", "JobTitle", "Picture", "MobilePhone", "WorkPhone", "Name")
+        .filter(`EMail ne null and ID ne ${currentUser.Id} and ${finalquery}`) // content tyep eq person
+        ();
+      // console.log("userList",userListSP);
+      // let currentWPContext:WebPartContext=props.props.context;  
+      let currentWPContext: WebPartContext = props.context;
+      // console.log("props",props);
+      const msgraphClient: MSGraphClientV3 = await currentWPContext.msGraphClientFactory.getClient('3');
+      const m265userList = await msgraphClient.api("users")
+        .version("v1.0")
+        .select("displayName,mail,jobTitle,mobilePhone,companyName,userPrincipalName")
+        .get();
+      // console.log("m265userList",m265userList);
 
-  
+      //Adding dummy companies to users for testing
+      //m265userList.value=m265userList.value.map((m:any)=>{let x=m; x['companyName']='dunnycommpany'; return x;});
+
+      let userList: any[] = [];
+
+      userList = userListSP.map(usr => {
+        let musrs = m265userList.value.filter((usr1: any) => { return toLower(usr1.mail) == toLower(usr.EMail) });
+        if (musrs.length > 0) {
+          usr['companyName'] = musrs[0]['companyName'];
+        }
+        else usr['companyName'] = 'NA';
+        return usr;
+      });
+      let CurrentUserDetails: any[] = [];
+      CurrentUserDetails = userListSP.map(usr => {
+        let musrs = m265userList.value.filter((usr1: any) => { return toLower(usr1.mail) == toLower(currentUser.Email) });
+        if (musrs.length > 0) {
+          setCurrentusercompany(musrs[0]['companyName'])
+        }
+      });
+
+      setUsersArr(userList);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
+  const applyFiltersAndSorting = (data: any[], companyName: string) => {
+    console.log("datatta", data, companyName)
+    const filteredData = data.filter((item) => {
+      return (
+        (companyName === '' || ((item?.companyName) ? item?.companyName.toLowerCase().includes(companyName.toLowerCase()) : false))
+      );
+    });
+    return filteredData;
+  };
+  const filteredEmployeeData = applyFiltersAndSorting(usersitem, Currentusercompany);
+
+  const currentData = filteredEmployeeData.slice(0, 10);
+
 
   const FilterDiscussionData = async () => {
-    
+
     setDiscussion(await getDiscussionFilter(sp))
   }
   // Function to get list of users following the current user
@@ -192,38 +260,37 @@ const SocialFeedContext = ({ props }: any) => {
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     debugger
     setLoading(true);
-    try
-    {
-    const files = Array.from(e.target.files || []); // Ensure files is an array of type File[]
-    let uploadedImages: any[] = [];
-    let ImagesIds: any[] = [];
-    for (const file of files) {
-      try {
-        // Assuming uploadFileToLibrary is your custom function to upload files
-        const uploadedImage = await uploadFileToLibrary(file, sp, "SocialFeedImages");
+    try {
+      const files = Array.from(e.target.files || []); // Ensure files is an array of type File[]
+      let uploadedImages: any[] = [];
+      let ImagesIds: any[] = [];
+      for (const file of files) {
+        try {
+          // Assuming uploadFileToLibrary is your custom function to upload files
+          const uploadedImage = await uploadFileToLibrary(file, sp, "SocialFeedImages");
 
-        uploadedImages.push(uploadedImage); // Store uploaded image data
-        console.log(uploadedImage, 'Uploaded file data');
-      } catch (error) {
-        console.log("Error uploading file:", file.name, error);
+          uploadedImages.push(uploadedImage); // Store uploaded image data
+          console.log(uploadedImage, 'Uploaded file data');
+        } catch (error) {
+          console.log("Error uploading file:", file.name, error);
+        }
       }
+
+
+
+      // Set state after uploading all images
+
+      setImages(flatArray(uploadedImages)); // Store all uploaded images
+
+      setUploadFile(flatArray(uploadedImages)); // Optional: Track the uploaded file(s) in another state
     }
-
-
-
-    // Set state after uploading all images
-
-    setImages(flatArray(uploadedImages)); // Store all uploaded images
-
-    setUploadFile(flatArray(uploadedImages)); // Optional: Track the uploaded file(s) in another state
-  }
-  catch (error) {
-    setLoading(false); 
-    console.error('Error toggling like:', error);
-  }
-  finally {
-    setLoading(false); // Enable the button after the function completes
-  }
+    catch (error) {
+      setLoading(false);
+      console.error('Error toggling like:', error);
+    }
+    finally {
+      setLoading(false); // Enable the button after the function completes
+    }
   };
 
   //#region flatArray
@@ -356,7 +423,7 @@ const SocialFeedContext = ({ props }: any) => {
             console.log(updatedPosts);
             setPosts(updatedPosts);
             let notifiedArr = {
-              ContentId:ele.data.Id,
+              ContentId: ele.data.Id,
               NotifiedUserId: ele.data.AuthorId,
               ContentType0: "Post By User",
               ContentName: ele.data.Contentpost,
@@ -375,7 +442,7 @@ const SocialFeedContext = ({ props }: any) => {
           setContent('');
           setImages([]);
         } catch (error) {
-          setIsSubmitting(false); 
+          setIsSubmitting(false);
           console.log("Error adding post to SharePoint: ", error);
           //alert("There was an error submitting your post. Please try again.");
         } finally {
@@ -726,7 +793,7 @@ const SocialFeedContext = ({ props }: any) => {
     }
 
   };
-  const follow = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, itemId: number) => {
+  const follow = async (e:any, itemId: number) => {
     e.preventDefault();
     try {
       const currentUser = await sp.web.currentUser();
@@ -804,127 +871,127 @@ const SocialFeedContext = ({ props }: any) => {
 
               <div className="col-md-3 mobile-w1">
                 <div className='psonew'>
-                <div className="row">
+                  <div className="row">
 
-                  <div style={{ display: 'flex', gap: '0.1rem' }}>
+                    <div style={{ display: 'flex', gap: '0.1rem' }}>
 
-                    <img src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${currentEmail}`}
+                      <img src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${currentEmail}`}
 
-                      className="rounded-circlecss img-thumbnail avatar-xl" style={{
+                        className="rounded-circlecss img-thumbnail avatar-xl" style={{
 
-                        borderRadius: '5rem', height: '3rem',
+                          borderRadius: '5rem', height: '3rem',
 
-                        width: '3rem'
+                          width: '3rem'
 
-                      }} />
+                        }} />
 
-                    <span style={{
+                      <span style={{
 
-                      whiteSpace: 'nowrap',
+                        whiteSpace: 'nowrap',
 
-                      display: 'flex',
+                        display: 'flex',
 
-                      alignItems: 'center'
+                        alignItems: 'center'
 
-                    }}>{currentUsername}</span>
-
-                  </div>
-
-                </div>
-
-                <div className="row mt-3">
-
-                  <div>
-
-                    <div>
-
-                      <div
-
-                        className={`tabcss mb-2 mt-2 me-1 ${activeMainTab === "feed" ? "activenew" : ""
-
-                          }`}
-
-                        onClick={() => handleTabClick("feed")}
-
-                        style={{ cursor: "pointer" }}
-
-                      >
-
-                        <span>
-
-                          <Rss />{" "}
-
-                        </span>{" "}
-
-                        Feed
-
-                      </div>
-
-                      <div
-
-                        className={`tabcss mb-2 mt-2 me-1 ${activeMainTab === "followers" ? "activenew" : ""
-
-                          }`}
-
-                        onClick={() => handleTabClick("followers")}
-
-                        style={{ cursor: "pointer" }}
-
-                      >
-
-                        {" "}
-
-                        <span>
-
-                          <UserPlus />{" "}
-
-                        </span>{" "}
-
-                        Followers
-
-                      </div>{" "}
-
-                      <div className={`tabcss mb-2 mt-2 me-1 ${activeMainTab === "following" ? "activenew" : ""
-
-                        }`} onClick={() => handleTabClick("following")} style={{ cursor: "pointer" }} > <span><Users /> </span> Following</div>
+                      }}>{currentUsername}</span>
 
                     </div>
 
                   </div>
 
+                  <div className="row mt-3">
 
-                  <div className='mt-3'>
-                    <h4 className='font-14 mb-3 uppercase'>Blogs you Saved</h4>
-                    {
+                    <div>
 
-                      blogdata.length > 0 ? blogdata.map((item: any) => {
+                      <div>
 
-                        return (
+                        <div
 
-                          <div className="row mt-1" style={{ gap: '0.5rem' }}><div className="col-md-1" onClick={() => gotoBlogsDetails(item)}>
+                          className={`tabcss mb-2 mt-2 me-1 ${activeMainTab === "feed" ? "activenew" : ""
 
-                            <span> <AvtarComponents Name={item.Title} /> </span>
+                            }`}
 
-                          </div>
+                          onClick={() => handleTabClick("feed")}
 
-                            <div className="col-md-10">
+                          style={{ cursor: "pointer" }}
 
-                              <span className="title-ellipsis font-14">{item.Title}</span>
+                        >
 
-                            </div></div>
+                          <span>
 
-                        )
+                            <Rss />{" "}
 
-                      }) : null
+                          </span>{" "}
 
-                    }
+                          Feed
+
+                        </div>
+
+                        <div
+
+                          className={`tabcss mb-2 mt-2 me-1 ${activeMainTab === "followers" ? "activenew" : ""
+
+                            }`}
+
+                          onClick={() => handleTabClick("followers")}
+
+                          style={{ cursor: "pointer" }}
+
+                        >
+
+                          {" "}
+
+                          <span>
+
+                            <UserPlus />{" "}
+
+                          </span>{" "}
+
+                          Followers
+
+                        </div>{" "}
+
+                        <div className={`tabcss mb-2 mt-2 me-1 ${activeMainTab === "following" ? "activenew" : ""
+
+                          }`} onClick={() => handleTabClick("following")} style={{ cursor: "pointer" }} > <span><Users /> </span> Following</div>
+
+                      </div>
+
+                    </div>
+
+
+                    <div className='mt-3'>
+                      <h4 className='font-14 mb-3 uppercase'>Blogs you Saved</h4>
+                      {
+
+                        blogdata.length > 0 ? blogdata.map((item: any) => {
+
+                          return (
+
+                            <div className="row mt-1" style={{ gap: '0.5rem' }}><div className="col-md-1" onClick={() => gotoBlogsDetails(item)}>
+
+                              <span> <AvtarComponents Name={item.Title} /> </span>
+
+                            </div>
+
+                              <div className="col-md-10">
+
+                                <span className="title-ellipsis font-14">{item.Title}</span>
+
+                              </div></div>
+
+                          )
+
+                        }) : null
+
+                      }
+
+                    </div>
+
+
+
 
                   </div>
-
-
-
-
-                </div>
                 </div>
               </div>
 
@@ -971,7 +1038,7 @@ const SocialFeedContext = ({ props }: any) => {
                                     placeholder="Write something..."
 
                                     value={Contentpost}
-                                  
+
                                     rows={4}
 
                                     onChange={(e) => setContent(e.target.value)}
@@ -1076,9 +1143,9 @@ const SocialFeedContext = ({ props }: any) => {
 
                                     </div>
 
-                                    <button type="submit" className="btn btn-sm btn-success font-121"   disabled={Loading}>
+                                    <button type="submit" className="btn btn-sm btn-success font-121" disabled={Loading}>
 
-                                 <FontAwesomeIcon icon={faPaperPlane} /> Post     
+                                      <FontAwesomeIcon icon={faPaperPlane} /> Post
 
                                     </button>
 
@@ -1251,7 +1318,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                                   alt="profile-image"
 
-                                  style={{ cursor: "pointer", borderRadius:'1000px', width:"6rem", height:'6rem' }}
+                                  style={{ cursor: "pointer", borderRadius: '1000px', width: "6rem", height: '6rem' }}
 
                                 />
 
@@ -1459,7 +1526,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                                   alt="profile-image"
 
-                                  style={{ cursor: "pointer"}}
+                                  style={{ cursor: "pointer" }}
 
                                 />
 
@@ -1481,11 +1548,11 @@ const SocialFeedContext = ({ props }: any) => {
 
                                 >
 
-                               
 
-                                    {truncateText(item.Title, 15)}
 
-                             
+                                  {truncateText(item.Title, 15)}
+
+
 
                                 </a>
 
@@ -1616,7 +1683,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                       <a
 
-                        style={{ float: "right",lineHeight:"21px" }}
+                        style={{ float: "right", lineHeight: "21px" }}
 
                         className="font-11 btn btn-primary  waves-effect waves-light view-all"
 
@@ -1628,7 +1695,7 @@ const SocialFeedContext = ({ props }: any) => {
                       {/* <div className="menu-toggle" onClick={toggleMenu}>
                         <MoreVertical size={20} />
                       </div> */}
-                     
+
 
                     </h4>
 
@@ -1677,18 +1744,18 @@ const SocialFeedContext = ({ props }: any) => {
                 </div>
 
 
-
+                {console.log("currentDatacurrentData", currentData)}
                 <div className="card mobile-6" style={{ borderRadius: "1rem" }}>
 
                   <div className="card-body pb-3 gheight">
 
                     <h4 className="header-title font-16 text-dark fw-bold mb-0" style={{ fontSize: '20px' }}>
 
-                      People you Follow
+                      People you may Follow
 
                       <a
 
-                        style={{ float: "right",lineHeight:"21px" }}
+                        style={{ float: "right", lineHeight: "21px" }}
 
                         className="font-11 view-all  btn btn-primary  waves-effect waves-light"
 
@@ -1704,7 +1771,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                     <div className="inbox-widget mt-4">
 
-                      {followerList.length > 0 && followerList.map((user: any, index: 0) => (
+                      {currentData.length > 0 && currentData.map((user: any, index: 0) => (
 
                         <div
 
@@ -1770,7 +1837,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                           <div className="col-sm-2 txtr">
 
-                            <PlusCircle size={20} color='#008751' />
+                            <PlusCircle size={20} color='#008751'   onClick={(e) => follow(e,user.ID)} />
 
                           </div>
 
