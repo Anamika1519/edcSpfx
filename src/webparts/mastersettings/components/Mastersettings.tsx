@@ -19,6 +19,11 @@ import { faPaperclip } from '@fortawesome/free-solid-svg-icons';
 import HorizontalNavbar from '../../horizontalNavBar/components/HorizontalNavBar';
 import styles from "../components/Mastersettings.module.scss"
 import { IMastersettingsProps } from './IMastersettingsProps';
+const endsWith=(str:string, ending:string)=> 
+  {
+    return str.slice(-ending.length) === ending;
+  }
+  
 export const MastersettingContext = ({ props }: any) => {
   const sp: SPFI = getSP();
   console.log(sp, 'sp');
@@ -31,6 +36,7 @@ export const MastersettingContext = ({ props }: any) => {
   const { setHide }: any = context;
   const [isDarkMode, setIsDarkMode] = React.useState(false);
   const [settingArray, setsettingArray] = React.useState([]);
+  const [IsUserAlllowed, setIsUserAlllowed] = React.useState(false);
   const SiteUrl = props.siteUrl;
   const Breadcrumb = [
     {
@@ -42,11 +48,35 @@ export const MastersettingContext = ({ props }: any) => {
       "ChildComponentURl": `${SiteUrl}/SitePages/Settings.aspx`
     }
   ]
+  const IsUserAllowedAccess=async ()=>{
+    // Get groups for the current user
+    const userGroups = await sp.web.currentUser.groups();
+    let grptitle:String[]=[];
+    for(var i=0;i<userGroups.length;i++)
+    {
+      grptitle.push(userGroups[i].Title.toLowerCase());
+    }
+     
+    let sidebarnavitems=await sp.web.lists.getByTitle("ARGSidebarNavigation").items.select("Title,Url,Icon,ParentId,ID,EnableAudienceTargeting,Audience/Title").expand("Audience").getAll();
+        
+    let securednavitems= sidebarnavitems.filter((nav:any)=>
+      {
+         return (!nav.EnableAudienceTargeting || ( nav.EnableAudienceTargeting && nav.Audience && nav.Audience.some((nv1:any)=>{  return grptitle.includes(nv1.Title.toLowerCase()); }  ) )  )
+      } 
+    )
 
+    return securednavitems.some((navitm:any)=> (navitm.Url)?endsWith(navitm.Url.toLowerCase(),location.pathname.toLowerCase()):false)
+
+  }
   React.useEffect(() => {
     ApiCall()
     console.log('This function is called only once', useHide);
+    IsUserAllowedAccess().then(bAllowed=>{
+  
+      //  console.log("%c Access allowed","color:green,font-size:14px",bAllowed);
+       setIsUserAlllowed(bAllowed);
 
+    })
     const showNavbar = (
       toggleId: string,
       navId: string,
@@ -163,6 +193,7 @@ export const MastersettingContext = ({ props }: any) => {
               </div>
               <div className="row manage-master mt-3">
                 {
+                  IsUserAlllowed?
                   settingArray.map((item: any) => {
                     const ImageUrl = item.ImageIcon == undefined || item.ImageIcon == null ? "" : JSON.parse(item.ImageIcon);
                     return (<div className="col-sm-3 col-md-3 mt-2">
@@ -175,7 +206,7 @@ export const MastersettingContext = ({ props }: any) => {
                         </div>
                       </a>
                     </div>)
-                  })
+                   }):(<div>Access Denied</div>)
                 }
               </div>
               {/* <>

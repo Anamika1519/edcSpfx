@@ -14,8 +14,8 @@ import "../../../CustomCss/mainCustom.scss"
 import moment from 'moment';
 import NotificationList from '../../../CustomJSComponents/CustomForm/NotificationList';
 import { result } from 'lodash';
-
 import { ListTitleTiSearchCategoryMapping } from './IHorizontalNavBarProps';
+
 
 interface ListFieldsMapping {
   ARGAnnouncementAndNews: string;
@@ -59,11 +59,11 @@ const HorizontalNavbar = ({ _context, siteUrl }: any) => {
   const [replyingTo, setReplyingTo] = useState<number | null>(null);
   const [isOpen, setIsOpen] = React.useState(false);
   const [isOpenBell, setIsOpenBell] = React.useState(false);
-
+  const [groupedSearchResults, setGroupedSearchResults] = useState<any>({});
   const [currentUser, setCurrentUser] = React.useState("")
   const [currentUserEmail, setCurrentUserEmail] = React.useState("")
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
-  const [groupedSearchResults, setGroupedSearchResults] = useState<any>({});
+  
   // Helper function to generate unique IDs
   const generateId = () => Math.floor(Math.random() * 100000);
   const [issearchOpen, setIsSearchOpen] = React.useState(false);
@@ -74,24 +74,16 @@ const HorizontalNavbar = ({ _context, siteUrl }: any) => {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [NotificationArray, setNotificationArray] = useState([]);
-  function groupByFn(array: any, keyGetter: any) {
-
-    return array.reduce((result: any, currentItem: any) => {
-
+ 
+  function groupByFn(array:any, keyGetter:any) {
+    return array.reduce((result:any, currentItem:any) => {
       const key = keyGetter(currentItem);
-
       if (!result[key]) {
-
         result[key] = [];
-
       }
-
       result[key].push(currentItem);
-
       return result;
-
     }, {});
-
   }
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -248,15 +240,11 @@ const HorizontalNavbar = ({ _context, siteUrl }: any) => {
 
     if (queryText && queryText.length > 2) {
       const searchResults = await searchAllLists(queryText);
-      let grped = groupByFn(searchResults, (res: any) => res.ListTitle)
-
-      console.log("grped results", grped);
-      //console.log(searchResults);
-
+      let grped=groupByFn(searchResults,(res:any)=>res.ListTitle)
+      console.log("grped results",grped);
       setSearchResults(searchResults);
       setGroupedSearchResults(grped);
-
-      console.log("grouped resuls after fncall", groupedSearchResults);
+      console.log("grouped resuls after fncall",groupedSearchResults);
     }
   };
   const handleSearchClick = async (result: any) => {
@@ -351,44 +339,33 @@ const HorizontalNavbar = ({ _context, siteUrl }: any) => {
                   {searchResults.length > 0 && <span style={{ padding: '0.85rem' }}>Found {searchResults.length} results</span>}
                   {console.log("grped searchResults dropfown", groupedSearchResults)}
                   {searchResults.length > 0 ? (
-                                        Object.keys(groupedSearchResults).map((grpreskey: any, grpind: number) => (
 
+                     
+Object.keys(groupedSearchResults).map((grpreskey:any,grpind:number)=>(
 
+      <div>
+      <div key={grpind}>{ListTitleTiSearchCategoryMapping[grpreskey]}({groupedSearchResults[grpreskey].length})</div>
+      {
+        groupedSearchResults[grpreskey].map((result:any,index:any)=>(
+          <div key={index} className="search-result-item">                                                    
+            <a onClick={() => handleSearchClick(result)} style={{ padding: '0.85rem' }}>
+              <h4 className='eclipcsss' style={{ fontSize: '0.9rem' }}>{result.Title || result.ProjectName || result.EventName || result.Contentpost}</h4>
+              {/* {result.Description && <p dangerouslySetInnerHTML={{ __html: result.Description }}></p>} */}
+              {result.Overview && <p className='eclipcsss' style={{ fontSize: '0.7rem' }}>{result.Overview}</p>}
+              {result.EventAgenda && <p className='eclipcsss' style={{ fontSize: '0.7rem' }}>{result.EventAgenda}</p>}
+            </a>
+          </div>
 
-                                          <div>
-                    
-                                            <div key={grpind}>{ListTitleTiSearchCategoryMapping[grpreskey]}({groupedSearchResults[grpreskey].length})</div>
-                    
-                                            {
-                    
-                                              groupedSearchResults[grpreskey].map((result: any, index: any) => (
-                    
-                                                <div key={index} className="search-result-item">
-                    
-                                                  <a onClick={() => handleSearchClick(result)} style={{ padding: '0.85rem' }}>
-                    
-                                                    <h4 className='eclipcsss' style={{ fontSize: '0.9rem' }}>{result.Title || result.ProjectName || result.EventName || result.Contentpost}</h4>
-                    
-                                                    {/* {result.Description && <p dangerouslySetInnerHTML={{ __html: result.Description }}></p>} */}
-                    
-                                                    {result.Overview && <p className='eclipcsss' style={{ fontSize: '0.7rem' }}>{result.Overview}</p>}
-                    
-                                                    {result.EventAgenda && <p className='eclipcsss' style={{ fontSize: '0.7rem' }}>{result.EventAgenda}</p>}
-                    
-                                                  </a>
-                    
-                                                </div>
-                    
-                    
-                    
-                                              ))
-                    
-                                            }
-                      </div>
-                    ))
-                  ) : (
-                    null
-                  )}
+        ))
+      }
+      </div>
+      
+      
+))
+
+) : (
+null
+)}
                   <div className="force-overflow"></div>
                 </div>
               </div>

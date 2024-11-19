@@ -59,14 +59,50 @@ export interface IUserItem {
   mobilePhone: string;
   companyName: string;    
 }
-const CorporateDirectoryContext = ({ props }: any) => {
+const sortArray=(array:any[], compareFn:any)=> {
+
+  const length = array.length;
+
+
+
+  for (let i = 0; i < length - 1; i++) {
+
+    for (let j = 0; j < length - i - 1; j++) {
+
+      // Use the provided compare function
+
+      if (compareFn(array[j], array[j + 1]) > 0) {
+
+        // Swap elements
+
+        [array[j], array[j + 1]] = [array[j + 1], array[j]];
+
+      }
+
+    }
+
+  }
+
+
+
+  return array;
+
+}
+
+
+
+const CorporateDirectoryContext = ({props}:any) => {
+
+
+
+  console.log("props 1",props);
 
   const sp: SPFI = getSP();
 
   console.log(sp, "sp");
 
   const [usersitem, setUsersArr] = useState<any[]>([]);
-
+  const [usersitemcopy, setUsersitemcopy] = useState<any[]>([]);
   // const { useHide }: any = React.useContext(UserContext);
 
   // const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
@@ -351,38 +387,41 @@ const CorporateDirectoryContext = ({ props }: any) => {
         .getByTitle("User Information List")
         .items
         .select("ID", "Title", "EMail", "Department", "JobTitle", "Picture", "MobilePhone","WorkPhone","Name")
-
-        .filter(`EMail ne null and ID ne ${currentUser.Id}`) // content tyep eq person
+        .filter(`EMail ne null and ID ne ${currentUser.Id}`) 
 
         ();
 
-      // console.log("userList",userListSP);
-      // let currentWPContext:WebPartContext=props.props.context;  
-      let currentWPContext:WebPartContext=props.context;  
-      // console.log("props",props);
-      const msgraphClient:MSGraphClientV3=await currentWPContext.msGraphClientFactory.getClient('3');
-      const m265userList= await msgraphClient.api("users")
-          .version("v1.0")
-          .select("displayName,mail,jobTitle,mobilePhone,companyName,userPrincipalName")
-          .get();
-      // console.log("m265userList",m265userList);
-
-      //Adding dummy companies to users for testing
-      //m265userList.value=m265userList.value.map((m:any)=>{let x=m; x['companyName']='dunnycommpany'; return x;});
-     
-     let userList:any[]=[];
-
-     userList=userListSP.map(usr=>{
-         let musrs=  m265userList.value.filter((usr1:any)=>{ return toLower(usr1.mail)==toLower(usr.EMail)});
-         if(musrs.length>0)
-         {
-          usr['companyName']=musrs[0]['companyName'];
-         }
-         else usr['companyName']='NA';
-         return usr;
-     })
+        console.log("userList",userListSP);
+        // let currentWPContext:WebPartContext=props.props.context;  
+        let currentWPContext:WebPartContext=props.context;  
+        // console.log("props",props);
+        const msgraphClient:MSGraphClientV3=await currentWPContext.msGraphClientFactory.getClient('3');
+        const m265userList= await msgraphClient.api("users")
+            .version("v1.0")
+            .select("displayName,mail,jobTitle,mobilePhone,companyName,userPrincipalName")
+            .get();
+        // console.log("m265userList",m265userList);
   
-
+        //Adding dummy companies to users for testing
+        //m265userList.value=m265userList.value.map((m:any)=>{let x=m; x['companyName']='dunnycommpany'; return x;});
+       
+       let userList:any[]=[];
+  
+       userList=userListSP.map(usr=>{
+           let musrs=  m265userList.value.filter((usr1:any)=>{ return toLower(usr1.mail)==toLower(usr.EMail)});
+           if(musrs.length>0)
+           {
+            usr['companyName']=musrs[0]['companyName'];
+           }
+           else usr['companyName']='NA';
+           return usr;
+       })
+  
+       //sort by title
+  
+       userList=sortArray(userList,(a:any, b:any) => a.Title.toLowerCase().localeCompare(b.Title.toLowerCase()))
+  
+  
       const initialLoadingStatus: Record<number, boolean> = {};
 
       const initialFollowStatus: Record<number, boolean> = {};
@@ -482,7 +521,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
       setLoadingUsers(initialLoadingStatus);
 
       setUsersArr(userList);
-
+      setUsersitemcopy(userList);
   
 
     } catch (error) {
@@ -692,7 +731,6 @@ const CorporateDirectoryContext = ({ props }: any) => {
         (filters.Email === "" ||
 
           item?.EMail.toLowerCase().includes(filters.Email.toLowerCase())) &&
-
           (filters.MobilePhone === '' || item?.MobilePhone.toLowerCase().includes(filters.MobilePhone.toLowerCase()))   &&
 
           (filters.companyName === '' || ((item?.companyName)?item?.companyName.toLowerCase().includes(filters.companyName.toLowerCase()):false))
@@ -827,7 +865,21 @@ const CorporateDirectoryContext = ({ props }: any) => {
     setIsOpen(!isOpen);
 
   };
+  const handleSearch:React.ChangeEventHandler=(e:React.ChangeEvent<HTMLInputElement>)=>{
 
+    let txtSearch=(document.getElementById('searchInput') as HTMLInputElement).value ;
+    let filteredusers=usersitemcopy.filter(usr=>{
+      return  usr.Title.toLowerCase().includes(txtSearch) || 
+      usr.EMail.toLowerCase().includes(txtSearch) ||
+      usr.Name.toLowerCase().includes(txtSearch) ||
+      ((usr.Department)?usr.Department.toLowerCase().includes(txtSearch):false)||
+      ((usr.companyName)?usr.companyName.toLowerCase().includes(txtSearch):false)
+    });
+
+    setUsersArr(filteredusers);
+
+
+  }
 
   const toggleFollow = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, item: any) => {
 
@@ -1022,6 +1074,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
                         id="searchInput"
 
                         placeholder="Search..."
+                        onChange={handleSearch}
 
                       />
 

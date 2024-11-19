@@ -41,6 +41,7 @@ import { getDiscussion } from '../../../APISearvice/DiscussionForumService'
 import moment from 'moment'
 import { fetchMediaGallerydata } from '../../../APISearvice/MediaDetailsServies'
 import { GroupPostComponent } from '../../../CustomJSComponents/GroupTeamPost/GroupPostComponent'
+import Swal from 'sweetalert2'
 
 export interface IGroupAndTeamPosts {
   Id: any;
@@ -108,7 +109,10 @@ const SocialFeedContext = ({ props }: any) => {
   const [getAllgroup, setgetAllgroup] = useState([]);
   const [activeTab, setActiveTab] = useState("allgroups");
   const [gallerydata, setGalleryData] = useState<any[]>([]);
-
+  // const [formData, setFormData] = React.useState({
+  //   Post: "",
+    
+  // });
   useEffect(() => {
     // Load posts from localStorage when the component mounts
     // const storedPosts = JSON.parse(localStorage.getItem('posts') || '[]');
@@ -274,8 +278,18 @@ const SocialFeedContext = ({ props }: any) => {
   //#endregion
 
   console.log(SocialFeedImagesJson, 'SocialFeedImagesJson');
+  const validateForm = () => {   
+    
+    let valid = true;
 
+    if (!Contentpost) {
+      Swal.fire('Error', 'Post is required!', 'error');
+      valid = false;
+    }
+    return valid;
+  };
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  //if (validateForm()) {
     let ImagesIdss: any[] = [];
     ImagesIdss = ImagesIdss.concat(SocialFeedImagesJson.map((item: any) => item.ID));
     setImageIds(ImagesIdss)
@@ -298,6 +312,7 @@ const SocialFeedContext = ({ props }: any) => {
     setContent('');
     setImages([]);
     fetchPosts();
+  //}
   };
 
 
@@ -457,9 +472,9 @@ const SocialFeedContext = ({ props }: any) => {
 
     {
 
-      "ChildComponent": "Groups / Teams",
+      "ChildComponent": "Groups",
 
-      "ChildComponentURl": `${siteUrl}/SitePages/Dashboard.aspx`
+      "ChildComponentURl": `${siteUrl}/SitePages/GroupandTeam.aspx`
 
     }
 
@@ -629,7 +644,7 @@ const SocialFeedContext = ({ props }: any) => {
                       whiteSpace: 'nowrap',
 
                       display: 'flex',
-
+                      textWrap: 'inherit',
                       alignItems: 'center'
 
                     }}>{GroupName}</span>
@@ -641,7 +656,8 @@ const SocialFeedContext = ({ props }: any) => {
 
                       display: 'flex',
 
-                      alignItems: 'center'
+                      alignItems: 'center',
+                      textWrap: 'inherit'
 
                     }}>{GroupDescription}</span>
                     {/* <div className='font-14 text-muted mt-2'>{GroupDescription}</div> */}
@@ -652,7 +668,7 @@ const SocialFeedContext = ({ props }: any) => {
                         <div className="card" style={{ borderRadius: "1rem" }}>
                           <div className="card-body pb-0 gheight">
                             <h4 className="header-title font-16 text-dark fw-bold mb-0">
-                              Members Followed the Group
+                              Group Members
 
                             </h4>
 
@@ -740,7 +756,7 @@ const SocialFeedContext = ({ props }: any) => {
                                     placeholder="Write something in this group..."
 
                                     value={Contentpost}
-
+                                    
                                     rows={4}
 
                                     onChange={(e) => setContent(e.target.value)}
@@ -1604,7 +1620,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                     <h4 className="header-title font-16 text-dark fw-bold mb-0" style={{ fontSize: '20px' }}>
 
-                      Group you can follow
+                      Group you might be interested in
 
                       {/* <a
 
@@ -1734,8 +1750,8 @@ const SocialFeedContext = ({ props }: any) => {
                           className="card-title fw-bold font-20 mb-1 mt-0"
 
                         >
-
-                          {groupItem.GroupName} ({groupItem.GroupType})
+  
+                        {groupItem.GroupName} ({groupItem.GroupType})
 
                         </h4>
 

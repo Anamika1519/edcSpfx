@@ -1237,7 +1237,7 @@ const HelloWorldContext = ({ props }: any) => {
                                 role="tab"
                                 tabIndex={-1}
                               >
-                                Close Projects
+                                Closed Projects
                               </a>
                             </li>
                           </ul>
@@ -1836,7 +1836,7 @@ const HelloWorldContext = ({ props }: any) => {
 
                                         onClick={() => UpdatProject(project.Id)}
                                       >
-                                        Close Project
+                                        Closed Project
                                       </a>
                                     </div>
                                   </div>
@@ -2037,7 +2037,7 @@ const HelloWorldContext = ({ props }: any) => {
 
                                         onClick={() => UpdatProject(project.Id)}
                                       >
-                                        Close Project
+                                        Closed Project
                                       </a>
                                     </div>
                                   </div>
