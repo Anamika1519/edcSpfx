@@ -1435,7 +1435,7 @@ const idNum = originalString.substring(1);
 
                       <div className="col-md-3 mobile-w3">
 
-<div className="card mobile-5 mt-3"  style={{ borderRadius: "22px" }}>
+<div className="card mobile-5 mt-2"  style={{ borderRadius: "22px" }}>
 <div className="card-body pb-3 gheight">
                           {}
                           <h4 className="header-title font-16 text-dark fw-bold mb-0"  style={{ fontSize: "20px" }}>Project Owner</h4>
@@ -1445,7 +1445,7 @@ const idNum = originalString.substring(1);
                           </h1></div>
     </div>
 
-<div className="card mobile-5 mt-3"  style={{ borderRadius: "22px" }}>
+<div className="card mobile-5 mt-2"  style={{ borderRadius: "22px" }}>
   <div className="card-body pb-3 gheight">
     <h4 className="header-title font-16 text-dark fw-bold mb-2"  style={{ fontSize: "20px" }}>Project Members</h4>
      {/* {argcurrentgroupuser */}
@@ -1465,7 +1465,7 @@ const idNum = originalString.substring(1);
           className="rounded-circlecss6 img-thumbnail avatar-xl"
           alt="profile-image"
         />
-        <p>{id?.Title} </p>
+        <p className="mb-0">{id?.Title} </p>
         <img
 
 src={require("../assets/calling.png")}

@@ -119,13 +119,13 @@ export const getGroupTeam = async (_sp) => {
     .getAll()
     .then((res) => {
       console.log("--------group", res);
-      arr = res;
-      // Filter items based on GroupType and InviteMembers
-      // arr = res.filter(item => 
-      //   // Include public groups or private groups where the current user is in the InviteMembers array
-      //   item.GroupType === "All" || 
-      //   (item.GroupType === "Selected Members" && item.InviteMemebers && item.InviteMemebers.some(member => member.Id === currentUser))
-      // );
+      // Add logic to truncate GroupName if its length is more than 50 characters
+      arr = res.map(item => ({
+        ...item,
+        TruncatedGroupName: item.GroupName.length > 50 
+          ? `${item.GroupName.slice(0, 50)}...` 
+          : item.GroupName,
+      }));
     })
     .catch((error) => {
       console.error("Error fetching data: ", error);
@@ -133,6 +133,7 @@ export const getGroupTeam = async (_sp) => {
 
   return arr;
 };
+
 
 export const updateItem = async (itemData, _sp, id) => {
   let resultArr = [];
@@ -185,7 +186,29 @@ export const updateGroupFollowItem = async (itemData, _sp, id) => {
       .getByTitle("ARGGroupandTeam")
       .items.getById(id)
       .update(itemData);
-    Swal.fire("Item update successfully", "", "success");
+    Swal.fire("Congratulations! You are IN: Join the conversation with Group Members", "", "success");
+    window.location.reload();
+    resultArr = newItem;
+    console.log("itemData------>>>>", itemData)
+    // Perform any necessary actions after successful addition
+  } catch (error) {
+    console.error("Error adding item:", error);
+    Swal.fire(" Cancelled", "", "error");
+    // Handle errors appropriately
+    resultArr = null;
+  }
+  return resultArr;
+};
+
+export const updateGroupUnFollowItem = async (itemData, _sp, id) => {
+  let resultArr = [];
+  debugger
+  try {
+    const newItem = await _sp.web.lists
+      .getByTitle("ARGGroupandTeam")
+      .items.getById(id)
+      .update(itemData);
+    Swal.fire("You are no longer able to post anything on this group", "", "success");
     window.location.reload();
     resultArr = newItem;
     console.log("itemData------>>>>", itemData)
@@ -250,6 +273,7 @@ export const getGroupTeamByID = async (_sp, id) => {
   console.log(arr, "arr");
   return arr;
 };
+
 export const getGroupTeamDetailsById = async (_sp, idNum) => {
   let arr = [];
   let arr1 = [];

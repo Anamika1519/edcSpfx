@@ -1044,7 +1044,7 @@ const HelloWorldContext = ({ props }: any) => {
                                   </a>
                                 </div>
                               </div>
-                              <h4 className="mt-0 mb-1">
+                              <h4 className="mt-0 mb-1 newalignv">
                                 <a
                                   style={{ textTransform: 'capitalize',cursor:"pointer" }}
                                   className="text-dark fw-bold font-16" onClick={() => GotoNextPageProject(project)}
@@ -1060,7 +1060,7 @@ const HelloWorldContext = ({ props }: any) => {
                               </div>
                               <p
                                 className="date-color para8 font-12 mb-3"
-                                style={{ color: "#98a6ad", height: "30px",}}
+                                style={{ color: "#98a6ad", height: "40px",}}
                               >
                                 {truncateString(project.ProjectOverview, project)}
                                 {/* <a   className="fw-bold text-muted">
@@ -1068,9 +1068,9 @@ const HelloWorldContext = ({ props }: any) => {
                                   </a> */}
                               </p>
                             
-                              <p style={{display:'flex', gap:'10px'}} className="mb-1 mt-2 font-12">
+                              <p style={{display:'flex', color: '#6e767e', gap:'10px'}} className="mb-1 mt-2 font-12">
                                 <span
-                                  style={{ color: "#6e767e" }}
+                                  
                                   className="pe-2 text-nowrap"
                                 >
                                   <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} /> <b>{project?.ProjectsDocsId?.length}</b> Documents
@@ -1095,6 +1095,7 @@ const HelloWorldContext = ({ props }: any) => {
                                       (id: any, idx: any) => {
                                         if (idx < 3) {
                                           return (
+                                            <div className="gfg_tooltip">
                                             <img
                                               style={{
                                                 margin:
@@ -1103,10 +1104,18 @@ const HelloWorldContext = ({ props }: any) => {
                                                     : "0 0 0px -12px",
                                               }}
                                               src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                                              className="rounded-circlecss newminus img-thumbnail avatar-xl"
-                                              alt="profile-image" data-bs-container="#tooltips-container" data-bs-toggle="tooltip" data-bs-placement="bottom" aria-label="Mat Helme" data-bs-original-title="Mat Helme" data-themekey="#"
-                                            />
+                                              className="rounded-circlecss newminus img-thumbnail avatar-xl "
+                                              alt="profile-image" 
+                                           />
+                                            <span className="gfg_text">
+                                            A Computer science portal
+                                        </span>
+
+                                        </div>
+
+                                           
                                           );
+                                        
 
                                         }
                                       }

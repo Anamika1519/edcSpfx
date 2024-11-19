@@ -11,6 +11,12 @@
     -webkit-box-orient: vertical; 
     -webkit-line-clamp: 2;
     }
+    .one-line{ 
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space:nowrap;
+      padding-right: 40px;
+  } 
     .ongoing{
       background:#6c757d!important;
       border-radius: 5px;
@@ -35,8 +41,9 @@
     .morealign{    position: absolute;
       width: 16px;
       right: 6px;}
+      .ml20 img{margin-left: -12px !important;}
   .arrow-none:after{display: none !important;}
-  .circlecssnewnew, .circlecssnew  {height: 2.5rem !important; width: 2.5rem !important; border-radius: 1000px !important;}
+  .circlecssnewnew, .circlecssnew,.circlecss  {height: 2.5rem !important; width: 2.5rem !important; border-radius: 1000px !important;}
   .newimg1{    float: left;
     margin: 1px 5px 0px 2px;}
     .newimg2{ margin: -1px 5px 0px 0px;}

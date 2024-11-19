@@ -212,7 +212,9 @@ const CustomWebpartTemplate = ({ _sp, SiteUrl }) => {
             }) : null}
         
         {visibleItems < AnnouncementData.length && (
+            <div className="text-center">
             <button onClick={handleLoadMore} className="btn btn-primary mt-3">Load More</button>
+            </div>
         )}
     </div>
             

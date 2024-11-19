@@ -1280,10 +1280,7 @@ alt="Check"
                               )}
                             </span>
                         </div> */}
-                            <p style={{
-
-                              margin: "11px",
-                            }} className="mb-2 mt-1 newt6 font-14">
+                            <p className="mb-2 mt-1 newt6 font-14">
 
 
 
@@ -1293,7 +1290,7 @@ alt="Check"
                                   position: "relative",
                                 }}
                               >
-                                <div style={{ display: "flex", marginTop: "-6px" }}>
+                                <div style={{ display: "flex", marginTop: "6px" }} className="ml90">
                                   {item?.InviteMemebers?.map(
                                     (id: any, idx: any) => {
                                       if (idx < 3) {
@@ -1414,6 +1411,17 @@ alt="Check"
                           <h3 style={{ width: '100%', textAlign: 'left', borderBottom: '1px solid #efefef', padding: '15px', fontSize: '18px' }} className="modal-title">Documents</h3>
                           <Modal.Header closeButton style={{ position: 'absolute', right: '0px', display:'flex', gap:'10px', top:'-6px', borderBottom: '0px solid #ccc' }}>
                             {/* <Modal.Title> {ProjectsDocsJSON.length} Documents</Modal.Title> */}
+                            
+                            
+                            <ul className="listnew">
+                              {selectedFiles.map((file, index) => (
+                                <li key={index}>
+                                  {file.name}
+                                  <button onClick={() => removeFile(file.name)} style={{ marginLeft: '10px', color: 'red' }}>❌</button>
+                                </li>
+                              ))}
+                            </ul>
+                            
                             <label>
 
 <div>
@@ -1439,14 +1447,7 @@ alt="Check"
 </label>      <Button variant="success" onClick={() => uploadfileinfolder()}>
                               Upload File
                             </Button>
-                            <ul>
-                              {selectedFiles.map((file, index) => (
-                                <li key={index}>
-                                  {file.name}
-                                  <button onClick={() => removeFile(file.name)} style={{ marginLeft: '10px', color: 'red' }}>❌</button>
-                                </li>
-                              ))}
-                            </ul>
+                          
                            
                           </Modal.Header>
                           <Modal.Body>
@@ -1604,7 +1605,7 @@ alt="Check"
                           {/* New comment input */}
 
                           {comments.map((comment, index) => (
-                            <div className="col-xl-12" style={{ marginTop: "1rem" }}>
+                            <div className="col-xl-12" style={{ marginTop: "0rem" }}>
                               <CommentCard
                                 key={index}
                                 commentId={index}
@@ -1628,7 +1629,7 @@ alt="Check"
                       </div>
                       <div className="col-md-3 mobile-w3">
 
-                        <div className="card mobile-5 mt-3" style={{ borderRadius: "22px" }}>
+                        <div className="card mobile-5 mt-2" style={{ borderRadius: "22px" }}>
                           <div className="card-body pb-3 gheight">
                             <h4 className="header-title font-16 text-dark fw-bold mb-0" style={{ fontSize: "20px" }}>Discussion Owner</h4>
                             <h1 className="text-muted font-14 mt-3"><p className="text-dark font-16 text-center mb-2">{item.Author.Title}</p>

@@ -1683,7 +1683,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                       <a
 
-                        style={{ float: "right", lineHeight: "21px" }}
+                        style={{ float: "right", lineHeight: "21px", right:'10px' }}
 
                         className="font-11 btn btn-primary  waves-effect waves-light view-all"
 
@@ -1755,7 +1755,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                       <a
 
-                        style={{ float: "right", lineHeight: "21px" }}
+                        style={{ float: "right", lineHeight: "21px",right:'10px' }}
 
                         className="font-11 view-all  btn btn-primary  waves-effect waves-light"
 

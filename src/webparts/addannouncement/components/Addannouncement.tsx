@@ -14,7 +14,7 @@ import DynamicForm from '../../../CustomJSComponents/CustomForm/DynamicForm';
 import { IAddannouncementProps } from './IAddannouncementProps';
 import { getCategory, getCurrentUser, getEntity, getType } from "../../../APISearvice/CustomService";
 import { addItem, getAnncouncementByID, getAnnouncementandNewsTypeMaster, getUrl, updateItem, uploadFile, uploadFileToLibrary } from '../../../APISearvice/AnnouncementsService';
-import { SPFI } from '@pnp/sp/presets/all';
+import { SPFI } from '@pnp/sp/presets/all'; 
 import Swal from 'sweetalert2';
 import "../components/addannoncement.scss";
 import ReactQuill from 'react-quill';

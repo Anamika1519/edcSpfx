@@ -320,15 +320,28 @@ button:hover {
     margin-top: 15px;
   }
   
-  input[type="text"],
-  input[type="email"] {
+  .popup input[type="text"],
+  .popup input[type="email"] {
     width: 100%;
     padding: 8px;
     margin: 5px 0;
     border: 1px solid #ccc;
     border-radius: 4px;
   }
-  
+  .popup h2{    font-size: 18px;
+    color: #3c3c3c;}
+    .popup  .close-btn{
+      background: #fff;
+      color: #3c3c3c;
+      min-width: auto;
+      width: 35px;
+      height: 35px;
+      border-radius: 1000px !important;
+      border: 1px solid #efefef;
+      line-height: 19px;
+    }
+  .listnew{list-style: none; margin: 0px;}
+  .listnew button{background: transparent; min-width: auto;} 
   button[type="submit"] {
     width: 100%;
     padding: 10px;
@@ -342,3 +355,4 @@ button:hover {
   button[type="submit"]:hover {
     background-color: #0056b3;
   }
+  .ml90 img{margin-right: -12px !important;}

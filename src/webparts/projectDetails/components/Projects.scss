@@ -16,9 +16,9 @@
     .dropdown-toggle:after{
       display: none !important;
     }
-    .projectmemeber{display: flex; border-bottom: 1px solid #efefef;   gap:5px; position: relative;align-items: center;
+    .projectmemeber{display: flex; border-bottom: 1px solid #efefef; padding: 5px 0px;   gap:5px; position: relative;align-items: center;
       font-size: 14px;}
-      .projectmemeber:last-child{border-bottom: 0px solid #efefef; padding: 10px 0px; }
+      .projectmemeber:last-child{border-bottom: 0px solid #efefef;  }
     .minw80 .modal-dialog{min-width: 65% !important;}
     .minw80 .moday-body{max-height: 470px;  overflow-y: auto;}
     .newaligntext{padding: 0px; min-width: auto !important;}
@@ -53,6 +53,26 @@
 .open-popup-btn:hover {
   background-color: #0056b3;
 }
+.popup input[type="text"],
+  .popup input[type="email"] {
+    width: 100%;
+    padding: 8px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  .popup h2{    font-size: 18px;
+    color: #3c3c3c;}
+    .popup  .close-btn{
+      background: #fff;
+      color: #3c3c3c;
+      min-width: auto;
+      width: 35px;
+      height: 35px;
+      border-radius: 1000px !important;
+      border: 1px solid #efefef;
+      line-height: 19px;
+    }
 
 .popup {
   position: fixed;
@@ -99,15 +119,16 @@ form {
   margin-top: 15px;
 }
 
-input[type="text"],
-input[type="email"] {
-  width: 100%;
-  padding: 8px;
-  margin: 5px 0;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
+// input[type="text"],
+// input[type="email"] {
+//   width: 100%;
+//   padding: 8px;
+//   margin: 5px 0;
+//   border: 1px solid #ccc;
+//   border-radius: 4px;
+// }
+.minw80 ul{list-style: none; margin-bottom: 0px;}
+.minw80 button{min-width: auto; border: none;}
 button[type="submit"] {
   width: 100%;
   padding: 10px;

@@ -1568,3 +1568,43 @@ span.navlink.active {
   color: #3c3c3c;
   font-size: 14px}
   #myDropdownBell {right: 0rem !important;}
+  .gfg_tooltip {
+    position: relative;
+    display: inline-block;
+   
+    color: black;
+  
+    text-align: center;
+    display: inline-block;
+    font-size: 13px;
+}
+
+.gfg_tooltip .gfg_text {
+    visibility: hidden;
+    width: auto;
+    background-color: #3c3c3c;
+    color: #fff; width: 140px;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    top: 115%;
+    left: 150%;
+    margin-left: -60px;
+}
+
+.gfg_tooltip .gfg_text::after {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent #3c3c3c transparent;
+}
+
+.gfg_tooltip:hover .gfg_text {
+    visibility: visible;
+}

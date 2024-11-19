@@ -570,7 +570,7 @@ export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentU
                 <span className="likes"><MessageSquare size={20} /> {CommentsCount} Comments</span>
                 <div className="post-actions likes">
                     <div className="menu-toggle" onClick={toggleMenushare}>
-                        <Share2 size={20} /> Share
+                        <Share2 size={20} />  <span className="sahrenew"> Share</span>
                     </div>
                     {isMenuOpenshare && (
                         <div className="dropdown-menucsspost" ref={menuRef}>

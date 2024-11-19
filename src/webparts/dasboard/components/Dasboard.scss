@@ -15,6 +15,13 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
+.newalignv{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space:nowrap;
+    padding-right: 40px;
+} 
+
 .margin01{margin-top: 2px;}
 .float-right{float: right;}
 .justify-between{gap:20px;}

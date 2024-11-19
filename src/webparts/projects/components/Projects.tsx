@@ -812,7 +812,7 @@ const HelloWorldContext = ({ props }: any) => {
                       </div>
                       <div className="modal-body">
                         <form className="row">
-                          <div className="col-lg-6">
+                          <div className="col-lg-4">
                             <div className="mb-3">
                               <label
                                 htmlFor=" Project Name"
@@ -866,7 +866,7 @@ const HelloWorldContext = ({ props }: any) => {
                             </div>
                           </div> */}
 
-                          <div className="col-lg-6">
+                          <div className="col-lg-4">
                             <div className="mb-3">
                               <label
                                 htmlFor="Project Privacy"
@@ -1099,7 +1099,7 @@ const HelloWorldContext = ({ props }: any) => {
                           </div> */}
                           {/* )} */}
 
-                          <div className="col-lg-8">
+                          <div className="col-lg-12">
                             <div className="mb-3">
                               <label
                                 htmlFor="Project Overview"
@@ -1113,7 +1113,7 @@ const HelloWorldContext = ({ props }: any) => {
                                 id="ProjectOverview"
                                 placeholder="Enter Project Overview"
                                 name="ProjectOverview"
-                                style={{ height: "166px" }}
+                                style={{ height: "auto" }}
                                 value={formData.ProjectOverview}
                                 onChange={(e) =>
                                   onChange(e.target.name, e.target.value)
@@ -1292,7 +1292,7 @@ const HelloWorldContext = ({ props }: any) => {
                                   </div>
 
                                   {/* Title */}
-                                  <h4 className="mt-0 mb-1 two-line">
+                                  <h4 className="mt-0 mb-1 one-line">
                                     <a onClick={() => GotoNextPage(project)}
                                       className="text-dark fw-bold font-16">
                                       {project.ProjectName}
@@ -1372,7 +1372,7 @@ const HelloWorldContext = ({ props }: any) => {
                                                          float:"left"
                                                 }}
                                                 src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                                                className="rounded-circlecssnew img-thumbnail avatar-xl"
+                                                className="circlecssnew img-thumbnail avatar-xl"
                                                 alt="profile-image"
                                               />
                                             );
@@ -1401,7 +1401,7 @@ const HelloWorldContext = ({ props }: any) => {
                                                      alignItems:'center',
                                                      justifyContent:'center'
                                             }}
-                                            className="rounded-circlecssnew text-center img-thumbnail avatar-xl"
+                                            className="circlecssnew text-center img-thumbnail avatar-xl"
                                           >
                                             +
                                           </div>
@@ -1432,7 +1432,7 @@ const HelloWorldContext = ({ props }: any) => {
                                                            float:"left"
                                                   }}
                                                   src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                                                  className="rounded-circlecssnew img-thumbnail avatar-xl"
+                                                  className="circlecssnew img-thumbnail avatar-xl"
                                                   alt="profile-image"
                                                 />
                                               );
@@ -1479,7 +1479,7 @@ const HelloWorldContext = ({ props }: any) => {
                                   </div>
 
                                   {/* Title */}
-                                  <h4 className="mt-0 mb-1 two-line">
+                                  <h4 className="mt-0 mb-1 newalignv">
                                     <a
                                       onClick={() => GotoNextPage(project)}
                                       className="text-dark fw-bold font-16"
@@ -1543,7 +1543,7 @@ const HelloWorldContext = ({ props }: any) => {
                                                       float:"left"
                                                 }}
                                                 src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                                                className="rounded-circlecssnew img-thumbnail avatar-xl"
+                                                className="circlecssnew img-thumbnail avatar-xl"
                                                 alt="profile-image"
                                               />
                                             );
@@ -1572,7 +1572,7 @@ const HelloWorldContext = ({ props }: any) => {
                                                      justifyContent:'center'
 
                                             }}
-                                            className="rounded-circlecssnew text-center img-thumbnail avatar-xl"
+                                            className="circlecssnew text-center img-thumbnail avatar-xl"
                                           >
                                             +
                                           </div>
@@ -1602,7 +1602,7 @@ const HelloWorldContext = ({ props }: any) => {
                                                         : "0 0 0px -12px",
                                                   }}
                                                   src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                                                  className="rounded-circlecssnew img-thumbnail avatar-xl"
+                                                  className="circlecssnew img-thumbnail avatar-xl"
                                                   alt="profile-image"
                                                 />
                                               );
@@ -1649,7 +1649,7 @@ const HelloWorldContext = ({ props }: any) => {
                                   </div>
 
                                   {/* Title */}
-                                  <h4 className="mt-0 mb-1 two-line">
+                                  <h4 className="mt-0 mb-1 one-line">
                                     <a
                                       className="text-dark fw-bold font-16"   onClick={() => GotoNextPage(project)}
                                     >
@@ -1713,7 +1713,7 @@ const HelloWorldContext = ({ props }: any) => {
                                                          float:"left"
                                                 }}
                                                 src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                                                className="rounded-circlecssnew img-thumbnail avatar-xl"
+                                                className="circlecssnew img-thumbnail avatar-xl"
                                                 alt="profile-image"
                                               />
                                             );
@@ -1842,7 +1842,7 @@ const HelloWorldContext = ({ props }: any) => {
                                   </div>
 
                                   {/* Title */}
-                                  <h4 className="mt-0 mb-1 two-line">
+                                  <h4 className="mt-0 mb-1 one-line">
                                     <a onClick={() => GotoNextPage(project)}
 
                                       className="text-dark fw-bold font-16"
@@ -1933,7 +1933,7 @@ const HelloWorldContext = ({ props }: any) => {
                                                      justifyContent:'center'
                                                   
                                             }}
-                                            className="rounded-circlecss text-center img-thumbnail avatar-xl"
+                                            className="circlecssnew text-center img-thumbnail avatar-xl"
                                           >
                                             +
                                           </div>
@@ -1964,7 +1964,7 @@ const HelloWorldContext = ({ props }: any) => {
                                                            float:"left"
                                                   }}
                                                   src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                                                  className="rounded-circlecss img-thumbnail avatar-xl"
+                                                  className="circlecssnew img-thumbnail avatar-xl"
                                                   alt="profile-image"
                                                 />
                                               );
@@ -2043,7 +2043,7 @@ const HelloWorldContext = ({ props }: any) => {
                                   </div>
 
                                   {/* Title */}
-                                  <h4 className="mt-0 mb-1 circlecssnew">
+                                  <h4 className="mt-0 mb-1">
                                     <a
                                       onClick={() => GotoNextPage(project)}
                                       className="text-dark fw-bold font-16"
@@ -2237,7 +2237,7 @@ const HelloWorldContext = ({ props }: any) => {
                                   </div>
 
                                   {/* Title */}
-                                  <h4 className="mt-0 mb-1 two-line">
+                                  <h4 className="mt-0 mb-1 one-line">
                                     <a
                                       onClick={() => GotoNextPage(project)}
                                       className="text-dark fw-bold font-16"
@@ -2434,7 +2434,7 @@ const HelloWorldContext = ({ props }: any) => {
                                   </div>
 
                                   {/* Title */}
-                                  <h4 className="mt-0 mb-1 two-line">
+                                  <h4 className="mt-0 mb-1 one-line">
                                     <a
                                       onClick={() => GotoNextPage(project)}
                                       className="text-dark fw-bold font-16"

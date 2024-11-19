@@ -637,7 +637,7 @@ const SocialFeedContext = ({ props }: any) => {
                     <span style={{
                       fontSize: '14px',
                       color: 'black',
-                      whiteSpace: 'nowrap',
+                      
 
                       display: 'flex',
 

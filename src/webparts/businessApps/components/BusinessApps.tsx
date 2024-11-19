@@ -804,7 +804,7 @@ const HelloWorldContext = ({ props }: any) => {
                 //const arrjson = item.MediaGalleryJSON ? JSON.parse(item.MediaGalleryJSON) : null
                 return (
                   <div className="col-md-6 col-xl-3" >
-                    <div className="widget-rounded-circle card" >
+                    <div className="widget-rounded-circle card hri90" >
                       <div className="card-body" >
                         <div className="row" onClick={() => handleRedirect(item.RedirectionLink)}>
                           <div className="col-3">
@@ -816,8 +816,8 @@ const HelloWorldContext = ({ props }: any) => {
                           <div className="col-9 d-flex justify-content-left align-items-center">
                             <div>
 
-                              <p style={{ marginBottom: '0px' }} className="text-dark mb-156 font-16  mt90">{item.Title}</p>
-                              <p className="text-muted mb-0 font-12  mt90">{item.SubTitle}</p>
+                              <p style={{ marginBottom: '5px' }} className="text-dark twolinewrap mb-156 linr56 font-16  mt90">{item.Title}</p>
+                              <p className="text-muted mb-0 font-12 twolinewrap  mt90">{item.SubTitle}</p>
                             </div>
                           </div>
                         </div>

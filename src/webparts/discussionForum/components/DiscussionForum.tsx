@@ -73,7 +73,12 @@ const DiscussionForumContext = ({ props }: any) => {
   const [DocumentpostIdsArr, setDocumentpostIdsArr] = React.useState([]);
   const [selectedValue, setSelectedValue] = useState([]);
   const [EnityData, setEnityData] = React.useState([]);
-  const [CurrentUserEnityData, setCurrentUserEnityData] = React.useState([]);
+  type UserEntityData = {
+    companyName: string;
+  };
+
+  const [CurrentUserEnityData, setCurrentUserEnityData] = React.useState<UserEntityData | null>(null);
+
   const [options, setOpions] = useState([]);
   const [filters, setFilters] = React.useState({
     SNo: "",
@@ -188,24 +193,24 @@ const DiscussionForumContext = ({ props }: any) => {
     setGroupTypeData(
       await getChoiceFieldOption(sp, "ARGDiscussionForum", "GroupType")
     );
-    // Fetch the leaderboard as before
+
+    // Fetch current user data
+    const currentUserData = await GetEntity(sp);
 
 
-    // Set the leaderboard and current user info as separate states
-    
-    setCurrentUserEnityData(await GetEntity(sp));
+    setCurrentUserEnityData(currentUserData); // Set the user data
+
+    setFormData((prevState) => ({
+      ...prevState,
+      entity: currentUserData.companyName || "", // Use companyName or fallback to empty string
+    }));
 
     // Assuming you have a setCurrentUser function
 
   };
 
-  const GetEntity = async (_sp: SPFI) => {
-    let arr: any[] = []
+  const GetEntity = async (_sp: SPFI): Promise<UserEntityData | null> => {
     try {
-      // Fetch the leaderboard as before
-      //const leaderboardData = await getLeaderTop(sp);
-
-      // Retrieve the current logged-in user's data using the /me endpoint
       const currentWPContext: WebPartContext = props.context;
       const msgraphClient: MSGraphClientV3 = await currentWPContext.msGraphClientFactory.getClient('3');
       const currentUserData = await msgraphClient.api("/me")
@@ -213,18 +218,20 @@ const DiscussionForumContext = ({ props }: any) => {
         .select("displayName,mail,jobTitle,mobilePhone,companyName,userPrincipalName")
         .get();
 
-      // Log the current user data
       console.log("Current User Data: ", currentUserData);
+      console.log("Current User's companyName : ", currentUserData.companyName);
 
-      // Set the leaderboard and current user info as separate states
-      //setLeaderboard(leaderboardData);
-      //setCurrentUser(currentUserData);  // Assuming you have a setCurrentUser function
+      // Map and return data in the expected structure
+      return {
+        companyName: currentUserData.companyName,
 
+      };
     } catch (error) {
-      console.error("Error fetching users:", error);
+      console.error("Error fetching user data:", error);
+      return null;
     }
-    return arr;
-  }
+  };
+
 
   const FilterDiscussionData = async (optionFilter: string) => {
     setAnnouncementData(await getDiscussionFilterAll(sp, optionFilter))
@@ -1206,10 +1213,13 @@ const DiscussionForumContext = ({ props }: any) => {
     console.log(id, "----id");
     window.location.href = `${SiteUrl}/SitePages/DiscussionForumDetail.aspx?${id}`;
   };
-
+  const shouldDisableOption = (item: any) => {
+    // Example condition: disable the option if it's already selected or based on another condition
+    return item.name === formData.entity || item.name === 'CompanyNameToDisable';
+  };
 
   return (
-
+    
     <div id="wrapper" ref={elementRef}>
       <div className="app-menu" id="myHeader">
         <VerticalSideBar _context={sp} />
@@ -1318,23 +1328,26 @@ const DiscussionForumContext = ({ props }: any) => {
                                 id="entity"
                                 name="entity"
                                 value={formData.entity}
-                                onChange={(e) =>
-                                  onChange(e.target.name, e.target.value)
-                                }
+                                onChange={(e) => onChange(e.target.name, e.target.value)}
                               >
-                                <option value=""> {CurrentUserEnityData.map((item, index) => (item?.companyName != null
-
-                                  ? item?.companyName
-
-                                  : "NA"))}</option>
+                                {CurrentUserEnityData && (
+                                  <option value={CurrentUserEnityData.companyName}>
+                                    {CurrentUserEnityData.companyName}
+                                  </option>
+                                )}
                                 {EnityData.map((item, index) => (
-                                  <option key={index} value={item.id}>
+                                  <option
+                                    key={index}
+                                    value={item.name}
+                                    disabled={item.name === 'CompanyNameToDisable'} // Disable option based on condition
+                                  >
                                     {item.name}
                                   </option>
                                 ))}
                               </select>
                             </div>
                           </div>
+
                           <div className="col-lg-4">
                             <div className="mb-3">
                               <div className="d-flex justify-content-between">
@@ -1600,7 +1613,7 @@ const DiscussionForumContext = ({ props }: any) => {
                 </div>
               </div>
             </div>
-            <div className="row mt-2">
+            <div className="row mt-4">
               <div className="col-12">
                 <div className="card mb-0">
                   <div className="card-body">
