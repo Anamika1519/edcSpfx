@@ -1653,31 +1653,37 @@ alt="Check"
                             <h4 className="header-title font-16 text-dark fw-bold mb-0" style={{ fontSize: "20px" }}>Impression Count</h4>
                             <h1 className="text-muted font-14 mt-3">
                               <div className="row">
-                                 <div className="col-lg-6">
-                                    <div className="card">
+                                 <div className="col-lg-12">
+                                    <div className="card1">
                                       <div className="d-flex juss">
-                                    <img src={require("../assets/ccomment.png")} className="alignright12"/>
-
-                                    <span className="likecount">{likeCount}</span>
+                                    <img src={require("../assets/glike.png")} className="alignright12"/>
+                                    <p className="text-muted font-14 text-center mb-1">Likes</p>
+                                  
                                     </div>
 
-                                    <p className="text-muted font-14 text-center mb-1">Likes</p>
+                                    <span className="likecount">{likeCount}</span>
 
 
-                                      </div>                                 </div>
+                                      </div>                                
 
-                                      <div className="col-lg-6">
-                                    <div className="card">
-
-                                      <span className="likecount">{likeCount}</span>
+                                    
+                                    <div className="card1">
+                                    <div className="d-flex juss">
+                                    <img src={require("../assets/ccomment.png")} className="alignright12"/>
+                                    <p className="text-muted font-14 text-center mb-1">Total Comments</p>
+                                  
+                                    </div>
+                                      <span className="likecount">{commentCount}</span>
                                     
                                        
-                                      </div>                                 </div>
-                                      <p className="text-muted font-12 text-center">{likeCount}</p>
+                                      </div>                               
+                                      
+                                        </div>
+                                      {/* <p className="text-muted font-12 text-center">{likeCount}</p> */}
 
                               </div>
                               {/* <p className="text-dark font-16 text-center mb-2">{item.Author.Title}</p> */}
-                              <p className="text-muted font-14 text-center mb-1">Total Comments {commentCount}</p>
+                              {/* <p className="text-muted font-14 text-center mb-1">Total Comments {commentCount}</p> */}
                              
                             </h1></div>
                         </div>

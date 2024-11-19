@@ -99,7 +99,7 @@ import { getSP } from "../loc/pnpjsConfig";
 
 import { Eye } from "react-feather";
 
-import { getDataByID, getMyApproval, getMyRequest, updateItemApproval } from "../../../APISearvice/ApprovalService";
+import {getApprovalListsData, getDataByID, getMyApproval, getMyRequest, updateItemApproval } from "../../../APISearvice/ApprovalService";
 
 const MyApprovalContext = ({ props }: any) => {
 
@@ -429,7 +429,7 @@ const MyApprovalContext = ({ props }: any) => {
 
         (filters.RequestedBy === "" ||
 
-          item?.Requester?.Title?.toLowerCase().includes(
+          item?.Author?.Title?.toLowerCase().includes(
 
             filters.RequestedBy.toLowerCase()
 
@@ -1275,7 +1275,7 @@ const MyApprovalContext = ({ props }: any) => {
 
                                   >
 
-                                    {item?.Requester?.Title}
+                                    {item?.Author?.Title}
 
                                   </td>
 

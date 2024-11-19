@@ -19,7 +19,7 @@ export const getAllEventMasternonselected = async (_sp,Idnum) => {
   let arr = []
   let str = "Announcements"
   await _sp.web.lists.getByTitle("ARGEventMaster").items.select("*,Entity/ID,Entity/Entity").expand("Entity").filter(`ID ne ${Idnum}`)
-  .top(3).orderBy("EventDate",true).getAll()
+  .top(3).orderBy("EventDate",false).getAll()
     .then((res) => {
       
 

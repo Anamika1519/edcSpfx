@@ -248,7 +248,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
     // const queryString = decryptId(Number(updatedString));
     setArrDetails(await getAnnouncementDetailsById(sp, Number(idNum)));
-    let Newsdata = await getAllAnnouncementnonselected(sp, Number(idNum));
+    let Newsdata = await getAllAnnouncementnonselected(sp, Number(idNum),'News');
     setArrtopNews(Newsdata);
     // let arr = []
 

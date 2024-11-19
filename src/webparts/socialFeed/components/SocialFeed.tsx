@@ -25,6 +25,7 @@ import { getDiscussion, getDiscussionFilter, fetchTrendingDiscussionBasedOn } fr
 import { WebPartContext } from "@microsoft/sp-webpart-base";
 import { MSGraphClientV3 } from "@microsoft/sp-http";
 import { toLower } from "lodash";
+import Swal from 'sweetalert2'
 interface Post {
   text: string;
   images: string[];
@@ -123,11 +124,17 @@ const SocialFeedContext = ({ props }: any) => {
           }
         });
       let finalquery = FollowedIds.map((x) => x).join(' and ');
+      let FinalfilterQuery = "";
+      if (FollowedIds.length > 0) {
+        FinalfilterQuery = `EMail ne null and ID ne ${currentUser.Id} and ${finalquery}`
+      } else {
+        FinalfilterQuery = `EMail ne null and ID ne ${currentUser.Id}`
+      }
       const userListSP = await sp.web.lists
         .getByTitle("User Information List")
         .items
         .select("ID", "Title", "EMail", "Department", "JobTitle", "Picture", "MobilePhone", "WorkPhone", "Name")
-        .filter(`EMail ne null and ID ne ${currentUser.Id} and ${finalquery}`) // content tyep eq person
+        .filter(`${FinalfilterQuery}`) // content tyep eq person
         ();
       // console.log("userList",userListSP);
       // let currentWPContext:WebPartContext=props.props.context;  
@@ -793,7 +800,7 @@ const SocialFeedContext = ({ props }: any) => {
     }
 
   };
-  const follow = async (e:any, itemId: number) => {
+  const follow = async (e: any, itemId: number) => {
     e.preventDefault();
     try {
       const currentUser = await sp.web.currentUser();
@@ -801,19 +808,23 @@ const SocialFeedContext = ({ props }: any) => {
         FollowerId: currentUser.Id,
         FollowedId: itemId
       });
-
+      Swal.fire("User followed successfully", "", "success");
       setFollowStatus((prevStatus) => ({
         ...prevStatus,
         [itemId]: true,
       }));
-
+      fetchUserInformationList()
       // Increase follower count and decrease unfollower count
 
     } catch (error) {
       console.error("Error following:", error);
     }
   };
-
+  const navigatetoDiscussionForum = (id: any) => {
+    debugger
+    console.log(id, "----id discussion");
+    window.location.href = `${siteUrl}/SitePages/DiscussionForumDetail.aspx?${id}`;
+  };
   const unfollow = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, itemId: number) => {
     e.preventDefault();
     try {
@@ -968,7 +979,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                           return (
 
-                            <div className="row mt-1" style={{ gap: '0.5rem' }}><div className="col-md-1" onClick={() => gotoBlogsDetails(item)}>
+                            <div className="row mt-1" style={{ gap: '0.5rem', cursor: 'pointer' }}><div className="col-md-1" onClick={() => gotoBlogsDetails(item)}>
 
                               <span> <AvtarComponents Name={item.Title} /> </span>
 
@@ -976,7 +987,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                               <div className="col-md-10">
 
-                                <span className="title-ellipsis font-14">{item.Title}</span>
+                                <span style={{ cursor: 'pointer' }} onClick={() => gotoBlogsDetails(item)} className="title-ellipsis font-14">{item.Title}</span>
 
                               </div></div>
 
@@ -1683,7 +1694,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                       <a
 
-                        style={{ float: "right", lineHeight: "21px", right:'10px' }}
+                        style={{ float: "right", lineHeight: "21px", right: '10px' }}
 
                         className="font-11 btn btn-primary  waves-effect waves-light view-all"
 
@@ -1715,9 +1726,9 @@ const SocialFeedContext = ({ props }: any) => {
 
                               <a className="font-14" style={{ fontSize: '14px' }}>
 
-                                <strong className="text-dark" style={{ fontWeight: '700' }}>{x?.DiscussionForumCategory?.CategoryName}:</strong> &nbsp;
+                                <strong className="text-dark" style={{ fontWeight: '700', cursor: 'pointer' }} onClick={() => navigatetoDiscussionForum(x.ID)}>{x?.DiscussionForumCategory?.CategoryName}:</strong> &nbsp;
 
-                                <span className="text-muted" style={{ color: '#6b6b6b' }}>
+                                <span className="text-muted" style={{ color: '#6b6b6b' }} >
 
                                   {x.Topic}
 
@@ -1755,7 +1766,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                       <a
 
-                        style={{ float: "right", lineHeight: "21px",right:'10px' }}
+                        style={{ float: "right", lineHeight: "21px", right: '10px' }}
 
                         className="font-11 view-all  btn btn-primary  waves-effect waves-light"
 
@@ -1837,7 +1848,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                           <div className="col-sm-2 txtr">
 
-                            <PlusCircle size={20} color='#008751'   onClick={(e) => follow(e,user.ID)} />
+                            <PlusCircle size={20} color='#008751' onClick={(e) => follow(e, user.ID)} />
 
                           </div>
 

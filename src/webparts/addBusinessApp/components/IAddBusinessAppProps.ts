@@ -1,4 +1,4 @@
-export interface IBusinessAppMasterProps {
+export interface IAddBusinessAppProps {
   description: string;
   isDarkTheme: boolean;
   environmentMessage: string;

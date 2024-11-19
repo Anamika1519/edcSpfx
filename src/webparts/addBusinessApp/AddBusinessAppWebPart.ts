@@ -8,22 +8,22 @@ import {
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 import { IReadonlyTheme } from '@microsoft/sp-component-base';
 
-import * as strings from 'BusinessAppMasterWebPartStrings';
-import BusinessAppMaster from './components/BusinessAppMaster';
-import { IBusinessAppMasterProps } from './components/IBusinessAppMasterProps';
+import * as strings from 'AddBusinessAppWebPartStrings';
+import AddBusinessApp from './components/AddBusinessApp';
+import { IAddBusinessAppProps } from './components/IAddBusinessAppProps';
 import { getSP } from './loc/pnpjsConfig';
-export interface IBusinessAppMasterWebPartProps {
+export interface IAddBusinessAppWebPartProps {
   description: string;
 }
 
-export default class BusinessAppMasterWebPart extends BaseClientSideWebPart<IBusinessAppMasterWebPartProps> {
+export default class AddBusinessAppWebPart extends BaseClientSideWebPart<IAddBusinessAppWebPartProps> {
 
   private _isDarkTheme: boolean = false;
   private _environmentMessage: string = '';
 
   public render(): void {
-    const element: React.ReactElement<IBusinessAppMasterProps> = React.createElement(
-      BusinessAppMaster,
+    const element: React.ReactElement<IAddBusinessAppProps> = React.createElement(
+      AddBusinessApp,
       {
         description: this.properties.description,
         isDarkTheme: this._isDarkTheme,

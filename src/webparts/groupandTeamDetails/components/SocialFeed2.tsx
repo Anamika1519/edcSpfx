@@ -10,7 +10,9 @@ import UserContext from '../../../GlobalContext/context';
 import {
 
   addItem,
+  additemtoFollowedGroup,
 
+  fetchNotFollowedGroupdata,
   getGroupTeam,
 
   getGroupTeamByID,
@@ -584,6 +586,25 @@ const SocialFeedContext = ({ props }: any) => {
 
   };
 
+  const addFollowedGroup = async (item: any) => {
+    const currentUser = await sp.web.currentUser();
+    const Itemdata = {
+
+      GroupIDId: Number(item.ID),
+      FollowedById: currentUser.Id
+    };
+    console.log("Itemdata", Itemdata);
+
+    const postResult = await additemtoFollowedGroup(sp, Itemdata);
+    const postId = postResult?.data?.ID;
+    Swal.fire("Group followed successfully", "", "success");
+    setgetAllgroup(await fetchNotFollowedGroupdata(sp));
+    debugger
+    if (!postId) {
+      console.error("Post creation failed.");
+      return;
+    }
+  }
 
 
   return (
@@ -1688,7 +1709,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                           <div className="col-sm-2 txtr">
 
-                            <PlusCircle size={20} color='#008751' />
+                            <PlusCircle   onClick={() => addFollowedGroup(user)} size={20} color='#008751' />
 
                           </div>
 

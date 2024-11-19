@@ -85,16 +85,102 @@ export const getMyRequest = async (sp)=>
   })
   return arr
 }
-export const getMyApproval = async (sp)=>
-  {
-    const currentUser = await sp.web.currentUser();
-    let arr = []
-    await sp.web.lists.getByTitle("ARGMyRequest").items.select("*,Requester/Id,Requester/Title,Approver/Id,Approver/Title").expand("Approver,Requester").filter(`ApproverId eq ${currentUser.Id}`).getAll().then((res) => {
-      arr = res
-      console.log(arr, 'arr');
+// export const getMyApproval = async (sp)=>
+//   {
+//     const currentUser = await sp.web.currentUser();
+//     let arr = []
+//     await sp.web.lists.getByTitle("ARGMyRequest").items.select("*,Requester/Id,Requester/Title,Approver/Id,Approver/Title").expand("Approver,Requester").filter(`ApproverId eq ${currentUser.Id}`).getAll().then((res) => {
+//       arr = res
+//       console.log(arr, 'arr');
+//     })
+//     return arr
+//   }
+export const getMyApproval = async (sp,listName) => {
+  const currentUser = await sp.web.currentUser();
+  let arr = [];
+  let AllApprovalArr = [];
+  await sp.web.lists.getByTitle("AllApprovalLists").items.orderBy("Created", false).getAll()
+    .then(async (res) => {
+      console.log("AllApprovallists", res);
+      debugger
+      for (let i = 0; i < res.length; i++) {
+        await sp.web.lists.getByTitle(`${res[i].Title}`).items
+        //.select("*,Requester/Id,Requester/Title,Approver/Id,Approver/Title")
+        //.expand("Approver,Requester")
+        .select("*,Author/ID,Author/Title,Author/EMail,AssignedTo/ID,AssignedTo/Title,AssignedTo/EMail,Approver/ID,Approver/Title,Approver/EMail")
+        .expand("Author,AssignedTo,Approver")
+        .filter(`ApproverId eq ${currentUser.Id} or AssignedToId eq ${currentUser.Id}`)
+        .getAll().then((resData) => {
+          for (let j = 0; j < resData.length; j++) {
+            AllApprovalArr.push(resData[j])
+          }
+          //arr = res
+          //console.log(arr, 'arr');
+        })
+      }
+    //})
+    console.log("AllApprovalArr", AllApprovalArr);
+    arr = AllApprovalArr;
+  })
+  .catch((error) => {
+    console.log("Error fetching data: ", error);
+  });
+
+  return arr
+}
+export const getApprovalListsData = async (_sp) => {
+  let arr = []
+
+  await _sp.web.lists.getByTitle("AllApprovalLists").items.orderBy("Created", false).getAll()
+    .then((res) => {
+      console.log("AllApprovallists", res);
+      let AllApprovalArr = [];
+      debugger
+      for (let i = 0; i < res.length; i++) {
+        getMyApproval(_sp, res[i].Title).then((resData) => {
+          for (let j = 0; j < resData.length; j++) {
+            AllApprovalArr.push(resData[j])
+          }
+
+        })
+      }
+      console.log("AllApprovalArr", AllApprovalArr);
+      arr = AllApprovalArr;
     })
-    return arr
-  }
+    .catch((error) => {
+      console.log("Error fetching data: ", error);
+    });
+  return arr;
+}
+export const getMyApprovalsdata = async (_sp, listName) => {
+  let arr = []
+  let currentUser;
+  await _sp.web.currentUser()
+    .then(user => {
+      console.log("user", user);
+      currentUser = user.Email; // Get the current user's Email
+    })
+    .catch(error => {
+      console.error("Error fetching current user: ", error);
+      return [];
+    });
+
+  if (!currentUser) return arr; // Return empty array if user fetch failed
+
+  await _sp.web.lists.getByTitle(listName).items
+    .select("*,Author/ID,Author/Title,Author/EMail,AssignedTo/ID,AssignedTo/Title,AssignedTo/EMail,Approver/ID,Approver/Title,Approver/EMail")
+    .expand("Author,AssignedTo,Approver")
+    .filter(`AssignedTo/EMail eq '${currentUser}' or Approver/EMail eq '${currentUser}'`)
+    .orderBy("Created", false).getAll()
+    .then((res) => {
+      console.log(`--MyApproval${listName}`, res);
+      arr = res
+    })
+    .catch((error) => {
+      console.log("Error fetching data: ", error);
+    });
+  return arr;
+}
 export const getDataByID = async (_sp,id,ContentName) => {
   debugger
   let arr = []

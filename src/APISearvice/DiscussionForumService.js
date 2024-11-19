@@ -384,6 +384,7 @@ export const getDiscussionFilter = async (_sp) => {
                     Overview: res[i].Overview,
                     DiscussionForumCategory:res[i].DiscussionForumCategory,
                     CommentLength: comment,    
+                    ID:res[i].ID   
                  }
                  arr.push(arrs);
             }

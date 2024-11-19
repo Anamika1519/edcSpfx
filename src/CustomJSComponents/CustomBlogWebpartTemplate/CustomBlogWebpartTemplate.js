@@ -11,7 +11,8 @@ import { getCurrentUserProfileEmail } from "../../APISearvice/CustomService";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPaperclip, faEdit } from '@fortawesome/free-solid-svg-icons';
+import { faPaperclip, faEdit ,faTrashAlt} from '@fortawesome/free-solid-svg-icons';
+
 import Swal from 'sweetalert2';
 import {
     uploadFile,
@@ -41,6 +42,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
     const [ImagepostIdsArr, setImagepostIdsArr] = React.useState([]);
     const [DocumentpostIdsArr, setDocumentpostIdsArr] = React.useState([]);
     const [DocumentpostArr1, setDocumentpostArr1] = React.useState([]);
+    const [DocumentpostArr, setDocumentpostArr] = React.useState([]);
     const [richTextValues, setRichTextValues] = React.useState({});
     const [CategoryData, setCategoryData] = React.useState([]);
     const [EditFormData, setEditFormData] = useState([]);
@@ -132,7 +134,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
         "size",
     ];
     useEffect(() => {
-        if (activeTab === "all") {
+        if (activeTab.toLowerCase() === "all") {
             setFilteredBlogItems(blogData);
         } else {
             // Find the selected category based on activeTab
@@ -178,8 +180,9 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
     useEffect(() => {
         ApIcall();
     }, []);
-    const FilterOptions = [{ id: 1, Name: "Published", name: "Published" }, { id: 2, Name: "Save as Draft", name: "Your Drafts" }, { id: 3, Name: "Bookmarked", name: "Bookmarked" }]
-
+    const FilterOptions = [{ id: 1, Name: "All", name: "All" }, { id: 2, Name: "Published", name: "Published" },
+        { id: 3, Name: "Save as Draft", name: "Your Drafts" }, { id: 4, Name: "Bookmarked", name: "Bookmarked" }]
+    
     const ApIcall = async () => {
         setEmail(await getCurrentUserProfileEmail(_sp));
         setBlogData(await fetchBlogdata(_sp));
@@ -187,9 +190,9 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
         setBookmarkstatus(await fetchPinstatus(_sp));
 
 
-        setActiveTab("Published");
+        setActiveTab("All");
         setBookmarkblogs(await fetchBookmarkBlogdata(_sp));
-        setActiveTab("Published");
+        setActiveTab("All");
         setEnityData(await getEntity(_sp)) //Entity
         // console.log("check data of blogs---",blogData)
         // const dataofblog = await fetchBlogdata(sp);
@@ -922,7 +925,36 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
 
 
     // Edit Blogs End
+    const DeleteBlog = (id) => {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const DeleteRes = DeleteBusinessAppsAPI(sp, id)
+                ApiCall()
+                Swal.fire({
+                    title: "Deleted!",
+                    text: "Item has been deleted.",
+                    icon: "success"
+                }).then(async res => {
+                    setBlogData(await fetchBlogdata(_sp));
+                }
+                ).catch(async err => {
+                    setBlogData(await fetchBlogdata(_sp));
+                }
+                )
 
+            }
+        })
+    }
+
+    //new code end
 
     const toggleDropdown = (itemId) => {
         if (showDropdownId === itemId) {
@@ -1108,9 +1140,13 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                 <div className="tab-pane show active" id="home1" role="tabpanel">
                     {filteredBlogItems.length > 0 ?
                         filteredBlogItems.slice(0, itemsToShow).map(item => {
-                            const AnnouncementandNewsBannerImage = item.BlogBannerImage == undefined || item.BlogBannerImage == null ? "" : JSON.parse(item.BlogBannerImage);
-
-
+                            const AnnouncementandNewsBannerImage = item.BlogBannerImage == undefined || item.BlogBannerImage == null ? ""
+                                : JSON.parse(item.BlogBannerImage);
+                            console.log("AnnouncementandNewsBannerImage", AnnouncementandNewsBannerImage, item);
+                            const AnnouncementandNewsBannerImage1 = item.BlogGalleryJSON == undefined || item.BlogGalleryJSON == null ? ""
+                                : JSON.parse(item.BlogGalleryJSON);
+                            console.log("AnnouncementandNewsBannerImage", AnnouncementandNewsBannerImage, item, AnnouncementandNewsBannerImage1);
+                         
                             return (
                                 <div className="card mb-2 annuncementcard">
                                     <div className="card-body">
@@ -1118,8 +1154,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                             <div className="col-sm-2">
                                                 <a onClick={() => gotoBlogsDetails(item)}>   <div className="imagehright">
                                                     {/* <img className="d-flex align-self-center me-3 w-100" src={g1} alt="Generic placeholder image" /> */}
-                                                    <img src={AnnouncementandNewsBannerImage?.serverUrl + AnnouncementandNewsBannerImage?.serverRelativeUrl}
-                                                        className="d-flex align-self-center me-3 w-100" lt="Generic placeholder image" style={{ height: '100%' }} />
+                                                    <img src={`https://officeindia.sharepoint.com${AnnouncementandNewsBannerImage1[0].fileUrl}`}        className="d-flex align-self-center me-3 w-100" lt="Generic placeholder image" style={{ height: '100%' }} />
                                                 </div>
                                                 </a>
                                             </div>
@@ -1158,7 +1193,16 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                                           
 
                                                         </div>
-
+                                                        <div className="d-flex flex-wrap align-items-center justify-content-end mt-0">
+                                                        
+                                                        <a
+                                                            className="text-dark1 waves-effect waves-light"
+                                                            onClick={() => DeleteBlog(item.ID)}
+                                                        >
+                                                            <FontAwesomeIcon icon={faTrashAlt} />
+                                                        </a>
+                                                    
+                                                    </div>
                                                         {/* Bootstrap Modal */}
                                                         {console.log("formdata", formData)}
                                                         <div
