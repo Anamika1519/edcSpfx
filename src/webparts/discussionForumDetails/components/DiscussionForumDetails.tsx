@@ -1229,19 +1229,19 @@ alt="Check"
                             <div className="tabcss mb-2 mt-2 me-1 newalign">
                               <span className="pe-2 widtsvg text-nowrap mb-0 d-inline-block"
                                 onClick={(e: any) => openModal(e)}>
-                                <FilePlus /> Open Document
+                                <FilePlus size={14}  /> <span className="docu"> Open Document</span>
                               </span>
                             </div>
                             <div className="tabcss mb-2 mt-2 me-1 newalign">
                               <span className="pe-2 text-nowrap mb-0 d-inline-block">
                                 <Calendar size={14} />{" "}
-                                {moment(item.Created).format("DD-MMM-YYYY")}{" "}
+                                <span className="docu">  {moment(item.Created).format("DD-MMM-YYYY")}{" "}</span> 
 
                               </span>
                             </div>
                             <div className="tabcss mb-2 sameh mt-2 me-1 ">
                               <span className="text-nowrap mb-0 d-inline-block" onClick={() => sendanEmail(item)} >
-                                <Share size={14} /> Share by email
+                                <Share size={14} /> <span className="docu">Share by email</span> 
                               </span>
                             </div>
                             <div className="tabcss mb-2 sameh mt-2 me-1 ">
@@ -1249,22 +1249,25 @@ alt="Check"
                                 className="text-nowrap mb-0 d-inline-block"
                                 onClick={togglePopup}
                               >
-                                <FilePlus size={14} /> Create Folder
+                                {/* <FilePlus size={14} /> */}
+                                <img src={require("../assets/createf.png")} className="alignright12"/>
+                                <span className="docu"> Create Folder</span> 
                               </span>
                             </div>
-                            <div className="tabcss mb-2 sameh mt-2 me-1 ">
+                            {/* <div className="tabcss mb-2 sameh mt-2 me-1 ">
                               <span
                                 className="text-nowrap mb-0 d-inline-block"
                               >
                                 {item.GroupType}
                               </span>
-                            </div>
+                            </div> */}
                             <div className="tabcss mb-2 sameh mt-2 me-1 ">
                               <span
                                 className="text-nowrap mb-0 d-inline-block"
                                 onClick={() => UpdateDiscussion(item.Id, item.Author.ID, item.ARGDiscussionStatus)}
                               >
-                                Close Discussion
+                                <img src={require("../assets/closed.png")} className="alignright12"/>
+                              <span className="docu"> Close Discussion</span> 
                               </span>
                             </div>
                             {/* <div className="tabcss sameh mb-3 mt-2 me-1 ">
@@ -1295,6 +1298,7 @@ alt="Check"
                                     (id: any, idx: any) => {
                                       if (idx < 3) {
                                         return (
+                                          <div className="gfg_tooltip">
                                           <img
                                             style={{
                                               margin:
@@ -1307,6 +1311,11 @@ alt="Check"
                                             className="rounded-circlecss pimg text-center img-thumbnail avatar-xl"
                                             alt="profile-image"
                                           />
+                                          <span className="gfg_text">
+            A Computer science portal
+        </span>
+
+        </div>
                                         );
                                       }
                                     }
@@ -1643,9 +1652,33 @@ alt="Check"
                           <div className="card-body pb-3 gheight">
                             <h4 className="header-title font-16 text-dark fw-bold mb-0" style={{ fontSize: "20px" }}>Impression Count</h4>
                             <h1 className="text-muted font-14 mt-3">
+                              <div className="row">
+                                 <div className="col-lg-6">
+                                    <div className="card">
+                                      <div className="d-flex juss">
+                                    <img src={require("../assets/ccomment.png")} className="alignright12"/>
+
+                                    <span className="likecount">{likeCount}</span>
+                                    </div>
+
+                                    <p className="text-muted font-14 text-center mb-1">Likes</p>
+
+
+                                      </div>                                 </div>
+
+                                      <div className="col-lg-6">
+                                    <div className="card">
+
+                                      <span className="likecount">{likeCount}</span>
+                                    
+                                       
+                                      </div>                                 </div>
+                                      <p className="text-muted font-12 text-center">{likeCount}</p>
+
+                              </div>
                               {/* <p className="text-dark font-16 text-center mb-2">{item.Author.Title}</p> */}
                               <p className="text-muted font-14 text-center mb-1">Total Comments {commentCount}</p>
-                              <p className="text-muted font-12 text-center">Total Like {likeCount}</p>
+                             
                             </h1></div>
                         </div>
                       </div>

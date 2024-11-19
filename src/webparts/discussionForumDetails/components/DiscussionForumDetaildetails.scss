@@ -307,10 +307,12 @@ button:hover {
     .minw80 .moday-body{max-height: 470px;  overflow-y: auto;}
     .newaligntext{padding: 0px; min-width: auto !important;}
     .newaligntext button{padding: 0px; min-width: auto !important;}
-    .widtsvg svg{width: 18px !important;}
+    .widtsvg svg{width: 18px !important; margin-top: 2px;}
   .close-btn:hover {
     color: red;
   }
+  .juss{justify-content: space-around;}
+  .newalign svg{margin-top: 1px;}
   
   h2 {
     margin-top: 0;
