@@ -718,7 +718,7 @@ const AnnouncementdetailsContext = ({ props }: any) => {
                           }
 
                         </div><div className="row mt-2">
-                          <p style={{ lineHeight: '22px' }} className="d-block text-dark mt-2 mb-0 font-16">
+                          <p style={{ lineHeight: '22px' }} className="d-block newpara text-dark mt-2 mb-0 font-16">
                             <div
                               dangerouslySetInnerHTML={{ __html: item.Description }}
                             ></div>
