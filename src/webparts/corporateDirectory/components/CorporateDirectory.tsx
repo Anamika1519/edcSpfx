@@ -144,13 +144,11 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
     Email: "",
 
-    EmployeeID: "",
+    EmployeeID: "",       
 
-    Department: "",
-
+    companyName: "",
+    Department: "", 
     MobilePhone: "",
-
-    companyName: ""
 
   });
 
@@ -389,7 +387,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
         .getByTitle("User Information List")
         .items
         .select("ID", "Title", "EMail", "Department", "JobTitle", "Picture", "MobilePhone", "WorkPhone", "Name")
-        .filter(`EMail ne null and ID ne ${currentUser.Id}`)
+        .filter(`ContentType eq 'Person' and EMail ne null and ID ne ${currentUser.Id} `)
 
         ();
 
@@ -700,7 +698,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
     field: string
 
   ) => {
-
+debugger
     setFilters({
 
       ...filters,
@@ -841,14 +839,10 @@ const CorporateDirectoryContext = ({ props }: any) => {
     const exportData = currentData.map((item, index) => ({
 
       Name: item.Title,
-
-      "Employee Id": item.ID,
-
       Email: item.EMail,
-
-      Department: item?.Department != null ? item?.Department : "NA",
-      WorkPhone: item?.WorkPhone,
       Entity: item?.companyName != null ? item?.companyName : "NA",
+      Department: item?.Department != null ? item?.Department : "NA",
+      WorkPhone: item?.WorkPhone,     
 
     }));
 
@@ -1483,19 +1477,32 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                 <div>
 
+                                {followStatus[item.ID] ? 
+                                
+                                <button key={item.ID}
 
-                                  <button key={item.ID}
-
-                                    type="button" className="btn btn-light btn-sm"
+                                    type="button" className="finish"
 
                                     onClick={(!loadingUsers[item.ID]) ? (e) => toggleFollow(e, item) : undefined} disabled={loadingUsers[item.ID]}
 
 
                                   >
+                                    Unfollow
 
-                                    {followStatus[item.ID] ? "Unfollow" : "Follow"}
+                                  </button> : 
+                                <button key={item.ID}
 
-                                  </button>
+                                type="button" className="btn btn-light btn-sm"
+
+                                onClick={(!loadingUsers[item.ID]) ? (e) => toggleFollow(e, item) : undefined} disabled={loadingUsers[item.ID]}
+
+
+                              >
+                                Follow
+                              </button>                                
+                                
+                                }
+                                 
 
                                 </div>
 
@@ -1727,79 +1734,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                   </th>
 
-                                  <th
-
-                                    style={{
-
-                                      minWidth: "100px",
-
-                                      maxWidth: "100px",
-
-                                    }}
-
-                                  >
-
-                                    <div className="d-flex flex-column bd-highlight ">
-
-                                      <div
-
-                                        className="d-flex  pb-2"
-
-                                        style={{
-
-                                          justifyContent: "space-between",
-
-                                        }}
-
-                                      >
-
-                                        {" "}
-
-                                        <span>Employee ID</span>{" "}
-
-                                        <span
-
-                                          onClick={() =>
-
-                                            handleSortChange("EmployeeID")
-
-                                          }
-
-                                        >
-
-                                          <FontAwesomeIcon icon={faSort} />{" "}
-
-                                        </span>
-
-                                      </div>
-
-                                      <div className=" bd-highlight">
-
-                                        {" "}
-
-                                        <input
-
-                                          type="text"
-
-                                          placeholder="Filter by Employee ID"
-
-                                          onChange={(e) =>
-
-                                            handleFilterChange(e, "EmployeeID")
-
-                                          }
-
-                                          className="inputcss"
-
-                                          style={{ width: "100%" }}
-
-                                        />
-
-                                      </div>
-
-                                    </div>
-
-                                  </th>
+                                  
 
                                   <th
 
