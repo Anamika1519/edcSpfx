@@ -1098,7 +1098,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                         id="searchInput"
 
-                        placeholder="Search..."
+                        placeholder="Search by name..."
                         onChange={handleSearch}
 
                       />
@@ -1727,7 +1727,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                   </th>
 
-                                  <th
+                                  {/* <th
 
                                     style={{
 
@@ -1799,7 +1799,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                     </div>
 
-                                  </th>
+                                  </th> */}
 
                                   <th
 
@@ -2179,7 +2179,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                         <td>{item.Title}</td>
 
-                                        <td>{item.ID}</td>
+                                        {/* <td>{item.ID}</td> */}
 
                                         <td>{item.EMail}</td>
                                         <td>
