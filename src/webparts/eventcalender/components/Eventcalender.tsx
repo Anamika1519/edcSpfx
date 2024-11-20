@@ -440,7 +440,7 @@ const EventcalenderContext = ({ props }: any) => {
                                   </h4>
                                   <p
                                     style={{ color: "#6b6b6b" }}
-                                    className="mb-2 font-14 text-muted"
+                                    className="mb-2 font-16 text-muted"
                                   >
                                     {truncateText(item.Overview, 200)}
                                   </p>

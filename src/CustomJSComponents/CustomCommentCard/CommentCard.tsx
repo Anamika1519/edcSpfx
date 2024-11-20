@@ -106,7 +106,7 @@ export const CommentCard: React.FC<{
             </div>
           </div>
 
-          <p className="mt-2">{Commenttext}</p>
+          <p className="mt-2 font-16">{Commenttext}</p>
 
           <div className="mt-0 mb-2 d-flex" style={{ gap: '2rem' }}>
             <div  onClick={!loadingLike ? onLike : undefined}  className="btn btn-sm btn-link text-muted ps-0" style={{

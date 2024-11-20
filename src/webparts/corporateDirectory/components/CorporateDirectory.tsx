@@ -1092,7 +1092,7 @@ debugger
 
                         id="searchInput"
 
-                        placeholder="Search..."
+                        placeholder="Search by name..."
                         onChange={handleSearch}
 
                       />
@@ -1734,7 +1734,79 @@ debugger
 
                                   </th>
 
-                                  
+                                  <th
+
+                                    style={{
+
+                                      minWidth: "100px",
+
+                                      maxWidth: "100px",
+
+                                    }}
+
+                                  >
+
+                                    <div className="d-flex flex-column bd-highlight ">
+
+                                      <div
+
+                                        className="d-flex  pb-2"
+
+                                        style={{
+
+                                          justifyContent: "space-between",
+
+                                        }}
+
+                                      >
+
+                                        {" "}
+
+                                        <span>Employee ID</span>{" "}
+
+                                        <span
+
+                                          onClick={() =>
+
+                                            handleSortChange("EmployeeID")
+
+                                          }
+
+                                        >
+
+                                          <FontAwesomeIcon icon={faSort} />{" "}
+
+                                        </span>
+
+                                      </div>
+
+                                      <div className=" bd-highlight">
+
+                                        {" "}
+
+                                        <input
+
+                                          type="text"
+
+                                          placeholder="Filter by Employee ID"
+
+                                          onChange={(e) =>
+
+                                            handleFilterChange(e, "EmployeeID")
+
+                                          }
+
+                                          className="inputcss"
+
+                                          style={{ width: "100%" }}
+
+                                        />
+
+                                      </div>
+
+                                    </div>
+
+                                  </th>
 
                                   <th
 
@@ -2114,7 +2186,7 @@ debugger
 
                                         <td>{item.Title}</td>
 
-                                        <td>{item.ID}</td>
+                                        {/* <td>{item.ID}</td> */}
 
                                         <td>{item.EMail}</td>
                                         <td>
