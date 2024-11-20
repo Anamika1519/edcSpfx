@@ -46,7 +46,7 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
 
     const [copySuccess, setCopySuccess] = useState('');
 
-
+    const [IsCall, setIsCall] = useState(true)
     const [showMore, setShowMore] = useState(false);
     const menuRef = useRef(null);
     const [showModal, setShowModal] = useState(false);
@@ -58,7 +58,8 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
 
     const [displayedCount, setDisplayedCount] = useState(3);
     useEffect(() => {
-        initializeData();
+        //initializeData();
+        
         GetId()
 
         if (typeof (post.SocialFeedImagesJson) == 'string') {
@@ -69,15 +70,23 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
 
             }
         }
-        // const initializeData = async () => {
-        //     const userId = await getCurrentUserNameId(sp);
-        //     setAuthorId(userId);
-        //     fetchInitialLikeData(userId);
-        // };
-        // initializeData();
+        const initializeData = async () => {
+            if (IsCall) {
+                // const userId = await getCurrentUserNameId(sp);
+                setAuthorId(CurrentUser.Id);
+                setIsCall(false)
+                fetchInitialLikeData(CurrentUser.Id);
+            }
+ 
+ 
+        };
+ 
+        initializeData(); 
+        
         const handleClickOutside = (event: { target: any; }) => {
             if (menuRef.current && !menuRef.current.contains(event.target)) {
                 setIsMenuOpenshare(false);
+                setIsMenuOpen(false);
             }
         };
 
@@ -87,18 +96,13 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
             document.removeEventListener('mousedown', handleClickOutside);
         };
 
-    }, [])
+    }, [post, sp, siteUrl])
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const [isMenuOpenshare, setIsMenuOpenshare] = useState(false);
 
 
-    const initializeData = async () => {
-        const userId = await getCurrentUserNameId(sp);
-        setAuthorId(userId);
-        fetchInitialLikeData(userId);
-    };
     const toggleMenu = (e: any) => {
 
         e.preventDefault()
@@ -477,7 +481,7 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
     };
 
     const handleDeletePost = async (e: any, postId: number) => {
-
+ 
         e.preventDefault();
         Swal.fire({
             title: 'Do you want to delete?',
@@ -492,13 +496,13 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
                     // Assuming you are using SharePoint API to delete the post
                     await sp.web.lists.getByTitle('ARGSocialFeed').items.getById(postId).delete();
                     // Remove post from UI
-
+ 
                     setPosts(prevPosts => prevPosts.filter(post => post.postId !== postId));
-
-                    window.location.reload()
-
+//chhaya
+                    editload && editload()
+ 
                 } catch (error) {
-
+ 
                 }
             }
         }).catch()
@@ -571,7 +575,7 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
                                         <MoreVertical size={20} />
                                     </div>
                                     {isMenuOpen && (
-                                        <div className="dropdown-menucsspost">
+                                        <div className="dropdown-menucsspost" ref={menuRef}>
                                             <button onClick={(e) => handleEditClick(e)} disabled={post.AutherId != CurrentUser.Id}>Edit</button>
                                             <button onClick={(e) => handleDeletePost(e, post.postId)} disabled={post.AutherId != CurrentUser.Id}>Delete</button>
                                         </div>
@@ -590,7 +594,12 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
                         onChange={(e) => setEditedContent(e.target.value)}
                         rows={4}
                         className="edit-post-textarea"
-                        onKeyDown={handleSaveOnEnter}
+                        onKeyPress={(e) => {
+                            if (e.key === 'Enter' && !e.shiftKey) {
+                                e.preventDefault(); // Prevents the new line in textarea
+                                handleSaveOnEnter(e); // Calls the function to add comment
+                            }
+                        }}
                     />
                 ) : (
                     <p>{post.Contentpost}   {/* Edit Button */}
