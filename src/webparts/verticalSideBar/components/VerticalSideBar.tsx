@@ -345,7 +345,7 @@ const VerticalContext = ({ _context }: any) => {
                   {/* <Airplay color="blue" size={48} />
               <FontAwesomeIcon icon={getIcon(item.Icon)} /> */}
                 </span>
-                <a className="link_name1" style={{ textDecoration: 'unset', paddingLeft: '0.7rem' }} target=''
+                <a className="link_name1" style={{ textDecoration: 'unset', paddingLeft: '1rem' }} target=''
                 >   <span className={classNames('navlink', {
                   active: item.ID == useActive && !useHide
 
@@ -394,7 +394,7 @@ const VerticalContext = ({ _context }: any) => {
                         {/* <li className='test' style={{ paddingBottom: '0.5rem', paddingTop: '0.5rem' }} key={item.ID} onClick={() => gotoPage(item.Url,item.ID)}> */}
                         <a className={classNames('link_name1 ', {
                           active: item.ID == useActive
-                        })} style={{ textDecoration: 'none', paddingLeft: '0.7rem' }} onClick={() => gotoPage(item.Url, item.ID)} >
+                        })} style={{ textDecoration: 'none', paddingLeft: '1rem' }} onClick={() => gotoPage(item.Url, item.ID)} >
                           <span style={dynamicStylecss}>{item.Title}</span>
                         </a>
                       </li>

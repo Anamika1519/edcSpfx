@@ -1492,7 +1492,7 @@ debugger
                                   </button> : 
                                 <button key={item.ID}
 
-                                type="button" className="btn btn-light btn-sm"
+                                type="button" style={{background:'#efefef'}} className="btn btn-primary btn-sm waves-effect waves-light"
 
                                 onClick={(!loadingUsers[item.ID]) ? (e) => toggleFollow(e, item) : undefined} disabled={loadingUsers[item.ID]}
 

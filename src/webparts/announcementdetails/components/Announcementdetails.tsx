@@ -742,7 +742,7 @@ const AnnouncementdetailsContext = ({ props }: any) => {
                     <div className="card" style={{ border: '1px solid #54ade0', borderRadius: '20px', boxShadow: '0 3px 20px #1d26260d' }}>
                       <div className="card-body" style={{ padding: '1rem 0.9rem' }}>
                         {/* New comment input */}
-                        {/* <h4 className="mt-0 mb-3 text-dark fw-bold font-16">Comments</h4> */}
+                        <h4 className="mt-0 mb-3 text-dark fw-bold font-16">Comments</h4>
                         <div className="mt-3">
                           <textarea id="example-textarea"
                             className="form-control text-dark form-control-light mb-2"
@@ -757,7 +757,7 @@ const AnnouncementdetailsContext = ({ props }: any) => {
                             disabled={loading} // Disable button when loading
                           >
 
-                            {loading ? 'Submitting...' : ''} {/* Change button text */}
+                            {loading ? 'Submitting...' : 'Post'} {/* Change button text */}
                           </button>
                         </div>
                       </div>

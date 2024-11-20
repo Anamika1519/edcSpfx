@@ -6,6 +6,7 @@
     margin-bottom: 20px;
     overflow: hidden;
 }
+.navtab-bgs{padding: 0px !important;}
 .cardcsss
 {
     border: 1px solid #54ade0;
@@ -18,6 +19,12 @@
     width: 300px;
     border: none;
     box-shadow: none;
+}
+.finish{
+    font-size: 14px !important;
+    font-weight: 500;
+    line-height: 19px;
+    padding: 6px 10px !important;
 }
 .header-title {
     font-size: 16px;

@@ -992,7 +992,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
                           {/* New comment input */}
 
-                          {/* <h4 className="mt-0 mb-3 text-dark fw-bold font-16">Comments</h4> */}
+                          <h4 className="mt-0 mb-3 text-dark fw-bold font-16">Comments</h4>
 
                           <div className="mt-3">
 
