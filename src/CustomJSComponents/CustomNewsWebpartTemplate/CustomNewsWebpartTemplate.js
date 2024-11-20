@@ -14,7 +14,7 @@ const CustomNewsWebpartTemplate = ({ _sp, SiteUrl }) => {
     
     const [copySuccess, setCopySuccess] = useState('');
     const [show, setShow] = useState(false)
-    const [itemsToShow, setItemsToShow] = useState(2); // Initial number of items to show
+    const [itemsToShow, setItemsToShow] = useState(5); // Initial number of items to show
     const [NewsData, setNews] = useState([])
     const [showDropdownId, setShowDropdownId] = useState(null);
     const [currentEmail, setEmail] = useState('');
@@ -92,7 +92,7 @@ const CustomNewsWebpartTemplate = ({ _sp, SiteUrl }) => {
     const loadMore = () => {
         event.preventDefault()
         event.stopImmediatePropagation()
-        setItemsToShow(itemsToShow + 2); // Increase the number by 8
+        setItemsToShow(itemsToShow + 5); // Increase the number by 8
       };
     return (
         <><div className="row mt-5" >
@@ -113,7 +113,7 @@ const CustomNewsWebpartTemplate = ({ _sp, SiteUrl }) => {
                                 <div className="row" style={{ paddingLeft: '0.5rem' }}>
                                     <div className="col-sm-4 text-left">
                                         <span style={{ padding: '5px', borderRadius: '4px', fontWeight: '500', color: '#009157',background:'rgba(0, 135, 81, 0.20)' }} className="font-14 float-start mt-2">
-                                            Featured News</span>
+                                            Latest News</span>
  
                                     </div>
                                     <div className="col-lg-12">

@@ -22,7 +22,7 @@ import { getCurrentUserProfileEmail, getEntity } from "../../APISearvice/CustomS
 import { fetchBlogdata, fetchBookmarkBlogdata, getBlogsByID, fetchPinstatus, updateItem, uploadFileBanner } from "../../APISearvice/BlogService"
 
 const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
-    const [itemsToShow, setItemsToShow] = useState(2);
+    const [itemsToShow, setItemsToShow] = useState(5);
     const [copySuccess, setCopySuccess] = useState('');
     const [show, setShow] = useState(false)
     const [NewsData, setNews] = useState([])
@@ -1043,7 +1043,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
     const loadMore = () => {
         event.preventDefault()
         event.stopImmediatePropagation()
-        setItemsToShow(itemsToShow + 2); // Increase the number by 8
+        setItemsToShow(itemsToShow + 5); // Increase the number by 8
     };
     return (
         <><div className="row mt-0" style={{ paddingLeft: '0.5rem' }}>

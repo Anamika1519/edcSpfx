@@ -270,6 +270,105 @@ const NewsdetailsContext = ({ props }: any) => {
 
   }
 
+  // const getApiData = async () => {
+
+
+  //   let initialComments: any[] = []
+
+  //   const ids = window.location.search;
+
+  //   const originalString = ids;
+  //   let initialArray: any[] = [];
+  //   let arrLike = {}
+  //   let likeArray: any[] = []
+  //   const idNum = originalString.substring(1);
+  //   sp.web.lists.getByTitle("ARGAnnouncementandNewsComments").items.select("*,AnnouncementAndNews/Id").expand("AnnouncementAndNews").filter(`AnnouncementAndNewsId eq ${Number(idNum)}`).orderBy("Created", false)().then(async (result: any) => {
+  //     console.log(result, 'ARGAnnouncementandNewsComments');
+
+
+
+  //     initialComments = result;
+
+  //     for (var i = 0; i < initialComments.length; i++) {
+  //       await sp.web.lists
+  //         .getByTitle("ARGAnnouncementandNewsUserLikes")
+  //         .items.filter(`AnnouncementAndNewsCommentId eq ${Number(initialComments[i].Id)}`).select("ID,AuthorId,UserName,Like,Created")()
+  //         .then((result1: any) => {
+  //           console.log(result1, "ARGEventsUserLikes");
+  //           likeArray = []
+  //           for (var j = 0; j < result1.length; j++) {
+  //             arrLike = {
+  //               "ID": result1[j].Id,
+  //               "AuthorId": result1[j].AuthorId,
+  //               "UserName": result1[j].UserName,
+  //               "Like": result1[j].Like,
+  //               "Created": result1[j].Created
+  //             }
+  //             likeArray.push(arrLike)
+  //           }
+  //           let arr = {
+  //             Id: initialComments[i].Id,
+  //             UserName: initialComments[i].UserName,
+  //             AuthorId: initialComments[i].AuthorId,
+  //             Comments: initialComments[i].Comments,
+  //             Created: new Date(initialComments[i].Created).toLocaleString(), // Formatting the created date
+  //             UserLikesJSON: result1.length > 0 ? likeArray : []
+  //             , // Default to empty array if null
+  //             UserCommentsJSON:
+  //               initialComments[i].UserCommentsJSON != "" &&
+  //                 initialComments[i].UserCommentsJSON != null &&
+  //                 initialComments[i].UserCommentsJSON != undefined
+  //                 ? JSON.parse(initialComments[i].UserCommentsJSON)
+  //                 : [], // Default to empty array if null
+  //             userHasLiked: initialComments[i].userHasLiked,
+  //             UserProfile: initialComments[i].UserProfile
+  //           }
+  //           initialArray.push(arr);
+  //         })
+  //     }
+  //     setComments(initialArray)
+  //     // setComments(initialComments.map((res) => ({
+
+  //     //   Id: res.Id,
+
+  //     //   UserName: res.UserName,
+
+  //     //   AuthorId: res.AuthorId,
+
+  //     //   Comments: res.Comments,
+
+  //     //   Created: new Date(res.Created).toLocaleString(), // Formatting the created date
+
+  //     //   UserLikesJSON: res.UserLikesJSON != "" && res.UserLikesJSON != null && res.UserLikesJSON != undefined ? JSON.parse(res.UserLikesJSON) : [], // Default to empty array if null
+
+  //     //   UserCommentsJSON: res.UserCommentsJSON != "" && res.UserCommentsJSON != null && res.UserCommentsJSON != undefined ? JSON.parse(res.UserCommentsJSON) : [], // Default to empty array if null
+
+  //     //   userHasLiked: res.userHasLiked,
+
+  //     //   UserProfile: res.UserProfile
+
+  //     //   // Initialize as false
+
+  //     // })))
+
+
+
+  //     // getUserProfilePicture(CurrentUser.Id,sp).then((url) => {
+
+  //     //   if (url) {
+
+  //     //     console.log("Profile Picture URL:", url);
+
+  //     //   } else {
+
+  //     //     console.log("No profile picture found.");
+
+  //     //   }
+
+  //     // });
+
+  //   })
+  // }
   const getApiData = async () => {
 
 
@@ -282,8 +381,12 @@ const NewsdetailsContext = ({ props }: any) => {
     let arrLike = {}
     let likeArray: any[] = []
     const idNum = originalString.substring(1);
-    sp.web.lists.getByTitle("ARGAnnouncementandNewsComments").items.select("*,AnnouncementAndNews/Id").expand("AnnouncementAndNews").filter(`AnnouncementAndNewsId eq ${Number(idNum)}`).orderBy("Created", false)().then(async (result: any) => {
-      console.log(result, 'ARGAnnouncementandNewsComments');
+    sp.web.lists.getByTitle("ARGAnnouncementandNewsComments").items
+    .select("*,AnnouncementAndNews/Id").expand("AnnouncementAndNews")
+    .filter(`AnnouncementAndNewsId eq ${Number(idNum)}`).orderBy("Created", false)()
+    .then(async (result: any) => {
+      
+      console.log(result, 'ARGAnnouncementandNewsComments data');
 
 
 
@@ -369,7 +472,9 @@ const NewsdetailsContext = ({ props }: any) => {
 
     })
   }
-
+  useEffect(() => {
+    getApiData()
+  })
   const ApICallData = async () => {
 
     debugger
@@ -887,7 +992,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
                           {/* New comment input */}
 
-                          <h4 className="mt-0 mb-3 text-dark fw-bold font-16">Comments</h4>
+                          {/* <h4 className="mt-0 mb-3 text-dark fw-bold font-16">Comments</h4> */}
 
                           <div className="mt-3">
 
@@ -899,7 +1004,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
                               onChange={(e) => setNewComment(e.target.value)}
 
-                              placeholder="Add a new comment..."
+                              placeholder="Type your comment here..."
 
                               rows={3} style={{ borderRadius: 'unset' }}
 
@@ -917,7 +1022,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
 
 
-                              {loading ? 'Submitting...' : 'Add Comment'} {/* Change button text */}
+                              {loading ? 'Submitting...' : 'Post'} {/* Change button text */}
 
                             </button>
 

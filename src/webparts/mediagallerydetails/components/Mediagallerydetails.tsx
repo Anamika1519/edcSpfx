@@ -147,7 +147,7 @@ const HelloWorldContext = ({props}:any) => {
                       <img
                         src={item?.fileUrl ? item?.fileUrl : require("../../../Assets/ExtraImage/NoDataFound.png")}
                         alt="media"
-                        style={{ maxWidth: "100%", height: "100%",width: "100%", borderRadius:"15px", objectFit:"cover"}}   
+                        style={{ maxWidth: "100%", height: "100%",width: "100%", borderRadius:"13px", objectFit:"cover"}}   
                       />
                     </a>
                   </div>

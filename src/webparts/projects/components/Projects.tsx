@@ -113,7 +113,7 @@ const HelloWorldContext = ({ props }: any) => {
   const _sp: SPFI = getSP();
 
   const [Dataproject, setDataproject] = useState<any[]>([]);
-  const [itemsToShow, setItemsToShow] = useState(8); // Initial number of items to show
+  const [itemsToShow, setItemsToShow] = useState(5); // Initial number of items to show
   const [ChoiceValueOne, setChoiceValueOne] = useState<any[]>([]);
   const [DocumentpostArr, setDocumentpostArr] = React.useState([]);
   const [DocumentpostArr1, setDocumentpostArr1] = React.useState([]);
@@ -780,7 +780,7 @@ const HelloWorldContext = ({ props }: any) => {
   const loadMore = () => {
     event.preventDefault()
     event.stopImmediatePropagation()
-    setItemsToShow(itemsToShow + 8); // Increase the number by 8
+    setItemsToShow(itemsToShow + 5); // Increase the number by 8
   };
 
   return (

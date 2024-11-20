@@ -27,7 +27,7 @@ const EventcalenderContext = ({ props }: any) => {
   const sp: SPFI = getSP();
   console.log(sp, "sp");
   
-  const [itemsToShow, setItemsToShow] = useState(2);
+  const [itemsToShow, setItemsToShow] = useState(5);
   const [copySuccess, setCopySuccess] = useState("");
   const [show, setShow] = useState(false);
   // const { useHide }: any = React.useContext(UserContext);
@@ -439,8 +439,8 @@ const EventcalenderContext = ({ props }: any) => {
                                     {truncateText(item.EventName, 90)}
                                   </h4>
                                   <p
-                                    style={{ color: "#6b6b6b" }}
-                                    className="mb-2 font-16 text-muted"
+                                    style={{ color: "#6b6b6b" , fontSize:'15px'}}
+                                    className="mb-2  text-muted"
                                   >
                                     {truncateText(item.Overview, 200)}
                                   </p>
@@ -508,7 +508,7 @@ const EventcalenderContext = ({ props }: any) => {
                                           // alt={attendee.name}
                                         />
                                         }
-                                        Attending
+                                        Registered
                                       </span>
                                     </div>
                                   </div>
@@ -522,7 +522,7 @@ const EventcalenderContext = ({ props }: any) => {
                                 style={{
                                   justifyContent: "end",
                                   cursor: "pointer",
-                                  marginRight:"3px"
+                                  marginRight:"10px"
                                 }}
                               >
                                 <div
@@ -535,7 +535,7 @@ const EventcalenderContext = ({ props }: any) => {
                                     key={item.Id}
                                   >
                                     <Share2
-                                      size={20}
+                                      size={25}
                                       color="#6c757d"
                                       strokeWidth={2}
                                       style={{ fontWeight: "400" }}
