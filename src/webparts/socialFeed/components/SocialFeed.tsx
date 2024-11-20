@@ -1041,7 +1041,7 @@ const SocialFeedContext = ({ props }: any) => {
                     </div>
 
 
-                    <div className='mt-3'>
+                    <div className='mt-4'>
                       <h4 className='font-14 mb-3 uppercase'>Bookmarked Blogs</h4>
                       {
 
@@ -1049,9 +1049,9 @@ const SocialFeedContext = ({ props }: any) => {
 
                           return (
 
-                            <div className="row mt-1" style={{ gap: '0.5rem', cursor: 'pointer' }}><div className="col-md-1" onClick={() => gotoBlogsDetails(item)}>
+                            <div className="row mt-1 bbokmark" style={{ gap: '0.5rem', cursor: 'pointer' }}><div className="col-md-1" onClick={() => gotoBlogsDetails(item)}>
 
-                              <span> <AvtarComponents Name={item.Title} /> </span>
+                              <span className="newbg"> <AvtarComponents  Name={item.Title} /> </span>
 
                             </div>
 
@@ -1801,7 +1801,7 @@ const SocialFeedContext = ({ props }: any) => {
 
 
                 {console.log("currentDatacurrentData", currentData)}
-                <div className="card mobile-6" style={{ borderRadius: "1rem" }}>
+                <div className="card mobile-6" style={{ borderRadius: "1rem", position:'sticky', top:'90px' }}>
 
                   <div className="card-body pb-3 gheight">
 

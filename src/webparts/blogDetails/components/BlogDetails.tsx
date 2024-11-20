@@ -676,7 +676,7 @@ const BlogDetailsContext = ({ props }: any) => {
 
               </div>
               <div className="col-lg-4">
-                <div className="card mt-4 postion8">
+              <div style={{  position:'sticky', top:'90px' }} className="card  postion8">
                   <div className="card-body">
                     <h4 className="header-title text-dark  fw-bold mb-0">
                       <span style={{ fontSize: '20px' }}>Related Blogs</span>    <a className="font-11 btn btn-primary  waves-effect waves-light view-all cursor-pointer" href="#" onClick={NavigatetoEvents} style={{ float: 'right', lineHeight: '18px' }}>View All</a></h4>

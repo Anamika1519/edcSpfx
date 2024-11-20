@@ -747,7 +747,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
                             <div className="col-md-12 col-xl-12">
 
-                              <p className="mb-2 mt-1 d-block font-14 eventtextnew">
+                              <p className="mb-2 mt-1 d-block text-dark font-14 eventtextnew">
 
                                 <span className="pe-2 text-nowrap mb-0 d-inline-block">
 
@@ -785,7 +785,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
 
 
-                            <p style={{ lineHeight: '22px' }} className="d-block text-muted mt-2 font-14">
+                            <p style={{ lineHeight: '22px' }} className="d-block text-dark mt-2 font-16">
 
                               {item.Overview}
 
@@ -839,7 +839,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
                           </div><div className="row mt-2">
 
-                            <p style={{ lineHeight: '22px' }} className="d-block text-muted mt-2 mb-0 font-14">
+                            <p style={{ lineHeight: '22px' }} className="d-block text-dark mt-2 mb-0 font-16">
 
                               <div
 
@@ -990,7 +990,7 @@ const NewsdetailsContext = ({ props }: any) => {
               </div>
 
               <div className="col-lg-4">
-                <div className="card mt-4 postion8">
+              <div style={{  position:'sticky', top:'90px' }} className="card  postion8">
                   <div className="card-body">
                     <h4 className="header-title text-dark  fw-bold mb-0">
                       <span style={{ fontSize: '20px' }}>Latest News</span>    <a className="font-11 btn btn-primary  waves-effect waves-light view-all cursor-pointer" href="#" onClick={NavigatetoEvents} style={{ float: 'right', lineHeight: '12px' }}>View All</a></h4>
@@ -1000,7 +1000,7 @@ const NewsdetailsContext = ({ props }: any) => {
                         <div className="mainevent mt-2">
                           <div className="bordernew">
                             <h3 className="twolinewrap font-16  text-dark fw-bold mb-2 cursor-pointer" style={{ cursor: "pointer" }}  onClick={() => gotoNewsDetails(res)}>{res.Title}</h3>
-                            <p style={{ lineHeight: '20px' }} className="font-14 text-muted twolinewrap">{res.Overview}</p>
+                            <p style={{ lineHeight: '20px' }} className="font-16 text-muted twolinewrap">{res.Overview}</p>
                             <div className="row">
                               <div className="col-sm-12">
                                 <span style={{ marginTop: "4px" }} className="date-color font-12 float-start  mb-1 ng-binding"><i className="fe-calendar"></i> {moment(res.Created).format("DD-MMM-YYYY")}</span>  &nbsp; &nbsp; &nbsp; <span className="font-12" style={{ color: '#009157', fontWeight: '600' }}>  </span></div>

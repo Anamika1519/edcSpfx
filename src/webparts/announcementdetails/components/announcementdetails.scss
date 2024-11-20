@@ -159,7 +159,7 @@ background-color: #0056b3;
 {
 width: 100%;
 object-fit: cover;
-border-radius: 15px;
+border-radius: 13px;
 }
 @media(max-width:1440px)
 {
@@ -168,27 +168,12 @@ border-radius: 15px;
         height: 200px !important;
     }
 }
-@media(max-width:1920px)
-  {
-      .postion8{width:24%; }
-  }
-  @media(max-width:1600px)
-  {
-      .postion8{width:23%; }
-  }
-  
+
   @media(max-width:1440px)
   {
-      .postion8{width:23%; }
+   
       .internalmedia .gal-box .image-popup {
         height: 200px !important;
     }
   }
-  @media(max-width:1280px)
-  {
-      .postion8{width:24.5%; }
-  }
-  @media(max-width:1200px)
-  {
-      .postion8{width:24%; }
-  }
+  

@@ -81,7 +81,7 @@ background-color: #008751 !important;
     border-radius: 20px;
     padding: 15px;
     float: left;
-    height: 550px;
+    height: auto;
     width: 100%;
 }
 .rbc-calendar{
@@ -95,10 +95,13 @@ background-color: #008751 !important;
     text-transform: uppercase;
     font-weight: 500;
 }
-.rbc-btn-group{border-radius: 4px;    flex-direction: row-reverse;
+.rbc-btn-group{border-radius: 4px;    
     display: flex;}
     .rbc-header{
         padding: 6px 3px;
+    }
+    .rbc-ellipsis, .rbc-event-label, .rbc-row-segment .rbc-event-content, .rbc-show-more{
+        padding: 5px !important;
     }
 .navtab-bg .nav-link {
     font-weight: 500;
@@ -132,7 +135,7 @@ background-color: #008751 !important;
     font-size: 11px;
     margin: 5px;
 }
-.tab-content{padding: 0px 12px;}
+.tab-content{padding: 0px 6px;}
 .imagemani {
     width: 90%;
     float: right;

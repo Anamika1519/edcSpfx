@@ -630,9 +630,14 @@ const EventdetailscalenderContext = ({ props }: any) => {
                           <div className="row mt-2">
 
                             <div className="col-md-12 col-xl-12">
-                              <p className="mb-2 mt-1 d-flex eventtextnew" style={{ cursor: 'pointer' }}>
+                              <p className="mb-2 mt-1 text-dark d-flex eventtextnew" style={{ cursor: 'pointer' }}>
                                 <span className="pe-2 text-nowrap mb-0 d-inline-block" >
-                                  <span style={{ paddingTop: '0px' }}>   <Calendar size={18} /> </span> <span>{moment(item.Created).format("DD-MMM-YYYY")} </span>  &nbsp;  &nbsp;  &nbsp;|
+                                <span style={{ paddingTop: '0px' }}>   
+                                    <Calendar size={18} /> </span> <span>Event: {moment(item.EventDate).format("DD-MMM-YYYY")} </span>  &nbsp;  &nbsp;  &nbsp;|
+                                </span>
+                                <span className="pe-2 text-nowrap mb-0 d-inline-block" >
+                                  <span style={{ paddingTop: '0px' }}>   
+                                    <Calendar size={18} /> </span> <span>Registration: {moment(item.RegistrationDueDate).format("DD-MMM-YYYY")} </span>  &nbsp;  &nbsp;  &nbsp;|
                                 </span>
                                 <span className="text-nowrap mb-0 d-inline-block"  onClick={() => sendanEmail(item)} >
                                   <Share size={18} />  Share by email &nbsp;  &nbsp;  &nbsp;|&nbsp;  &nbsp;  &nbsp;
@@ -654,13 +659,13 @@ const EventdetailscalenderContext = ({ props }: any) => {
                                       )
                                     })
                                   }
-                                  {item?.Attendees?.length > 0 && (<span style={{paddingTop:'3px', paddingLeft:'3px'}}>Attending</span>)}
+                                  {item?.Attendees?.length > 0 && (<span style={{paddingTop:'3px', paddingLeft:'3px'}}>Registered</span>)}
                                 </span>
                               </p>
 
                               <p>
 
-                                {new Date(item.RegistrationDueDate) > new Date() ? (<div className="EventAttendes mt-4 rounded-pill" onClick={() => AddAttendees(item)}><Users size={14} /> Attend this event
+                                {new Date(item.RegistrationDueDate) > new Date() ? (<div className="EventAttendes mt-4 rounded-pill" onClick={() => AddAttendees(item)}><Users size={14} /> Register
                                 </div>) : (<div className="EventAttendesGray  mt-4 rounded-pill" >! Event Expired
                                 </div>)}
                               </p>
@@ -670,7 +675,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
                         <div className="row" >
                           <p
                             style={{ lineHeight: "22px" }}
-                            className="d-block text-muted mt-2 font-14"
+                            className="d-block text-dark mt-2 font-16"
                           >
                             {item.Overview}
                           </p>
@@ -769,7 +774,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
               </div>
 
               <div className="col-lg-4">
-                <div className="card mt-4 postion8">
+                <div style={{  position:'sticky', top:'90px' }} className="card  postion8">
                   <div className="card-body">
                     <h4 className="header-title text-dark  fw-bold mb-0">
                       <span style={{ fontSize: '20px' }}>Upcoming Events</span>  
@@ -781,7 +786,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
                        
                         <div className="bordernew">
                           <h3 className="twolinewrap font-16 text-dark fw-bold mb-2 cursor-pointer" style={{ cursor: "pointer" }} onClick={() => gotoNewsDetails(res)}>{res.EventName}</h3>
-                          <p style={{ lineHeight: '20px' }} className="font-14 text-muted twolinewrap">{res.Overview}</p>
+                          <p style={{ lineHeight: '20px' }} className="font-16 text-muted twolinewrap">{res.Overview}</p>
                           <div className="row">
                             <div className="col-sm-12"> <span style={{ marginTop: "4px" }} className="date-color font-12 float-start  mb-1 ng-binding"><i className="fe-calendar"></i> {moment(res.Created).format("DD-MMM-YYYY")}</span>  &nbsp; &nbsp;| &nbsp; <span className="font-12" style={{ color: '#009157', fontWeight: '600' }}>{res.Entity.Entity}  </span></div>
 

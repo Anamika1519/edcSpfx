@@ -1261,7 +1261,7 @@ alt="Check"
                                 {item.GroupType}
                               </span>
                             </div> */}
-                            <div className="tabcss mb-2 sameh mt-2 me-1 ">
+                            <div className="tabcss btn btn-secondary mb-2 sameh mt-2 me-1 ">
                               <span
                                 className="text-nowrap mb-0 d-inline-block"
                                 onClick={() => UpdateDiscussion(item.Id, item.Author.ID, item.ARGDiscussionStatus)}
@@ -1378,7 +1378,7 @@ alt="Check"
 
 
 
-                        <div className="row ">
+                        <div style={{position:'sticky', top:'90px'}}  className="row ">
                           <p
                             style={{ lineHeight: "22px" }}
                             className="d-block text-muted mt-2 font-14"
@@ -1636,9 +1636,9 @@ alt="Check"
                           ))}
                         </div>
                       </div>
-                      <div className="col-md-3 mobile-w3">
+                      <div  className="col-md-3 mobile-w3">
 
-                        <div className="card mobile-5 mt-2" style={{ borderRadius: "22px" }}>
+                        <div className="card mobile-5 mt-2" style={{ borderRadius: "22px",position:'sticky', top:'90px' }}>
                           <div className="card-body pb-3 gheight">
                             <h4 className="header-title font-16 text-dark fw-bold mb-0" style={{ fontSize: "20px" }}>Discussion Owner</h4>
                             <h1 className="text-muted font-14 mt-3"><p className="text-dark font-16 text-center mb-2">{item.Author.Title}</p>
@@ -1648,7 +1648,7 @@ alt="Check"
                         </div>
 
                         {/* Impression code */}
-                        <div className="card mobile-5 mt-3" style={{ borderRadius: "22px" }}>
+                        <div className="card mobile-5 mt-3" style={{ borderRadius: "22px",position:'sticky', top:'260px' }}>
                           <div className="card-body pb-3 gheight">
                             <h4 className="header-title font-16 text-dark fw-bold mb-0" style={{ fontSize: "20px" }}>Impression Count</h4>
                             <h1 className="text-muted font-14 mt-3">

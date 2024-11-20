@@ -122,19 +122,19 @@ const CustomNewsWebpartTemplate = ({ _sp, SiteUrl }) => {
                                     </div>
                                     <div className="row">
                                         <div className="col-sm-12">
-                                            <p className="mb-2 mt-1 d-block customhead">
-                                                <span style={{ fontWeight: '400' }} className="pe-2 text-nowrap color-new font-12 mb-0 d-inline-block">
-                                                    <Calendar size={12} color="#6b6b6b" strokeWidth={1} className="pl-2" style={{ fontWeight: '400' }} />&nbsp;
+                                            <p className="mb-2 mt-1 d-block text-dark customhead">
+                                                <span style={{ fontWeight: '400' }} className="pe-2 text-nowrap font-12 mb-0 d-inline-block">
+                                                    <Calendar size={12}  strokeWidth={1} className="pl-2 text-muted" style={{ fontWeight: '400' }} />&nbsp;
                                                     {moment(item.Created).format("DD-MMM-YYYY HH:mm")} &nbsp;  &nbsp;  &nbsp;|
                                                 </span>
-                                                <span style={{ fontWeight: '400' }} className="text-nowrap mb-0 color-new font-12 d-inline-block">
-                                                    Author: <span style={{ color: '#009157', fontWeight: '600' }}>{item.Author.Title} &nbsp;  &nbsp;  &nbsp;|&nbsp;  &nbsp;  &nbsp;
+                                                <span style={{ fontWeight: '400' }} className="text-nowrap mb-0  font-1 text-muted2 d-inline-block">
+                                                    Author: <span style={{ color: '#009157', fontWeight: '600' }}>{item.Author.Title} 
                                                     </span>
  
                                                 </span></p>
  
                                             <div style={{ clear: 'both', height: '4rem' }}>
-                                                <p className="d-block customdescription">{truncateText(item.Overview, 320)}</p>
+                                                <p className="d-block font-14 text-dark customdescription">{truncateText(item.Overview, 320)}</p>
                                             </div>
                                             <a onClick={() => gotoNewsDetails(item)} style={{ textDecoration: 'none', marginTop:'15px', float:'left' }}>
                                                 <div style={{ height: '40px', lineHeight: '24px' }} className="btnCustomcss btn-primary">Read more..</div> </a>

@@ -301,7 +301,7 @@ const HorizontalNavbar = ({ _context, siteUrl }: any) => {
     <div style={{ zIndex: '99' }} ref={headerRef}
       className={isSticky ? "sticky " : "navbar"}
       id="myHeader">
-      <div className='navcss' style={{ marginLeft: `${!useHide ? '240px' : '80px'}` }} >
+      <div className='navcss' style={{ marginLeft: `${!useHide ? '230px' : '80px'}` }} >
         <div className="" onClick={() => handleSidebarToggle(useHide)}>
           <div className={` ${useHide ? 'sidebar-closedBar' : 'sidebar-openBa'}`} onClick={() => handleSidebarToggle(useHide)}>
             <div className="" onClick={() => handleSidebarToggle(useHide)}>

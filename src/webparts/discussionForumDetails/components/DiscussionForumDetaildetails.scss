@@ -166,7 +166,7 @@ button:hover {
 {
   width: 100%;
   object-fit: cover;
-  border-radius: 15px;
+  border-radius: 13px;
 }
 .attendeesImg {
   border-radius: 50% !important;
@@ -320,6 +320,10 @@ button:hover {
     top: 4px;
     padding: 3px 20px;
     border-radius: 15px; }
+    .btn-secondary{    background: #6c757d !important;
+      width: 100%;
+      color: #fff;
+      text-align: left;}
   .juss{justify-content: flex-start;
     gap: 15px;
     align-items: center;}

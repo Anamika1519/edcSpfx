@@ -3,6 +3,8 @@ import CustomBreadcrumb from "../../../CustomJSComponents/CustomBreadcrumb/Custo
 import VerticalSideBar from "../../verticalSideBar/components/VerticalSideBar";
 import { SPFI } from "@pnp/sp/presets/all";
 import Swal from "sweetalert2";
+import Select from 'react-select'
+import Multiselect from "multiselect-react-dropdown";
 import "../../../Assets/Figtree/Figtree-VariableFont_wght.ttf";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
@@ -84,6 +86,7 @@ const ProjectDetailsContext = ({ props }: any) => {
   const [showDropdownId, setShowDropdownId] = React.useState(null);
   const [loadingLike, setLoadingLike] = useState<boolean>(false);
   const [loadingReply, setLoadingReply] = useState<boolean>(false);
+  const [selectedValue, setSelectedValue] = useState([]);
   const toggleDropdown = (itemId: any) => {
     if (showDropdownId === itemId) {
       setShowDropdownId(null); // Close the dropdown if already open
@@ -91,6 +94,46 @@ const ProjectDetailsContext = ({ props }: any) => {
       setShowDropdownId(itemId); // Open the dropdown for the clicked item
     }
   };
+  const [users, setUsers] = useState([]);
+  useEffect(() => {
+    // Fetch users from SharePoint when the component mounts
+    const fetchUsers = async () => {
+      try {
+        const userList = await sp.web.siteUsers();  // Fetch users from the site
+        const userOptions = userList.map(user => ({
+          label: user.Title,   // Display name of the user
+          value: user.Id       // Unique user ID
+        }));
+        setUsers(userOptions);  // Set the options for Select and Multiselect
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+  const currentUserEmailRef = useRef('');
+  const getCurrrentuser=async()=>{
+    const userdata = await sp.web.currentUser();
+    // alert(userdata)
+    currentUserEmailRef.current = userdata.Email;
+    alert(`ID: ${userdata}`)
+    // alert(currentUserEmailRef.current)
+ 
+  }
+  useEffect(() => {
+    getCurrrentuser()
+
+  }, []);
+  const onSelect = (selectedList:any) => {
+    console.log(selectedList , "selectedList");
+    setSelectedValue(selectedList);  // Set the selected users
+  };
+
+  const onRemove = (removedItem:any) => {
+    setSelectedValue(prev => prev.filter(item => item.value !== removedItem.value));  // Remove the user from the selection
+  };
+
   // Load comments from localStorage on mount
   useEffect(() => {
     // const savedComments = localStorage.getItem('comments');
@@ -849,7 +892,7 @@ try{
   };
 
 const [isPopupVisible, setPopupVisible] = useState(false);
-
+const [toggleuserpopup, Settoggleuserpopup] = useState(false);
 
 
 
@@ -884,6 +927,12 @@ const idNum = originalString.substring(1);
       });
     }
 };
+
+
+const togglevalue = (e:any) => {
+  e.preventDefault()
+  Settoggleuserpopup(!toggleuserpopup);
+}
 
   const [name, setName] = useState('');
   const [Overview, setOverview] = useState('');
@@ -938,6 +987,82 @@ const idNum = originalString.substring(1);
       }
     }
   };
+  const UpdateTeamMember = async (e: any) => {
+    e.preventDefault();
+
+    try {
+        console.log('Form submitted:', { name, Overview });
+        const ids = window.location.search;
+        const originalString = ids;
+        const idNum = originalString.substring(1);
+        console.log(name, "name", Overview, "overview");
+
+        // Fetch the current People Picker value (TeamMembers) from the list item
+        const item = await sp.web.lists.getByTitle("ARGProject").items.getById(parseInt(idNum))
+            .select("*, TeamMembers/Id, TeamMembers/EMail, TeamMembers/Title")
+            .expand("TeamMembers")();
+        
+        console.log(item, "here is my item");
+
+        // Current People Picker column value (TeamMembers) from the fetched item
+        const existingUsers = (item as any)["TeamMembers"] || [];
+        console.log(existingUsers, "existing users");
+
+        // Format new users for the People Picker column (only LookupId values)
+        const newUsers = selectedValue.map((user: { label: string, value: number }) => ({
+            LookupId: user.value, // Use 'LookupId' for People Picker
+        }));
+
+        // Extract the LookupId from existing users to avoid duplication
+        const existingUserLookupIds = existingUsers.map((user: { Id: number }) => user.Id);
+
+        // Combine existing users with new users, ensuring no duplicates based on 'LookupId'
+        const updatedUsers = [
+            ...existingUsers.map((user: { Id: number }) => ({ LookupId: user.Id })), // Use 'Id' for existing users
+            ...newUsers.filter(newUser => !existingUserLookupIds.includes(newUser.LookupId)) // Avoid duplicates by checking LookupId
+        ];
+
+        console.log(updatedUsers, "updatedUsers");
+
+        // Prepare updated values for SharePoint item
+        const updatedValues = {
+            TeamMembersId: updatedUsers.map(user => user.LookupId), // Ensure it's an array
+        };
+
+        // Update the SharePoint item
+        const updatedItem =  await sp.web.lists.getByTitle('ARGProject').items.getById(parseInt(idNum)).update(updatedValues);
+        if(updatedItem){
+
+          togglevalue(e)
+  
+            alert(false)
+               // Show success message
+        Swal.fire({
+          title: 'Success!',
+          text: 'Users added successfully.',
+          icon: 'success',
+          confirmButtonText: 'OK',
+      });
+       
+        }
+       
+     
+
+        // Close popup (toggle visibility)
+
+    } catch (error) {
+        console.error('Error updating item:', error);
+
+        // Show error message
+        Swal.fire({
+            title: 'Error!',
+            text: 'Something went wrong. Please try again.',
+            icon: 'error',
+            confirmButtonText: 'OK',
+        });
+    }
+};
+
 
   const DeleteFileFromFileMaster =async (fileId:any) =>{
     try {
@@ -1025,11 +1150,41 @@ const idNum = originalString.substring(1);
           </div>
         </div>
       )}
+      {toggleuserpopup && (
+        <div className="popup">
+          <div className="popup-content">
+            <button className="close-btn" onClick={togglevalue}>
+              &times; {/* Cross mark */}
+            </button>
+            <h2>Add Users</h2>
+            <form>
+              <label htmlFor="name">Select Users </label>
+                {/* React-Select component */}
+                <Select
+                options={users}
+                value={selectedValue}
+                onChange={(selectedOption:any) => onSelect(selectedOption)} // For multi-select, you'll need to handle array of options
+                isMulti
+              />
+
+              {/* Multiselect component */}
+              <Multiselect
+                options={users}  // Same options for both Select and Multiselect
+                selectedValues={selectedValue}
+                onSelect={onSelect} // Called when items are selected
+                onRemove={onRemove} // Called when items are removed
+                displayValue="label" // Display name of the user
+              />
+              <button type="submit" onClick={UpdateTeamMember}>Submit</button>
+            </form>
+          </div>
+        </div>
+      )}
             <div className="row ">
               <div className="col-lg-8">
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
               </div>
-            
+          
             </div>
             {ArrDetails.length > 0
               ? ArrDetails.map((item: any, index) => {
@@ -1070,12 +1225,17 @@ const idNum = originalString.substring(1);
                   onClick={(e) => openModal(e)}
                  
                 >
-                  <FilePlus /> Open Document
+                  <FilePlus /> Open Document Repository
                 </button>
                         </div>
                         <div className="tabcss mb-2 mt-2 me-1 newalign"> <span className="pe-2 text-nowrap mb-0 d-inline-block">
                               <Calendar size={14} />{" "}
-                              {moment(item.StartDate).format("DD-MMM-YYYY")}{" "}
+                              {moment(item.StartDate).format("DD-MMM-YYYY")}{" "} Start Date
+                              
+                            </span>  </div>
+                            <div className="tabcss mb-2 mt-2 me-1 newalign"> <span className="pe-2 text-nowrap mb-0 d-inline-block">
+                              <Calendar size={14} />{" "}
+                             {moment(item.DueDate).format("DD-MMM-YYYY")}{" "} End Date
                               
                             </span>  </div>
                             <div className="tabcss mb-2 sameh mt-2 me-1 ">
@@ -1083,7 +1243,7 @@ const idNum = originalString.substring(1);
                               <Share size={14} /> Share by email 
                             </span>
                             </div>
-                            <div className="tabcss sameh mb-3 mt-2 me-1 ">
+                            {/* <div className="tabcss sameh mb-3 mt-2 me-1 "> */}
                             {/* <span
                               className="text-nowrap mb-0 d-inline-block"
                               onClick={() => openprojectlibrary()}
@@ -1095,15 +1255,15 @@ const idNum = originalString.substring(1);
                                 </span>
                               )}
                             </span> */}
-                             <span
+                             {/* <span
                               className="text-nowrap mb-0 d-inline-block"
                               onClick={togglePopup}
                             >
                              Create Folder
                              
-                            </span>
-                            </div>
-                          <p  style={{
+                            </span> */}
+                            {/* </div> */}
+                          {/* <p  style={{
                               
                               margin: "11px",
                             }}   className="mb-2 mt-1 newt6 font-14">
@@ -1189,15 +1349,15 @@ const idNum = originalString.substring(1);
                                 </div>
                               )}
                             </div>
-                          </p>
+                          </p> */}
                         </div>
                       </div>
                       
 
 
-                      <div className="row ">
+                      <div style={{ position:'sticky', top:'90px'}} className="row ">
                       <p
-                        style={{ lineHeight: "22px" }}
+                        style={{ lineHeight: "22px", position:'sticky', top:'90px'}}
                         className="d-block text-muted mt-2 font-14"
                       >
                         {item.ProjectOverview}
@@ -1435,7 +1595,7 @@ const idNum = originalString.substring(1);
 
                       <div className="col-md-3 mobile-w3">
 
-<div className="card mobile-5 mt-2"  style={{ borderRadius: "22px" }}>
+<div className="card mobile-5 mt-2"  style={{ borderRadius: "22px", position:'sticky', top:'90px' }}>
 <div className="card-body pb-3 gheight">
                           {}
                           <h4 className="header-title font-16 text-dark fw-bold mb-0"  style={{ fontSize: "20px" }}>Project Owner</h4>
@@ -1445,10 +1605,17 @@ const idNum = originalString.substring(1);
                           </h1></div>
     </div>
 
-<div className="card mobile-5 mt-2"  style={{ borderRadius: "22px" }}>
+<div className="card mobile-5 mt-2"  style={{ borderRadius: "22px", position:'sticky', top:'230px' }}>
   <div className="card-body pb-3 gheight">
     <h4 className="header-title font-16 text-dark fw-bold mb-2"  style={{ fontSize: "20px" }}>Project Members</h4>
      {/* {argcurrentgroupuser */}
+     {item.Author.EMail === currentUserEmailRef.current && (
+    <div>
+     <button onClick={(e)=>togglevalue(e)}>Add User </button>
+  <i className="fe-plus-circle"></i>
+    </div>
+ 
+)}
      {argcurrentgroupuser[0]?.TeamMembers?.length > 0 && argcurrentgroupuser[0]?.TeamMembers?.map(
   (id: any, idx: any) => {
     if (idx ) {

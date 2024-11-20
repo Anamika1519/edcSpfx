@@ -794,7 +794,7 @@ const HelloWorldContext = ({ props }: any) => {
           className="content mt-2"
           style={{ marginLeft: `${!useHide ? "240px" : "80px"}` }}
         >
-          <div className="container-fluid">
+          <div className="container-fluid paddb">
             <div className="row">
               <div className="col-lg-4">
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
@@ -1323,15 +1323,7 @@ const HelloWorldContext = ({ props }: any) => {
                                       {project.ProjectName}
                                     </a>
                                   </h4>
-                                  <p
-                                    style={{ color: "#98a6ad" }}
-                                    className="date-color two-line font-14 mb-3 sp-line-2"
-                                  >
-                                   
-                                   {truncateText(project.ProjectOverview , 20) ||
-    "No description available..."}{" "}
-                             
-                                  </p>
+                                
                                   <a>
 
 {
@@ -1352,6 +1344,16 @@ const HelloWorldContext = ({ props }: any) => {
       )
 }
 </a>
+
+<p
+                                    style={{ color: "#98a6ad" }}
+                                    className="date-color two-line font-14 mb-3 sp-line-2"
+                                  >
+                                   
+                                   {truncateText(project.ProjectOverview , 20) ||
+    "No description available..."}{" "}
+                             
+                                  </p>
 
                                   {/* Description */}
                                   {/* <p
@@ -1900,15 +1902,7 @@ const HelloWorldContext = ({ props }: any) => {
                                       {project.ProjectName}
                                     </a>
                                   </h4>
-                                  <p
-                                    style={{ color: "#98a6ad" }}
-                                    className="date-color two-line font-14 mb-3 sp-line-2"
-                                  >
-                                   
-                                   {truncateText(project.ProjectOverview , 20) ||
-    "No description available..."}{" "}
-                             
-                                  </p>
+                                
                                   <a>
 {
       project?.ProjectStatus === null 
@@ -1916,8 +1910,8 @@ const HelloWorldContext = ({ props }: any) => {
       : (
           <a className="ongoing mb-3"
               style={{ 
-                  background: project?.ProjectStatus === 'Close' ? '#008751' : '#cce7dc',
-                  color: project?.ProjectStatus === 'Close' ? '#008751' : '#cce7dc',
+                  background: project?.ProjectStatus === 'Close' ? '#cce7dc'  : '#6c757d',
+                  color: project?.ProjectStatus === 'Close' ? '#008751' : '#fff',
                   padding: '5px',
                   borderRadius: '4px',
                   textDecoration: 'none'
@@ -1928,6 +1922,16 @@ const HelloWorldContext = ({ props }: any) => {
       )
 }
 </a>
+
+<p
+                                    style={{ color: "#98a6ad" }}
+                                    className="date-color two-line font-14 mb-3 sp-line-2"
+                                  >
+                                   
+                                   {truncateText(project.ProjectOverview , 20) ||
+    "No description available..."}{" "}
+                             
+                                  </p>
                                   <p className="mb-1 font-12">
                                     <span
                                       style={{ color: "#6e767e" }}
@@ -2142,15 +2146,7 @@ const HelloWorldContext = ({ props }: any) => {
                                         "Untitled Project"}
                                     </a>
                                   </h4>
-                                  <p
-                                    style={{ color: "#98a6ad" }}
-                                    className="date-color two-line font-14 mb-3 sp-line-2"
-                                  >
-                                   
-                                   {truncateText(project.ProjectOverview , 20) ||
-    "No description available..."}{" "}
-                             
-                                  </p>
+                                  
                                   <a>
 
 {
@@ -2159,8 +2155,8 @@ const HelloWorldContext = ({ props }: any) => {
       : (
           <a className="ongoing mb-3"
               style={{ 
-                  background: project?.ProjectStatus === 'Close' ? '#008751' : '#cce7dc',
-                  color: project?.ProjectStatus === 'Close' ? '#008751' : '#cce7dc',
+                  background: project?.ProjectStatus === 'Close' ? '#cce7dc' : '#6c757d',
+                  color: project?.ProjectStatus === 'Close' ? '#008751' : '#fff',
                   padding: '5px',
                   borderRadius: '4px',
                   textDecoration: 'none'
@@ -2171,6 +2167,16 @@ const HelloWorldContext = ({ props }: any) => {
       )
 }
 </a>
+
+<p
+                                    style={{ color: "#98a6ad" }}
+                                    className="date-color two-line font-14 mb-3 sp-line-2"
+                                  >
+                                   
+                                   {truncateText(project.ProjectOverview , 20) ||
+    "No description available..."}{" "}
+                             
+                                  </p>
                                   <p className="mb-1 font-12">
                                     <span
                                       style={{ color: "#6e767e" }}
@@ -2376,15 +2382,7 @@ const HelloWorldContext = ({ props }: any) => {
                                         "Untitled Project"}
                                     </a>
                                   </h4>
-                                  <p
-                                    style={{ color: "#98a6ad" }}
-                                    className="date-color two-line font-14 mb-3 sp-line-2"
-                                  >
-                                   
-                                   {truncateText(project.ProjectOverview , 20) ||
-    "No description available..."}{" "}
-                             
-                                  </p>
+                                 
                                   <a>
 
 {
@@ -2393,8 +2391,8 @@ const HelloWorldContext = ({ props }: any) => {
       : (
           <a className="ongoing mb-3"
               style={{ 
-                  background: project?.ProjectStatus === 'Close' ? '#008751' : '#cce7dc',
-                  color: project?.ProjectStatus === 'Close' ? '#008751' : '#cce7dc',
+                  background: project?.ProjectStatus === 'Close' ? '#cce7dc' : '#6c757d',
+                  color: project?.ProjectStatus === 'Close' ? '#008751' : '#fff',
                   padding: '5px',
                   borderRadius: '4px',
                   textDecoration: 'none'
@@ -2405,6 +2403,15 @@ const HelloWorldContext = ({ props }: any) => {
       )
 }
 </a>
+<p
+                                    style={{ color: "#98a6ad" }}
+                                    className="date-color two-line font-14 mb-3 sp-line-2"
+                                  >
+                                   
+                                   {truncateText(project.ProjectOverview , 20) ||
+    "No description available..."}{" "}
+                             
+                                  </p>
                                   
 
                                   <p className="mb-1 font-12">
@@ -2613,15 +2620,7 @@ const HelloWorldContext = ({ props }: any) => {
                                         "Untitled Project"}
                                     </a>
                                   </h4>
-                                  <p
-                                    style={{ color: "#98a6ad" }}
-                                    className="date-color two-line font-14 mb-3 sp-line-2"
-                                  >
-                                   
-                                   {truncateText(project.ProjectOverview , 20) ||
-    "No description available..."}{" "}
-                             
-                                  </p>
+                               
                                   <a>
 
 {
@@ -2630,8 +2629,8 @@ const HelloWorldContext = ({ props }: any) => {
       : (
           <a className="ongoing mb-3"
               style={{ 
-                  background: project?.ProjectStatus === 'Close' ? '#008751' : '#cce7dc',
-                  color: project?.ProjectStatus === 'Close' ? '#008751' : '#cce7dc',
+                background: project?.ProjectStatus === 'Close' ? '#cce7dc' : '#6c757d',
+                color: project?.ProjectStatus === 'Close' ? '#008751' : '#fff',
                   padding: '5px',
                   borderRadius: '4px',
                   textDecoration: 'none'
@@ -2642,6 +2641,16 @@ const HelloWorldContext = ({ props }: any) => {
       )
 }
 </a>
+
+<p
+                                    style={{ color: "#98a6ad" }}
+                                    className="date-color two-line font-14 mb-3 sp-line-2"
+                                  >
+                                   
+                                   {truncateText(project.ProjectOverview , 20) ||
+    "No description available..."}{" "}
+                             
+                                  </p>
                                   <p className="mb-1 font-12">
                                     <span
                                       style={{ color: "#6e767e" }}

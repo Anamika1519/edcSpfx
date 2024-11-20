@@ -38,7 +38,7 @@
   margin-top: 2px;
   margin-right: 5px;}
 .paddb {
-  padding: 16px 25px 0px 25px !important;
+  padding: 16px 35px 0px 20px !important;
 }
 .paddbnew{
   padding: 16px 13px 0px 13px !important;
@@ -49,7 +49,9 @@
   height: 42px !important; resize: none;
   overflow-y: auto;
 }
-
+.add-comment textarea::placeholder{
+  color: #000 !important; font-size: 16px; font-weight: 600;
+}
 .row{
   --bs-gutter-x: 0.8rem;
 }
@@ -119,6 +121,30 @@ height:63px;
 
 -webkit-line-clamp: 3;
 }
+.two-line{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  
+  display: -webkit-box;
+  height:43px;
+  
+  -webkit-box-orient: vertical;
+  
+  -webkit-line-clamp: 2;
+}
+
+.sevenline{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  
+  display: -webkit-box;
+
+  
+  -webkit-box-orient: vertical;
+  
+  -webkit-line-clamp: 7;
+}
+
 .card-body{
   padding: 0.8rem !important;
 }
@@ -160,7 +186,7 @@ a:hover, a:active {
 .sidebar.close .logo_item{
   width: auto;
 }
-.postion8{position: fixed; width:25%; }
+.postion8{ width:95%; float: right; margin-top: 92px; }
 .mainevent{border-bottom: 1px solid #ccc; padding: 10px 0px;}
 .mainevent:last-child{border-bottom: 0px !important;}
 
