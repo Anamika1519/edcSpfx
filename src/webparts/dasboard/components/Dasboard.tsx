@@ -270,6 +270,11 @@ const HelloWorldContext = ({ props }: any) => {
     const encryptedId = encryptId(String(item.ID));
     window.location.href = `${siteUrl}/SitePages/Announcements.aspx`;
   };
+  const GotoNextPageLeaderboard = (item: any) => {
+    console.log("item-->>>>", item)
+    const encryptedId = encryptId(String(item.ID));
+    window.location.href = `${siteUrl}/SitePages/Leaderboard.aspx`;
+  };
   const NavigatetoAnnouncement = (e:any,item: number) => {
     console.log("NavigatetoAnnouncement-->>>>", item)
     debugger
@@ -886,7 +891,7 @@ const HelloWorldContext = ({ props }: any) => {
                         <a
                           style={{ float: "right",cursor:"pointer" }}
                           className="font-11 view-all fw-normal btn  rounded-pill waves-effect waves-light"
-
+                          onClick={(e) => GotoNextPageLeaderboard(e)}
                         >
                           View All
                         </a>

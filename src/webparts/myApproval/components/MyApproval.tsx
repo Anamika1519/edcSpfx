@@ -541,7 +541,7 @@ const MyApprovalContext = ({ props }: any) => {
 
     {
 
-      ChildComponent: "My Approve",
+      ChildComponent: "My Approval",
 
       ChildComponentURl: `${siteUrl}/SitePages/MyApprovals.aspx`,
 

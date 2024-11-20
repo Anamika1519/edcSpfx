@@ -15,18 +15,20 @@ import moment from "moment";
 
 import Swal from "sweetalert2";
 
-export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, currentEmail, post }: any) => {
+import SocialFeed from "../../webparts/groupandTeamDetails/components/SocialFeed2";
+
+export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, currentEmail, post, fetchPost }: any) => {
     const [loadingReply, setLoadingReply] = useState<boolean>(false);
     const [loadingLike, setLoadingLike] = useState<boolean>(false);
     const [liked, setLiked] = useState(post.userHasLiked);
-    const [likesCount, setLikesCount] = useState(post.likecount || 0);
-    const [CommentsCount, setCommentsCount] = useState(post.commentcount || 0);
+    const [likesCount, setLikesCount] = useState(post.LikesCount || 0);
+    const [CommentsCount, setCommentsCount] = useState(post.CommentsCount || 0);
     const [posts, setPosts] = useState([post]);
     const [comments, setComments] = useState(post.comments || []);
-    const [gcomments, setGComments] = useState(post.gcomments || []);
+    // const [gcomments, setGComments] = useState(post.gcomments || []);
     const [SocialFeedImagesJson, setImages] = useState([]);
     const [authorId, setAuthorId] = useState(0);
-    const [editedContent, setEditedContent] = useState(post.Contentpost);
+    const [editedContent, setEditedContent] = useState(post.Comments);
     const [newComment, setNewComment] = useState('');
     const [isEditing, setIsEditing] = useState(false);
     const isPostAuthor = post.userName === currentUsername;
@@ -68,7 +70,7 @@ export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentU
     const initializeData = async () => {
         const userId = await getCurrentUserNameId(sp);
         setAuthorId(userId);
-        fetchInitialLikeData(userId);
+        fetchInitialGroupLikeData(userId);
     };
 
     const toggleMenu = (e: any) => {
@@ -107,7 +109,7 @@ export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentU
 
         setIsEditing(false);
 
-        setEditedContent(post.Contentpost);
+        setEditedContent(post.Comments);
 
     };
 
@@ -119,19 +121,19 @@ export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentU
 
         try {
 
-            await sp.web.lists.getByTitle('ARGSocialFeed').items.getById(post.postId).update({
+            await sp.web.lists.getByTitle('ARGGroupandTeamComments').items.getById(post.postId).update({
 
-                Contentpost: editedContent
+                Comments: editedContent
 
             });
 
             setIsEditing(false);
 
-            window.location.reload()
+            // window.location.reload()
 
             setEditedContent(editedContent);
 
-
+            fetchPost();
 
         } catch (error) {
 
@@ -141,69 +143,69 @@ export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentU
 
     };
 
-    const fetchInitialLikeData = async (userId: number) => {
+    // const fetchInitialLikeData = async (userId: number) => {
+
+    //     const postId = post.postId;
+    //     await sp.web.lists.getByTitle('ARGSocialFeedPostsUserLikes').items.select("*,Author/Id").expand("Author")
+    //         .filter(`ARGSocialFeedPostsId eq ${postId} and AuthorId eq ${userId}`)().then(async (ele: any) => {
+    //             if (ele.length > 0)
+    //                 setLiked(ele[0].userHasLiked);
+    //             // setLikesCount(ele.length);
+    //         })
+
+    //     await sp.web.lists.getByTitle('ARGSocialFeedPostsUserLikes').items.select("*,Author/Id").expand("Author")
+    //         .filter(`ARGSocialFeedPostsId eq ${postId} and userHasLiked eq 1`)().then(async (ele: any) => {
+    //             if (ele.length > 0)
+    //                 setLikesCount(ele.length);
+    //         })
+
+    //     await sp.web.lists.getByTitle('ARGSocialFeedComments').items.select("*,Author/Id").expand("Author")
+    //         .filter(`ARGSocialFeedId eq ${postId}`)().then(async (ele: any) => {
+    //             if (ele.length > 0)
+    //                 setCommentsCount(ele.length);
+    //         })
+
+    //     await sp.web.lists.getByTitle('ARGSocialFeedComments').items.select("*,Author/Id,Author/Title").expand("Author")
+    //         .filter(`ARGSocialFeedId eq ${postId}`)().then(async (ele: any) => {
+    //             if (ele.length > 0)
+    //                 setComments(ele);
+    //         })
+
+    // };
+
+    const fetchInitialGroupLikeData = async (userId: number) => {
 
         const postId = post.postId;
-        await sp.web.lists.getByTitle('ARGSocialFeedPostsUserLikes').items.select("*,Author/Id").expand("Author")
-            .filter(`ARGSocialFeedPostsId eq ${postId} and AuthorId eq ${userId}`)().then(async (ele: any) => {
+        await sp.web.lists.getByTitle('ARGGroupandTeamUserLikes').items.select("*,Author/Id").expand("Author")
+            .filter(`GroupandTeamCommentsId eq ${postId} and AuthorId eq ${userId}`)().then(async (ele: any) => {
                 if (ele.length > 0)
                     setLiked(ele[0].userHasLiked);
                 // setLikesCount(ele.length);
             })
 
-        await sp.web.lists.getByTitle('ARGSocialFeedPostsUserLikes').items.select("*,Author/Id").expand("Author")
-            .filter(`ARGSocialFeedPostsId eq ${postId} and userHasLiked eq 1`)().then(async (ele: any) => {
+        await sp.web.lists.getByTitle('ARGGroupandTeamUserLikes').items.select("*,Author/Id").expand("Author")
+            .filter(`GroupandTeamCommentsId eq ${postId} and userHasLiked eq 1`)().then(async (ele: any) => {
                 if (ele.length > 0)
                     setLikesCount(ele.length);
             })
 
-        await sp.web.lists.getByTitle('ARGSocialFeedComments').items.select("*,Author/Id").expand("Author")
-            .filter(`ARGSocialFeedId eq ${postId}`)().then(async (ele: any) => {
+        await sp.web.lists.getByTitle('ARGGroupandTeamUserComments').items.select("*,Author/Id").expand("Author")
+            .filter(`GroupandTeamCommentsId eq ${postId}`)().then(async (ele: any) => {
                 if (ele.length > 0)
                     setCommentsCount(ele.length);
             })
 
-        await sp.web.lists.getByTitle('ARGSocialFeedComments').items.select("*,Author/Id,Author/Title").expand("Author")
-            .filter(`ARGSocialFeedId eq ${postId}`)().then(async (ele: any) => {
+        await sp.web.lists.getByTitle('ARGGroupandTeamUserComments').items.select("*,Author/Id,Author/Title").expand("Author")
+            .filter(`GroupandTeamCommentsId eq ${postId}`)().then(async (ele: any) => {
                 if (ele.length > 0)
                     setComments(ele);
             })
 
     };
 
-    const fetchInitialGroupLikeData = async (userId: number) => {
-
-        const postId = post.postId;
-        await sp.web.lists.getByTitle('ARGSocialFeedPostsUserLikes').items.select("*,Author/Id").expand("Author")
-            .filter(`ARGSocialFeedPostsId eq ${postId} and AuthorId eq ${userId}`)().then(async (ele: any) => {
-                if (ele.length > 0)
-                    setLiked(ele[0].userHasLiked);
-                // setLikesCount(ele.length);
-            })
-
-        await sp.web.lists.getByTitle('ARGSocialFeedPostsUserLikes').items.select("*,Author/Id").expand("Author")
-            .filter(`ARGSocialFeedPostsId eq ${postId} and userHasLiked eq 1`)().then(async (ele: any) => {
-                if (ele.length > 0)
-                    setLikesCount(ele.length);
-            })
-
-        await sp.web.lists.getByTitle('ARGSocialFeedComments').items.select("*,Author/Id").expand("Author")
-            .filter(`ARGSocialFeedId eq ${postId}`)().then(async (ele: any) => {
-                if (ele.length > 0)
-                    setCommentsCount(ele.length);
-            })
-
-        await sp.web.lists.getByTitle('ARGGroupandTeamComments').items.select("*,Author/Id,Author/Title").expand("Author")
-            .filter(`GroupandTeamId eq ${postId}`)().then(async (ele: any) => {
-                if (ele.length > 0)
-                    setGComments(ele);
-            })
-
-    };
-
     const fetchPosts = async () => {
         try {
-            const fetchedPosts = await sp.web.lists.getByTitle('ARGSocialFeed').items.getAll();
+            const fetchedPosts = await sp.web.lists.getByTitle('ARGGroupandTeamComments').items.getAll();
             setPosts(fetchedPosts);
         } catch (error) {
             console.error("Error fetching posts:", error);
@@ -225,15 +227,15 @@ export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentU
             // setAuthorId(await getCurrentUserNameId(sp))
             const postId = post.postId;
             debugger
-            await sp.web.lists.getByTitle('ARGSocialFeedPostsUserLikes').items.select("*,Author/Id").expand("Author").filter(`ARGSocialFeedPostsId eq ${postId} and AuthorId eq ${authorId}`).top(1)().then(async (ele: any) => {
+            await sp.web.lists.getByTitle('ARGGroupandTeamUserLikes').items.select("*,Author/Id").expand("Author").filter(`GroupandTeamCommentsId eq ${postId} and AuthorId eq ${authorId}`).top(1)().then(async (ele: any) => {
                 console.log(ele, 'ele');
                 debugger
                 if (ele.length > 0) {
                     var likePosts = {
-                        ARGSocialFeedPostsId: postId,
+                        GroupandTeamCommentsId: postId,
                         userHasLiked: !ele[0].userHasLiked
                     }
-                    await sp.web.lists.getByTitle('ARGSocialFeedPostsUserLikes').items.getById(ele[0].Id).delete().then(async (ele1: any) => {
+                    await sp.web.lists.getByTitle('ARGGroupandTeamUserLikes').items.getById(ele[0].Id).delete().then(async (ele1: any) => {
                         console.log(ele1);
 
                         await addActivityLeaderboard(sp, "Unlike on Post");
@@ -242,12 +244,12 @@ export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentU
                 }
                 else {
                     const likePostsJson = {
-                        ARGSocialFeedPostsId: postId,
+                        GroupandTeamCommentsId: postId,
                         userHasLiked: true
                     }
                     let likePostsJson1 = Array.isArray(likePostsJson) ? likePostsJson : [likePostsJson];
                     debugger
-                    await sp.web.lists.getByTitle('ARGSocialFeedPostsUserLikes').items.add(likePostsJson).then(async (ele1: any) => {
+                    await sp.web.lists.getByTitle('ARGGroupandTeamUserLikes').items.add(likePostsJson).then(async (ele1: any) => {
                         console.log(ele1);
                         await addActivityLeaderboard(sp, "Likes on Post");
                         let notifiedArr = {
@@ -256,7 +258,7 @@ export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentU
                             ContentType0: "Likes on Post",
                             ContentName: ele.data.Title,
                             ActionUserId: CurrentUser.Id,
-                            DeatilPage: "SocialFeed",
+                            DeatilPage: "Groups/Team",
                             ReadStatus: false
                         }
                         const nofiArr = await addNotification(notifiedArr, sp)
@@ -284,6 +286,7 @@ export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentU
 
 
     const handleAddComment = async (e: { preventDefault: () => void; }) => {
+        debugger
         setLoadingReply(true);
         try {
             e.preventDefault();
@@ -298,13 +301,13 @@ export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentU
                     const postId = post.postId;// Assuming postId is correctly passed as a prop
                     console.log("Post ID:", postId);
 
-                    const existingPost = await sp.web.lists.getByTitle('ARGSocialFeed').items.getById(postId)();
+                    const existingPost = await sp.web.lists.getByTitle('ARGGroupandTeamComments').items.getById(postId)();
 
                     if (!existingPost) {
                         throw new Error("Post not found");
                     }
                     // Parse existing comments (if any)
-                    const existingComments = existingPost.SocialFeedCommentsJson ? JSON.parse(existingPost.SocialFeedCommentsJson) : [];
+                    const existingComments = existingPost.GroupTeamCommentsJson ? JSON.parse(existingPost.GroupTeamCommentsJson) : [];
 
                     // Create a new comment object
 
@@ -312,14 +315,14 @@ export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentU
 
                     const commentsBody = {
                         Comments: newComment,  // Assuming Comments is the correct field name
-                        ARGSocialFeedId: postId,
-                        UserImage: `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${currentEmail}`
+                        GroupandTeamCommentsId: postId,
+                        UserProfile: `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${currentEmail}`
                     };
 
-                    const commentResponse = await sp.web.lists.getByTitle('ARGSocialFeedComments').items.add(commentsBody);
+                    const commentResponse = await sp.web.lists.getByTitle('ARGGroupandTeamUserComments').items.add(commentsBody);
                     console.log('Comment added:', commentResponse);
-                    await sp.web.lists.getByTitle('ARGSocialFeedComments').items.select("*,Author/Id,Author/Title").expand("Author")
-                        .filter(`ARGSocialFeedId eq ${postId}`)().then(async (ele: any) => {
+                    await sp.web.lists.getByTitle('ARGGroupandTeamUserComments').items.select("*,Author/Id,Author/Title").expand("Author")
+                        .filter(`GroupandTeamCommentsId eq ${postId}`)().then(async (ele: any) => {
                             if (ele.length > 0)
                                 await addActivityLeaderboard(sp, "Comments on Post");
                             setCommentsCount(ele.length)
@@ -362,19 +365,21 @@ export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentU
             title: 'Do you want to delete?',
             showConfirmButton: true,
             showCancelButton: true,
-            confirmButtonText: "Save",
-            cancelButtonText: "Cancel",
+            confirmButtonText: "Yes",
+            cancelButtonText: "No",
             icon: 'warning'
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
                     // Assuming you are using SharePoint API to delete the post
-                    await sp.web.lists.getByTitle('ARGSocialFeed').items.getById(postId).delete();
+                    await sp.web.lists.getByTitle('ARGGroupandTeamComments').items.getById(postId).delete();
                     // Remove post from UI
 
                     setPosts(prevPosts => prevPosts.filter(post => post.postId !== postId));
 
-                    window.location.reload()
+                    fetchPost();
+
+                    // window.location.reload()
 
                 } catch (error) {
 
@@ -385,28 +390,33 @@ export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentU
         }
     };
 
-    const copyToClipboard = (Id: number) => {
-        const link = `${siteUrl}/SitePages/SocialFeed.aspx?${Id}`;
+    const copyToClipboard = (Id: number, e?: React.MouseEvent<HTMLButtonElement>) => {
+        e?.preventDefault();
+    const ids = window.location.search;
+    const originalString = ids;
+    const idNum = originalString.substring(1); 
+        const link = `${siteUrl}/SitePages/GroupandTeamDetails.aspx?${idNum}`;
         navigator.clipboard.writeText(link)
             .then(() => {
                 setCopySuccess('Link copied!');
-                setTimeout(() => setCopySuccess(''), 2000); // Clear message after 2 seconds
+                // setTimeout(() => setCopySuccess(''), 2000); // Clear message after 2 seconds
             })
             .catch(err => {
                 setCopySuccess('Failed to copy link');
             });
     };
 
-    const sendanEmail = (item: any) => {
-       
-        // window.open("https://outlook.office365.com/mail/deeplink/compose?subject=Share%20Info&body=");
-        const subject = "Post link-" + item.Contentpost;
-        const body = 'Here is the link to the Post:' + `${siteUrl}/SitePages/GroupandTeamDetails.aspx?${item.Id}`;
+    const sendanEmail = () => {
+        const ids = window.location.search;
+    const originalString = ids;
+    const idNum = originalString.substring(1);
+        window.open(`https://outlook.office365.com/mail/deeplink/compose?body= Here is the group link: "${siteUrl}/SitePages/GroupandTeamDetails.aspx?${idNum}"`);
+    };
+    const OpenImagePreview = (imageurl: any) => {
+        //#region Methods
 
-        const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-
-        // Open the link to launch the default mail client (like Outlook)
-        window.location.href = mailtoLink;
+        window.open(imageurl, "_blank"); // imge prwview type
+        //#endregion
     };
 
     const handleToggleImages = () => {
@@ -449,7 +459,7 @@ export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentU
                                     </div>
                                     {isMenuOpen && (
                                         <div className="dropdown-menucsspost">
-                                            {/* <button onClick={(e) => handleEditClick(e)}>Edit</button> */}
+                                            <button onClick={(e) => handleEditClick(e)}>Edit</button>
                                             <button onClick={(e) => handleDeletePost(e, post.postId)}>Delete</button>
                                         </div>
                                     )}
@@ -470,7 +480,7 @@ export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentU
                         onKeyDown={handleSaveOnEnter}
                     />
                 ) : (
-                    <p>{post.Contentpost}   {/* Edit Button */}
+                    <p>{post.Comments}   {/* Edit Button */}
                     </p>
                 )}
 
@@ -492,7 +502,7 @@ export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentU
                                     {/* Render the image */}
                                     <img
                                         src={imageUrl}
-                                        alt={`Social feed ${index}`}
+                                        alt={`Group/Team ${index}`} onClick={(e) => OpenImagePreview(imageUrl)}
                                         style={{ width: "100%", height: "auto" }}
                                     />
                                     {/* Show +X overlay if it is the third image and there are more images to show */}
@@ -570,12 +580,12 @@ export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentU
                 <span className="likes"><MessageSquare size={20} /> {CommentsCount} Comments</span>
                 <div className="post-actions likes">
                     <div className="menu-toggle" onClick={toggleMenushare}>
-                        <Share2 size={20} />  <span className="sahrenew"> Share</span>
+                        <Share2 size={20} /> Share
                     </div>
                     {isMenuOpenshare && (
                         <div className="dropdown-menucsspost" ref={menuRef}>
-                            <button onClick={(e) => sendanEmail(post)}>Share by email</button>
-                            <button onClick={(e) => copyToClipboard(post.postId)}>Copy link</button>
+                            <button onClick={(e) => sendanEmail()} type="button">Share by email</button>
+                            <button onClick={(e) => copyToClipboard(post.postId)} type="button">Copy link</button>
                             {copySuccess && <span className="text-success">{copySuccess}</span>}
                         </div>
                     )}
@@ -583,10 +593,10 @@ export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentU
             </div>
 
 
-            {gcomments.length > 0 ? gcomments.map((comment: any, index: React.Key) => (
+            {comments.length > 0 ? comments.map((comment: any, index: React.Key) => (
                 <div className="d-flex align-items-start commentss">
                     <div className="flex-shrink-0">
-                        <img src={comment.UserImage} alt="user avatar" className="commentsImg" />
+                        <img src={comment.UserProfile} alt="user avatar" className="commentsImg" />
                     </div>
                     <div className="flex-grow-1 ms-2">
                         <p className="mb-1 fw-bold">

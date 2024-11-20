@@ -956,79 +956,80 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
 
   const togglePin = async (e: any, item: any) => {
-
+ 
     debugger
-
+ 
     e.preventDefault();
-
+ 
     setLoadingUsers((prev) => ({ ...prev, [item.ID]: true })); // Set loading state for the specific user
-
-
+ 
+ 
     try {
-
+ 
       const currentUser = await sp.web.currentUser();
-
+ 
       const pinRecords = await sp.web.lists.getByTitle("ARGPinned").items
-
+ 
         .filter(`PinnedById eq ${currentUser.Id} and PinnedId eq ${item.ID}`)();
-
+ 
       const MyPinnedCount = await sp.web.lists.getByTitle("ARGPinned").items
-
+ 
         .filter(`PinnedById eq ${currentUser.Id}`)
-
+ 
         .getAll();
-
+ 
       console.log("MyPinnedCount", MyPinnedCount.length);
-      if (MyPinnedCount.length >= 4) {
-        Swal.fire("You cannot pin more than 4 users")
-        // setShowPin(true)
+ 
+ 
+      if (pinRecords.length > 0) {
+ 
+        // Unpin logic
+ 
+        await sp.web.lists.getByTitle("ARGPinned").items.getById(pinRecords[0].Id).delete();
+ 
+        setPinStatus((prev) => ({ ...prev, [item.ID]: false })); // Update [pin] status
+ 
       } else {
-        if (pinRecords.length > 0) {
-
-          // Unpin logic
-
-          await sp.web.lists.getByTitle("ARGPinned").items.getById(pinRecords[0].Id).delete();
-
-          setPinStatus((prev) => ({ ...prev, [item.ID]: false })); // Update [pin] status
-
+        if (MyPinnedCount.length >= 4) {
+          Swal.fire("You’ve hit the limit for pinning users to the Home Screen!")
         } else {
-
-          // pin logic
-
           await sp.web.lists.getByTitle("ARGPinned").items.add({
-
+ 
             PinnedById: currentUser.Id,
-
+ 
             PinnedId: item.ID
-
+ 
           });
-
-          setPinStatus((prev) => ({ ...prev, [item.ID]: true })); // Update pin status
-
         }
-        setShowPin(false)
+        // pin logic
+ 
+ 
+ 
+        setPinStatus((prev) => ({ ...prev, [item.ID]: true })); // Update pin status
+ 
       }
-
+ 
+ 
     } catch (error) {
-
+ 
       setLoadingUsers((prev) => ({ ...prev, [item.ID]: false })); // End loading state for the specific user
-
-
+ 
+ 
       console.error("Error toggling pin status:", error);
-
+ 
       alert("Failed to toggle pin status. Please try again.");
-
+ 
     } finally {
-
+ 
       fetchUserInformationList()
-
+ 
       setLoadingUsers((prev) => ({ ...prev, [item.ID]: false })); // End loading state for the specific user
-
-
-
+ 
+ 
+ 
     }
-
-  };
+ 
+  }
 
   const loadMore = () => {
     event.preventDefault()

@@ -187,7 +187,7 @@ export const updateGroupFollowItem = async (itemData, _sp, id) => {
       .items.getById(id)
       .update(itemData);
     Swal.fire("Congratulations! You are IN: Join the conversation with Group Members", "", "success");
-    window.location.reload();
+    //window.location.reload();
     resultArr = newItem;
     console.log("itemData------>>>>", itemData)
     // Perform any necessary actions after successful addition
@@ -209,7 +209,7 @@ export const updateGroupUnFollowItem = async (itemData, _sp, id) => {
       .items.getById(id)
       .update(itemData);
     Swal.fire("You are no longer able to post anything on this group", "", "success");
-    window.location.reload();
+    //window.location.reload();
     resultArr = newItem;
     console.log("itemData------>>>>", itemData)
     // Perform any necessary actions after successful addition

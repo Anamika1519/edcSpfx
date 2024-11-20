@@ -57,7 +57,8 @@ const SocialFeedContext = ({ props }: any) => {
   const [FollowingUser, setFollowingUsers] = useState<any[]>([]);
   const [FollowUser, setFollowUsers] = useState<any[]>([]);
   const [usersitem, setUsersArr] = useState<any[]>([]);
-
+  const [followwerLength, setfollowwerLength] = useState(0); // Start with 10 posts
+  const [followingLength, setFollowingListLength] = useState(0); // Start with 10 posts
   const [followStatus, setFollowStatus] = React.useState<{ [key: number]: boolean }>({}); // Track follow status for each user
 
   const [followerList, setFollowerList] = React.useState<any[]>([]); // List of users following the current user
@@ -123,18 +124,19 @@ const SocialFeedContext = ({ props }: any) => {
             FollowedIds.push(`ID ne ${x[i].FollowedId}`)
           }
         });
+      console.log(FollowedIds, 'FollowedIds');
       let finalquery = FollowedIds.map((x) => x).join(' and ');
-      let FinalfilterQuery = "";
-      if (FollowedIds.length > 0) {
-        FinalfilterQuery = `EMail ne null and ID ne ${currentUser.Id} and ${finalquery}`
-      } else {
-        FinalfilterQuery = `EMail ne null and ID ne ${currentUser.Id}`
-      }
+ 
+      console.log(finalquery, 'finalquery');
+ 
+      const strfilter = FollowedIds.length > 0 ? `EMail ne null and ID ne ${currentUser.Id} and ID ne ${finalquery}` : `EMail ne null and ID ne ${currentUser.Id}`
+ 
       const userListSP = await sp.web.lists
         .getByTitle("User Information List")
         .items
         .select("ID", "Title", "EMail", "Department", "JobTitle", "Picture", "MobilePhone", "WorkPhone", "Name")
-        .filter(`${FinalfilterQuery}`) // content tyep eq person
+        // .filter(`EMail ne null and ID ne ${currentUser.Id} and ${finalquery}`) // content tyep eq person
+        .filter(strfilter) // content tyep eq person
         ();
       // console.log("userList",userListSP);
       // let currentWPContext:WebPartContext=props.props.context;  
@@ -146,12 +148,12 @@ const SocialFeedContext = ({ props }: any) => {
         .select("displayName,mail,jobTitle,mobilePhone,companyName,userPrincipalName")
         .get();
       // console.log("m265userList",m265userList);
-
+ 
       //Adding dummy companies to users for testing
       //m265userList.value=m265userList.value.map((m:any)=>{let x=m; x['companyName']='dunnycommpany'; return x;});
-
+ 
       let userList: any[] = [];
-
+ 
       userList = userListSP.map(usr => {
         let musrs = m265userList.value.filter((usr1: any) => { return toLower(usr1.mail) == toLower(usr.EMail) });
         if (musrs.length > 0) {
@@ -167,7 +169,7 @@ const SocialFeedContext = ({ props }: any) => {
           setCurrentusercompany(musrs[0]['companyName'])
         }
       });
-
+ 
       setUsersArr(userList);
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -212,6 +214,7 @@ const SocialFeedContext = ({ props }: any) => {
 
   // Function to get list of users the current user is following
   const fetchFollowingList = async () => {
+    let checkLength : any[] = [];
     try {
       const currentUser = await sp.web.currentUser();
       const followings = await sp.web.lists.getByTitle("ARGFollows").items
@@ -223,6 +226,8 @@ const SocialFeedContext = ({ props }: any) => {
       });
 
       setFollowingList(followings.map(f => f.Followed));
+      checkLength = followings.map(f => f.Followed)
+      setFollowingListLength(checkLength.length)
     } catch (error) {
       console.error("Error fetching followings:", error);
     }
@@ -501,127 +506,191 @@ const SocialFeedContext = ({ props }: any) => {
   // Fetch posts from SharePoint list
 
   const fetchPosts = async () => {
-
+ 
+    let followersCheck: any[] = []
+ 
     try {
-
-      let newPost: any[] = []
-
-      await sp.web.lists
-
-        .getByTitle("ARGSocialFeed") // SharePoint list name
-
-        .items.select("*,SocialFeedImages/Id,SocialFeedUserLikes/Id,Author/Id,Author/Title")
-
-        .expand("SocialFeedImages,SocialFeedUserLikes,Author").orderBy("Created", false)().then((item: any) => {
-
-          console.log(item, 'ihhh');
-
-          if (item.length > 0) {
-
-            item.map((ele: any) => {
-
-              let newPosts = {
-
-                Contentpost: ele.Contentpost,
-
-                SocialFeedImagesJson: ele.SocialFeedImagesJson,
-
-                Created: ele.Created,
-
-                userName: ele.Author?.Title,
-
-                userAvatar: ele.userAvatar,
-
-                likecount: 0,
-
-                commentcount: 0,
-
-                comments: ele?.SocialFeedCommentsJson != null ? JSON.parse(ele?.SocialFeedCommentsJson) : [],
-
-                Id: ele.Id,
-
-                SocialFeedUserLikesJson: ele?.SocialFeedUserLikesJson != null ? JSON.parse(ele?.SocialFeedUserLikesJson) : []
-
-              };
-
-              newPost.push(newPosts)
-
-            }
-
-
-
-            )
-
-            const updatedPosts = [newPost, ...posts];
-            console.log(updatedPosts);
-            setPosts(updatedPosts[0]);
-
-          }
-
-
-
-
-        })
-
-      // setStoredPosts(items.map((item) => item.Title));
+      const currentUser = await sp.web.currentUser();
+      const followers = await sp.web.lists.getByTitle("ARGFollows").items
+        .filter(`FollowedId eq ${currentUser.Id}`)
+        .expand("Follower")
+        .select("Follower/Title", "Follower/EMail", "Follower/Department", "Follower/ID")();
+      console.log(followers, 'followers');
+ 
+      followers.forEach(element => {
+        checkIfFollower(element);
+      });
+ 
+      console.log(followers, "followers");
+ 
+      followersCheck = followers.map(f => f.Follower)
+ 
+      setfollowwerLength(followersCheck.length)
+      followersCheck.forEach(async element => {
+        try {
+ 
+          let newPost: any[] = []
+          let filterQuery = followersCheck.length > 0 ? `AuthorId eq ${element.ID} or AuthorId eq ${currentUser.Id}` : `AuthorId eq ${element.ID}`;
+          await sp.web.lists
+ 
+            .getByTitle("ARGSocialFeed") // SharePoint list name
+ 
+            .items.select("*,SocialFeedImages/Id,SocialFeedUserLikes/Id,Author/Id,Author/Title")
+ 
+            .expand("SocialFeedImages,SocialFeedUserLikes,Author").filter(filterQuery).orderBy("Created", false)().then((item: any) => {
+ 
+              console.log(item, 'ihhh');
+ 
+              if (item.length > 0) {
+ 
+                item.map((ele: any) => {
+ 
+                  let newPosts = {
+ 
+                    Contentpost: ele.Contentpost,
+ 
+                    SocialFeedImagesJson: ele.SocialFeedImagesJson,
+ 
+                    Created: ele.Created,
+                    AutherId: ele.Author?.Id,
+                    userName: ele.Author?.Title,
+ 
+                    userAvatar: ele.userAvatar,
+ 
+                    likecount: 0,
+ 
+                    commentcount: 0,
+ 
+                    comments: ele?.SocialFeedCommentsJson != null ? JSON.parse(ele?.SocialFeedCommentsJson) : [],
+ 
+                    Id: ele.Id,
+ 
+                    SocialFeedUserLikesJson: ele?.SocialFeedUserLikesJson != null ? JSON.parse(ele?.SocialFeedUserLikesJson) : []
+ 
+                  };
+ 
+                  newPost.push(newPosts)
+ 
+                }
+ 
+ 
+ 
+                )
+ 
+                const updatedPosts = [newPost, ...posts];
+                console.log(updatedPosts);
+ 
+                setPosts(updatedPosts[0]);
+ 
+              }
+ 
+ 
+ 
+ 
+            })
+          //setVisibleCount(newPost.length)
+ 
+          // setStoredPosts(items.map((item) => item.Title));
+        } catch (error) {
+          console.log("Error fetching posts:", error);
+        }
+ 
+      });
+ 
+ 
+ 
+ 
+ 
     } catch (error) {
-      console.log("Error fetching posts:", error);
+      console.error("Error fetching followers:", error);
     }
+    // checkIfFollower(element);
+ 
+ 
+    // console.log(followers, followers);
+ 
+    // setFollowerList(followers.map(f => f.Follower));
+ 
+ 
+ 
   };
 
   const fetchPostsMe = async () => {
+    const cuurentID = await getCurrentUserNameId(sp);
+    let followersCheck: any[] = []
     try {
-      let newPost: any[] = []
-      console.log(currentId, 'currentId["Id"]');
-
-      const cuurentID = await getCurrentUserNameId(sp);
-      await sp.web.lists
-        .getByTitle("ARGSocialFeed") // SharePoint list name
-        .items.select("*,SocialFeedComments/Id,SocialFeedComments/Comments,SocialFeedImages/Id,SocialFeedUserLikes/Id,Author/Id,Author/Title")
-        .expand("SocialFeedComments,SocialFeedImages,SocialFeedUserLikes,Author").filter(`AuthorId eq ${cuurentID}`).orderBy("Created", false)().then((item: any) => {
-          console.log(item, 'ihhhpostsME');
-
-          if (item.length > 0) {
-            item.map((ele: any) => {
-              let newPosts = {
-                Contentpost: ele.Contentpost,
-                SocialFeedImagesJson: ele.SocialFeedImagesJson,
-                Created: ele.Created,
-                userName: ele.Author?.Title,
-                userAvatar: ele.userAvatar,
-                likecount: 0,
-                commentcount: 0,
-                comments: ele?.SocialFeedCommentsJson != null ? JSON.parse(ele?.SocialFeedCommentsJson) : [],
-                Id: ele.Id,
-                SocialFeedUserLikesJson: ele?.SocialFeedUserLikesJson != null ? JSON.parse(ele?.SocialFeedUserLikesJson) : []
-              };
-              newPost.push(newPosts)
-            }
-
-            )
-            const updatedPosts = [newPost, ...posts];
-            console.log(updatedPosts, 'updatedPosts');
-
-            setPostsME(updatedPosts[0]);
-            console.log(updatedPosts);
-          }
-
-
-
-        })
-
-      // setStoredPosts(items.map((item) => item.Title));
-
+ 
+      const followers = await sp.web.lists.getByTitle("ARGFollows").items
+        .filter(`FollowedId eq ${cuurentID}`)
+        .expand("Follower")
+        .select("Follower/Title", "Follower/EMail", "Follower/Department", "Follower/ID")();
+      console.log(followers, 'followers');
+ 
+      followers.forEach(element => {
+        checkIfFollower(element);
+      });
+ 
+      console.log(followers, "followers");
+ 
+      followersCheck = followers.map(f => f.Follower)
+      followersCheck.forEach(async element => {
+        try {
+          let newPost: any[] = []
+          console.log(currentId, 'currentId["Id"]');
+          let filterQuery = followersCheck.length > 0 ? `AuthorId eq ${element.ID} or AuthorId eq ${cuurentID}` : `AuthorId eq ${element.ID}`;
+ 
+          await sp.web.lists
+            .getByTitle("ARGSocialFeed") // SharePoint list name
+            .items.select("*,SocialFeedComments/Id,SocialFeedComments/Comments,SocialFeedImages/Id,SocialFeedUserLikes/Id,Author/Id,Author/Title")
+            .expand("SocialFeedComments,SocialFeedImages,SocialFeedUserLikes,Author").filter(filterQuery).orderBy("Created", false)().then((item: any) => {
+              console.log(item, 'ihhhpostsME');
+ 
+              if (item.length > 0) {
+                item.map((ele: any) => {
+                  let newPosts = {
+                    Contentpost: ele.Contentpost,
+                    SocialFeedImagesJson: ele.SocialFeedImagesJson,
+                    Created: ele.Created,
+                    AutherId: ele.Author?.Id,
+                    userName: ele.Author?.Title,
+                    userAvatar: ele.userAvatar,
+                    likecount: 0,
+                    commentcount: 0,
+                    comments: ele?.SocialFeedCommentsJson != null ? JSON.parse(ele?.SocialFeedCommentsJson) : [],
+                    Id: ele.Id,
+                    SocialFeedUserLikesJson: ele?.SocialFeedUserLikesJson != null ? JSON.parse(ele?.SocialFeedUserLikesJson) : []
+                  };
+                  newPost.push(newPosts)
+                }
+ 
+                )
+                const updatedPosts = [newPost, ...posts];
+                console.log(updatedPosts, 'updatedPosts');
+ 
+                setPostsME(updatedPosts[0]);
+                console.log(updatedPosts);
+              }
+ 
+ 
+ 
+            })
+ 
+          // setStoredPosts(items.map((item) => item.Title));
+ 
+        } catch (error) {
+ 
+          console.log("Error fetching posts:", error);
+ 
+        }
+      })
     } catch (error) {
-
+ 
       console.log("Error fetching posts:", error);
-
+ 
     }
-
+ 
   };
-
-
-  console.log(postsME, 'postsME');
+  
 
 
   // Handle input change
@@ -958,13 +1027,14 @@ const SocialFeedContext = ({ props }: any) => {
 
                           </span>{" "}
 
-                          Followers
+                          Followers ({followwerLength})
 
                         </div>{" "}
 
                         <div className={`tabcss mb-2 mt-2 me-1 ${activeMainTab === "following" ? "activenew" : ""
 
-                          }`} onClick={() => handleTabClick("following")} style={{ cursor: "pointer" }} > <span><Users /> </span> Following</div>
+                          }`} onClick={() => handleTabClick("following")} style={{ cursor: "pointer" }} > 
+                          <span><Users /> </span> Following ({followingLength})</div>
 
                       </div>
 
@@ -972,7 +1042,7 @@ const SocialFeedContext = ({ props }: any) => {
 
 
                     <div className='mt-3'>
-                      <h4 className='font-14 mb-3 uppercase'>Blogs you Saved</h4>
+                      <h4 className='font-14 mb-3 uppercase'>Bookmarked Blogs</h4>
                       {
 
                         blogdata.length > 0 ? blogdata.map((item: any) => {
@@ -1103,56 +1173,29 @@ const SocialFeedContext = ({ props }: any) => {
                                     </label>
 
                                     <div className="image-preview mt-2">
-
-                                      {/* <div className="grid-container">
-
-                                    {SocialFeedImagesJson.map((image: any, index) => {
-
-                                      const imageUrl = mergeAndRemoveDuplicates(siteUrl, image.fileUrl);
-
-                                      const className = index === 0 ? 'large-image' : 'small-image'; // First image as large, rest as small
-
+  {Loading ? (
+    <div className="spinner-border text-primary" role="status">
+      <span className="sr-only">Loading...</span>
+    </div>
+  ) : (
+    SocialFeedImagesJson.map((image: any, index) => {
+      var imageUrl = mergeAndRemoveDuplicates(siteUrl, image.fileUrl);
+      console.log(imageUrl);
  
-
-                                      return (
-
-                                        <div key={index} className={`grid-item ${className}`}>
-
-                                          <img src={imageUrl} alt={`Social feed ${index}`} />
-
-                                        </div>
-
-                                      );
-
-                                    })}
-
-                                  </div> */}
-
-                                      {SocialFeedImagesJson.map((image: any, index) => {
-
-                                        var imageUrl = mergeAndRemoveDuplicates(siteUrl, image.fileUrl)
-
-                                        console.log(imageUrl);
-
-
-
-                                        return (
-
-                                          <><img key={index} src={imageUrl} alt={`preview-${index}`} style={{ width: '100px', marginRight: '10px' }} />
-
-
-
-                                          </>
-
-                                        )
-
-                                      }
-
-
-
-                                      )}
-
-                                    </div>
+      return (
+        <img
+          key={index}
+          src={imageUrl}
+          alt={`preview-${index}`}
+          style={{
+            width: "100px",
+            marginRight: "10px",
+          }}
+        />
+      );
+    })
+  )}
+</div>
 
                                     <button type="submit" className="btn btn-sm btn-success font-121" disabled={Loading}>
 
@@ -1194,7 +1237,7 @@ const SocialFeedContext = ({ props }: any) => {
                             currentUserName={currentUsername}
                             CurrentUser={CurrentUser}
                             currentEmail={currentEmail}
-
+                            editload={fetchPosts}
                             post={{
 
                               userName: post.userName,
@@ -1214,7 +1257,7 @@ const SocialFeedContext = ({ props }: any) => {
                               comments: post?.comments != null ? post.comments : [],
 
                               postId: post.Id,
-
+                              AutherId: post.AutherId,
                               SocialFeedUserLikesJson: post.SocialFeedUserLikesJson
 
                             }}
@@ -1241,6 +1284,7 @@ const SocialFeedContext = ({ props }: any) => {
                               siteUrl={siteUrl}
                               currentUserName={currentUsername}
                               currentEmail={currentEmail}
+                              editload={fetchPosts}
                               post={{
                                 userName: post.userName,
                                 Created: post.Created,
@@ -1251,6 +1295,7 @@ const SocialFeedContext = ({ props }: any) => {
                                 commentcount: post.commentcount,
                                 comments: post?.comments != null ? post.comments : [],
                                 postId: post.Id,
+                                AutherId: post.AutherId,
                                 SocialFeedUserLikesJson: post.SocialFeedUserLikesJson
                               }}
                             />

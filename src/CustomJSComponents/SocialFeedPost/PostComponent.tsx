@@ -11,11 +11,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { faHeart, faThumbsUp } from "@fortawesome/free-solid-svg-icons";
 
+import { Carousel, Modal, Spinner } from "react-bootstrap";
+
 import moment from "moment";
 
 import Swal from "sweetalert2";
 
-export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, currentEmail, post }: any) => {
+export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, currentEmail, editload, post }: any) => {
     const [loadingReply, setLoadingReply] = useState<boolean>(false);
     const [loadingLike, setLoadingLike] = useState<boolean>(false);
 
@@ -24,8 +26,8 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
     const [likesCount, setLikesCount] = useState(post.likecount || 0);
 
     const [CommentsCount, setCommentsCount] = useState(post.commentcount || 0);
-    const [gcomments, setGComments] = useState(post.gcomments || []);
-   
+    // const [gcomments, setGComments] = useState(post.gcomments || []);
+
     const [posts, setPosts] = useState([post]);
 
     const [comments, setComments] = useState(post.comments || []);
@@ -44,11 +46,21 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
 
     const [copySuccess, setCopySuccess] = useState('');
 
+
     const [showMore, setShowMore] = useState(false);
     const menuRef = useRef(null);
-    useEffect(() => {
+    const [showModal, setShowModal] = useState(false);
 
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+    const [loading, setLoading] = useState(false); // To show loading spinner
+
+
+    const [displayedCount, setDisplayedCount] = useState(3);
+    useEffect(() => {
+        initializeData();
         GetId()
+
         if (typeof (post.SocialFeedImagesJson) == 'string') {
 
             if (post.SocialFeedImagesJson != null && post.SocialFeedImagesJson != undefined && post.SocialFeedImagesJson != "") {
@@ -75,10 +87,8 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
             document.removeEventListener('mousedown', handleClickOutside);
         };
 
-    }, [post, sp, siteUrl])
-    useEffect(()=>{
-        initializeData();
-    },[]);
+    }, [])
+
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const [isMenuOpenshare, setIsMenuOpenshare] = useState(false);
@@ -154,8 +164,8 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
 
             setIsEditing(false);
 
-            window.location.reload()
-
+            // window.location.reload()
+            editload && editload()
             setEditedContent(editedContent);
 
 
@@ -219,7 +229,7 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
                     setComments(ele);
 
             })
-       
+
 
     };
 
@@ -245,16 +255,23 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
                     setCommentsCount(ele.length);
             })
 
-        await sp.web.lists.getByTitle('ARGGroupandTeamComments').items.select("*,Author/Id,Author/Title").expand("Author")
-            .filter(`GroupandTeamId eq ${postId}`)().then(async (ele: any) => {
-                if (ele.length > 0)
-                    setGComments(ele);
-            })
+        // await sp.web.lists.getByTitle('ARGGroupandTeamComments').items.select("*,Author/Id,Author/Title").expand("Author")
+        //     .filter(`GroupandTeamId eq ${postId}`)().then(async (ele: any) => {
+        //         if (ele.length > 0)
+        //             setGComments(ele);
+        //     })
 
 
 
     };
+    const handleShowMore = () => {
+        setDisplayedCount((prevCount) => prevCount + 3); // Show 3 more comments
+    };
 
+    // Handle "Show Less" button click
+    const handleShowLess = () => {
+        setDisplayedCount(3); // Reset to initial 3 comments
+    };
     const fetchPosts = async () => {
 
         try {
@@ -502,7 +519,7 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
     };
 
     const sendanEmail = (item: any) => {
-       
+
         // window.open("https://outlook.office365.com/mail/deeplink/compose?subject=Share%20Info&body=");
         const subject = "Post link-" + item.Contentpost;
         const body = 'Here is the link to the Post:' + `${siteUrl}/SitePages/GroupandTeamDetails.aspx?${item.Id}`;
@@ -514,8 +531,10 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
     };
 
     const handleToggleImages = () => {
-        setShowMore((prevShowMore) => !prevShowMore);
-    };
+        // setShowMore((prevShowMore) => !prevShowMore);
+        setShowModal(true); // Open the modal
+        setCurrentImageIndex(0); // Reset the carousel to the first image
+      };
     const sendanEmailStop = () => {
         setIsMenuOpenshare(false);
     }
@@ -553,8 +572,8 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
                                     </div>
                                     {isMenuOpen && (
                                         <div className="dropdown-menucsspost">
-                                            {/* <button onClick={(e) => handleEditClick(e)}>Edit</button> */}
-                                            <button onClick={(e) => handleDeletePost(e, post.postId)}>Delete</button>
+                                            <button onClick={(e) => handleEditClick(e)} disabled={post.AutherId != CurrentUser.Id}>Edit</button>
+                                            <button onClick={(e) => handleDeletePost(e, post.postId)} disabled={post.AutherId != CurrentUser.Id}>Delete</button>
                                         </div>
                                     )}
                                 </div></>
@@ -595,10 +614,18 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
                                 >
                                     {/* Render the image */}
                                     <img
-                                        src={imageUrl}
-                                        alt={`Social feed ${index}`}
-                                        style={{ width: "100%", height: "auto" }}
-                                    />
+                      src={imageUrl}
+                      alt={`Social feed ${index}`}
+                      style={{
+                        width: "100%",
+                        height: "auto",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => {
+                        setShowModal(true); // Open the modal
+                        setCurrentImageIndex(index); // Pass the clicked image index
+                      }}
+                    />
                                     {/* Show +X overlay if it is the third image and there are more images to show */}
                                     {isThirdImage && (
                                         <div
@@ -652,6 +679,27 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
                     })}
                 </div> */}
             </div>
+            <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+          <Modal.Header closeButton></Modal.Header>
+          <Modal.Body>
+            <Carousel
+              activeIndex={currentImageIndex} // Show the clicked image first
+              onSelect={(selectedIndex) => setCurrentImageIndex(selectedIndex)}
+            >
+              {SocialFeedImagesJson.map((item: any, index: number) => (
+                <Carousel.Item key={index}>
+                  <img
+                    className="d-block w-100"
+                    src={mergeAndRemoveDuplicates(siteUrl, item.fileUrl)} // Use your image URL merge function
+                    alt={`Slide ${index}`}
+                    style={{ height: "auto", objectFit: "contain" }}
+                  />
+                </Carousel.Item>
+              ))}
+            </Carousel>
+          </Modal.Body>
+        </Modal>
+
             {/* Post Interactions */}
 
             <div className="post-interactions mt-3 mb-3">
@@ -675,25 +723,55 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
             </div>
 
 
-            {comments.length > 0 ? comments.map((comment: any, index: React.Key) => (
-                <div className="d-flex align-items-start commentss">
-                    <div className="flex-shrink-0">
-                        <img src={comment.UserImage} alt="user avatar" className="commentsImg" />
+            {comments.length > 0
+                ? comments.slice(0, displayedCount).map((comment: any, index: React.Key) => (
+                    <div key={index} className="d-flex align-items-start commentss">
+                        <div className="flex-shrink-0">
+                            <img
+                                src={comment.UserImage}
+                                alt="user avatar"
+                                className="commentsImg"
+                            />
+                        </div>
+                        <div className="flex-grow-1 ms-2">
+                            <p className="mb-1 fw-bold">{comment?.Author?.Title}</p>
+                            <p
+                                style={{
+                                    fontSize: "0.9rem",
+                                    fontWeight: "400",
+                                    color: "#6c757d",
+                                    marginBottom: "0px",
+                                }}
+                            >
+                                {comment.Comments}
+                            </p>
+                        </div>
                     </div>
-                    <div className="flex-grow-1 ms-2">
-                        <p className="mb-1 fw-bold">
-                            {comment?.Author?.Title}  </p>
-                        <p style={{
-                            fontSize: '0.9rem',
-                            fontWeight: '400',
-                            color: '#6c757d',
-                            marginBottom: '0px'
-                        }}>
-                            {comment.Comments}
-                        </p>
+                ))
+                : ""}
+
+            <div className="mt-3">
+                {/* Show More button */}
+                {comments.length > displayedCount && (
+                    <div
+                        //   type="button"
+                        onClick={handleShowMore}
+                    // className="btn btn-primary me-2"
+                    >
+                        Show More
                     </div>
-                </div>
-            )) : ""}
+                )}
+
+                {/* Show Less button */}
+                {displayedCount > 3 && (
+                    <div
+                        onClick={handleShowLess}
+                    // className="btn btn-secondary"
+                    >
+                        Show Less
+                    </div>
+                )}
+            </div>
             {/* <div className="post-comments">
                 {comments.length > 0 ? comments.map((comment: any, index: React.Key) => (
                     <div className="comment" key={index}>
