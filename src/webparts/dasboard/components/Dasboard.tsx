@@ -510,7 +510,7 @@ const HelloWorldContext = ({ props }: any) => {
                   {/* Corporate Directory */}
                   <div className="col-xl-5 col-lg-5">
                     <div className="card" style={{ borderRadius: "1rem" }}>
-                      <div className="card-body pb-0 gheight">
+                      <div className="card-body pb-0 gheightnew">
                         <h4 className="header-title font-16 text-dark fw-bold mb-0">
                           Corporate Directory
                           <a
@@ -522,6 +522,18 @@ const HelloWorldContext = ({ props }: any) => {
                           </a>
                         </h4>
                         <div className="inbox-widget" style={{ marginTop: '1rem' }}>
+                          
+                          <div className="align-items-center text-center mt-5"
+                          >
+                              
+ <img style={{ cursor: "pointer", marginTop:'50px', width:'32px' }} src={require("../assets/noun-pin-7368310.png")} className="mb-3"
+alt="pin"
+
+/>
+
+<p className="font-14 text-muted text-center">Pin users from Corporate Directory </p>
+
+                          </div>
                           {pinUsersitem.map((user, index) => (
                             <div
                               key={index}

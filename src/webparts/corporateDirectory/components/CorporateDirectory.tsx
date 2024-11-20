@@ -1325,7 +1325,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                 <img style={{ cursor: "pointer" }}
 
-                                  src={pinStatus[item.ID] ? require("../assets/unpin.png") : require("../assets/noun-pin-7368310.png")}
+                                  src={pinStatus[item.ID] ? require("../assets/noun-pin-7368310.png") : require("../assets/unpin.png")}
 
                                   className="alignrightpin"
 
