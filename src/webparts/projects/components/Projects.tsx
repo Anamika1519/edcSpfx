@@ -204,7 +204,27 @@ const HelloWorldContext = ({ props }: any) => {
     ProjectFileManager : ""
   
   });
-
+//   const clearstates = () => {
+//     event.preventDefault()
+//     // alert('clear')
+// // setFormData({ ...formData, ProjectName: "" , ProjectPriority : "" , ProjectPrivacy : "" , startDate : "" , dueDate : "" , Budget : "" , TeamMembers : "" , ProjectOverview : ""});
+// // Use capital 'D'
+// alert('clear');
+// setFormData({
+//   ProjectName: "",
+//   ProjectPriority: "",
+//   ProjectPrivacy: "",
+//   startDate: "",
+//   dueDate: "",
+//   Budget: "",
+//   TeamMembers: "",
+//   ProjectOverview: "",
+//   ProjectFileManager: "",
+  
+// });
+// setSelectedValue([]),
+// setDocumentpostArr1([])
+//   }
   const flatArray = (arr: any[]): any[] => {
     return arr.reduce((acc, val) => acc.concat(val), []);
   };
@@ -243,7 +263,7 @@ const HelloWorldContext = ({ props }: any) => {
           ProjectPrivacy: formData.ProjectPrivacy,
           StartDate: formData.startDate,
           DueDate: formData.dueDate,
-          Budget: formData.Budget,
+          // Budget: formData.Budget,
           ProjectOverview: formData.ProjectOverview,
         
         })
@@ -277,11 +297,13 @@ const HelloWorldContext = ({ props }: any) => {
         ProjectPrivacy: formData.ProjectPrivacy,
         StartDate: formData.startDate,
         DueDate: formData.dueDate,
-        Budget: formData.Budget,
+        // Budget: formData.Budget,
         ProjectOverview: formData.ProjectOverview,
         TeamMembersId: selectedIds,
-        // ProjectFileManager : formData.ProjectFileManager,
-        // ProjectStatus: "Ongoing"
+         ProjectFileManager : `/sites/SPFXDemo/ARGProjectsFiles/${formData.ProjectName}`,
+         ProjectStatus: "Ongoing",
+         ProjectFolderName: formData.ProjectName,
+         FolderInProgress: 'In Progress'
         // DiscussionForumCategoryId: Number(formData.category),
       };
       const postResult = await addItem(postPayload, sp);
@@ -360,6 +382,7 @@ const HelloWorldContext = ({ props }: any) => {
               ProjectFileManager: ""
             });
             // window.location.reload(); //forNow
+            // setSelectedValue([])
             setDataproject(await fetchprojectdata(sp));
             setChoiceValueOne(await Choicedata(sp));
             dismissModal();
@@ -384,6 +407,7 @@ const HelloWorldContext = ({ props }: any) => {
             ProjectFileManager : ""
           });
           // window.location.reload(); //forNow
+          setSelectedValue([])
           setDataproject(await fetchprojectdata(sp));
           setChoiceValueOne(await Choicedata(sp));
           dismissModal();
@@ -808,6 +832,7 @@ const HelloWorldContext = ({ props }: any) => {
                           className="btn-close"
                           data-bs-dismiss="modal"
                           aria-label="Close"
+                          // onClick={()=>clearstates()}
                         ></button>
                       </div>
                       <div className="modal-body">
@@ -964,7 +989,7 @@ const HelloWorldContext = ({ props }: any) => {
                           </div>
 
                           {/* Due Date Field */}
-                          <div className="col-lg-4">
+                          {/* <div className="col-lg-4">
                             <div className="mb-3">
                               <label htmlFor="dueDate" className="form-label">
                                 Due Date
@@ -980,7 +1005,7 @@ const HelloWorldContext = ({ props }: any) => {
                                 }
                               />
                             </div>
-                          </div>
+                          </div> */}
 
                           <div className="col-lg-4">
                             <div className="mb-3">
@@ -1298,7 +1323,15 @@ const HelloWorldContext = ({ props }: any) => {
                                       {project.ProjectName}
                                     </a>
                                   </h4>
-                               
+                                  <p
+                                    style={{ color: "#98a6ad" }}
+                                    className="date-color two-line font-14 mb-3 sp-line-2"
+                                  >
+                                   
+                                   {truncateText(project.ProjectOverview , 20) ||
+    "No description available..."}{" "}
+                             
+                                  </p>
                                   <a>
 
 {
@@ -1307,8 +1340,8 @@ const HelloWorldContext = ({ props }: any) => {
       : (
           <a className="ongoing mb-3"
               style={{ 
-                  background: project?.ProjectStatus === 'Close' ? '#008751' : '#cce7dc',
-                  color: project?.ProjectStatus === 'Close' ? '#008751' : '#cce7dc',
+                  background: project?.ProjectStatus === 'Close' ? '#cce7dc' : '#6c757d',
+                  color: project?.ProjectStatus === 'Close' ? '#008751' : '#fff',
                   padding: '5px',
                   borderRadius: '4px',
                   textDecoration: 'none'
@@ -1321,20 +1354,14 @@ const HelloWorldContext = ({ props }: any) => {
 </a>
 
                                   {/* Description */}
-                                  <p
+                                  {/* <p
                                     style={{ color: "#98a6ad" }}
                                     className="date-color two-line font-14 mb-3 sp-line-2"
                                   >
                                     {project.ProjectOverview} 
                                     
-                                    {/* <a
-                                      href="javascript:void(0);"
-                                      className="fw-bold text-muted"
-                                      onClick={() => GotoNextPage(project)}
-                                    >
-                                      view more
-                                    </a> */}
-                                  </p>
+                                  
+                                  </p> */}
 
                                   {/* Task info */}
                                   <p style={{display:'flex', gap:'10px'}} className="mb-1 font-12">
@@ -1355,7 +1382,7 @@ const HelloWorldContext = ({ props }: any) => {
                                   </p>
                                   <div
                                     style={{
-                                     
+                                      display:'flex'
                                     }}
                                   >
                                     <div style={{ display: 'flex' }} className="ml20">
@@ -1412,11 +1439,10 @@ const HelloWorldContext = ({ props }: any) => {
                                       <div
                                         className=""
                                         style={{
-                                          position: "absolute",
-                                          zIndex: "99",
-                                          background: "#fff",
-                                          padding: "1rem",
-                                          width: "30rem",
+                                          position: "relative",
+                                          left:"-16px",
+                                          top:'11px'
+                                       
                                         }}
                                       >
                                         {showDropdownId === project.Id && (
@@ -1527,6 +1553,7 @@ const HelloWorldContext = ({ props }: any) => {
                                     style={{
                                      
                                       position: "relative",
+                                      display:'flex'
                                     }}
                                   >
                                     <div style={{ display: 'flex' }} className="ml20">
@@ -1534,6 +1561,7 @@ const HelloWorldContext = ({ props }: any) => {
                                         (id: any, idx: any) => {
                                           if (idx < 3) {
                                             return (
+                                              <div style={{width:'40px', marginLeft:'-7px'}} className="gfg_tooltip">
                                               <img
                                                 style={{
                                                   margin:
@@ -1546,6 +1574,11 @@ const HelloWorldContext = ({ props }: any) => {
                                                 className="circlecssnew img-thumbnail avatar-xl"
                                                 alt="profile-image"
                                               />
+                                              <span className="gfg_text">
+                                            A Computer science portal
+                                        </span>
+
+                                        </div>
                                             );
                                           }
                                         }
@@ -1583,17 +1616,17 @@ const HelloWorldContext = ({ props }: any) => {
                                       <div
                                         className=""
                                         style={{
-                                          position: "absolute",
-                                          zIndex: "99",
-                                          background: "#fff",
-                                          padding: "1rem",
-                                          width: "30rem",
+                                          position: "relative",
+                                          left:"-16px",
+                                          top:'11px'
+                                       
                                         }}
                                       >
                                         {showDropdownId === project.Id && (
                                           project?.TeamMembers?.map(
                                             (id: any, idx: any) => {
                                               return (
+                                                <div style={{width:'40px', marginLeft:'-7px'}} className="gfg_tooltip">
                                                 <img
                                                   style={{
                                                     margin:
@@ -1605,6 +1638,11 @@ const HelloWorldContext = ({ props }: any) => {
                                                   className="circlecssnew img-thumbnail avatar-xl"
                                                   alt="profile-image"
                                                 />
+                                                <span className="gfg_text">
+                                            A Computer science portal
+                                        </span>
+
+                                        </div>
                                               );
                                             }
                                           )
@@ -1696,7 +1734,7 @@ const HelloWorldContext = ({ props }: any) => {
                                   </p>
                                   <div
                                     style={{
-                                     
+                                      display:'flex'
                                     }}
                                   >
                                     <div className="ml20">
@@ -1704,6 +1742,7 @@ const HelloWorldContext = ({ props }: any) => {
                                         (id: any, idx: any) => {
                                           if (idx < 3) {
                                             return (
+                                              <div style={{width:'40px', marginLeft:'-7px'}} className="gfg_tooltip">
                                               <img
                                                 style={{
                                                   margin:
@@ -1716,6 +1755,11 @@ const HelloWorldContext = ({ props }: any) => {
                                                 className="circlecssnew img-thumbnail avatar-xl"
                                                 alt="profile-image"
                                               />
+                                               <span className="gfg_text">
+                                            A Computer science portal
+                                        </span>
+
+                                        </div>
                                             );
                                           }
                                         }
@@ -1755,6 +1799,7 @@ const HelloWorldContext = ({ props }: any) => {
                                         project?.TeamMembers?.map(
                                           (id: any, idx: any) => {
                                             return (
+                                              <div style={{width:'40px', marginLeft:'-7px'}} className="gfg_tooltip">
                                               <img
                                                 style={{
                                                   margin:
@@ -1767,6 +1812,11 @@ const HelloWorldContext = ({ props }: any) => {
                                                 className="circlecssnew img-thumbnail avatar-xl"
                                                 alt="profile-image"
                                               />
+                                              <span className="gfg_text">
+                                              A Computer science portal
+                                          </span>
+  
+                                          </div>
                                             );
                                           }
                                         )
@@ -1850,7 +1900,34 @@ const HelloWorldContext = ({ props }: any) => {
                                       {project.ProjectName}
                                     </a>
                                   </h4>
-
+                                  <p
+                                    style={{ color: "#98a6ad" }}
+                                    className="date-color two-line font-14 mb-3 sp-line-2"
+                                  >
+                                   
+                                   {truncateText(project.ProjectOverview , 20) ||
+    "No description available..."}{" "}
+                             
+                                  </p>
+                                  <a>
+{
+      project?.ProjectStatus === null 
+      ? null // Don't display anything if ProjectStatus is null
+      : (
+          <a className="ongoing mb-3"
+              style={{ 
+                  background: project?.ProjectStatus === 'Close' ? '#008751' : '#cce7dc',
+                  color: project?.ProjectStatus === 'Close' ? '#008751' : '#cce7dc',
+                  padding: '5px',
+                  borderRadius: '4px',
+                  textDecoration: 'none'
+              }}
+          >
+              {project?.ProjectStatus === 'Ongoing' ? 'Ongoing' : 'Close'}
+          </a>
+      )
+}
+</a>
                                   <p className="mb-1 font-12">
                                     <span
                                       style={{ color: "#6e767e" }}
@@ -1887,7 +1964,8 @@ const HelloWorldContext = ({ props }: any) => {
                                   <div
                                     style={{
                                      
-                                      position: "relative"
+                                      position: "relative",
+                                       display:'flex'
                                     }}
                                   >
                                     <div style={{ display: 'flex' }} className="ml20">
@@ -1895,6 +1973,7 @@ const HelloWorldContext = ({ props }: any) => {
                                         (id: any, idx: any) => {
                                           if (idx < 3) {
                                             return (
+                                              <div style={{width:'40px', marginLeft:'-7px'}} className="gfg_tooltip">
                                               <img
                                                 style={{
                                                   margin:
@@ -1907,6 +1986,11 @@ const HelloWorldContext = ({ props }: any) => {
                                                 className="circlecssnew img-thumbnail avatar-xl"
                                                 alt="profile-image"
                                               />
+                                               <span className="gfg_text">
+                                            A Computer science portal
+                                        </span>
+
+                                        </div>
                                             );
                                           }
                                         }
@@ -1944,17 +2028,17 @@ const HelloWorldContext = ({ props }: any) => {
                                       <div
                                         className=""
                                         style={{
-                                          position: "absolute",
-                                          zIndex: "99",
-                                          background: "#fff",
-                                          padding: "1rem",
-                                          width: "30rem",
+                                          position: "relative",
+                                          left:"-16px",
+                                          top:'11px'
+                                       
                                         }}
                                       >
                                         {showDropdownId === project.Id && (
                                           project?.TeamMembers?.map(
                                             (id: any, idx: any) => {
                                               return (
+                                                <div style={{width:'40px', marginLeft:'-7px'}} className="gfg_tooltip">
                                                 <img
                                                   style={{
                                                     margin:
@@ -1967,7 +2051,13 @@ const HelloWorldContext = ({ props }: any) => {
                                                   className="circlecssnew img-thumbnail avatar-xl"
                                                   alt="profile-image"
                                                 />
+                                                <span className="gfg_text">
+                                                A Computer science portal
+                                            </span>
+    
+                                            </div>
                                               );
+
                                             }
                                           )
                                         )}
@@ -2052,7 +2142,35 @@ const HelloWorldContext = ({ props }: any) => {
                                         "Untitled Project"}
                                     </a>
                                   </h4>
+                                  <p
+                                    style={{ color: "#98a6ad" }}
+                                    className="date-color two-line font-14 mb-3 sp-line-2"
+                                  >
+                                   
+                                   {truncateText(project.ProjectOverview , 20) ||
+    "No description available..."}{" "}
+                             
+                                  </p>
+                                  <a>
 
+{
+      project?.ProjectStatus === null 
+      ? null // Don't display anything if ProjectStatus is null
+      : (
+          <a className="ongoing mb-3"
+              style={{ 
+                  background: project?.ProjectStatus === 'Close' ? '#008751' : '#cce7dc',
+                  color: project?.ProjectStatus === 'Close' ? '#008751' : '#cce7dc',
+                  padding: '5px',
+                  borderRadius: '4px',
+                  textDecoration: 'none'
+              }}
+          >
+              {project?.ProjectStatus === 'Ongoing' ? 'Ongoing' : 'Close'}
+          </a>
+      )
+}
+</a>
                                   <p className="mb-1 font-12">
                                     <span
                                       style={{ color: "#6e767e" }}
@@ -2090,7 +2208,8 @@ const HelloWorldContext = ({ props }: any) => {
                                   <div
                                     style={{
                                     
-                                      position: "relative"
+                                      position: "relative",
+                                       display:'flex'
                                     }}
                                   >
                                     <div style={{ display: 'flex' }} className="ml20">
@@ -2098,6 +2217,7 @@ const HelloWorldContext = ({ props }: any) => {
                                         (id: any, idx: any) => {
                                           if (idx < 3) {
                                             return (
+                                              <div style={{width:'40px', marginLeft:'-7px'}} className="gfg_tooltip">
                                               <img
                                                 style={{
                                                   margin:
@@ -2110,6 +2230,11 @@ const HelloWorldContext = ({ props }: any) => {
                                                 className="rounded-circlecss img-thumbnail avatar-xl"
                                                 alt="profile-image"
                                               />
+                                                <span className="gfg_text">
+                                            A Computer science portal
+                                        </span>
+
+                                        </div>
                                             );
                                           }
                                         }
@@ -2143,17 +2268,17 @@ const HelloWorldContext = ({ props }: any) => {
                                       <div
                                         className=""
                                         style={{
-                                          position: "absolute",
-                                          zIndex: "99",
-                                          background: "#fff",
-                                          padding: "1rem",
-                                          width: "30rem",
+                                          position: "relative",
+                                          left:"-16px",
+                                          top:'11px'
+                                       
                                         }}
                                       >
                                         {showDropdownId === project.Id && (
                                           project?.TeamMembers?.map(
                                             (id: any, idx: any) => {
                                               return (
+                                                <div style={{width:'40px', marginLeft:'-7px'}} className="gfg_tooltip">
                                                 <img
                                                   style={{
                                                     margin:
@@ -2166,6 +2291,11 @@ const HelloWorldContext = ({ props }: any) => {
                                                   className="rounded-circlecss img-thumbnail avatar-xl"
                                                   alt="profile-image"
                                                 />
+                                                  <span className="gfg_text">
+                                            A Computer science portal
+                                        </span>
+
+                                        </div>
                                               );
                                             }
                                           )
@@ -2246,7 +2376,35 @@ const HelloWorldContext = ({ props }: any) => {
                                         "Untitled Project"}
                                     </a>
                                   </h4>
+                                  <p
+                                    style={{ color: "#98a6ad" }}
+                                    className="date-color two-line font-14 mb-3 sp-line-2"
+                                  >
+                                   
+                                   {truncateText(project.ProjectOverview , 20) ||
+    "No description available..."}{" "}
+                             
+                                  </p>
+                                  <a>
 
+{
+      project?.ProjectStatus === null 
+      ? null // Don't display anything if ProjectStatus is null
+      : (
+          <a className="ongoing mb-3"
+              style={{ 
+                  background: project?.ProjectStatus === 'Close' ? '#008751' : '#cce7dc',
+                  color: project?.ProjectStatus === 'Close' ? '#008751' : '#cce7dc',
+                  padding: '5px',
+                  borderRadius: '4px',
+                  textDecoration: 'none'
+              }}
+          >
+              {project?.ProjectStatus === 'Ongoing' ? 'Ongoing' : 'Close'}
+          </a>
+      )
+}
+</a>
                                   
 
                                   <p className="mb-1 font-12">
@@ -2286,7 +2444,8 @@ const HelloWorldContext = ({ props }: any) => {
                                   <div
                                     style={{
                                     
-                                      position: "relative"
+                                      position: "relative",
+                                       display:'flex'
                                     }}
                                   >
                                     <div style={{ display: 'flex' }} className="ml20">
@@ -2294,6 +2453,7 @@ const HelloWorldContext = ({ props }: any) => {
                                         (id: any, idx: any) => {
                                           if (idx < 3) {
                                             return (
+                                              <div style={{width:'40px', marginLeft:'-7px'}} className="gfg_tooltip">
                                               <img
                                                 style={{
                                                   margin:
@@ -2306,6 +2466,11 @@ const HelloWorldContext = ({ props }: any) => {
                                                 className="rounded-circlecss img-thumbnail avatar-xl"
                                                 alt="profile-image"
                                               />
+                                              <span className="gfg_text">
+                                              A Computer science portal
+                                          </span>
+  
+                                          </div>
                                             );
                                           }
                                         }
@@ -2342,17 +2507,17 @@ const HelloWorldContext = ({ props }: any) => {
                                       <div
                                         className=""
                                         style={{
-                                          position: "absolute",
-                                          zIndex: "99",
-                                          background: "#fff",
-                                          padding: "1rem",
-                                          width: "30rem",
+                                          position: "relative",
+                                          left:"-16px",
+                                          top:'11px'
+                                       
                                         }}
                                       >
                                         {showDropdownId === project.Id && (
                                           project?.TeamMembers?.map(
                                             (id: any, idx: any) => {
                                               return (
+                                                <div style={{width:'40px', marginLeft:'-7px'}} className="gfg_tooltip">
                                                 <img
                                                   style={{
                                                     margin:
@@ -2365,6 +2530,11 @@ const HelloWorldContext = ({ props }: any) => {
                                                   className="rounded-circlecss img-thumbnail avatar-xl"
                                                   alt="profile-image"
                                                 />
+                                                 <span className="gfg_text">
+                                            A Computer science portal
+                                        </span>
+
+                                        </div>
                                               );
                                             }
                                           )
@@ -2443,7 +2613,35 @@ const HelloWorldContext = ({ props }: any) => {
                                         "Untitled Project"}
                                     </a>
                                   </h4>
+                                  <p
+                                    style={{ color: "#98a6ad" }}
+                                    className="date-color two-line font-14 mb-3 sp-line-2"
+                                  >
+                                   
+                                   {truncateText(project.ProjectOverview , 20) ||
+    "No description available..."}{" "}
+                             
+                                  </p>
+                                  <a>
 
+{
+      project?.ProjectStatus === null 
+      ? null // Don't display anything if ProjectStatus is null
+      : (
+          <a className="ongoing mb-3"
+              style={{ 
+                  background: project?.ProjectStatus === 'Close' ? '#008751' : '#cce7dc',
+                  color: project?.ProjectStatus === 'Close' ? '#008751' : '#cce7dc',
+                  padding: '5px',
+                  borderRadius: '4px',
+                  textDecoration: 'none'
+              }}
+          >
+              {project?.ProjectStatus === 'Ongoing' ? 'Ongoing' : 'Close'}
+          </a>
+      )
+}
+</a>
                                   <p className="mb-1 font-12">
                                     <span
                                       style={{ color: "#6e767e" }}
@@ -2481,7 +2679,8 @@ const HelloWorldContext = ({ props }: any) => {
                                   <div
                                     style={{
                                     
-                                      position: "relative"
+                                      position: "relative",
+                                       display:'flex'
                                     }}
                                   >
                                     <div style={{ display: 'flex' }} className="ml20">
@@ -2489,6 +2688,7 @@ const HelloWorldContext = ({ props }: any) => {
                                         (id: any, idx: any) => {
                                           if (idx < 3) {
                                             return (
+                                              <div style={{width:'40px', marginLeft:'-7px'}} className="gfg_tooltip">
                                               <img
                                                 style={{
                                                   margin:
@@ -2501,6 +2701,11 @@ const HelloWorldContext = ({ props }: any) => {
                                                 className="rounded-circlecss img-thumbnail avatar-xl"
                                                 alt="profile-image"
                                               />
+                                              <span className="gfg_text">
+                                              A Computer science portal
+                                          </span>
+  
+                                          </div>
                                             );
                                           }
                                         }
@@ -2537,17 +2742,17 @@ const HelloWorldContext = ({ props }: any) => {
                                       <div
                                         className=""
                                         style={{
-                                          position: "absolute",
-                                          zIndex: "99",
-                                          background: "#fff",
-                                          padding: "1rem",
-                                          width: "30rem",
+                                          position: "relative",
+                                          left:"-16px",
+                                          top:'11px'
+                                       
                                         }}
                                       >
                                         {showDropdownId === project.Id && (
                                           project?.TeamMembers?.map(
                                             (id: any, idx: any) => {
                                               return (
+                                                <div style={{width:'40px', marginLeft:'-7px'}} className="gfg_tooltip">
                                                 <img
                                                   style={{
                                                     margin:
@@ -2560,6 +2765,11 @@ const HelloWorldContext = ({ props }: any) => {
                                                   className="rounded-circlecss img-thumbnail avatar-xl"
                                                   alt="profile-image"
                                                 />
+                                                 <span className="gfg_text">
+                                            A Computer science portal
+                                        </span>
+
+                                        </div>
                                               );
                                             }
                                           )

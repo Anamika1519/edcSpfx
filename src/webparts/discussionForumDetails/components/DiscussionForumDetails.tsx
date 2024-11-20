@@ -1241,7 +1241,7 @@ alt="Check"
                             </div>
                             <div className="tabcss mb-2 sameh mt-2 me-1 ">
                               <span className="text-nowrap mb-0 d-inline-block" onClick={() => sendanEmail(item)} >
-                                <Share size={14} /> <span className="docu">Share by email</span> 
+                                <Share size={14} className="alignright123" /> <span className="docu">Share by email</span> 
                               </span>
                             </div>
                             <div className="tabcss mb-2 sameh mt-2 me-1 ">
@@ -1250,7 +1250,7 @@ alt="Check"
                                 onClick={togglePopup}
                               >
                                 {/* <FilePlus size={14} /> */}
-                                <img src={require("../assets/createf.png")} className="alignright12"/>
+                                <img  src={require("../assets/createf.png")} className="alignright123"/>
                                 <span className="docu"> Create Folder</span> 
                               </span>
                             </div>
@@ -1266,7 +1266,7 @@ alt="Check"
                                 className="text-nowrap mb-0 d-inline-block"
                                 onClick={() => UpdateDiscussion(item.Id, item.Author.ID, item.ARGDiscussionStatus)}
                               >
-                                <img src={require("../assets/closed.png")} className="alignright12"/>
+                                <img src={require("../assets/closed.png")} className="alignright123"/>
                               <span className="docu"> Close Discussion</span> 
                               </span>
                             </div>
@@ -1654,10 +1654,10 @@ alt="Check"
                             <h1 className="text-muted font-14 mt-3">
                               <div className="row">
                                  <div className="col-lg-12">
-                                    <div className="card1">
+                                    <div className="card1 mb-1">
                                       <div className="d-flex juss">
                                     <img src={require("../assets/glike.png")} className="alignright12"/>
-                                    <p className="text-muted font-14 text-center mb-1">Likes</p>
+                                    <p className="text-dark font-14 text-center mb-0">Likes</p>
                                   
                                     </div>
 
@@ -1667,10 +1667,10 @@ alt="Check"
                                       </div>                                
 
                                     
-                                    <div className="card1">
+                                    <div className="card1 bodernone mt-3 pb-0">
                                     <div className="d-flex juss">
                                     <img src={require("../assets/ccomment.png")} className="alignright12"/>
-                                    <p className="text-muted font-14 text-center mb-1">Total Comments</p>
+                                    <p className="text-dark font-14 text-center mb-0">Total Comments</p>
                                   
                                     </div>
                                       <span className="likecount">{commentCount}</span>

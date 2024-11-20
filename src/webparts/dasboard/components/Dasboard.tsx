@@ -368,7 +368,7 @@ const HelloWorldContext = ({ props }: any) => {
       <div className="content-page">
         <HorizontalNavbar _context={sp} siteUrl={siteUrl} />
         <div className="content mt-4" style={{ marginLeft: `${!useHide ? '240px' : '80px'}` }}>
-          <div className="container-fluid  paddb">
+          <div className="container-fluid  paddbnew">
             <div className="row">
               <div
                 //  className=" col-md-10"
@@ -1091,7 +1091,7 @@ const HelloWorldContext = ({ props }: any) => {
                                 </span>
 
                               </p>
-                              <div className="avatar-group mt-3 mb-2">
+                              <div className="avatar-group mt-3 ms-2 mb-2">
                                 <div style={{ display: 'flex' }}
 
                                 >
@@ -1100,7 +1100,7 @@ const HelloWorldContext = ({ props }: any) => {
                                       (id: any, idx: any) => {
                                         if (idx < 3) {
                                           return (
-                                            <div className="gfg_tooltip">
+                                            <div style={{marginLeft:'-12px'}} className="gfg_tooltip">
                                             <img
                                               style={{
                                                 margin:

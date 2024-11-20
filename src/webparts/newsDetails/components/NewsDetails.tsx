@@ -999,7 +999,7 @@ const NewsdetailsContext = ({ props }: any) => {
                       return (
                         <div className="mainevent mt-2">
                           <div className="bordernew">
-                            <h3 className="twolinewrap font-15  text-dark fw-bold mb-2 cursor-pointer" style={{ cursor: "pointer" }}  onClick={() => gotoNewsDetails(res)}>{res.Title}</h3>
+                            <h3 className="twolinewrap font-16  text-dark fw-bold mb-2 cursor-pointer" style={{ cursor: "pointer" }}  onClick={() => gotoNewsDetails(res)}>{res.Title}</h3>
                             <p style={{ lineHeight: '20px' }} className="font-14 text-muted twolinewrap">{res.Overview}</p>
                             <div className="row">
                               <div className="col-sm-12">
