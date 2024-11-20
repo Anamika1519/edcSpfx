@@ -1,5 +1,6 @@
 import React from "react";
 import { getSP } from "../loc/pnpjsConfig";
+import moment from 'moment';
 import { SPFI } from "@pnp/sp";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../../../CustomCss/mainCustom.scss";
@@ -133,7 +134,7 @@ const HelloWorldContext = ({props}:any) => {
             <div className="row mt-2">
               <div className="col-lg-12">
                 <h4 className="page-title fw-700 mb-1  pe-5 font-28" style={{color:"black"}}>{title}</h4>
-                <p className="font-14"> <span className="pe-2 text-nowrap mb-0 d-inline-block">{createdDate} </span> | <span className="text-nowrap mb-0 d-inline-block" style={{fontWeight: '600',
+                <p className="font-14"> <span className="pe-2 text-nowrap mb-0 d-inline-block">{moment(createdDate).format("DD-MMM-YYYY")}</span> | <span className="text-nowrap mb-0 d-inline-block" style={{fontWeight: '600',
     color: '#009157'}}>{category}</span></p>
               </div>
             </div>

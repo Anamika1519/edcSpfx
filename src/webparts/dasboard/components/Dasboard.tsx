@@ -522,72 +522,74 @@ const HelloWorldContext = ({ props }: any) => {
                           </a>
                         </h4>
                         <div className="inbox-widget" style={{ marginTop: '1rem' }}>
-                          
-                          <div className="align-items-center text-center mt-5"
-                          >
-                              
- <img style={{ cursor: "pointer", marginTop:'50px', width:'32px' }} src={require("../assets/noun-pin-7368310.png")} className="mb-3"
+                        {pinUsersitem.length === 0 ? 
+                         <div className="align-items-center text-center mt-5"
+                         >
+                             
+<img style={{ cursor: "pointer", marginTop:'50px', width:'32px' }} src={require("../assets/noun-pin-7368310.png")} className="mb-3"
 alt="pin"
 
 />
 
 <p className="font-14 text-muted text-center">Pin users from Corporate Directory </p>
 
-                          </div>
-                          {pinUsersitem.map((user, index) => (
-                            <div
-                              key={index}
-                              className="d-flex border-bottom heit8 align-items-start w-100 justify-content-between mb-1"
-                            >
-                              <div className="col-sm-2">
-                                <a href="contacts-profile.html">
-                                <img
-                                    // src={user.Picture != null ? `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${user.EMail}` : require("../assets/users.jpg")}
-                                    src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${user.Pinned.EMail}`}
-                                    className="rounded-circle"
-                                    width="50"
-                                    alt={user.Pinned.Title}
-                                  />
-                                </a>
-                              </div>
-                              <div style={{ cursor: "pointer" }} className="col-sm-8">
-                                <a href="contacts-profile.html">
-                                  <p className="fw-bold font-14 mb-2 text-dark">
-                                  {user.Pinned.Title} | {user.Pinned.EMail != null ? user.Pinned.EMail : 'NA'}
-                                  </p>
-                                </a>
-                                <p
-                                  style={{
-                                    color: "#6b6b6b",
-                                    fontWeight: "500",
-                                  }}
-                                  className="font-12"
-                                >
-                                  {user.Pinned.MobilePhone}
-                                  {/* Mob: {user.mobile} */}
-                                </p>
-                              </div>
-                              <div className="col-sm-2">
+                         </div>
+                         : pinUsersitem.map((user, index) => (
+                          <div
+                            key={index}
+                            className="d-flex border-bottom heit8 align-items-start w-100 justify-content-between mb-1"
+                          >
+                            <div className="col-sm-2">
+                              <a href="contacts-profile.html">
                               <img
-                                  src={require("../assets/calling.png")}
-                                  onClick={() =>
-
-                                    window.open(
-
-                                      `https://teams.microsoft.com/l/call/0/0?users=${user.Pinned.EMail}`,
-
-                                      "_blank"
-
-                                    )
-
-                                  }
-                                  className="alignright"
-                                  alt="call"
-                                  width="25"
+                                  // src={user.Picture != null ? `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${user.EMail}` : require("../assets/users.jpg")}
+                                  src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${user.Pinned.EMail}`}
+                                  className="rounded-circle"
+                                  width="50"
+                                  alt={user.Pinned.Title}
                                 />
-                              </div>
+                              </a>
                             </div>
-                          ))}
+                            <div style={{ cursor: "pointer" }} className="col-sm-8">
+                              <a href="contacts-profile.html">
+                                <p className="fw-bold font-14 mb-2 text-dark">
+                                {user.Pinned.Title} | {user.Pinned.EMail != null ? user.Pinned.EMail : 'NA'}
+                                </p>
+                              </a>
+                              <p
+                                style={{
+                                  color: "#6b6b6b",
+                                  fontWeight: "500",
+                                }}
+                                className="font-12"
+                              >
+                                {user.Pinned.MobilePhone}
+                                {/* Mob: {user.mobile} */}
+                              </p>
+                            </div>
+                            <div className="col-sm-2">
+                            <img
+                                src={require("../assets/calling.png")}
+                                onClick={() =>
+
+                                  window.open(
+
+                                    `https://teams.microsoft.com/l/call/0/0?users=${user.Pinned.EMail}`,
+
+                                    "_blank"
+
+                                  )
+
+                                }
+                                className="alignright"
+                                alt="call"
+                                width="25"
+                              />
+                            </div>
+                          </div>
+                        ))}
+                          
+                          
                         </div>
                       </div>
                     </div>

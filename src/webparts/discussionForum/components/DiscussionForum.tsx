@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import VerticalSideBar from "../../verticalSideBar/components/VerticalSideBar";
 import HorizontalNavbar from "../../horizontalNavBar/components/HorizontalNavBar";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { filter } from "lodash";
 import "../../../CustomCss/mainCustom.scss";
 import "../components/DiscussionForum.scss";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
@@ -51,11 +50,6 @@ import "react-quill/dist/quill.snow.css";
 import { SPFI } from "@pnp/sp/presets/all";
 import { fetchUserInformationList } from "../../../APISearvice/GroupTeamService";
 import Multiselect from "multiselect-react-dropdown";
-import { MSGraphClientV3 } from "@microsoft/sp-http";
-import { WebPartContext } from "@microsoft/sp-webpart-base";
-import context from "react-bootstrap/esm/AccordionContext";
-
-
 const DiscussionForumContext = ({ props }: any) => {
   const sp: SPFI = getSP();
   const { useHide }: any = React.useContext(UserContext);
@@ -73,12 +67,6 @@ const DiscussionForumContext = ({ props }: any) => {
   const [DocumentpostIdsArr, setDocumentpostIdsArr] = React.useState([]);
   const [selectedValue, setSelectedValue] = useState([]);
   const [EnityData, setEnityData] = React.useState([]);
-  type UserEntityData = {
-    companyName: string;
-  };
-
-  const [CurrentUserEnityData, setCurrentUserEnityData] = React.useState<UserEntityData | null>(null);
-
   const [options, setOpions] = useState([]);
   const [filters, setFilters] = React.useState({
     SNo: "",
@@ -193,46 +181,7 @@ const DiscussionForumContext = ({ props }: any) => {
     setGroupTypeData(
       await getChoiceFieldOption(sp, "ARGDiscussionForum", "GroupType")
     );
-
-    // Fetch current user data
-    const currentUserData = await GetEntity(sp);
-
-
-    setCurrentUserEnityData(currentUserData); // Set the user data
-
-    setFormData((prevState) => ({
-      ...prevState,
-      entity: currentUserData.companyName || "", // Use companyName or fallback to empty string
-    }));
-
-    // Assuming you have a setCurrentUser function
-
   };
-
-  const GetEntity = async (_sp: SPFI): Promise<UserEntityData | null> => {
-    try {
-      const currentWPContext: WebPartContext = props.context;
-      const msgraphClient: MSGraphClientV3 = await currentWPContext.msGraphClientFactory.getClient('3');
-      const currentUserData = await msgraphClient.api("/me")
-        .version("v1.0")
-        .select("displayName,mail,jobTitle,mobilePhone,companyName,userPrincipalName")
-        .get();
-
-      console.log("Current User Data: ", currentUserData);
-      console.log("Current User's companyName : ", currentUserData.companyName);
-
-      // Map and return data in the expected structure
-      return {
-        companyName: currentUserData.companyName,
-
-      };
-    } catch (error) {
-      console.error("Error fetching user data:", error);
-      return null;
-    }
-  };
-
-
   const FilterDiscussionData = async (optionFilter: string) => {
     setAnnouncementData(await getDiscussionFilterAll(sp, optionFilter))
   }
@@ -1013,7 +962,6 @@ const DiscussionForumContext = ({ props }: any) => {
                 GroupType: formData.GroupType,
                 DiscussionForumCategoryId: Number(formData.category),
                 InviteMemebersId: selectedIds,
-                ARGDiscussionStatus: "Ongoing",
               };
             }
             else {
@@ -1023,8 +971,7 @@ const DiscussionForumContext = ({ props }: any) => {
                 Description: richTextValues.description,
                 EntityId: Number(formData.entity),
                 GroupType: formData.GroupType,
-                DiscussionForumCategoryId: Number(formData.category),
-                ARGDiscussionStatus: "Ongoing"
+                DiscussionForumCategoryId: Number(formData.category)
               };
             }
 
@@ -1213,13 +1160,10 @@ const DiscussionForumContext = ({ props }: any) => {
     console.log(id, "----id");
     window.location.href = `${SiteUrl}/SitePages/DiscussionForumDetail.aspx?${id}`;
   };
-  const shouldDisableOption = (item: any) => {
-    // Example condition: disable the option if it's already selected or based on another condition
-    return item.name === formData.entity || item.name === 'CompanyNameToDisable';
-  };
+
 
   return (
-    
+
     <div id="wrapper" ref={elementRef}>
       <div className="app-menu" id="myHeader">
         <VerticalSideBar _context={sp} />
@@ -1234,7 +1178,7 @@ const DiscussionForumContext = ({ props }: any) => {
           }}
         >
           <div className="container-fluid paddb">
-            <div className="row">
+            <div className="row" style={{ paddingLeft: "0.5rem" }}>
               <div className="col-lg-6">
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
               </div>
@@ -1328,26 +1272,19 @@ const DiscussionForumContext = ({ props }: any) => {
                                 id="entity"
                                 name="entity"
                                 value={formData.entity}
-                                onChange={(e) => onChange(e.target.name, e.target.value)}
+                                onChange={(e) =>
+                                  onChange(e.target.name, e.target.value)
+                                }
                               >
-                                {CurrentUserEnityData && (
-                                  <option value={CurrentUserEnityData.companyName}>
-                                    {CurrentUserEnityData.companyName}
-                                  </option>
-                                )}
+                                <option value="">Select</option>
                                 {EnityData.map((item, index) => (
-                                  <option
-                                    key={index}
-                                    value={item.name}
-                                    disabled={item.name === 'CompanyNameToDisable'} // Disable option based on condition
-                                  >
+                                  <option key={index} value={item.id}>
                                     {item.name}
                                   </option>
                                 ))}
                               </select>
                             </div>
                           </div>
-
                           <div className="col-lg-4">
                             <div className="mb-3">
                               <div className="d-flex justify-content-between">
@@ -1613,7 +1550,7 @@ const DiscussionForumContext = ({ props }: any) => {
                 </div>
               </div>
             </div>
-            <div className="row mt-4">
+            <div className="row mt-2">
               <div className="col-12">
                 <div className="card mb-0">
                   <div className="card-body">
@@ -1879,8 +1816,7 @@ const DiscussionForumContext = ({ props }: any) => {
                                 {item.commentsLength}
                               </td>
                               <td style={{ minWidth: "70px", maxWidth: "70px" }}>
-                                {/* {moment(item.CreatedDate).fromNow()} */}
-                                {moment(item.Created).format("DD-MMM-YYYY")}
+                                {moment(item.CreatedDate).fromNow()}
                               </td>
                             </tr>
                           ))

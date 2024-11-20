@@ -437,11 +437,19 @@ export const getDiscussionComments = async (sp, Id) => {
         
         var lengthcount = res.length - 1
         CreatedDate =res.length>0? res[res.length - 1].Created:"NA"
+        const totalLikes = res.reduce((total, res1) => total + ((res1.UserLikesJSON != "" && res1.UserLikesJSON != null && res1.UserLikesJSON != undefined) && JSON.parse(res1.UserLikesJSON).length || 0), 0);
+
+        const totalRepliesCount = res.reduce(
+            (total, res1) => total + ((res1.UserCommentsJSON != "" && res1.UserCommentsJSON != null && res1.UserCommentsJSON != undefined) && JSON.parse(res1.UserCommentsJSON)?.length || 0),
+            0
+        );
         let mainArray =
         {
             arrLength: res.length,
             arrUser: uniqueArray,
-            CreatedDate: CreatedDate
+            CreatedDate: CreatedDate,
+            totalLikes:totalLikes,
+            totalRepliesCount:totalRepliesCount
         }
         arr = mainArray
     }
