@@ -4,7 +4,7 @@
     height: 2rem !important;
     width: 2rem !important;
   }
-  .project-box{height: 200px;}
+  .project-box{height: 240px;}
   .two-line{    overflow: hidden; line-height: 18px !important;
     text-overflow: ellipsis;
     display: -webkit-box;
@@ -18,24 +18,24 @@
       padding-right: 40px;
   } 
     .ongoing{
-      background:#6c757d!important;
+      background:#6c757d;
       border-radius: 5px;
       color: #fff;
       display: inline-block;
       font-size: 11px;
-      font-weight: 500;
+      font-weight: 500; text-align: center;
       line-height: 19px;
-      padding: 1px 10px;
+      padding: 1px 10px !important; width:70px;
     }
     .finish {
-      background: rgba(0, 135, 81, .2) !important;
+      background: rgba(0, 135, 81, .2);
       border-radius: 5px;
       color: #008751;
       display: inline-block;
       font-size: 11px;
       font-weight: 500;
       line-height: 19px;
-      padding: 1px 10px;
+      padding: 1px 10px !important; width:70px;
   }
     .date-color{height: 38px;}
     .morealign{    position: absolute;
@@ -83,3 +83,17 @@
     .datanew{border-bottom: 1px solid #efefef;position: relative;} 
 .alignright{position: absolute; right: 10px; top: 0;}
 .rounded-circlecss6{width: 3.5rem !important; float: left; border-radius: 1000px !important; height: 3.5rem !important;}
+
+
+
+/* Hide the spinner in Webkit browsers (Chrome, Safari, Edge) */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Hide the spinner in Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}

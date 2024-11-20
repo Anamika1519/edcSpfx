@@ -38,10 +38,26 @@
   margin-top: 2px;
   margin-right: 5px;}
 .paddb {
+  padding: 16px 25px 0px 25px !important;
+}
+.paddbnew{
   padding: 16px 13px 0px 13px !important;
 }
+.add-comment textarea{
+  border: 1px solid #007bff;
+  border-radius: 30px !important;
+  height: 42px !important; resize: none;
+  overflow-y: auto;
+}
+
 .row{
   --bs-gutter-x: 0.8rem;
+}
+.image-preview .large-image img{
+  height: 100% !important;
+}
+.large-image{
+  height: 216px !important;
 }
 .carousel1 {
   position: relative;
@@ -63,7 +79,7 @@
   padding: 1px 10px;
   display: inline-block;
   border-radius: 5px;
-  background: rgba(0, 135, 81, 0.20) !important;
+  background: rgba(0, 135, 81, 0.20);
   color: #008751;
   font-weight: 500;
 }
@@ -73,7 +89,7 @@
   padding: 1px 10px;
   display: inline-block;
   border-radius: 5px;
-  background: #6b6f6f  !important;
+  background: #6b6f6f ;
   color: #fff;
   font-weight: 500;
 }
@@ -462,7 +478,7 @@ a:hover, a:active {
   font-size: 16px !important;
 }
 .logo_item{
-  width: 210px; margin-top: 1rem;
+  width: 210px; margin-top: 0rem;
 }
 
 .navbar img {
@@ -1142,7 +1158,7 @@ margin: 10px 0px !important ;
   .sidebar-enable .tabcontentv,.sidebar-enable .tabv{height: 350px !important;}
   .menu_items{max-height: 730px;}
   .item {
-    margin: .6rem .8rem 0;
+    margin: .5rem .6rem 0;
 }
 }
 
@@ -1159,7 +1175,7 @@ margin: 10px 0px !important ;
     width: 50px;
   }
   .item{
-    margin:0.4rem 0.8rem 0rem 0.8rem;
+    margin:0.2rem 0.4rem 0rem 0.4rem;
   } 
   .event p{
     font-size: 10px !important;
@@ -1233,6 +1249,21 @@ margin: 10px 0px !important ;
   .sidebar-enable .tabcontentv,.sidebar-enable .tabv{height: 330px !important;}
 
 }
+.sidebar .menu_items .active{
+  background: #1fb0e5 !important; 
+}
+.sidebar .menu_items .active .link_name1{
+color: #fff !important;
+}
+.sidebar .menu_items .active{
+  background: #1fb0e5 !important; 
+}
+.sidebar .menu_items .active .link_name1{
+  color: #fff !important;
+}
+.menu_items .nav_link .submenu_item .link_name1{
+  color:#6c757d !important;
+}
 
 @media(max-width:1280px)
 {
@@ -1249,10 +1280,10 @@ margin: 10px 0px !important ;
     width: 46px;
 }
 .menu_items {
-  max-height: 550px;
+  max-height: 620px;
 }
 .item {
-margin: .1rem .8rem 0;
+margin: .1rem .4rem 0;
 }
   .view-all {
     position: absolute;

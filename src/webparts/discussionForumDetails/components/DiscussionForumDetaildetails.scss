@@ -311,10 +311,22 @@ button:hover {
   .close-btn:hover {
     color: red;
   }
-  .likecount{ background: #d2effa; font-weight: 600; font-size: 20px; color: #1fb0e5; }
-  .juss{justify-content: space-around;}
+  .likecount{ background: #d2effa;
+    color: #1fb0e5;
+    font-size: 20px;
+    font-weight: 600;
+    position: absolute;
+    right: 0;
+    top: 4px;
+    padding: 3px 20px;
+    border-radius: 15px; }
+  .juss{justify-content: flex-start;
+    gap: 15px;
+    align-items: center;}
+    .card1{border-bottom: 1px solid #efefef; position: relative; padding-bottom: 17px;}
+    .bodernone{border-bottom: 0px solid #efefef;}
   .newalign svg{margin-top: 1px;}
-  
+  .alignright123{margin-top: -3px;}
   h2 {
     margin-top: 0;
   }
