@@ -204,7 +204,27 @@ const HelloWorldContext = ({ props }: any) => {
     ProjectFileManager : ""
   
   });
-//   const clearstates = () => {
+  const clearstates = () => {
+    event.preventDefault()
+    // alert('clear')
+// setFormData({ ...formData, ProjectName: "" , ProjectPriority : "" , ProjectPrivacy : "" , startDate : "" , dueDate : "" , Budget : "" , TeamMembers : "" , ProjectOverview : ""});
+// Use capital 'D'
+alert('clear');
+setFormData({
+  ProjectName: "",
+  ProjectPriority: "",
+  ProjectPrivacy: "",
+  startDate: "",
+  dueDate: "",
+  Budget: "",
+  TeamMembers: "",
+  ProjectOverview: "",
+  ProjectFileManager: "",
+  
+});
+setSelectedValue([]),
+setDocumentpostArr1([])
+  }//   const clearstates = () => {
 //     event.preventDefault()
 //     // alert('clear')
 // // setFormData({ ...formData, ProjectName: "" , ProjectPriority : "" , ProjectPrivacy : "" , startDate : "" , dueDate : "" , Budget : "" , TeamMembers : "" , ProjectOverview : ""});
@@ -297,13 +317,17 @@ const HelloWorldContext = ({ props }: any) => {
         ProjectPrivacy: formData.ProjectPrivacy,
         StartDate: formData.startDate,
         DueDate: formData.dueDate,
-        // Budget: formData.Budget,
+        // // Budget: formData.Budget,
         ProjectOverview: formData.ProjectOverview,
         TeamMembersId: selectedIds,
          ProjectFileManager : `/sites/SPFXDemo/ARGProjectsFiles/${formData.ProjectName}`,
          ProjectStatus: "Ongoing",
          ProjectFolderName: formData.ProjectName,
          FolderInProgress: 'In Progress'
+        //  ProjectFileManager : `/sites/SPFXDemo/ARGProjectsFiles/${formData.ProjectName}`,
+        //  ProjectStatus: "Ongoing",
+        //  ProjectFolderName: formData.ProjectName,
+        //  FolderInProgress: 'In Progress'
         // DiscussionForumCategoryId: Number(formData.category),
       };
       const postResult = await addItem(postPayload, sp);
@@ -382,7 +406,6 @@ const HelloWorldContext = ({ props }: any) => {
               ProjectFileManager: ""
             });
             // window.location.reload(); //forNow
-            // setSelectedValue([])
             setDataproject(await fetchprojectdata(sp));
             setChoiceValueOne(await Choicedata(sp));
             dismissModal();
@@ -832,7 +855,7 @@ const HelloWorldContext = ({ props }: any) => {
                           className="btn-close"
                           data-bs-dismiss="modal"
                           aria-label="Close"
-                          // onClick={()=>clearstates()}
+                          onClick={()=>clearstates()}
                         ></button>
                       </div>
                       <div className="modal-body">
@@ -989,10 +1012,10 @@ const HelloWorldContext = ({ props }: any) => {
                           </div>
 
                           {/* Due Date Field */}
-                          {/* <div className="col-lg-4">
+                          <div className="col-lg-4">
                             <div className="mb-3">
                               <label htmlFor="dueDate" className="form-label">
-                                Due Date
+                                End Date
                               </label>
                               <input
                                 type="date"
@@ -1005,9 +1028,9 @@ const HelloWorldContext = ({ props }: any) => {
                                 }
                               />
                             </div>
-                          </div> */}
+                          </div> 
 
-                          <div className="col-lg-4">
+                          {/* <div className="col-lg-4">
                             <div className="mb-3">
                               <label htmlFor="Budget" className="form-label">
                                 Budget
@@ -1015,6 +1038,7 @@ const HelloWorldContext = ({ props }: any) => {
                               <input
                                 type="number"
                                 id="Budget"
+                                 min="0"
                                 name="Budget"
                                 placeholder="Enter Budget"
                                 className="form-control inputcss"
@@ -1024,9 +1048,9 @@ const HelloWorldContext = ({ props }: any) => {
                                 }
                               />
                             </div>
-                          </div>
+                          </div> */}
 
-                          <div className="col-lg-4">
+                          {/* <div className="col-lg-4">
                             <div className="mb-3">
                               <div className="d-flex justify-content-between">
                                 <div>
@@ -1077,7 +1101,7 @@ const HelloWorldContext = ({ props }: any) => {
                                 }
                               />
                             </div>
-                          </div>
+                          </div> */}
 
                           {/* {IsinvideHide && ( */}
                           <div className="col-lg-4">
@@ -1086,7 +1110,7 @@ const HelloWorldContext = ({ props }: any) => {
                                 htmlFor="invitemembers"
                                 className="form-label"
                               >
-                                Select Members{" "}
+                               Select project Team{" "}
                                 {/* <span className="text-danger">*</span> */}
                               </label>
 
@@ -1320,10 +1344,12 @@ const HelloWorldContext = ({ props }: any) => {
                                   <h4 className="mt-0 mb-1 one-line">
                                     <a onClick={() => GotoNextPage(project)}
                                       className="text-dark fw-bold font-16">
-                                      {project.ProjectName}
+                                        {truncateText(project.ProjectName , 40)}
+                                      {/* {project.ProjectName} */}
                                     </a>
+                                 
                                   </h4>
-                                
+                               
                                   <a>
 
 {
@@ -1346,11 +1372,11 @@ const HelloWorldContext = ({ props }: any) => {
 </a>
 
 <p
-                                    style={{ color: "#98a6ad" }}
-                                    className="date-color two-line font-14 mb-3 sp-line-2"
+                                 
+                                    className="date-color text-muted two-line font-14 mb-3 sp-line-2"
                                   >
                                    
-                                   {truncateText(project.ProjectOverview , 20) ||
+                                   {truncateText(project.ProjectOverview , 100) ||
     "No description available..."}{" "}
                              
                                   </p>
@@ -1366,16 +1392,16 @@ const HelloWorldContext = ({ props }: any) => {
                                   </p> */}
 
                                   {/* Task info */}
-                                  <p style={{display:'flex', gap:'10px'}} className="mb-1 font-12">
+                                  <p style={{display:'flex', gap:'10px'}} className="mb-1  text-muted font-12">
                                     <span
-                                      style={{ color: "#6e767e" }}
+                                     
                                       className="pe-2 text-nowrap mb-1 d-inline-block"
                                     >
                                       
                                       <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} />     <b>{project?.ProjectsDocsId?.length}</b> Documents
                                     </span>
                                     <span
-                                      style={{ color: "#6e767e" }}
+                                     
                                       className="text-nowrap mb-1 d-inline-block"
                                     >
                                       
@@ -1392,6 +1418,7 @@ const HelloWorldContext = ({ props }: any) => {
                                         (id: any, idx: any) => {
                                           if (idx < 3) {
                                             return (
+                                              <div style={{width:'40px', marginLeft:'-7px'}} className="gfg_tooltip">
                                               <img
                                                 style={{
                                                   margin:
@@ -1404,6 +1431,11 @@ const HelloWorldContext = ({ props }: any) => {
                                                 className="circlecssnew img-thumbnail avatar-xl"
                                                 alt="profile-image"
                                               />
+                                                <span className="gfg_text">
+                                            A Computer science portal
+                                        </span>
+
+                                        </div>
                                             );
                                           }
                                         }
@@ -1428,9 +1460,11 @@ const HelloWorldContext = ({ props }: any) => {
                                                      float:"left",
                                                      display:'flex',
                                                      alignItems:'center',
-                                                     justifyContent:'center'
+                                                     justifyContent:'center',
+                                                      position:'relative',
+                                                     width:'40px'
                                             }}
-                                            className="circlecssnew text-center img-thumbnail avatar-xl"
+                                            className="circlecssnew mlnew0 text-center img-thumbnail avatar-xl"
                                           >
                                             +
                                           </div>
@@ -1442,8 +1476,10 @@ const HelloWorldContext = ({ props }: any) => {
                                         className=""
                                         style={{
                                           position: "relative",
-                                          left:"-16px",
-                                          top:'11px'
+                                          left:"-28px",
+                                          top:'11px',
+                                          zIndex:'99',
+                                          display:'flex'
                                        
                                         }}
                                       >
@@ -1451,6 +1487,7 @@ const HelloWorldContext = ({ props }: any) => {
                                           project?.TeamMembers?.map(
                                             (id: any, idx: any) => {
                                               return (
+                                                <div style={{width:'40px', marginLeft:'-7px'}} className="gfg_tooltip">
                                                 <img
                                                   style={{
                                                     margin:
@@ -1463,6 +1500,11 @@ const HelloWorldContext = ({ props }: any) => {
                                                   className="circlecssnew img-thumbnail avatar-xl"
                                                   alt="profile-image"
                                                 />
+                                                <span className="gfg_text">
+                                                A Computer science portal
+                                            </span>
+    
+                                            </div>
                                               );
                                             }
                                           )
@@ -1517,16 +1559,16 @@ const HelloWorldContext = ({ props }: any) => {
                                   </h4>
 
 
-                                  <p className="mb-1 font-12">
+                                  <p className="mb-1 text-muted font-12">
                                     <span
-                                      style={{ color: "#6e767e" }}
+                                    
                                       className="pe-2 text-nowrap mb-1 d-inline-block"
                                     >
                                       
                                       <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} />     <b>{project?.ProjectsDocsId?.length}</b> Documents
                                     </span>
                                     <span
-                                      style={{ color: "#6e767e" }}
+                                    
                                       className="text-nowrap mb-1 d-inline-block"
                                     >
                                       
@@ -1604,10 +1646,12 @@ const HelloWorldContext = ({ props }: any) => {
                                                      float:"left",
                                                      display:'flex',
                                                      alignItems:'center',
-                                                     justifyContent:'center'
+                                                     justifyContent:'center',
+                                                      position:'relative',
+                                                     width:'40px'
 
                                             }}
-                                            className="circlecssnew text-center img-thumbnail avatar-xl"
+                                            className="circlecssnew mlnew0 text-center img-thumbnail avatar-xl"
                                           >
                                             +
                                           </div>
@@ -1619,8 +1663,10 @@ const HelloWorldContext = ({ props }: any) => {
                                         className=""
                                         style={{
                                           position: "relative",
-                                          left:"-16px",
-                                          top:'11px'
+                                          left:"-28px",
+                                          top:'11px',
+                                          zIndex:'99',
+                                              display:'flex'
                                        
                                         }}
                                       >
@@ -1703,8 +1749,8 @@ const HelloWorldContext = ({ props }: any) => {
 
                                   {/* Description */}
                                   <p
-                                    style={{ color: "#98a6ad" }}
-                                    className="date-color two-line font-14 mb-3 sp-line-2"
+                                    
+                                    className="date-color text-muted two-line font-14 mb-3 sp-line-2"
                                   >
                                     {project.ProjectOverview ||
                                       "No description available..."}{" "}
@@ -1718,16 +1764,16 @@ const HelloWorldContext = ({ props }: any) => {
                                   </p>
 
                                   {/* Task info */}
-                                  <p style={{display:'flex', gap:'10px'}} className="mb-1 font-12">
+                                  <p style={{display:'flex', gap:'10px'}} className="mb-1 text-muted font-12">
                                     <span
-                                      style={{ color: "#6e767e" }}
+                                     
                                       className="pe-2 text-nowrap mb-1 d-inline-block"
                                     >
                                       
                                       <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} /> <b>{project?.ProjectsDocsId?.length}</b> Documents
                                     </span>
                                     <span
-                                      style={{ color: "#6e767e" }}
+                                     
                                       className="text-nowrap mb-1 d-inline-block"
                                     >
                                    
@@ -1784,9 +1830,11 @@ const HelloWorldContext = ({ props }: any) => {
                                                      float:"left",
                                                      display:'flex',
                                                      alignItems:'center',
-                                                     justifyContent:'center'
+                                                     justifyContent:'center',
+                                                     position:'relative',
+                                                     width:'40px'
                                             }}
-                                            className="circlecssnewnew text-center img-thumbnail avatar-xl"
+                                            className="circlecssnewnew mlnew0 text-center img-thumbnail avatar-xl"
                                           >
                                             +
                                           </div>
@@ -1902,6 +1950,7 @@ const HelloWorldContext = ({ props }: any) => {
                                       {project.ProjectName}
                                     </a>
                                   </h4>
+                              
                                 
                                   <a>
 {
@@ -1910,7 +1959,7 @@ const HelloWorldContext = ({ props }: any) => {
       : (
           <a className="ongoing mb-3"
               style={{ 
-                  background: project?.ProjectStatus === 'Close' ? '#cce7dc'  : '#6c757d',
+                  background: project?.ProjectStatus === 'Close' ? '#cce7dc' : '#6c757d',
                   color: project?.ProjectStatus === 'Close' ? '#008751' : '#fff',
                   padding: '5px',
                   borderRadius: '4px',
@@ -1922,26 +1971,26 @@ const HelloWorldContext = ({ props }: any) => {
       )
 }
 </a>
-
 <p
-                                    style={{ color: "#98a6ad" }}
-                                    className="date-color two-line font-14 mb-3 sp-line-2"
+                                 
+                                    className="date-color two-line text-muted font-14 mb-3 sp-line-2"
                                   >
                                    
-                                   {truncateText(project.ProjectOverview , 20) ||
+                                   {truncateText(project.ProjectOverview , 100) ||
     "No description available..."}{" "}
                              
                                   </p>
+
                                   <p className="mb-1 font-12">
                                     <span
-                                      style={{ color: "#6e767e" }}
-                                      className="pe-2 text-nowrap mb-1 d-inline-block"
+                                      
+                                      className="pe-2 text-muted text-nowrap mb-1 d-inline-block"
                                     >
                                      
                                      <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} />  <b>{project?.ProjectsDocsId?.length}</b> Documents
                                     </span>
                                     <span
-                                      style={{ color: "#6e767e" }}
+                                     
                                       className="text-nowrap mb-1 d-inline-block"
                                     >
                                     <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />
@@ -2018,10 +2067,12 @@ const HelloWorldContext = ({ props }: any) => {
                                                      float:"left",
                                                      display:'flex',
                                                      alignItems:'center',
-                                                     justifyContent:'center'
+                                                     justifyContent:'center',
+                                                      position:'relative',
+                                                     width:'40px'
                                                   
                                             }}
-                                            className="circlecssnew text-center img-thumbnail avatar-xl"
+                                            className="circlecssnew mlnew0 text-center img-thumbnail avatar-xl"
                                           >
                                             +
                                           </div>
@@ -2033,8 +2084,10 @@ const HelloWorldContext = ({ props }: any) => {
                                         className=""
                                         style={{
                                           position: "relative",
-                                          left:"-16px",
-                                          top:'11px'
+                                          left:"-28px",
+                                          top:'11px',
+                                          zIndex:'99',
+                                              display:'flex'
                                        
                                         }}
                                       >
@@ -2147,6 +2200,7 @@ const HelloWorldContext = ({ props }: any) => {
                                     </a>
                                   </h4>
                                   
+
                                   <a>
 
 {
@@ -2155,7 +2209,7 @@ const HelloWorldContext = ({ props }: any) => {
       : (
           <a className="ongoing mb-3"
               style={{ 
-                  background: project?.ProjectStatus === 'Close' ? '#cce7dc' : '#6c757d',
+                 background: project?.ProjectStatus === 'Close' ? '#cce7dc' : '#6c757d',
                   color: project?.ProjectStatus === 'Close' ? '#008751' : '#fff',
                   padding: '5px',
                   borderRadius: '4px',
@@ -2169,24 +2223,25 @@ const HelloWorldContext = ({ props }: any) => {
 </a>
 
 <p
-                                    style={{ color: "#98a6ad" }}
-                                    className="date-color two-line font-14 mb-3 sp-line-2"
+                                   
+                                    className="date-color text-muted two-line font-14 mb-3 sp-line-2"
                                   >
                                    
-                                   {truncateText(project.ProjectOverview , 20) ||
+                                   {truncateText(project.ProjectOverview , 100) ||
     "No description available..."}{" "}
                              
                                   </p>
+
                                   <p className="mb-1 font-12">
                                     <span
-                                      style={{ color: "#6e767e" }}
-                                      className="pe-2 text-nowrap mb-1 d-inline-block"
+                                    
+                                      className="pe-2 text-muted text-nowrap mb-1 d-inline-block"
                                     >
                                        <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} /> 
                                       <b>{project?.ProjectsDocsId?.length}</b> Documents
                                     </span>
                                     <span
-                                      style={{ color: "#6e767e" }}
+                                 
                                       className="text-nowrap mb-1 d-inline-block"
                                     >
                                       
@@ -2261,9 +2316,11 @@ const HelloWorldContext = ({ props }: any) => {
                                                 index == 0
                                                   ? "0 0 0 0"
                                                   : "0 0 0px -12px",
-                                                     float:"left"
-                                            }}
-                                            className="rounded-circlecss img-thumbnail avatar-xl"
+                                                  display:'flex',
+                                                  alignItems:'center',
+                                                  justifyContent:'center', width:'40px'
+                                         }}
+                                            className="rounded-circlecss mlnew0 img-thumbnail avatar-xl"
                                           >
                                             +
                                           </div>
@@ -2275,8 +2332,10 @@ const HelloWorldContext = ({ props }: any) => {
                                         className=""
                                         style={{
                                           position: "relative",
-                                          left:"-16px",
-                                          top:'11px'
+                                          left:"-28px",
+                                          top:'11px',
+                                          zIndex:'99',
+                                              display:'flex'
                                        
                                         }}
                                       >
@@ -2403,27 +2462,27 @@ const HelloWorldContext = ({ props }: any) => {
       )
 }
 </a>
+
 <p
-                                    style={{ color: "#98a6ad" }}
-                                    className="date-color two-line font-14 mb-3 sp-line-2"
+                                   
+                                    className="date-color text-muted two-line font-14 mb-3 sp-line-2"
                                   >
                                    
-                                   {truncateText(project.ProjectOverview , 20) ||
+                                   {truncateText(project.ProjectOverview , 100) ||
     "No description available..."}{" "}
                              
                                   </p>
-                                  
 
-                                  <p className="mb-1 font-12">
+                                  <p className="mb-1 text-muted font-12">
                                     <span
-                                      style={{ color: "#6e767e" }}
+                                     
                                       className="pe-2 text-nowrap mb-1 d-inline-block"
                                     >
                                        <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} /> 
                                       <b>{project?.ProjectsDocsId?.length}</b> Documents
                                     </span>
                                     <span
-                                      style={{ color: "#6e767e" }}
+                                      
                                       className="text-nowrap mb-1 d-inline-block"
                                     >
                                         <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />
@@ -2501,9 +2560,9 @@ const HelloWorldContext = ({ props }: any) => {
                                                      float:"left",
                                                      display:'flex',
                                                      alignItems:'center',
-                                                     justifyContent:'center'
+                                                     justifyContent:'center', width:'40px'
                                             }}
-                                            className="rounded-circlecss img-thumbnail avatar-xl"
+                                            className="rounded-circlecss mlnew0 img-thumbnail avatar-xl"
                                           >
                                             +
                                           </div>
@@ -2515,8 +2574,11 @@ const HelloWorldContext = ({ props }: any) => {
                                         className=""
                                         style={{
                                           position: "relative",
-                                          left:"-16px",
-                                          top:'11px'
+                                          left:"-28px",
+                                          top:'11px',
+                                          zIndex:'99',
+                                              display:'flex',
+                                              
                                        
                                         }}
                                       >
@@ -2620,7 +2682,8 @@ const HelloWorldContext = ({ props }: any) => {
                                         "Untitled Project"}
                                     </a>
                                   </h4>
-                               
+                                
+
                                   <a>
 
 {
@@ -2629,8 +2692,8 @@ const HelloWorldContext = ({ props }: any) => {
       : (
           <a className="ongoing mb-3"
               style={{ 
-                background: project?.ProjectStatus === 'Close' ? '#cce7dc' : '#6c757d',
-                color: project?.ProjectStatus === 'Close' ? '#008751' : '#fff',
+                   background: project?.ProjectStatus === 'Close' ? '#cce7dc' : '#6c757d',
+                  color: project?.ProjectStatus === 'Close' ? '#008751' : '#fff',
                   padding: '5px',
                   borderRadius: '4px',
                   textDecoration: 'none'
@@ -2643,24 +2706,24 @@ const HelloWorldContext = ({ props }: any) => {
 </a>
 
 <p
-                                    style={{ color: "#98a6ad" }}
-                                    className="date-color two-line font-14 mb-3 sp-line-2"
+                                    
+                                    className="date-color text-muted two-line font-14 mb-3 sp-line-2"
                                   >
                                    
-                                   {truncateText(project.ProjectOverview , 20) ||
+                                   {truncateText(project.ProjectOverview , 100) ||
     "No description available..."}{" "}
                              
                                   </p>
-                                  <p className="mb-1 font-12">
+                                  <p className="mb-1 text-muted font-12">
                                     <span
-                                      style={{ color: "#6e767e" }}
+                                      
                                       className="pe-2 text-nowrap mb-1 d-inline-block"
                                     >
                                      <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} />
                                       <b>{project?.ProjectsDocsId?.length}</b> Documents
                                     </span>
                                     <span
-                                      style={{ color: "#6e767e" }}
+                                    
                                       className="text-nowrap mb-1 d-inline-block"
                                     >
                                        <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />
@@ -2738,9 +2801,10 @@ const HelloWorldContext = ({ props }: any) => {
                                                      float:"left",
                                                      display:'flex',
                                                      alignItems:'center',
-                                                     justifyContent:'center'
+                                                     justifyContent:'center',
+                                                     width:'40px'
                                             }}
-                                            className="rounded-circlecss img-thumbnail avatar-xl"
+                                            className="rounded-circlecss mlnew0 img-thumbnail avatar-xl"
                                           >
                                             +
                                           </div>
@@ -2752,8 +2816,10 @@ const HelloWorldContext = ({ props }: any) => {
                                         className=""
                                         style={{
                                           position: "relative",
-                                          left:"-16px",
-                                          top:'11px'
+                                          left:"-28px",
+                                          top:'11px',
+                                          zIndex:'99',
+                                              display:'flex'
                                        
                                         }}
                                       >

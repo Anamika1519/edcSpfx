@@ -680,20 +680,20 @@ const EventdetailscalenderContext = ({ props }: any) => {
                                 </div>) : (<div className="EventAttendesGray  mt-4 rounded-pill" >! Event Expired
                                 </div>)} */}
                                
-                                <span style={{ display: 'flex', gap: '0.2rem', marginTop:'30px' }}>
+                                <span style={{ display: 'flex', gap: '0.2rem', marginLeft:'10px', marginTop:'30px' }}>
                                   { 
                                     item?.Attendees?.length > 0 && item?.Attendees.map((item1: any, index: 0) => {
 
                                       return (
                                         <>
-                                          {item1.EMail ? <span style={{ margin: index == 0 ? '0 0 0 0' : '0 0 0px -12px' }}><img src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item1.EMail}`} className="attendeesImg" /> </span> :
+                                          {item1.EMail ? <span style={{ margin: index == 0 ? '0 0 0 0' : '0 0 0px -12px' }}>&nbsp; | &nbsp;<img src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item1.EMail}`} className="attendeesImg" /> </span> :
                                             <span> <AvtarComponents Name={item1.Title} /> </span>
                                           }
                                         </>
                                       )
                                     })
                                   }
-                                  {item?.Attendees?.length > 0 && (<span style={{ paddingTop: '3px', paddingLeft: '3px' }}>Registered</span>)}
+                                  {item?.Attendees?.length > 0 && (<span className="font-14" style={{ paddingTop: '3px', paddingLeft: '3px' }}>Registered</span>)}
                                 </span>
                               </p>
                             </div>
