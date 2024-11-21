@@ -76,3 +76,16 @@
     .datanew{border-bottom: 1px solid #efefef;position: relative;} 
 .alignright{position: absolute; right: 10px; top: 0;}
 .rounded-circlecss6{width: 3.5rem !important; float: left; border-radius: 1000px !important; height: 3.5rem !important;}
+
+
+/* Hide the spinner in Webkit browsers (Chrome, Safari, Edge) */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Hide the spinner in Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}

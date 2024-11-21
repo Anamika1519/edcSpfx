@@ -2,17 +2,22 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import CustomBreadcrumb from "../../../CustomJSComponents/CustomBreadcrumb/CustomBreadcrumb";
 import VerticalSideBar from "../../verticalSideBar/components/VerticalSideBar";
 import { SPFI } from "@pnp/sp/presets/all";
+import { fetchUserInformationList } from "../../../APISearvice/GroupTeamService";
+import Select from 'react-select'
 import Swal from "sweetalert2";
 import "../../../Assets/Figtree/Figtree-VariableFont_wght.ttf";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "../../../CustomCss/mainCustom.scss";
 import "../../verticalSideBar/components/VerticalSidebar.scss";
+let INGLOBAL : any
+let currentuseridglobal : any
 // import "../components/announcementdetails.scss";
+import Multiselect from "multiselect-react-dropdown";
 import Provider from "../../../GlobalContext/provider";
 import HorizontalNavbar from "../../horizontalNavBar/components/HorizontalNavBar";
 // import 'react-comments-section/dist/index.css';
-import { CommentCard } from "../../../CustomJSComponents/CustomCommentCard/CommentCard";
+import { CommentCard } from "../../../CustomJSComponents/CustomCommentCardProject/CommentCardProject";
 import {
   addNotification,
   getCurrentUser,
@@ -30,6 +35,8 @@ import { getProjectDetailsById } from "../../../APISearvice/BlogService";
 import "./Projects.scss";
 import { Modal, Card ,Dropdown , Button} from "react-bootstrap";
 import FileIcon from "../../../CustomJSComponents/FileIcon";
+import { asAsync } from "@fluentui/react";
+import { parse } from "@fortawesome/fontawesome-svg-core";
 
 // Define types for reply and comment structures
 interface Reply {
@@ -71,8 +78,11 @@ const ProjectDetailsContext = ({ props }: any) => {
   const menuRef = useRef(null);
   const [projectallfile, setProjectallfiles] = useState([]);
   const elementRef = React.useRef<HTMLDivElement>(null);
+  const [selectedValue, setSelectedValue] = useState([]);
   const [CurrentUser, setCurrentUser]: any[] = useState([]);
   const [comments, setComments] = useState<Comment[]>([]);
+const [options, setOpions] = useState([]);
+
   const [newComment, setNewComment] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [ArrDetails, setArrDetails] = useState([]);
@@ -91,6 +101,66 @@ const ProjectDetailsContext = ({ props }: any) => {
       setShowDropdownId(itemId); // Open the dropdown for the clicked item
     }
   };
+  const [users, setUsers] = useState([]);
+  useEffect(() => {
+    // Fetch users from SharePoint when the component mounts
+    const fetchUsers = async () => {
+      try {
+        const userList = await sp.web.siteUsers();  // Fetch users from the site
+        const userOptions = userList.map(user => ({
+          label: user.Title,   // Display name of the user
+          value: user.Id       // Unique user ID
+        }));
+        setUsers(userOptions);  // Set the options for Select and Multiselect
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+  const currentUserEmailRef = useRef('');
+  const getCurrrentuser=async()=>{
+    const userdata = await sp.web.currentUser();
+    // alert(userdata)
+    currentUserEmailRef.current = userdata.Email;
+    currentuseridglobal = userdata.Id
+     alert(`current user : ${userdata.Id}`)
+    // alert(currentUserEmailRef.current)
+ 
+  }
+  useEffect(() => {
+    getCurrrentuser()
+
+  }, []);
+  const onSelect = (selectedList:any) => {
+    console.log(selectedList , "selectedList");
+    setSelectedValue(selectedList);  // Set the selected users
+  };
+
+  const onRemove = (removedItem:any) => {
+    setSelectedValue(prev => prev.filter(item => item.value !== removedItem.value));  // Remove the user from the selection
+  };
+
+  const fetchOptions = async () => {
+    try {
+      const items = await fetchUserInformationList(sp);
+
+      console.log(items, "itemsitemsitems");
+
+      const formattedOptions = items.map((item: { Title: any; Id: any }) => ({
+        name: item.Title, // Adjust according to your list schema
+
+        id: item.Id,
+      }));
+
+      setOpions(formattedOptions);
+    } catch (error) {
+      console.error("Error fetching options:", error);
+    }
+  };
+
+
   // Load comments from localStorage on mount
   useEffect(() => {
     // const savedComments = localStorage.getItem('comments');
@@ -152,13 +222,14 @@ ApICallData();
     const ids = window.location.search;
     const originalString = ids;
     const idNum = originalString.substring(1);
+    INGLOBAL = idNum
     let initialArray: any[] = [];
     let arrLike = {};
     let likeArray: any[] = [];
     sp.web.lists
       .getByTitle("ARGProjectComments")
-      .items.select("*,ARGProject/Id")
-      .expand("ARGProject")
+      .items.select("*,ARGProject/Id ,Author/ID,Author/Title,Author/EMail")
+      .expand("ARGProject , Author")
       .filter(`ARGProjectId eq ${Number(idNum)}`)()
       .then(async (result: any) => {
         console.log(result, "ARGProjectComments");
@@ -265,8 +336,11 @@ if (projectDetails ) {
 
   const ApICallData = async () => {
     debugger;
+
     setCurrentUser(await getCurrentUser(sp, siteUrl));
+    // alert(CurrentUser.Title);
     setCurrentUserProfile(await getCurrentUserProfile(sp, siteUrl));
+    console.log(CurrentUserProfile, "CurrentUserProfile");
   };
 
   const [showModal, setShowModal] = useState(false);
@@ -710,6 +784,7 @@ try{
     const files = Array.from(e.target.files || []);  // Ensure files is an array of type File[]
   
     try {
+      
       const allowedTypes = [
         'image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml', 
         'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 
@@ -756,6 +831,7 @@ try{
           'The file has been successfully Uploaded.',
           'success'
       );
+      getAllFilesForProject()
       setSelectedFiles([])
       }
       // alert(uploadResult)
@@ -849,6 +925,7 @@ try{
   };
 
 const [isPopupVisible, setPopupVisible] = useState(false);
+const [toggleuserpopup, Settoggleuserpopup] = useState(false);
 
 
 
@@ -885,6 +962,11 @@ const idNum = originalString.substring(1);
     }
 };
 
+
+const togglevalue = (e:any) => {
+  e.preventDefault()
+  Settoggleuserpopup(!toggleuserpopup);
+}
   const [name, setName] = useState('');
   const [Overview, setOverview] = useState('');
 
@@ -939,6 +1021,84 @@ const idNum = originalString.substring(1);
     }
   };
 
+  
+  const UpdateTeamMember = async (e: any) => {
+    e.preventDefault();
+
+    try {
+        console.log('Form submitted:', { name, Overview });
+        const ids = window.location.search;
+        const originalString = ids;
+        const idNum = originalString.substring(1);
+        console.log(name, "name", Overview, "overview");
+
+        // Fetch the current People Picker value (TeamMembers) from the list item
+        const item = await sp.web.lists.getByTitle("ARGProject").items.getById(parseInt(idNum))
+            .select("*, TeamMembers/Id, TeamMembers/EMail, TeamMembers/Title")
+            .expand("TeamMembers")();
+        
+        console.log(item, "here is my item");
+
+        // Current People Picker column value (TeamMembers) from the fetched item
+        const existingUsers = (item as any)["TeamMembers"] || [];
+        console.log(existingUsers, "existing users");
+
+        // Format new users for the People Picker column (only LookupId values)
+        const newUsers = selectedValue.map((user: { label: string, value: number }) => ({
+            LookupId: user.value, // Use 'LookupId' for People Picker
+        }));
+
+        // Extract the LookupId from existing users to avoid duplication
+        const existingUserLookupIds = existingUsers.map((user: { Id: number }) => user.Id);
+
+        // Combine existing users with new users, ensuring no duplicates based on 'LookupId'
+        const updatedUsers = [
+            ...existingUsers.map((user: { Id: number }) => ({ LookupId: user.Id })), // Use 'Id' for existing users
+            ...newUsers.filter(newUser => !existingUserLookupIds.includes(newUser.LookupId)) // Avoid duplicates by checking LookupId
+        ];
+
+        console.log(updatedUsers, "updatedUsers");
+
+        // Prepare updated values for SharePoint item
+        const updatedValues = {
+            TeamMembersId: updatedUsers.map(user => user.LookupId), // Ensure it's an array
+        };
+
+        // Update the SharePoint item
+        const updatedItem =  await sp.web.lists.getByTitle('ARGProject').items.getById(parseInt(idNum)).update(updatedValues);
+        if(updatedItem){
+
+          togglevalue(e)
+  
+            alert(false)
+               // Show success message
+        Swal.fire({
+          title: 'Success!',
+          text: 'Users added successfully.',
+          icon: 'success',
+          confirmButtonText: 'OK',
+      });
+       
+        }
+       
+     
+
+        // Close popup (toggle visibility)
+
+    } catch (error) {
+        console.error('Error updating item:', error);
+
+        // Show error message
+        Swal.fire({
+            title: 'Error!',
+            text: 'Something went wrong. Please try again.',
+            icon: 'error',
+            confirmButtonText: 'OK',
+        });
+    }
+};
+
+
   const DeleteFileFromFileMaster =async (fileId:any) =>{
     try {
       // Show confirmation alert using Swal
@@ -983,6 +1143,56 @@ const idNum = originalString.substring(1);
       );
   }
   }
+  const handleSaveComment = async (id: number, newText: string) => {
+    // Logic for saving a comment goes here
+    // For example:
+    alert(INGLOBAL)
+    await sp.web.lists
+      .getByTitle("ARGProjectComments")
+      .items.getById(id)
+      .update({
+        Comments: newText,
+        ARGProjectId: Number(INGLOBAL)
+      });
+  };
+
+  const handleDeleteComment = async (commentId: number) => {
+    try {
+      // Show confirmation alert
+      const result = await Swal.fire({
+          title: "Are you sure?",
+          text: "Do you really want to delete this item? This action cannot be undone!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#d33",
+          cancelButtonColor: "#3085d6",
+          confirmButtonText: "Yes, delete it!",
+      });
+
+      // If confirmed, proceed to delete
+      if (result.isConfirmed) {
+          await sp.web.lists.getByTitle("ARGProjectComments").items.getById(commentId).delete();
+
+          // Show success alert
+          Swal.fire({
+              title: "Deleted!",
+              text: "The item has been successfully deleted.",
+              icon: "success",
+              timer: 1500,
+              showConfirmButton: false,
+          });
+      }
+  } catch (error) {
+      // Show error alert
+      Swal.fire({
+          title: "Error!",
+          text: `There was an issue deleting the item: ${error.message}`,
+          icon: "error",
+          confirmButtonText: "OK",
+      });
+      console.error(`Error deleting item `, error);
+  }
+  }
   return (
     <div id="wrapper" ref={elementRef}>
       <div className="app-menu" id="myHeader">
@@ -1025,6 +1235,36 @@ const idNum = originalString.substring(1);
           </div>
         </div>
       )}
+          {toggleuserpopup && (
+        <div className="popup">
+          <div className="popup-content">
+            <button className="close-btn" onClick={togglevalue}>
+              &times; {/* Cross mark */}
+            </button>
+            <h2>Add Users</h2>
+            <form>
+              <label htmlFor="name">Select Users </label>
+                {/* React-Select component */}
+                <Select
+                options={users}
+                value={selectedValue}
+                onChange={(selectedOption:any) => onSelect(selectedOption)} // For multi-select, you'll need to handle array of options
+                isMulti
+              />
+
+              {/* Multiselect component */}
+              <Multiselect
+                options={users}  // Same options for both Select and Multiselect
+                selectedValues={selectedValue}
+                onSelect={onSelect} // Called when items are selected
+                onRemove={onRemove} // Called when items are removed
+                displayValue="label" // Display name of the user
+              />
+              <button type="submit" onClick={UpdateTeamMember}>Submit</button>
+            </form>
+          </div>
+        </div>
+      )}
             <div className="row ">
               <div className="col-lg-8">
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
@@ -1033,6 +1273,13 @@ const idNum = originalString.substring(1);
             </div>
             {ArrDetails.length > 0
               ? ArrDetails.map((item: any, index) => {
+
+                console.log(item?.Author?.Email , "email" )
+                console.log(item?.Author?.Title , "email" )
+                // alert(item.Author.EMail)
+                if(item.Author.EMail === currentUserEmailRef.current){
+                  // alert(true)
+                }
                 if (item.ProjectStatus === "Close") {
                   var div = document.querySelector('.col-md-6.mobile-w2') as HTMLElement;
                   if (div) {
@@ -1070,12 +1317,17 @@ const idNum = originalString.substring(1);
                   onClick={(e) => openModal(e)}
                  
                 >
-                  <FilePlus /> Open Document
+                  <FilePlus /> Open Document Repository
                 </button>
                         </div>
                         <div className="tabcss mb-2 mt-2 me-1 newalign"> <span className="pe-2 text-nowrap mb-0 d-inline-block">
                               <Calendar size={14} />{" "}
-                              {moment(item.StartDate).format("DD-MMM-YYYY")}{" "}
+                             {moment(item.StartDate).format("DD-MMM-YYYY")}{" "} Start Date
+                              
+                            </span>  </div>
+                        <div className="tabcss mb-2 mt-2 me-1 newalign"> <span className="pe-2 text-nowrap mb-0 d-inline-block">
+                              <Calendar size={14} />{" "}
+                             {moment(item.DueDate).format("DD-MMM-YYYY")}{" "} End Date
                               
                             </span>  </div>
                             <div className="tabcss mb-2 sameh mt-2 me-1 ">
@@ -1095,15 +1347,15 @@ const idNum = originalString.substring(1);
                                 </span>
                               )}
                             </span> */}
-                             <span
+                             {/* <span
                               className="text-nowrap mb-0 d-inline-block"
                               onClick={togglePopup}
                             >
                              Create Folder
                              
-                            </span>
+                            </span> */}
                             </div>
-                          <p  style={{
+                          {/* <p  style={{
                               
                               margin: "11px",
                             }}   className="mb-2 mt-1 newt6 font-14">
@@ -1189,7 +1441,7 @@ const idNum = originalString.substring(1);
                                 </div>
                               )}
                             </div>
-                          </p>
+                          </p> */}
                         </div>
                       </div>
                       
@@ -1357,7 +1609,7 @@ const idNum = originalString.substring(1);
                         className="form-control text-dark form-control-light mb-2"
                         value={newComment}
                         onChange={(e) => setNewComment(e.target.value)}
-                        placeholder="Add a new comment..."
+                        placeholder="Add a new Post..."
                         rows={3}
                         style={{ borderRadius: "unset" }}
                       />
@@ -1397,7 +1649,7 @@ const idNum = originalString.substring(1);
                         onClick={handleAddComment}
                         disabled={loading} // Disable button when loading
                       >
-                        {loading ? "Submitting..." : "Add Comment"}{" "}
+                        {loading ? "Submitting..." : "Post Something"}{" "}
                         {/* Change button text */}
                       </button>
                     </div>
@@ -1409,11 +1661,15 @@ const idNum = originalString.substring(1);
               {/* New comment input */}
 
               {comments.map((comment, index) => (
+              
                 <div className="col-xl-12" style={{ marginTop: "1rem" }}>
+                   {  alert(`${comment.AuthorId} : Email` )}
+                   {console.log("comment json", comment)}
                   <CommentCard
                     key={index}
                     commentId={index}
                     username={comment.UserName}
+                    AuthorID={comment.AuthorId}
                     Commenttext={comment.Comments}
                     Comments={comments}
                     Created={comment.Created}
@@ -1421,11 +1677,14 @@ const idNum = originalString.substring(1);
                     replies={comment.UserCommentsJSON}
                     userHasLiked={comment.userHasLiked}
                     CurrentUserProfile={CurrentUserProfile}
+                    currentuserid = {currentuseridglobal}
                     loadingLike={loadingLike}
                     Action="Project"
-                    onAddReply={(text) => handleAddReply(index, text)}
+                    onAddReply={(text:any) => handleAddReply(index, text)}
                     onLike={() => handleLikeToggle(index)} // Pass like handler
                     loadingReply={loadingReply}
+                      onSaveComment={(text:any)=>handleSaveComment(comment.Id,text)} 
+                      ondeleteComment={()=>handleDeleteComment(comment.Id)}
                   />
                 </div>
               ))}
@@ -1448,51 +1707,32 @@ const idNum = originalString.substring(1);
 <div className="card mobile-5 mt-3"  style={{ borderRadius: "22px" }}>
   <div className="card-body pb-3 gheight">
     <h4 className="header-title font-16 text-dark fw-bold mb-2"  style={{ fontSize: "20px" }}>Project Members</h4>
-     {/* {argcurrentgroupuser */}
-     {argcurrentgroupuser[0]?.TeamMembers?.length > 0 && argcurrentgroupuser[0]?.TeamMembers?.map(
-  (id: any, idx: any) => {
-    if (idx ) {
-      return (
-        <div className="projectmemeber">
-<img
-          // style={{
-          //   margin:
-          //     index == 0
-          //       ? "0 0 0 0"
-          //       : "0 0 0px -12px",
-          // }}
-          src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-          className="rounded-circlecss6 img-thumbnail avatar-xl"
-          alt="profile-image"
-        />
-        <p>{id?.Title} </p>
-        <img
-
-src={require("../assets/calling.png")}
-
-className="alignright"
-
-onClick={() =>
-
-  window.open(
-
-    `https://teams.microsoft.com/l/call/0/0?users=${id.EMail}`,
-
-    "_blank"
-
-  )
-
-}
-
-alt="Call"
-
-/>
-        </div>
-        
-      );
-    }
-  }
+    {item.Author.EMail === currentUserEmailRef.current && (
+    <div>
+     <button onClick={(e)=>togglevalue(e)}>Add User </button>
+  <i className="fe-plus-circle"></i>
+    </div>
+ 
 )}
+     {/* {argcurrentgroupuser */}
+     {item?.TeamMembers?.map((id: any, idx: any) => {
+  return (
+    <div key={idx} className="projectmemeber">
+      <img
+        src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+        className="rounded-circlecss6 img-thumbnail avatar-xl"
+        alt="profile-image"
+      />
+      <p>{id?.Title}</p>
+      <img
+        src={require("../assets/calling.png")}
+        className="alignright"
+        onClick={() => window.open(`https://teams.microsoft.com/l/call/0/0?users=${id.EMail}`, "_blank")}
+        alt="Call"
+      />
+    </div>
+  );
+})}
      {/* } */}
     
     </div>
