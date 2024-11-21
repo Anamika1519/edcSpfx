@@ -16,6 +16,7 @@ import moment from "moment";
 import Swal from "sweetalert2";
 
 import SocialFeed from "../../webparts/groupandTeamDetails/components/SocialFeed2";
+import { Carousel, Modal } from "react-bootstrap";
 
 export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, currentEmail, post, fetchPost }: any) => {
     const [loadingReply, setLoadingReply] = useState<boolean>(false);
@@ -35,6 +36,10 @@ export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentU
     const [copySuccess, setCopySuccess] = useState('');
     const [showMore, setShowMore] = useState(false);
     const menuRef = useRef(null);
+    const [showModal, setShowModal] = useState(false);
+ 
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+ 
 
     useEffect(() => {
         GetId()
@@ -419,9 +424,15 @@ export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentU
         //#endregion
     };
 
+    // const handleToggleImages = () => {
+    //     setShowMore((prevShowMore) => !prevShowMore);
+    // };
     const handleToggleImages = () => {
-        setShowMore((prevShowMore) => !prevShowMore);
+        // setShowMore((prevShowMore) => !prevShowMore);
+        setShowModal(true);
+        setCurrentImageIndex(0);
     };
+ 
     const sendanEmailStop = () => {
         setIsMenuOpenshare(false);
     }
@@ -458,7 +469,7 @@ export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentU
                                         <MoreVertical size={20} />
                                     </div>
                                     {isMenuOpen && (
-                                        <div className="dropdown-menucsspost">
+                                        <div className="dropdown-menucsspost" ref={menuRef}>
                                             <button onClick={(e) => handleEditClick(e)}>Edit</button>
                                             <button onClick={(e) => handleDeletePost(e, post.postId)}>Delete</button>
                                         </div>
@@ -484,7 +495,77 @@ export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentU
                     </p>
                 )}
 
-                <div className="image-preview mt-2">
+                {/* <div className="image-preview mt-2">
+                    <div className="grid-container">
+                        {displayedImages.map((image: any, index) => {
+                        
+                            const imageUrl = mergeAndRemoveDuplicates(siteUrl, image.fileUrl);
+                      
+                            const className = index === 0 ? "large-image" : "small-image";
+                         
+                            const isThirdImage = index === 2 && SocialFeedImagesJson.length > 3 && !showMore;
+                            return (image.fileType === "image/jpeg" ?
+                                <div
+                                    key={index}
+                                    className={`grid-item ${className}`}
+                                    style={{ position: "relative" }}
+                                >
+                                    <img
+                                        src={imageUrl}
+                                        alt={`Group/Team ${index}`} onClick={(e) => OpenImagePreview(imageUrl)}
+                                        style={{ width: "100%", height: "auto" }}
+                                    />
+                                  
+                                    {isThirdImage && (
+                                        <div
+                                            className="more-images-overlay"
+                                            style={{
+                                                position: "absolute",
+                                                top: 0,
+                                                left: 0,
+                                                right: 0,
+                                                bottom: 0,
+                                                backgroundColor: "rgba(0, 0, 0, 0.5)",
+                                                color: "white",
+                                                fontSize: "24px",
+                                                display: "flex",
+                                                alignItems: "center",
+                                                justifyContent: "center",
+                                                cursor: "pointer",
+                                            }}
+                                            onClick={handleToggleImages} 
+                                        >
+                                            +{SocialFeedImagesJson.length - 3}
+                                        </div>
+                                    )}
+                                </div>
+                                : <div className="item-design"
+                                    key={index}                                  
+                                    style={{ position: "relative" }}
+                                >
+                               
+                                    <a target="_blank" href={imageUrl} style={{fontSize:'16px'}}>{image.fileName}</a>
+                                    <br />
+
+
+                                </div>
+                            );
+                        })}
+                    </div>
+
+             
+
+                    {showMore && (
+                        <div
+                            className="show-less"
+                            style={{ marginTop: "10px", cursor: "pointer" }}
+                            onClick={handleToggleImages}
+                        >
+                            Show Less
+                        </div>
+                    )}
+                </div> */}
+<div className="image-preview mt-2">
                     <div className="grid-container">
                         {displayedImages.map((image: any, index) => {
                             // Merging and cleaning up the image URL if needed
@@ -493,7 +574,7 @@ export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentU
                             const className = index === 0 ? "large-image" : "small-image";
                             // Check if the current image is the third one and if there are more than 3 images
                             const isThirdImage = index === 2 && SocialFeedImagesJson.length > 3 && !showMore;
-                            return (image.fileType === "image/jpeg" ?
+                            return (
                                 <div
                                     key={index}
                                     className={`grid-item ${className}`}
@@ -501,10 +582,18 @@ export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentU
                                 >
                                     {/* Render the image */}
                                     <img
-                                        src={imageUrl}
-                                        alt={`Group/Team ${index}`} onClick={(e) => OpenImagePreview(imageUrl)}
-                                        style={{ width: "100%", height: "auto" }}
-                                    />
+                      src={imageUrl}
+                      alt={`Social feed ${index}`}
+                      style={{
+                        width: "100%",
+                        height: "auto",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => {
+                        setShowModal(true); // Open the modal
+                        setCurrentImageIndex(index); // Pass the clicked image index
+                      }}
+                    />
                                     {/* Show +X overlay if it is the third image and there are more images to show */}
                                     {isThirdImage && (
                                         <div
@@ -529,22 +618,12 @@ export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentU
                                         </div>
                                     )}
                                 </div>
-                                : <div className="item-design"
-                                    key={index}                                  
-                                    style={{ position: "relative" }}
-                                >
-                                    {/* Render the file */}
-                                    <a target="_blank" href={imageUrl} style={{fontSize:'16px'}}>{image.fileName}</a>
-                                    <br />
-
-
-                                </div>
                             );
                         })}
                     </div>
-
+ 
                     {/* Only display a "Show Less" message if more images are shown */}
-
+ 
                     {showMore && (
                         <div
                             className="show-less"
@@ -555,7 +634,6 @@ export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentU
                         </div>
                     )}
                 </div>
-
                 
 
                 {/* <div className="grid-container">
@@ -570,6 +648,26 @@ export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentU
                     })}
                 </div> */}
             </div>
+            <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+          <Modal.Header closeButton></Modal.Header>
+          <Modal.Body>
+            <Carousel
+              activeIndex={currentImageIndex} // Show the clicked image first
+              onSelect={(selectedIndex) => setCurrentImageIndex(selectedIndex)}
+            >
+              {SocialFeedImagesJson.map((item: any, index: number) => (
+                <Carousel.Item key={index}>
+                  <img
+                    className="d-block w-100"
+                    src={mergeAndRemoveDuplicates(siteUrl, item.fileUrl)} // Use your image URL merge function
+                    alt={`Slide ${index}`}
+                    style={{ height: "auto", objectFit: "contain" }}
+                  />
+                </Carousel.Item>
+              ))}
+            </Carousel>
+          </Modal.Body>
+        </Modal>
             {/* Post Interactions */}
 
             <div className="post-interactions mt-3 mb-3">

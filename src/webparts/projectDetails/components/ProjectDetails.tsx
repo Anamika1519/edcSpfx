@@ -1874,6 +1874,16 @@ const handleRemoveUser = async (userId: number) => {
           className="rounded-circlecss6 img-thumbnail avatar-xl"
           alt="profile-image"
         />
+        <p>{id?.Title} </p>
+        {item.Author.EMail === currentUserEmailRef.current && (
+        <div>
+        <button onClick={()=>handleRemoveUser(id?.ID)}>Remove</button>
+        </div>
+
+        )
+        
+        }
+      
         <p className="mb-0">{id?.Title} </p>
         <a onClick={()=>handleRemoveUser(id?.ID)} className="action-icon text-danger">
           <svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="trash-can" className="svg-inline--fa fa-trash-can " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
