@@ -38,11 +38,13 @@
   margin-top: 2px;
   margin-right: 5px;}
 .paddb {
-  padding: 16px 35px 0px 20px !important;
+  padding: 30px 35px 0px 20px !important;
 }
 .paddbnew{
-  padding: 16px 13px 0px 13px !important;
+  padding: 30px 16px 0px 0px !important;
 }
+.sub-menu .test{padding: 0px 10px !important;    height: 30px;
+  line-height: 10px;}
 .add-comment textarea{
   border: 1px solid #007bff;
   border-radius: 30px !important;
@@ -50,7 +52,7 @@
   overflow-y: auto;
 }
 .add-comment textarea::placeholder{
-  color: #000 !important; font-size: 16px; font-weight: 600;
+  color: #000 !important; font-size: 14px; font-weight: 400;
 }
 .row{
   --bs-gutter-x: 0.8rem;
@@ -99,7 +101,7 @@
 a{text-decoration: none !important; cursor: pointer;}
 .sidebar.close {
   padding: 0 0;
-  width: 80px;
+  width: 70px;
 }
 #myDropdown, #myDropdownBell{transform: translateY(19px) !important; border-radius: 5px;}
 .twolinewrap{
@@ -280,6 +282,7 @@ a:hover, a:active {
   list-style: none;
   max-height: 800px;
   overflow-y: hidden;
+  overflow-x: hidden;
 }
 .menu_items:hover{
   overflow-y: auto;
@@ -561,7 +564,7 @@ a:hover, a:active {
 .sub-menu {
   display: none; /* Hide the submenu by default */
   position: fixed;
-  left: 4.3rem;
+  left:3.8rem;
   background-color: var(--blue-color);
   padding: 10px;
   list-style-type: none;

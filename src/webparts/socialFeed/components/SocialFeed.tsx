@@ -1070,7 +1070,7 @@ const SocialFeedContext = ({ props }: any) => {
 
           <div className="container-fluid paddb">
 
-            <div className="row" style={{ paddingLeft: '0.5rem' }}>
+            <div className="row">
 
               <div className="col-lg-3">
 
@@ -1249,7 +1249,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                                     className="form-control border-0 resize-none textareacss"
 
-                                    placeholder="Write something..."
+                                    placeholder="Type your post here..."
 
                                     value={Contentpost}
 
@@ -1926,7 +1926,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                     <h4 className="header-title font-16 text-dark fw-bold mb-0" style={{ fontSize: '20px' }}>
 
-                      People you may Follow
+                    <span className='padd30px'>People you may Follow</span>  
 
                       <a
 
