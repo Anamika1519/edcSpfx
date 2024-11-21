@@ -337,11 +337,11 @@ const BlogsContext = ({ props }: any) => {
     if (validateForm()) {
       if (editForm) {
         Swal.fire({
-          title: "Do you want to update?",
+          title: "Are you sure you want to publish this blog?",
           showConfirmButton: true,
           showCancelButton: true,
-          confirmButtonText: "Save",
-          cancelButtonText: "Cancel",
+          confirmButtonText: "Yes",
+          cancelButtonText: "No",
           icon: "warning",
         }).then(async (result) => {
           console.log(result);
@@ -648,7 +648,7 @@ const BlogsContext = ({ props }: any) => {
                 console.log("Update Result:", updateResult);
               }
             }
-            Swal.fire("Item update successfully", "", "success");
+            //Swal.fire("Item update successfully", "", "success");
             sessionStorage.removeItem("announcementId");
             setTimeout(() => {
               dismissModal()
@@ -657,11 +657,11 @@ const BlogsContext = ({ props }: any) => {
         });
       } else {
         Swal.fire({
-          title: "Do you want to save?",
+          title: "Are you sure you want to publish this blog?",
           showConfirmButton: true,
           showCancelButton: true,
-          confirmButtonText: "Save",
-          cancelButtonText: "Cancel",
+          confirmButtonText: "Yes",
+          cancelButtonText: "No",
           icon: "warning",
         }).then(async (result) => {
           //console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
@@ -1243,7 +1243,7 @@ const BlogsContext = ({ props }: any) => {
                                 </div>
                               </div>
 
-                              <div className="col-lg-4">
+                              {/* <div className="col-lg-4">
                                 <div className="mb-3">
                                   <label
                                     htmlFor="FeaturedAnnouncement"
@@ -1269,7 +1269,7 @@ const BlogsContext = ({ props }: any) => {
                                     />
                                   </div>
                                 </div>
-                              </div>
+                              </div> */}
 
                               <div className="col-lg-8">
                                 <div className="mb-3">
@@ -1285,7 +1285,7 @@ const BlogsContext = ({ props }: any) => {
                                     id="overview"
                                     placeholder="Enter Overview"
                                     name="overview"
-                                    style={{ height: "70px" }}
+                                    style={{ minHeight: "80px",maxHeight:"80px" }}
                                     value={formData.overview}
                                     onChange={(e) =>
                                       onChange(e.target.name, e.target.value)

@@ -9,7 +9,7 @@
     font-family: $ms-font-family-fallbacks;
   }
 }
-
+.rounded-circlenu{width: 2.5rem; height: 2.5rem; border-radius: 1000px !important;}
 .welcome {
   text-align: center;
 }
@@ -31,4 +31,10 @@
       color: var(--linkHovered); // note: CSS Custom Properties support is limited to modern browsers only
     }
   }
+}
+.namcss{
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  text-align: left;
 }
