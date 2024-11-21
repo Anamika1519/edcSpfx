@@ -25,6 +25,7 @@ import { getDiscussion, getDiscussionFilter, fetchTrendingDiscussionBasedOn } fr
 import { WebPartContext } from "@microsoft/sp-webpart-base";
 import { MSGraphClientV3 } from "@microsoft/sp-http";
 import { toLower } from "lodash";
+
 import Swal from 'sweetalert2'
 interface Post {
   text: string;
@@ -49,6 +50,7 @@ const SocialFeedContext = ({ props }: any) => {
   const [CurrentUser, setCurrentUser] = useState<any>([])
 
   const [currentId, setCurrentID] = useState<any>(0)
+  const [CurrentData, setCurrentData] = useState<any>([])
 
   const [currentUsername, setCurrentUserName] = useState("")
   const [UploadedFile, setUploadFile] = useState([])
@@ -68,7 +70,7 @@ const SocialFeedContext = ({ props }: any) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [Loading, setLoading] = useState(false);
   const [Loading1, setLoading1] = useState(false);
-
+  const [validationMessage, setValidationMessage] = useState("");
   const [copySuccess, setCopySuccess] = useState('');
   const [activeMainTab, setActiveMainTab] = useState("feed");
   const [loadingReply, setLoadingReply] = useState<boolean>(false);
@@ -84,6 +86,7 @@ const SocialFeedContext = ({ props }: any) => {
     fetchUserInformationList();
     // setPosts(storedPosts);
     getAllAPI();
+    
     const handleClickOutside = (event: { target: any; }) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
         setIsMenuOpenshare(false);
@@ -100,6 +103,8 @@ const SocialFeedContext = ({ props }: any) => {
   const getAllAPI = async () => {
     setCurrentEmail(await getCurrentUserProfileEmail(sp))
     setCurrentUser(await getCurrentUser(sp))
+    
+   // const currentData = filteredEmployeeData.slice(0, 10);
     if (IsCall) {
       const cuurentID = await getCurrentUserNameId(sp);
       setCurrentID(cuurentID)
@@ -117,10 +122,11 @@ const SocialFeedContext = ({ props }: any) => {
     FilterDiscussionData()
     // setFollowUsers(await getFollow(sp))
     // setFollowingUsers(await getFollowing(sp))
-
+   
 
   }
   const fetchUserInformationList = async () => {
+    
     try {
       const currentUser = await sp.web.currentUser();
       let FollowedIds: any[] = [];
@@ -136,7 +142,7 @@ const SocialFeedContext = ({ props }: any) => {
  
       console.log(finalquery, 'finalquery');
  
-      const strfilter = FollowedIds.length > 0 ? `EMail ne null and ID ne ${currentUser.Id} and ID ne ${finalquery}` : `EMail ne null and ID ne ${currentUser.Id}`
+      const strfilter = FollowedIds.length > 0 ? `EMail ne null and ID ne ${currentUser.Id} and ${finalquery} and ContentType eq 'Person'` : `EMail ne null and ID ne ${currentUser.Id} and ContentType eq 'Person'`
  
       const userListSP = await sp.web.lists
         .getByTitle("User Information List")
@@ -178,6 +184,8 @@ const SocialFeedContext = ({ props }: any) => {
       });
  
       setUsersArr(userList);
+      const filteredEmployeeData = await applyFiltersAndSorting(userList, Currentusercompany);
+      setCurrentData(filteredEmployeeData.slice(0, 5))
     } catch (error) {
       console.error("Error fetching users:", error);
     }
@@ -191,9 +199,7 @@ const SocialFeedContext = ({ props }: any) => {
     });
     return filteredData;
   };
-  const filteredEmployeeData = applyFiltersAndSorting(usersitem, Currentusercompany);
-
-  const currentData = filteredEmployeeData.slice(0, 10);
+  
 
 
   const FilterDiscussionData = async () => {
@@ -389,42 +395,49 @@ const SocialFeedContext = ({ props }: any) => {
   // };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    debugger
-    e.preventDefault();
+    e.preventDefault(); // Prevent form default behavior
+    debugger;
+ 
+    if (!Contentpost.trim() && SocialFeedImagesJson.length === 0) {
+      // Validation message when both fields are empty
+      setValidationMessage("Please type something or upload an image.");
+      setTimeout(() => setValidationMessage(""), 3000); // Clear message after 3 seconds
+      return;
+    }
+ 
     setLoading(true);
     try {
- 
       let ImagesIdss: any[] = [];
+      setIsSubmitting(true); // Start submitting
+      let newPostss: any;
  
-      setIsSubmitting(true);  // Start submitting
- 
-      let newPostss: any
- 
-      if (Contentpost.trim() || SocialFeedImagesJson.length) {
-        const newPost = {
-          Contentpost,
-          SocialFeedImagesJson,
-          Created: new Date().toLocaleTimeString(),
-          userName: currentUsername,
-          userAvatar: `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${currentEmail}`,
-          likecount: 0,
-          commentcount: 0,
-          shares: 0,
-        };
-        ImagesIdss = ImagesIdss.concat(SocialFeedImagesJson.map((item: any) => item.ID));
-        setImageIds(ImagesIdss)
-        try {
-          // Add the new post to SharePoint List
-          await sp.web.lists.getByTitle('ARGSocialFeed').items.add({
-            Contentpost: Contentpost,  // Use the Contentpost for the title (or a different field if necessary)
-            SocialFeedImagesJson: JSON.stringify(SocialFeedImagesJson),  // Store the images as JSON string
+      const newPost = {
+        Contentpost,
+        SocialFeedImagesJson,
+        Created: new Date().toLocaleTimeString(),
+        userName: currentUsername,
+        userAvatar: `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${currentEmail}`,
+        likecount: 0,
+        commentcount: 0,
+        shares: 0,
+      };
+      ImagesIdss = ImagesIdss.concat(
+        SocialFeedImagesJson.map((item: any) => item.ID)
+      );
+      setImageIds(ImagesIdss);
+      try {
+        await sp.web.lists
+          .getByTitle("ARGSocialFeed")
+          .items.add({
+            Contentpost,
+            SocialFeedImagesJson: JSON.stringify(SocialFeedImagesJson),
             UserName: currentUsername,
             userAvatar: `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${currentEmail}`,
             likecount: 0,
             commentcount: 0,
-            SocialFeedImagesId: ImagesIdss
-          }).then(async (ele: any) => {
-            console.log(ele);
+            SocialFeedImagesId: ImagesIdss,
+          })
+          .then(async (ele: any) => {
             newPostss = {
               Contentpost,
               SocialFeedImagesJson,
@@ -434,54 +447,37 @@ const SocialFeedContext = ({ props }: any) => {
               likecount: 0,
               commentcount: 0,
               shares: 0,
-              Id: ele.data.Id
-//chhaya
+              Id: ele.data.Id,
             };
  
             const updatedPosts = [newPostss, ...posts];
             await addActivityLeaderboard(sp, "Post By User");
-            console.log(updatedPosts);
-            setPosts(updatedPosts);//chhaya
-            localStorage.setItem('posts', JSON.stringify(updatedPosts));
-            fetchPosts()
-            let notifiedArr = {
+            setPosts(updatedPosts);
+            localStorage.setItem("posts", JSON.stringify(updatedPosts));
+            fetchPosts();
+            const notifiedArr = {
               ContentId: ele.data.Id,
               NotifiedUserId: ele.data.AuthorId,
               ContentType0: "Post By User",
               ContentName: ele.data.Contentpost,
               ActionUserId: CurrentUser.Id,
               DeatilPage: "SocialFeed",
-              ReadStatus: false
-            }
-            const nofiArr = await addNotification(notifiedArr, sp)
-            console.log(nofiArr, 'nofiArr');
-          }
-          );
-          // If the SharePoint request is successful, update the state and local storage
-          // Clear fields
-          setContent('');
-          setImages([]);
-          setLoading(false);//chhaya
-        } catch (error) {
-          setIsSubmitting(false);
-          console.log("Error adding post to SharePoint: ", error);
-          //alert("There was an error submitting your post. Please try again.");
-        } finally {
-          // setLoading(false);//chhaya
-          setIsSubmitting(false);  // End submitting
-        }
-      } else {
-        // setLoading(false);//chhaya
-        //alert("Please add some content or upload images before submitting.");
+              ReadStatus: false,
+            };
+            await addNotification(notifiedArr, sp);
+          });
+ 
+        // Clear fields
+        setContent("");
+        setImages([]);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error adding post to SharePoint: ", error);
+      } finally {
         setIsSubmitting(false);
       }
-    }
-    catch (error) {
-      setLoading(false);
-      console.error('Error toggling Reply:', error);
-    }
-    finally {
-     //chhaya // setLoading(false); // Enable the button after the function completes
+    } catch (error) {
+      console.error("Error toggling Reply:", error);
     }
   };
 
@@ -538,6 +534,8 @@ const SocialFeedContext = ({ props }: any) => {
       followersCheck = followers.map(f => f.Follower)
  
       setfollowwerLength(followersCheck.length)
+
+      
       if (followersCheck.length > 0) {//chhaya
         followersCheck.forEach(async element => {
           try {
@@ -1010,12 +1008,13 @@ const SocialFeedContext = ({ props }: any) => {
         FollowerId: currentUser.Id,
         FollowedId: itemId
       });
-      Swal.fire("User followed successfully", "", "success");
+      fetchUserInformationList()
+      //Swal.fire("User followed successfully", "", "success");
       setFollowStatus((prevStatus) => ({
         ...prevStatus,
         [itemId]: true,
       }));
-      fetchUserInformationList()
+
       // Increase follower count and decrease unfollower count
 
     } catch (error) {
@@ -1339,7 +1338,7 @@ const SocialFeedContext = ({ props }: any) => {
                                   </div>
 
                                 </form>
-
+                                {validationMessage && <p className="validation-message">{validationMessage}</p>}
                               </div>
 
                             </div>
@@ -1890,11 +1889,11 @@ const SocialFeedContext = ({ props }: any) => {
 
                               <a className="font-14" style={{ fontSize: '14px' }}>
 
-                                <strong className="text-dark" style={{ fontWeight: '700', cursor: 'pointer' }} onClick={() => navigatetoDiscussionForum(x.ID)}>{x?.DiscussionForumCategory?.CategoryName}:</strong> &nbsp;
+                                <strong className="text-dark" style={{ fontWeight: '700', cursor: 'pointer' }} onClick={() => navigatetoDiscussionForum(x.ID)}>{truncateText(x?.Topic, 10)}:</strong> &nbsp;
 
                                 <span className="text-muted" style={{ color: '#6b6b6b' }} >
-
-                                  {x.Topic}
+                                {truncateText(x.Overview, 15)}
+                                
 
                                 </span>
 
@@ -1919,7 +1918,7 @@ const SocialFeedContext = ({ props }: any) => {
                 </div>
 
 
-                {console.log("currentDatacurrentData", currentData)}
+                {/* {console.log("currentDatacurrentData", currentData)} */}
                 <div className="card mobile-6" style={{ borderRadius: "1rem", position:'sticky', top:'90px' }}>
 
                   <div className="card-body pb-3 gheight">
@@ -1946,7 +1945,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                     <div className="inbox-widget mt-4">
 
-                      {currentData.length > 0 && currentData.map((user: any, index: 0) => (
+                      {CurrentData.length > 0 && CurrentData.map((user: any, index: 0) => (
 
                         <div
 
@@ -1982,7 +1981,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                               <p className="fw-bold font-14 mb-0 text-dark namcss" style={{ fontSize: '14px' }}>
 
-                                {user.Title}| {user.Department != null ? user.Department : 'NA'}
+                                {user.Title}
 
                               </p>
 
@@ -2001,9 +2000,8 @@ const SocialFeedContext = ({ props }: any) => {
                               className="font-12 namcss"
 
                             >
-
-                              NA
-
+                            {user.jobTitle != null ? user.jobTitle : 'NA'}
+                              
                               {/* Mob: {user.mobile} */}
 
                             </p>
