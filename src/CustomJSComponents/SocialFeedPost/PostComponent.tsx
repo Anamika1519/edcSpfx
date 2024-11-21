@@ -592,7 +592,7 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
                     <textarea
                         value={editedContent}
                         onChange={(e) => setEditedContent(e.target.value)}
-                        rows={4}
+                        rows={10}
                         className="edit-post-textarea"
                         onKeyPress={(e) => {
                             if (e.key === 'Enter' && !e.shiftKey) {

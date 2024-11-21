@@ -660,24 +660,26 @@ const SocialFeedContext = ({ props }: any) => {
                       }} /> */}
 
                     <span style={{
-                      fontSize: '18px',
+                      fontSize: '28px',
                       color: 'black',
                       whiteSpace: 'nowrap',
 
                       display: 'flex',
+                      fontWeight:'700',
                       textWrap: 'inherit',
                       alignItems: 'center'
 
                     }}>{GroupName}</span>
                     <br />
                     <span style={{
-                      fontSize: '14px',
+                      fontSize: '15px',
                       color: 'black',
                       
 
                       display: 'flex',
 
                       alignItems: 'center',
+                      lineHeight:'22px',
                       textWrap: 'inherit'
 
                     }}>{GroupDescription}</span>
@@ -685,11 +687,11 @@ const SocialFeedContext = ({ props }: any) => {
 
                     <br />
                     <div className="row mt-0">
-                      <div>
-                        <div className="card" style={{ borderRadius: "1rem" }}>
+                      <div style={{position:'sticky', top:'90px' }}>
+                        <div className="card" style={{ borderRadius: "1rem"}}>
                           <div className="card-body pb-0 gheight">
                             <h4 className="header-title font-16 text-dark fw-bold mb-0">
-                              Group Members
+                              Group Members 
 
                             </h4>
 
@@ -700,10 +702,10 @@ const SocialFeedContext = ({ props }: any) => {
                                   className="d-flex border-bottom heit8 align-items-start w-100 justify-content-between mb-1"
                                 >
                                   <div style={{ display: 'flex' }}>
-                                    <a href="contacts-profile.html">
+                                    <a>
                                       <img
                                         src={user.Picture != null ? `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${user.EMail}` : require("../assets/users.jpg")}
-                                        className="rounded-circle"
+                                        className="rounded-circlenu"
                                         width="50"
                                         alt={user.name}
                                       />
@@ -1635,14 +1637,14 @@ const SocialFeedContext = ({ props }: any) => {
 
 
 
-                <div className="card mobile-6" style={{ borderRadius: "1rem" }}>
+                <div className="card mobile-6" style={{ borderRadius: "1rem", position:'sticky', top:'90px' }}>
 
                   <div className="card-body pb-0 gheight">
 
                     <h4 className="header-title font-16 text-dark fw-bold mb-0" style={{ fontSize: '20px' }}>
 
                       Group you might be interested in
-
+                      <a className="font-11 view-all  btn btn-primary  waves-effect waves-light" style={{float: 'right', lineHeight: '21px', right: '10px'}}>View All</a>
                       {/* <a
 
                         style={{ float: "right" }}
@@ -1691,15 +1693,21 @@ const SocialFeedContext = ({ props }: any) => {
 
                           </div> */}
 
-                          <div className="col-sm-8">
+                          <div className="col-sm-10">
 
                             <a>
+                            <div style={{width:'160px'}} className="gfg_tooltip">
 
                               <p className="fw-bold mt-1 font-14 mb-0 text-dark namcss" style={{ fontSize: '14px' }}>
 
                                 {user.GroupName}
 
                               </p>
+                              <span style={{left:'50%'}} className="gfg_text">
+                              {user.GroupName}
+                                        </span>
+
+                                        </div>
 
                             </a>
 

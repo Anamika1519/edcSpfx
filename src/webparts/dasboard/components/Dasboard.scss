@@ -21,7 +21,7 @@
     white-space:nowrap;
     padding-right: 40px;
 } 
-.gheightnew{height: 373px;}
+.gheightnew{height: 400px;}
 .margin01{margin-top: 2px;}
 .float-right{float: right;}
 .justify-between{gap:20px;}
@@ -163,6 +163,7 @@
         height: 434px !important;
         overflow: hidden;
     }
+    .gheightnew{height: 408px;}
     .inbox-widget .heit8 {
         padding: .52rem 0;
     
@@ -377,6 +378,7 @@ img, svg {
 .heit9 {height: 128px; padding: 32px 0px 32px 0px; margin: auto; width: 98%;}
 @media(max-width:1600px){ 
     .inbox-widget .heit8{    padding: .75rem 0;}
+    .gheightnew{height: 405px;}
     .event{margin-bottom: 3px;
         margin-top: 13px;}
         .tabv button{ padding: 11px 10px; }
@@ -395,6 +397,7 @@ img, svg {
     .inbox-widget .heit8 { padding:.625rem 0;}
     .event{margin-bottom: 1px;
         margin-top: 8px;}
+        .gheightnew{height: 374px;}
        
 }
 @media(max-width:1280px)
@@ -403,6 +406,7 @@ img, svg {
         margin-bottom: 8px;
         margin-top: 9px;
     }
+    .gheightnew{height: 350px;}
     .justify-between {
         gap: 6px;
     }
@@ -417,12 +421,34 @@ img, svg {
 
   @media(max-width:1200px)
   {
-  
+    .gheightnew{height: 319px;}
     .posnew{top: -6px !important;
         width: 100%;
         text-align: center;
         padding: 3px !important;
         font-size: 8px !important;
         right: 0 !important;}
+        .event p {
+            font-size: 9px !important;
+        }
+        .gheightl {
+            height: 408px;
+        }
+        .heit9 {
+            height: 118px;
+        }
+        .newc {
+         
+    
+            font-size: 12px !important;
+            height: 18px !important;
+            
+            line-height: 20px !important;
+            
+            margin-top: 5.5px !important;
+            padding: 0 1px !important;
+            width: 18px !important;
+        }
+        
   
 }

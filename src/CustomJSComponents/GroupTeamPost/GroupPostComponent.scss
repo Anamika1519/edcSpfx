@@ -31,7 +31,26 @@
 .post-content p {
   margin: 16px 0;
 }
-
+.post-actions span {
+  color: gray;
+  cursor: pointer;
+  margin-right: 10px;
+}
+.item-design{
+  position: relative;
+    text-align: center;
+   
+    border: 1px solid  #007bff;
+    ;
+    border-radius: 6%;
+    display: flex;
+    align-items: center;
+}
+.sahrenew {
+  float: left;
+  margin-left: 5px;
+  margin-top: 3px;
+}
 .post-images img {
   width: 100px;
   height: auto;
