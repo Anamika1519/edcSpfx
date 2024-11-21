@@ -1678,7 +1678,7 @@ alt="Check"
                                     <div className="card1 bodernone mt-3 pb-0">
                                     <div className="d-flex juss">
                                     <img src={require("../assets/ccomment.png")} className="alignright12"/>
-                                    <p className="text-dark font-14 text-center mb-0">Total Comments</p>
+                                    <p className="text-dark font-14 text-center mb-0">Response & Reply</p>
                                   
                                     </div>
                                       <span className="likecount">{commentCount}</span>

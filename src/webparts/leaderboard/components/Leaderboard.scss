@@ -64,11 +64,11 @@
 .mtable{margin: 0px !important;}
 .mtable td, .mtable th{font-size: 14px;}
 .mtable tbody tr:nth-of-type(2n) {
-    background-color: #eeeeee;
+    background-color: #fff;
 }
 .mtable td{color: #6c757d;}
-.mtable th:first-child,.mtable td:first-child{border-top-left-radius: 10px;border-bottom-left-radius: 10px;}
-.mtable th:last-child,.mtable td:last-child{border-top-right-radius: 10px;border-bottom-right-radius: 10px;}
+.mtable th:first-child,.mtable td:first-child{border-top-left-radius: 0px;border-bottom-left-radius: 0px;}
+.mtable th:last-child,.mtable td:last-child{border-top-right-radius: 0px;border-bottom-right-radius: 0px;}
 .inputcss, input.form-control.inputcss{font-size: 12px;}
 .inbox-item-text {
     margin-left: 10px;

@@ -1717,7 +1717,7 @@ const DiscussionForumContext = ({ props }: any) => {
                                 <FontAwesomeIcon icon={faSort} />
                               </span>
                             </div>
-                            <div className="bd-highlight">
+                            {/* <div className="bd-highlight">
                               <input
                                 type="text"
                                 placeholder="index"
@@ -1725,9 +1725,9 @@ const DiscussionForumContext = ({ props }: any) => {
                                 className="inputcss"
                                 style={{ width: "100%" }}
                               />
-                            </div>
+                            </div> */}
                           </th>
-                          <th style={{ minWidth: "180px", maxWidth: "180px" }}>
+                          <th style={{ minWidth: "150px", maxWidth: "150px" }}>
                             <div className="d-flex flex-column bd-highlight ">
                               <div
                                 className="d-flex"
@@ -1738,7 +1738,7 @@ const DiscussionForumContext = ({ props }: any) => {
                                   <FontAwesomeIcon icon={faSort} />
                                 </span>
                               </div>
-                              <div className=" bd-highlight">
+                              {/* <div className=" bd-highlight">
                                 <input
                                   type="text"
                                   placeholder="Filter by Title"
@@ -1748,7 +1748,7 @@ const DiscussionForumContext = ({ props }: any) => {
                                   className="inputcss"
                                   style={{ width: "100%" }}
                                 />
-                              </div>
+                              </div> */}
                             </div>
                           </th>
                           <th style={{ minWidth: "150px", maxWidth: "150px" }}>
@@ -1764,7 +1764,7 @@ const DiscussionForumContext = ({ props }: any) => {
                                   <FontAwesomeIcon icon={faSort} />{" "}
                                 </span>
                               </div>
-                              <div className=" bd-highlight">
+                              {/* <div className=" bd-highlight">
                                 <input
                                   type="text"
                                   placeholder="Filter by Overview"
@@ -1774,7 +1774,7 @@ const DiscussionForumContext = ({ props }: any) => {
                                   className="inputcss"
                                   style={{ width: "100%" }}
                                 />
-                              </div>
+                              </div> */}
                             </div>
                           </th>
 
@@ -1791,7 +1791,7 @@ const DiscussionForumContext = ({ props }: any) => {
                                   <FontAwesomeIcon icon={faSort} />{" "}
                                 </span>
                               </div>
-                              <div className=" bd-highlight">
+                              {/* <div className=" bd-highlight">
                                 <input
                                   type="text"
                                   placeholder="Filter by Category"
@@ -1801,20 +1801,18 @@ const DiscussionForumContext = ({ props }: any) => {
                                   className="inputcss"
                                   style={{ width: "100%" }}
                                 />
-                              </div>
+                              </div> */}
                             </div>
                           </th>
                           <th style={{ minWidth: "70px", maxWidth: "70px" }}>
                             <div className="d-flex flex-column bd-highlight ">
                               <div
-                                className="d-flex  pb-2"
+                                className="d-flex "
                                 style={{ justifyContent: "space-between" }}
                               >
                                 <span>Users</span>
                               </div>
-                              <br />
-                              <div className=" bd-highlight">
-                              </div>
+                             
                             </div>
                           </th>
 
@@ -1823,14 +1821,12 @@ const DiscussionForumContext = ({ props }: any) => {
                           }}>
                             <div className="d-flex flex-column bd-highlight ">
                               <div
-                                className="d-flex  pb-2"
+                                className="d-flex"
                                 style={{ justifyContent: "space-between" }}
                               >
                                 <span>Replies</span>
                               </div>
-                              <br />
-                              <div className=" bd-highlight">
-                              </div>
+                             
                             </div>
                           </th>
                           <th style={{
@@ -1838,47 +1834,42 @@ const DiscussionForumContext = ({ props }: any) => {
                           }}>
                             <div className="d-flex flex-column bd-highlight ">
                               <div
-                                className="d-flex  pb-2"
+                                className="d-flex "
                                 style={{ justifyContent: "space-between" }}
                               >
                                 <span>Likes</span>
                               </div>
-                              <br />
-                              <div className=" bd-highlight">
-                              </div>
+                             
                             </div>
                           </th>
                           <th style={{
-                            minWidth: "50px", maxWidth: "50px", textAlign: "center"
+                            minWidth: "110px", maxWidth: "110px", textAlign: "center"
                           }}>
                             <div className="d-flex flex-column bd-highlight ">
                               <div
-                                className="d-flex  pb-2"
+                                className="d-flex  pb-0"
                                 style={{ justifyContent: "space-between" }}
                               >
-                                <span>Comments</span>
+                                <span>Response</span>
                               </div>
-                              <br />
-                              <div className=" bd-highlight">
-                              </div>
+                             
+                              
                             </div>
                           </th>
-                          <th style={{
-                            minWidth: "50px", maxWidth: "50px", borderBottomRightRadius: "10px",
+                          {/* <th style={{
+                            minWidth: "80px", maxWidth: "80px", borderBottomRightRadius: "10px",
                             borderTopRightRadius: "10px", textAlign: "center"
                           }}>
                             <div className="d-flex flex-column bd-highlight ">
                               <div
-                                className="d-flex  pb-2"
+                                className="d-flex"
                                 style={{ justifyContent: "space-between" }}
                               >
                                 <span>Activities</span>
                               </div>
-                              <br />
-                              <div className=" bd-highlight">
-                              </div>
+                             
                             </div>
-                          </th>
+                          </th> */}
                         </tr>
                       </thead>
                       <tbody>
@@ -1905,7 +1896,7 @@ const DiscussionForumContext = ({ props }: any) => {
                                 }}>
                                 {startIndex + index + 1}
                               </td>
-                              <td style={{ minWidth: "180px", maxWidth: "180px", textTransform: 'capitalize' }}  onClick={() => handleClick(item.Id)}>{item.Topic}</td>
+                              <td style={{ minWidth: "150px", maxWidth: "150px", textTransform: 'capitalize' }}  onClick={() => handleClick(item.Id)}>{item.Topic}</td>
                               <td style={{ minWidth: "150px", maxWidth: "150px" }}>{item.Overview}</td>
                               <td style={{ minWidth: "100px", maxWidth: "100px" }}>
                                 {item?.DiscussionForumCategory?.CategoryName}
@@ -1919,7 +1910,7 @@ const DiscussionForumContext = ({ props }: any) => {
                                     position: "relative",
                                   }}
                                 >
-                                  <div style={{ display: "flex" }}>
+                                  <div style={{ display: "flex" }} className="newimage5">
                                     {item?.InviteMemebers?.map(
                                       (id: any, idx: any) => {
                                         if (idx < 3) {
@@ -1995,23 +1986,31 @@ const DiscussionForumContext = ({ props }: any) => {
                               </td>
                               {/* Replies Count */}
         <td style={{ minWidth: "50px", maxWidth: "50px" }}>
-          {item.repliesCount ? item.repliesCount : 0}
+        <img
+                                            src={require("../assets/noun-reply.png")}
+                                            
+                                            alt="Check"
+                                          /> {item.repliesCount ? item.repliesCount : 0}
         </td>
 
         {/* Likes Count */}
         <td style={{ minWidth: "50px", maxWidth: "50px" }}>
-          {item.likesCount ? item.likesCount : 0}
+        <img
+                                            src={require("../assets/noun-like.png")}
+                                           
+                                            alt="Check"
+                                          /> {item.likesCount ? item.likesCount : 0}
         </td>
 
         {/* Comments Count */}
-        <td style={{ minWidth: "50px", maxWidth: "50px" }}>
+        <td style={{ minWidth: "110px", maxWidth: "110px", textAlign: "center" }}>
           {item.commentsLength ? item.commentsLength : 0}
         </td>
 
-                              <td style={{ minWidth: "70px", maxWidth: "70px" }}>
-                                {/* {moment(item.CreatedDate).fromNow()} */}
+                              {/* <td style={{ minWidth: "80px", maxWidth: "80px" }}>
+                              
                                 {moment(item.Created).format("DD-MMM-YYYY")}
-                              </td>
+                              </td> */}
                             </tr>
                           ))
                         )}

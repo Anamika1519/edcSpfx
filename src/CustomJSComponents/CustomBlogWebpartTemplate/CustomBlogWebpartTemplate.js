@@ -969,7 +969,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                                 </span></p>
 
                                             <div style={{ clear: 'both' }}>
-                                                <p style={{fontSize:'15px', lineHeight:'22px'}} className="d-block customdescription">{truncateText(item.Overview, 300)}</p>
+                                                <p style={{fontSize:'15px', lineHeight:'22px'}} className="d-block text-dark customdescription">{truncateText(item.Overview, 300)}</p>
                                             </div>
                                         </div>
                                         <a onClick={() => gotoBlogsDetails(item)} style={{ textDecoration: 'none' }}>
@@ -1078,7 +1078,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                                 <div className="d-flex" style={{ justifyContent: 'end', gap: '10px', marginRight: '3px', cursor: 'pointer' }}>
                                                     <div className="col-lg-12">
                                                         {item.Status == "Save as Draft" &&
-                                                            <><div className="d-flex flex-wrap align-items-center justify-content-end mt-0">
+                                                            <><div style={{gap:'10px'}} className="d-flex flex-wrap align-items-center justify-content-end mt-0">
                                                                 {/* Button to trigger modal */}
                                                                 <FontAwesomeIcon
                                                                     icon={faEdit}
@@ -1088,13 +1088,13 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                                                     onClick={() => EditBlogs(item.ID)} />
 
 
-                                                            </div><div className="d-flex flex-wrap align-items-center justify-content-end mt-0">
+                                                            
 
                                                                     <a
-                                                                        className="text-dark1 waves-effect waves-light"
+                                                                       
                                                                         onClick={() => DeleteBlog(item.ID)}
                                                                     >
-                                                                        <FontAwesomeIcon icon={faTrashAlt} />
+                                                                        <FontAwesomeIcon  className="text-dark1 waves-effect waves-light" icon={faTrashAlt} />
                                                                     </a>
 
                                                                 </div></>

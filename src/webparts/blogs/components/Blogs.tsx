@@ -1137,7 +1137,7 @@ const BlogsContext = ({ props }: any) => {
                     >
                       <div className="modal-dialog modal-lg ">
                         <div className="modal-content">
-                          <div className="modal-header">
+                          <div className="modal-header d-block">
                             <h5 className="modal-title" id="exampleModalLabel">
                               New Blog
                             </h5>

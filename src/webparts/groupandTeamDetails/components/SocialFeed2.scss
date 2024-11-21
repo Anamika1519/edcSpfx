@@ -9,11 +9,52 @@
     font-family: $ms-font-family-fallbacks;
   }
 }
-.rounded-circlenu{width: 2.5rem; height: 2.5rem; border-radius: 1000px !important;}
+.mobile-w1 img{
+  width: 2.5rem !important; height: 2.5rem !important;
+}
+.alignright{
+  background: #fff;
+  border-radius: 1000px;
+  /* height: 1.8rem; */
+  right: 0rem;
+  margin-left: auto;
+  position: absolute;
+  top: 15px;
+
+  
+}
+
+.projectmemeber{
+  padding: 5px 0px;
+  border-bottom: 1px solid #efefef;
+  position: relative;
+}
+.modal-header{
+  padding: 0px !important; border: 0px !important;
+  position: absolute;
+    width: 42px;
+    background: #fff;
+    right: 22px;
+    height: 42px;
+    border-radius: 1000px !important;
+    z-index: 999;
+    top: 27px;
+}
+.btn-close{
+
+    /* background: #fff; */
+    opacity: 1;
+    /* color: #fff; */
+    right: 7px !important;
+    top: 8px !important; z-index: 90
+    ;
+
+}
+.rounded-circlenu{width: 2.5rem !important; height: 2.5rem !important; border-radius: 1000px !important;}
 .welcome {
   text-align: center;
 }
-
+.itemalign{display: flex; gap:10px; align-items: center;}
 .welcomeImage {
   width: 100%;
   max-width: 420px;

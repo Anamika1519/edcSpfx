@@ -710,7 +710,7 @@ const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
 
             {activeTab === "allgroups" && (<div className="row mt-3">
 
-              <div className="col-md-3 mobile-w1">
+              <div className="col-md-3">
                 <div className="row">
 
                   <div style={{ gap: '1rem' }}>
@@ -760,11 +760,12 @@ const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
                               Group Members 
 
                             </h4>
-                            <p>{GroupName}</p>
+                            {/* <p>{GroupName}</p> */}
                             {/* <>{ArrDetails[0].GroupType}</> */}
                             {ArrDetails[0]?.InviteMemebers?.length > 0 && 
                           ArrDetails[0]?.InviteMemebers.map((member:any, idx:any) => (
         <div className="projectmemeber">
+          <div className="itemalign">
 <img
           // style={{
           //   margin:
@@ -773,10 +774,11 @@ const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
           //       : "0 0 0px -12px",
           // }}
           src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${member?.EMail}`}
-          className="rounded-circlecss6 img-thumbnail avatar-xl"
+          className="rounded-circlenu img-thumbnail avatar-xl"
           alt="profile-image"
         />
-        <p>{member?.Title} </p>
+        <p className='mb-0'>{member?.Title} </p>
+        </div>
         {/* {item.Author.EMail === currentUserEmailRef.current && (
         <div>
         <button onClick={()=>handleRemoveUser(id?.ID)}>Remove</button>
