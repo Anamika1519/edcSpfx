@@ -1866,7 +1866,15 @@ const handleRemoveUser = async (userId: number) => {
           alt="profile-image"
         />
         <p>{id?.Title} </p>
-       <button onClick={()=>handleRemoveUser(id?.ID)}>Remove</button>
+        {item.Author.EMail === currentUserEmailRef.current && (
+        <div>
+        <button onClick={()=>handleRemoveUser(id?.ID)}>Remove</button>
+        </div>
+
+        )
+        
+        }
+      
               <img
 
 src={require("../assets/calling.png")}
