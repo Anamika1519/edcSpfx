@@ -326,7 +326,40 @@ const BlogsContext = ({ props }: any) => {
 
     return valid;
   };
+  const validateFormDraft = () => {
+    const { topic, Type, category, entity, overview, FeaturedAnnouncement } =
+      formData;
+    const { description } = richTextValues;
+    let valid = true;
 
+    if (!topic) {
+      Swal.fire("Error", "Topic is required!", "error");
+      valid = false;
+    } else if (!entity) {
+      Swal.fire("Error", "Entity is required!", "error");
+      valid = false;
+    }
+    else if (BnnerImagepostArr.length == 0) {
+      Swal.fire('Error', 'Banner image is required!', 'error');
+      valid = false;
+    }
+    // else if (ImagepostArr.length == 0 && ImagepostArr1Edit.length == 0) {
+    //     Swal.fire('Error', 'Gallery image is required!', 'error');
+    //     valid = false;
+    // }
+    //else if (!overview) {
+    //   Swal.fire('Error', 'Overview is required!', 'error');
+    //   valid = false;
+    // } else if (!description) {
+    //   Swal.fire('Error', 'Description is required!', 'error');
+    //   valid = false;
+    // } else if (!FeaturedAnnouncement) {
+    //   Swal.fire('Error', 'Featured Announcement is required!', 'error');
+    //   valid = false;
+    // }
+
+    return valid;
+  };
   const setShowModalFunc = (bol: boolean, name: string) => {
     if (name == "bannerimg") {
       setShowModal(bol);
@@ -770,19 +803,19 @@ const BlogsContext = ({ props }: any) => {
             }
 
             // Upload Documents
-            if (DocumentpostArr.length > 0) {
-              for (const file of DocumentpostArr[0]?.files) {
-                const uploadedDocument = await uploadFileToLibrary(
-                  file,
-                  sp,
-                  "BlogsDoc"
-                );
-                documentIds = documentIds.concat(
-                  uploadedDocument.map((item: { ID: any }) => item.ID)
-                );
-                documentArray.push(uploadedDocument);
-              }
-            }
+            // if (DocumentpostArr.length > 0) {
+            //   for (const file of DocumentpostArr[0]?.files) {
+            //     const uploadedDocument = await uploadFileToLibrary(
+            //       file,
+            //       sp,
+            //       "BlogsDoc"
+            //     );
+            //     documentIds = documentIds.concat(
+            //       uploadedDocument.map((item: { ID: any }) => item.ID)
+            //     );
+            //     documentArray.push(uploadedDocument);
+            //   }
+            // }
 
             // Update Post with Gallery and Document Information
             const updatePayload = {
@@ -792,19 +825,19 @@ const BlogsContext = ({ props }: any) => {
                   flatArray(galleryArray)
                 ),
               }),
-              ...(documentIds.length > 0 && {
-                BlogsDocsId: documentIds,
-                BlogDocsJSON: JSON.stringify(
-                  flatArray(documentArray)
-                ),
-              }),
+              // ...(documentIds.length > 0 && {
+              //   BlogsDocsId: documentIds,
+              //   BlogDocsJSON: JSON.stringify(
+              //     flatArray(documentArray)
+              //   ),
+              // }),
             };
 
             if (Object.keys(updatePayload).length > 0) {
               const updateResult = await updateItem(updatePayload, sp, postId);
               console.log("Update Result:", updateResult);
             }
-             Swal.fire("Item added successfully", "", "success");
+             Swal.fire("Item published successfully", "", "success");
             // sessionStorage.removeItem("bannerId");
             setTimeout(async () => {
               setAnnouncementData(await getBlog(sp));
@@ -817,7 +850,7 @@ const BlogsContext = ({ props }: any) => {
     }
   };
   const handleFormSaevasDraft = async () => {
-    if (validateForm()) {
+    if (validateFormDraft()) {
     Swal.fire({
       title: "Do you want to save as Draft?",
       showConfirmButton: true,
@@ -896,19 +929,19 @@ const BlogsContext = ({ props }: any) => {
         }
 
         // Upload Documents
-        if (DocumentpostArr.length > 0) {
-          for (const file of DocumentpostArr[0]?.files) {
-            const uploadedDocument = await uploadFileToLibrary(
-              file,
-              sp,
-              "BlogsDoc"
-            );
-            documentIds = documentIds.concat(
-              uploadedDocument.map((item: { ID: any }) => item.ID)
-            );
-            documentArray.push(uploadedDocument);
-          }
-        }
+        // if (DocumentpostArr.length > 0) {
+        //   for (const file of DocumentpostArr[0]?.files) {
+        //     const uploadedDocument = await uploadFileToLibrary(
+        //       file,
+        //       sp,
+        //       "BlogsDoc"
+        //     );
+        //     documentIds = documentIds.concat(
+        //       uploadedDocument.map((item: { ID: any }) => item.ID)
+        //     );
+        //     documentArray.push(uploadedDocument);
+        //   }
+        // }
 
         // Update Post with Gallery and Document Information
         const updatePayload = {
@@ -918,12 +951,12 @@ const BlogsContext = ({ props }: any) => {
               flatArray(galleryArray)
             ),
           }),
-          ...(documentIds.length > 0 && {
-            BlogsDocsId: documentIds,
-            BlogDocsJSON: JSON.stringify(
-              flatArray(documentArray)
-            ),
-          }),
+          // ...(documentIds.length > 0 && {
+          //   BlogsDocsId: documentIds,
+          //   BlogDocsJSON: JSON.stringify(
+          //     flatArray(documentArray)
+          //   ),
+          // }),
         };
 
         if (Object.keys(updatePayload).length > 0) {
