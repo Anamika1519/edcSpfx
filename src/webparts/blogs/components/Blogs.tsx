@@ -1433,19 +1433,19 @@ const BlogsContext = ({ props }: any) => {
                                   onClick={handleFormSaevasDraft}
                                 >
                                   <div
-                                    className="d-flex"
-                                    style={{
-                                      justifyContent: "space-around",
-                                      width: "120px",
-                                    }}
-                                  >
-                                    <img
-                                      src={require("../../../Assets/ExtraImage/checkcircle.svg")}
-                                      style={{ width: "1rem" }}
-                                      alt="Check"
-                                    />{" "}
-                                    Save as draft
-                                  </div>
+                                                                                        className="d-flex"
+                                                                                        style={{
+                                                                                            justifyContent: "space-around",
+                                                                                            width: "120px",
+                                                                                        }}
+                                                                                    >
+                                                                                        <img
+                                                                                            src={require("../assets/checkcircle.svg")}
+                                                                                            style={{ width: "1rem" }}
+                                                                                            alt="Check"
+                                                                                        />{" "}
+                                                                                        Save as Draft
+                                                                                    </div>
                                 </div>
                                 <div
                                   className="btn btn-success waves-effect waves-light m-1"
@@ -1460,7 +1460,7 @@ const BlogsContext = ({ props }: any) => {
                                     }}
                                   >
                                     <img
-                                      src={require("../../../Assets/ExtraImage/checkcircle.svg")}
+                                      src={require("../assets/checkcircle.svg")}
                                       style={{ width: "1rem" }}
                                       alt="Check"
                                     />{" "}
@@ -1474,7 +1474,7 @@ const BlogsContext = ({ props }: any) => {
                                   onClick={handleCancel}
                                 >
                                   <img
-                                    src={require("../../../Assets/ExtraImage/xIcon.svg")}
+                                    src={require("../assets/xIcon.svg")}
                                     style={{ width: "1rem" }}
                                     className="me-1"
                                     alt="x"
