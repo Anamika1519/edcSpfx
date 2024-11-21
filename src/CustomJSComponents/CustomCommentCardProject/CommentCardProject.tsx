@@ -300,7 +300,7 @@ const CheckCurrentuser = (Author:any)=>{
         <div className="row">
           <div className="d-flex align-items-start">
             <img
-              className="me-2 mt-0 avatar-sm rounded-circle"
+              className="me-2 mt-1 avatar-sm rounded-circle"
               src={Comments[0].UserProfile}
               alt="User"
             />

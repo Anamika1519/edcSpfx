@@ -1635,7 +1635,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                 </div>
                 {itemsToShow < blogData.length && (
                     <div className="col-12 text-center mt-3 mb-3">
-                        <button onClick={loadMore} className="btn btn-primary">
+                        <button type='button' onClick={loadMore} className="btn btn-primary">
                             Load More
                         </button>
                     </div>

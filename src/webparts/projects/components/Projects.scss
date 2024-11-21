@@ -38,9 +38,13 @@
       padding: 1px 10px !important; width:70px;
   }
     .date-color{height: 38px;}
+    .nav-pills .nav-link.active{background: #1fb0e5;}
     .morealign{    position: absolute;
       width: 16px; top: 15px;
       right: 5px;}
+      .mlnew0{    margin-left: -23px !important;
+        z-index: 9;
+        position: relative;}
       .ml20 img{margin-left: -12px !important;}
   .arrow-none:after{display: none !important;}
   .circlecssnewnew, .circlecssnew,.circlecss  {height: 2.5rem !important; width: 2.5rem !important; border-radius: 1000px !important;}
@@ -55,7 +59,7 @@
     margin: 0px 5px;
     color: #3c3c3c;
     font-size: 14px;}
-    .ml20{padding-left: 10px; padding-top: 10px;}
+    .ml20{padding-left: 19px; display: flex; padding-top: 10px;}
     .ml20 img{width: 2.5rem !important; height: 2.5rem !important; border-radius: 1000px !important;}
 
 

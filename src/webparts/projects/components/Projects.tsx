@@ -1344,20 +1344,12 @@ setDocumentpostArr1([])
                                   <h4 className="mt-0 mb-1 one-line">
                                     <a onClick={() => GotoNextPage(project)}
                                       className="text-dark fw-bold font-16">
-                                        {truncateText(project.ProjectName , 12)}
+                                        {truncateText(project.ProjectName , 40)}
                                       {/* {project.ProjectName} */}
                                     </a>
                                  
                                   </h4>
-                                  <p
-                                    style={{ color: "#98a6ad" }}
-                                    className="date-color two-line font-14 mb-3 sp-line-2"
-                                  >
-                                   
-                                   {truncateText(project.ProjectOverview , 20) ||
-    "No description available..."}{" "}
-                             
-                                  </p>
+                               
                                   <a>
 
 {
@@ -1379,33 +1371,37 @@ setDocumentpostArr1([])
 }
 </a>
 
+<p
+                                 
+                                    className="date-color text-muted two-line font-14 mb-3 sp-line-2"
+                                  >
+                                   
+                                   {truncateText(project.ProjectOverview , 100) ||
+    "No description available..."}{" "}
+                             
+                                  </p>
+
                                   {/* Description */}
-                                  <p
+                                  {/* <p
                                     style={{ color: "#98a6ad" }}
                                     className="date-color two-line font-14 mb-3 sp-line-2"
                                   >
                                     {project.ProjectOverview} 
                                     
-                                    {/* <a
-                                      href="javascript:void(0);"
-                                      className="fw-bold text-muted"
-                                      onClick={() => GotoNextPage(project)}
-                                    >
-                                      view more
-                                    </a> */}
-                                  </p>
+                                  
+                                  </p> */}
 
                                   {/* Task info */}
-                                  <p style={{display:'flex', gap:'10px'}} className="mb-1 font-12">
+                                  <p style={{display:'flex', gap:'10px'}} className="mb-1  text-muted font-12">
                                     <span
-                                      style={{ color: "#6e767e" }}
+                                     
                                       className="pe-2 text-nowrap mb-1 d-inline-block"
                                     >
                                       
                                       <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} />     <b>{project?.ProjectsDocsId?.length}</b> Documents
                                     </span>
                                     <span
-                                      style={{ color: "#6e767e" }}
+                                     
                                       className="text-nowrap mb-1 d-inline-block"
                                     >
                                       
@@ -1422,6 +1418,7 @@ setDocumentpostArr1([])
                                         (id: any, idx: any) => {
                                           if (idx < 3) {
                                             return (
+                                              <div style={{width:'40px', marginLeft:'-7px'}} className="gfg_tooltip">
                                               <img
                                                 style={{
                                                   margin:
@@ -1434,6 +1431,11 @@ setDocumentpostArr1([])
                                                 className="circlecssnew img-thumbnail avatar-xl"
                                                 alt="profile-image"
                                               />
+                                                <span className="gfg_text">
+                                            A Computer science portal
+                                        </span>
+
+                                        </div>
                                             );
                                           }
                                         }
@@ -1458,9 +1460,11 @@ setDocumentpostArr1([])
                                                      float:"left",
                                                      display:'flex',
                                                      alignItems:'center',
-                                                     justifyContent:'center'
+                                                     justifyContent:'center',
+                                                      position:'relative',
+                                                     width:'40px'
                                             }}
-                                            className="circlecssnew text-center img-thumbnail avatar-xl"
+                                            className="circlecssnew mlnew0 text-center img-thumbnail avatar-xl"
                                           >
                                             +
                                           </div>
@@ -1472,8 +1476,10 @@ setDocumentpostArr1([])
                                         className=""
                                         style={{
                                           position: "relative",
-                                          left:"-16px",
-                                          top:'11px'
+                                          left:"-28px",
+                                          top:'11px',
+                                          zIndex:'99',
+                                          display:'flex'
                                        
                                         }}
                                       >
@@ -1481,6 +1487,7 @@ setDocumentpostArr1([])
                                           project?.TeamMembers?.map(
                                             (id: any, idx: any) => {
                                               return (
+                                                <div style={{width:'40px', marginLeft:'-7px'}} className="gfg_tooltip">
                                                 <img
                                                   style={{
                                                     margin:
@@ -1493,6 +1500,11 @@ setDocumentpostArr1([])
                                                   className="circlecssnew img-thumbnail avatar-xl"
                                                   alt="profile-image"
                                                 />
+                                                <span className="gfg_text">
+                                                A Computer science portal
+                                            </span>
+    
+                                            </div>
                                               );
                                             }
                                           )
@@ -1547,16 +1559,16 @@ setDocumentpostArr1([])
                                   </h4>
 
 
-                                  <p className="mb-1 font-12">
+                                  <p className="mb-1 text-muted font-12">
                                     <span
-                                      style={{ color: "#6e767e" }}
+                                    
                                       className="pe-2 text-nowrap mb-1 d-inline-block"
                                     >
                                       
                                       <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} />     <b>{project?.ProjectsDocsId?.length}</b> Documents
                                     </span>
                                     <span
-                                      style={{ color: "#6e767e" }}
+                                    
                                       className="text-nowrap mb-1 d-inline-block"
                                     >
                                       
@@ -1634,10 +1646,12 @@ setDocumentpostArr1([])
                                                      float:"left",
                                                      display:'flex',
                                                      alignItems:'center',
-                                                     justifyContent:'center'
+                                                     justifyContent:'center',
+                                                      position:'relative',
+                                                     width:'40px'
 
                                             }}
-                                            className="circlecssnew text-center img-thumbnail avatar-xl"
+                                            className="circlecssnew mlnew0 text-center img-thumbnail avatar-xl"
                                           >
                                             +
                                           </div>
@@ -1649,8 +1663,10 @@ setDocumentpostArr1([])
                                         className=""
                                         style={{
                                           position: "relative",
-                                          left:"-16px",
-                                          top:'11px'
+                                          left:"-28px",
+                                          top:'11px',
+                                          zIndex:'99',
+                                              display:'flex'
                                        
                                         }}
                                       >
@@ -1733,8 +1749,8 @@ setDocumentpostArr1([])
 
                                   {/* Description */}
                                   <p
-                                    style={{ color: "#98a6ad" }}
-                                    className="date-color two-line font-14 mb-3 sp-line-2"
+                                    
+                                    className="date-color text-muted two-line font-14 mb-3 sp-line-2"
                                   >
                                     {project.ProjectOverview ||
                                       "No description available..."}{" "}
@@ -1748,16 +1764,16 @@ setDocumentpostArr1([])
                                   </p>
 
                                   {/* Task info */}
-                                  <p style={{display:'flex', gap:'10px'}} className="mb-1 font-12">
+                                  <p style={{display:'flex', gap:'10px'}} className="mb-1 text-muted font-12">
                                     <span
-                                      style={{ color: "#6e767e" }}
+                                     
                                       className="pe-2 text-nowrap mb-1 d-inline-block"
                                     >
                                       
                                       <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} /> <b>{project?.ProjectsDocsId?.length}</b> Documents
                                     </span>
                                     <span
-                                      style={{ color: "#6e767e" }}
+                                     
                                       className="text-nowrap mb-1 d-inline-block"
                                     >
                                    
@@ -1814,9 +1830,11 @@ setDocumentpostArr1([])
                                                      float:"left",
                                                      display:'flex',
                                                      alignItems:'center',
-                                                     justifyContent:'center'
+                                                     justifyContent:'center',
+                                                     position:'relative',
+                                                     width:'40px'
                                             }}
-                                            className="circlecssnewnew text-center img-thumbnail avatar-xl"
+                                            className="circlecssnewnew mlnew0 text-center img-thumbnail avatar-xl"
                                           >
                                             +
                                           </div>
@@ -1933,15 +1951,7 @@ setDocumentpostArr1([])
                                     </a>
                                   </h4>
                               
-                                  <p
-                                    style={{ color: "#98a6ad" }}
-                                    className="date-color two-line font-14 mb-3 sp-line-2"
-                                  >
-                                   
-                                   {truncateText(project.ProjectOverview , 20) ||
-    "No description available..."}{" "}
-                             
-                                  </p>
+                                
                                   <a>
 {
       project?.ProjectStatus === null 
@@ -1949,8 +1959,8 @@ setDocumentpostArr1([])
       : (
           <a className="ongoing mb-3"
               style={{ 
-                  background: project?.ProjectStatus === 'Close' ? '#008751' : '#cce7dc',
-                  color: project?.ProjectStatus === 'Close' ? '#008751' : '#cce7dc',
+                  background: project?.ProjectStatus === 'Close' ? '#cce7dc' : '#6c757d',
+                  color: project?.ProjectStatus === 'Close' ? '#008751' : '#fff',
                   padding: '5px',
                   borderRadius: '4px',
                   textDecoration: 'none'
@@ -1961,17 +1971,26 @@ setDocumentpostArr1([])
       )
 }
 </a>
+<p
+                                 
+                                    className="date-color two-line text-muted font-14 mb-3 sp-line-2"
+                                  >
+                                   
+                                   {truncateText(project.ProjectOverview , 100) ||
+    "No description available..."}{" "}
+                             
+                                  </p>
 
                                   <p className="mb-1 font-12">
                                     <span
-                                      style={{ color: "#6e767e" }}
-                                      className="pe-2 text-nowrap mb-1 d-inline-block"
+                                      
+                                      className="pe-2 text-muted text-nowrap mb-1 d-inline-block"
                                     >
                                      
                                      <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} />  <b>{project?.ProjectsDocsId?.length}</b> Documents
                                     </span>
                                     <span
-                                      style={{ color: "#6e767e" }}
+                                     
                                       className="text-nowrap mb-1 d-inline-block"
                                     >
                                     <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />
@@ -2048,10 +2067,12 @@ setDocumentpostArr1([])
                                                      float:"left",
                                                      display:'flex',
                                                      alignItems:'center',
-                                                     justifyContent:'center'
+                                                     justifyContent:'center',
+                                                      position:'relative',
+                                                     width:'40px'
                                                   
                                             }}
-                                            className="circlecssnew text-center img-thumbnail avatar-xl"
+                                            className="circlecssnew mlnew0 text-center img-thumbnail avatar-xl"
                                           >
                                             +
                                           </div>
@@ -2063,8 +2084,10 @@ setDocumentpostArr1([])
                                         className=""
                                         style={{
                                           position: "relative",
-                                          left:"-16px",
-                                          top:'11px'
+                                          left:"-28px",
+                                          top:'11px',
+                                          zIndex:'99',
+                                              display:'flex'
                                        
                                         }}
                                       >
@@ -2176,15 +2199,7 @@ setDocumentpostArr1([])
                                         "Untitled Project"}
                                     </a>
                                   </h4>
-                                  <p
-                                    style={{ color: "#98a6ad" }}
-                                    className="date-color two-line font-14 mb-3 sp-line-2"
-                                  >
-                                   
-                                   {truncateText(project.ProjectOverview , 20) ||
-    "No description available..."}{" "}
-                             
-                                  </p>
+                                  
 
                                   <a>
 
@@ -2194,8 +2209,8 @@ setDocumentpostArr1([])
       : (
           <a className="ongoing mb-3"
               style={{ 
-                  background: project?.ProjectStatus === 'Close' ? '#008751' : '#cce7dc',
-                  color: project?.ProjectStatus === 'Close' ? '#008751' : '#cce7dc',
+                 background: project?.ProjectStatus === 'Close' ? '#cce7dc' : '#6c757d',
+                  color: project?.ProjectStatus === 'Close' ? '#008751' : '#fff',
                   padding: '5px',
                   borderRadius: '4px',
                   textDecoration: 'none'
@@ -2207,16 +2222,26 @@ setDocumentpostArr1([])
 }
 </a>
 
+<p
+                                   
+                                    className="date-color text-muted two-line font-14 mb-3 sp-line-2"
+                                  >
+                                   
+                                   {truncateText(project.ProjectOverview , 100) ||
+    "No description available..."}{" "}
+                             
+                                  </p>
+
                                   <p className="mb-1 font-12">
                                     <span
-                                      style={{ color: "#6e767e" }}
-                                      className="pe-2 text-nowrap mb-1 d-inline-block"
+                                    
+                                      className="pe-2 text-muted text-nowrap mb-1 d-inline-block"
                                     >
                                        <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} /> 
                                       <b>{project?.ProjectsDocsId?.length}</b> Documents
                                     </span>
                                     <span
-                                      style={{ color: "#6e767e" }}
+                                 
                                       className="text-nowrap mb-1 d-inline-block"
                                     >
                                       
@@ -2291,9 +2316,11 @@ setDocumentpostArr1([])
                                                 index == 0
                                                   ? "0 0 0 0"
                                                   : "0 0 0px -12px",
-                                                     float:"left"
-                                            }}
-                                            className="rounded-circlecss img-thumbnail avatar-xl"
+                                                  display:'flex',
+                                                  alignItems:'center',
+                                                  justifyContent:'center', width:'40px'
+                                         }}
+                                            className="rounded-circlecss mlnew0 img-thumbnail avatar-xl"
                                           >
                                             +
                                           </div>
@@ -2305,8 +2332,10 @@ setDocumentpostArr1([])
                                         className=""
                                         style={{
                                           position: "relative",
-                                          left:"-16px",
-                                          top:'11px'
+                                          left:"-28px",
+                                          top:'11px',
+                                          zIndex:'99',
+                                              display:'flex'
                                        
                                         }}
                                       >
@@ -2412,15 +2441,7 @@ setDocumentpostArr1([])
                                         "Untitled Project"}
                                     </a>
                                   </h4>
-                                  <p
-                                    style={{ color: "#98a6ad" }}
-                                    className="date-color two-line font-14 mb-3 sp-line-2"
-                                  >
-                                   
-                                   {truncateText(project.ProjectOverview , 20) ||
-    "No description available..."}{" "}
-                             
-                                  </p>
+                                 
                                   <a>
 
 {
@@ -2429,8 +2450,8 @@ setDocumentpostArr1([])
       : (
           <a className="ongoing mb-3"
               style={{ 
-                  background: project?.ProjectStatus === 'Close' ? '#008751' : '#cce7dc',
-                  color: project?.ProjectStatus === 'Close' ? '#008751' : '#cce7dc',
+                  background: project?.ProjectStatus === 'Close' ? '#cce7dc' : '#6c757d',
+                  color: project?.ProjectStatus === 'Close' ? '#008751' : '#fff',
                   padding: '5px',
                   borderRadius: '4px',
                   textDecoration: 'none'
@@ -2442,16 +2463,26 @@ setDocumentpostArr1([])
 }
 </a>
 
-                                  <p className="mb-1 font-12">
+<p
+                                   
+                                    className="date-color text-muted two-line font-14 mb-3 sp-line-2"
+                                  >
+                                   
+                                   {truncateText(project.ProjectOverview , 100) ||
+    "No description available..."}{" "}
+                             
+                                  </p>
+
+                                  <p className="mb-1 text-muted font-12">
                                     <span
-                                      style={{ color: "#6e767e" }}
+                                     
                                       className="pe-2 text-nowrap mb-1 d-inline-block"
                                     >
                                        <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} /> 
                                       <b>{project?.ProjectsDocsId?.length}</b> Documents
                                     </span>
                                     <span
-                                      style={{ color: "#6e767e" }}
+                                      
                                       className="text-nowrap mb-1 d-inline-block"
                                     >
                                         <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />
@@ -2529,9 +2560,9 @@ setDocumentpostArr1([])
                                                      float:"left",
                                                      display:'flex',
                                                      alignItems:'center',
-                                                     justifyContent:'center'
+                                                     justifyContent:'center', width:'40px'
                                             }}
-                                            className="rounded-circlecss img-thumbnail avatar-xl"
+                                            className="rounded-circlecss mlnew0 img-thumbnail avatar-xl"
                                           >
                                             +
                                           </div>
@@ -2543,8 +2574,11 @@ setDocumentpostArr1([])
                                         className=""
                                         style={{
                                           position: "relative",
-                                          left:"-16px",
-                                          top:'11px'
+                                          left:"-28px",
+                                          top:'11px',
+                                          zIndex:'99',
+                                              display:'flex',
+                                              
                                        
                                         }}
                                       >
@@ -2648,15 +2682,7 @@ setDocumentpostArr1([])
                                         "Untitled Project"}
                                     </a>
                                   </h4>
-                                  <p
-                                    style={{ color: "#98a6ad" }}
-                                    className="date-color two-line font-14 mb-3 sp-line-2"
-                                  >
-                                   
-                                   {truncateText(project.ProjectOverview , 20) ||
-    "No description available..."}{" "}
-                             
-                                  </p>
+                                
 
                                   <a>
 
@@ -2666,8 +2692,8 @@ setDocumentpostArr1([])
       : (
           <a className="ongoing mb-3"
               style={{ 
-                  background: project?.ProjectStatus === 'Close' ? '#008751' : '#cce7dc',
-                  color: project?.ProjectStatus === 'Close' ? '#008751' : '#cce7dc',
+                   background: project?.ProjectStatus === 'Close' ? '#cce7dc' : '#6c757d',
+                  color: project?.ProjectStatus === 'Close' ? '#008751' : '#fff',
                   padding: '5px',
                   borderRadius: '4px',
                   textDecoration: 'none'
@@ -2678,16 +2704,26 @@ setDocumentpostArr1([])
       )
 }
 </a>
-                                  <p className="mb-1 font-12">
+
+<p
+                                    
+                                    className="date-color text-muted two-line font-14 mb-3 sp-line-2"
+                                  >
+                                   
+                                   {truncateText(project.ProjectOverview , 100) ||
+    "No description available..."}{" "}
+                             
+                                  </p>
+                                  <p className="mb-1 text-muted font-12">
                                     <span
-                                      style={{ color: "#6e767e" }}
+                                      
                                       className="pe-2 text-nowrap mb-1 d-inline-block"
                                     >
                                      <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} />
                                       <b>{project?.ProjectsDocsId?.length}</b> Documents
                                     </span>
                                     <span
-                                      style={{ color: "#6e767e" }}
+                                    
                                       className="text-nowrap mb-1 d-inline-block"
                                     >
                                        <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />
@@ -2765,9 +2801,10 @@ setDocumentpostArr1([])
                                                      float:"left",
                                                      display:'flex',
                                                      alignItems:'center',
-                                                     justifyContent:'center'
+                                                     justifyContent:'center',
+                                                     width:'40px'
                                             }}
-                                            className="rounded-circlecss img-thumbnail avatar-xl"
+                                            className="rounded-circlecss mlnew0 img-thumbnail avatar-xl"
                                           >
                                             +
                                           </div>
@@ -2779,8 +2816,10 @@ setDocumentpostArr1([])
                                         className=""
                                         style={{
                                           position: "relative",
-                                          left:"-16px",
-                                          top:'11px'
+                                          left:"-28px",
+                                          top:'11px',
+                                          zIndex:'99',
+                                              display:'flex'
                                        
                                         }}
                                       >
