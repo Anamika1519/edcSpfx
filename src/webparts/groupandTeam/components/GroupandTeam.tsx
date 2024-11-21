@@ -780,6 +780,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
   const endIndex = startIndex + itemsPerPage;
 
+  const [placeholder, setPlaceholder] = useState("Select")
   const currentData = filteredAnnouncementData.slice(startIndex, endIndex);
 
   const newsCurrentData = filteredNewsData.slice(startIndex, endIndex);
@@ -798,34 +799,53 @@ const GroupandTeamcontext = ({ props }: any) => {
 
   const fetchOptions = async () => {
 
-    try {
+    // try {
 
-      const items = await fetchUserInformationList(sp);
+    //   const items = await fetchUserInformationList(sp);
+
+    //   console.log(items, 'itemsitemsitems');
+
+
+
+    //   const formattedOptions = items.map((item: { Title: any; Id: any; }) => ({
+
+    //     name: item.Title, // Adjust according to your list schema
+
+    //     id: item.Id,
+
+    //   }));
+
+    //   setOpions(formattedOptions);
+
+    // } catch (error) {
+
+    //   console.error('Error fetching options:', error);
+
+    // }
+    try {
+      const items = await sp.web.siteUsers
+          .filter("PrincipalType eq 1")();
 
       console.log(items, 'itemsitemsitems');
 
-
-
-      const formattedOptions = items.map((item: { Title: any; Id: any; }) => ({
-
-        name: item.Title, // Adjust according to your list schema
-
-        id: item.Id,
-
+      const formattedOptions = items.map((item) => ({
+          name: item.Title, // Adjust according to your list schema
+          id: item.Id,
       }));
 
       setOpions(formattedOptions);
-
-    } catch (error) {
-
+  } catch (error) {
       console.error('Error fetching options:', error);
-
-    }
+  }
 
   };
 
   const onSelect = (selectedList: React.SetStateAction<any[]>, selectedItem: any) => {
-
+    if(selectedList.length > 0){
+      setPlaceholder("");
+    }else{
+      setPlaceholder("Select");
+    }
     setSelectedValue(selectedList);
 
     console.log('Selected item:', selectedItem, 'selectedList', selectedList);
@@ -835,7 +855,11 @@ const GroupandTeamcontext = ({ props }: any) => {
 
 
   const onRemove = (selectedList: React.SetStateAction<any[]>, removedItem: any) => {
-
+    if(selectedList.length > 0){
+      setPlaceholder("");
+    }else{
+      setPlaceholder("Select");
+    }
     setSelectedValue(selectedList);
 
     console.log('Removed item:', removedItem);
@@ -1861,7 +1885,7 @@ const GroupandTeamcontext = ({ props }: any) => {
   //#endregion
 
 
-
+  
   return (
 
     <div id="wrapper" ref={elementRef}>
@@ -2235,7 +2259,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
                                 </label>
 
-                                <Multiselect
+                                {/* <Multiselect
 
                                   options={options}
 
@@ -2247,7 +2271,19 @@ const GroupandTeamcontext = ({ props }: any) => {
 
                                   displayValue="name"
 
-                                />
+                                /> */}
+                                  <Multiselect
+                options={options}
+                selectedValues={selectedValue}
+                onSelect={onSelect}
+                onRemove={onRemove}
+                displayValue="name"
+                // showCheckbox={true}
+                placeholder={placeholder} // Change the placeholder text
+                avoidHighlightFirstOption={true} // Option to avoid highlighting the first option by default
+                customCloseIcon={<span>&times;</span>} // Custom icon for removing selected items
+                closeIcon="cancel" // Close icon for clearing selections
+            />
 
                               </div>
 

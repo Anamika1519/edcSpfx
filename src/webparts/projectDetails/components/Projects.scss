@@ -38,9 +38,19 @@
   height: 40px;
   border-radius: 1000px;}
   .alignright{    position: absolute;
-    right: 0;
+    right: 20px; width:21px;
     top: 13;
 }
+.action-icon{
+  position: absolute;
+    right: -3px;
+}
+.action-icon svg{
+  height:20px;
+}
+textarea{border: none;}
+textarea:focus{outline: none;}
+.ht{padding: 9px;}
 .open-popup-btn {
   padding: 10px 20px;
   background-color: #007bff;
@@ -128,6 +138,7 @@ form {
 //   border-radius: 4px;
 // }
 .minw80 ul{list-style: none; margin-bottom: 0px;}
+
 .minw80 button{min-width: auto; border: none;}
 button[type="submit"] {
   width: 100%;

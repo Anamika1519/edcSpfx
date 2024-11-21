@@ -1709,7 +1709,7 @@ const DiscussionForumContext = ({ props }: any) => {
                             }}
                           >
                             <div
-                              className="d-flex pb-2"
+                              className="d-fle"
                               style={{ justifyContent: "space-between" }}
                             >
                               <span>S.No.</span>
@@ -1730,7 +1730,7 @@ const DiscussionForumContext = ({ props }: any) => {
                           <th style={{ minWidth: "180px", maxWidth: "180px" }}>
                             <div className="d-flex flex-column bd-highlight ">
                               <div
-                                className="d-flex pb-2"
+                                className="d-flex"
                                 style={{ justifyContent: "space-between" }}
                               >
                                 <span>Title</span>
@@ -1754,7 +1754,7 @@ const DiscussionForumContext = ({ props }: any) => {
                           <th style={{ minWidth: "150px", maxWidth: "150px" }}>
                             <div className="d-flex flex-column bd-highlight ">
                               <div
-                                className="d-flex  pb-2"
+                                className="d-flex"
                                 style={{ justifyContent: "space-between" }}
                               >
                                 <span>Overview</span>{" "}
@@ -1781,7 +1781,7 @@ const DiscussionForumContext = ({ props }: any) => {
                           <th style={{ minWidth: "100px", maxWidth: "100px" }}>
                             <div className="d-flex flex-column bd-highlight ">
                               <div
-                                className="d-flex  pb-2"
+                                className="d-flex "
                                 style={{ justifyContent: "space-between" }}
                               >
                                 <span>Category</span>{" "}

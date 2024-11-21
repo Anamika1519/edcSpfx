@@ -44,6 +44,7 @@ import moment from 'moment'
 import { fetchMediaGallerydata } from '../../../APISearvice/MediaDetailsServies'
 import { GroupPostComponent } from '../../../CustomJSComponents/GroupTeamPost/GroupPostComponent'
 import Swal from 'sweetalert2'
+import { colors } from '@mui/material'
 
 export interface IGroupAndTeamPosts {
   Id: any;
@@ -111,21 +112,43 @@ const SocialFeedContext = ({ props }: any) => {
   const [getAllgroup, setgetAllgroup] = useState([]);
   const [activeTab, setActiveTab] = useState("allgroups");
   const [gallerydata, setGalleryData] = useState<any[]>([]);
+  const [Loading1, setLoading1] = useState(false);
   // const [formData, setFormData] = React.useState({
   //   Post: "",
     
   // });
+  const[argcurrentgroupuser, setArgcurrentgroupuser] = useState([])
   useEffect(() => {
     // Load posts from localStorage when the component mounts
     // const storedPosts = JSON.parse(localStorage.getItem('posts') || '[]');
     // console.log(storedPosts);
-
+    fetchDetailbyProjectName()
     // setPosts(storedPosts);
     getAllAPI()
     // getuserprofile()
 
   }, [props]);
+  async function  fetchDetailbyProjectName() {
+    console.log(GroupName, "GroupName")
+    const ids = window.location.search;
+    const originalString = ids;
+    const idNum = originalString.substring(1);
+    try {
+     
+        
+      alert(GroupName)
+      const getargmember = await sp.web.lists.getByTitle('ARGGroupandTeam').items.filter(`GroupName eq '${GroupName}'`).select("*,InviteMemebers/ID,InviteMemebers/EMail,InviteMemebers/Title , Author/ID,Author/Title,Author/EMail").expand("InviteMemebers ,Author")();
+      console.log(getargmember, "getargmember")
+  
+      setArgcurrentgroupuser(getargmember)
+    } catch (error) {
+      
+    }
+ 
+   
+  }
 
+  console.log(argcurrentgroupuser, "ARGGroupandTeam member")
   useEffect(() => {
     getuserprofile()
   }, []);
@@ -189,7 +212,7 @@ const SocialFeedContext = ({ props }: any) => {
     debugger;
     const getgroup1 = await sp.web.lists
       .getByTitle("ARGGroupandTeam")
-      .items.getById(idNum2).select("*,InviteMemebers/Id,InviteMemebers/Title,InviteMemebers/EMail,GroupType").expand("InviteMemebers")()
+      .items.getById(idNum2).select("*,InviteMemebers/Id,InviteMemebers/Title,InviteMemebers/EMail,GroupType , Author/ID,Author/Title,Author/EMail").expand("InviteMemebers , Author")()
       .then((res) => {
         // arr=res;
         GroupName = res.GroupName
@@ -197,7 +220,7 @@ const SocialFeedContext = ({ props }: any) => {
         console.log(res, ":response")
         // debugger
         console.log("res------", res)
-        setArrDetails(res)
+        setArrDetails([res])
         debugger
 
         userList.forEach(function (element, index, array) {
@@ -228,6 +251,8 @@ const SocialFeedContext = ({ props }: any) => {
         console.log("Error fetching data: ", error);
       });
   }
+  console.log(ArrDetails , "ArrDetails data success")
+  console.log(ArrDetails , "ArrDetails data success")
   const getAllAPI = async () => {
     const galleryItemsone = await fetchMediaGallerydata(sp);
     setGalleryData(galleryItemsone);
@@ -243,32 +268,63 @@ const SocialFeedContext = ({ props }: any) => {
 
   }
 
-  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  // const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const files = Array.from(e.target.files || []); 
+  //   let uploadedImages: any[] = [];
+  //   let ImagesIds: any[] = [];
+  //   for (const file of files) {
+  //     try {
+      
+  //       const uploadedImage = await uploadFileToLibrary(file, sp, "SocialFeedImages");
+
+  //       uploadedImages.push(uploadedImage); 
+  //       console.log(uploadedImage, 'Uploaded file data');
+  //     } catch (error) {
+  //       console.log("Error uploading file:", file.name, error);
+  //     }
+  //   }
+
+
+
+    
+
+  //   setImages(flatArray(uploadedImages)); 
+
+  //   setUploadFile(flatArray(uploadedImages)); 
+
+  // };
+
+ 
+const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []); // Ensure files is an array of type File[]
     let uploadedImages: any[] = [];
     let ImagesIds: any[] = [];
     for (const file of files) {
+      setLoading1(true);
       try {
         // Assuming uploadFileToLibrary is your custom function to upload files
-        const uploadedImage = await uploadFileToLibrary(file, sp, "SocialFeedImages");
-
+        const uploadedImage = await uploadFileToLibrary(
+          file,
+          sp,
+          "SocialFeedImages"
+        );
+ 
         uploadedImages.push(uploadedImage); // Store uploaded image data
-        console.log(uploadedImage, 'Uploaded file data');
+        console.log(uploadedImage, "Uploaded file data");
       } catch (error) {
+        setLoading1(false);
         console.log("Error uploading file:", file.name, error);
+      } finally {
+        setLoading1(false); // Enable the button after the function completes
       }
     }
-
-
-
     // Set state after uploading all images
-
+ 
     setImages(flatArray(uploadedImages)); // Store all uploaded images
-
+ 
     setUploadFile(flatArray(uploadedImages)); // Optional: Track the uploaded file(s) in another state
-
   };
-
+ 
   //#region flatArray
 
   const flatArray = (arr: any[]): any[] => {
@@ -290,8 +346,17 @@ const SocialFeedContext = ({ props }: any) => {
     }
     return valid;
   };
+
+  const [errorMessage, setErrorMessage] = useState('');
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
   //if (validateForm()) {
+    if (!Contentpost) {
+      event.preventDefault()
+      setErrorMessage('Please write something in the post.');
+      return;
+    }
+
+    setErrorMessage('');
     let ImagesIdss: any[] = [];
     ImagesIdss = ImagesIdss.concat(SocialFeedImagesJson.map((item: any) => item.ID));
     setImageIds(ImagesIdss)
@@ -300,6 +365,7 @@ const SocialFeedContext = ({ props }: any) => {
     const ids = window.location.search;
     const originalString = ids;
     const idNum = originalString.substring(1);
+    
     await sp.web.lists.getByTitle("ARGGroupandTeamComments")
       .items.add({
         Comments: Contentpost,
@@ -694,8 +760,57 @@ const SocialFeedContext = ({ props }: any) => {
                               Group Members 
 
                             </h4>
+                            <p>{GroupName}</p>
+                            {/* <>{ArrDetails[0].GroupType}</> */}
+                            {ArrDetails[0]?.InviteMemebers?.length > 0 && 
+                          ArrDetails[0]?.InviteMemebers.map((member:any, idx:any) => (
+        <div className="projectmemeber">
+<img
+          // style={{
+          //   margin:
+          //     index == 0
+          //       ? "0 0 0 0"
+          //       : "0 0 0px -12px",
+          // }}
+          src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${member?.EMail}`}
+          className="rounded-circlecss6 img-thumbnail avatar-xl"
+          alt="profile-image"
+        />
+        <p>{member?.Title} </p>
+        {/* {item.Author.EMail === currentUserEmailRef.current && (
+        <div>
+        <button onClick={()=>handleRemoveUser(id?.ID)}>Remove</button>
+        </div>
 
-                            <div className="inbox-widget" style={{ marginTop: '1rem' }}>
+        )
+        
+        } */}
+      
+              <img
+
+src={require("../assets/calling.png")}
+
+className="alignright"
+
+onClick={() =>
+
+  window.open(
+
+    `https://teams.microsoft.com/l/call/0/0?users=${member.EMail}`,
+
+    "_blank"
+
+  )
+
+}
+
+alt="Call"
+
+/>
+        </div>
+        
+      ))}
+                            {/* <div className="inbox-widget" style={{ marginTop: '1rem' }}>
                               {groupmembers.map((user, index) => (
                                 <div
                                   key={index}
@@ -720,7 +835,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                                 </div>
                               ))}
-                            </div>
+                            </div> */}
                           </div>
                         </div>
                       </div>
@@ -814,7 +929,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                                     </label>
 
-                                    <div className="image-preview mt-2">
+                                    {/* <div className="image-preview mt-2">
 
 
 
@@ -842,14 +957,52 @@ const SocialFeedContext = ({ props }: any) => {
 
                                       )}
 
-                                    </div>
+                                    </div> */}
 
+
+ 
+                      <div className="image-preview mt-2">
+                                         {Loading1 ? (
+                                           <div
+                                             className="spinner-border text-primary"
+                                             role="status"
+                                           >
+                                             <span className="sr-only">
+                                               Loading...
+                                             </span>
+                                           </div>
+                                         ) : (
+                                           SocialFeedImagesJson.map(
+                                             (image: any, index) => {
+                                               var imageUrl =
+                                                 mergeAndRemoveDuplicates(
+                                                   siteUrl,
+                                                   image.fileUrl
+                                                 );
+                                               console.log(imageUrl);
+  
+                                               return (
+                                                 <img
+                                                   key={index}
+                                                   src={imageUrl}
+                                                   alt={`preview-${index}`}
+                                                   style={{
+                                                     width: "100px",
+                                                     marginRight: "10px",
+                                                   }}
+                                                 />
+                                               );
+                                             }
+                                           )
+                                         )}
+                                       </div>
+  
                                     <button type="submit" className="btn btn-sm btn-success font-121">
 
                                       <FontAwesomeIcon icon={faPaperPlane} /> Post
 
                                     </button>
-
+                                    <p style={{ color: 'red', fontSize: '14px', marginTop: '10px' }}>{errorMessage}</p>
                                   </div>
 
                                 </form>

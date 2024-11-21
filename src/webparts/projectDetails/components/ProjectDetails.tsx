@@ -2,19 +2,24 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import CustomBreadcrumb from "../../../CustomJSComponents/CustomBreadcrumb/CustomBreadcrumb";
 import VerticalSideBar from "../../verticalSideBar/components/VerticalSideBar";
 import { SPFI } from "@pnp/sp/presets/all";
-import Swal from "sweetalert2";
+import { fetchUserInformationList } from "../../../APISearvice/GroupTeamService";
 import Select from 'react-select'
-import Multiselect from "multiselect-react-dropdown";
+import Swal from "sweetalert2";
+// import Select from 'react-select'
+// import Multiselect from "multiselect-react-dropdown";
 import "../../../Assets/Figtree/Figtree-VariableFont_wght.ttf";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "../../../CustomCss/mainCustom.scss";
 import "../../verticalSideBar/components/VerticalSidebar.scss";
+let INGLOBAL : any
+let currentuseridglobal : any
 // import "../components/announcementdetails.scss";
+import Multiselect from "multiselect-react-dropdown";
 import Provider from "../../../GlobalContext/provider";
 import HorizontalNavbar from "../../horizontalNavBar/components/HorizontalNavBar";
 // import 'react-comments-section/dist/index.css';
-import { CommentCard } from "../../../CustomJSComponents/CustomCommentCard/CommentCard";
+import { CommentCard } from "../../../CustomJSComponents/CustomCommentCardProject/CommentCardProject";
 import {
   addNotification,
   getCurrentUser,
@@ -32,6 +37,8 @@ import { getProjectDetailsById } from "../../../APISearvice/BlogService";
 import "./Projects.scss";
 import { Modal, Card ,Dropdown , Button} from "react-bootstrap";
 import FileIcon from "../../../CustomJSComponents/FileIcon";
+import { asAsync } from "@fluentui/react";
+import { parse } from "@fortawesome/fontawesome-svg-core";
 
 // Define types for reply and comment structures
 interface Reply {
@@ -73,8 +80,11 @@ const ProjectDetailsContext = ({ props }: any) => {
   const menuRef = useRef(null);
   const [projectallfile, setProjectallfiles] = useState([]);
   const elementRef = React.useRef<HTMLDivElement>(null);
+  // const [selectedValue, setSelectedValue] = useState([]);
   const [CurrentUser, setCurrentUser]: any[] = useState([]);
   const [comments, setComments] = useState<Comment[]>([]);
+const [options, setOpions] = useState([]);
+
   const [newComment, setNewComment] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [ArrDetails, setArrDetails] = useState([]);
@@ -112,19 +122,77 @@ const ProjectDetailsContext = ({ props }: any) => {
 
     fetchUsers();
   }, []);
-  const currentUserEmailRef = useRef('');
+  // const currentUserEmailRef = useRef('');
   const getCurrrentuser=async()=>{
     const userdata = await sp.web.currentUser();
-    // alert(userdata)
+
     currentUserEmailRef.current = userdata.Email;
-    alert(`ID: ${userdata}`)
-    // alert(currentUserEmailRef.current)
+    currentuseridglobal = userdata.Id
+
  
   }
   useEffect(() => {
     getCurrrentuser()
 
   }, []);
+  // const onSelect = (selectedList:any) => {
+  //   console.log(selectedList , "selectedList");
+  //   setSelectedValue(selectedList);  // Set the selected users
+  // };
+
+  // const onRemove = (removedItem:any) => {
+  //   setSelectedValue(prev => prev.filter(item => item.value !== removedItem.value));  // Remove the user from the selection
+  // };
+
+  const fetchOptions = async () => {
+    try {
+      const items = await fetchUserInformationList(sp);
+
+      console.log(items, "itemsitemsitems");
+
+      const formattedOptions = items.map((item: { Title: any; Id: any }) => ({
+        name: item.Title, // Adjust according to your list schema
+
+        id: item.Id,
+      }));
+
+      setOpions(formattedOptions);
+    } catch (error) {
+      console.error("Error fetching options:", error);
+    }
+  };
+
+
+  // const [users, setUsers] = useState([]);
+  useEffect(() => {
+    // Fetch users from SharePoint when the component mounts
+    const fetchUsers = async () => {
+      try {
+        const userList = await sp.web.siteUsers();  // Fetch users from the site
+        const userOptions = userList.map(user => ({
+          label: user.Title,   // Display name of the user
+          value: user.Id       // Unique user ID
+        }));
+        setUsers(userOptions);  // Set the options for Select and Multiselect
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+  const currentUserEmailRef = useRef('');
+  // const getCurrrentuser=async()=>{
+  //   const userdata = await sp.web.currentUser();
+
+  //   currentUserEmailRef.current = userdata.Email;
+  
+ 
+  // }
+  // useEffect(() => {
+  //   getCurrrentuser()
+
+  // }, []);
   const onSelect = (selectedList:any) => {
     console.log(selectedList , "selectedList");
     setSelectedValue(selectedList);  // Set the selected users
@@ -195,13 +263,14 @@ ApICallData();
     const ids = window.location.search;
     const originalString = ids;
     const idNum = originalString.substring(1);
+    INGLOBAL = idNum
     let initialArray: any[] = [];
     let arrLike = {};
     let likeArray: any[] = [];
     sp.web.lists
       .getByTitle("ARGProjectComments")
-      .items.select("*,ARGProject/Id")
-      .expand("ARGProject")
+      .items.select("*,ARGProject/Id ,Author/ID,Author/Title,Author/EMail")
+      .expand("ARGProject , Author")
       .filter(`ARGProjectId eq ${Number(idNum)}`)()
       .then(async (result: any) => {
         console.log(result, "ARGProjectComments");
@@ -282,7 +351,7 @@ ApICallData();
       });
   }
   const ApiLocalStorageData = async () => {
-    debugger;
+
 
     //Get the Id parameter
     const ids = window.location.search;
@@ -307,9 +376,11 @@ if (projectDetails ) {
   };
 
   const ApICallData = async () => {
-    debugger;
+
+
     setCurrentUser(await getCurrentUser(sp, siteUrl));
     setCurrentUserProfile(await getCurrentUserProfile(sp, siteUrl));
+    console.log(CurrentUserProfile, "CurrentUserProfile");
   };
 
   const [showModal, setShowModal] = useState(false);
@@ -363,7 +434,7 @@ if (projectDetails ) {
   // };
   // Add a new comment
   const handleAddComment = async () => {
-    debugger;
+ 
     if (newComment.trim() === "") return;
     setLoading(true);
     await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -626,7 +697,7 @@ try{
 
   // Add a reply to a comment
   const handleAddReply = async (commentIndex: number, replyText: string) => {
-    debugger;
+
     setLoadingReply(true);
     try {
     if (replyText.trim() === "") return;
@@ -733,7 +804,7 @@ try{
   //     let filteredFiles = files.filter(file => allowedTypes.includes(file.type));
 
   //     if (filteredFiles.length === 0) {
-  //       alert("Only PNG, JPG, SVG, DOC, DOCX, PDF, EXCEL, PPT, CSV, and TSX files are allowed.");
+  //      
   //       setLoading(false);
   //       return;
   //     }
@@ -748,11 +819,45 @@ try{
   // };
   const [error, setError] = useState<string>('');  
   // Function to remove a file from the selected files array
+  // const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   setLoading(true);
+  //   const files = Array.from(e.target.files || []);  // Ensure files is an array of type File[]
+  
+  //   try {
+      
+  //     const allowedTypes = [
+  //       'image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml', 
+  //       'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 
+  //       'application/pdf', 'application/vnd.ms-excel', 
+  //       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 
+  //       'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+  //       'text/csv', 'text/tsx'
+  //     ];
+  
+  //     // Filter valid files based on MIME types
+  //     const filteredFiles = files.filter(file => allowedTypes.includes(file.type));
+  //     console.error('here is my filteredFiles:', filteredFiles);
+  //     if (filteredFiles.length === 0) {
+  //       setError("Only PNG, JPG, SVG, DOC, DOCX, PDF, EXCEL, PPT, CSV, and TSX files are allowed.");
+  //       setLoading(false);
+  //       return;
+  //     }
+  
+  //     setError('');
+  //     setSelectedFiles(filteredFiles);
+  //   } catch (error) {
+  //     console.error('Error handling file input:', error);
+  //     setError('An error occurred while processing the files.');
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setLoading(true);
     const files = Array.from(e.target.files || []);  // Ensure files is an array of type File[]
   
     try {
+      
       const allowedTypes = [
         'image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml', 
         'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 
@@ -780,36 +885,79 @@ try{
       setLoading(false);
     }
   };
-  const uploadfileinfolder = async()=>{
-    console.log("hernter here in ")
+//   const uploadfileinfolder = async()=>{
+//     console.log("hernter here in ")
+//     console.log(selectedFiles , " Here is my selected files")
+//   for (const file of selectedFiles) {
+
+//     try {
+//       console.log(`Uploading file: ${file.name}`);
+//       console.log(`filemanager: ${filemanager}`);
+      
+//       // Reference the folder by server-relative path
+//       const uploadFolder = sp.web.getFolderByServerRelativePath(`${filemanager}`);
+//       console.log(uploadFolder , "uplaodfold")
+//       // Upload the file using addChunked (use appropriate chunk size if needed)
+//       const uploadResult = await uploadFolder.files.addChunked(file.name, file)
+//       if(uploadResult){
+//         await Swal.fire(
+//           'Uploaded!',
+//           'The file has been successfully Uploaded.',
+//           'success'
+//       );
+//       getAllFilesForProject()
+//       setSelectedFiles([])
+//       }
+  
+//       console.log(`Upload successful for file: ${file.name}`);
+//     } catch (error) {
+//       console.error(`Error uploading file: ${file.name}`, error);
+//     }
+//   }
+      
+
+// }
+const sanitizeFileName = (name:any) => {
+  // Remove invalid characters
+  return name.replace(/[<>:"/\\|?*%#]/g, '_'); // Replace invalid characters with an underscore
+};
+
+const uploadfileinfolder = async () => {
+  console.log("Entering upload function");
+
   for (const file of selectedFiles) {
+      try {
+          console.log(`Uploading file: ${file.name}`);
+          console.log(`filemanager: ${filemanager}`);
 
-    try {
-      console.log(`Uploading file: ${file.name}`);
-      console.log(`filemanager: ${filemanager}`);
-      
-      // Reference the folder by server-relative path
-      const uploadFolder = sp.web.getFolderByServerRelativePath(`${filemanager}`);
-      console.log(uploadFolder , "uplaodfold")
-      // Upload the file using addChunked (use appropriate chunk size if needed)
-      const uploadResult = await uploadFolder.files.addChunked(file.name, file)
-      if(uploadResult){
-        await Swal.fire(
-          'Uploaded!',
-          'The file has been successfully Uploaded.',
-          'success'
-      );
-      setSelectedFiles([])
+          // Sanitize the file name
+          const sanitizedFileName = sanitizeFileName(file.name);
+          console.log(`Sanitized file name: ${sanitizedFileName}`);
+
+          // Reference the folder by server-relative path
+          const uploadFolder = sp.web.getFolderByServerRelativePath(filemanager.trim());
+          console.log(uploadFolder, "uploadFolder");
+
+          // Upload the file using addChunked (use appropriate chunk size if needed)
+          const uploadResult = await uploadFolder.files.addChunked(sanitizedFileName, file);
+
+          if (uploadResult) {
+              await Swal.fire(
+                  'Uploaded!',
+                  'The file has been successfully uploaded.',
+                  'success'
+              );
+              getAllFilesForProject();
+              setSelectedFiles([]);
+          }
+
+          console.log(`Upload successful for file: ${file.name}`);
+      } catch (error) {
+          console.error(`Error uploading file: ${file.name}`, error);
       }
-      // alert(uploadResult)
-      console.log(`Upload successful for file: ${file.name}`);
-    } catch (error) {
-      console.error(`Error uploading file: ${file.name}`, error);
-    }
   }
-      
+};
 
-}
   const removeFile = (fileName: string) => {
     setSelectedFiles(prevFiles => prevFiles.filter(file => file.name !== fileName));
   };
@@ -887,12 +1035,54 @@ try{
     }
    
   }
-  const handlePreviewFile = (fileUrl:any) => {
+  const handlePreviewFile =  (fileUrl:any) => {
     window.open(fileUrl, '_blank'); // Open the file in a new tab
+  };
+  const Handledeletefile = async (fileid:any) => {
+    try {
+      const result = await Swal.fire({
+          title: 'Are you sure?',
+          text: "You won't be able to revert this!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, delete it!'
+      });
+
+      if (result.isConfirmed) {
+          // Fetch the file using its unique ID
+          const file = await sp.web.getFileById(fileid)();
+
+          if (file) {
+              // Delete the file
+              await sp.web.getFileById(fileid).delete();
+
+              await Swal.fire(
+                  'Deleted!',
+                  'Your file has been deleted.',
+                  'success'
+              );
+
+              getAllFilesForProject()
+          } else {
+              alert("File not found.");
+          }
+      }
+  } catch (error) {
+      console.error("Error deleting file:", error);
+      Swal.fire({
+          title: 'Error!',
+          text: 'Failed to delete file. Check the console for details.',
+          icon: 'error',
+          confirmButtonText: 'OK'
+      });
+  }
   };
 
 const [isPopupVisible, setPopupVisible] = useState(false);
 const [toggleuserpopup, Settoggleuserpopup] = useState(false);
+// const [toggleuserpopup, Settoggleuserpopup] = useState(false);
 
 
 
@@ -901,7 +1091,7 @@ const togglePopup  =async () => {
   const ids = window.location.search;
 const originalString = ids;
 const idNum = originalString.substring(1);
-//alert(idNum)
+
 
   const getdata :any= await sp.web.lists.getByTitle('ARGProject').items.getById(parseInt(idNum))()
   console.log(getdata , "get data ")
@@ -934,6 +1124,11 @@ const togglevalue = (e:any) => {
   Settoggleuserpopup(!toggleuserpopup);
 }
 
+
+// const togglevalue = (e:any) => {
+//   e.preventDefault()
+//   Settoggleuserpopup(!toggleuserpopup);
+// }
   const [name, setName] = useState('');
   const [Overview, setOverview] = useState('');
 
@@ -987,6 +1182,8 @@ const togglevalue = (e:any) => {
       }
     }
   };
+
+  
   const UpdateTeamMember = async (e: any) => {
     e.preventDefault();
 
@@ -1028,14 +1225,14 @@ const togglevalue = (e:any) => {
         const updatedValues = {
             TeamMembersId: updatedUsers.map(user => user.LookupId), // Ensure it's an array
         };
-
+        
         // Update the SharePoint item
         const updatedItem =  await sp.web.lists.getByTitle('ARGProject').items.getById(parseInt(idNum)).update(updatedValues);
         if(updatedItem){
 
           togglevalue(e)
   
-            alert(false)
+  
                // Show success message
         Swal.fire({
           title: 'Success!',
@@ -1066,7 +1263,7 @@ const togglevalue = (e:any) => {
 
   const DeleteFileFromFileMaster =async (fileId:any) =>{
     try {
-      // Show confirmation alert using Swal
+    
       const result = await Swal.fire({
           title: 'Are you sure?',
           text: 'Do you really want to delete this file? This action cannot be undone.',
@@ -1083,7 +1280,7 @@ const togglevalue = (e:any) => {
           // Delete the file
           await sp.web.getFileById(fileId).delete();
           
-          // Success alert
+          
           await Swal.fire(
               'Deleted!',
               'The file has been deleted successfully.',
@@ -1100,7 +1297,7 @@ const togglevalue = (e:any) => {
       }
   } catch (error) {
       console.error('Error deleting file:', error);
-      // Show error alert
+  
       await Swal.fire(
           'Error!',
           'There was an error deleting the file.',
@@ -1108,6 +1305,162 @@ const togglevalue = (e:any) => {
       );
   }
   }
+  const handleSaveComment = async (id: number, newText: string) => {
+    // Logic for saving a comment goes here
+    // For example:
+
+    await sp.web.lists
+      .getByTitle("ARGProjectComments")
+      .items.getById(id)
+      .update({
+        Comments: newText,
+        ARGProjectId: Number(INGLOBAL)
+      });
+  };
+
+  const handleDeleteComment = async (commentId: number) => {
+    try {
+
+      const result = await Swal.fire({
+          title: "Are you sure?",
+          text: "Do you really want to delete this item? This action cannot be undone!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#d33",
+          cancelButtonColor: "#3085d6",
+          confirmButtonText: "Yes, delete it!",
+      });
+
+      // If confirmed, proceed to delete
+      if (result.isConfirmed) {
+          await sp.web.lists.getByTitle("ARGProjectComments").items.getById(commentId).delete();
+
+    
+          Swal.fire({
+              title: "Deleted!",
+              text: "The item has been successfully deleted.",
+              icon: "success",
+              timer: 1500,
+              showConfirmButton: false,
+          });
+      }
+  } catch (error) {
+   
+      Swal.fire({
+          title: "Error!",
+          text: `There was an issue deleting the item: ${error.message}`,
+          icon: "error",
+          confirmButtonText: "OK",
+      });
+      console.error(`Error deleting item `, error);
+  }
+  }
+
+//   const handleRemoveUser = async (userId: number) => {
+   
+//     try {
+//         const itemId = argcurrentgroupuser[0]?.Id;
+//       
+//         if (!itemId) {
+//       
+//             return;
+//         }
+
+//         if (!userId) {
+//         
+//             return;
+//         }
+
+//         // Fetch the item with expanded TeamMembers
+//         const item = await sp.web.lists
+//             .getByTitle("ARGProject")
+//             .items.getById(itemId)
+//             .select("*, TeamMembers/Id, TeamMembers/EMail, TeamMembers/Title")
+//             .expand("TeamMembers")();
+
+//         console.log("Current item:", item);
+
+//         // Existing users in TeamMembers field
+//         const currentUsers = item.TeamMembers || [];
+//         console.log("Current users in TeamMembers:", currentUsers);
+
+//         // Filter out the user to be removed
+//         const updatedUsers = currentUsers.filter((user: any) => user.Id !== userId);
+//         console.log("Updated users list:", updatedUsers);
+
+//         // Prepare the updated array of LookupIds for SharePoint
+//         const updatedValues = {
+//             TeamMembersId: { results: updatedUsers.map((user: any) => user.Id) },
+//         };
+
+//         // Update the SharePoint item
+//         await sp.web.lists
+//             .getByTitle("ARGProject")
+//             .items.getById(itemId)
+//             .update(updatedValues);
+
+//      
+//     } catch (error) {
+//         console.error("Error removing user:", error);
+//      
+//     }
+// };
+const handleRemoveUser = async (userId: number) => {
+  try {
+      const ids = window.location.search;
+      const idNum = ids.substring(1);
+
+      if (!idNum) {
+       
+          return;
+      }
+
+      // Fetch the current People Picker value (TeamMembers) from the list item
+      const item = await sp.web.lists.getByTitle("ARGProject").items.getById(parseInt(idNum))
+          .select("*, TeamMembers/Id, TeamMembers/EMail, TeamMembers/Title")
+          .expand("TeamMembers")();
+
+      console.log(item, "here is my item");
+
+      // Current People Picker column value (TeamMembers) from the fetched item
+      const existingUsers = (item as any)["TeamMembers"] || [];
+      console.log(existingUsers, "existing users");
+
+      // Filter out the user to be removed
+      const updatedUsers = existingUsers.filter((user: { Id: number }) => user.Id !== userId);
+
+      console.log(updatedUsers, "updatedUsers after removal");
+
+      // Prepare updated values for SharePoint item
+      const updatedValues = {
+          TeamMembersId: updatedUsers.map((user: { Id: number }) => user.Id), // Use 'Id' to update TeamMembers
+      };
+
+      console.log(updatedValues, "updatedValues");
+
+      // Update the SharePoint item
+      const updatedItem = await sp.web.lists.getByTitle("ARGProject").items.getById(parseInt(idNum)).update(updatedValues);
+
+      // Show success message
+      Swal.fire({
+          title: "Success!",
+          text: "User removed successfully.",
+          icon: "success",
+          confirmButtonText: "OK",
+      });
+  } catch (error) {
+      console.error("Error removing user:", error);
+
+      // Show error message
+      Swal.fire({
+          title: "Error!",
+          text: "Something went wrong. Please try again.",
+          icon: "error",
+          confirmButtonText: "OK",
+      });
+  }
+};
+
   return (
     <div id="wrapper" ref={elementRef}>
       <div className="app-menu" id="myHeader">
@@ -1150,7 +1503,7 @@ const togglevalue = (e:any) => {
           </div>
         </div>
       )}
-      {toggleuserpopup && (
+          {toggleuserpopup && (
         <div className="popup">
           <div className="popup-content">
             <button className="close-btn" onClick={togglevalue}>
@@ -1181,13 +1534,20 @@ const togglevalue = (e:any) => {
         </div>
       )}
             <div className="row ">
-              <div className="col-lg-8">
+              <div className="col-lg-8 mt-2">
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
               </div>
           
             </div>
             {ArrDetails.length > 0
               ? ArrDetails.map((item: any, index) => {
+
+                console.log(item?.Author?.Email , "email" )
+                console.log(item?.Author?.Title , "email" )
+            
+                if(item.Author.EMail === currentUserEmailRef.current){
+        
+                }
                 if (item.ProjectStatus === "Close") {
                   var div = document.querySelector('.col-md-6.mobile-w2') as HTMLElement;
                   if (div) {
@@ -1217,7 +1577,16 @@ const togglevalue = (e:any) => {
                      
                         {item.ProjectName}
                       </p>
-                      <div className="row mt-2">
+                      <div className="row ">
+                      <p
+                        style={{ lineHeight: "22px", fontSize:'15px', position:'sticky', top:'90px'}}
+                        className="d-block text-dark mt-2"
+                      >
+                        {item.ProjectOverview}
+                      </p>
+                     
+                    </div>
+                      <div style={{ position:'sticky', top:'90px'}}  className="row mt-2">
                         <div className="col-md-12 col-xl-12">
                         <div className="tabcss sameh mb-2 mt-2 me-1 activenew">
 
@@ -1225,17 +1594,18 @@ const togglevalue = (e:any) => {
                   onClick={(e) => openModal(e)}
                  
                 >
-                  <FilePlus /> Open Document Repository
+                  <FilePlus />  Documents
+             
                 </button>
                         </div>
                         <div className="tabcss mb-2 mt-2 me-1 newalign"> <span className="pe-2 text-nowrap mb-0 d-inline-block">
-                              <Calendar size={14} />{" "}
-                              {moment(item.StartDate).format("DD-MMM-YYYY")}{" "} Start Date
+                              <Calendar size={14} />{" "}  Start Date:&nbsp; 
+                             {moment(item.StartDate).format("DD-MMM-YYYY")}{" "}
                               
                             </span>  </div>
-                            <div className="tabcss mb-2 mt-2 me-1 newalign"> <span className="pe-2 text-nowrap mb-0 d-inline-block">
-                              <Calendar size={14} />{" "}
-                             {moment(item.DueDate).format("DD-MMM-YYYY")}{" "} End Date
+                        <div className="tabcss mb-2 mt-2 me-1 newalign"> <span className="pe-2 text-nowrap mb-0 d-inline-block">
+                              <Calendar size={14} />{" "} End Date:&nbsp; 
+                             {moment(item.DueDate).format("DD-MMM-YYYY")}{" "} 
                               
                             </span>  </div>
                             <div className="tabcss mb-2 sameh mt-2 me-1 ">
@@ -1256,13 +1626,14 @@ const togglevalue = (e:any) => {
                               )}
                             </span> */}
                              {/* <span
+                             {/* <span
                               className="text-nowrap mb-0 d-inline-block"
                               onClick={togglePopup}
                             >
                              Create Folder
                              
                             </span> */}
-                            {/* </div> */}
+                            </div>
                           {/* <p  style={{
                               
                               margin: "11px",
@@ -1355,15 +1726,207 @@ const togglevalue = (e:any) => {
                       
 
 
-                      <div style={{ position:'sticky', top:'90px'}} className="row ">
-                      <p
-                        style={{ lineHeight: "22px", position:'sticky', top:'90px'}}
-                        className="d-block text-muted mt-2 font-14"
+                   
+
+                    <div className="col-md-6 mobile-w2">
+                      <div className="row mt-2">
+              <div >
+                <div
+                  className="card"
+                  style={{
+                    border: "1px solid #54ade0",
+                    borderRadius: "20px",
+                    boxShadow: "0 3px 20px #1d26260d",
+                  }}
+                >
+                  <div className="card-body" style={{ padding: "1rem 0.9rem" }}>
+                    {/* New comment input */}
+                    <h4 className="mt-0 mb-3 text-dark fw-bold font-16">
+                      Post
+                    </h4>
+                    <div className="mt-3">
+                      <textarea
+                        id="example-textarea"
+                        className="form-control text-dark form-control-light mb-2"
+                        value={newComment}
+                        onChange={(e) => setNewComment(e.target.value)}
+                        placeholder="Add a new Post..."
+                        rows={3}
+                        style={{ borderRadius: "unset" }}
+                      />
+                       {/* <ul>
+          {selectedFiles.map((file, index) => (
+            <li key={index}>
+              {file.name} 
+              <button onClick={() => removeFile(file.name)} style={{ marginLeft: '10px', color: 'red' }}>❌</button>
+            </li>
+          ))}
+        </ul> */}
+                          <label>
+
+{/* <div>
+
+  <Link style={{ width: "20px", height: "16px" }} onClick={() => handleImageChange} />
+
+  <input
+
+    type="file"
+
+    multiple
+
+    accept="image/*"
+
+    onChange={handleImageChange}
+
+    className="fs-6 w-50" aria-rowspan={5} style={{ display: 'none' }}
+
+  />
+
+</div> */}
+
+</label>
+                      <button type="button"
+                        className="btn btn-primary mt-2"
+                        onClick={handleAddComment}
+                        disabled={loading} // Disable button when loading
                       >
-                        {item.ProjectOverview}
-                      </p>
-                     
+                        {loading ? "Submitting..." : "Post Something"}{" "}
+                        {/* Change button text */}
+                      </button>
                     </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="row ">
+              {/* New comment input */}
+
+              {comments.map((comment, index) => (
+              
+                <div className="col-xl-12" style={{ marginTop: "1rem" }}>
+
+                   {console.log("comment json", comment)}
+                  <CommentCard
+                    key={index}
+                    commentId={index}
+                    username={comment.UserName}
+                    AuthorID={comment.AuthorId}
+                    Commenttext={comment.Comments}
+                    Comments={comments}
+                    Created={comment.Created}
+                    likes={comment.UserLikesJSON}
+                    replies={comment.UserCommentsJSON}
+                    userHasLiked={comment.userHasLiked}
+                    CurrentUserProfile={CurrentUserProfile}
+                    currentuserid = {currentuseridglobal}
+                    loadingLike={loadingLike}
+                    Action="Project"
+                    onAddReply={(text:any) => handleAddReply(index, text)}
+                    onLike={() => handleLikeToggle(index)} // Pass like handler
+                    loadingReply={loadingReply}
+                      onSaveComment={(text:any)=>handleSaveComment(comment.Id,text)} 
+                      ondeleteComment={()=>handleDeleteComment(comment.Id)}
+                  />
+                </div>
+              ))}
+            </div>
+
+                      </div>
+
+                      <div className="col-md-3 mobile-w3">
+
+<div className="card mobile-5 mt-2"  style={{ borderRadius: "22px", position:'sticky', top:'90px' }}>
+<div className="card-body pb-3 gheight">
+                          {}
+                          <h4 className="header-title font-16 text-dark fw-bold mb-0"  style={{ fontSize: "20px" }}>Project Owner</h4>
+                          <h1 className="text-muted font-14 mt-3"><p className="text-dark font-16 text-center mb-2"> {item.Author.Title}</p>
+                          {/* <p className="text-muted font-14 text-center mb-1">Cloud Infrastructure Alchemist</p> */}
+                          <p className="text-muted font-12 text-center">{item.Author.EMail} </p>
+                          </h1></div>
+    </div>
+
+<div className="card mobile-5 mt-2"  style={{ borderRadius: "22px", position:'sticky', top:'230px' }}>
+  <div className="card-body pb-3 gheight">
+    <h4 className="header-title font-16 text-dark fw-bold mb-2"  style={{ fontSize: "20px" }}>Project Members</h4>
+    {item.Author.EMail === currentUserEmailRef.current && (
+    <div>
+     <button onClick={(e)=>togglevalue(e)}>Add User </button>
+  <i className="fe-plus-circle"></i>
+    </div>
+ 
+)}
+     {/* {argcurrentgroupuser */}
+     {argcurrentgroupuser[0]?.TeamMembers?.length > 0 && argcurrentgroupuser[0]?.TeamMembers?.map(
+  (id: any, idx: any) => {
+    console.log(id, 'id');
+    console.log(id.Id, 'id');
+    if (idx ) {
+      return (
+        <div className="projectmemeber">
+<img
+          // style={{
+          //   margin:
+          //     index == 0
+          //       ? "0 0 0 0"
+          //       : "0 0 0px -12px",
+          // }}
+          src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+          className="rounded-circlecss6 img-thumbnail avatar-xl"
+          alt="profile-image"
+        />
+        <p>{id?.Title} </p>
+        {item.Author.EMail === currentUserEmailRef.current && (
+        <div>
+        <button onClick={()=>handleRemoveUser(id?.ID)}>Remove</button>
+        </div>
+
+        )
+        
+        }
+      
+        <p className="mb-0">{id?.Title} </p>
+        <a onClick={()=>handleRemoveUser(id?.ID)} className="action-icon text-danger">
+          <svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="trash-can" className="svg-inline--fa fa-trash-can " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+          <path fill="currentColor" d="M170.5 51.6L151.5 80l145 0-19-28.4c-1.5-2.2-4-3.6-6.7-3.6l-93.7 0c-2.7 0-5.2 1.3-6.7 3.6zm147-26.6L354.2 80 368 80l48 0 8 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-8 0 0 304c0 44.2-35.8 80-80 80l-224 0c-44.2 0-80-35.8-80-80l0-304-8 0c-13.3 0-24-10.7-24-24S10.7 80 24 80l8 0 48 0 13.8 0 36.7-55.1C140.9 9.4 158.4 0 177.1 0l93.7 0c18.7 0 36.2 9.4 46.6 24.9zM80 128l0 304c0 17.7 14.3 32 32 32l224 0c17.7 0 32-14.3 32-32l0-304L80 128zm80 64l0 208c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-208c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0l0 208c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-208c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0l0 208c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-208c0-8.8 7.2-16 16-16s16 7.2 16 16z">
+            </path></svg></a>
+       {/* <button style={{minWidth:'auto', border:'none'}} onClick={()=>handleRemoveUser(id?.ID)}>Remove</button> */}
+              <img
+
+src={require("../assets/calling.png")}
+
+className="alignright"
+
+onClick={() =>
+
+  window.open(
+
+    `https://teams.microsoft.com/l/call/0/0?users=${id.EMail}`,
+
+    "_blank"
+
+  )
+
+}
+
+alt="Call"
+
+/>
+        </div>
+        
+      );
+    }
+  }
+)}
+     {/* } */}
+    
+    </div>
+    
+    </div>
+
+  
+</div>
+
+
                     <div className="row internalmedia filterable-content mt-3">
                       <Modal show={showModal} onHide={closeModal} className="minw80">
                         <h3 style={{width:'100%', textAlign:'left',borderBottom:'1px solid #efefef',  padding:'15px', fontSize:'18px'}} className="modal-title">Documents</h3>
@@ -1440,6 +2003,9 @@ const togglevalue = (e:any) => {
                     <Dropdown.Item onClick={() => handlePreviewFile(file.ServerRelativeUrl)} style={{fontSize:'12px', textAlign:'center'  }}>
                       Preview
                     </Dropdown.Item>
+                    <Dropdown.Item onClick={() => Handledeletefile(file.UniqueId)} style={{fontSize:'12px', textAlign:'center'  }}>
+                      Delete File
+                    </Dropdown.Item>
                     {/* Add more options if needed */}
                   </Dropdown.Menu>
                 </Dropdown>
@@ -1492,190 +2058,14 @@ const togglevalue = (e:any) => {
                         ></div>
                       </p>
                     </div>
-
                       </div>
-
-                      <div className="col-md-6 mobile-w2">
-                      <div className="row mt-2">
-              <div >
-                <div
-                  className="card"
-                  style={{
-                    border: "1px solid #54ade0",
-                    borderRadius: "20px",
-                    boxShadow: "0 3px 20px #1d26260d",
-                  }}
-                >
-                  <div className="card-body" style={{ padding: "1rem 0.9rem" }}>
-                    {/* New comment input */}
-                    <h4 className="mt-0 mb-3 text-dark fw-bold font-16">
-                      Comments
-                    </h4>
-                    <div className="mt-3">
-                      <textarea
-                        id="example-textarea"
-                        className="form-control text-dark form-control-light mb-2"
-                        value={newComment}
-                        onChange={(e) => setNewComment(e.target.value)}
-                        placeholder="Add a new comment..."
-                        rows={3}
-                        style={{ borderRadius: "unset" }}
-                      />
-                       {/* <ul>
-          {selectedFiles.map((file, index) => (
-            <li key={index}>
-              {file.name} 
-              <button onClick={() => removeFile(file.name)} style={{ marginLeft: '10px', color: 'red' }}>❌</button>
-            </li>
-          ))}
-        </ul> */}
-                          <label>
-
-{/* <div>
-
-  <Link style={{ width: "20px", height: "16px" }} onClick={() => handleImageChange} />
-
-  <input
-
-    type="file"
-
-    multiple
-
-    accept="image/*"
-
-    onChange={handleImageChange}
-
-    className="fs-6 w-50" aria-rowspan={5} style={{ display: 'none' }}
-
-  />
-
-</div> */}
-
-</label>
-                      <button type="button"
-                        className="btn btn-primary mt-2"
-                        onClick={handleAddComment}
-                        disabled={loading} // Disable button when loading
-                      >
-                        {loading ? "Submitting..." : "Add Comment"}{" "}
-                        {/* Change button text */}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="row ">
-              {/* New comment input */}
-
-              {comments.map((comment, index) => (
-                <div className="col-xl-12" style={{ marginTop: "1rem" }}>
-                  <CommentCard
-                    key={index}
-                    commentId={index}
-                    username={comment.UserName}
-                    Commenttext={comment.Comments}
-                    Comments={comments}
-                    Created={comment.Created}
-                    likes={comment.UserLikesJSON}
-                    replies={comment.UserCommentsJSON}
-                    userHasLiked={comment.userHasLiked}
-                    CurrentUserProfile={CurrentUserProfile}
-                    loadingLike={loadingLike}
-                    Action="Project"
-                    onAddReply={(text) => handleAddReply(index, text)}
-                    onLike={() => handleLikeToggle(index)} // Pass like handler
-                    loadingReply={loadingReply}
-                  />
-                </div>
-              ))}
-            </div>
-
-                      </div>
-
-                      <div className="col-md-3 mobile-w3">
-
-<div className="card mobile-5 mt-2"  style={{ borderRadius: "22px", position:'sticky', top:'90px' }}>
-<div className="card-body pb-3 gheight">
-                          {}
-                          <h4 className="header-title font-16 text-dark fw-bold mb-0"  style={{ fontSize: "20px" }}>Project Owner</h4>
-                          <h1 className="text-muted font-14 mt-3"><p className="text-dark font-16 text-center mb-2"> {item.Author.Title}</p>
-                          {/* <p className="text-muted font-14 text-center mb-1">Cloud Infrastructure Alchemist</p> */}
-                          <p className="text-muted font-12 text-center">{item.Author.EMail} </p>
-                          </h1></div>
-    </div>
-
-<div className="card mobile-5 mt-2"  style={{ borderRadius: "22px", position:'sticky', top:'230px' }}>
-  <div className="card-body pb-3 gheight">
-    <h4 className="header-title font-16 text-dark fw-bold mb-2"  style={{ fontSize: "20px" }}>Project Members</h4>
-     {/* {argcurrentgroupuser */}
-     {item.Author.EMail === currentUserEmailRef.current && (
-    <div>
-     <button onClick={(e)=>togglevalue(e)}>Add User </button>
-  <i className="fe-plus-circle"></i>
-    </div>
- 
-)}
-     {argcurrentgroupuser[0]?.TeamMembers?.length > 0 && argcurrentgroupuser[0]?.TeamMembers?.map(
-  (id: any, idx: any) => {
-    if (idx ) {
-      return (
-        <div className="projectmemeber">
-<img
-          // style={{
-          //   margin:
-          //     index == 0
-          //       ? "0 0 0 0"
-          //       : "0 0 0px -12px",
-          // }}
-          src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-          className="rounded-circlecss6 img-thumbnail avatar-xl"
-          alt="profile-image"
-        />
-        <p className="mb-0">{id?.Title} </p>
-        <img
-
-src={require("../assets/calling.png")}
-
-className="alignright"
-
-onClick={() =>
-
-  window.open(
-
-    `https://teams.microsoft.com/l/call/0/0?users=${id.EMail}`,
-
-    "_blank"
-
-  )
-
-}
-
-alt="Call"
-
-/>
-        </div>
-        
-      );
-    }
-  }
-)}
-     {/* } */}
-    
-    </div>
-    
-    </div>
-
   
-</div>
-
-                      
 
 
 
                      
                     
-                    </div>
+                
                   
                   </>
                 );
