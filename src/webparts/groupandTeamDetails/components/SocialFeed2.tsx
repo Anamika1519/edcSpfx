@@ -136,7 +136,7 @@ const SocialFeedContext = ({ props }: any) => {
     try {
      
         
-      alert(GroupName)
+     // alert(GroupName)
       const getargmember = await sp.web.lists.getByTitle('ARGGroupandTeam').items.filter(`GroupName eq '${GroupName}'`).select("*,InviteMemebers/ID,InviteMemebers/EMail,InviteMemebers/Title , Author/ID,Author/Title,Author/EMail").expand("InviteMemebers ,Author")();
       console.log(getargmember, "getargmember")
   

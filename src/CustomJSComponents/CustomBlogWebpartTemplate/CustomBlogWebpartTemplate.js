@@ -658,7 +658,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                         setTimeout(async () => {
                             setBlogData(await fetchBlogdata(_sp));
                             dismissModal();
-                            //window.location.href = `${SiteUrl}/SitePages/Blogs.aspx`;
+                            window.location.href = `${SiteUrl}/SitePages/Blogs.aspx`;
                         }, 2000);
                         setTimeout(() => {
 
