@@ -11,15 +11,14 @@ import { getCurrentUserProfileEmail } from "../../APISearvice/CustomService";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPaperclip, faEdit ,faTrashAlt} from '@fortawesome/free-solid-svg-icons';
-
+import { faPaperclip, faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
-import {
-    uploadFile,
-    uploadFileToLibrary,
-} from "../../APISearvice/MediaService";
+import { uploadFile, uploadFileToLibrary } from "../../APISearvice/BlogService";
 import { getCurrentUserProfileEmail, getEntity } from "../../APISearvice/CustomService";
-import { fetchBlogdata, fetchBookmarkBlogdata, getBlogsByID, fetchPinstatus, updateItem, uploadFileBanner } from "../../APISearvice/BlogService"
+import {
+    fetchBlogdata, fetchBookmarkBlogdata, getBlogsByID, getBlogByID, GetBlogCategory, GetCategory,
+    fetchPinstatus, updateItem, uploadFileBanner, DeleteBusinessAppsAPI
+} from "../../APISearvice/BlogService"
 
 const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
     const [itemsToShow, setItemsToShow] = useState(5);
@@ -134,6 +133,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
         "size",
     ];
     useEffect(() => {
+        console.log("activeeee", activeTab);
         if (activeTab.toLowerCase() === "all") {
             setFilteredBlogItems(blogData);
         } else {
@@ -151,10 +151,18 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                     console.log("currentEmailcurrentEmail", Bookmarkblogs)
                     setFilteredBlogItems(Bookmarkblogs);
                 } else {
-                    const filteredItems = blogData.filter(
-                        (item) => item.Status === selectedCategory.Name
-                    );
-                    setFilteredBlogItems(filteredItems);
+                    if (selectedCategory.Name == "Save as Draft") {
+                        const filteredItems = blogData.filter(
+                            (item) => item.Status === selectedCategory.Name && item.Author.EMail == currentEmail
+                        );
+                        setFilteredBlogItems(filteredItems);
+                    } else {
+                        const filteredItems = blogData.filter(
+                            (item) => item.Status === selectedCategory.Name
+                        );
+                        setFilteredBlogItems(filteredItems);
+                    }
+
                 }
 
             } else {
@@ -181,13 +189,15 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
         ApIcall();
     }, []);
     const FilterOptions = [{ id: 1, Name: "All", name: "All" }, { id: 2, Name: "Published", name: "Published" },
-        { id: 3, Name: "Save as Draft", name: "Your Drafts" }, { id: 4, Name: "Bookmarked", name: "Bookmarked" }]
-    
+    { id: 3, Name: "Save as Draft", name: "Your Drafts" }, { id: 4, Name: "Bookmarked", name: "Bookmarked" }]
+
     const ApIcall = async () => {
         setEmail(await getCurrentUserProfileEmail(_sp));
         setBlogData(await fetchBlogdata(_sp));
 
         setBookmarkstatus(await fetchPinstatus(_sp));
+        setCategoryData(await GetCategory(_sp));
+        //setBlogCategoryData(await GetBlogCategory(_sp));
 
 
         setActiveTab("All");
@@ -425,6 +435,14 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
             Swal.fire("Error", "Entity is required!", "error");
             valid = false;
         }
+        else if (BnnerImagepostArr.length == 0) {
+            Swal.fire('Error', 'Banner image is required!', 'error');
+            valid = false;
+        }
+        else if (ImagepostArr.length == 0) {
+            Swal.fire('Error', 'Gallery image is required!', 'error');
+            valid = false;
+        }
         //else if (!overview) {
         //   Swal.fire('Error', 'Overview is required!', 'error');
         //   valid = false;
@@ -442,11 +460,11 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
         if (validateForm()) {
             if (editForm) {
                 Swal.fire({
-                    title: "Do you want to update?",
+                    title: "Are you sure you want to publish this blog?",
                     showConfirmButton: true,
                     showCancelButton: true,
-                    confirmButtonText: "Save",
-                    cancelButtonText: "Cancel",
+                    confirmButtonText: "Yes",
+                    cancelButtonText: "No",
                     icon: "warning",
                 }).then(async (result) => {
                     console.log(result);
@@ -488,6 +506,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                 Overview: formData.overview,
                                 Description: richTextValues.description,
                                 EntityId: Number(formData.entity),
+                                Status:"Published",
                                 BlogBannerImage: JSON.stringify(bannerImageArray),
                                 // DiscussionForumCategoryId: Number(formData.category),
                             };
@@ -583,7 +602,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                 console.log(galleryIds, "galleryIds");
                                 // Update Post with Gallery and Document Information
                             }
-
+                            //dismissModal();
                             const updatePayload = {
                                 ...(galleryIds.length > 0 && {
                                     DiscussionForumGalleryId: galleryIds,
@@ -633,6 +652,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                 Overview: formData.overview,
                                 Description: richTextValues.description,
                                 EntityId: Number(formData.entity),
+                                Status:"Published",
                                 BlogBannerImage: JSON.stringify(bannerImageArray)
                                 // DiscussionForumCategoryId: Number(formData.category),
                             };
@@ -758,10 +778,11 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                         setTimeout(async () => {
                             setBlogData(await fetchBlogdata(_sp));
                             dismissModal();
+                            window.location.href = `${siteUrl}/SitePages/Blogs.aspx`;
                         }, 2000);
-                        sessionStorage.removeItem("announcementId");
+                        //sessionStorage.removeItem("announcementId");
                         setTimeout(() => {
-                            window.location.href = `${siteUrl}/SitePages/Announcementmaster.aspx`;
+                           
                         }, 2000);
                     }
                 });
@@ -769,131 +790,135 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
         }
     };
     const handleFormSaveasDraft = async () => {
+        if (validateForm()) {
+            Swal.fire({
+                title: "Do you want to save this blog?",
+                showConfirmButton: true,
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+                cancelButtonText: "No",
+                icon: "warning",
+            }).then(async (result) => {
+                //console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
+                if (result.isConfirmed) {
+                    debugger;
+                    let bannerImageArray = {};
+                    let galleryIds = [];
+                    let documentIds = [];
+                    let galleryArray = [];
+                    let documentArray = [];
 
-        Swal.fire({
-            title: "Do you want to save as Draft?",
-            showConfirmButton: true,
-            showCancelButton: true,
-            confirmButtonText: "Save",
-            cancelButtonText: "Cancel",
-            icon: "warning",
-        }).then(async (result) => {
-            //console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
-            if (result.isConfirmed) {
-                debugger;
-                let bannerImageArray = {};
-                let galleryIds = [];
-                let documentIds = [];
-                let galleryArray = [];
-                let documentArray = [];
+                    // formData.FeaturedAnnouncement === "on"?  true :false;
 
-                // formData.FeaturedAnnouncement === "on"?  true :false;
-
-                // Upload Banner Images
-                if (
-                    BnnerImagepostArr.length > 0 &&
-                    BnnerImagepostArr[0]?.files?.length > 0
-                ) {
-                    for (const file of BnnerImagepostArr[0].files) {
-                        //  const uploadedBanner = await uploadFile(file, _sp, "Documents", Url);
-                        bannerImageArray = await uploadFileBanner(
-                            file,
-                            _sp,
-                            "Documents",
-                            "https://officeindia.sharepoint.com"
-                        );
+                    // Upload Banner Images
+                    if (
+                        BnnerImagepostArr.length > 0 &&
+                        BnnerImagepostArr[0]?.files?.length > 0
+                    ) {
+                        for (const file of BnnerImagepostArr[0].files) {
+                            //  const uploadedBanner = await uploadFile(file, _sp, "Documents", Url);
+                            bannerImageArray = await uploadFileBanner(
+                                file,
+                                _sp,
+                                "Documents",
+                                "https://officeindia.sharepoint.com"
+                            );
+                        }
                     }
-                }
-                debugger;
-                // Create Post
-                const postPayload = {
-                    Title: formData.topic,
-                    Overview: formData.overview,
-                    Description: richTextValues.description,
-                    EntityId: formData.entity && Number(formData.entity),
-                    Status: "Save as Draft",
-                    BlogBannerImage: bannerImageArray && JSON.stringify(bannerImageArray)
-                    // DiscussionForumCategoryId: Number(formData.category),
-                };
-                console.log("postPayload 3-->>>>>", postPayload);
+                    debugger;
+                    // Create Post
+                    const postPayload = {
+                        Title: formData.topic,
+                        Overview: formData.overview,
+                        Description: richTextValues.description,
+                        EntityId: formData.entity && Number(formData.entity),
+                        Status: "Save as Draft",
+                        BlogBannerImage: bannerImageArray && JSON.stringify(bannerImageArray)
+                        // DiscussionForumCategoryId: Number(formData.category),
+                    };
+                    console.log("postPayload 3-->>>>>", postPayload);
 
-                const postResult = await updateItem(postPayload, _sp, editID);
-                const postId = postResult?.data?.ID;
-                debugger;
-
-                if (!postId) {
-                    console.error("Post creation failed.");
-                    return;
-                } else {
-                    Swal.fire("Item update successfully", "", "success");
-                    sessionStorage.removeItem("announcementId");
+                    const postResult = await updateItem(postPayload, _sp, editID);
+                    const postId = postResult?.data?.ID;
+                    debugger;
+                    dismissModal();
                     setBlogData(await fetchBlogdata(_sp));
-                    dismissModal()
-                    setTimeout(() => {
-                        dismissModal()
+                    if (!postId) {
+                        console.error("Post creation failed.");
+                        return;
+                    } else {
+                        Swal.fire("Item update successfully", "", "success");
+                        //sessionStorage.removeItem("announcementId");
+                        setBlogData(await fetchBlogdata(_sp));
+                      
+                        window.location.href = `${SiteUrl}/SitePages/Blogs.aspx`;
+
+                        setTimeout(() => {
+                            dismissModal()
+                        }, 2000);
+                    }
+                    // Upload Gallery Images
+                    if (ImagepostArr.length > 0) {
+                        for (const file of ImagepostArr[0]?.files) {
+                            const uploadedGalleryImage = await uploadFileToLibrary(
+                                file,
+                                _sp,
+                                "BlogGallery"
+                            );
+
+                            galleryIds = galleryIds.concat(
+                                uploadedGalleryImage.map((item) => item.ID)
+                            );
+                            galleryArray.push(uploadedGalleryImage);
+                        }
+                    }
+
+                    // Upload Documents
+                    if (DocumentpostArr.length > 0) {
+                        for (const file of DocumentpostArr[0]?.files) {
+                            const uploadedDocument = await uploadFileToLibrary(
+                                file,
+                                _sp,
+                                "BlogsDoc"
+                            );
+                            documentIds = documentIds.concat(
+                                uploadedDocument.map((item) => item.ID)
+                            );
+                            documentArray.push(uploadedDocument);
+                        }
+                    }
+
+                    // Update Post with Gallery and Document Information
+                    const updatePayload = {
+                        ...(galleryIds.length > 0 && {
+                            BlogsGalleryId: galleryIds,
+                            BlogGalleryJSON: JSON.stringify(
+                                flatArray(galleryArray)
+                            ),
+                        }),
+                        ...(documentIds.length > 0 && {
+                            BlogsDocsId: documentIds,
+                            BlogDocsJSON: JSON.stringify(
+                                flatArray(documentArray)
+                            ),
+                        }),
+                    };
+
+                    if (Object.keys(updatePayload).length > 0) {
+                        const updateResult = await updateItem(updatePayload, _sp, postId);
+                        console.log("Update Result:", updateResult);
+                    }
+                    // Swal.fire("Item added successfully", "", "success");
+                    // sessionStorage.removeItem("bannerId");
+
+                    setTimeout(async () => {
+                        setBlogData(await fetchBlogdata(_sp));
+                        window.location.href = `${siteUrl}/SitePages/Blogs.aspx`;
+
                     }, 2000);
                 }
-                // Upload Gallery Images
-                if (ImagepostArr.length > 0) {
-                    for (const file of ImagepostArr[0]?.files) {
-                        const uploadedGalleryImage = await uploadFileToLibrary(
-                            file,
-                            _sp,
-                            "BlogGallery"
-                        );
-
-                        galleryIds = galleryIds.concat(
-                            uploadedGalleryImage.map((item) => item.ID)
-                        );
-                        galleryArray.push(uploadedGalleryImage);
-                    }
-                }
-
-                // Upload Documents
-                if (DocumentpostArr.length > 0) {
-                    for (const file of DocumentpostArr[0]?.files) {
-                        const uploadedDocument = await uploadFileToLibrary(
-                            file,
-                            _sp,
-                            "BlogsDoc"
-                        );
-                        documentIds = documentIds.concat(
-                            uploadedDocument.map((item) => item.ID)
-                        );
-                        documentArray.push(uploadedDocument);
-                    }
-                }
-
-                // Update Post with Gallery and Document Information
-                const updatePayload = {
-                    ...(galleryIds.length > 0 && {
-                        BlogsGalleryId: galleryIds,
-                        BlogGalleryJSON: JSON.stringify(
-                            flatArray(galleryArray)
-                        ),
-                    }),
-                    ...(documentIds.length > 0 && {
-                        BlogsDocsId: documentIds,
-                        BlogDocsJSON: JSON.stringify(
-                            flatArray(documentArray)
-                        ),
-                    }),
-                };
-
-                if (Object.keys(updatePayload).length > 0) {
-                    const updateResult = await updateItem(updatePayload, _sp, postId);
-                    console.log("Update Result:", updateResult);
-                }
-                // Swal.fire("Item added successfully", "", "success");
-                // sessionStorage.removeItem("bannerId");
-
-                setTimeout(async () => {
-                    setBlogData(await fetchBlogdata(_sp));
-
-                }, 2000);
-            }
-        });
-
+            });
+        }
 
     };
     const dismissModal = () => {
@@ -1140,13 +1165,13 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                 <div className="tab-pane show active" id="home1" role="tabpanel">
                     {filteredBlogItems.length > 0 ?
                         filteredBlogItems.slice(0, itemsToShow).map(item => {
-                            const AnnouncementandNewsBannerImage = item.BlogBannerImage == undefined || item.BlogBannerImage == null ? ""
-                                : JSON.parse(item.BlogBannerImage);
-                            console.log("AnnouncementandNewsBannerImage", AnnouncementandNewsBannerImage, item);
+                            // const AnnouncementandNewsBannerImage = item.BlogBannerImage == undefined || item.BlogBannerImage == null ? ""
+                            //     : JSON.parse(item.BlogBannerImage);
+                            // console.log("AnnouncementandNewsBannerImage", AnnouncementandNewsBannerImage, item);
                             const AnnouncementandNewsBannerImage1 = item.BlogGalleryJSON == undefined || item.BlogGalleryJSON == null ? ""
                                 : JSON.parse(item.BlogGalleryJSON);
-                            console.log("AnnouncementandNewsBannerImage", AnnouncementandNewsBannerImage, item, AnnouncementandNewsBannerImage1);
-                         
+                            console.log("AnnouncementandNewsBannerImage", item, AnnouncementandNewsBannerImage1);
+
                             return (
                                 <div className="card mb-2 annuncementcard">
                                     <div className="card-body">
@@ -1154,7 +1179,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                             <div className="col-sm-2">
                                                 <a onClick={() => gotoBlogsDetails(item)}>   <div className="imagehright">
                                                     {/* <img className="d-flex align-self-center me-3 w-100" src={g1} alt="Generic placeholder image" /> */}
-                                                    <img src={`https://officeindia.sharepoint.com${AnnouncementandNewsBannerImage1[0].fileUrl}`}        className="d-flex align-self-center me-3 w-100" lt="Generic placeholder image" style={{ height: '100%' }} />
+                                                    <img src={`https://officeindia.sharepoint.com${AnnouncementandNewsBannerImage1[0].fileUrl}`} className="d-flex align-self-center me-3 w-100" lt="Generic placeholder image" style={{ height: '100%' }} />
                                                 </div>
                                                 </a>
                                             </div>
@@ -1179,26 +1204,30 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                                 </a>
                                             </div>
                                             <div className="col-sm-1">
-                                                <div className="d-flex" style={{ justifyContent: 'end', gap:'10px', marginRight: '3px', cursor: 'pointer' }}>
-                                                <div className="col-lg-12">
-                                                        <div style={{gap:'10px'}} className="d-flex flex-wrap align-items-center justify-content-end mt-0">
-                                                            {/* Button to trigger modal */}
-                                                            <FontAwesomeIcon
-                                                                icon={faEdit}
-                                                                data-bs-toggle="modal"
-                                                                data-bs-target="#discussionModalEdit"
-                                                                className="text-dark1 waves-effect waves-light"
-                                                                onClick={() => EditBlogs(item.ID)}
-                                                            />
-                                                    
-                                                        <a
-                                                            
-                                                            onClick={() => DeleteBlog(item.ID)}
-                                                        >
-                                                            <FontAwesomeIcon className="text-dark1 waves-effect waves-light" icon={faTrashAlt} />
-                                                        </a>
-                                                    
-                                                    </div>
+                                                <div className="d-flex" style={{ justifyContent: 'end', gap: '10px', marginRight: '3px', cursor: 'pointer' }}>
+                                                    <div className="col-lg-12">
+                                                        {item.Status == "Save as Draft" &&
+                                                            <><div className="d-flex flex-wrap align-items-center justify-content-end mt-0">
+                                                                {/* Button to trigger modal */}
+                                                                <FontAwesomeIcon
+                                                                    icon={faEdit}
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#discussionModalEdit"
+                                                                    className="text-dark1 waves-effect waves-light"
+                                                                    onClick={() => EditBlogs(item.ID)} />
+
+
+                                                            </div><div className="d-flex flex-wrap align-items-center justify-content-end mt-0">
+
+                                                                    <a
+                                                                        className="text-dark1 waves-effect waves-light"
+                                                                        onClick={() => DeleteBlog(item.ID)}
+                                                                    >
+                                                                        <FontAwesomeIcon icon={faTrashAlt} />
+                                                                    </a>
+
+                                                                </div></>
+                                                        }
                                                         {/* Bootstrap Modal */}
                                                         {console.log("formdata", formData)}
                                                         <div
@@ -1209,13 +1238,13 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                                             aria-hidden="true"
                                                             data-target=".bd-example-modal-lg"
                                                         >
-                                                            <div style={{minWidth:'80%'}} className="modal-dialog modal-lg ">
+                                                            <div style={{ minWidth: '80%' }} className="modal-dialog modal-lg ">
                                                                 <div className="modal-content">
                                                                     <div className="modal-header d-block">
                                                                         <h5 className="modal-title" id="exampleModalLabel">
                                                                             Edit Blog
                                                                         </h5>
-                                                                        <button style={{right:'20px', top:'20px'}}
+                                                                        <button style={{ right: '20px', top: '20px' }}
                                                                             type="button"
                                                                             className="btn-close"
                                                                             data-bs-dismiss="modal"
@@ -1326,7 +1355,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                                                                                 htmlFor="discussionGallery"
                                                                                                 className="form-label"
                                                                                             >
-                                                                                                Discussion Gallery{" "}
+                                                                                                Blog Gallery{" "}
                                                                                                 <span className="text-danger">*</span>
                                                                                             </label>
                                                                                         </div>
@@ -1396,7 +1425,8 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                                                                         id="overview"
                                                                                         placeholder="Enter Overview"
                                                                                         name="overview"
-                                                                                        style={{ height: "auto" }}
+                                                                                        //style={{ height: "auto" }}
+                                                                                        style={{ minHeight: "80px", maxHeight: "80px" }}
                                                                                         value={formData.overview}
                                                                                         onChange={(e) =>
                                                                                             onChange(e.target.name, e.target.value)
@@ -1443,7 +1473,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                                                                 </div>
                                                                             </div>
 
-                                                                            <div className="col-lg-4">
+                                                                            {/* <div className="col-lg-4">
                                                                                 <div className="mb-3">
                                                                                     <div className="d-flex justify-content-between">
                                                                                         <div>
@@ -1503,7 +1533,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                                                                         }
                                                                                     />
                                                                                 </div>
-                                                                            </div>
+                                                                            </div> */}
 
 
                                                                             <div className="text-center butncss">
@@ -1544,14 +1574,14 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                                                                             style={{ width: "1rem" }}
                                                                                             alt="Check"
                                                                                         />{" "}
-                                                                                        Submit
+                                                                                        Publish
                                                                                     </div>
                                                                                 </div>
                                                                                 <button
                                                                                     type="button"
                                                                                     className="btn btn-light waves-effect waves-light m-1"
-                                                                                    style={{ fontSize: "0.875rem" }}
-                                                                                //onClick={handleCancel}
+                                                                                    data-bs-dismiss="modal"
+                                                                                    aria-label="Close"
                                                                                 >
                                                                                     <img
                                                                                         src={require("../../Assets/ExtraImage/xIcon.svg")}
@@ -1582,10 +1612,10 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                                             </div>
                                                         )}
                                                     </div>
-                                                    <img color="#6c757d" width={"20px"} style={{ cursor: "pointer", height:'22px', fontWeight: '400' }}
+                                                    <img color="#6c757d" width={"20px"} style={{ cursor: "pointer", height: '22px', fontWeight: '400' }}
 
                                                         //src={require("../../CustomAsset/unbookmark.png")}
-                                                        src={Bookmarkstatus[item.ID] ? require("../../CustomAsset/unbookmark.png") : require("../../CustomAsset/bookmark.png")}
+                                                        src={Bookmarkstatus[item.ID] ? require("../../CustomAsset/bookmark.png") : require("../../CustomAsset/unbookmark.png")}
 
                                                         className="alignrightpin"
                                                         alt="pin"

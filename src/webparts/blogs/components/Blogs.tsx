@@ -28,7 +28,7 @@ import { faPaperclip } from "@fortawesome/free-solid-svg-icons";
 import {
   uploadFile,
   uploadFileToLibrary,
-} from "../../../APISearvice/MediaService";
+} from "../../../APISearvice/BlogService";
 import Swal from "sweetalert2";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
@@ -304,6 +304,15 @@ const BlogsContext = ({ props }: any) => {
       Swal.fire("Error", "Entity is required!", "error");
       valid = false;
     }
+    else if (BnnerImagepostArr.length == 0 ) {
+      Swal.fire('Error', 'Banner image is required!', 'error');
+      valid = false;
+    }
+    else if (ImagepostArr.length == 0) {
+      Swal.fire('Error', 'Gallery image is required!', 'error');
+      valid = false;
+    }
+
     //else if (!overview) {
     //   Swal.fire('Error', 'Overview is required!', 'error');
     //   valid = false;
@@ -339,335 +348,351 @@ const BlogsContext = ({ props }: any) => {
   const flatArray = (arr: any[]): any[] => {
     return arr.reduce((acc, val) => acc.concat(val), []);
   };
-
+  const dismissModal = () => {
+    const modalElement = document.getElementById('discussionModal');
+    
+    // Remove Bootstrap classes and attributes manually
+    modalElement.classList.remove('show');
+    modalElement.style.display = 'none';
+    modalElement.setAttribute('aria-hidden', 'true');
+    modalElement.removeAttribute('aria-modal');
+    modalElement.removeAttribute('role');
+  
+    // Optionally, remove the backdrop if it was added manually
+    const modalBackdrop = document.querySelector('.modal-backdrop');
+    if (modalBackdrop) {
+      modalBackdrop.remove();
+    }
+  };
   const handleFormSubmit = async () => {
     if (validateForm()) {
-      if (editForm) {
+      // if (editForm) {
+      //   Swal.fire({
+      //     title: "Do you want to update?",
+      //     showConfirmButton: true,
+      //     showCancelButton: true,
+      //     confirmButtonText: "Save",
+      //     cancelButtonText: "Cancel",
+      //     icon: "warning",
+      //   }).then(async (result) => {
+      //     console.log(result);
+      //     if (result.isConfirmed) {
+      //       //console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
+      //       debugger;
+      //       let bannerImageArray: any = {};
+      //       let galleryIds: any[] = [];
+      //       let documentIds: any[] = [];
+      //       let galleryArray: any[] = [];
+      //       let documentArray: any[] = [];
+
+      //       // formData.FeaturedAnnouncement === "on"?  true :false;
+
+      //       // Upload Banner Images
+      //       if (
+      //         BnnerImagepostArr.length > 0 &&
+      //         BnnerImagepostArr[0]?.files?.length > 0
+      //       ) {
+      //         debugger
+      //         for (const file of BnnerImagepostArr[0].files) {
+      //           debugger
+      //           //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
+      //           bannerImageArray = await uploadFileBanner(
+      //             file,
+      //             sp,
+      //             "Documents",
+      //             "https://officeindia.sharepoint.com"
+      //           );
+      //         }
+      //       } else {
+      //         bannerImageArray = null;
+      //       }
+      //       debugger;
+      //       if (bannerImageArray != null) {
+      //         // Create Post
+      //         const postPayload = {
+      //           Topic: formData.topic,
+      //           Overview: formData.overview,
+      //           Description: richTextValues.description,
+      //           EntityId: Number(formData.entity),
+      //           BlogBannerImage: JSON.stringify(bannerImageArray),
+      //           // DiscussionForumCategoryId: Number(formData.category),
+      //         };
+      //         console.log("postPayload-->>>>>", postPayload);
+
+      //         const postResult = await updateItem(postPayload, sp, editID);
+      //         const postId = postResult?.data?.ID;
+      //         debugger;
+      //         // if (!postId) {
+      //         //   console.error("Post creation failed.");
+      //         //   return;
+      //         // }
+
+      //         // Upload Gallery Images
+      //         // Upload Gallery Images
+      //         if (ImagepostArr[0]?.files?.length > 0) {
+      //           for (const file of ImagepostArr[0].files) {
+      //             const uploadedGalleryImage = await uploadFileToLibrary(
+      //               file,
+      //               sp,
+      //               "BlogGallery"
+      //             );
+
+      //             galleryIds = galleryIds.concat(
+      //               uploadedGalleryImage.map((item: { ID: any }) => item.ID)
+      //             );
+      //             if (ImagepostArr1.length > 0) {
+      //               ImagepostArr1.push(uploadedGalleryImage[0]);
+      //               const updatedData = ImagepostArr1.filter(
+      //                 (item) => item.ID !== 0
+      //               );
+      //               debugger;
+      //               console.log(updatedData, "updatedData");
+      //               galleryArray = updatedData;
+      //               //galleryArray.push(ImagepostArr1);
+
+      //               ImagepostIdsArr.push(galleryIds[0]); //galleryIds.push(ImagepostIdsArr)
+      //               galleryIds = ImagepostIdsArr;
+      //             } else {
+      //               galleryArray.push(uploadedGalleryImage);
+      //             }
+      //           }
+      //         } else {
+      //           galleryIds = ImagepostIdsArr;
+      //           galleryArray = ImagepostArr1;
+      //         }
+
+      //         // Upload Documents
+      //         if (DocumentpostArr[0]?.files?.length > 0) {
+      //           for (const file of DocumentpostArr[0].files) {
+      //             const uploadedDocument = await uploadFileToLibrary(
+      //               file,
+      //               sp,
+      //               "BlogsDocs"
+      //             );
+      //             documentIds = documentIds.concat(
+      //               uploadedDocument.map((item: { ID: any }) => item.ID)
+      //             );
+      //             if (DocumentpostArr1.length > 0) {
+      //               DocumentpostArr1.push(uploadedDocument[0]);
+      //               const updatedData = DocumentpostArr1.filter(
+      //                 (item) => item.ID !== 0
+      //               );
+      //               console.log(updatedData, "updatedData");
+      //               documentArray = updatedData;
+      //               // documentArray.push(DocumentpostArr1)
+      //               DocumentpostIdsArr.push(documentIds[0]); //.push(DocumentpostIdsArr)
+      //               documentIds = DocumentpostIdsArr;
+      //             } else {
+      //               documentArray.push(uploadedDocument);
+      //             }
+      //           }
+      //         } else {
+      //           documentIds = DocumentpostIdsArr;
+      //           documentArray = DocumentpostArr1;
+      //         }
+      //         if (galleryArray.length > 0) {
+      //           let ars = galleryArray.filter((x) => x.ID == 0);
+      //           if (ars.length > 0) {
+      //             for (let i = 0; i < ars.length; i++) {
+      //               galleryArray.slice(i, 1);
+      //             }
+      //           }
+      //         }
+      //         if (documentArray.length > 0) {
+      //           let arsdoc = documentArray.filter((x) => x.ID == 0);
+      //           if (arsdoc.length > 0) {
+      //             for (let i = 0; i < arsdoc.length; i++) {
+      //               documentArray.slice(i, 1);
+      //             }
+      //           }
+      //           console.log(documentIds, "documentIds");
+      //           console.log(galleryIds, "galleryIds");
+      //           // Update Post with Gallery and Document Information
+      //         }
+
+      //         const updatePayload = {
+      //           ...(galleryIds.length > 0 && {
+      //             DiscussionForumGalleryId: galleryIds,
+
+      //             DiscussionForumGalleryJSON: JSON.stringify(
+      //               flatArray(galleryArray)
+      //             ),
+      //           }),
+      //           ...(documentIds.length > 0 && {
+      //             DiscussionForumDocsId: documentIds,
+      //             DiscussionForumDocsJSON: JSON.stringify(
+      //               flatArray(documentArray)
+      //             ),
+      //           }),
+      //         };
+
+      //         if (Object.keys(updatePayload).length > 0) {
+      //           const updateResult = await updateItem(
+      //             updatePayload,
+      //             sp,
+      //             editID
+      //           );
+      //           console.log("Update Result:", updateResult);
+      //         }
+      //       } else {
+      //         if (
+      //           BnnerImagepostArr.length > 0 &&
+      //           BnnerImagepostArr[0]?.files?.length > 0
+      //         ) {
+      //           debugger
+      //           for (const file of BnnerImagepostArr[0].files) {
+      //             debugger
+      //             //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
+      //             bannerImageArray = await uploadFileBanner(
+      //               file,
+      //               sp,
+      //               "Documents",
+      //               "https://officeindia.sharepoint.com"
+      //             );
+      //           }
+      //         } else {
+      //           bannerImageArray = null;
+      //         }
+      //         // Create Post
+      //         const postPayload = {
+      //           Title: formData.topic,
+      //           Overview: formData.overview,
+      //           Description: richTextValues.description,
+      //           EntityId: Number(formData.entity),
+      //           BlogBannerImage: JSON.stringify(bannerImageArray)
+      //           // DiscussionForumCategoryId: Number(formData.category),
+      //         };
+      //         console.log("postPayload else-->>>>", postPayload);
+
+      //         const postResult = await updateItem(postPayload, sp, editID);
+      //         const postId = postResult?.data?.ID;
+      //         debugger;
+      //         // if (!postId) {
+      //         //   console.error("Post creation failed.");
+      //         //   return;
+      //         // }
+
+      //         // Upload Gallery Images
+      //         // Upload Gallery Images
+      //         if (ImagepostArr[0]?.files?.length > 0) {
+      //           for (const file of ImagepostArr[0].files) {
+      //             const uploadedGalleryImage = await uploadFileToLibrary(
+      //               file,
+      //               sp,
+      //               "BlogGallery"
+      //             );
+
+      //             galleryIds = galleryIds.concat(
+      //               uploadedGalleryImage.map((item: { ID: any }) => item.ID)
+      //             );
+      //             if (ImagepostArr1.length > 0) {
+      //               ImagepostArr1.push(uploadedGalleryImage[0]);
+      //               const updatedData = ImagepostArr1.filter(
+      //                 (item) => item.ID !== 0
+      //               );
+      //               console.log(updatedData, "updatedData");
+      //               galleryArray = updatedData;
+      //               // galleryArray.push(ImagepostArr1);
+
+      //               ImagepostIdsArr.push(galleryIds[0]); //galleryIds.push(ImagepostIdsArr)
+      //               galleryIds = ImagepostIdsArr;
+      //             } else {
+      //               galleryArray.push(uploadedGalleryImage);
+      //             }
+      //           }
+      //         } else {
+      //           galleryIds = ImagepostIdsArr;
+      //           galleryArray = ImagepostArr1;
+      //         }
+
+      //         // Upload Documents
+      //         if (DocumentpostArr[0]?.files?.length > 0) {
+      //           for (const file of DocumentpostArr[0].files) {
+      //             const uploadedDocument = await uploadFileToLibrary(
+      //               file,
+      //               sp,
+      //               "BlogsDocs"
+      //             );
+      //             documentIds = documentIds.concat(
+      //               uploadedDocument.map((item: { ID: any }) => item.ID)
+      //             );
+      //             if (DocumentpostArr1.length > 0) {
+      //               DocumentpostArr1.push(uploadedDocument[0]);
+      //               const updatedData = DocumentpostArr1.filter(
+      //                 (item) => item.ID !== 0
+      //               );
+      //               console.log(updatedData, "updatedData");
+      //               documentArray = updatedData;
+      //               // documentArray.push(DocumentpostArr1)
+      //               DocumentpostIdsArr.push(documentIds[0]); //.push(DocumentpostIdsArr)
+      //               documentIds = DocumentpostIdsArr;
+      //             } else {
+      //               documentArray.push(uploadedDocument);
+      //             }
+      //           }
+      //         } else {
+      //           documentIds = DocumentpostIdsArr;
+      //           documentArray = DocumentpostArr1;
+      //         }
+      //         if (galleryArray.length > 0) {
+      //           let ars = galleryArray.filter((x) => x.ID == 0);
+      //           if (ars.length > 0) {
+      //             for (let i = 0; i < ars.length; i++) {
+      //               galleryArray.slice(i, 1);
+      //             }
+      //           }
+      //         }
+      //         if (documentArray.length > 0) {
+      //           let arsdoc = documentArray.filter((x) => x.ID == 0);
+      //           if (arsdoc.length > 0) {
+      //             for (let i = 0; i < arsdoc.length; i++) {
+      //               documentArray.slice(i, 1);
+      //             }
+      //           }
+      //         }
+      //         console.log(documentIds, "documentIds");
+      //         console.log(galleryIds, "galleryIds");
+      //         // Update Post with Gallery and Document Information
+      //         const updatePayload = {
+      //           ...(galleryIds.length > 0 && {
+      //             AnnouncementAndNewsGallaryId: galleryIds,
+
+      //             AnnouncementAndNewsGallaryJSON: JSON.stringify(
+      //               flatArray(galleryArray)
+      //             ),
+      //           }),
+      //           ...(documentIds.length > 0 && {
+      //             AnnouncementsAndNewsDocsId: documentIds,
+      //             AnnouncementAndNewsDocsJSON: JSON.stringify(
+      //               flatArray(documentArray)
+      //             ),
+      //           }),
+      //         };
+
+      //         if (Object.keys(updatePayload).length > 0) {
+      //           const updateResult = await updateItem(
+      //             updatePayload,
+      //             sp,
+      //             editID
+      //           );
+      //           console.log("Update Result:", updateResult);
+      //         }
+      //       }
+      //       //Swal.fire("Item update successfully", "", "success");
+      //       sessionStorage.removeItem("announcementId");
+      //       setTimeout(() => {
+      //         window.location.href = `${siteUrl}/SitePages/Announcementmaster.aspx`;
+      //       }, 2000);
+      //     }
+      //   });
+      // } else {
+
         Swal.fire({
-          title: "Do you want to update?",
+          title: "Are you sure you want to publish this blog?",
           showConfirmButton: true,
           showCancelButton: true,
-          confirmButtonText: "Save",
-          cancelButtonText: "Cancel",
-          icon: "warning",
-        }).then(async (result) => {
-          console.log(result);
-          if (result.isConfirmed) {
-            //console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
-            debugger;
-            let bannerImageArray: any = {};
-            let galleryIds: any[] = [];
-            let documentIds: any[] = [];
-            let galleryArray: any[] = [];
-            let documentArray: any[] = [];
-
-            // formData.FeaturedAnnouncement === "on"?  true :false;
-
-            // Upload Banner Images
-            if (
-              BnnerImagepostArr.length > 0 &&
-              BnnerImagepostArr[0]?.files?.length > 0
-            ) {
-              debugger
-              for (const file of BnnerImagepostArr[0].files) {
-                debugger
-                //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
-                bannerImageArray = await uploadFileBanner(
-                  file,
-                  sp,
-                  "Documents",
-                  "https://officeindia.sharepoint.com"
-                );
-              }
-            } else {
-              bannerImageArray = null;
-            }
-            debugger;
-            if (bannerImageArray != null) {
-              // Create Post
-              const postPayload = {
-                Topic: formData.topic,
-                Overview: formData.overview,
-                Description: richTextValues.description,
-                EntityId: Number(formData.entity),
-                BlogBannerImage: JSON.stringify(bannerImageArray),
-                // DiscussionForumCategoryId: Number(formData.category),
-              };
-              console.log("postPayload-->>>>>", postPayload);
-
-              const postResult = await updateItem(postPayload, sp, editID);
-              const postId = postResult?.data?.ID;
-              debugger;
-              // if (!postId) {
-              //   console.error("Post creation failed.");
-              //   return;
-              // }
-
-              // Upload Gallery Images
-              // Upload Gallery Images
-              if (ImagepostArr[0]?.files?.length > 0) {
-                for (const file of ImagepostArr[0].files) {
-                  const uploadedGalleryImage = await uploadFileToLibrary(
-                    file,
-                    sp,
-                    "BlogGallery"
-                  );
-
-                  galleryIds = galleryIds.concat(
-                    uploadedGalleryImage.map((item: { ID: any }) => item.ID)
-                  );
-                  if (ImagepostArr1.length > 0) {
-                    ImagepostArr1.push(uploadedGalleryImage[0]);
-                    const updatedData = ImagepostArr1.filter(
-                      (item) => item.ID !== 0
-                    );
-                    debugger;
-                    console.log(updatedData, "updatedData");
-                    galleryArray = updatedData;
-                    //galleryArray.push(ImagepostArr1);
-
-                    ImagepostIdsArr.push(galleryIds[0]); //galleryIds.push(ImagepostIdsArr)
-                    galleryIds = ImagepostIdsArr;
-                  } else {
-                    galleryArray.push(uploadedGalleryImage);
-                  }
-                }
-              } else {
-                galleryIds = ImagepostIdsArr;
-                galleryArray = ImagepostArr1;
-              }
-
-              // Upload Documents
-              if (DocumentpostArr[0]?.files?.length > 0) {
-                for (const file of DocumentpostArr[0].files) {
-                  const uploadedDocument = await uploadFileToLibrary(
-                    file,
-                    sp,
-                    "BlogsDocs"
-                  );
-                  documentIds = documentIds.concat(
-                    uploadedDocument.map((item: { ID: any }) => item.ID)
-                  );
-                  if (DocumentpostArr1.length > 0) {
-                    DocumentpostArr1.push(uploadedDocument[0]);
-                    const updatedData = DocumentpostArr1.filter(
-                      (item) => item.ID !== 0
-                    );
-                    console.log(updatedData, "updatedData");
-                    documentArray = updatedData;
-                    // documentArray.push(DocumentpostArr1)
-                    DocumentpostIdsArr.push(documentIds[0]); //.push(DocumentpostIdsArr)
-                    documentIds = DocumentpostIdsArr;
-                  } else {
-                    documentArray.push(uploadedDocument);
-                  }
-                }
-              } else {
-                documentIds = DocumentpostIdsArr;
-                documentArray = DocumentpostArr1;
-              }
-              if (galleryArray.length > 0) {
-                let ars = galleryArray.filter((x) => x.ID == 0);
-                if (ars.length > 0) {
-                  for (let i = 0; i < ars.length; i++) {
-                    galleryArray.slice(i, 1);
-                  }
-                }
-              }
-              if (documentArray.length > 0) {
-                let arsdoc = documentArray.filter((x) => x.ID == 0);
-                if (arsdoc.length > 0) {
-                  for (let i = 0; i < arsdoc.length; i++) {
-                    documentArray.slice(i, 1);
-                  }
-                }
-                console.log(documentIds, "documentIds");
-                console.log(galleryIds, "galleryIds");
-                // Update Post with Gallery and Document Information
-              }
-
-              const updatePayload = {
-                ...(galleryIds.length > 0 && {
-                  DiscussionForumGalleryId: galleryIds,
-
-                  DiscussionForumGalleryJSON: JSON.stringify(
-                    flatArray(galleryArray)
-                  ),
-                }),
-                ...(documentIds.length > 0 && {
-                  DiscussionForumDocsId: documentIds,
-                  DiscussionForumDocsJSON: JSON.stringify(
-                    flatArray(documentArray)
-                  ),
-                }),
-              };
-
-              if (Object.keys(updatePayload).length > 0) {
-                const updateResult = await updateItem(
-                  updatePayload,
-                  sp,
-                  editID
-                );
-                console.log("Update Result:", updateResult);
-              }
-            } else {
-              if (
-                BnnerImagepostArr.length > 0 &&
-                BnnerImagepostArr[0]?.files?.length > 0
-              ) {
-                debugger
-                for (const file of BnnerImagepostArr[0].files) {
-                  debugger
-                  //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
-                  bannerImageArray = await uploadFileBanner(
-                    file,
-                    sp,
-                    "Documents",
-                    "https://officeindia.sharepoint.com"
-                  );
-                }
-              } else {
-                bannerImageArray = null;
-              }
-              // Create Post
-              const postPayload = {
-                Title: formData.topic,
-                Overview: formData.overview,
-                Description: richTextValues.description,
-                EntityId: Number(formData.entity),
-                BlogBannerImage: JSON.stringify(bannerImageArray)
-                // DiscussionForumCategoryId: Number(formData.category),
-              };
-              console.log("postPayload else-->>>>", postPayload);
-
-              const postResult = await updateItem(postPayload, sp, editID);
-              const postId = postResult?.data?.ID;
-              debugger;
-              // if (!postId) {
-              //   console.error("Post creation failed.");
-              //   return;
-              // }
-
-              // Upload Gallery Images
-              // Upload Gallery Images
-              if (ImagepostArr[0]?.files?.length > 0) {
-                for (const file of ImagepostArr[0].files) {
-                  const uploadedGalleryImage = await uploadFileToLibrary(
-                    file,
-                    sp,
-                    "BlogGallery"
-                  );
-
-                  galleryIds = galleryIds.concat(
-                    uploadedGalleryImage.map((item: { ID: any }) => item.ID)
-                  );
-                  if (ImagepostArr1.length > 0) {
-                    ImagepostArr1.push(uploadedGalleryImage[0]);
-                    const updatedData = ImagepostArr1.filter(
-                      (item) => item.ID !== 0
-                    );
-                    console.log(updatedData, "updatedData");
-                    galleryArray = updatedData;
-                    // galleryArray.push(ImagepostArr1);
-
-                    ImagepostIdsArr.push(galleryIds[0]); //galleryIds.push(ImagepostIdsArr)
-                    galleryIds = ImagepostIdsArr;
-                  } else {
-                    galleryArray.push(uploadedGalleryImage);
-                  }
-                }
-              } else {
-                galleryIds = ImagepostIdsArr;
-                galleryArray = ImagepostArr1;
-              }
-
-              // Upload Documents
-              if (DocumentpostArr[0]?.files?.length > 0) {
-                for (const file of DocumentpostArr[0].files) {
-                  const uploadedDocument = await uploadFileToLibrary(
-                    file,
-                    sp,
-                    "BlogsDocs"
-                  );
-                  documentIds = documentIds.concat(
-                    uploadedDocument.map((item: { ID: any }) => item.ID)
-                  );
-                  if (DocumentpostArr1.length > 0) {
-                    DocumentpostArr1.push(uploadedDocument[0]);
-                    const updatedData = DocumentpostArr1.filter(
-                      (item) => item.ID !== 0
-                    );
-                    console.log(updatedData, "updatedData");
-                    documentArray = updatedData;
-                    // documentArray.push(DocumentpostArr1)
-                    DocumentpostIdsArr.push(documentIds[0]); //.push(DocumentpostIdsArr)
-                    documentIds = DocumentpostIdsArr;
-                  } else {
-                    documentArray.push(uploadedDocument);
-                  }
-                }
-              } else {
-                documentIds = DocumentpostIdsArr;
-                documentArray = DocumentpostArr1;
-              }
-              if (galleryArray.length > 0) {
-                let ars = galleryArray.filter((x) => x.ID == 0);
-                if (ars.length > 0) {
-                  for (let i = 0; i < ars.length; i++) {
-                    galleryArray.slice(i, 1);
-                  }
-                }
-              }
-              if (documentArray.length > 0) {
-                let arsdoc = documentArray.filter((x) => x.ID == 0);
-                if (arsdoc.length > 0) {
-                  for (let i = 0; i < arsdoc.length; i++) {
-                    documentArray.slice(i, 1);
-                  }
-                }
-              }
-              console.log(documentIds, "documentIds");
-              console.log(galleryIds, "galleryIds");
-              // Update Post with Gallery and Document Information
-              const updatePayload = {
-                ...(galleryIds.length > 0 && {
-                  AnnouncementAndNewsGallaryId: galleryIds,
-
-                  AnnouncementAndNewsGallaryJSON: JSON.stringify(
-                    flatArray(galleryArray)
-                  ),
-                }),
-                ...(documentIds.length > 0 && {
-                  AnnouncementsAndNewsDocsId: documentIds,
-                  AnnouncementAndNewsDocsJSON: JSON.stringify(
-                    flatArray(documentArray)
-                  ),
-                }),
-              };
-
-              if (Object.keys(updatePayload).length > 0) {
-                const updateResult = await updateItem(
-                  updatePayload,
-                  sp,
-                  editID
-                );
-                console.log("Update Result:", updateResult);
-              }
-            }
-            Swal.fire("Item update successfully", "", "success");
-            sessionStorage.removeItem("announcementId");
-            setTimeout(() => {
-              window.location.href = `${siteUrl}/SitePages/Announcementmaster.aspx`;
-            }, 2000);
-          }
-        });
-      } else {
-        Swal.fire({
-          title: "Do you want to save?",
-          showConfirmButton: true,
-          showCancelButton: true,
-          confirmButtonText: "Save",
-          cancelButtonText: "Cancel",
+          confirmButtonText: "Yes",
+          cancelButtonText: "No",
           icon: "warning",
         }).then(async (result) => {
           //console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
@@ -703,6 +728,7 @@ const BlogsContext = ({ props }: any) => {
               Overview: formData.overview,
               Description: richTextValues.description,
               EntityId: Number(formData.entity),
+              Status:"Published",
               BlogBannerImage: JSON.stringify(bannerImageArray)
               // DiscussionForumCategoryId: Number(formData.category),
             };
@@ -778,17 +804,147 @@ const BlogsContext = ({ props }: any) => {
               const updateResult = await updateItem(updatePayload, sp, postId);
               console.log("Update Result:", updateResult);
             }
-            // Swal.fire("Item added successfully", "", "success");
+             Swal.fire("Item added successfully", "", "success");
             // sessionStorage.removeItem("bannerId");
             setTimeout(async () => {
               setAnnouncementData(await getBlog(sp));
+              dismissModal()
+              window.location.href = `${siteUrl}/SitePages/Blogs.aspx`;
             }, 2000);
           }
         });
-      }
+      //}
     }
   };
+  const handleFormSaevasDraft = async () => {
+    if (validateForm()) {
+    Swal.fire({
+      title: "Do you want to save as Draft?",
+      showConfirmButton: true,
+      showCancelButton: true,
+      confirmButtonText: "Save",
+      cancelButtonText: "Cancel",
+      icon: "warning",
+    }).then(async (result) => {
+      //console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
+      if (result.isConfirmed) {
+        debugger;
+        let bannerImageArray: any = {};
+        let galleryIds: any[] = [];
+        let documentIds: any[] = [];
+        let galleryArray: any[] = [];
+        let documentArray: any[] = [];
 
+        // formData.FeaturedAnnouncement === "on"?  true :false;
+
+        // Upload Banner Images
+        if (
+          BnnerImagepostArr.length > 0 &&
+          BnnerImagepostArr[0]?.files?.length > 0
+        ) {
+          for (const file of BnnerImagepostArr[0].files) {
+            //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
+            bannerImageArray = await uploadFileBanner(
+              file,
+              sp,
+              "Documents",
+              "https://officeindia.sharepoint.com"
+            );
+          }
+        }
+        debugger;
+        // Create Post
+        const postPayload = {
+          Title: formData.topic,
+          Overview: formData.overview,
+          Description: richTextValues.description,
+          EntityId:formData.entity && Number(formData.entity),
+          Status:"Save as Draft",
+          BlogBannerImage:bannerImageArray && JSON.stringify(bannerImageArray)
+          // DiscussionForumCategoryId: Number(formData.category),
+        };
+        console.log("postPayload 3-->>>>>", postPayload);
+
+        const postResult = await addItem(postPayload, sp);
+        const postId = postResult?.data?.ID;
+        debugger;
+        
+        if (!postId) {
+          console.error("Post creation failed.");
+          return;
+        } else {
+          
+          //sessionStorage.removeItem("announcementId");
+          setTimeout(() => {
+            dismissModal()
+          }, 5000);
+        }
+        // Upload Gallery Images
+        if (ImagepostArr.length > 0) {
+          for (const file of ImagepostArr[0]?.files) {
+            const uploadedGalleryImage = await uploadFileToLibrary(
+              file,
+              sp,
+              "BlogGallery"
+            );
+
+            galleryIds = galleryIds.concat(
+              uploadedGalleryImage.map((item: { ID: any }) => item.ID)
+            );
+            galleryArray.push(uploadedGalleryImage);
+          }
+        }
+
+        // Upload Documents
+        if (DocumentpostArr.length > 0) {
+          for (const file of DocumentpostArr[0]?.files) {
+            const uploadedDocument = await uploadFileToLibrary(
+              file,
+              sp,
+              "BlogsDoc"
+            );
+            documentIds = documentIds.concat(
+              uploadedDocument.map((item: { ID: any }) => item.ID)
+            );
+            documentArray.push(uploadedDocument);
+          }
+        }
+
+        // Update Post with Gallery and Document Information
+        const updatePayload = {
+          ...(galleryIds.length > 0 && {
+            BlogsGalleryId: galleryIds,
+            BlogGalleryJSON: JSON.stringify(
+              flatArray(galleryArray)
+            ),
+          }),
+          ...(documentIds.length > 0 && {
+            BlogsDocsId: documentIds,
+            BlogDocsJSON: JSON.stringify(
+              flatArray(documentArray)
+            ),
+          }),
+        };
+
+        if (Object.keys(updatePayload).length > 0) {
+          const updateResult = await updateItem(updatePayload, sp, postId);
+          console.log("Update Result:", updateResult);
+        }
+
+        // Swal.fire("Item added successfully", "", "success");
+        // sessionStorage.removeItem("bannerId");
+        setTimeout(async () => {
+          Swal.fire("Item saved successfully", "", "success");
+          dismissModal();
+          setAnnouncementData(await getBlog(sp));
+          window.location.href = `${siteUrl}/SitePages/Blogs.aspx`;
+         
+        }, 2000);
+      }
+    });
+  
+  }
+};
   const handleCancel = () => {
     debugger;
     window.location.href =
@@ -1133,7 +1289,7 @@ const BlogsContext = ({ props }: any) => {
                                     id="overview"
                                     placeholder="Enter Overview"
                                     name="overview"
-                                    style={{ height: "166px" }}
+                                    style={{ minHeight: "80px",maxHeight:"80px" }}
                                     value={formData.overview}
                                     onChange={(e) =>
                                       onChange(e.target.name, e.target.value)
@@ -1180,7 +1336,7 @@ const BlogsContext = ({ props }: any) => {
                                 </div>
                               </div>
 
-                              <div className="col-lg-6">
+                              {/* <div className="col-lg-6">
                                 <div className="mb-3">
                                   <div className="d-flex justify-content-between">
                                     <div>
@@ -1240,7 +1396,7 @@ const BlogsContext = ({ props }: any) => {
                                     }
                                   />
                                 </div>
-                              </div>
+                              </div> */}
 
                               {/* <div className="col-lg-2">
                                 <div className="mb-3">
@@ -1271,6 +1427,26 @@ const BlogsContext = ({ props }: any) => {
                               </div> */}
 
                               <div className="text-center butncss">
+                              <div
+                                  className="btn btn-success waves-effect waves-light m-1"
+                                  style={{ fontSize: "0.875rem" }}
+                                  onClick={handleFormSaevasDraft}
+                                >
+                                  <div
+                                    className="d-flex"
+                                    style={{
+                                      justifyContent: "space-around",
+                                      width: "120px",
+                                    }}
+                                  >
+                                    <img
+                                      src={require("../../../Assets/ExtraImage/checkcircle.svg")}
+                                      style={{ width: "1rem" }}
+                                      alt="Check"
+                                    />{" "}
+                                    Save as draft
+                                  </div>
+                                </div>
                                 <div
                                   className="btn btn-success waves-effect waves-light m-1"
                                   style={{ fontSize: "0.875rem" }}
@@ -1288,7 +1464,7 @@ const BlogsContext = ({ props }: any) => {
                                       style={{ width: "1rem" }}
                                       alt="Check"
                                     />{" "}
-                                    Submit
+                                    Publish
                                   </div>
                                 </div>
                                 <button

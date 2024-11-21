@@ -3,7 +3,7 @@ export const fetchBlogdata = async (_sp) => {
   let arr = []
 
   await _sp.web.lists.getByTitle("ARGBlogs")
-    .items.select("*,Author/ID,Author/Title").expand("Author").orderBy("Created", false).getAll().then((res) => {
+    .items.select("*,Author/ID,Author/Title,Author/EMail").expand("Author").orderBy("Created", false).getAll().then((res) => {
       console.log(res);
 
       //res.filter(x=>x.Category?.Category==str)
@@ -155,7 +155,7 @@ export const updateItem = async (itemData, sp, id) => {
   let resultArr = []
   try {
     const newItem = await sp.web.lists.getByTitle('ARGBlogs').items.getById(id).update(itemData);
-    Swal.fire('Item update successfully', '', 'success');
+    //Swal.fire('Item update successfully', '', 'success');
     resultArr = newItem
     // Perform any necessary actions after successful addition
   } catch (error) {
@@ -186,17 +186,94 @@ export const addItem = async (itemData, _sp) => {
   return resultArr;
 };
  
+
+export const uploadFile = async (file, _sp, docLib, siteUrl) => {
+  let arr = {};
+  debugger
+  const uploadResult = await sp.web.lists.getByTitle(docLib).rootFolder.files.addChunked(file.name, file, data => {
+    console.log(`progress`, data);
+  }, true);
+
+  const fileUrl = uploadResult.data.ServerRelativeUrl;
+
+  const imgMetadata = {
+    "__metadata": { "type": "SP.FieldUrlValue" },
+    "Description": file.name,
+    "Url": `${siteUrl}${fileUrl}`
+  };
+
+  // await sp.web.lists.getByTitle(docLib).items.getById(uploadResult.data.UniqueId).update({
+  //   "AnnouncementandNewsBannerImage": imgMetadata
+  // });
+  arr = {
+    "type": "thumbnail",
+    "fileName": file.name,
+    "serverUrl": siteUrl,
+    "fieldName": "Image",
+    "serverRelativeUrl": fileUrl
+  };
+  return arr;
+};
+export const uploadFileToLibrary = async (file, _sp, docLib) => {
+  debugger
+  let arrFIleData = [];
+  let fileSize = 0
+  try {
+    const result = await _sp.web.lists.getByTitle(docLib).rootFolder.files.addChunked(file.name, file,
+
+      // const result = await sp.web.lists.getByTitle(docLib).rootFolder.files.addChunked(
+      // file.name,
+      // file,
+      (progress, data) => {
+        console.log(progress, data);
+        fileSize = progress.fileSize
+      },
+      true
+    );
+    //const resultnew = await sp.web.get
+    if (result.data != undefined) {
+      console.log(result.data, 'itemitemhg', docLib);
+      const item = await _sp.web.lists.getByTitle(`${docLib}`).items.orderBy("Created", false)
+      //.filter(`Name eq '${result.data.Name}'`)
+      
+      //.top(1)
+      .getAll();
+      //console.log(item1, 'itemitem111');
+      //const item = await _sp.web.getFileByServerRelativePath(result.data.ServerRelativeUrl).getItem("*", "ID", "AuthorId", "Modified")
+      console.log(item, 'itemitem');
+      let arr = {
+        ID: item[0].Id,
+        Createdby: item[0].AuthorId,
+        Modified: item[0].Modified,
+        fileUrl: result.data.ServerRelativeUrl,
+        fileSize: fileSize,
+        fileType: file.type,
+        fileName: file.name,
+      }
+      arrFIleData.push(arr)
+      console.log(arrFIleData);
+
+      return arrFIleData;
+    }
+
+  } catch (error) {
+    console.log("Error uploading file:", error);
+    return null; // Or handle error differently
+  }
+};
+
 export const getBlogByID = async (_sp, id) => {
   debugger
   let arr = []
   let arrs = []
   let bannerimg = []
-  await _sp.web.lists.getByTitle("ARGBlogs").items.getById(id).select("*,DiscussionForumCategory/ID,Category/Category,Entity/ID,Entity/Entity").expand("Category,Entity,DiscussionForumTypeMaster")()
+  await _sp.web.lists.getByTitle("ARGBlogs").items.getById(id).select("*,BlogCategory/ID,BlogCategory/CategoryName,Entity/ID,Entity/Entity").expand("BlogCategory,Entity")()
     .then((res) => {
-      console.log(res, ' let arrs=[]');
+      console.log(res, 'blog let arrs=[]');
+      const bannerimgobject = res.BlogBannerImage != "{}" && JSON.parse(res.BlogBannerImage)
       // const bannerimgobject = res.AnnouncementandNewsBannerImage != "{}" && JSON.parse(res.AnnouncementandNewsBannerImage)
       // console.log(bannerimgobject[0], 'bannerimgobject');
- 
+
       bannerimg.push(bannerimgobject);
       const parsedValues = {
         Title: res.Title != undefined ? res.Title : "",
@@ -206,22 +283,22 @@ export const getBlogByID = async (_sp, id) => {
         ID: res.ID,
         // BannerImage: bannerimg,
         //   TypeMaster: res?.AnnouncementandNewsTypeMaster?.ID != undefined ? res.AnnouncementandNewsTypeMaster?.ID : "",
-        DiscussionForumCategory: res.Category?.ID != undefined ? res.Category?.ID : "",
+        Category: res.BlogCategory?.ID != undefined ? res.BlogCategory?.ID : "",
         Entity: res.Entity?.ID != undefined ? res.Entity?.ID : "",
-        FeaturedAnnouncement: res.FeaturedAnnouncement,
+        ///FeaturedAnnouncement: res.FeaturedAnnouncement,
         BlogGalleryJSON: res.BlogGalleryJSON != null ? JSON.parse(res.BlogGalleryJSON) : "",
         BlogDocsJSON: res.BlogDocsJSON != null ? JSON.parse(res.BlogDocsJSON) : "",
         BlogGalleryId: res.BlogGalleryId,
         BlogDocsId: res.BlogDocsId
         // other fields as needed
       };
- 
+
       arr.push(parsedValues)
     })
     .catch((error) => {
       console.log("Error fetching data: ", error);
     });
-  console.log(arr, 'arr');
+  console.log(arr, 'arrblllll');
   return arr;
 }
 export const getBlogsByID = async (_sp, id) => {
@@ -230,41 +307,41 @@ export const getBlogsByID = async (_sp, id) => {
   let arrs = []
   let bannerimg = []
   await _sp.web.lists.getByTitle("ARGBlogs").items.getById(id).select("*,Author/ID,Author/Title,Entity/ID,Entity/Entity").expand("Author,Entity")()
-      .then((res) => {
-          console.log(res, ' let arrs=[]');
-           const bannerimgobject = res.BlogBannerImage != "{}" && JSON.parse(res.BlogBannerImage)
-           console.log(bannerimgobject[0], 'bannerimgobject');
+    .then((res) => {
+      console.log(res, ' let arrs=[]');
+      const bannerimgobject = res.BlogBannerImage != "{}" && JSON.parse(res.BlogBannerImage)
+      console.log(bannerimgobject, 'bannerimgobject');
 
-          bannerimg.push(bannerimgobject);
-          const parsedValues = {
-              Title: res.Title != undefined ? res.Title : "",
-              description: res.Description != undefined ? res.Description : "",
-              //   overview: res.Overview != undefined ? res.Overview : "",
-              //   IsActive: res.IsActive,
-              ID: res.ID,
-              Topic: res.Title,
-              Overview: res.Overview,
-               BannerImage: bannerimg,
-              //GroupType: res.GroupType,
-              //   TypeMaster: res?.AnnouncementandNewsTypeMaster?.ID != undefined ? res.AnnouncementandNewsTypeMaster?.ID : "",
-              //Category: res.DiscussionForumCategory?.ID != undefined ? res.DiscussionForumCategory?.ID : "",
-              Entity: res.Entity?.ID != undefined ? res.Entity?.ID : "",
-              //FeaturedAnnouncement: res.FeaturedAnnouncement,
-              BlogGalleryJSON: res.BlogGalleryJSON != null ? JSON.parse(res.BlogGalleryJSON) : "",
-              BlogDocsJSON: res.BlogDocsJSON != null ? JSON.parse(res.BlogDocsJSON) : "",
-              BlogGalleryId: res.BlogGalleryId,
-              BlogsDocsId: res.BlogsDocsId,
-             
-              // other fields as needed
+      bannerimg.push(bannerimgobject);
+      const parsedValues = {
+        Title: res.Title != undefined ? res.Title : "",
+        description: res.Description != undefined ? res.Description : "",
+        //   overview: res.Overview != undefined ? res.Overview : "",
+        //   IsActive: res.IsActive,
+        ID: res.ID,
+        Topic: res.Title,
+        Overview: res.Overview,
+        BannerImage: bannerimg,
+        //GroupType: res.GroupType,
+        //   TypeMaster: res?.AnnouncementandNewsTypeMaster?.ID != undefined ? res.AnnouncementandNewsTypeMaster?.ID : "",
+        //Category: res.DiscussionForumCategory?.ID != undefined ? res.DiscussionForumCategory?.ID : "",
+        Entity: res.Entity?.ID != undefined ? res.Entity?.ID : "",
+        //FeaturedAnnouncement: res.FeaturedAnnouncement,
+        BlogGalleryJSON: res.BlogGalleryJSON != null ? JSON.parse(res.BlogGalleryJSON) : "",
+        BlogDocsJSON: res.BlogDocsJSON != null ? JSON.parse(res.BlogDocsJSON) : "",
+        BlogGalleryId: res.BlogGalleryId,
+        BlogsDocsId: res.BlogsDocsId,
 
-          };
+        // other fields as needed
 
-          arr.push(parsedValues);
-          console.log("arrarrarrarr", arr, parsedValues);
-      })
-      .catch((error) => {
-          console.log("Error fetching data: ", error);
-      });
+      };
+
+      arr.push(parsedValues);
+      console.log("arrarrarrarr", arr, parsedValues);
+    })
+    .catch((error) => {
+      console.log("Error fetching data: ", error);
+    });
   console.log(arr, 'arr');
   return arr;
 }
@@ -284,19 +361,19 @@ export const DeleteBusinessAppsAPI = async (_sp, id) => {
   return resultArr;
 }
 // new code end
-export const getAllBlogsnonselected = async (_sp,Idnum) => {
+export const getAllBlogsnonselected = async (_sp, Idnum) => {
   debugger
   let arr = []
   let str = "Announcements"
   await _sp.web.lists.getByTitle("ARGBlogs").items
-  .select("*").expand("")
-  .filter(`ID ne ${Idnum}`)
-  .top(3)
-  .orderBy("Created",true)
-  .getAll()
+    .select("*").expand("")
+    .filter(`ID ne ${Idnum}`)
+    .top(3)
+    .orderBy("Created", false)
+    .getAll()
     .then((res) => {
-      let resnew= res.slice(0, 3);
-      console.log("getallBlogs excluding",res,resnew);
+      let resnew = res.slice(0, 3);
+      console.log("getallBlogs excluding", res, resnew);
 
       //res.filter(x=>x.Category?.Category==str)
       arr = resnew;

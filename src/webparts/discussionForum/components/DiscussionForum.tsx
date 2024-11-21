@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import VerticalSideBar from "../../verticalSideBar/components/VerticalSideBar";
 import HorizontalNavbar from "../../horizontalNavBar/components/HorizontalNavBar";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { filter } from "lodash";
 import "../../../CustomCss/mainCustom.scss";
 import "../components/DiscussionForum.scss";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
@@ -50,6 +51,11 @@ import "react-quill/dist/quill.snow.css";
 import { SPFI } from "@pnp/sp/presets/all";
 import { fetchUserInformationList } from "../../../APISearvice/GroupTeamService";
 import Multiselect from "multiselect-react-dropdown";
+import { MSGraphClientV3 } from "@microsoft/sp-http";
+import { WebPartContext } from "@microsoft/sp-webpart-base";
+import context from "react-bootstrap/esm/AccordionContext";
+
+
 const DiscussionForumContext = ({ props }: any) => {
   const sp: SPFI = getSP();
   const { useHide }: any = React.useContext(UserContext);
@@ -67,6 +73,13 @@ const DiscussionForumContext = ({ props }: any) => {
   const [DocumentpostIdsArr, setDocumentpostIdsArr] = React.useState([]);
   const [selectedValue, setSelectedValue] = useState([]);
   const [EnityData, setEnityData] = React.useState([]);
+  const [showDropdownId, setShowDropdownId] = React.useState(null);
+  type UserEntityData = {
+    companyName: string;
+  };
+
+  const [CurrentUserEnityData, setCurrentUserEnityData] = React.useState<UserEntityData | null>(null);
+
   const [options, setOpions] = useState([]);
   const [filters, setFilters] = React.useState({
     SNo: "",
@@ -121,7 +134,10 @@ const DiscussionForumContext = ({ props }: any) => {
       for (var i = 0; i < announcementArr.length; i++) {
         lengArr = await getDiscussionComments(sp, announcementArr[i].ID)
         console.log(lengArr, 'rrr');
-        announcementArr[i].commentsLength = lengArr.arrLength,
+        announcementArr[i].commentsLength = lengArr.commentsLength; // Number of comments
+        announcementArr[i].likesCount = lengArr.totalLikes;         // Number of likes
+        announcementArr[i].repliesCount = lengArr.totalRepliesCount;
+
           announcementArr[i].Users = lengArr.arrUser,
           announcementArr[i].CreatedDate = lengArr.CreatedDate
       }
@@ -135,6 +151,8 @@ const DiscussionForumContext = ({ props }: any) => {
         lengArr = await getDiscussionComments(sp, announcementArr[i].ID)
         console.log(lengArr, 'rrr');
         announcementArr[i].commentsLength = lengArr.arrLength,
+        announcementArr[i].likesCount = lengArr.totalLikes;         // Number of likes
+        announcementArr[i].repliesCount = lengArr.totalRepliesCount;
           announcementArr[i].Users = lengArr.arrUser
         announcementArr[i].CreatedDate = lengArr.CreatedDate
       }
@@ -147,6 +165,8 @@ const DiscussionForumContext = ({ props }: any) => {
         lengArr = await getDiscussionComments(sp, announcementArr[i].ID)
         console.log(lengArr, 'rrr');
         announcementArr[i].commentsLength = lengArr.arrLength,
+        announcementArr[i].likesCount = lengArr.totalLikes;         // Number of likes
+        announcementArr[i].repliesCount = lengArr.totalRepliesCount;
           announcementArr[i].Users = lengArr.arrUser,
           announcementArr[i].CreatedDate = lengArr.CreatedDate
       }
@@ -169,7 +189,10 @@ const DiscussionForumContext = ({ props }: any) => {
       lengArr = await getDiscussionComments(sp, announcementArr[i].ID)
       console.log(lengArr, 'rrr');
       announcementArr[i].commentsLength = lengArr.arrLength,
+      announcementArr[i].likesCount = lengArr.totalLikes;         // Number of likes
+      announcementArr[i].repliesCount = lengArr.totalRepliesCount;
         announcementArr[i].Users = lengArr.arrUser
+        
     }
     fetchOptions()
     // const categorylist = await GetCategory(sp);
@@ -181,7 +204,46 @@ const DiscussionForumContext = ({ props }: any) => {
     setGroupTypeData(
       await getChoiceFieldOption(sp, "ARGDiscussionForum", "GroupType")
     );
+
+    // Fetch current user data
+    const currentUserData = await GetEntity(sp);
+
+
+    setCurrentUserEnityData(currentUserData); // Set the user data
+
+    setFormData((prevState) => ({
+      ...prevState,
+      entity: currentUserData.companyName || "", // Use companyName or fallback to empty string
+    }));
+
+    // Assuming you have a setCurrentUser function
+
   };
+
+  const GetEntity = async (_sp: SPFI): Promise<UserEntityData | null> => {
+    try {
+      const currentWPContext: WebPartContext = props.context;
+      const msgraphClient: MSGraphClientV3 = await currentWPContext.msGraphClientFactory.getClient('3');
+      const currentUserData = await msgraphClient.api("/me")
+        .version("v1.0")
+        .select("displayName,mail,jobTitle,mobilePhone,companyName,userPrincipalName")
+        .get();
+
+      console.log("Current User Data: ", currentUserData);
+      console.log("Current User's companyName : ", currentUserData.companyName);
+
+      // Map and return data in the expected structure
+      return {
+        companyName: currentUserData.companyName,
+
+      };
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      return null;
+    }
+  };
+
+
   const FilterDiscussionData = async (optionFilter: string) => {
     setAnnouncementData(await getDiscussionFilterAll(sp, optionFilter))
   }
@@ -251,6 +313,7 @@ const DiscussionForumContext = ({ props }: any) => {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentData = filteredAnnouncementData.slice(startIndex, endIndex);
+  console.log("check the data of comment of like",currentData)
   const newsCurrentData = filteredNewsData.slice(startIndex, endIndex);
   const [editID, setEditID] = React.useState(null);
   const [ImagepostIdsArr, setImagepostIdsArr] = React.useState([]);
@@ -962,6 +1025,7 @@ const DiscussionForumContext = ({ props }: any) => {
                 GroupType: formData.GroupType,
                 DiscussionForumCategoryId: Number(formData.category),
                 InviteMemebersId: selectedIds,
+                ARGDiscussionStatus: "Ongoing",
               };
             }
             else {
@@ -971,7 +1035,8 @@ const DiscussionForumContext = ({ props }: any) => {
                 Description: richTextValues.description,
                 EntityId: Number(formData.entity),
                 GroupType: formData.GroupType,
-                DiscussionForumCategoryId: Number(formData.category)
+                DiscussionForumCategoryId: Number(formData.category),
+                ARGDiscussionStatus: "Ongoing"
               };
             }
 
@@ -1160,10 +1225,19 @@ const DiscussionForumContext = ({ props }: any) => {
     console.log(id, "----id");
     window.location.href = `${SiteUrl}/SitePages/DiscussionForumDetail.aspx?${id}`;
   };
-
-
+  const shouldDisableOption = (item: any) => {
+    // Example condition: disable the option if it's already selected or based on another condition
+    return item.name === formData.entity || item.name === 'CompanyNameToDisable';
+  };
+  const toggleDropdown1 = (itemId: any) => {
+    if (showDropdownId === itemId) {
+      setShowDropdownId(null); // Close the dropdown if already open
+    } else {
+      setShowDropdownId(itemId); // Open the dropdown for the clicked item
+    }
+  };
   return (
-
+    
     <div id="wrapper" ref={elementRef}>
       <div className="app-menu" id="myHeader">
         <VerticalSideBar _context={sp} />
@@ -1178,7 +1252,7 @@ const DiscussionForumContext = ({ props }: any) => {
           }}
         >
           <div className="container-fluid paddb">
-            <div className="row" style={{ paddingLeft: "0.5rem" }}>
+            <div className="row">
               <div className="col-lg-6">
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
               </div>
@@ -1272,19 +1346,26 @@ const DiscussionForumContext = ({ props }: any) => {
                                 id="entity"
                                 name="entity"
                                 value={formData.entity}
-                                onChange={(e) =>
-                                  onChange(e.target.name, e.target.value)
-                                }
+                                onChange={(e) => onChange(e.target.name, e.target.value)}
                               >
-                                <option value="">Select</option>
+                                {CurrentUserEnityData && (
+                                  <option value={CurrentUserEnityData.companyName}>
+                                    {CurrentUserEnityData.companyName}
+                                  </option>
+                                )}
                                 {EnityData.map((item, index) => (
-                                  <option key={index} value={item.id}>
+                                  <option
+                                    key={index}
+                                    value={item.name}
+                                    disabled={item.name === 'CompanyNameToDisable'} // Disable option based on condition
+                                  >
                                     {item.name}
                                   </option>
                                 ))}
                               </select>
                             </div>
                           </div>
+
                           <div className="col-lg-4">
                             <div className="mb-3">
                               <div className="d-flex justify-content-between">
@@ -1550,7 +1631,7 @@ const DiscussionForumContext = ({ props }: any) => {
                 </div>
               </div>
             </div>
-            <div className="row mt-2">
+            <div className="row mt-4">
               <div className="col-12">
                 <div className="card mb-0">
                   <div className="card-body">
@@ -1753,6 +1834,36 @@ const DiscussionForumContext = ({ props }: any) => {
                             </div>
                           </th>
                           <th style={{
+                            minWidth: "50px", maxWidth: "50px", textAlign: "center"
+                          }}>
+                            <div className="d-flex flex-column bd-highlight ">
+                              <div
+                                className="d-flex  pb-2"
+                                style={{ justifyContent: "space-between" }}
+                              >
+                                <span>Likes</span>
+                              </div>
+                              <br />
+                              <div className=" bd-highlight">
+                              </div>
+                            </div>
+                          </th>
+                          <th style={{
+                            minWidth: "50px", maxWidth: "50px", textAlign: "center"
+                          }}>
+                            <div className="d-flex flex-column bd-highlight ">
+                              <div
+                                className="d-flex  pb-2"
+                                style={{ justifyContent: "space-between" }}
+                              >
+                                <span>Comments</span>
+                              </div>
+                              <br />
+                              <div className=" bd-highlight">
+                              </div>
+                            </div>
+                          </th>
+                          <th style={{
                             minWidth: "50px", maxWidth: "50px", borderBottomRightRadius: "10px",
                             borderTopRightRadius: "10px", textAlign: "center"
                           }}>
@@ -1782,8 +1893,9 @@ const DiscussionForumContext = ({ props }: any) => {
                           </div>
                         ) : (
                           currentData.map((item: any, index: number) => (
+                           
                             <tr
-                              onClick={() => handleClick(item.Id)}
+                             
                               key={index}
                               style={{ cursor: "pointer" }}>
                               <td
@@ -1793,30 +1905,112 @@ const DiscussionForumContext = ({ props }: any) => {
                                 }}>
                                 {startIndex + index + 1}
                               </td>
-                              <td style={{ minWidth: "180px", maxWidth: "180px", textTransform: 'capitalize' }}>{item.Topic}</td>
+                              <td style={{ minWidth: "180px", maxWidth: "180px", textTransform: 'capitalize' }}  onClick={() => handleClick(item.Id)}>{item.Topic}</td>
                               <td style={{ minWidth: "150px", maxWidth: "150px" }}>{item.Overview}</td>
                               <td style={{ minWidth: "100px", maxWidth: "100px" }}>
                                 {item?.DiscussionForumCategory?.CategoryName}
                               </td>
 
                               <td style={{ minWidth: "70px", maxWidth: "70px" }}>
-                                {
-                                  item?.InviteMemebers?.length > 0 ? item?.InviteMemebers.map((res: any, index: 0) => {
-                                    return (
-                                      <img style={{ margin: index == 0 ? '0 0 0 0' : '0 0 0px -12px' }}
-                                        src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${res.EMail}`}
-                                        className="rounded-circlecss img-thumbnail avatar-xl"
-                                        alt="profile-image" />
-                                    )
-                                  }
-                                  ) : null
-                                }
+                                <div
+                                  style={{
+                                    minWidth: "70px",
+                                    maxWidth: "100%",
+                                    position: "relative",
+                                  }}
+                                >
+                                  <div style={{ display: "flex" }}>
+                                    {item?.InviteMemebers?.map(
+                                      (id: any, idx: any) => {
+                                        if (idx < 3) {
+                                          return (
+                                            <img
+                                              style={{
+                                                margin:
+                                                  index == 0
+                                                    ? "0 0 0 0"
+                                                    : "0 0 0px -12px",
+                                              }}
+                                              src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+                                              className="rounded-circlecss img-thumbnail avatar-xl"
+                                              alt="profile-image"
+                                            />
+                                          );
+                                        }
+                                      }
+                                    )}
+                                    {item?.InviteMemebers?.length > 3 && (
+                                      <div
+                                        className=""
+                                        onClick={() => toggleDropdown1(item.Id)}
+                                        key={item.Id}
+                                      >
+                                        <div
+                                          style={{
+                                            textAlign: "center",
+                                            margin:
+                                              index == 0
+                                                ? "0 0 0 0"
+                                                : "0 0 0px -12px",
+                                          }}
+                                          className="rounded-circlecss img-thumbnail avatar-xl"
+                                        >
+                                          +
+                                        </div>
+                                      </div>
+                                    )}
+                                  </div>
+                                  {showDropdownId === item.Id && (
+                                    <div
+                                    // ref={menuRef}
+                                      className=""
+                                      style={{
+                                        position: "fixed",
+                                        
+                                        zIndex: "99",
+                                        background: "#fff",
+                                        padding: "1rem",
+                                        width: "20rem",
+                                      }}
+                                    >
+                                      {showDropdownId === item.Id &&
+                                        item?.InviteMemebers?.map(
+                                          (id: any, idx: any) => {
+                                            return (
+                                              <div className="m-1">
+                                                <img
+                                                  style={{}}
+                                                  src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+                                                  className="rounded-circlecss img-thumbnail avatar-xl"
+                                                  alt="profile-image"
+                                                />{" "}
+                                                {id?.EMail}
+                                              </div>
+                                            );
+                                          }
+                                        )}
+                                    </div>
+                                  )}
+                                </div>
                               </td>
-                              <td style={{ minWidth: "50px", maxWidth: "50px" }}>
-                                {item.commentsLength}
-                              </td>
+                              {/* Replies Count */}
+        <td style={{ minWidth: "50px", maxWidth: "50px" }}>
+          {item.repliesCount ? item.repliesCount : 0}
+        </td>
+
+        {/* Likes Count */}
+        <td style={{ minWidth: "50px", maxWidth: "50px" }}>
+          {item.likesCount ? item.likesCount : 0}
+        </td>
+
+        {/* Comments Count */}
+        <td style={{ minWidth: "50px", maxWidth: "50px" }}>
+          {item.commentsLength ? item.commentsLength : 0}
+        </td>
+
                               <td style={{ minWidth: "70px", maxWidth: "70px" }}>
-                                {moment(item.CreatedDate).fromNow()}
+                                {/* {moment(item.CreatedDate).fromNow()} */}
+                                {moment(item.Created).format("DD-MMM-YYYY")}
                               </td>
                             </tr>
                           ))
