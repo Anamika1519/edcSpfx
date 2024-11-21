@@ -1072,9 +1072,9 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                     </div>
                                     <div className="row">
                                         <div className="col-sm-12">
-                                            <p className="mb-2 mt-1 d-block customhead">
+                                            <p className="mb-2 mt-1 text-dark d-block customhead">
                                                 <span style={{ fontWeight: '400' }} className="pe-2 text-nowrap color-new font-12 mb-0 d-inline-block">
-                                                    <Calendar size={12} color="#6b6b6b" strokeWidth={1} className="pl-2" style={{ fontWeight: '400' }} />
+                                                    <Calendar size={12}  strokeWidth={1} className="pl-2" style={{ fontWeight: '400' }} />
                                                     {moment(item.Created).format("DD-MMM-YYYY")} &nbsp;  &nbsp;  &nbsp;|
                                                 </span>
                                                 <span style={{ fontWeight: '400' }} className="text-nowrap mb-0 color-new font-12 d-inline-block">
@@ -1084,7 +1084,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                                 </span></p>
 
                                             <div style={{ clear: 'both' }}>
-                                                <p className="d-block customdescription">{truncateText(item.Overview, 300)}</p>
+                                                <p style={{fontSize:'15px', lineHeight:'22px'}} className="d-block customdescription">{truncateText(item.Overview, 300)}</p>
                                             </div>
                                         </div>
                                         <a onClick={() => gotoBlogsDetails(item)} style={{ textDecoration: 'none' }}>
@@ -1164,7 +1164,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                                         <span className="font-12 date-color float-start mt-0 mb-2 ng-binding" style={{ color: '#6b6b6b', fontSize: '12px', paddingRight: '0.2rem' }}>
                                                             <Calendar size={12} color="#6b6b6b" strokeWidth={2} style={{ fontWeight: '400' }} /></span>
 
-                                                        <span className="font-12 date-color float-start mt-0 mb-2 ng-binding" style={{ color: '#6b6b6b', fontSize: '12px' }}>{moment(item.Created).format("DD-MMM-YYYY HH:mm")}
+                                                        <span className="font-12 date-color float-start mt-0 mb-2 ng-binding" style={{ color: '#6b6b6b', fontSize: '12px' }}>{moment(item.Created).format("DD-MMM-YYYY")}
                                                             {/* 12-Mar-2024 18:37 */}
                                                         </span>
                                                     </div>
@@ -1172,7 +1172,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                                 <a > <div className="w-100">
                                                     <h4 className="mt-0 mb-1 font-16 fw-bold ng-binding" style={{ color: '#343a40', fontSize: '16px' }}> {truncateText(item.Title, 90)}
                                                     </h4>
-                                                    <p style={{ color: '#6b6b6b', fontSize: '14px', height: '2.5rem' }} className="mb-2 font-14 ng-binding">
+                                                    <p style={{ color: '#6b6b6b', fontSize: '15px', lineHeight:'20px', height: '4rem' }} className="mb-2 ng-binding">
                                                         {truncateText(item.Overview, 200)}</p>
                                                     <div className="readmore" onClick={() => gotoBlogsDetails(item)} style={{ cursor: 'pointer' }}>Read more..</div>
                                                 </div>
