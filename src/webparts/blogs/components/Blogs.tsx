@@ -1242,7 +1242,7 @@ const BlogsContext = ({ props }: any) => {
                                 </div>
                               </div>
 
-                              <div className="col-lg-2">
+                              {/* <div className="col-lg-2">
                                 <div className="mb-3">
                                   <label
                                     htmlFor="FeaturedAnnouncement"
@@ -1268,7 +1268,7 @@ const BlogsContext = ({ props }: any) => {
                                     />
                                   </div>
                                 </div>
-                              </div>
+                              </div> */}
 
                               <div className="text-center butncss">
                                 <div

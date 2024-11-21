@@ -98,7 +98,7 @@ export const CommentEventCard: React.FC<{
             </div>
           </div>
 
-          <p className="mt-2">{Commenttext}</p>
+          <p className="mt-2 font-16 text-dark">{Commenttext}</p>
 
           <div className="mt-0 mb-2 d-flex" style={{ gap: '2rem' }}>
           <div  onClick={!loading ? onLike : undefined}  className="btn btn-sm btn-link text-muted ps-0" style={{
@@ -136,7 +136,7 @@ export const CommentEventCard: React.FC<{
                   <div className="w-100 mt-0">
                     <h6 className="font-14 fw600">{reply.UserName}</h6>
                     <p className="mb-0 para-width  text-muted ng-binding"  style={{wordBreak:'break-all'}}>{reply.Comments}</p>
-                    <p className="text-muted font-12 mt-3">
+                    <p className="text-muted font-12 mt-0">
                       <small>{moment(reply.Created).format("DD-MMM-YYYY HH:mm")}</small>
                     </p>
 

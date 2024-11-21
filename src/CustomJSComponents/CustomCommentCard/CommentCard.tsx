@@ -88,7 +88,7 @@ export const CommentCard: React.FC<{
         <div className="row">
           <div className="d-flex align-items-start">
             <img
-              className="me-2 mt-0 avatar-sm rounded-circle"
+              className="me-2 mt-1 avatar-sm rounded-circle"
               src={Comments[0].UserProfile}
               alt="User"
             />
@@ -106,7 +106,7 @@ export const CommentCard: React.FC<{
             </div>
           </div>
 
-          <p className="mt-2">{Commenttext}</p>
+          <p className="mt-2 font-16">{Commenttext}</p>
 
           <div className="mt-0 mb-2 d-flex" style={{ gap: '2rem' }}>
             <div  onClick={!loadingLike ? onLike : undefined}  className="btn btn-sm btn-link text-muted ps-0" style={{
@@ -142,10 +142,10 @@ export const CommentCard: React.FC<{
                     />
                   </div>
                   <div className="w-100 mt-0">
-                    <h6 className="font-14 fw600">{reply.UserName}</h6>
-                    <p className="mb-0 para-width  text-muted ng-binding" style={{ wordBreak: 'break-all' }}>{reply.Comments}</p>
-                    <p className="text-muted font-12 mt-3">
-                      <small> {moment(reply.Created).format("DD-MMM-YYYY HH:mm")}</small>
+                    <h6 className="font-16 fw600">{reply.UserName}</h6>
+                    <p className="mb-2 para-width  text-muted ng-binding" style={{ wordBreak: 'break-all', fontSize:'15px', paddingRight:'22px' }}>{reply.Comments}</p>
+                    <p className="text-muted font-14 mt-0 mb-0">
+                      <small> {moment(reply.Created).format("DD-MMM-YYYY")}</small>
                     </p>
 
                   </div>

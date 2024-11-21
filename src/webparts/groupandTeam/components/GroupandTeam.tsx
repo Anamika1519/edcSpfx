@@ -70,6 +70,8 @@ import {
 
   updateItem,
 
+  updateGroupUnFollowItem
+
 } from "../../../APISearvice/GroupTeamService";
 
 import * as XLSX from "xlsx";
@@ -244,23 +246,23 @@ const GroupandTeamcontext = ({ props }: any) => {
     debugger;
     e.stopPropagation();
     let updatedFollowers;
-    let existingFollowers:any = groupItem.GroupFollowersId || [];
+    let existingFollowers: any = groupItem.GroupFollowersId || [];
     if (value === "follow") {
       document.getElementById(value + groupItem.Id).innerText = "Unfollow";
-      document.getElementById(value+groupItem.Id).classList.remove('btn-blue');
-      document.getElementById(value+groupItem.Id).classList.add('btn-red');
+      document.getElementById(value + groupItem.Id).classList.remove('btn-blue');
+      document.getElementById(value + groupItem.Id).classList.add('btn-red');
       updatedFollowers = [...existingFollowers, currentUser.Id];
       const updatedata = {
         GroupFollowersId: updatedFollowers
       }
-      const updateResult = await updateGroupFollowItem(updatedata, sp,groupItem.Id);
-     
+      const updateResult = await updateGroupFollowItem(updatedata, sp, groupItem.Id);
+
     }
     else if (value === "unfollow") {
       document.getElementById(value + groupItem.Id).innerText = "follow";
-      document.getElementById(value+groupItem.Id).classList.remove('btn-red');
-      document.getElementById(value+groupItem.Id).classList.add('btn-blue');
-     let indexToRemove= existingFollowers.indexOf(currentUser.Id);
+      document.getElementById(value + groupItem.Id).classList.remove('btn-red');
+      document.getElementById(value + groupItem.Id).classList.add('btn-blue');
+      let indexToRemove = existingFollowers.indexOf(currentUser.Id);
       if (indexToRemove > -1) {
         existingFollowers.splice(indexToRemove, 1);
       }
@@ -268,8 +270,8 @@ const GroupandTeamcontext = ({ props }: any) => {
       const updatedata = {
         GroupFollowersId: updatedFollowers
       }
-      const updateResult = await updateGroupFollowItem(updatedata, sp, groupItem.Id);
-      
+      const updateResult = await updateGroupUnFollowItem(updatedata, sp, groupItem.Id);
+
     }
   }
   const handleTabClick = async (tab: React.SetStateAction<string>) => {
@@ -282,7 +284,7 @@ const GroupandTeamcontext = ({ props }: any) => {
         // Include public groups or private groups where the current user is in the InviteMembers array
         item.Author.Title == currentUser.Title);
       setGroupsData(res);
-      if(res.length<0){
+      if (res.length < 0) {
         const res = tempgroupsData.filter(item =>
           // Include public groups or private groups where the current user is in the InviteMembers array
           item.Author.Title == currentUser.Title);
@@ -482,7 +484,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
         } else {
 
-          Swal.fire("only document can be upload");
+          Swal.fire("only document can be uploaded");
 
         }
 
@@ -993,15 +995,15 @@ const GroupandTeamcontext = ({ props }: any) => {
 
         Swal.fire({
 
-          title: "Do you want to update?",
+          title: "Are you sure you want to create group?",
 
           showConfirmButton: true,
 
           showCancelButton: true,
 
-          confirmButtonText: "Save",
+          confirmButtonText: "Yes",
 
-          cancelButtonText: "Cancel",
+          cancelButtonText: "No",
 
           icon: "warning",
 
@@ -1425,7 +1427,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
             }
 
-            Swal.fire("Item update successfully", "", "success");
+            Swal.fire("Congratulations! You are IN: Join the conversation with Group Members", "", "success");
 
             setFormData([]);
 
@@ -1451,15 +1453,15 @@ const GroupandTeamcontext = ({ props }: any) => {
 
         Swal.fire({
 
-          title: "Do you want to save?",
+          title: "Are you sure you want to create group?",
 
           showConfirmButton: true,
 
           showCancelButton: true,
 
-          confirmButtonText: "Save",
+          confirmButtonText: "Yes",
 
-          cancelButtonText: "Cancel",
+          cancelButtonText: "No",
 
           icon: "warning",
 
@@ -1694,7 +1696,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
             }
 
-            Swal.fire("Item added successfully", "", "success");
+            Swal.fire("Congratulations! Groups created successfully", "", "success");
 
             setFormData([]);
 
@@ -1818,15 +1820,15 @@ const GroupandTeamcontext = ({ props }: any) => {
   const renderContent = (groupItem: any) => {
     if (groupItem.GroupFollowersId === null) {
       return <div id={"follow" + groupItem.ID}
-      onClick={(e) => handleFollow(groupItem, e, "follow")}
-       className="btn-light font-14 rounded-pill text-primary waves-effect fw-bold waves-light btn-lightcss btn-blue">
+        onClick={(e) => handleFollow(groupItem, e, "follow")}
+        className="btn-light font-14 rounded-pill text-primary waves-effect fw-bold waves-light btn-lightcss btn-blue">
         Follow
       </div>
 
     } else {
       return <div id={"unfollow" + groupItem.ID}
-      onClick={(e) => handleFollow(groupItem, e, "unfollow")} 
-      className="btn-light font-14 rounded-pill text-primary waves-effect fw-bold waves-light btn-lightcss btn-red">
+        onClick={(e) => handleFollow(groupItem, e, "unfollow")}
+        className="btn-light font-14 rounded-pill text-primary waves-effect fw-bold waves-light btn-lightcss btn-red">
         UnFollow
       </div>
     }
@@ -1842,13 +1844,13 @@ const GroupandTeamcontext = ({ props }: any) => {
 
       MainComponent: "Home",
 
-      MainComponentURl: `${siteUrl}SitePages/Dashboard.aspx`,
+      MainComponentURl: `${siteUrl}/SitePages/Dashboard.aspx`,
 
     },
 
     {
 
-      ChildComponent: "Group and Team",
+      ChildComponent: "Groups",
 
       ChildComponentURl: `${siteUrl}/SitePages/GroupandTeam.aspx`,
 
@@ -2282,7 +2284,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
                                 rows={3}
 
-                                style={{ height: '60px' }}
+                                style={{ height: '120px' }}
 
                                 value={formData.GroupDescription}
 
@@ -2334,7 +2336,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
                                 />{" "}
 
-                                Submit
+                                Create
 
                               </div>
 
@@ -2466,8 +2468,10 @@ const GroupandTeamcontext = ({ props }: any) => {
                             className="card-title fw-bold font-20 mb-1 mt-0"
 
                           >
-
-                            {groupItem.GroupName} ({groupItem.GroupType})
+                            {groupItem.GroupName.length > 50
+                              ? `${groupItem.GroupName.substring(0, 47)}...`
+                              : groupItem.GroupName}{" "}
+                            ({groupItem.GroupType})
 
                           </h4>
 
@@ -2531,7 +2535,10 @@ const GroupandTeamcontext = ({ props }: any) => {
 
                           >
 
-                            {groupItem.GroupName} ({groupItem.GroupType})
+                            {groupItem.GroupName.length > 50
+                              ? `${groupItem.GroupName.substring(0, 47)}...`
+                              : groupItem.GroupName}{" "}
+                            ({groupItem.GroupType})
 
                           </h4>
 
@@ -2595,12 +2602,13 @@ const GroupandTeamcontext = ({ props }: any) => {
 
                           >
 
-                            {groupItem.GroupName} ({groupItem.GroupType})
+<p style={{ lineHeight: '20px' }} className="font-12 text-muted twolinewrap">
+{groupItem.GroupName}</p> ({groupItem.GroupType})
 
                           </h4>
 
                         </a>
-                       
+
                       </div>
 
                     </div>

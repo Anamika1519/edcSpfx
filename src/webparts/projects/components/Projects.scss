@@ -4,39 +4,46 @@
     height: 2rem !important;
     width: 2rem !important;
   }
-  .project-box{height: 200px;}
+  .project-box{height: 240px;}
   .two-line{    overflow: hidden; line-height: 18px !important;
     text-overflow: ellipsis;
     display: -webkit-box;
     -webkit-box-orient: vertical; 
     -webkit-line-clamp: 2;
     }
+    .one-line{ 
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space:nowrap;
+      padding-right: 40px;
+  } 
     .ongoing{
-      background:#6c757d!important;
+      background:#6c757d;
       border-radius: 5px;
       color: #fff;
       display: inline-block;
       font-size: 11px;
-      font-weight: 500;
+      font-weight: 500; text-align: center;
       line-height: 19px;
-      padding: 1px 10px;
+      padding: 1px 10px !important; width:70px;
     }
     .finish {
-      background: rgba(0, 135, 81, .2) !important;
+      background: rgba(0, 135, 81, .2);
       border-radius: 5px;
       color: #008751;
       display: inline-block;
       font-size: 11px;
       font-weight: 500;
       line-height: 19px;
-      padding: 1px 10px;
+      padding: 1px 10px !important; width:70px;
   }
     .date-color{height: 38px;}
     .morealign{    position: absolute;
-      width: 16px;
-      right: 6px;}
+      width: 16px; top: 15px;
+      right: 5px;}
+      .ml20 img{margin-left: -12px !important;}
   .arrow-none:after{display: none !important;}
-  .circlecssnewnew, .circlecssnew  {height: 2.5rem !important; width: 2.5rem !important; border-radius: 1000px !important;}
+  .circlecssnewnew, .circlecssnew,.circlecss  {height: 2.5rem !important; width: 2.5rem !important; border-radius: 1000px !important;}
   .newimg1{    float: left;
     margin: 1px 5px 0px 2px;}
     .newimg2{ margin: -1px 5px 0px 0px;}
@@ -76,6 +83,7 @@
     .datanew{border-bottom: 1px solid #efefef;position: relative;} 
 .alignright{position: absolute; right: 10px; top: 0;}
 .rounded-circlecss6{width: 3.5rem !important; float: left; border-radius: 1000px !important; height: 3.5rem !important;}
+
 
 
 /* Hide the spinner in Webkit browsers (Chrome, Safari, Edge) */

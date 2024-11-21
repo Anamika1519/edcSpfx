@@ -5,7 +5,7 @@ export const fetchEventdata = async (_sp) => {
        .items.select("*,Attendees/Id,Attendees/Title,Attendees/EMail")
        .expand("Attendees")
        .filter("Status eq 'Approved'")
-       .orderBy("Created",false)       
+       .orderBy("EventDate",true)      
        ().then((res) => {
         console.log(res);
      

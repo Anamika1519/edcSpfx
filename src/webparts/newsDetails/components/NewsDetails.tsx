@@ -282,8 +282,12 @@ const NewsdetailsContext = ({ props }: any) => {
     let arrLike = {}
     let likeArray: any[] = []
     const idNum = originalString.substring(1);
-    sp.web.lists.getByTitle("ARGAnnouncementandNewsComments").items.select("*,AnnouncementAndNews/Id").expand("AnnouncementAndNews").filter(`AnnouncementAndNewsId eq ${Number(idNum)}`).orderBy("Created", false)().then(async (result: any) => {
-      console.log(result, 'ARGAnnouncementandNewsComments');
+    sp.web.lists.getByTitle("ARGAnnouncementandNewsComments").items
+    .select("*,AnnouncementAndNews/Id").expand("AnnouncementAndNews")
+    .filter(`AnnouncementAndNewsId eq ${Number(idNum)}`).orderBy("Created", false)()
+    .then(async (result: any) => {
+      
+      console.log(result, 'ARGAnnouncementandNewsComments data');
 
 
 
@@ -369,7 +373,9 @@ const NewsdetailsContext = ({ props }: any) => {
 
     })
   }
-
+  useEffect(() => {
+    getApiData()
+  })
   const ApICallData = async () => {
 
     debugger

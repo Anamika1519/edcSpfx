@@ -113,7 +113,7 @@ const HelloWorldContext = ({ props }: any) => {
   const _sp: SPFI = getSP();
 
   const [Dataproject, setDataproject] = useState<any[]>([]);
-  const [itemsToShow, setItemsToShow] = useState(8); // Initial number of items to show
+  const [itemsToShow, setItemsToShow] = useState(5); // Initial number of items to show
   const [ChoiceValueOne, setChoiceValueOne] = useState<any[]>([]);
   const [DocumentpostArr, setDocumentpostArr] = React.useState([]);
   const [DocumentpostArr1, setDocumentpostArr1] = React.useState([]);
@@ -224,7 +224,27 @@ setFormData({
 });
 setSelectedValue([]),
 setDocumentpostArr1([])
-  }
+  }//   const clearstates = () => {
+//     event.preventDefault()
+//     // alert('clear')
+// // setFormData({ ...formData, ProjectName: "" , ProjectPriority : "" , ProjectPrivacy : "" , startDate : "" , dueDate : "" , Budget : "" , TeamMembers : "" , ProjectOverview : ""});
+// // Use capital 'D'
+// alert('clear');
+// setFormData({
+//   ProjectName: "",
+//   ProjectPriority: "",
+//   ProjectPrivacy: "",
+//   startDate: "",
+//   dueDate: "",
+//   Budget: "",
+//   TeamMembers: "",
+//   ProjectOverview: "",
+//   ProjectFileManager: "",
+  
+// });
+// setSelectedValue([]),
+// setDocumentpostArr1([])
+//   }
   const flatArray = (arr: any[]): any[] => {
     return arr.reduce((acc, val) => acc.concat(val), []);
   };
@@ -297,13 +317,17 @@ setDocumentpostArr1([])
         ProjectPrivacy: formData.ProjectPrivacy,
         StartDate: formData.startDate,
         DueDate: formData.dueDate,
-        // Budget: formData.Budget,
+        // // Budget: formData.Budget,
         ProjectOverview: formData.ProjectOverview,
         TeamMembersId: selectedIds,
          ProjectFileManager : `/sites/SPFXDemo/ARGProjectsFiles/${formData.ProjectName}`,
          ProjectStatus: "Ongoing",
          ProjectFolderName: formData.ProjectName,
          FolderInProgress: 'In Progress'
+        //  ProjectFileManager : `/sites/SPFXDemo/ARGProjectsFiles/${formData.ProjectName}`,
+        //  ProjectStatus: "Ongoing",
+        //  ProjectFolderName: formData.ProjectName,
+        //  FolderInProgress: 'In Progress'
         // DiscussionForumCategoryId: Number(formData.category),
       };
       const postResult = await addItem(postPayload, sp);
@@ -382,7 +406,6 @@ setDocumentpostArr1([])
               ProjectFileManager: ""
             });
             // window.location.reload(); //forNow
-            setSelectedValue([])
             setDataproject(await fetchprojectdata(sp));
             setChoiceValueOne(await Choicedata(sp));
             dismissModal();
@@ -780,7 +803,7 @@ setDocumentpostArr1([])
   const loadMore = () => {
     event.preventDefault()
     event.stopImmediatePropagation()
-    setItemsToShow(itemsToShow + 8); // Increase the number by 8
+    setItemsToShow(itemsToShow + 5); // Increase the number by 8
   };
 
   return (
@@ -794,7 +817,7 @@ setDocumentpostArr1([])
           className="content mt-2"
           style={{ marginLeft: `${!useHide ? "240px" : "80px"}` }}
         >
-          <div className="container-fluid">
+          <div className="container-fluid paddb">
             <div className="row">
               <div className="col-lg-4">
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
@@ -837,7 +860,7 @@ setDocumentpostArr1([])
                       </div>
                       <div className="modal-body">
                         <form className="row">
-                          <div className="col-lg-6">
+                          <div className="col-lg-4">
                             <div className="mb-3">
                               <label
                                 htmlFor=" Project Name"
@@ -891,7 +914,7 @@ setDocumentpostArr1([])
                             </div>
                           </div> */}
 
-                          <div className="col-lg-6">
+                          <div className="col-lg-4">
                             <div className="mb-3">
                               <label
                                 htmlFor="Project Privacy"
@@ -992,7 +1015,7 @@ setDocumentpostArr1([])
                           <div className="col-lg-4">
                             <div className="mb-3">
                               <label htmlFor="dueDate" className="form-label">
-                                Due Date
+                                End Date
                               </label>
                               <input
                                 type="date"
@@ -1005,7 +1028,7 @@ setDocumentpostArr1([])
                                 }
                               />
                             </div>
-                          </div>
+                          </div> 
 
                           {/* <div className="col-lg-4">
                             <div className="mb-3">
@@ -1027,7 +1050,7 @@ setDocumentpostArr1([])
                             </div>
                           </div> */}
 
-                          <div className="col-lg-4">
+                          {/* <div className="col-lg-4">
                             <div className="mb-3">
                               <div className="d-flex justify-content-between">
                                 <div>
@@ -1078,7 +1101,7 @@ setDocumentpostArr1([])
                                 }
                               />
                             </div>
-                          </div>
+                          </div> */}
 
                           {/* {IsinvideHide && ( */}
                           <div className="col-lg-4">
@@ -1087,7 +1110,7 @@ setDocumentpostArr1([])
                                 htmlFor="invitemembers"
                                 className="form-label"
                               >
-                                Select Members{" "}
+                               Select project Team{" "}
                                 {/* <span className="text-danger">*</span> */}
                               </label>
 
@@ -1125,7 +1148,7 @@ setDocumentpostArr1([])
                           </div> */}
                           {/* )} */}
 
-                          <div className="col-lg-8">
+                          <div className="col-lg-12">
                             <div className="mb-3">
                               <label
                                 htmlFor="Project Overview"
@@ -1139,7 +1162,7 @@ setDocumentpostArr1([])
                                 id="ProjectOverview"
                                 placeholder="Enter Project Overview"
                                 name="ProjectOverview"
-                                style={{ height: "166px" }}
+                                style={{ height: "auto" }}
                                 value={formData.ProjectOverview}
                                 onChange={(e) =>
                                   onChange(e.target.name, e.target.value)
@@ -1263,7 +1286,7 @@ setDocumentpostArr1([])
                                 role="tab"
                                 tabIndex={-1}
                               >
-                                Close Projects
+                                Closed Projects
                               </a>
                             </li>
                           </ul>
@@ -1318,7 +1341,7 @@ setDocumentpostArr1([])
                                   </div>
 
                                   {/* Title */}
-                                  <h4 className="mt-0 mb-1 two-line">
+                                  <h4 className="mt-0 mb-1 one-line">
                                     <a onClick={() => GotoNextPage(project)}
                                       className="text-dark fw-bold font-16">
                                         {truncateText(project.ProjectName , 12)}
@@ -1343,8 +1366,8 @@ setDocumentpostArr1([])
       : (
           <a className="ongoing mb-3"
               style={{ 
-                  background: project?.ProjectStatus === 'Close' ? '#008751' : '#cce7dc',
-                  color: project?.ProjectStatus === 'Close' ? '#008751' : '#cce7dc',
+                  background: project?.ProjectStatus === 'Close' ? '#cce7dc' : '#6c757d',
+                  color: project?.ProjectStatus === 'Close' ? '#008751' : '#fff',
                   padding: '5px',
                   borderRadius: '4px',
                   textDecoration: 'none'
@@ -1357,15 +1380,20 @@ setDocumentpostArr1([])
 </a>
 
                                   {/* Description */}
-                         
-                                  {/* <p
+                                  <p
                                     style={{ color: "#98a6ad" }}
                                     className="date-color two-line font-14 mb-3 sp-line-2"
                                   >
-                                    {project?.ProjectStatus} 
+                                    {project.ProjectOverview} 
                                     
-                                  
-                                  </p> */}
+                                    {/* <a
+                                      href="javascript:void(0);"
+                                      className="fw-bold text-muted"
+                                      onClick={() => GotoNextPage(project)}
+                                    >
+                                      view more
+                                    </a> */}
+                                  </p>
 
                                   {/* Task info */}
                                   <p style={{display:'flex', gap:'10px'}} className="mb-1 font-12">
@@ -1386,7 +1414,7 @@ setDocumentpostArr1([])
                                   </p>
                                   <div
                                     style={{
-                                     
+                                      display:'flex'
                                     }}
                                   >
                                     <div style={{ display: 'flex' }} className="ml20">
@@ -1403,7 +1431,7 @@ setDocumentpostArr1([])
                                                          float:"left"
                                                 }}
                                                 src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                                                className="rounded-circlecssnew img-thumbnail avatar-xl"
+                                                className="circlecssnew img-thumbnail avatar-xl"
                                                 alt="profile-image"
                                               />
                                             );
@@ -1432,7 +1460,7 @@ setDocumentpostArr1([])
                                                      alignItems:'center',
                                                      justifyContent:'center'
                                             }}
-                                            className="rounded-circlecssnew text-center img-thumbnail avatar-xl"
+                                            className="circlecssnew text-center img-thumbnail avatar-xl"
                                           >
                                             +
                                           </div>
@@ -1443,11 +1471,10 @@ setDocumentpostArr1([])
                                       <div
                                         className=""
                                         style={{
-                                          position: "absolute",
-                                          zIndex: "99",
-                                          background: "#fff",
-                                          padding: "1rem",
-                                          width: "30rem",
+                                          position: "relative",
+                                          left:"-16px",
+                                          top:'11px'
+                                       
                                         }}
                                       >
                                         {showDropdownId === project.Id && (
@@ -1463,7 +1490,7 @@ setDocumentpostArr1([])
                                                            float:"left"
                                                   }}
                                                   src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                                                  className="rounded-circlecssnew img-thumbnail avatar-xl"
+                                                  className="circlecssnew img-thumbnail avatar-xl"
                                                   alt="profile-image"
                                                 />
                                               );
@@ -1510,7 +1537,7 @@ setDocumentpostArr1([])
                                   </div>
 
                                   {/* Title */}
-                                  <h4 className="mt-0 mb-1 two-line">
+                                  <h4 className="mt-0 mb-1 newalignv">
                                     <a
                                       onClick={() => GotoNextPage(project)}
                                       className="text-dark fw-bold font-16"
@@ -1558,6 +1585,7 @@ setDocumentpostArr1([])
                                     style={{
                                      
                                       position: "relative",
+                                      display:'flex'
                                     }}
                                   >
                                     <div style={{ display: 'flex' }} className="ml20">
@@ -1565,6 +1593,7 @@ setDocumentpostArr1([])
                                         (id: any, idx: any) => {
                                           if (idx < 3) {
                                             return (
+                                              <div style={{width:'40px', marginLeft:'-7px'}} className="gfg_tooltip">
                                               <img
                                                 style={{
                                                   margin:
@@ -1574,9 +1603,14 @@ setDocumentpostArr1([])
                                                       float:"left"
                                                 }}
                                                 src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                                                className="rounded-circlecssnew img-thumbnail avatar-xl"
+                                                className="circlecssnew img-thumbnail avatar-xl"
                                                 alt="profile-image"
                                               />
+                                              <span className="gfg_text">
+                                            A Computer science portal
+                                        </span>
+
+                                        </div>
                                             );
                                           }
                                         }
@@ -1603,7 +1637,7 @@ setDocumentpostArr1([])
                                                      justifyContent:'center'
 
                                             }}
-                                            className="rounded-circlecssnew text-center img-thumbnail avatar-xl"
+                                            className="circlecssnew text-center img-thumbnail avatar-xl"
                                           >
                                             +
                                           </div>
@@ -1614,17 +1648,17 @@ setDocumentpostArr1([])
                                       <div
                                         className=""
                                         style={{
-                                          position: "absolute",
-                                          zIndex: "99",
-                                          background: "#fff",
-                                          padding: "1rem",
-                                          width: "30rem",
+                                          position: "relative",
+                                          left:"-16px",
+                                          top:'11px'
+                                       
                                         }}
                                       >
                                         {showDropdownId === project.Id && (
                                           project?.TeamMembers?.map(
                                             (id: any, idx: any) => {
                                               return (
+                                                <div style={{width:'40px', marginLeft:'-7px'}} className="gfg_tooltip">
                                                 <img
                                                   style={{
                                                     margin:
@@ -1633,9 +1667,14 @@ setDocumentpostArr1([])
                                                         : "0 0 0px -12px",
                                                   }}
                                                   src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                                                  className="rounded-circlecssnew img-thumbnail avatar-xl"
+                                                  className="circlecssnew img-thumbnail avatar-xl"
                                                   alt="profile-image"
                                                 />
+                                                <span className="gfg_text">
+                                            A Computer science portal
+                                        </span>
+
+                                        </div>
                                               );
                                             }
                                           )
@@ -1680,7 +1719,7 @@ setDocumentpostArr1([])
                                   </div>
 
                                   {/* Title */}
-                                  <h4 className="mt-0 mb-1 two-line">
+                                  <h4 className="mt-0 mb-1 one-line">
                                     <a
                                       className="text-dark fw-bold font-16"   onClick={() => GotoNextPage(project)}
                                     >
@@ -1727,7 +1766,7 @@ setDocumentpostArr1([])
                                   </p>
                                   <div
                                     style={{
-                                     
+                                      display:'flex'
                                     }}
                                   >
                                     <div className="ml20">
@@ -1735,6 +1774,7 @@ setDocumentpostArr1([])
                                         (id: any, idx: any) => {
                                           if (idx < 3) {
                                             return (
+                                              <div style={{width:'40px', marginLeft:'-7px'}} className="gfg_tooltip">
                                               <img
                                                 style={{
                                                   margin:
@@ -1744,9 +1784,14 @@ setDocumentpostArr1([])
                                                          float:"left"
                                                 }}
                                                 src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                                                className="rounded-circlecssnew img-thumbnail avatar-xl"
+                                                className="circlecssnew img-thumbnail avatar-xl"
                                                 alt="profile-image"
                                               />
+                                               <span className="gfg_text">
+                                            A Computer science portal
+                                        </span>
+
+                                        </div>
                                             );
                                           }
                                         }
@@ -1786,6 +1831,7 @@ setDocumentpostArr1([])
                                         project?.TeamMembers?.map(
                                           (id: any, idx: any) => {
                                             return (
+                                              <div style={{width:'40px', marginLeft:'-7px'}} className="gfg_tooltip">
                                               <img
                                                 style={{
                                                   margin:
@@ -1798,6 +1844,11 @@ setDocumentpostArr1([])
                                                 className="circlecssnew img-thumbnail avatar-xl"
                                                 alt="profile-image"
                                               />
+                                              <span className="gfg_text">
+                                              A Computer science portal
+                                          </span>
+  
+                                          </div>
                                             );
                                           }
                                         )
@@ -1867,13 +1918,13 @@ setDocumentpostArr1([])
 
                                         onClick={() => UpdatProject(project.Id)}
                                       >
-                                        Close Project
+                                        Closed Project
                                       </a>
                                     </div>
                                   </div>
 
                                   {/* Title */}
-                                  <h4 className="mt-0 mb-1 two-line">
+                                  <h4 className="mt-0 mb-1 one-line">
                                     <a onClick={() => GotoNextPage(project)}
 
                                       className="text-dark fw-bold font-16"
@@ -1947,7 +1998,8 @@ setDocumentpostArr1([])
                                   <div
                                     style={{
                                      
-                                      position: "relative"
+                                      position: "relative",
+                                       display:'flex'
                                     }}
                                   >
                                     <div style={{ display: 'flex' }} className="ml20">
@@ -1955,6 +2007,7 @@ setDocumentpostArr1([])
                                         (id: any, idx: any) => {
                                           if (idx < 3) {
                                             return (
+                                              <div style={{width:'40px', marginLeft:'-7px'}} className="gfg_tooltip">
                                               <img
                                                 style={{
                                                   margin:
@@ -1967,6 +2020,11 @@ setDocumentpostArr1([])
                                                 className="circlecssnew img-thumbnail avatar-xl"
                                                 alt="profile-image"
                                               />
+                                               <span className="gfg_text">
+                                            A Computer science portal
+                                        </span>
+
+                                        </div>
                                             );
                                           }
                                         }
@@ -1993,7 +2051,7 @@ setDocumentpostArr1([])
                                                      justifyContent:'center'
                                                   
                                             }}
-                                            className="rounded-circlecss text-center img-thumbnail avatar-xl"
+                                            className="circlecssnew text-center img-thumbnail avatar-xl"
                                           >
                                             +
                                           </div>
@@ -2004,17 +2062,17 @@ setDocumentpostArr1([])
                                       <div
                                         className=""
                                         style={{
-                                          position: "absolute",
-                                          zIndex: "99",
-                                          background: "#fff",
-                                          padding: "1rem",
-                                          width: "30rem",
+                                          position: "relative",
+                                          left:"-16px",
+                                          top:'11px'
+                                       
                                         }}
                                       >
                                         {showDropdownId === project.Id && (
                                           project?.TeamMembers?.map(
                                             (id: any, idx: any) => {
                                               return (
+                                                <div style={{width:'40px', marginLeft:'-7px'}} className="gfg_tooltip">
                                                 <img
                                                   style={{
                                                     margin:
@@ -2024,10 +2082,16 @@ setDocumentpostArr1([])
                                                            float:"left"
                                                   }}
                                                   src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                                                  className="rounded-circlecss img-thumbnail avatar-xl"
+                                                  className="circlecssnew img-thumbnail avatar-xl"
                                                   alt="profile-image"
                                                 />
+                                                <span className="gfg_text">
+                                                A Computer science portal
+                                            </span>
+    
+                                            </div>
                                               );
+
                                             }
                                           )
                                         )}
@@ -2097,13 +2161,13 @@ setDocumentpostArr1([])
 
                                         onClick={() => UpdatProject(project.Id)}
                                       >
-                                        Close Project
+                                        Closed Project
                                       </a>
                                     </div>
                                   </div>
 
                                   {/* Title */}
-                                  <h4 className="mt-0 mb-1 circlecssnew">
+                                  <h4 className="mt-0 mb-1">
                                     <a
                                       onClick={() => GotoNextPage(project)}
                                       className="text-dark fw-bold font-16"
@@ -2180,7 +2244,8 @@ setDocumentpostArr1([])
                                   <div
                                     style={{
                                     
-                                      position: "relative"
+                                      position: "relative",
+                                       display:'flex'
                                     }}
                                   >
                                     <div style={{ display: 'flex' }} className="ml20">
@@ -2188,6 +2253,7 @@ setDocumentpostArr1([])
                                         (id: any, idx: any) => {
                                           if (idx < 3) {
                                             return (
+                                              <div style={{width:'40px', marginLeft:'-7px'}} className="gfg_tooltip">
                                               <img
                                                 style={{
                                                   margin:
@@ -2200,6 +2266,11 @@ setDocumentpostArr1([])
                                                 className="rounded-circlecss img-thumbnail avatar-xl"
                                                 alt="profile-image"
                                               />
+                                                <span className="gfg_text">
+                                            A Computer science portal
+                                        </span>
+
+                                        </div>
                                             );
                                           }
                                         }
@@ -2233,17 +2304,17 @@ setDocumentpostArr1([])
                                       <div
                                         className=""
                                         style={{
-                                          position: "absolute",
-                                          zIndex: "99",
-                                          background: "#fff",
-                                          padding: "1rem",
-                                          width: "30rem",
+                                          position: "relative",
+                                          left:"-16px",
+                                          top:'11px'
+                                       
                                         }}
                                       >
                                         {showDropdownId === project.Id && (
                                           project?.TeamMembers?.map(
                                             (id: any, idx: any) => {
                                               return (
+                                                <div style={{width:'40px', marginLeft:'-7px'}} className="gfg_tooltip">
                                                 <img
                                                   style={{
                                                     margin:
@@ -2256,6 +2327,11 @@ setDocumentpostArr1([])
                                                   className="rounded-circlecss img-thumbnail avatar-xl"
                                                   alt="profile-image"
                                                 />
+                                                  <span className="gfg_text">
+                                            A Computer science portal
+                                        </span>
+
+                                        </div>
                                               );
                                             }
                                           )
@@ -2327,7 +2403,7 @@ setDocumentpostArr1([])
                                   </div>
 
                                   {/* Title */}
-                                  <h4 className="mt-0 mb-1 two-line">
+                                  <h4 className="mt-0 mb-1 one-line">
                                     <a
                                       onClick={() => GotoNextPage(project)}
                                       className="text-dark fw-bold font-16"
@@ -2403,7 +2479,8 @@ setDocumentpostArr1([])
                                   <div
                                     style={{
                                     
-                                      position: "relative"
+                                      position: "relative",
+                                       display:'flex'
                                     }}
                                   >
                                     <div style={{ display: 'flex' }} className="ml20">
@@ -2411,6 +2488,7 @@ setDocumentpostArr1([])
                                         (id: any, idx: any) => {
                                           if (idx < 3) {
                                             return (
+                                              <div style={{width:'40px', marginLeft:'-7px'}} className="gfg_tooltip">
                                               <img
                                                 style={{
                                                   margin:
@@ -2423,6 +2501,11 @@ setDocumentpostArr1([])
                                                 className="rounded-circlecss img-thumbnail avatar-xl"
                                                 alt="profile-image"
                                               />
+                                              <span className="gfg_text">
+                                              A Computer science portal
+                                          </span>
+  
+                                          </div>
                                             );
                                           }
                                         }
@@ -2459,17 +2542,17 @@ setDocumentpostArr1([])
                                       <div
                                         className=""
                                         style={{
-                                          position: "absolute",
-                                          zIndex: "99",
-                                          background: "#fff",
-                                          padding: "1rem",
-                                          width: "30rem",
+                                          position: "relative",
+                                          left:"-16px",
+                                          top:'11px'
+                                       
                                         }}
                                       >
                                         {showDropdownId === project.Id && (
                                           project?.TeamMembers?.map(
                                             (id: any, idx: any) => {
                                               return (
+                                                <div style={{width:'40px', marginLeft:'-7px'}} className="gfg_tooltip">
                                                 <img
                                                   style={{
                                                     margin:
@@ -2482,6 +2565,11 @@ setDocumentpostArr1([])
                                                   className="rounded-circlecss img-thumbnail avatar-xl"
                                                   alt="profile-image"
                                                 />
+                                                 <span className="gfg_text">
+                                            A Computer science portal
+                                        </span>
+
+                                        </div>
                                               );
                                             }
                                           )
@@ -2551,7 +2639,7 @@ setDocumentpostArr1([])
                                   </div>
 
                                   {/* Title */}
-                                  <h4 className="mt-0 mb-1 two-line">
+                                  <h4 className="mt-0 mb-1 one-line">
                                     <a
                                       onClick={() => GotoNextPage(project)}
                                       className="text-dark fw-bold font-16"
@@ -2627,7 +2715,8 @@ setDocumentpostArr1([])
                                   <div
                                     style={{
                                     
-                                      position: "relative"
+                                      position: "relative",
+                                       display:'flex'
                                     }}
                                   >
                                     <div style={{ display: 'flex' }} className="ml20">
@@ -2635,6 +2724,7 @@ setDocumentpostArr1([])
                                         (id: any, idx: any) => {
                                           if (idx < 3) {
                                             return (
+                                              <div style={{width:'40px', marginLeft:'-7px'}} className="gfg_tooltip">
                                               <img
                                                 style={{
                                                   margin:
@@ -2647,6 +2737,11 @@ setDocumentpostArr1([])
                                                 className="rounded-circlecss img-thumbnail avatar-xl"
                                                 alt="profile-image"
                                               />
+                                              <span className="gfg_text">
+                                              A Computer science portal
+                                          </span>
+  
+                                          </div>
                                             );
                                           }
                                         }
@@ -2683,17 +2778,17 @@ setDocumentpostArr1([])
                                       <div
                                         className=""
                                         style={{
-                                          position: "absolute",
-                                          zIndex: "99",
-                                          background: "#fff",
-                                          padding: "1rem",
-                                          width: "30rem",
+                                          position: "relative",
+                                          left:"-16px",
+                                          top:'11px'
+                                       
                                         }}
                                       >
                                         {showDropdownId === project.Id && (
                                           project?.TeamMembers?.map(
                                             (id: any, idx: any) => {
                                               return (
+                                                <div style={{width:'40px', marginLeft:'-7px'}} className="gfg_tooltip">
                                                 <img
                                                   style={{
                                                     margin:
@@ -2706,6 +2801,11 @@ setDocumentpostArr1([])
                                                   className="rounded-circlecss img-thumbnail avatar-xl"
                                                   alt="profile-image"
                                                 />
+                                                 <span className="gfg_text">
+                                            A Computer science portal
+                                        </span>
+
+                                        </div>
                                               );
                                             }
                                           )

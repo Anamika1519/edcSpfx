@@ -369,6 +369,22 @@
           "manifest": "./src/webparts/businessAppMaster/BusinessAppMasterWebPart.manifest.json"
         }
       ]
+    },
+    "ad-to-sp-group-sync-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/adToSpGroupSync/AdToSpGroupSyncWebPart.js",
+          "manifest": "./src/webparts/adToSpGroupSync/AdToSpGroupSyncWebPart.manifest.json"
+        }
+      ]
+    },
+    "add-business-app-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/addBusinessApp/AddBusinessAppWebPart.js",
+          "manifest": "./src/webparts/addBusinessApp/AddBusinessAppWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {
@@ -428,6 +444,8 @@
     "NotificationDetailsWebPartStrings": "lib/webparts/notificationDetails/loc/{locale}.js",
     "UserProfileWebPartStrings": "lib/webparts/userProfile/loc/{locale}.js",
     "CommingsoonWebPartStrings": "lib/webparts/commingsoon/loc/{locale}.js",
-    "BusinessAppMasterWebPartStrings": "lib/webparts/businessAppMaster/loc/{locale}.js"
+    "BusinessAppMasterWebPartStrings": "lib/webparts/businessAppMaster/loc/{locale}.js",
+    "AdToSpGroupSyncWebPartStrings": "lib/webparts/adToSpGroupSync/loc/{locale}.js",
+    "AddBusinessAppWebPartStrings": "lib/webparts/addBusinessApp/loc/{locale}.js"
   }
 }

@@ -14,7 +14,7 @@ const CustomNewsWebpartTemplate = ({ _sp, SiteUrl }) => {
     
     const [copySuccess, setCopySuccess] = useState('');
     const [show, setShow] = useState(false)
-    const [itemsToShow, setItemsToShow] = useState(2); // Initial number of items to show
+    const [itemsToShow, setItemsToShow] = useState(5); // Initial number of items to show
     const [NewsData, setNews] = useState([])
     const [showDropdownId, setShowDropdownId] = useState(null);
     const [currentEmail, setEmail] = useState('');
@@ -92,7 +92,7 @@ const CustomNewsWebpartTemplate = ({ _sp, SiteUrl }) => {
     const loadMore = () => {
         event.preventDefault()
         event.stopImmediatePropagation()
-        setItemsToShow(itemsToShow + 2); // Increase the number by 8
+        setItemsToShow(itemsToShow + 5); // Increase the number by 8
       };
     return (
         <><div className="row mt-5" >
@@ -113,7 +113,7 @@ const CustomNewsWebpartTemplate = ({ _sp, SiteUrl }) => {
                                 <div className="row" style={{ paddingLeft: '0.5rem' }}>
                                     <div className="col-sm-4 text-left">
                                         <span style={{ padding: '5px', borderRadius: '4px', fontWeight: '500', color: '#009157',background:'rgba(0, 135, 81, 0.20)' }} className="font-14 float-start mt-2">
-                                            Featured News</span>
+                                            Latest News</span>
  
                                     </div>
                                     <div className="col-lg-12">
@@ -122,19 +122,19 @@ const CustomNewsWebpartTemplate = ({ _sp, SiteUrl }) => {
                                     </div>
                                     <div className="row">
                                         <div className="col-sm-12">
-                                            <p className="mb-2 mt-1 d-block customhead">
-                                                <span style={{ fontWeight: '400' }} className="pe-2 text-nowrap color-new font-12 mb-0 d-inline-block">
-                                                    <Calendar size={12} color="#6b6b6b" strokeWidth={1} className="pl-2" style={{ fontWeight: '400' }} />&nbsp;
+                                            <p className="mb-2 mt-1 d-block text-dark customhead">
+                                                <span style={{ fontWeight: '400' }} className="pe-2 text-nowrap font-14 mb-0 d-inline-block">
+                                                    <Calendar size={12}  strokeWidth={1} className="pl-2 text-muted" style={{ fontWeight: '400' }} />&nbsp;
                                                     {moment(item.Created).format("DD-MMM-YYYY HH:mm")} &nbsp;  &nbsp;  &nbsp;|
                                                 </span>
-                                                <span style={{ fontWeight: '400' }} className="text-nowrap mb-0 color-new font-12 d-inline-block">
-                                                    Author: <span style={{ color: '#009157', fontWeight: '600' }}>{item.Author.Title} &nbsp;  &nbsp;  &nbsp;|&nbsp;  &nbsp;  &nbsp;
+                                                <span style={{ fontWeight: '400' }} className="text-nowrap mb-0  font-14 text-muted2 d-inline-block">
+                                                    Author: <span style={{ color: '#009157', fontWeight: '600' }}>{item.Author.Title} 
                                                     </span>
  
                                                 </span></p>
  
-                                            <div style={{ clear: 'both', height: '4rem' }}>
-                                                <p className="d-block customdescription">{truncateText(item.Overview, 320)}</p>
+                                            <div style={{ clear: 'both' }}>
+                                                <p style={{lineHeight:'22px', fontSize:'15px'}} className="d-block  text-dark customdescription">{truncateText(item.Overview, 320)}</p>
                                             </div>
                                             <a onClick={() => gotoNewsDetails(item)} style={{ textDecoration: 'none', marginTop:'15px', float:'left' }}>
                                                 <div style={{ height: '40px', lineHeight: '24px' }} className="btnCustomcss btn-primary">Read more..</div> </a>
@@ -171,25 +171,25 @@ const CustomNewsWebpartTemplate = ({ _sp, SiteUrl }) => {
                                                         <span className="font-12 date-color float-start mt-0 mb-1 ng-binding" style={{ color: '#6b6b6b', fontSize: '12px', paddingRight: '0.2rem' }}>
                                                             <Calendar size={12} color="#6b6b6b" strokeWidth={2} style={{ fontWeight: '400' }} /></span>
  
-                                                        <span className="font-12 date-color float-start mt-0 mb-1 ng-binding" style={{ color: '#6b6b6b', fontSize: '12px' }}>{moment(item.Created).format("DD-MMM-YYYY HH:mm")}
+                                                        <span className="font-12 date-color float-start mt-0 mb-1 ng-binding" style={{ color: '#6b6b6b', fontSize: '12px' }}>{moment(item.Created).format("DD-MMM-YYYY")}
                                                             {/* 12-Mar-2024 18:37 */}
                                                         </span>
                                                     </div>
                                                 </div>
                                                 <a > <div className="w-100">
-                                                    <h4 className="mt-0 mb-1 font-16 fw-bold ng-binding" style={{ color: '#343a40', fontSize: '16px' }}> {truncateText(item.Title, 80)}
+                                                    <h4 className="mt-1 mb-1 font-16 fw-bold ng-binding" style={{ color: '#343a40', fontSize: '16px' }}> {truncateText(item.Title, 80)}
                                                     </h4>
-                                                    <p style={{ color: '#6b6b6b', fontSize: '14px', height: '4.5rem' }} className="mb-2 font-14 ng-binding">
+                                                    <p style={{ color: '#6b6b6b', fontSize: '15px', height: '4rem' }} className="mb-2  ng-binding">
                                                         {truncateText(item.Overview, 250)}</p>
                                                     <div className="readmore" onClick={() => gotoNewsDetails(item)} style={{ cursor: 'pointer' }}>Read more..</div>
                                                 </div>
                                                 </a>
                                             </div>
                                             <div className="col-sm-1">
-                                                <div className="d-flex" style={{ justifyContent: 'end', marginRight:"3px", cursor: 'pointer' }}>
+                                                <div className="d-flex" style={{ justifyContent: 'end', marginRight:"10px", cursor: 'pointer' }}>
                                                     <div className="" style={{ position: 'relative' }}>
                                                         <div  className="" onClick={() => toggleDropdown(item.Id)} key={item.Id}>
-                                                            <Share2 size={20} color="#6c757d" strokeWidth={2} style={{ fontWeight: '400' }} />
+                                                            <Share2 size={25} color="#6c757d" strokeWidth={2} style={{ fontWeight: '400' }} />
                                                         </div>
                                                         {showDropdownId === item.Id && (
                                                             <div className="dropdown-menu dropcss" isMenuOpenshareref={menuRef}>

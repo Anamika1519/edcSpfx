@@ -11,13 +11,13 @@
     float: left;
     background: #f3f7fa;
 }
-.commentheight{max-height: 129px; overflow-x: hidden; overflow-y: auto;}
+// .commentheight{max-height: 129px; overflow-x: hidden; overflow-y: auto;}
 .btn:first-child:active {
     border: none;
 }
 .ht {
     border: 1px solid #54ade0 !important;
-    border-radius: unset;
+    border-radius: 30px !important;
     font-size: 13px;
-    height: 36px;
+    height: 40px; resize: unset;
 }

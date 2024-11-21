@@ -38,10 +38,28 @@
   margin-top: 2px;
   margin-right: 5px;}
 .paddb {
+  padding: 16px 35px 0px 20px !important;
+}
+.paddbnew{
   padding: 16px 13px 0px 13px !important;
+}
+.add-comment textarea{
+  border: 1px solid #007bff;
+  border-radius: 30px !important;
+  height: 42px !important; resize: none;
+  overflow-y: auto;
+}
+.add-comment textarea::placeholder{
+  color: #000 !important; font-size: 16px; font-weight: 600;
 }
 .row{
   --bs-gutter-x: 0.8rem;
+}
+.image-preview .large-image img{
+  height: 100% !important;
+}
+.large-image{
+  height: 216px !important;
 }
 .carousel1 {
   position: relative;
@@ -63,7 +81,7 @@
   padding: 1px 10px;
   display: inline-block;
   border-radius: 5px;
-  background: rgba(0, 135, 81, 0.20) !important;
+  background: rgba(0, 135, 81, 0.20);
   color: #008751;
   font-weight: 500;
 }
@@ -73,7 +91,7 @@
   padding: 1px 10px;
   display: inline-block;
   border-radius: 5px;
-  background: #6b6f6f  !important;
+  background: #6b6f6f ;
   color: #fff;
   font-weight: 500;
 }
@@ -103,6 +121,30 @@ height:63px;
 
 -webkit-line-clamp: 3;
 }
+.two-line{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  
+  display: -webkit-box;
+  height:43px;
+  
+  -webkit-box-orient: vertical;
+  
+  -webkit-line-clamp: 2;
+}
+
+.sevenline{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  
+  display: -webkit-box;
+
+  
+  -webkit-box-orient: vertical;
+  
+  -webkit-line-clamp: 7;
+}
+
 .card-body{
   padding: 0.8rem !important;
 }
@@ -144,7 +186,7 @@ a:hover, a:active {
 .sidebar.close .logo_item{
   width: auto;
 }
-.postion8{position: fixed; width:25%; }
+.postion8{ width:95%; float: right; margin-top: 92px; }
 .mainevent{border-bottom: 1px solid #ccc; padding: 10px 0px;}
 .mainevent:last-child{border-bottom: 0px !important;}
 
@@ -179,8 +221,8 @@ a:hover, a:active {
 .ht{   border: 1px solid #54ade0 !important;    height: 36px;
   border-radius: 30px;
   font-size: 13px;}
-.nose p{max-height: 77px; overflow-y: hidden;}
-.nose p:hover{overflow-y: auto;}
+// .nose p{max-height: 77px; overflow-y: hidden;}
+// .nose p:hover{overflow-y: auto;}
 .sidebar::-webkit-scrollbar {
   display: none;
 }
@@ -462,7 +504,7 @@ a:hover, a:active {
   font-size: 16px !important;
 }
 .logo_item{
-  width: 210px; margin-top: 1rem;
+  width: 210px; margin-top: 0rem;
 }
 
 .navbar img {
@@ -1142,7 +1184,7 @@ margin: 10px 0px !important ;
   .sidebar-enable .tabcontentv,.sidebar-enable .tabv{height: 350px !important;}
   .menu_items{max-height: 730px;}
   .item {
-    margin: .6rem .8rem 0;
+    margin: .5rem .6rem 0;
 }
 }
 
@@ -1159,7 +1201,7 @@ margin: 10px 0px !important ;
     width: 50px;
   }
   .item{
-    margin:0.4rem 0.8rem 0rem 0.8rem;
+    margin:0.2rem 0.4rem 0rem 0.4rem;
   } 
   .event p{
     font-size: 10px !important;
@@ -1233,6 +1275,21 @@ margin: 10px 0px !important ;
   .sidebar-enable .tabcontentv,.sidebar-enable .tabv{height: 330px !important;}
 
 }
+.sidebar .menu_items .active{
+  background: #1fb0e5 !important; 
+}
+.sidebar .menu_items .active .link_name1{
+color: #fff !important;
+}
+.sidebar .menu_items .active{
+  background: #1fb0e5 !important; 
+}
+.sidebar .menu_items .active .link_name1{
+  color: #fff !important;
+}
+.menu_items .nav_link .submenu_item .link_name1{
+  color:#6c757d !important;
+}
 
 @media(max-width:1280px)
 {
@@ -1249,10 +1306,10 @@ margin: 10px 0px !important ;
     width: 46px;
 }
 .menu_items {
-  max-height: 550px;
+  max-height: 620px;
 }
 .item {
-margin: .1rem .8rem 0;
+margin: .1rem .4rem 0;
 }
   .view-all {
     position: absolute;
@@ -1568,3 +1625,43 @@ span.navlink.active {
   color: #3c3c3c;
   font-size: 14px}
   #myDropdownBell {right: 0rem !important;}
+  .gfg_tooltip {
+    position: relative;
+    display: inline-block;
+   
+    color: black;
+  width:30px;
+    text-align: center;
+    display: inline-block;
+    font-size: 13px;
+}
+
+.gfg_tooltip .gfg_text {
+    visibility: hidden;
+    width: auto;
+    background-color: #3c3c3c;
+    color: #fff; width: 140px;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    top: 115%;
+    left: 150%;
+    margin-left: -60px;
+}
+
+.gfg_tooltip .gfg_text::after {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent #3c3c3c transparent;
+}
+
+.gfg_tooltip:hover .gfg_text {
+    visibility: visible;
+}

@@ -48,8 +48,9 @@ import "../../announcementmaster/components/announcementMaster.scss";
 
 import "../../../CustomJSComponents/CustomTable/CustomTable.scss";
 import { WebPartContext } from "@microsoft/sp-webpart-base";
-import { MSGraphClientV3  } from "@microsoft/sp-http";
+import { MSGraphClientV3 } from "@microsoft/sp-http";
 import { toLower } from "lodash";
+import Swal from "sweetalert2";
 
 export interface IUserItem {
   displayName: string;
@@ -57,16 +58,52 @@ export interface IUserItem {
   userPrincipalName: string;
   jobTitle: string;
   mobilePhone: string;
-  companyName: string;    
+  companyName: string;
 }
+const sortArray = (array: any[], compareFn: any) => {
+
+  const length = array.length;
+
+
+
+  for (let i = 0; i < length - 1; i++) {
+
+    for (let j = 0; j < length - i - 1; j++) {
+
+      // Use the provided compare function
+
+      if (compareFn(array[j], array[j + 1]) > 0) {
+
+        // Swap elements
+
+        [array[j], array[j + 1]] = [array[j + 1], array[j]];
+
+      }
+
+    }
+
+  }
+
+
+
+  return array;
+
+}
+
+
+
 const CorporateDirectoryContext = ({ props }: any) => {
+
+
+
+  console.log("props 1", props);
 
   const sp: SPFI = getSP();
 
   console.log(sp, "sp");
 
   const [usersitem, setUsersArr] = useState<any[]>([]);
-
+  const [usersitemcopy, setUsersitemcopy] = useState<any[]>([]);
   // const { useHide }: any = React.useContext(UserContext);
 
   // const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
@@ -82,6 +119,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
   const { setHide }: any = context;
 
   const [isDarkMode, setIsDarkMode] = React.useState(false);
+  const [ShowPin, setShowPin] = React.useState(false);
 
   const [sortConfig, setSortConfig] = React.useState({
 
@@ -106,13 +144,11 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
     Email: "",
 
-    EmployeeID: "",
+    EmployeeID: "",       
 
-    Department: "",
-
+    companyName: "",
+    Department: "", 
     MobilePhone: "",
-
-    companyName:""
 
   });
 
@@ -122,7 +158,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
   const [pinStatus, setPinStatus] = useState<Record<number, boolean>>({}); // Track follow status for each user
 
-  
+
 
   const [isFollowing, setIsFollowing] = useState(false); // Track follow status for each user
 
@@ -334,7 +370,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
   // };
 
-  
+
 
   const fetchUserInformationList = async () => {
 
@@ -342,7 +378,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
       const currentUser = await sp.web.currentUser();
 
-  
+
 
       // Fetch the user list, excluding the current user
 
@@ -350,38 +386,40 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
         .getByTitle("User Information List")
         .items
-        .select("ID", "Title", "EMail", "Department", "JobTitle", "Picture", "MobilePhone","WorkPhone","Name")
-
-        .filter(`EMail ne null and ID ne ${currentUser.Id}`) // content tyep eq person
+        .select("ID", "Title", "EMail", "Department", "JobTitle", "Picture", "MobilePhone", "WorkPhone", "Name")
+        .filter(`ContentType eq 'Person' and EMail ne null and ID ne ${currentUser.Id} `)
 
         ();
 
-      // console.log("userList",userListSP);
+      console.log("userList", userListSP);
       // let currentWPContext:WebPartContext=props.props.context;  
-      let currentWPContext:WebPartContext=props.context;  
+      let currentWPContext: WebPartContext = props.context;
       // console.log("props",props);
-      const msgraphClient:MSGraphClientV3=await currentWPContext.msGraphClientFactory.getClient('3');
-      const m265userList= await msgraphClient.api("users")
-          .version("v1.0")
-          .select("displayName,mail,jobTitle,mobilePhone,companyName,userPrincipalName")
-          .get();
+      const msgraphClient: MSGraphClientV3 = await currentWPContext.msGraphClientFactory.getClient('3');
+      const m265userList = await msgraphClient.api("users")
+        .version("v1.0")
+        .select("displayName,mail,jobTitle,mobilePhone,companyName,userPrincipalName")
+        .get();
       // console.log("m265userList",m265userList);
 
       //Adding dummy companies to users for testing
       //m265userList.value=m265userList.value.map((m:any)=>{let x=m; x['companyName']='dunnycommpany'; return x;});
-     
-     let userList:any[]=[];
 
-     userList=userListSP.map(usr=>{
-         let musrs=  m265userList.value.filter((usr1:any)=>{ return toLower(usr1.mail)==toLower(usr.EMail)});
-         if(musrs.length>0)
-         {
-          usr['companyName']=musrs[0]['companyName'];
-         }
-         else usr['companyName']='NA';
-         return usr;
-     })
-  
+      let userList: any[] = [];
+
+      userList = userListSP.map(usr => {
+        let musrs = m265userList.value.filter((usr1: any) => { return toLower(usr1.mail) == toLower(usr.EMail) });
+        if (musrs.length > 0) {
+          usr['companyName'] = musrs[0]['companyName'];
+        }
+        else usr['companyName'] = 'NA';
+        return usr;
+      })
+
+      //sort by title
+
+      userList = sortArray(userList, (a: any, b: any) => a.Title.toLowerCase().localeCompare(b.Title.toLowerCase()))
+
 
       const initialLoadingStatus: Record<number, boolean> = {};
 
@@ -389,7 +427,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
       const initialPinStatus: Record<number, boolean> = {};
 
-  
+
 
       // Function to fetch follow status and post count for each user
 
@@ -401,13 +439,24 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
           .getAll();
 
-          const pinRecords = await sp.web.lists.getByTitle("ARGPinned").items
+        const pinRecords = await sp.web.lists.getByTitle("ARGPinned").items
 
           .filter(`PinnedById eq ${currentUser.Id} and PinnedId eq ${user.ID}`)
 
           .getAll();
 
-  
+        const MyPinnedCount = await sp.web.lists.getByTitle("ARGPinned").items
+
+          .filter(`PinnedById eq ${currentUser.Id}`)
+
+          .getAll();
+
+        console.log("MyPinnedCount", MyPinnedCount.length);
+        if (MyPinnedCount.length >= 4) {
+          setShowPin(true)
+        } else {
+          setShowPin(false)
+        }
 
         initialFollowStatus[user.ID] = followRecords.length > 0;
 
@@ -421,7 +470,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
           .getAll();
 
-  
+
 
         const followingCount = await sp.web.lists.getByTitle("ARGFollows").items
 
@@ -431,13 +480,13 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
           .getAll();
 
-  
+
 
         user.followersCount = followersCount.length;
 
         user.followingCount = followingCount.length;
 
-  
+
 
         const postData = await sp.web.lists.getByTitle("ARGSocialFeed").items
 
@@ -445,13 +494,13 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
           .getAll();
 
-  
+
 
         user.postCount = postData.length > 0 ? postData.length : 0;
 
       };
 
-  
+
 
       // Fetch details for each user in parallel
 
@@ -465,13 +514,13 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
       });
 
-  
+
 
       // Wait for all user details to be fetched
 
       await Promise.all(userDetailsPromises);
 
-  
+
 
       // Update the state with the fetched data
 
@@ -482,8 +531,8 @@ const CorporateDirectoryContext = ({ props }: any) => {
       setLoadingUsers(initialLoadingStatus);
 
       setUsersArr(userList);
+      setUsersitemcopy(userList);
 
-  
 
     } catch (error) {
 
@@ -635,9 +684,9 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
   //#endregion
 
-  const handleUserClick = (userID:any , currentStatus:any) => {
-    console.log("currentStatus",currentStatus)
-   
+  const handleUserClick = (userID: any, currentStatus: any) => {
+    console.log("currentStatus", currentStatus)
+
     sessionStorage.setItem("selectedUserID", userID);
     sessionStorage.setItem("currentStatus", currentStatus);
     window.location.href = `${siteUrl}/SitePages/Userprofile.aspx?${userID}`;
@@ -649,7 +698,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
     field: string
 
   ) => {
-
+debugger
     setFilters({
 
       ...filters,
@@ -692,11 +741,10 @@ const CorporateDirectoryContext = ({ props }: any) => {
         (filters.Email === "" ||
 
           item?.EMail.toLowerCase().includes(filters.Email.toLowerCase())) &&
+        (filters.MobilePhone === '' || item?.MobilePhone.toLowerCase().includes(filters.MobilePhone.toLowerCase())) &&
 
-          (filters.MobilePhone === '' || item?.MobilePhone.toLowerCase().includes(filters.MobilePhone.toLowerCase()))   &&
+        (filters.companyName === '' || ((item?.companyName) ? item?.companyName.toLowerCase().includes(filters.companyName.toLowerCase()) : false))
 
-          (filters.companyName === '' || ((item?.companyName)?item?.companyName.toLowerCase().includes(filters.companyName.toLowerCase()):false))
-  
       );
 
     });
@@ -791,14 +839,10 @@ const CorporateDirectoryContext = ({ props }: any) => {
     const exportData = currentData.map((item, index) => ({
 
       Name: item.Title,
-
-      "Employee Id": item.ID,
-
       Email: item.EMail,
-
-      Department: item?.Department != null ? item?.Department : "NA",
-      WorkPhone:item?.WorkPhone,
       Entity: item?.companyName != null ? item?.companyName : "NA",
+      Department: item?.Department != null ? item?.Department : "NA",
+      WorkPhone: item?.WorkPhone,     
 
     }));
 
@@ -827,7 +871,21 @@ const CorporateDirectoryContext = ({ props }: any) => {
     setIsOpen(!isOpen);
 
   };
+  const handleSearch: React.ChangeEventHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
 
+    let txtSearch = (document.getElementById('searchInput') as HTMLInputElement).value;
+    let filteredusers = usersitemcopy.filter(usr => {
+      return usr.Title.toLowerCase().includes(txtSearch) ||
+        usr.EMail.toLowerCase().includes(txtSearch) ||
+        usr.Name.toLowerCase().includes(txtSearch) ||
+        ((usr.Department) ? usr.Department.toLowerCase().includes(txtSearch) : false) ||
+        ((usr.companyName) ? usr.companyName.toLowerCase().includes(txtSearch) : false)
+    });
+
+    setUsersArr(filteredusers);
+
+
+  }
 
   const toggleFollow = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, item: any) => {
 
@@ -884,7 +942,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
       setLoadingUsers((prev) => ({ ...prev, [item.ID]: false })); // End loading state for the specific user
 
-    
+
 
     }
 
@@ -892,67 +950,80 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
 
   const togglePin = async (e: any, item: any) => {
-
+ 
     debugger
-
+ 
     e.preventDefault();
-
+ 
     setLoadingUsers((prev) => ({ ...prev, [item.ID]: true })); // Set loading state for the specific user
-
-
+ 
+ 
     try {
-
+ 
       const currentUser = await sp.web.currentUser();
-
+ 
       const pinRecords = await sp.web.lists.getByTitle("ARGPinned").items
-
+ 
         .filter(`PinnedById eq ${currentUser.Id} and PinnedId eq ${item.ID}`)();
-
-
+ 
+      const MyPinnedCount = await sp.web.lists.getByTitle("ARGPinned").items
+ 
+        .filter(`PinnedById eq ${currentUser.Id}`)
+ 
+        .getAll();
+ 
+      console.log("MyPinnedCount", MyPinnedCount.length);
+ 
+ 
       if (pinRecords.length > 0) {
-
+ 
         // Unpin logic
-
+ 
         await sp.web.lists.getByTitle("ARGPinned").items.getById(pinRecords[0].Id).delete();
-
+ 
         setPinStatus((prev) => ({ ...prev, [item.ID]: false })); // Update [pin] status
-
+ 
       } else {
-
+        if (MyPinnedCount.length >= 4) {
+          Swal.fire("You’ve hit the limit for pinning users to the Home Screen!")
+        } else {
+          await sp.web.lists.getByTitle("ARGPinned").items.add({
+ 
+            PinnedById: currentUser.Id,
+ 
+            PinnedId: item.ID
+ 
+          });
+        }
         // pin logic
-
-        await sp.web.lists.getByTitle("ARGPinned").items.add({
-
-          PinnedById: currentUser.Id,
-
-          PinnedId: item.ID
-
-        });
-
+ 
+ 
+ 
         setPinStatus((prev) => ({ ...prev, [item.ID]: true })); // Update pin status
-
+ 
       }
-
+ 
+ 
     } catch (error) {
-
+ 
       setLoadingUsers((prev) => ({ ...prev, [item.ID]: false })); // End loading state for the specific user
-
-
+ 
+ 
       console.error("Error toggling pin status:", error);
-
+ 
       alert("Failed to toggle pin status. Please try again.");
-
+ 
     } finally {
-
+ 
       fetchUserInformationList()
-
+ 
       setLoadingUsers((prev) => ({ ...prev, [item.ID]: false })); // End loading state for the specific user
-
-    
-
+ 
+ 
+ 
     }
-
-  };
+ 
+  }
 
   const loadMore = () => {
     event.preventDefault()
@@ -1021,7 +1092,8 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                         id="searchInput"
 
-                        placeholder="Search..."
+                        placeholder="Search by name..."
+                        onChange={handleSearch}
 
                       />
 
@@ -1175,7 +1247,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                   <div className="row card-view">
 
-                    {console.log("usersssitem", usersitem,followStatus,pinStatus)}
+                    {console.log("usersssitem", usersitem, followStatus, pinStatus)}
 
                     {usersitem.slice(0, itemsToShow).map((item) => (
 
@@ -1243,11 +1315,11 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                               </a>
 
-                              <p>                             
+                              <p>
 
                                 <img style={{ cursor: "pointer" }}
 
-                                  src={pinStatus[item.ID]  ? require("../assets/unpin.png"): require("../assets/noun-pin-7368310.png")}
+                                  src={pinStatus[item.ID] ? require("../assets/noun-pin-7368310.png") : require("../assets/unpin.png")}
 
                                   className="alignrightpin"
 
@@ -1258,13 +1330,13 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                 />
 
-                             
 
-                               </p>
+
+                              </p>
 
                               <h4 className="mt-2 mb-1">
 
-                                <a onClick={() => handleUserClick(item.ID , followStatus[item.ID])}
+                                <a onClick={() => handleUserClick(item.ID, followStatus[item.ID])}
 
                                   className="text-dark font-16 fw-bold"
 
@@ -1278,11 +1350,11 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                 >
 
-                                  
 
-                                    {truncateText(item.Title, 15)}
 
-                                 
+                                  {truncateText(item.Title, 15)}
+
+
 
                                 </a>
 
@@ -1348,16 +1420,16 @@ const CorporateDirectoryContext = ({ props }: any) => {
                                     ? item.WorkPhone
 
                                     : " NA ", 10)} */}
-                                                        {
-                                  // truncateText(item.WorkPhone != null
+                                  {
+                                    // truncateText(item.WorkPhone != null
 
-                                  //   ? item.WorkPhone
+                                    //   ? item.WorkPhone
 
-                                  truncateText(item.companyName != null
+                                    truncateText(item.companyName != null
 
-                                    ? item.companyName
+                                      ? item.companyName
 
-                                    : " NA ", 25)}
+                                      : " NA ", 25)}
 
                                 </span>
 
@@ -1405,19 +1477,32 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                 <div>
 
+                                {followStatus[item.ID] ? 
+                                
+                                <button key={item.ID}
 
-                                  <button key={item.ID}
+                                    type="button" className="finish"
 
-                                    type="button" className="btn btn-light btn-sm"
-
-                                    onClick={(!loadingUsers[item.ID])?(e) => toggleFollow(e, item):undefined} disabled={loadingUsers[item.ID]}
+                                    onClick={(!loadingUsers[item.ID]) ? (e) => toggleFollow(e, item) : undefined} disabled={loadingUsers[item.ID]}
 
 
                                   >
+                                    Unfollow
 
-                                    {followStatus[item.ID] ? "Unfollow" : "Follow"}
+                                  </button> : 
+                                <button key={item.ID}
 
-                                  </button>
+                                type="button" style={{background:'#efefef'}} className="btn btn-primary btn-sm waves-effect waves-light"
+
+                                onClick={(!loadingUsers[item.ID]) ? (e) => toggleFollow(e, item) : undefined} disabled={loadingUsers[item.ID]}
+
+
+                              >
+                                Follow
+                              </button>                                
+                                
+                                }
+                                 
 
                                 </div>
 
@@ -1541,10 +1626,10 @@ const CorporateDirectoryContext = ({ props }: any) => {
                       </div> // end col
 
                     ))}
-   {itemsToShow < usersitem.length && (
+                    {itemsToShow < usersitem.length && (
                       <div className="col-12 text-center mb-3 mt-3">
                         <button onClick={loadMore} className="btn btn-primary">
-                          Load More 
+                          Load More
                         </button>
                       </div>
                     )}
@@ -1798,77 +1883,77 @@ const CorporateDirectoryContext = ({ props }: any) => {
                                   </th>
                                   <th
 
-style={{
+                                    style={{
 
-  minWidth: "100px",
+                                      minWidth: "100px",
 
-  maxWidth: "100px",
+                                      maxWidth: "100px",
 
-}}
+                                    }}
 
->
+                                  >
 
-<div className="d-flex flex-column bd-highlight ">
+                                    <div className="d-flex flex-column bd-highlight ">
 
-  <div
+                                      <div
 
-    className="d-flex  pb-2"
+                                        className="d-flex  pb-2"
 
-    style={{
+                                        style={{
 
-      justifyContent: "space-between",
+                                          justifyContent: "space-between",
 
-    }}
+                                        }}
 
-  >
+                                      >
 
-    {" "}
+                                        {" "}
 
-    <span>Entity</span>{" "}
+                                        <span>Entity</span>{" "}
 
-    <span
+                                        <span
 
-      onClick={() =>
+                                          onClick={() =>
 
-        handleSortChange("companyName")
+                                            handleSortChange("companyName")
 
-      }
+                                          }
 
-    >
+                                        >
 
-      <FontAwesomeIcon icon={faSort} />{" "}
+                                          <FontAwesomeIcon icon={faSort} />{" "}
 
-    </span>
+                                        </span>
 
-  </div>
+                                      </div>
 
-  <div className=" bd-highlight">
+                                      <div className=" bd-highlight">
 
-    {" "}
+                                        {" "}
 
-    <input
+                                        <input
 
-      type="text"
+                                          type="text"
 
-      placeholder="Filter by Entity"
+                                          placeholder="Filter by Entity"
 
-      onChange={(e) =>
+                                          onChange={(e) =>
 
-        handleFilterChange(e, "companyName")
+                                            handleFilterChange(e, "companyName")
 
-      }
+                                          }
 
-      className="inputcss"
+                                          className="inputcss"
 
-      style={{ width: "100%" }}
+                                          style={{ width: "100%" }}
 
-    />
+                                        />
 
-  </div>
+                                      </div>
 
-</div>
+                                    </div>
 
-</th>
+                                  </th>
                                   <th
 
                                     style={{
@@ -2101,15 +2186,15 @@ style={{
 
                                         <td>{item.Title}</td>
 
-                                        <td>{item.ID}</td>
+                                        {/* <td>{item.ID}</td> */}
 
                                         <td>{item.EMail}</td>
                                         <td>
-                                        {item?.companyName != null
+                                          {item?.companyName != null
 
-                                          ? item?.companyName
+                                            ? item?.companyName
 
-                                          : "NA"}
+                                            : "NA"}
 
 
                                         </td>

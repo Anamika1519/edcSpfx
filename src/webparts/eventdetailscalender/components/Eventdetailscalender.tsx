@@ -499,36 +499,56 @@ const EventdetailscalenderContext = ({ props }: any) => {
         setCopySuccess('Failed to copy link');
       });
   };
-  const sendanEmail = (item:any) => {
+  const sendanEmail = (item: any) => {
     // window.open("https://outlook.office.com/mail/inbox");
-  
-     const subject ="Event link-"+ item.EventName;
-     const body = 'Here is the link to the event:'+ `${siteUrl}/SitePages/EventDetailsCalendar.aspx?${item.Id}`;
-  
+
+    const subject = "Event link-" + item.EventName;
+    const body = 'Here is the link to the event:' + `${siteUrl}/SitePages/EventDetailsCalendar.aspx?${item.Id}`;
+
     const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-  
+
     // Open the link to launch the default mail client (like Outlook)
     window.location.href = mailtoLink;
-   };
+  };
   const AddAttendees = async (Item: any) => {
-    let arr = []
+    let arr: any[] = []
     console.log(Item, 'Item');
+
     if (Item?.AttendeesId != null) {
       // const flatArrayAttendees = Item?.AttendeesId[0];
       // //  const attendees = flatArray(flatArrayAttendees)
       // arr.push(flatArrayAttendees)
       try {
-        const email = await getCurrentUserProfileEmail(sp)
+        let arrNew: any[] = [];
+        
+
+        const email = await getCurrentUserProfileEmail(sp);
+
+        for (let i = 0; i < Item.Attendees.length; i++) {
+          arr.push(Item.AttendeesId[i])
+        }
+
+        if (Item?.Attendees?.length > 0 && Item?.AttendeesId.indexOf(CurrentUser.Id) > 0) {
+          arr = arr.filter((x) => x != CurrentUser.Id ) 
+        } else {
+          console.log("arrrr", arr);
+          const userId = await getUserId(email);
+          arr.push(userId);
+        }
+        
         // Get the user's SharePoint ID
-        const userId = await getUserId(email);
-        arr.push(userId)
+       
+
+        //arr = arr.filter(x => !arr.includes(userId));
+        console.log("arr,,,,", arr);
         // Update the list item with the user ID
         await sp.web.lists.getByTitle("ARGEventMaster").items.getById(Item.Id).update(
           {
-            AttendeesId: arr,
+            AttendeesId: arr.map(x => x)
           }
         ).then(res => {
           console.log("People Picker field updated successfully!");
+          ApiLocalStorageData()
           ApICallData()
         }
         )
@@ -550,7 +570,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
         // Update the list item with the user ID
         await sp.web.lists.getByTitle("ARGEventMaster").items.getById(Item.Id).update(
           {
-            AttendeesId: arr,
+            AttendeesId: arr.map(x => x),
           }
         ).then(res => {
           console.log("People Picker field updated successfully!");
@@ -565,7 +585,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
     }
 
   }
-  
+
   const gotoNewsDetails = (valurArr: any) => {
     debugger;
     localStorage.setItem("EventId", valurArr.Id);
@@ -630,19 +650,38 @@ const EventdetailscalenderContext = ({ props }: any) => {
                           <div className="row mt-2">
 
                             <div className="col-md-12 col-xl-12">
-                              <p className="mb-2 mt-1 d-flex eventtextnew" style={{ cursor: 'pointer' }}>
+                              <p className="mb-2 mt-1 text-dark d-flex eventtextnew" style={{ cursor: 'pointer' }}>
                                 <span className="pe-2 text-nowrap mb-0 d-inline-block" >
-                                  <span style={{ paddingTop: '0px' }}>   <Calendar size={18} /> </span> <span>{moment(item.Created).format("DD-MMM-YYYY")} </span>  &nbsp;  &nbsp;  &nbsp;|
+                                  <span style={{ paddingTop: '0px' }}>
+                                    <Calendar size={18} /> </span> <span>Event: {moment(item.EventDate).format("DD-MMM-YYYY")} </span>  &nbsp;  &nbsp;  &nbsp;|
                                 </span>
-                                <span className="text-nowrap mb-0 d-inline-block"  onClick={() => sendanEmail(item)} >
+                                <span className="pe-2 text-nowrap mb-0 d-inline-block" >
+                                  <span style={{ paddingTop: '0px' }}>
+                                    <Calendar size={18} /> </span> <span>Registration: {moment(item.RegistrationDueDate).format("DD-MMM-YYYY")} </span>  &nbsp;  &nbsp;  &nbsp;|
+                                </span>
+                                <span className="text-nowrap mb-0 d-inline-block" onClick={() => sendanEmail(item)} >
                                   <Share size={18} />  Share by email &nbsp;  &nbsp;  &nbsp;|&nbsp;  &nbsp;  &nbsp;
                                 </span>
                                 <span className="text-nowrap mb-0 d-inline-block" onClick={() => copyToClipboard(item.Id)}>
-                                  <Link size={18} />    Copy link &nbsp;  &nbsp;  &nbsp;{copySuccess && <span className="text-success">{copySuccess}</span>} &nbsp;  &nbsp;  |&nbsp;  &nbsp;
+                                  <Link size={18} />    Copy link &nbsp;  &nbsp;  &nbsp;{copySuccess && <span className="text-success">{copySuccess}</span>} &nbsp;  &nbsp;
                                 </span>
 
-                                <span style={{ display: 'flex', gap: '0.2rem' }}>
-                                  {
+
+                              </p>
+
+                              <p className="d-flex">
+                                {new Date(item.RegistrationDueDate) > new Date() ? (<div className="EventAttendes mt-4 rounded-pill"
+                                  onClick={() => AddAttendees(item)}><Users size={14} />
+                                  {item?.Attendees?.length > 0 && item?.AttendeesId.indexOf(CurrentUser.Id) == -1 ?
+                                    "Register" : "Un-Register"}
+                                </div>) : (<div className="EventAttendesGray  mt-4 rounded-pill" >! Registration Expired
+                                </div>)}
+                                {/* {new Date(item.RegistrationDueDate) > new Date() ? (<div className="EventAttendes mt-4 rounded-pill" onClick={() => AddAttendees(item)}><Users size={14} /> Register
+                                </div>) : (<div className="EventAttendesGray  mt-4 rounded-pill" >! Event Expired
+                                </div>)} */}
+                               
+                                <span style={{ display: 'flex', gap: '0.2rem', marginTop:'30px' }}>
+                                  { 
                                     item?.Attendees?.length > 0 && item?.Attendees.map((item1: any, index: 0) => {
 
                                       return (
@@ -654,15 +693,8 @@ const EventdetailscalenderContext = ({ props }: any) => {
                                       )
                                     })
                                   }
-                                  {item?.Attendees?.length > 0 && (<span style={{paddingTop:'3px', paddingLeft:'3px'}}>Attending</span>)}
+                                  {item?.Attendees?.length > 0 && (<span style={{ paddingTop: '3px', paddingLeft: '3px' }}>Registered</span>)}
                                 </span>
-                              </p>
-
-                              <p>
-
-                                {new Date(item.RegistrationDueDate) > new Date() ? (<div className="EventAttendes mt-4 rounded-pill" onClick={() => AddAttendees(item)}><Users size={14} /> Attend this event
-                                </div>) : (<div className="EventAttendesGray  mt-4 rounded-pill" >! Event Expired
-                                </div>)}
                               </p>
                             </div>
                           </div>
@@ -670,7 +702,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
                         <div className="row" >
                           <p
                             style={{ lineHeight: "22px" }}
-                            className="d-block text-muted mt-2 font-14"
+                            className="d-block text-dark mt-2 font-16"
                           >
                             {item.Overview}
                           </p>
@@ -734,7 +766,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
                             onClick={handleAddComment}
                             disabled={loading} // Disable button when loading
                           >
-                            {loading ? "Submitting..." : "Add Comment"}{" "}
+                            {loading ? "Submitting..." : "Post"}{" "}
                             {/* Change button text */}
                           </button>
                         </div>
@@ -769,26 +801,26 @@ const EventdetailscalenderContext = ({ props }: any) => {
               </div>
 
               <div className="col-lg-4">
-                <div className="card mt-4 postion8">
+                <div style={{ position: 'sticky', top: '90px' }} className="card  postion8">
                   <div className="card-body">
                     <h4 className="header-title text-dark  fw-bold mb-0">
-                      <span style={{ fontSize: '20px' }}>Upcoming Events</span>  
-                        <a className="font-11 btn btn-primary  waves-effect waves-light view-all cursor-pointer" href="#" onClick={NavigatetoEvents} style={{ float: 'right', lineHeight: '12px' }}>View All</a></h4>
+                      <span style={{ fontSize: '20px' }}>Upcoming Events</span>
+                      <a className="font-11 btn btn-primary  waves-effect waves-light view-all cursor-pointer" href="#" onClick={NavigatetoEvents} style={{ float: 'right', lineHeight: '12px' }}>View All</a></h4>
                     {console.log("ArrtopEvents", ArrtopEvents)}
                     {ArrtopEvents && ArrtopEvents.map((res: any) => {
-                       return (
+                      return (
                         <div className="mainevent mt-2">
-                       
-                        <div className="bordernew">
-                          <h3 className="twolinewrap font-14  text-dark fw-bold mb-2 cursor-pointer" style={{ cursor: "pointer" }} onClick={() => gotoNewsDetails(res)}>{res.EventName}</h3>
-                          <p style={{ lineHeight: '20px' }} className="font-12 text-muted twolinewrap">{res.Overview}</p>
-                          <div className="row">
-                            <div className="col-sm-12"> <span style={{ marginTop: "4px" }} className="date-color font-12 float-start  mb-1 ng-binding"><i className="fe-calendar"></i> {moment(res.Created).format("DD-MMM-YYYY")}</span>  &nbsp; &nbsp;| &nbsp; <span className="font-12" style={{ color: '#009157', fontWeight: '600' }}>{res.Entity.Entity}  </span></div>
 
+                          <div className="bordernew">
+                            <h3 className="twolinewrap font-16 text-dark fw-bold mb-2 cursor-pointer" style={{ cursor: "pointer" }} onClick={() => gotoNewsDetails(res)}>{res.EventName}</h3>
+                            <p style={{ lineHeight: '22px', fontSize: '15px' }} className="text-muted twolinewrap">{res.Overview}</p>
+                            <div className="row">
+                              <div className="col-sm-12"> <span style={{ marginTop: "4px" }} className="date-color font-12 float-start  mb-1 ng-binding"><i className="fe-calendar"></i> {moment(res.Created).format("DD-MMM-YYYY")}</span>  &nbsp; &nbsp;| &nbsp; <span className="font-12" style={{ color: '#009157', fontWeight: '600' }}>{res.Entity.Entity}  </span></div>
+
+                            </div>
                           </div>
                         </div>
-                        </div>
-                       )   
+                      )
                     })}
 
                   </div>

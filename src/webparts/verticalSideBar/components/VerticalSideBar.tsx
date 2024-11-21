@@ -102,8 +102,22 @@ const VerticalContext = ({ _context }: any) => {
     //   setNavItems(arr);
     // }
     // else {
-    await _context.web.lists.getByTitle("ARGSidebarNavigation").items.orderBy('Order',true).getAll().then((res: any) => {
-      console.log(res, 'res');
+      const currentUser = await _context.web.currentUser();
+
+      // Get groups for the current user
+      const userGroups = await _context.web.currentUser.groups();
+  
+      console.log("userGroups",userGroups);
+      let grptitle:String[]=[];
+      for(var i=0;i<userGroups.length;i++)
+      {
+        grptitle.push(userGroups[i].Title.toLowerCase());
+      }
+  
+      console.log('%c Start',"background-color:red");
+  
+      await _context.web.lists.getByTitle("ARGSidebarNavigation").items.select("Title,Url,Icon,ParentId,ID,EnableAudienceTargeting,Audience/Title").expand("Audience").getAll().then((res: any) => {
+      console.log('%c res',"background-color:red",res);
       const items: NavItem[] = res.map((item: any) => {
         return {
           Title: item.Title,
@@ -114,7 +128,15 @@ const VerticalContext = ({ _context }: any) => {
         };
       });
       // localStorage.setItem('Navitems', JSON.stringify(items))
-      setNavItems(res);
+     // setNavItems(res);
+      let securednavitems= res.filter((nav:any)=>
+        {
+           return (!nav.EnableAudienceTargeting || ( nav.EnableAudienceTargeting && nav.Audience && nav.Audience.some((nv1:any)=>{  return grptitle.includes(nv1.Title.toLowerCase()); }  ) )  )
+        } 
+      )
+
+      // setNavItems(res);
+      setNavItems(securednavitems);
       return items;
     });
     // }
@@ -323,7 +345,7 @@ const VerticalContext = ({ _context }: any) => {
                   {/* <Airplay color="blue" size={48} />
               <FontAwesomeIcon icon={getIcon(item.Icon)} /> */}
                 </span>
-                <a className="link_name1" style={{ textDecoration: 'unset', paddingLeft: '0.7rem' }} target=''
+                <a className="link_name1" style={{ textDecoration: 'unset', paddingLeft: '1rem' }} target=''
                 >   <span className={classNames('navlink', {
                   active: item.ID == useActive && !useHide
 
@@ -372,7 +394,7 @@ const VerticalContext = ({ _context }: any) => {
                         {/* <li className='test' style={{ paddingBottom: '0.5rem', paddingTop: '0.5rem' }} key={item.ID} onClick={() => gotoPage(item.Url,item.ID)}> */}
                         <a className={classNames('link_name1 ', {
                           active: item.ID == useActive
-                        })} style={{ textDecoration: 'none', paddingLeft: '0.7rem' }} onClick={() => gotoPage(item.Url, item.ID)} >
+                        })} style={{ textDecoration: 'none', paddingLeft: '1rem' }} onClick={() => gotoPage(item.Url, item.ID)} >
                           <span style={dynamicStylecss}>{item.Title}</span>
                         </a>
                       </li>

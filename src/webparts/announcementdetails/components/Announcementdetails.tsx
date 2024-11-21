@@ -125,7 +125,7 @@ const AnnouncementdetailsContext = ({ props }: any) => {
     // const queryString = decryptId(Number(updatedString));
 
     setArrDetails(await getAnnouncementDetailsById(sp, Number(idNum)));
-    let Announcementsdata = await getAllAnnouncementnonselected(sp, Number(idNum));
+    let Announcementsdata = await getAllAnnouncementnonselected(sp, Number(idNum),'Announcement');
     setArrtopAnnouncements(Announcementsdata);
 
 
@@ -671,7 +671,7 @@ const AnnouncementdetailsContext = ({ props }: any) => {
                         </p>
                         <div className="row mt-2">
                           <div className="col-md-12 col-xl-12">
-                            <p className="mb-2 mt-1 font-14 d-block eventtextnew">
+                            <p className="mb-2 mt-1 text-dark font-14 d-block eventtextnew">
                               <span className="pe-2 text-nowrap mb-0 d-inline-block">
                                 <Calendar size={18} /> {moment(item.Created).format("DD-MMM-YYYY")}  &nbsp;  &nbsp;  &nbsp;|
                               </span>
@@ -691,7 +691,7 @@ const AnnouncementdetailsContext = ({ props }: any) => {
                       </div>
                         <div className="row ">
 
-                          <p style={{ lineHeight: '22px' }} className="d-block text-muted mt-2 font-14">
+                          <p style={{ lineHeight: '22px' }} className="d-block text-dark mt-2 font-16">
                             {item.Overview}
                           </p>
                         </div>
@@ -718,7 +718,7 @@ const AnnouncementdetailsContext = ({ props }: any) => {
                           }
 
                         </div><div className="row mt-2">
-                          <p style={{ lineHeight: '22px' }} className="d-block text-muted mt-2 mb-0 font-14">
+                          <p style={{ lineHeight: '22px' }} className="d-block newpara text-dark mt-2 mb-0 font-16">
                             <div
                               dangerouslySetInnerHTML={{ __html: item.Description }}
                             ></div>
@@ -748,7 +748,7 @@ const AnnouncementdetailsContext = ({ props }: any) => {
                             className="form-control text-dark form-control-light mb-2"
                             value={newComment}
                             onChange={(e) => setNewComment(e.target.value)}
-                            placeholder="Add a new comment..."
+                           placeholder="Type your comment here..."
                             rows={3} style={{ borderRadius: 'unset' }}
                           />
                           <button
@@ -757,7 +757,7 @@ const AnnouncementdetailsContext = ({ props }: any) => {
                             disabled={loading} // Disable button when loading
                           >
 
-                            {loading ? 'Submitting...' : 'Add Comment'} {/* Change button text */}
+                            {loading ? 'Submitting...' : 'Post'} {/* Change button text */}
                           </button>
                         </div>
                       </div>
@@ -814,7 +814,7 @@ const AnnouncementdetailsContext = ({ props }: any) => {
 
               </div>
               <div className="col-lg-4">
-                <div className="card mt-4 postion8">
+              <div style={{  position:'sticky', top:'90px' }} className="card  postion8">
                   <div className="card-body">
                     <h4 className="header-title text-dark  fw-bold mb-0">
                       <span style={{ fontSize: '20px' }}>Latest Announcement</span>    <a className="font-11 btn btn-primary  waves-effect waves-light view-all cursor-pointer" href="#" onClick={NavigatetoEvents} style={{ float: 'right', lineHeight: '18px' }}>View All</a></h4>
@@ -823,8 +823,8 @@ const AnnouncementdetailsContext = ({ props }: any) => {
                       return (
                         <div className="mainevent mt-2">
                           <div className="bordernew" >
-                            <h3 className="twolinewrap font-14  text-dark fw-bold mb-2 cursor-pointer" style={{ cursor: "pointer" }} onClick={() => gotoNewsDetails(res)}>{res.Title}</h3>
-                            <p style={{ lineHeight: '20px' }} className="font-12 text-muted twolinewrap">{res.Overview}</p>
+                            <h3 className="twolinewrap font-16  text-dark fw-bold mb-2 cursor-pointer" style={{ cursor: "pointer" }} onClick={() => gotoNewsDetails(res)}>{res.Title}</h3>
+                            <p style={{ lineHeight: '20px', fontSize:'15px' }} className="text-muted twolinewrap">{res.Overview}</p>
                             <div className="row">
                               <div className="col-sm-12"> <span style={{ marginTop: "4px" }} className="date-color font-12 float-start  mb-1 ng-binding"><i className="fe-calendar"></i> {moment(res.Created).format("DD-MMM-YYYY")}</span>  &nbsp; &nbsp; &nbsp; <span className="font-12" style={{ color: '#009157', fontWeight: '600' }}>  </span></div>
 

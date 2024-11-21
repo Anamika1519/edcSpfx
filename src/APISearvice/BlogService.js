@@ -268,6 +268,22 @@ export const getBlogsByID = async (_sp, id) => {
   console.log(arr, 'arr');
   return arr;
 }
+//new code 
+export const DeleteBusinessAppsAPI = async (_sp, id) => {
+  let resultArr = []
+  try {
+    const newItem = await _sp.web.lists.getByTitle('ARGBlogs').items.getById(id).delete();
+    console.log('Item deleted successfully:', newItem);
+    resultArr = newItem
+    // Perform any necessary actions after successful addition
+  } catch (error) {
+    console.log('Error adding item:', error);
+    // Handle errors appropriately
+    resultArr = null
+  }
+  return resultArr;
+}
+// new code end
 export const getAllBlogsnonselected = async (_sp,Idnum) => {
   debugger
   let arr = []

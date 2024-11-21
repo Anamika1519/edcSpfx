@@ -31,7 +31,7 @@ import { toLower } from "lodash";
 const LeaderboardContext = ({ props }: any) => {
   const sp: SPFI = getSP();
   console.log(sp, "sp");
-  const [usersitem, setUsersArr] = useState<any[]>([]);
+  const [leaderboard, setUsersArr] = useState<any[]>([]);
   // const { useHide }: any = React.useContext(UserContext);
   // const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
   const { useHide }: any = React.useContext(UserContext);
@@ -46,8 +46,12 @@ const LeaderboardContext = ({ props }: any) => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const siteUrl = props.siteUrl;
-  const [leaderboard, setLeaderboard] = useState([]);
-  const [CurrentUserEnityData, setCurrentUserEnityData] = React.useState([]);
+  //const [leaderboard, setLeaderboard] = useState([]);
+  type UserEntityData = {
+    companyName: string;
+    mail:string;
+  };
+  
   const [filters, setFilters] = React.useState({
     AuthorTitle: "",
     AuthorEMail: "",
@@ -109,78 +113,66 @@ const LeaderboardContext = ({ props }: any) => {
 
   const fetchUserInformationList = async () => {
     try {
-      // Fetch the leaderboard as before
-      setLeaderboard(await getLeaderTop(sp))
-
-      const currentUser = await sp.web.currentUser();
-      const userListSP = await sp.web.lists
-
-        .getByTitle("User Information List")
-        .items
-        .select("ID", "Title", "EMail", "Department", "JobTitle", "Picture", "MobilePhone","WorkPhone","Name")
-
-        .filter(`EMail ne null and ID ne ${currentUser.Id}`) // content tyep eq person
-
-        ();
-      
-      // Retrieve the current logged-in user's data using the /me endpoint
-     // console.log("userList",userListSP);
-      // let currentWPContext:WebPartContext=props.props.context;  
-      let currentWPContext:WebPartContext=props.context;  
-      // console.log("props",props);
-      const msgraphClient:MSGraphClientV3=await currentWPContext.msGraphClientFactory.getClient('3');
-      const m265userList= await msgraphClient.api("users")
-          .version("v1.0")
-          .select("displayName,mail,jobTitle,mobilePhone,companyName,userPrincipalName")
-          .get();
-      // console.log("m265userList",m265userList);
-
-      //Adding dummy companies to users for testing
-      //m265userList.value=m265userList.value.map((m:any)=>{let x=m; x['companyName']='dunnycommpany'; return x;});
-     
-     let userList:any[]=[];
-
-     userList=userListSP.map(usr=>{
-         let musrs=  m265userList.value.filter((usr1:any)=>{ return toLower(usr1.mail)==toLower(usr.EMail)});
-         if(musrs.length>0)
-         {
-          usr['companyName']=musrs[0]['companyName'];
-         }
-         else usr['companyName']='NA';
-         return usr;
-     })
+      // Fetch the leaderboard
+      const leaderboard = await getLeaderTop(sp);
+     // setLeaderboard(leaderboard);
+    // setUsersArr(userList);
+      // Fetch all user entities
+      const allUserEntities = await GetEntity(sp);
   
+      if (!allUserEntities) {
+        console.error("Failed to fetch user entities");
+        return;
+      }
+  
+      // Map user list with fetched user entities
+      const userList = leaderboard.map((usr) => {
+        const matchedUser = allUserEntities.find((user: UserEntityData) =>
+          user.mail &&
+          usr.AuthorEMail && // Adjust this property to match actual structure
+          user.mail.toLowerCase() === usr.AuthorEMail.toLowerCase()
+        );
+  
+        return {
+          ...usr,
+          companyName: matchedUser ? matchedUser.companyName : "NA",
+        };
+      });
+      setUsersArr(userList);
+      setUsersArr(userList); // Update state with the user list
     } catch (error) {
-      console.error("Error fetching users:", error);
+      console.error("Error fetching user information:", error);
     }
   };
+  
+  
 
-  const GetEntity = async (_sp: SPFI) => {
-    let arr: any[] = []
+  const GetEntity = async (_sp: SPFI): Promise<UserEntityData[] | null> => {
     try {
-      // Fetch the leaderboard as before
-      //const leaderboardData = await getLeaderTop(sp);
-
-      // Retrieve the current logged-in user's data using the /me endpoint
       const currentWPContext: WebPartContext = props.context;
       const msgraphClient: MSGraphClientV3 = await currentWPContext.msGraphClientFactory.getClient('3');
-      const currentUserData = await msgraphClient.api("/me")
+      const userEntities = await msgraphClient
+        .api("users")
         .version("v1.0")
         .select("displayName,mail,jobTitle,mobilePhone,companyName,userPrincipalName")
         .get();
-
-      // Log the current user data
-      console.log("Current User Data: ", currentUserData);
-
-      // Set the leaderboard and current user info as separate states
-      //setLeaderboard(leaderboardData);
-      //setCurrentUser(currentUserData);  // Assuming you have a setCurrentUser function
-
+  
+      console.log("Fetched User Entities: ", userEntities.value);
+  
+      // Ensure you return the array of users (userEntities.value)
+      return userEntities.value.map((user: any) => ({
+        
+        mail: user.mail || null,
+        
+        companyName: user.companyName || null,
+    
+      }));
     } catch (error) {
-      console.error("Error fetching users:", error);
+      console.error("Error fetching user entities:", error);
+      return null;
     }
-    return arr;
-  }
+  };
+  
   
 
 
@@ -448,7 +440,7 @@ const LeaderboardContext = ({ props }: any) => {
                 {activeTab === "cardView" && (
                   // Card View Content (only displayed when "cardView" is active)
                   <div className="row card-view">
-                    {console.log("usersssitem", usersitem)}
+                    {/* {console.log("usersssitem", usersitem)} */}
                     {leaderboard.length > 0 && leaderboard.map((item, index) => (
                       <div className="col-lg-3 col-md-4" key={item.Id}>
                         <div

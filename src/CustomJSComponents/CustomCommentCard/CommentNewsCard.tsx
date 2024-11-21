@@ -130,9 +130,9 @@ export const CommentNewsCard: React.FC<{
                   </div>
                   <div className="w-100 mt-0">
                     <h6 className="font-14 fw600">{reply.UserName}</h6>
-                    <p className="mb-0 para-width  text-muted ng-binding"  style={{wordBreak:'break-all'}}>{reply.Comments}</p>
-                    <p className="text-muted font-12 mt-3">
-                      <small>{moment(reply.Created).format("DD-MMM-YYYY HH:mm")}</small>
+                    <p className="mb-0 para-width  text-muted ng-binding"  style={{wordBreak:'break-all', paddingRight:'20px'}}>{reply.Comments}</p>
+                    <p className="text-muted font-12 mt-1">
+                      <small>{moment(reply.Created).format("DD-MMM-YYYY")}</small>
                     </p>
  
                   </div>

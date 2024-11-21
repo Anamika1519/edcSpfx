@@ -11,7 +11,7 @@ import { IReadonlyTheme } from '@microsoft/sp-component-base';
 import * as strings from 'BusinessAppMasterWebPartStrings';
 import BusinessAppMaster from './components/BusinessAppMaster';
 import { IBusinessAppMasterProps } from './components/IBusinessAppMasterProps';
-
+import { getSP } from './loc/pnpjsConfig';
 export interface IBusinessAppMasterWebPartProps {
   description: string;
 }
@@ -29,18 +29,22 @@ export default class BusinessAppMasterWebPart extends BaseClientSideWebPart<IBus
         isDarkTheme: this._isDarkTheme,
         environmentMessage: this._environmentMessage,
         hasTeamsContext: !!this.context.sdks.microsoftTeams,
-        userDisplayName: this.context.pageContext.user.displayName
+        userDisplayName: this.context.pageContext.user.displayName,
+        context: this.context,
+        siteUrl: this.context.pageContext.web.absoluteUrl,
       }
     );
 
     ReactDom.render(element, this.domElement);
   }
 
-  protected onInit(): Promise<void> {
-    return this._getEnvironmentMessage().then(message => {
-      this._environmentMessage = message;
-    });
+  protected async onInit(): Promise<void> {
+    //this._environmentMessage = this._getEnvironmentMessage();
+
+    await super.onInit();
+    getSP(this.context);
   }
+
 
 
 

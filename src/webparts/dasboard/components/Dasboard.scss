@@ -15,6 +15,13 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
+.newalignv{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space:nowrap;
+    padding-right: 40px;
+} 
+.gheightnew{height: 373px;}
 .margin01{margin-top: 2px;}
 .float-right{float: right;}
 .justify-between{gap:20px;}
@@ -33,7 +40,7 @@
     border-radius: 5px;
     background: rgba(0, 135, 81, 0.20) !important;
     color: #008751;
-    font-weight: 500;
+    font-weight: 500; width: 70px; text-align: center;
 }
 .cptext {
     position: absolute;

@@ -370,7 +370,7 @@ a.nav-linkcss.px-4.py-3 {
   height: 103px !important;
 }
 .small-image img{height: 100% !important; border-radius: 10px; object-fit: cover;}
-.add-comment textarea{height: 44px; border: 1px solid #007bff; border-radius: 3px;}
+.add-comment textarea{height: 42px; border: 1px solid #007bff; border-radius: 3px;}
 .uppercase{text-transform: uppercase;}
 .more-images-overlay{border-radius: 10px;}
 .likes{display: flex;
@@ -385,6 +385,33 @@ a.nav-linkcss.px-4.py-3 {
   text-overflow: ellipsis;
   font-weight: 600; margin-top: 3px;
 }
+.modal-content, .modal-dialog {
+  border-radius: 20px !important;
+  min-width: 80% !important;
+}
+.modal-dialog .carousel-item {
+  height: 500px;
+}
+.modal-dialog .carousel-item img {
+  border-radius: 15px;
+  height: 100% !important;
+  object-fit: cover !important;
+  width: 100%;
+}
+.carousel-indicators [data-bs-target]{
+  min-width: 15px;
+}
+.bbokmark:nth-child(1) .newbg{background: #008751 !important; color: #fff !important;}
+.bbokmark:nth-child(2) .newbg{background: #ffba00  !important; color: #fff !important;}
+.bbokmark:nth-child(3) .newbg{background: #1fb0e5 !important; color: #fff !important;}
+.bbokmark:nth-child(4) .newbg{background: #008751 !important; color: #fff !important;}
+.bbokmark:nth-child(5) .newbg{background: #ffba00  !important; color: #fff !important;}
+.bbokmark:nth-child(6) .newbg{background: #1fb0e5 !important; color: #fff !important;}
+.bbokmark:nth-child(7) .newbg{background: #008751 !important; color: #fff !important;}
+.bbokmark:nth-child(8) .newbg{background: #ffba00  !important; color: #fff !important;}
+.bbokmark:nth-child(9) .newbg{background: #1fb0e5 !important; color: #fff !important;}
+
+
 .psonew{position: fixed; width:13%;}
 .mobile-6{  position: sticky;
   position: -webkit-sticky; top: 0px; }

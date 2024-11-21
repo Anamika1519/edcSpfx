@@ -166,7 +166,7 @@ button:hover {
 {
   width: 100%;
   object-fit: cover;
-  border-radius: 15px;
+  border-radius: 13px;
 }
 .attendeesImg {
   border-radius: 50% !important;
@@ -307,11 +307,30 @@ button:hover {
     .minw80 .moday-body{max-height: 470px;  overflow-y: auto;}
     .newaligntext{padding: 0px; min-width: auto !important;}
     .newaligntext button{padding: 0px; min-width: auto !important;}
-    .widtsvg svg{width: 18px !important;}
+    .widtsvg svg{width: 18px !important; margin-top: 2px;}
   .close-btn:hover {
     color: red;
   }
-  
+  .likecount{ background: #d2effa;
+    color: #1fb0e5;
+    font-size: 20px;
+    font-weight: 600;
+    position: absolute;
+    right: 0;
+    top: 4px;
+    padding: 3px 20px;
+    border-radius: 15px; }
+    .btn-secondary{    background: #6c757d !important;
+      width: 100%;
+      color: #fff;
+      text-align: left;}
+  .juss{justify-content: flex-start;
+    gap: 15px;
+    align-items: center;}
+    .card1{border-bottom: 1px solid #efefef; position: relative; padding-bottom: 17px;}
+    .bodernone{border-bottom: 0px solid #efefef;}
+  .newalign svg{margin-top: 1px;}
+  .alignright123{margin-top: -3px;}
   h2 {
     margin-top: 0;
   }
@@ -320,15 +339,28 @@ button:hover {
     margin-top: 15px;
   }
   
-  input[type="text"],
-  input[type="email"] {
+  .popup input[type="text"],
+  .popup input[type="email"] {
     width: 100%;
     padding: 8px;
     margin: 5px 0;
     border: 1px solid #ccc;
     border-radius: 4px;
   }
-  
+  .popup h2{    font-size: 18px;
+    color: #3c3c3c;}
+    .popup  .close-btn{
+      background: #fff;
+      color: #3c3c3c;
+      min-width: auto;
+      width: 35px;
+      height: 35px;
+      border-radius: 1000px !important;
+      border: 1px solid #efefef;
+      line-height: 19px;
+    }
+  .listnew{list-style: none; margin: 0px;}
+  .listnew button{background: transparent; min-width: auto;} 
   button[type="submit"] {
     width: 100%;
     padding: 10px;
@@ -342,3 +374,4 @@ button:hover {
   button[type="submit"]:hover {
     background-color: #0056b3;
   }
+  .ml90 img{margin-right: -12px !important;}

@@ -270,6 +270,11 @@ const HelloWorldContext = ({ props }: any) => {
     const encryptedId = encryptId(String(item.ID));
     window.location.href = `${siteUrl}/SitePages/Announcements.aspx`;
   };
+  const GotoNextPageLeaderboard = (item: any) => {
+    console.log("item-->>>>", item)
+    const encryptedId = encryptId(String(item.ID));
+    window.location.href = `${siteUrl}/SitePages/Leaderboard.aspx`;
+  };
   const NavigatetoAnnouncement = (e:any,item: number) => {
     console.log("NavigatetoAnnouncement-->>>>", item)
     debugger
@@ -363,7 +368,7 @@ const HelloWorldContext = ({ props }: any) => {
       <div className="content-page">
         <HorizontalNavbar _context={sp} siteUrl={siteUrl} />
         <div className="content mt-4" style={{ marginLeft: `${!useHide ? '240px' : '80px'}` }}>
-          <div className="container-fluid  paddb">
+          <div className="container-fluid  paddbnew">
             <div className="row">
               <div
                 //  className=" col-md-10"
@@ -505,7 +510,7 @@ const HelloWorldContext = ({ props }: any) => {
                   {/* Corporate Directory */}
                   <div className="col-xl-5 col-lg-5">
                     <div className="card" style={{ borderRadius: "1rem" }}>
-                      <div className="card-body pb-0 gheight">
+                      <div className="card-body pb-0 gheightnew">
                         <h4 className="header-title font-16 text-dark fw-bold mb-0">
                           Corporate Directory
                           <a
@@ -517,60 +522,74 @@ const HelloWorldContext = ({ props }: any) => {
                           </a>
                         </h4>
                         <div className="inbox-widget" style={{ marginTop: '1rem' }}>
-                          {pinUsersitem.map((user, index) => (
-                            <div
-                              key={index}
-                              className="d-flex border-bottom heit8 align-items-start w-100 justify-content-between mb-1"
-                            >
-                              <div className="col-sm-2">
-                                <a href="contacts-profile.html">
-                                <img
-                                    // src={user.Picture != null ? `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${user.EMail}` : require("../assets/users.jpg")}
-                                    src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${user.Pinned.EMail}`}
-                                    className="rounded-circle"
-                                    width="50"
-                                    alt={user.Pinned.Title}
-                                  />
-                                </a>
-                              </div>
-                              <div style={{ cursor: "pointer" }} className="col-sm-8">
-                                <a href="contacts-profile.html">
-                                  <p className="fw-bold font-14 mb-2 text-dark">
-                                  {user.Pinned.Title} | {user.Pinned.EMail != null ? user.Pinned.EMail : 'NA'}
-                                  </p>
-                                </a>
-                                <p
-                                  style={{
-                                    color: "#6b6b6b",
-                                    fontWeight: "500",
-                                  }}
-                                  className="font-12"
-                                >
-                                  {user.Pinned.MobilePhone}
-                                  {/* Mob: {user.mobile} */}
-                                </p>
-                              </div>
-                              <div className="col-sm-2">
+                        {pinUsersitem.length === 0 ? 
+                         <div className="align-items-center text-center mt-5"
+                         >
+                             
+<img style={{ cursor: "pointer", marginTop:'50px', width:'32px' }} src={require("../assets/noun-pin-7368310.png")} className="mb-3"
+alt="pin"
+
+/>
+
+<p className="font-14 text-muted text-center">Pin users from Corporate Directory </p>
+
+                         </div>
+                         : pinUsersitem.map((user, index) => (
+                          <div
+                            key={index}
+                            className="d-flex border-bottom heit8 align-items-start w-100 justify-content-between mb-1"
+                          >
+                            <div className="col-sm-2">
+                              <a href="contacts-profile.html">
                               <img
-                                  src={require("../assets/calling.png")}
-                                  onClick={() =>
-
-                                    window.open(
-
-                                      `https://teams.microsoft.com/l/call/0/0?users=${user.Pinned.EMail}`,
-
-                                      "_blank"
-
-                                    )
-
-                                  }
-                                  className="alignright"
-                                  alt="call"
-                                  width="25"
+                                  // src={user.Picture != null ? `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${user.EMail}` : require("../assets/users.jpg")}
+                                  src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${user.Pinned.EMail}`}
+                                  className="rounded-circle"
+                                  width="50"
+                                  alt={user.Pinned.Title}
                                 />
-                              </div>
+                              </a>
                             </div>
-                          ))}
+                            <div style={{ cursor: "pointer" }} className="col-sm-8">
+                              <a href="contacts-profile.html">
+                                <p className="fw-bold font-14 mb-2 text-dark">
+                                {user.Pinned.Title} | {user.Pinned.EMail != null ? user.Pinned.EMail : 'NA'}
+                                </p>
+                              </a>
+                              <p
+                                style={{
+                                  color: "#6b6b6b",
+                                  fontWeight: "500",
+                                }}
+                                className="font-12"
+                              >
+                                {user.Pinned.MobilePhone}
+                                {/* Mob: {user.mobile} */}
+                              </p>
+                            </div>
+                            <div className="col-sm-2">
+                            <img
+                                src={require("../assets/calling.png")}
+                                onClick={() =>
+
+                                  window.open(
+
+                                    `https://teams.microsoft.com/l/call/0/0?users=${user.Pinned.EMail}`,
+
+                                    "_blank"
+
+                                  )
+
+                                }
+                                className="alignright"
+                                alt="call"
+                                width="25"
+                              />
+                            </div>
+                          </div>
+                        ))}
+                          
+                          
                         </div>
                       </div>
                     </div>
@@ -886,7 +905,7 @@ const HelloWorldContext = ({ props }: any) => {
                         <a
                           style={{ float: "right",cursor:"pointer" }}
                           className="font-11 view-all fw-normal btn  rounded-pill waves-effect waves-light"
-
+                          onClick={(e) => GotoNextPageLeaderboard(e)}
                         >
                           View All
                         </a>
@@ -1044,7 +1063,7 @@ const HelloWorldContext = ({ props }: any) => {
                                   </a>
                                 </div>
                               </div>
-                              <h4 className="mt-0 mb-1">
+                              <h4 className="mt-0 mb-1 newalignv">
                                 <a
                                   style={{ textTransform: 'capitalize',cursor:"pointer" }}
                                   className="text-dark fw-bold font-16" onClick={() => GotoNextPageProject(project)}
@@ -1060,7 +1079,7 @@ const HelloWorldContext = ({ props }: any) => {
                               </div>
                               <p
                                 className="date-color para8 font-12 mb-3"
-                                style={{ color: "#98a6ad", height: "30px",}}
+                                style={{ color: "#98a6ad", height: "40px",}}
                               >
                                 {truncateString(project.ProjectOverview, project)}
                                 {/* <a   className="fw-bold text-muted">
@@ -1068,9 +1087,9 @@ const HelloWorldContext = ({ props }: any) => {
                                   </a> */}
                               </p>
                             
-                              <p style={{display:'flex', gap:'10px'}} className="mb-1 mt-2 font-12">
+                              <p style={{display:'flex', color: '#6e767e', gap:'10px'}} className="mb-1 mt-2 font-12">
                                 <span
-                                  style={{ color: "#6e767e" }}
+                                  
                                   className="pe-2 text-nowrap"
                                 >
                                   <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} /> <b>{project?.ProjectsDocsId?.length}</b> Documents
@@ -1086,7 +1105,7 @@ const HelloWorldContext = ({ props }: any) => {
                                 </span>
 
                               </p>
-                              <div className="avatar-group mt-3 mb-2">
+                              <div className="avatar-group mt-3 ms-2 mb-2">
                                 <div style={{ display: 'flex' }}
 
                                 >
@@ -1095,6 +1114,7 @@ const HelloWorldContext = ({ props }: any) => {
                                       (id: any, idx: any) => {
                                         if (idx < 3) {
                                           return (
+                                            <div style={{marginLeft:'-12px'}} className="gfg_tooltip">
                                             <img
                                               style={{
                                                 margin:
@@ -1103,10 +1123,18 @@ const HelloWorldContext = ({ props }: any) => {
                                                     : "0 0 0px -12px",
                                               }}
                                               src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                                              className="rounded-circlecss newminus img-thumbnail avatar-xl"
-                                              alt="profile-image" data-bs-container="#tooltips-container" data-bs-toggle="tooltip" data-bs-placement="bottom" aria-label="Mat Helme" data-bs-original-title="Mat Helme" data-themekey="#"
-                                            />
+                                              className="rounded-circlecss newminus img-thumbnail avatar-xl "
+                                              alt="profile-image" 
+                                           />
+                                            <span className="gfg_text">
+                                            A Computer science portal
+                                        </span>
+
+                                        </div>
+
+                                           
                                           );
+                                        
 
                                         }
                                       }

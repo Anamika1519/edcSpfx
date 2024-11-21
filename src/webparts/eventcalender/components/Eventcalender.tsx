@@ -27,7 +27,7 @@ const EventcalenderContext = ({ props }: any) => {
   const sp: SPFI = getSP();
   console.log(sp, "sp");
   
-  const [itemsToShow, setItemsToShow] = useState(2);
+  const [itemsToShow, setItemsToShow] = useState(5);
   const [copySuccess, setCopySuccess] = useState("");
   const [show, setShow] = useState(false);
   // const { useHide }: any = React.useContext(UserContext);
@@ -225,7 +225,7 @@ const EventcalenderContext = ({ props }: any) => {
   const loadMore = () => {
     event.preventDefault()
     event.stopImmediatePropagation()
-    setItemsToShow(itemsToShow + 2); // Increase the number by 8
+    setItemsToShow(itemsToShow + 5); // Increase the number by 8
   };
    
   const[currentmonth , SetCurrentmonth] = useState<any>("");
@@ -422,7 +422,7 @@ const EventcalenderContext = ({ props }: any) => {
                               <div className="row">
                                 <div className="col-sm-12">
                                   <span className="font-13 float-start mt-0 mb-1">
-                                    {formattedEventDate}
+                                  {moment(item.EventDate).format("DD-MMM-YYYY")}
                                   </span>
                                 </div>
                               </div>
@@ -439,8 +439,8 @@ const EventcalenderContext = ({ props }: any) => {
                                     {truncateText(item.EventName, 90)}
                                   </h4>
                                   <p
-                                    style={{ color: "#6b6b6b" }}
-                                    className="mb-2 font-14 text-muted"
+                                    style={{ color: "#6b6b6b" , fontSize:'15px'}}
+                                    className="mb-2  text-muted"
                                   >
                                     {truncateText(item.Overview, 200)}
                                   </p>
@@ -508,7 +508,7 @@ const EventcalenderContext = ({ props }: any) => {
                                           // alt={attendee.name}
                                         />
                                         }
-                                        Attending
+                                        Registered
                                       </span>
                                     </div>
                                   </div>
@@ -522,7 +522,7 @@ const EventcalenderContext = ({ props }: any) => {
                                 style={{
                                   justifyContent: "end",
                                   cursor: "pointer",
-                                  marginRight:"3px"
+                                  marginRight:"10px"
                                 }}
                               >
                                 <div
@@ -535,7 +535,7 @@ const EventcalenderContext = ({ props }: any) => {
                                     key={item.Id}
                                   >
                                     <Share2
-                                      size={20}
+                                      size={25}
                                       color="#6c757d"
                                       strokeWidth={2}
                                       style={{ fontWeight: "400" }}
@@ -640,17 +640,17 @@ const EventcalenderContext = ({ props }: any) => {
                           <div  id="carouselExampleCaptions" className="carousel slide" data-bs-ride="carousel">
                          
                           <div className="carousel-inner">
-  <div className="carousel-item active">
-  <div style={{padding:'10px'}} className="gal-box">
+  <div className="carousel-item active"> 
+  <div style={{padding:'10px', height:'425px'}} className="gal-box">
   
     <>
       <a className="image-popup newhimg span57" title={eventDetails.title} href={eventDetails.eventLink}>
         <img src={eventDetails.image} className="d-block w-100" alt={eventDetails.title} />
       </a>
       <a href={eventDetails.eventLink}>
-        <div className="gall-info">
-          <h4 className="font-16 mb-2 mt-2 text-dark fw-bold mt-0">{truncateText(eventDetails.title, 90)}</h4>
-          <p className="font-14 text-muted">{truncateText(eventDetails.Overview, 200)}</p>
+        <div style={{clear:'both'}} className="gall-info">
+          <h4 className="font-16 two-line mb-2 mt-2 text-dark fw-bold mt-0">{truncateText(eventDetails.title, 90)}</h4>
+          <p className="font-14 sevenline text-muted">{truncateText(eventDetails.Overview, 125)}</p>
           <span style={{ display: 'flex', gap: '0.2rem', alignItems: 'center' }}>
             {eventDetails?.Attendees !== undefined && eventDetails?.Attendees.length > 0
               ? eventDetails.Attendees.map((item1: any, index: any) => (
@@ -751,8 +751,8 @@ const EventcalenderContext = ({ props }: any) => {
                         
                         
                          <div >
-                          <div style={{height:'425px'}}>
-                          <div style={{padding:'10px', height:'420px', display:'flex', justifyContent:'center', alignItems:'center'}} className="gal-box">
+                          <div>
+                          <div style={{padding:'10px', height:'425px', display:'flex', justifyContent:'center', alignItems:'center'}} className="gal-box">
                         
       <a href={eventDetails.eventLink}>
         <div className="gall-info">

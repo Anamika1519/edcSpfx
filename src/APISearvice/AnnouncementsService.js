@@ -295,15 +295,17 @@ export const getAnncouncementByID = async (_sp, id) => {
   console.log(arr, 'arr');
   return arr;
 }
-export const getAllAnnouncementnonselected = async (_sp, Idnum) => {
+export const getAllAnnouncementnonselected = async (_sp, Idnum,text) => {
   debugger
   let arr = []
   let str = "Announcements"
   await _sp.web.lists.getByTitle("ARGAnnouncementAndNews").items
-    .select("*").expand("")
-    .filter(`ID ne ${Idnum}`)
+  .select("*,AnnouncementandNewsTypeMaster/Id,AnnouncementandNewsTypeMaster/TypeMaster,Category/Id,Category/Category,Author/ID,Author/Title")
+  .expand("AnnouncementandNewsTypeMaster,Category,Author")
+  .filter(`AnnouncementandNewsTypeMaster/TypeMaster eq '${text}' and ID ne ${Idnum}`)
+    //.filter(`ID ne ${Idnum}`)
     .top(3)
-    .orderBy("Created", true)
+    .orderBy("Created", false)
     .getAll()
     .then((res) => {
       let resnew= res.slice(0, 3);

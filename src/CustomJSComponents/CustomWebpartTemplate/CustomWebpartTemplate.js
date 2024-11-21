@@ -95,10 +95,12 @@ const CustomWebpartTemplate = ({ _sp, SiteUrl }) => {
         // Open the link to launch the default mail client (like Outlook)
         window.location.href = mailtoLink;
        };
-    const [visibleItems, setVisibleItems] = React.useState(2);
+    const [visibleItems, setVisibleItems] = React.useState(5);
 
     const handleLoadMore = () => {
-        setVisibleItems(prevVisibleItems => prevVisibleItems + 2);
+        event.preventDefault()
+        event.stopImmediatePropagation()
+        setVisibleItems(prevVisibleItems => prevVisibleItems + 5);
     };
     
     return (
@@ -120,7 +122,7 @@ const CustomWebpartTemplate = ({ _sp, SiteUrl }) => {
                                 <div className="row">
                                     <div className="col-sm-4 text-left">
                                         <span style={{ padding: '5px', borderRadius: '4px', fontWeight: '500', color: '#009157', background: 'rgba(0, 135, 81, 0.20)' }} className="font-14 float-start mt-2">
-                                            Featured Announcement</span>
+                                            Latest Announcement</span>
  
                                     </div>
                                     <div className="col-lg-12">
@@ -129,19 +131,19 @@ const CustomWebpartTemplate = ({ _sp, SiteUrl }) => {
                                     </div>
                                     <div className="row">
                                         <div className="col-sm-12">
-                                            <p className="mb-2 mt-1 d-block customhead">
-                                                <span style={{ fontWeight: '400' }} className="pe-2 text-nowrap color-new font-12 mb-0 d-inline-block">
-                                                    <Calendar size={12} color="#6b6b6b" strokeWidth={1} className="pl-2" style={{ fontWeight: '400' }} />&nbsp;&nbsp;
+                                            <p className="mb-2 mt-1 text-dark d-block customhead">
+                                                <span style={{ fontWeight: '400' }} className="pe-2 text-nowrap color-new font-14 mb-0 d-inline-block">
+                                                    <Calendar size={12}  strokeWidth={1} className="pl-2" style={{ fontWeight: '400' }} />&nbsp;&nbsp;
                                                     {moment(item.Created).format("DD-MMM-YYYY HH:mm")} &nbsp;  &nbsp;  &nbsp;|
                                                 </span>
-                                                <span style={{ fontWeight: '400' }} className="text-nowrap mb-0 color-new font-12 d-inline-block">
-                                                    Author: <span style={{ color: '#009157', fontWeight: '600' }}>{item.Author.Title} &nbsp;  &nbsp;  &nbsp;|&nbsp;  &nbsp;  &nbsp;
+                                                <span style={{ fontWeight: '400' }} className="text-nowrap mb-0 color-new font-14 d-inline-block">
+                                                    Author: <span style={{ color: '#009157', fontWeight: '600' }}>{item.Author.Title} &nbsp;  &nbsp;  &nbsp;
                                                     </span>
  
                                                 </span></p>
  
-                                            <div style={{ clear: 'both', height: '5rem' }}>
-                                                <p className="d-block customdescription">{truncateText(item.Overview, 250)}</p>
+                                            <div style={{ clear: 'both'}}>
+                                                <p style={{lineHeight:'20px', fontSize:'15px'}} className="d-block  text-dark customdescription">{truncateText(item.Overview, 250)}</p>
                                             </div>
                                             <a onClick={() => gotoAnnouncementDetails(item)} style={{ textDecoration: 'none' }}>
                                                 <div style={{ height: '40px', lineHeight: '24px' }} className="btnCustomcss btn-primary">Read more..</div> </a>
@@ -160,7 +162,7 @@ const CustomWebpartTemplate = ({ _sp, SiteUrl }) => {
                 const AnnouncementandNewsBannerImage = item.AnnouncementandNewsBannerImage == undefined || item.AnnouncementandNewsBannerImage == null ? "" : JSON.parse(item.AnnouncementandNewsBannerImage);
 
                 return (
-                    <div className="card mb-2 annuncementcard" style={{ cursor: 'pointer' }}>
+                    <div className="card mb-2" style={{ cursor: 'pointer' }}>
                         <div className="card-body">
                             <div className="row align-items-start">
                                 <div className="col-sm-2">
@@ -177,22 +179,22 @@ const CustomWebpartTemplate = ({ _sp, SiteUrl }) => {
                                             <span className="font-12 date-color float-start mt-0 mb-1 ng-binding" style={{ color: '#6b6b6b', fontSize: '12px', paddingRight: '0.2rem' }}>
                                                 <Calendar size={12} color="#6b6b6b" strokeWidth={2} style={{ fontWeight: '400' }} /></span>
 
-                                            <span className="font-12 date-color float-start mt-0 mb-1 ng-binding" style={{ color: '#6b6b6b', fontSize: '12px' }}>{moment(item.Created).format("DD-MMM-YYYY HH:mm")}</span>
+                                            <span className="font-12 date-color float-start mt-0 mb-1 ng-binding" style={{ color: '#6b6b6b', fontSize: '12px' }}>{moment(item.Created).format("DD-MMM-YYYY")}</span>
                                         </div>
                                     </div>
                                     <a onClick={() => gotoAnnouncementDetails(item)}>
                                         <div className="w-100">
-                                            <h4 className="mt-0 mb-1 font-16 fw-bold ng-binding" style={{ color: '#343a40', fontSize: '16px' }}>{truncateText(item.Title, 90)}</h4>
-                                            <p style={{ color: '#6b6b6b', fontSize: '14px', height: '4rem' }} className="mb-2 font-14 ng-binding">{truncateText(item.Overview, 350)}</p>
-                                            <div className="readmore mb-0">Read more..</div>
+                                            <h4 className="mt-1 mb-1 font-16 fw-bold ng-binding" style={{ color: '#343a40', fontSize: '16px' }}>{truncateText(item.Title, 90)}</h4>
+                                            <p style={{ color: '#6b6b6b', fontSize: '15px' }} className="mb-2 ng-binding">{truncateText(item.Overview, 350)}</p>
+                                            <div   className="readmore mt-3 mb-0">Read more..</div>
                                         </div>
                                     </a>
                                 </div>
                                 <div className="col-sm-1">
-                                    <div className="d-flex" style={{ justifyContent: 'space-evenly', cursor: 'pointer' }}>
-                                        <div className="" style={{ position: 'relative' }}>
+                                    <div className="d-flex" style={{ justifyContent: 'end', cursor: 'pointer' }}>
+                                        <div className="" style={{ position: 'relative', right:'10px' }}>
                                             <div className="" onClick={() => toggleDropdown(item.Id)} key={item.Id}>
-                                                <Share2 size={20} color="#6c757d" strokeWidth={2} style={{ fontWeight: '400' }} />
+                                                <Share2 size={25} color="#6c757d" strokeWidth={2} style={{ fontWeight: '400' }} />
                                             </div>
                                             {showDropdownId === item.Id && (
                                                 <div className="dropdown-menu dropcss" isMenuOpenshareref={menuRef}>
@@ -202,7 +204,7 @@ const CustomWebpartTemplate = ({ _sp, SiteUrl }) => {
                                                 </div>
                                             )}
                                         </div>
-                                        <Bookmark size={20} color="#6c757d" strokeWidth={2} style={{ fontWeight: '400' }} />
+                                        {/* <Bookmark size={20} color="#6c757d" strokeWidth={2} style={{ fontWeight: '400' }} /> */}
                                     </div>
                                 </div>
                             </div>
@@ -212,7 +214,9 @@ const CustomWebpartTemplate = ({ _sp, SiteUrl }) => {
             }) : null}
         
         {visibleItems < AnnouncementData.length && (
-            <button onClick={handleLoadMore} className="btn btn-primary mt-3">Load More</button>
+            <div className="text-center">
+            <button onClick={()=>handleLoadMore()} className="btn btn-primary mt-3">Load More</button>
+            </div>
         )}
     </div>
             

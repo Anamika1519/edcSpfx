@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import VerticalSideBar from "../../verticalSideBar/components/VerticalSideBar";
 import HorizontalNavbar from "../../horizontalNavBar/components/HorizontalNavBar";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { filter } from "lodash";
 import "../../../CustomCss/mainCustom.scss";
 import "../components/DiscussionForum.scss";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
@@ -51,11 +50,6 @@ import "react-quill/dist/quill.snow.css";
 import { SPFI } from "@pnp/sp/presets/all";
 import { fetchUserInformationList } from "../../../APISearvice/GroupTeamService";
 import Multiselect from "multiselect-react-dropdown";
-import { MSGraphClientV3 } from "@microsoft/sp-http";
-import { WebPartContext } from "@microsoft/sp-webpart-base";
-import context from "react-bootstrap/esm/AccordionContext";
-
-
 const DiscussionForumContext = ({ props }: any) => {
   const sp: SPFI = getSP();
   const { useHide }: any = React.useContext(UserContext);
@@ -73,7 +67,6 @@ const DiscussionForumContext = ({ props }: any) => {
   const [DocumentpostIdsArr, setDocumentpostIdsArr] = React.useState([]);
   const [selectedValue, setSelectedValue] = useState([]);
   const [EnityData, setEnityData] = React.useState([]);
-  const [CurrentUserEnityData, setCurrentUserEnityData] = React.useState([]);
   const [options, setOpions] = useState([]);
   const [filters, setFilters] = React.useState({
     SNo: "",
@@ -188,44 +181,7 @@ const DiscussionForumContext = ({ props }: any) => {
     setGroupTypeData(
       await getChoiceFieldOption(sp, "ARGDiscussionForum", "GroupType")
     );
-    // Fetch the leaderboard as before
-
-
-    // Set the leaderboard and current user info as separate states
-    
-    setCurrentUserEnityData(await GetEntity(sp));
-
-    // Assuming you have a setCurrentUser function
-
   };
-
-  const GetEntity = async (_sp: SPFI) => {
-    let arr: any[] = []
-    try {
-      // Fetch the leaderboard as before
-      //const leaderboardData = await getLeaderTop(sp);
-
-      // Retrieve the current logged-in user's data using the /me endpoint
-      const currentWPContext: WebPartContext = props.context;
-      const msgraphClient: MSGraphClientV3 = await currentWPContext.msGraphClientFactory.getClient('3');
-      const currentUserData = await msgraphClient.api("/me")
-        .version("v1.0")
-        .select("displayName,mail,jobTitle,mobilePhone,companyName,userPrincipalName")
-        .get();
-
-      // Log the current user data
-      console.log("Current User Data: ", currentUserData);
-
-      // Set the leaderboard and current user info as separate states
-      //setLeaderboard(leaderboardData);
-      //setCurrentUser(currentUserData);  // Assuming you have a setCurrentUser function
-
-    } catch (error) {
-      console.error("Error fetching users:", error);
-    }
-    return arr;
-  }
-
   const FilterDiscussionData = async (optionFilter: string) => {
     setAnnouncementData(await getDiscussionFilterAll(sp, optionFilter))
   }
@@ -1006,7 +962,6 @@ const DiscussionForumContext = ({ props }: any) => {
                 GroupType: formData.GroupType,
                 DiscussionForumCategoryId: Number(formData.category),
                 InviteMemebersId: selectedIds,
-                ARGDiscussionStatus: "Ongoing",
               };
             }
             else {
@@ -1016,8 +971,7 @@ const DiscussionForumContext = ({ props }: any) => {
                 Description: richTextValues.description,
                 EntityId: Number(formData.entity),
                 GroupType: formData.GroupType,
-                DiscussionForumCategoryId: Number(formData.category),
-                ARGDiscussionStatus: "Ongoing"
+                DiscussionForumCategoryId: Number(formData.category)
               };
             }
 
@@ -1224,7 +1178,7 @@ const DiscussionForumContext = ({ props }: any) => {
           }}
         >
           <div className="container-fluid paddb">
-            <div className="row">
+            <div className="row" style={{ paddingLeft: "0.5rem" }}>
               <div className="col-lg-6">
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
               </div>
@@ -1322,11 +1276,7 @@ const DiscussionForumContext = ({ props }: any) => {
                                   onChange(e.target.name, e.target.value)
                                 }
                               >
-                                <option value=""> {CurrentUserEnityData.map((item, index) => (item?.companyName != null
-
-                                  ? item?.companyName
-
-                                  : "NA"))}</option>
+                                <option value="">Select</option>
                                 {EnityData.map((item, index) => (
                                   <option key={index} value={item.id}>
                                     {item.name}
@@ -1866,8 +1816,7 @@ const DiscussionForumContext = ({ props }: any) => {
                                 {item.commentsLength}
                               </td>
                               <td style={{ minWidth: "70px", maxWidth: "70px" }}>
-                                {/* {moment(item.CreatedDate).fromNow()} */}
-                                {moment(item.Created).format("DD-MMM-YYYY")}
+                                {moment(item.CreatedDate).fromNow()}
                               </td>
                             </tr>
                           ))
