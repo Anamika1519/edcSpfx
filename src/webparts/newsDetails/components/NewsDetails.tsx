@@ -248,7 +248,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
     // const queryString = decryptId(Number(updatedString));
     setArrDetails(await getAnnouncementDetailsById(sp, Number(idNum)));
-    let Newsdata = await getAllAnnouncementnonselected(sp, Number(idNum),'News');
+    let Newsdata = await getAllAnnouncementnonselected(sp, Number(idNum));
     setArrtopNews(Newsdata);
     // let arr = []
 
@@ -270,105 +270,6 @@ const NewsdetailsContext = ({ props }: any) => {
 
   }
 
-  // const getApiData = async () => {
-
-
-  //   let initialComments: any[] = []
-
-  //   const ids = window.location.search;
-
-  //   const originalString = ids;
-  //   let initialArray: any[] = [];
-  //   let arrLike = {}
-  //   let likeArray: any[] = []
-  //   const idNum = originalString.substring(1);
-  //   sp.web.lists.getByTitle("ARGAnnouncementandNewsComments").items.select("*,AnnouncementAndNews/Id").expand("AnnouncementAndNews").filter(`AnnouncementAndNewsId eq ${Number(idNum)}`).orderBy("Created", false)().then(async (result: any) => {
-  //     console.log(result, 'ARGAnnouncementandNewsComments');
-
-
-
-  //     initialComments = result;
-
-  //     for (var i = 0; i < initialComments.length; i++) {
-  //       await sp.web.lists
-  //         .getByTitle("ARGAnnouncementandNewsUserLikes")
-  //         .items.filter(`AnnouncementAndNewsCommentId eq ${Number(initialComments[i].Id)}`).select("ID,AuthorId,UserName,Like,Created")()
-  //         .then((result1: any) => {
-  //           console.log(result1, "ARGEventsUserLikes");
-  //           likeArray = []
-  //           for (var j = 0; j < result1.length; j++) {
-  //             arrLike = {
-  //               "ID": result1[j].Id,
-  //               "AuthorId": result1[j].AuthorId,
-  //               "UserName": result1[j].UserName,
-  //               "Like": result1[j].Like,
-  //               "Created": result1[j].Created
-  //             }
-  //             likeArray.push(arrLike)
-  //           }
-  //           let arr = {
-  //             Id: initialComments[i].Id,
-  //             UserName: initialComments[i].UserName,
-  //             AuthorId: initialComments[i].AuthorId,
-  //             Comments: initialComments[i].Comments,
-  //             Created: new Date(initialComments[i].Created).toLocaleString(), // Formatting the created date
-  //             UserLikesJSON: result1.length > 0 ? likeArray : []
-  //             , // Default to empty array if null
-  //             UserCommentsJSON:
-  //               initialComments[i].UserCommentsJSON != "" &&
-  //                 initialComments[i].UserCommentsJSON != null &&
-  //                 initialComments[i].UserCommentsJSON != undefined
-  //                 ? JSON.parse(initialComments[i].UserCommentsJSON)
-  //                 : [], // Default to empty array if null
-  //             userHasLiked: initialComments[i].userHasLiked,
-  //             UserProfile: initialComments[i].UserProfile
-  //           }
-  //           initialArray.push(arr);
-  //         })
-  //     }
-  //     setComments(initialArray)
-  //     // setComments(initialComments.map((res) => ({
-
-  //     //   Id: res.Id,
-
-  //     //   UserName: res.UserName,
-
-  //     //   AuthorId: res.AuthorId,
-
-  //     //   Comments: res.Comments,
-
-  //     //   Created: new Date(res.Created).toLocaleString(), // Formatting the created date
-
-  //     //   UserLikesJSON: res.UserLikesJSON != "" && res.UserLikesJSON != null && res.UserLikesJSON != undefined ? JSON.parse(res.UserLikesJSON) : [], // Default to empty array if null
-
-  //     //   UserCommentsJSON: res.UserCommentsJSON != "" && res.UserCommentsJSON != null && res.UserCommentsJSON != undefined ? JSON.parse(res.UserCommentsJSON) : [], // Default to empty array if null
-
-  //     //   userHasLiked: res.userHasLiked,
-
-  //     //   UserProfile: res.UserProfile
-
-  //     //   // Initialize as false
-
-  //     // })))
-
-
-
-  //     // getUserProfilePicture(CurrentUser.Id,sp).then((url) => {
-
-  //     //   if (url) {
-
-  //     //     console.log("Profile Picture URL:", url);
-
-  //     //   } else {
-
-  //     //     console.log("No profile picture found.");
-
-  //     //   }
-
-  //     // });
-
-  //   })
-  // }
   const getApiData = async () => {
 
 
@@ -852,7 +753,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
                             <div className="col-md-12 col-xl-12">
 
-                              <p className="mb-2 mt-1 d-block text-dark font-14 eventtextnew">
+                              <p className="mb-2 mt-1 d-block font-14 eventtextnew">
 
                                 <span className="pe-2 text-nowrap mb-0 d-inline-block">
 
@@ -890,7 +791,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
 
 
-                            <p style={{ lineHeight: '22px' }} className="d-block text-dark mt-2 font-16">
+                            <p style={{ lineHeight: '22px' }} className="d-block text-muted mt-2 font-14">
 
                               {item.Overview}
 
@@ -944,7 +845,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
                           </div><div className="row mt-2">
 
-                            <p style={{ lineHeight: '22px' }} className="d-block text-dark mt-2 mb-0 newpara font-16">
+                            <p style={{ lineHeight: '22px' }} className="d-block text-muted mt-2 mb-0 font-14">
 
                               <div
 
@@ -1004,7 +905,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
                               onChange={(e) => setNewComment(e.target.value)}
 
-                              placeholder="Type your comment here..."
+                              placeholder="Add a new comment..."
 
                               rows={3} style={{ borderRadius: 'unset' }}
 
@@ -1022,7 +923,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
 
 
-                              {loading ? 'Submitting...' : 'Post'} {/* Change button text */}
+                              {loading ? 'Submitting...' : 'Add Comment'} {/* Change button text */}
 
                             </button>
 
@@ -1095,7 +996,7 @@ const NewsdetailsContext = ({ props }: any) => {
               </div>
 
               <div className="col-lg-4">
-              <div style={{  position:'sticky', top:'90px' }} className="card  postion8">
+                <div className="card mt-4 postion8">
                   <div className="card-body">
                     <h4 className="header-title text-dark  fw-bold mb-0">
                       <span style={{ fontSize: '20px' }}>Latest News</span>    <a className="font-11 btn btn-primary  waves-effect waves-light view-all cursor-pointer" href="#" onClick={NavigatetoEvents} style={{ float: 'right', lineHeight: '12px' }}>View All</a></h4>
@@ -1104,11 +1005,10 @@ const NewsdetailsContext = ({ props }: any) => {
                       return (
                         <div className="mainevent mt-2">
                           <div className="bordernew">
-                            <h3 className="twolinewrap font-16  text-dark fw-bold mb-2 cursor-pointer" style={{ cursor: "pointer" }}  onClick={() => gotoNewsDetails(res)}>{res.Title}</h3>
-                            <p style={{ lineHeight: '20px', fontSize:'15px' }} className="text-muted twolinewrap">{res.Overview}</p>
+                            <h3 className="twolinewrap font-14  text-dark fw-bold mb-2 cursor-pointer" style={{ cursor: "pointer" }}  onClick={() => gotoNewsDetails(res)}>{res.Title}</h3>
+                            <p style={{ lineHeight: '20px' }} className="font-12 text-muted twolinewrap">{res.Overview}</p>
                             <div className="row">
-                              <div className="col-sm-12">
-                                <span style={{ marginTop: "4px" }} className="date-color font-12 float-start  mb-1 ng-binding"><i className="fe-calendar"></i> {moment(res.Created).format("DD-MMM-YYYY")}</span>  &nbsp; &nbsp; &nbsp; <span className="font-12" style={{ color: '#009157', fontWeight: '600' }}>  </span></div>
+                              <div className="col-sm-12"> <span style={{ marginTop: "4px" }} className="date-color font-12 float-start  mb-1 ng-binding"><i className="fe-calendar"></i> {moment(res.Created).format("DD-MMM-YYYY")}</span>  &nbsp; &nbsp; &nbsp; <span className="font-12" style={{ color: '#009157', fontWeight: '600' }}>  </span></div>
 
                             </div>
                           </div>
