@@ -1543,10 +1543,10 @@ const handleRemoveUser = async (userId: number) => {
           className="content "
           style={{
             marginLeft: `${!useHide ? "240px" : "80px"}`,
-            marginTop: "1rem",
+            marginTop: "0rem",
           }}
         >
-          <div className="container-fluid">
+          <div className="container-fluid paddb">
           {isPopupVisible && (
         <div className="popup">
           <div className="popup-content">
@@ -1910,12 +1910,13 @@ const handleRemoveUser = async (userId: number) => {
 <div className="card-body pb-3 gheight">
                           {}
                           <h4 className="header-title font-16 text-dark fw-bold mb-0"  style={{ fontSize: "20px" }}>Project Owner</h4>
+                         <div className="displcenter">
                           <img 
           src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item?.Author?.EMail}`}
-          className="rounded-circlecss6 img-thumbnail avatar-xl"
+          className="rounded-circlecss68 img-thumbnail avatar-xl"
           alt="profile-image"
-        />
-                          <h1 className="text-muted font-14 mt-3"><p className="text-dark font-16 text-center mb-2"> {item.Author.Title}</p>
+        /></div>
+                          <h1 className="text-muted font-14 mt-1"><p className="text-dark font-16 text-center mb-2"> {item.Author.Title}</p>
                           {/* <p className="text-muted font-14 text-center mb-1">Cloud Infrastructure Alchemist</p> */}
                           <p className="text-muted font-12 text-center">{item.Author.EMail} </p>
                           </h1></div>

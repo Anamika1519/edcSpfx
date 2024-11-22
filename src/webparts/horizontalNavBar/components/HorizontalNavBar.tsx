@@ -336,7 +336,7 @@ const HorizontalNavbar = ({ _context, siteUrl }: any) => {
               <div className={searchResults.length > 0 ? 'search-results' : ''}>
 
                 <div className={searchResults.length > 0 ? 'scrollbar' : ''} id={searchResults.length > 0 ? 'style-6' : ''}>
-                  {searchResults.length > 0 && <span style={{ padding: '0.85rem' }}>Found {searchResults.length} results</span>}
+                  {searchResults.length > 0 && <span className='alifnsearch' style={{ padding: '0.85rem' }}>Found {searchResults.length} results</span>}
                   {console.log("grped searchResults dropfown", groupedSearchResults)}
                   {searchResults.length > 0 ? (
 
@@ -344,15 +344,15 @@ const HorizontalNavbar = ({ _context, siteUrl }: any) => {
 Object.keys(groupedSearchResults).map((grpreskey:any,grpind:number)=>(
 
       <div>
-      <div key={grpind}>{ListTitleTiSearchCategoryMapping[grpreskey]}({groupedSearchResults[grpreskey].length})</div>
+      <div className='alifnsearch1'  key={grpind}>{ListTitleTiSearchCategoryMapping[grpreskey]}({groupedSearchResults[grpreskey].length})</div>
       {
         groupedSearchResults[grpreskey].map((result:any,index:any)=>(
           <div key={index} className="search-result-item">                                                    
             <a onClick={() => handleSearchClick(result)} style={{ padding: '0.85rem' }}>
-              <h4 className='eclipcsss' style={{ fontSize: '0.9rem' }}>{result.Title || result.ProjectName || result.EventName || result.Contentpost}</h4>
+              <h4 className='eclipcsss text-dark' style={{ fontSize: '16px' }}>{result.Title || result.ProjectName || result.EventName || result.Contentpost}</h4>
               {/* {result.Description && <p dangerouslySetInnerHTML={{ __html: result.Description }}></p>} */}
-              {result.Overview && <p className='eclipcsss' style={{ fontSize: '0.7rem' }}>{result.Overview}</p>}
-              {result.EventAgenda && <p className='eclipcsss' style={{ fontSize: '0.7rem' }}>{result.EventAgenda}</p>}
+              {result.Overview && <p className='eclipcsss text-muted' style={{ fontSize: '14px' }}>{result.Overview}</p>}
+              {result.EventAgenda && <p className='eclipcsss text-muted' style={{ fontSize: '14px' }}>{result.EventAgenda}</p>}
             </a>
           </div>
 

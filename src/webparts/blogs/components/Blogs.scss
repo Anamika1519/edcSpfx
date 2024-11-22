@@ -11,7 +11,7 @@
   min-width: 28px;
 }
 .ql-editor{min-height: 120px; max-height: 120px;}
-.ql-toolbar .ql-formats:nth-child(4){display: none !important;}
+.ql-toolbar .ql-formats:nth-child(3),.ql-toolbar .ql-formats:nth-child(4){display: none !important;}
 input.form-control.inputcss {
   display: block;
   width: 100%;

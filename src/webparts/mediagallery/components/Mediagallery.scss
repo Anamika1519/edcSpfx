@@ -286,8 +286,9 @@ img, svg {
     display: block;
  
 }
-
-
+.gall-info span{text-transform: capitalize;}
+.filter-menu a{text-transform: capitalize;}
+.btn-primary:hover{color: #fff;}
 .text-dark { --ct-text-opacity: 1; color: rgba(var(--ct-dark-rgb), var(--ct-text-opacity)) !important;}
 .fw-bold {font-weight: 700 !important;}
 .btn-primary { background: rgba(0, 135, 81, 0.20) !important; font-weight: 500 !important;

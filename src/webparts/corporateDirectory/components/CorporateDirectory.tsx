@@ -1492,7 +1492,7 @@ debugger
                                   </button> : 
                                 <button key={item.ID}
 
-                                type="button" style={{background:'#efefef'}} className="btn btn-primary btn-sm waves-effect waves-light"
+                                type="button" style={{background:'#efefef'}} className="btn btn-primary1 text-dark btn-sm waves-effect waves-light"
 
                                 onClick={(!loadingUsers[item.ID]) ? (e) => toggleFollow(e, item) : undefined} disabled={loadingUsers[item.ID]}
 
@@ -1738,9 +1738,9 @@ debugger
 
                                     style={{
 
-                                      minWidth: "100px",
+                                      minWidth: "120px",
 
-                                      maxWidth: "100px",
+                                      maxWidth: "120px",
 
                                     }}
 

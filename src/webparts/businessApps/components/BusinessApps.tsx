@@ -810,7 +810,7 @@ const HelloWorldContext = ({ props }: any) => {
                           <div className="col-3">
                             <div style={{ background: '#fff', width: '45px', height: '45px' }}
                               className="avatar-lg d-flex justify-content-center align-items-center rounded-circle bg-soft-primary border-primary border">
-                              <img style={{ width: '30px' }} src={imageUrl} />
+                              <img style={{ width: '30px', marginTop:'10px' }} src={imageUrl} />
                             </div>
                           </div>
                           <div className="col-9 d-flex justify-content-left align-items-center">

@@ -1900,8 +1900,8 @@ const DiscussionForumContext = ({ props }: any) => {
                                   
                               <span className="indexdesign">  {startIndex + index + 1}</span>
                               </td>
-                              <td style={{ minWidth: "150px", maxWidth: "150px", textTransform: 'capitalize' }}  onClick={() => handleClick(item.Id)}>{item.Topic}</td>
-                              <td style={{ minWidth: "150px", maxWidth: "150px" }}>{item.Overview}</td>
+                              <td style={{ minWidth: "130px", maxWidth: "130px", textTransform: 'capitalize' }}  onClick={() => handleClick(item.Id)}>{item.Topic}</td>
+                              <td style={{ minWidth: "130px", maxWidth: "130px" }}>{item.Overview}</td>
                               <td style={{ minWidth: "100px", maxWidth: "100px" }}>
                                 {item?.DiscussionForumCategory?.CategoryName}
                               </td>
@@ -1911,6 +1911,7 @@ const DiscussionForumContext = ({ props }: any) => {
                                   style={{
                                   
                                     position: "relative",
+                                   
                                   }}
                                 >
                                   <div style={{ display: "flex" }} className="newimage5">
@@ -1949,7 +1950,7 @@ const DiscussionForumContext = ({ props }: any) => {
                                           }}
                                           className=""
                                         >
-                                          + 3 more
+                                         <span className="mt-2"> &nbsp;+ 3 more</span> 
                                         </div>
                                       </div>
                                     )}

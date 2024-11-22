@@ -859,7 +859,7 @@ setDocumentpostArr1([])
                     data-bs-target="#discussionModal"
                     className="btn btn-secondary waves-effect waves-light"
                   >
-                    <i className="fe-plus-circle"></i> New Request 1
+                    <i className="fe-plus-circle"></i> New Request 
                   </button>
                 </div>
 
