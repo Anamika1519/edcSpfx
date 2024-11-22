@@ -99,7 +99,7 @@ import { getSP } from "../loc/pnpjsConfig";
 
 import { Eye } from "react-feather";
 
-import {getApprovalListsData, getDataByID, getMyApproval, getMyRequest, updateItemApproval } from "../../../APISearvice/ApprovalService";
+import { getDataByID, getMyApproval, getMyRequest, updateItemApproval } from "../../../APISearvice/ApprovalService";
 
 const MyApprovalContext = ({ props }: any) => {
 
@@ -429,7 +429,7 @@ const MyApprovalContext = ({ props }: any) => {
 
         (filters.RequestedBy === "" ||
 
-          item?.Author?.Title?.toLowerCase().includes(
+          item?.Requester?.Title?.toLowerCase().includes(
 
             filters.RequestedBy.toLowerCase()
 
@@ -541,7 +541,7 @@ const MyApprovalContext = ({ props }: any) => {
 
     {
 
-      ChildComponent: "My Approval",
+      ChildComponent: "My Approve",
 
       ChildComponentURl: `${siteUrl}/SitePages/MyApprovals.aspx`,
 
@@ -697,6 +697,35 @@ const MyApprovalContext = ({ props }: any) => {
 
     setisActivedata(true)
 
+    let sessionkey="";
+    let redirecturl="";
+    if(Item?.ProcessName)
+    {
+      switch(Item?.ProcessName)
+      {
+        case "Announcement":
+          sessionkey="announcementId";
+          redirecturl=`${siteUrl}/SitePages/AddAnnouncement.aspx`+"?requestid="+Item?.Id+"&mode=approval";
+          break;
+        case "Event":
+          sessionkey="EventId";
+          redirecturl=`${siteUrl}/SitePages/EventMasterForm.aspx`+"?requestid="+Item?.Id+"&mode=approval";
+        break;
+        default:;
+     }
+
+      const encryptedId = encryptId(String(Item?.ContentId));
+      sessionStorage.setItem(sessionkey, encryptedId);
+      location.href=redirecturl;
+
+    }
+    // const encryptedId = encryptId(String(Item?.ContentId));
+
+    // sessionStorage.setItem("announcementId", encryptedId);
+
+    // location.href="https://officeindia.sharepoint.com/sites/SPFXDemo/SitePages/AddAnnouncement.aspx"+"?requestid="+Item?.Id+"&mode=approval";
+
+
   };
 
 
@@ -709,7 +738,8 @@ const MyApprovalContext = ({ props }: any) => {
 
       Remark: formData.Remark,
 
-      Status: Status
+      Status: Status,
+      TriggerUpdateFlow:true
 
     };
 
@@ -1275,7 +1305,7 @@ const MyApprovalContext = ({ props }: any) => {
 
                                   >
 
-                                    {item?.Author?.Title}
+                                    {item?.Requester?.Title}
 
                                   </td>
 

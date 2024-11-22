@@ -87,7 +87,7 @@ export const CommentNewsCard: React.FC<{
                 {username}
                 {/* </a> */}
               </h5>
-              <p className="text-muted font-12 mt-3">
+              <p className="text-muted font-12 mt-1">
                 <small>{Created}</small>
               </p>
             </div>

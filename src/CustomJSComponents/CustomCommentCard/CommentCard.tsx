@@ -101,7 +101,8 @@ export const CommentCard: React.FC<{
                 {/* </a> */}
               </h5>
               <p className="text-muted font-12 mt-0">
-                <small>{Created}</small>
+                {/* <small>{Created}</small> */}
+                <small> {moment(Created).format("DD-MMM-YYYY")}</small>
               </p>
             </div>
           </div>

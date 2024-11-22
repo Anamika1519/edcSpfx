@@ -313,7 +313,7 @@ const CheckCurrentuser = (Author:any)=>{
                 <small> {moment(Created).format("DD-MMM-YYYY")}</small>
               </p>
             </div>
-            {currentuserid === AuthorID && (
+            {/* {currentuserid === AuthorID && (
                 <div className="dropdown mt-2 me-2 font-18">
                 <FontAwesomeIcon
                   icon={faEllipsisV}
@@ -347,7 +347,7 @@ const CheckCurrentuser = (Author:any)=>{
                   </li>
                 </ul>
               </div>
-            )}
+            )} */}
           </div>
        {console.log(Comments, 'Comments')} {console.log("Comments [0]" , Comments[0])}
           {/* Editable CommentText */}
@@ -369,7 +369,7 @@ const CheckCurrentuser = (Author:any)=>{
                 }}
               />
               <button
-                className="btn btn-primary btn-sm mt-2"
+                className="btn btn-primary mb-3 btn-sm mt-2"
                 onClick={()=>handleSaveComment(Comments, editedText )}
                 disabled={loading}
               >
@@ -388,7 +388,41 @@ const CheckCurrentuser = (Author:any)=>{
             // </p>
             <p className="mt-2 d-flex justify-content-between" style={{ whiteSpace: "pre-wrap" }}>
             {editedText}
-           
+            {currentuserid === AuthorID && (
+                <div className="dropdown newdrop">
+                <FontAwesomeIcon
+                  icon={faEllipsisV}
+                  className="text-muted cursor-pointer"
+                  style={{ cursor: "pointer" }}
+                  id="dropdownMenuButton"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                />
+                <ul
+                  className="dropdown-menu dropdown-menu-end"
+                  aria-labelledby="dropdownMenuButton"
+                >
+                  <li>
+                    <button
+                      className="dropdown-item"
+                      onClick={() => {
+                        setIsEditing(true);
+                      }}
+                    >
+                      Edit
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      className="dropdown-item text-danger"
+                       onClick={() => Handledeletecomment()}
+                    >
+                      Delete
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            )}
           
           </p>
           )}
@@ -422,6 +456,7 @@ const CheckCurrentuser = (Author:any)=>{
                   </div>
                   <div className="w-100 mt-0">
                     <h6 className="font-14 fw600">{reply.UserName}</h6>
+                    <p className="mb-2 para-width  text-muted ng-binding" style={{ wordBreak: 'break-all', fontSize:'15px', paddingRight:'22px' }}>{reply.Comments}</p>
                     {/* <p className="mb-0 para-width text-muted ng-binding" style={{ wordBreak: 'break-all' }}>{reply.Comments}</p> */}
                     {/* {isEditing ? (
         <div>

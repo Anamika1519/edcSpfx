@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import CustomBreadcrumb from "../../../CustomJSComponents/CustomBreadcrumb/CustomBreadcrumb";
 import VerticalSideBar from "../../verticalSideBar/components/VerticalSideBar";
-import { SPFI } from "@pnp/sp/presets/all";
+import { IList, SPFI } from "@pnp/sp/presets/all";
 import { fetchUserInformationList } from "../../../APISearvice/GroupTeamService";
 import Select from 'react-select'
 import Swal from "sweetalert2";
@@ -108,16 +108,33 @@ const [options, setOpions] = useState([]);
   useEffect(() => {
     // Fetch users from SharePoint when the component mounts
     const fetchUsers = async () => {
+      // try {
+      //   const userList = await sp.web.siteUsers();  // Fetch users from the site
+      //   const userOptions = userList.map(user => ({
+      //     label: user.Title,   // Display name of the user
+      //     value: user.Id       // Unique user ID
+      //   }));
+      //   setUsers(userOptions);  // Set the options for Select and Multiselect
+      // } catch (error) {
+      //   console.error('Error fetching users:', error);
+      // }
       try {
-        const userList = await sp.web.siteUsers();  // Fetch users from the site
-        const userOptions = userList.map(user => ({
-          label: user.Title,   // Display name of the user
-          value: user.Id       // Unique user ID
-        }));
-        setUsers(userOptions);  // Set the options for Select and Multiselect
-      } catch (error) {
+        // Fetch all users and filter out groups
+        const siteUsers = await sp.web.siteUsers();
+  
+        // Filter users by checking the PrincipalType and ensure it's not a group
+        const usersOnly = siteUsers.filter(user => user.PrincipalType === 1);
+        const formattedOptions = usersOnly.map((item) => ({
+          name: item.Title, // Adjust according to your list schema
+          id: item.Id,
+      }));
+  
+      setUsers(formattedOptions);
+        console.log(usersOnly, 'usersOnly');
+        return usersOnly;
+    } catch (error) {
         console.error('Error fetching users:', error);
-      }
+    }
     };
 
     fetchUsers();
@@ -167,16 +184,33 @@ const [options, setOpions] = useState([]);
   useEffect(() => {
     // Fetch users from SharePoint when the component mounts
     const fetchUsers = async () => {
+      // try {
+      //   const userList = await sp.web.siteUsers();  // Fetch users from the site
+      //   const userOptions = userList.map(user => ({
+      //     label: user.Title,   // Display name of the user
+      //     value: user.Id       // Unique user ID
+      //   }));
+      //   setUsers(userOptions);  // Set the options for Select and Multiselect
+      // } catch (error) {
+      //   console.error('Error fetching users:', error);
+      // }
       try {
-        const userList = await sp.web.siteUsers();  // Fetch users from the site
-        const userOptions = userList.map(user => ({
-          label: user.Title,   // Display name of the user
-          value: user.Id       // Unique user ID
-        }));
-        setUsers(userOptions);  // Set the options for Select and Multiselect
-      } catch (error) {
+       
+        const siteUsers = await sp.web.siteUsers();
+  
+
+        const usersOnly = siteUsers.filter(user => user.PrincipalType === 1);
+        const formattedOptions = usersOnly.map((item) => ({
+          name: item.Title, 
+          id: item.Id,
+      }));
+  
+      setUsers(formattedOptions);
+        console.log(usersOnly, 'usersOnly');
+        return usersOnly;
+    } catch (error) {
         console.error('Error fetching users:', error);
-      }
+    }
     };
 
     fetchUsers();
@@ -271,7 +305,7 @@ ApICallData();
       .getByTitle("ARGProjectComments")
       .items.select("*,ARGProject/Id ,Author/ID,Author/Title,Author/EMail")
       .expand("ARGProject , Author")
-      .filter(`ARGProjectId eq ${Number(idNum)}`)()
+      .filter(`ARGProjectId eq ${Number(idNum)}`).orderBy("Modified" , false )()
       .then(async (result: any) => {
         console.log(result, "ARGProjectComments");
 
@@ -921,42 +955,79 @@ const sanitizeFileName = (name:any) => {
   // Remove invalid characters
   return name.replace(/[<>:"/\\|?*%#]/g, '_'); // Replace invalid characters with an underscore
 };
-
 const uploadfileinfolder = async () => {
   console.log("Entering upload function");
-
-  for (const file of selectedFiles) {
-      try {
+ 
+  try {
+      for (const file of selectedFiles) {
           console.log(`Uploading file: ${file.name}`);
           console.log(`filemanager: ${filemanager}`);
-
-          // Sanitize the file name
+ 
+   
           const sanitizedFileName = sanitizeFileName(file.name);
           console.log(`Sanitized file name: ${sanitizedFileName}`);
-
-          // Reference the folder by server-relative path
-          const uploadFolder = sp.web.getFolderByServerRelativePath(filemanager.trim());
+ 
+          const uploadFolder = sp.web.getFolderByServerRelativePath(filemanager);
           console.log(uploadFolder, "uploadFolder");
-
-          // Upload the file using addChunked (use appropriate chunk size if needed)
+ 
+   
           const uploadResult = await uploadFolder.files.addChunked(sanitizedFileName, file);
-
+ 
           if (uploadResult) {
-              await Swal.fire(
-                  'Uploaded!',
-                  'The file has been successfully uploaded.',
-                  'success'
-              );
-              getAllFilesForProject();
-              setSelectedFiles([]);
+              console.log(`Upload successful for file: ${file.name}`);
           }
-
-          console.log(`Upload successful for file: ${file.name}`);
-      } catch (error) {
-          console.error(`Error uploading file: ${file.name}`, error);
       }
+ 
+ 
+      await Swal.fire(
+          'Uploaded!',
+          'All files have been successfully uploaded.',
+          'success'
+      );
+      getAllFilesForProject();
+      setSelectedFiles([]);
+  } catch (error) {
+      console.error(`Error uploading file`, error);
   }
 };
+ 
+
+// const uploadfileinfolder = async () => {
+//   console.log("Entering upload function");
+
+//   for (const file of selectedFiles) {
+//       try {
+//           console.log(`Uploading file: ${file.name}`);
+//           console.log(`filemanager: ${filemanager}`);
+
+//           // Sanitize the file name
+//           const sanitizedFileName = sanitizeFileName(file.name);
+//           console.log(`Sanitized file name: ${sanitizedFileName}`);
+
+//           // Reference the folder by server-relative path
+//           const uploadFolder = sp.web.getFolderByServerRelativePath(filemanager.trim());
+//           console.log(uploadFolder, "uploadFolder");
+
+//           // Upload the file using addChunked (use appropriate chunk size if needed)
+//           const uploadResult = await uploadFolder.files.addChunked(sanitizedFileName, file);
+
+//           if (uploadResult) {
+//               await Swal.fire(
+//                   'Uploaded!',
+//                   'The file has been successfully uploaded.',
+//                   'success'
+//               );
+//               getAllFilesForProject();
+//               setSelectedFiles([]);
+//           }
+
+//           console.log(`Upload successful for file: ${file.name}`);
+//       } catch (error) {
+//           console.error(`Error uploading file: ${file.name}`, error);
+//       }
+//   }
+// };
+
 
   const removeFile = (fileName: string) => {
     setSelectedFiles(prevFiles => prevFiles.filter(file => file.name !== fileName));
@@ -1021,7 +1092,7 @@ const uploadfileinfolder = async () => {
      
         
       
-      const getargmember = await sp.web.lists.getByTitle('ARGProject').items.filter(`ProjectName eq '${projectname}'`).select("*,TeamMembers/ID,TeamMembers/EMail,TeamMembers/Title").expand("TeamMembers")();
+      const getargmember :IList[] = await sp.web.lists.getByTitle('ARGProject').items.filter(`ProjectName eq '${projectname}'`).select("*,TeamMembers/ID,TeamMembers/EMail,TeamMembers/Title").expand("TeamMembers")();
       console.log(getargmember, "getargmember")
       const userList = await sp.web.lists.getByTitle("User Information List").items.select("ID", "Title", "EMail", "Department", "JobTitle", "Picture").filter("EMail ne null")();
       console.log(userList, "userlist")
@@ -1521,13 +1592,13 @@ const handleRemoveUser = async (userId: number) => {
               />
 
               {/* Multiselect component */}
-              <Multiselect
+              {/* <Multiselect
                 options={users}  // Same options for both Select and Multiselect
                 selectedValues={selectedValue}
                 onSelect={onSelect} // Called when items are selected
                 onRemove={onRemove} // Called when items are removed
                 displayValue="label" // Display name of the user
-              />
+              /> */}
               <button type="submit" onClick={UpdateTeamMember}>Submit</button>
             </form>
           </div>
@@ -1839,6 +1910,11 @@ const handleRemoveUser = async (userId: number) => {
 <div className="card-body pb-3 gheight">
                           {}
                           <h4 className="header-title font-16 text-dark fw-bold mb-0"  style={{ fontSize: "20px" }}>Project Owner</h4>
+                          <img 
+          src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item?.Author?.EMail}`}
+          className="rounded-circlecss6 img-thumbnail avatar-xl"
+          alt="profile-image"
+        />
                           <h1 className="text-muted font-14 mt-3"><p className="text-dark font-16 text-center mb-2"> {item.Author.Title}</p>
                           {/* <p className="text-muted font-14 text-center mb-1">Cloud Infrastructure Alchemist</p> */}
                           <p className="text-muted font-12 text-center">{item.Author.EMail} </p>
@@ -1847,11 +1923,16 @@ const handleRemoveUser = async (userId: number) => {
 
 <div className="card mobile-5 mt-2"  style={{ borderRadius: "22px", position:'sticky', top:'230px' }}>
   <div className="card-body pb-3 gheight">
-    <h4 className="header-title font-16 text-dark fw-bold mb-2"  style={{ fontSize: "20px" }}>Project Members</h4>
+    <h4 className="header-title font-16 text-dark fw-bold mb-3"  style={{ fontSize: "20px" }}>Project Members</h4>
     {item.Author.EMail === currentUserEmailRef.current && (
     <div>
-     <button onClick={(e)=>togglevalue(e)}>Add User </button>
+     <button className="plusiconalign" onClick={(e)=>togglevalue(e)}> <img
+
+src={require("../assets/plus.png")}
+
+className="newplusicon" alt="add user" /> </button>
   <i className="fe-plus-circle"></i>
+  
     </div>
  
 )}
@@ -1877,7 +1958,12 @@ const handleRemoveUser = async (userId: number) => {
         <p className="mb-0">{id?.Title} </p>
         {item.Author.EMail === currentUserEmailRef.current && (
         <div>
-        <button onClick={()=>handleRemoveUser(id?.ID)}>Remove</button>
+        {/* <button onClick={()=>handleRemoveUser(id?.ID)}>Remove</button> */}
+
+        <a onClick={()=>handleRemoveUser(id?.ID)} className="action-icon text-danger">
+          <svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="trash-can" className="svg-inline--fa fa-trash-can " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+          <path fill="currentColor" d="M170.5 51.6L151.5 80l145 0-19-28.4c-1.5-2.2-4-3.6-6.7-3.6l-93.7 0c-2.7 0-5.2 1.3-6.7 3.6zm147-26.6L354.2 80 368 80l48 0 8 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-8 0 0 304c0 44.2-35.8 80-80 80l-224 0c-44.2 0-80-35.8-80-80l0-304-8 0c-13.3 0-24-10.7-24-24S10.7 80 24 80l8 0 48 0 13.8 0 36.7-55.1C140.9 9.4 158.4 0 177.1 0l93.7 0c18.7 0 36.2 9.4 46.6 24.9zM80 128l0 304c0 17.7 14.3 32 32 32l224 0c17.7 0 32-14.3 32-32l0-304L80 128zm80 64l0 208c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-208c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0l0 208c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-208c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0l0 208c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-208c0-8.8 7.2-16 16-16s16 7.2 16 16z">
+            </path></svg></a>
         </div>
 
         )
@@ -1885,11 +1971,8 @@ const handleRemoveUser = async (userId: number) => {
         }
       
         {/* <p className="mb-0">{id?.Title} </p> */}
-        <a onClick={()=>handleRemoveUser(id?.ID)} className="action-icon text-danger">
-          <svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="trash-can" className="svg-inline--fa fa-trash-can " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-          <path fill="currentColor" d="M170.5 51.6L151.5 80l145 0-19-28.4c-1.5-2.2-4-3.6-6.7-3.6l-93.7 0c-2.7 0-5.2 1.3-6.7 3.6zm147-26.6L354.2 80 368 80l48 0 8 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-8 0 0 304c0 44.2-35.8 80-80 80l-224 0c-44.2 0-80-35.8-80-80l0-304-8 0c-13.3 0-24-10.7-24-24S10.7 80 24 80l8 0 48 0 13.8 0 36.7-55.1C140.9 9.4 158.4 0 177.1 0l93.7 0c18.7 0 36.2 9.4 46.6 24.9zM80 128l0 304c0 17.7 14.3 32 32 32l224 0c17.7 0 32-14.3 32-32l0-304L80 128zm80 64l0 208c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-208c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0l0 208c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-208c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0l0 208c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-208c0-8.8 7.2-16 16-16s16 7.2 16 16z">
-            </path></svg></a>
-       {/* <button style={{minWidth:'auto', border:'none'}} onClick={()=>handleRemoveUser(id?.ID)}>Remove</button> */}
+       
+       
               <img
 
 src={require("../assets/calling.png")}

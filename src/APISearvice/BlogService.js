@@ -361,13 +361,12 @@ export const DeleteBusinessAppsAPI = async (_sp, id) => {
   return resultArr;
 }
 // new code end
-export const getAllBlogsnonselected = async (_sp, Idnum) => {
-  debugger
+export const getAllBlogsnonselected = async (_sp, Idnum,categoryId) => {  
   let arr = []
   let str = "Announcements"
   await _sp.web.lists.getByTitle("ARGBlogs").items
-    .select("*").expand("")
-    .filter(`ID ne ${Idnum}`)
+  .select("*,BlogCategory/ID,BlogCategory/CategoryName").expand("BlogCategory")
+  .filter(`ID ne ${Idnum} and BlogCategoryId eq '${categoryId}'` )
     .top(3)
     .orderBy("Created", false)
     .getAll()
@@ -387,15 +386,19 @@ export const getBlogDetailsById = async (_sp, idNum) => {
   let arr = []
   let arr1 = []
  
-  await _sp.web.lists.getByTitle("ARGBlogs").items.getById(idNum)()
-    .then((res) => {
+  await _sp.web.lists
+  .getByTitle("ARGBlogs")
+  .items.select("*,BlogCategory/ID,BlogCategory/CategoryName")
+  .expand("BlogCategory")
+  .filter(`Id eq ${Number(idNum)}`)()
+  .then((res) => {
       // arr=res;
       arr1.push(res)
       arr = arr1
     }).catch((error) => {
       console.log("Error fetching data: ", error);
     });
-  return arr;
+  return arr1;
 }
  
 // export const uploadFile = async (file, sp, docLib, siteUrl) => {

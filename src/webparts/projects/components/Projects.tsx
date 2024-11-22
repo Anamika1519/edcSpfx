@@ -133,9 +133,10 @@ const HelloWorldContext = ({ props }: any) => {
   const [selectedValue, setSelectedValue] = useState([]); // Initialize selectedValue as an array
   const [userId, setUserId] = useState<any>(-1);
   const [showDropdownId, setShowDropdownId] = React.useState(null);
+  const [placeholder, setPlaceholder] = useState("Select")
   const toggleDropdown = (itemId: any) => {
     if (showDropdownId === itemId) {
-      setShowDropdownId(null); // Close the dropdown if already open
+      setShowDropdownId(null); 
     } else {
       setShowDropdownId(itemId); // Open the dropdown for the clicked item
     }
@@ -170,7 +171,7 @@ const HelloWorldContext = ({ props }: any) => {
 
   const siteUrl = props.siteUrl;
   const truncateText = (text: string, maxLength: number) => {
-    return text.length > maxLength
+    return text?.length > maxLength
       ? text.substring(0, maxLength) + "..."
       : text;
   };
@@ -209,7 +210,7 @@ const HelloWorldContext = ({ props }: any) => {
     // alert('clear')
 // setFormData({ ...formData, ProjectName: "" , ProjectPriority : "" , ProjectPrivacy : "" , startDate : "" , dueDate : "" , Budget : "" , TeamMembers : "" , ProjectOverview : ""});
 // Use capital 'D'
-alert('clear');
+// alert('clear');
 setFormData({
   ProjectName: "",
   ProjectPriority: "",
@@ -563,7 +564,7 @@ setDocumentpostArr1([])
     }).then((result) => {
       if (result.isConfirmed) {
         sp.web.lists.getByTitle("ARGProject").items.getById(Id).update({
-          ProjectStatus: "Close"
+          ProjectStatus: "Completed"
         }).then(async () => {
           setDataproject(await fetchprojectdata(sp));
           Swal.fire("Updated!", "Project status has been set to 'Close'.", "success");
@@ -765,21 +766,38 @@ setDocumentpostArr1([])
   };
 
   const fetchOptions = async () => {
+    // try {
+    //   const items = await fetchUserInformationList(sp);
+
+    //   console.log(items, "itemsitemsitems");
+
+    //   const formattedOptions = items.map((item: { Title: any; Id: any }) => ({
+    //     name: item.Title, // Adjust according to your list schema
+
+    //     id: item.Id,
+    //   }));
+
+    //   setOpions(formattedOptions);
+    // } catch (error) {
+    //   console.error("Error fetching options:", error);
+    // }
     try {
-      const items = await fetchUserInformationList(sp);
+      // Fetch all users and filter out groups
+      const siteUsers = await sp.web.siteUsers();
 
-      console.log(items, "itemsitemsitems");
-
-      const formattedOptions = items.map((item: { Title: any; Id: any }) => ({
+      // Filter users by checking the PrincipalType and ensure it's not a group
+      const usersOnly = siteUsers.filter(user => user.PrincipalType === 1);
+      const formattedOptions = usersOnly.map((item) => ({
         name: item.Title, // Adjust according to your list schema
-
         id: item.Id,
-      }));
+    }));
 
-      setOpions(formattedOptions);
-    } catch (error) {
-      console.error("Error fetching options:", error);
-    }
+    setOpions(formattedOptions);
+      console.log(usersOnly, 'usersOnly');
+      return usersOnly;
+  } catch (error) {
+      console.error('Error fetching users:', error);
+  }
   };
 
   const onSelect = (
@@ -787,7 +805,12 @@ setDocumentpostArr1([])
     selectedItem: any
   ) => {
     setSelectedValue(selectedList);
-
+    if(selectedList.length > 0){
+      setPlaceholder("");
+    }else{
+      setPlaceholder("Select");
+    }
+	
     console.log("Selected item:", selectedItem, "selectedList", selectedList);
   };
 
@@ -796,7 +819,12 @@ setDocumentpostArr1([])
     removedItem: any
   ) => {
     setSelectedValue(selectedList);
-
+    if(selectedList.length > 0){
+      setPlaceholder("");
+    }else{
+      setPlaceholder("Select");
+    }
+	
     console.log("Removed item:", removedItem);
   };
 
@@ -831,7 +859,7 @@ setDocumentpostArr1([])
                     data-bs-target="#discussionModal"
                     className="btn btn-secondary waves-effect waves-light"
                   >
-                    <i className="fe-plus-circle"></i> New Request
+                    <i className="fe-plus-circle"></i> New Request 1
                   </button>
                 </div>
 
@@ -854,7 +882,7 @@ setDocumentpostArr1([])
                           type="button"
                           className="btn-close"
                           data-bs-dismiss="modal"
-                          aria-label="Close"
+                          aria-label="Completed"
                           onClick={()=>clearstates()}
                         ></button>
                       </div>
@@ -1102,6 +1130,7 @@ setDocumentpostArr1([])
                                 onSelect={onSelect}
                                 onRemove={onRemove}
                                 displayValue="name"
+                                placeholder={placeholder} 
                               />
                             </div>
                           </div>
@@ -1268,7 +1297,7 @@ setDocumentpostArr1([])
                                 role="tab"
                                 tabIndex={-1}
                               >
-                                Closed Projects
+                                Completed
                               </a>
                             </li>
                           </ul>
@@ -1329,10 +1358,29 @@ setDocumentpostArr1([])
                                         {truncateText(project.ProjectName , 40)}
                                       {/* {project.ProjectName} */}
                                     </a>
-                                 
+                                    ongoing mb-3
                                   </h4>
-                               
+                                  <p>{project?.ProjectStatus}</p>
                                   <a>
+{
+      project?.ProjectStatus === null 
+      ? null // Don't display anything if ProjectStatus is null
+      : (
+          <a className="ongoing mb-3"
+              style={{ 
+                  background: project?.ProjectStatus === 'Completed' ? '#cce7dc' : '#6c757d',
+                  color: project?.ProjectStatus === 'Completed' ? '#008751' : '#fff',
+                  padding: '5px',
+                  borderRadius: '4px',
+                  textDecoration: 'none'
+              }}
+          >
+              {project?.ProjectStatus === 'Ongoing' ? 'Ongoing' : 'Completed'}
+          </a>
+      )
+}
+</a>
+                                  {/* <a>
 
 {
       project?.ProjectStatus === null 
@@ -1340,14 +1388,34 @@ setDocumentpostArr1([])
       : (
           <a className="ongoing mb-3"
               style={{ 
-                  background: project?.ProjectStatus === 'Close' ? '#cce7dc' : '#6c757d',
-                  color: project?.ProjectStatus === 'Close' ? '#008751' : '#fff',
+                  background: project?.ProjectStatus === 'Completed' ? '#cce7dc' : '#6c757d',
+                  color: project?.ProjectStatus === 'Completed' ? '#008751' : '#fff',
                   padding: '5px',
                   borderRadius: '4px',
                   textDecoration: 'none'
               }}
           >
-              {project?.ProjectStatus === 'Ongoing' ? 'Ongoing' : 'Close'}
+              {project?.ProjectStatus === 'Ongoing' ? 'Ongoing' : 'Completed'}
+          </a>
+      )
+}
+</a> */}
+  <a>
+
+{
+      project?.ProjectStatus === null 
+      ? null // Don't display anything if ProjectStatus is null
+      : (
+          <a className="ongoing mb-3"
+              style={{ 
+                 background: project?.ProjectStatus === 'Completed' ? '#cce7dc' : '#6c757d',
+                  color: project?.ProjectStatus === 'Completed' ? '#008751' : '#fff',
+                  padding: '5px',
+                  borderRadius: '4px',
+                  textDecoration: 'none'
+              }}
+          >
+              {project?.ProjectStatus === 'Ongoing' ? 'Ongoing' : 'Completed'}
           </a>
       )
 }
@@ -1422,7 +1490,7 @@ setDocumentpostArr1([])
                                           }
                                         }
                                       )}
-                                      {
+                                      {/* {
                                         project?.TeamMembers?.length > 3 &&
 
                                         <div
@@ -1451,9 +1519,17 @@ setDocumentpostArr1([])
                                             +
                                           </div>
                                         </div>
+                                      } */}
+                                       {
+                                        project?.TeamMembers?.length > 3 &&
+                                        <div>
+                                          <div className="moreuser text-muted" >
+                                            +{project?.TeamMembers?.length - 3} more
+                                          </div>
+                                        </div>
                                       }
                                     </div>
-                                    {showDropdownId === project.Id && (
+                                    {/* {showDropdownId === project.Id && (
                                       <div
                                         className=""
                                         style={{
@@ -1492,7 +1568,7 @@ setDocumentpostArr1([])
                                           )
                                         )}
                                       </div>
-                                    )}
+                                    )} */}
                                   </div>
                                 </div>
                               </div>
@@ -1640,7 +1716,15 @@ setDocumentpostArr1([])
                                         </div>
                                       }
                                     </div>
-                                    {showDropdownId === project.Id && (
+                                    {
+                                        project?.TeamMembers?.length > 3 &&
+                                        <div>
+                                          <div className="moreuser text-muted" >
+                                            +{project?.TeamMembers?.length - 3} more
+                                          </div>
+                                        </div>
+                                      }
+                                    {/* {showDropdownId === project.Id && (
                                       <div
                                         className=""
                                         style={{
@@ -1678,7 +1762,7 @@ setDocumentpostArr1([])
                                           )
                                         )}
                                       </div>
-                                    )}
+                                    )} */}
                                   </div>
                                 </div>
                               </div>
@@ -1796,29 +1880,9 @@ setDocumentpostArr1([])
                                       )}
                                       {
                                         project?.TeamMembers?.length > 3 &&
-                                        <div
-                                          className=""
-                                          onClick={() =>
-                                            toggleDropdown(project.Id)
-                                          }
-                                          key={project.Id}
-                                        >
-                                          <div
-                                            style={{
-                                              margin:
-                                                index == 0
-                                                  ? "0 0 0 0"
-                                                  : "0 0 0px -12px",
-                                                     float:"left",
-                                                     display:'flex',
-                                                     alignItems:'center',
-                                                     justifyContent:'center',
-                                                     position:'relative',
-                                                     width:'40px'
-                                            }}
-                                            className="circlecssnewnew mlnew0 text-center img-thumbnail avatar-xl"
-                                          >
-                                            +
+                                        <div>
+                                          <div className="moreuser text-muted" >
+                                            +{project?.TeamMembers?.length - 3} more
                                           </div>
                                         </div>
                                       }
@@ -1827,7 +1891,7 @@ setDocumentpostArr1([])
                                       className=""
                                       style={{ position: "relative" }}
                                     >
-                                      {showDropdownId === project.Id && (
+                                      {/* {showDropdownId === project.Id && (
                                         project?.TeamMembers?.map(
                                           (id: any, idx: any) => {
                                             return (
@@ -1852,7 +1916,7 @@ setDocumentpostArr1([])
                                             );
                                           }
                                         )
-                                      )}
+                                      )} */}
                                     </div>
                                   </div>
                                 </div>
@@ -1918,7 +1982,7 @@ setDocumentpostArr1([])
 
                                         onClick={() => UpdatProject(project.Id)}
                                       >
-                                        Closed Project
+                                        Mark Completed
                                       </a>
                                     </div>
                                   </div>
@@ -1941,14 +2005,14 @@ setDocumentpostArr1([])
       : (
           <a className="ongoing mb-3"
               style={{ 
-                  background: project?.ProjectStatus === 'Close' ? '#cce7dc' : '#6c757d',
-                  color: project?.ProjectStatus === 'Close' ? '#008751' : '#fff',
+                  background: project?.ProjectStatus === 'Completed' ? '#cce7dc' : '#6c757d',
+                  color: project?.ProjectStatus === 'Completed' ? '#008751' : '#fff',
                   padding: '5px',
                   borderRadius: '4px',
                   textDecoration: 'none'
               }}
           >
-              {project?.ProjectStatus === 'Ongoing' ? 'Ongoing' : 'Close'}
+              {project?.ProjectStatus === 'Ongoing' ? 'Ongoing' : 'Completed'}
           </a>
       )
 }
@@ -2030,7 +2094,7 @@ setDocumentpostArr1([])
                                           }
                                         }
                                       )}
-                                      {
+                                      {/* {
                                         project?.TeamMembers?.length > 3 &&
 
                                         <div
@@ -2059,9 +2123,20 @@ setDocumentpostArr1([])
                                             +
                                           </div>
                                         </div>
+                                      } */}
+                                       {
+                                        project?.TeamMembers?.length > 3 &&
+
+                                        <div
+                                          className=""
+                                        >
+                                          <div className="moreuser text-muted">
+                                            +{project?.TeamMembers?.length - 3} more
+                                          </div>
+                                        </div>
                                       }
                                     </div>
-                                    {showDropdownId === project.Id && (
+                                    {/* {showDropdownId === project.Id && (
                                       <div
                                         className=""
                                         style={{
@@ -2101,7 +2176,7 @@ setDocumentpostArr1([])
                                           )
                                         )}
                                       </div>
-                                    )}
+                                    )} */}
                                   </div>
                                 </div>
                               </div>
@@ -2191,14 +2266,14 @@ setDocumentpostArr1([])
       : (
           <a className="ongoing mb-3"
               style={{ 
-                 background: project?.ProjectStatus === 'Close' ? '#cce7dc' : '#6c757d',
-                  color: project?.ProjectStatus === 'Close' ? '#008751' : '#fff',
+                 background: project?.ProjectStatus === 'Completed' ? '#cce7dc' : '#6c757d',
+                  color: project?.ProjectStatus === 'Completed' ? '#008751' : '#fff',
                   padding: '5px',
                   borderRadius: '4px',
                   textDecoration: 'none'
               }}
           >
-              {project?.ProjectStatus === 'Ongoing' ? 'Ongoing' : 'Close'}
+              {project?.ProjectStatus === 'Ongoing' ? 'Ongoing' : 'Completed'}
           </a>
       )
 }
@@ -2282,7 +2357,7 @@ setDocumentpostArr1([])
                                           }
                                         }
                                       )}
-                                      {
+                                      {/* {
                                         project?.TeamMembers?.length > 3 &&
 
                                         <div
@@ -2307,9 +2382,20 @@ setDocumentpostArr1([])
                                             +
                                           </div>
                                         </div>
+                                      } */}
+                                       {
+                                        project?.TeamMembers?.length > 3 &&
+
+                                        <div className="moreuser text-muted"
+                                        >
+                                          <div 
+                                          >
+                                            +{project?.TeamMembers?.length - 3} more
+                                          </div>
+                                        </div>
                                       }
                                     </div>
-                                    {showDropdownId === project.Id && (
+                                    {/* {showDropdownId === project.Id && (
                                       <div
                                         className=""
                                         style={{
@@ -2348,7 +2434,7 @@ setDocumentpostArr1([])
                                           )
                                         )}
                                       </div>
-                                    )}
+                                    )} */}
                                   </div>
                                 </div>
                               </div>
@@ -2432,14 +2518,14 @@ setDocumentpostArr1([])
       : (
           <a className="ongoing mb-3"
               style={{ 
-                  background: project?.ProjectStatus === 'Close' ? '#cce7dc' : '#6c757d',
-                  color: project?.ProjectStatus === 'Close' ? '#008751' : '#fff',
+                  background: project?.ProjectStatus === 'Completed' ? '#cce7dc' : '#6c757d',
+                  color: project?.ProjectStatus === 'Completed' ? '#008751' : '#fff',
                   padding: '5px',
                   borderRadius: '4px',
                   textDecoration: 'none'
               }}
           >
-              {project?.ProjectStatus === 'Ongoing' ? 'Ongoing' : 'Close'}
+              {project?.ProjectStatus === 'Ongoing' ? 'Ongoing' : 'Completed'}
           </a>
       )
 }
@@ -2523,7 +2609,7 @@ setDocumentpostArr1([])
                                           }
                                         }
                                       )}
-                                      {
+                                      {/* {
                                         project?.TeamMembers?.length > 3 &&
 
                                         <div
@@ -2549,9 +2635,19 @@ setDocumentpostArr1([])
                                             +
                                           </div>
                                         </div>
+                                      } */}
+                                       {
+                                        project?.TeamMembers?.length > 3 &&
+
+                                       <div className="moreuser text-muted"
+                                        ><div 
+                                          >
+                                            +{project?.TeamMembers?.length - 3} more
+                                          </div>
+                                        </div>
                                       }
                                     </div>
-                                    {showDropdownId === project.Id && (
+                                    {/* {showDropdownId === project.Id && (
                                       <div
                                         className=""
                                         style={{
@@ -2591,7 +2687,7 @@ setDocumentpostArr1([])
                                           )
                                         )}
                                       </div>
-                                    )}
+                                    )} */}
                                   </div>
                                 </div>
                               </div>
@@ -2622,7 +2718,7 @@ setDocumentpostArr1([])
                   {Dataproject.length > 0 ? (
                     <div className="row">
                       {Dataproject.slice(0, itemsToShow).map((project, index) => {
-                        if (project?.ProjectStatus === "Close") {
+                        if (project?.ProjectStatus === "Closed") {
                           return (
                             <div key={index} className="col-lg-4 col-md-6 mb-0">
                               <div className="card project-box">
@@ -2674,14 +2770,14 @@ setDocumentpostArr1([])
       : (
           <a className="ongoing mb-3"
               style={{ 
-                   background: project?.ProjectStatus === 'Close' ? '#cce7dc' : '#6c757d',
-                  color: project?.ProjectStatus === 'Close' ? '#008751' : '#fff',
+                   background: project?.ProjectStatus === 'Completed' ? '#cce7dc' : '#6c757d',
+                  color: project?.ProjectStatus === 'Completed' ? '#008751' : '#fff',
                   padding: '5px',
                   borderRadius: '4px',
                   textDecoration: 'none'
               }}
           >
-              {project?.ProjectStatus === 'Ongoing' ? 'Ongoing' : 'Close'}
+              {project?.ProjectStatus === 'Ongoing' ? 'Ongoing' : 'Completed'}
           </a>
       )
 }
@@ -2764,7 +2860,7 @@ setDocumentpostArr1([])
                                           }
                                         }
                                       )}
-                                      {
+                                      {/* {
                                         project?.TeamMembers?.length > 3 &&
 
                                         <div
@@ -2791,9 +2887,19 @@ setDocumentpostArr1([])
                                             +
                                           </div>
                                         </div>
+                                      } */}
+                                       {
+                                        project?.TeamMembers?.length > 3 &&
+
+                                       <div className="moreuser text-muted"
+                                        ><div 
+                                          >
+                                            +{project?.TeamMembers?.length - 3} more
+                                          </div>
+                                        </div>
                                       }
                                     </div>
-                                    {showDropdownId === project.Id && (
+                                    {/* {showDropdownId === project.Id && (
                                       <div
                                         className=""
                                         style={{
@@ -2832,7 +2938,7 @@ setDocumentpostArr1([])
                                           )
                                         )}
                                       </div>
-                                    )}
+                                    )} */}
                                   </div>
                                 </div>
                               </div>

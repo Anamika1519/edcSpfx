@@ -837,13 +837,13 @@ const BlogsContext = ({ props }: any) => {
               const updateResult = await updateItem(updatePayload, sp, postId);
               console.log("Update Result:", updateResult);
             }
-             Swal.fire("Item published successfully", "", "success");
+             //Swal.fire("Item published successfully", "", "success");
             // sessionStorage.removeItem("bannerId");
             setTimeout(async () => {
               setAnnouncementData(await getBlog(sp));
               dismissModal()
               window.location.href = `${siteUrl}/SitePages/Blogs.aspx`;
-            }, 2000);
+            }, 1000);
           }
         });
       //}
@@ -855,8 +855,8 @@ const BlogsContext = ({ props }: any) => {
       title: "Do you want to save as Draft?",
       showConfirmButton: true,
       showCancelButton: true,
-      confirmButtonText: "Save",
-      cancelButtonText: "Cancel",
+      confirmButtonText: "Yes",
+      cancelButtonText: "No",
       icon: "warning",
     }).then(async (result) => {
       //console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
@@ -910,7 +910,7 @@ const BlogsContext = ({ props }: any) => {
           //sessionStorage.removeItem("announcementId");
           setTimeout(() => {
             dismissModal()
-          }, 5000);
+          }, 1000);
         }
         // Upload Gallery Images
         if (ImagepostArr.length > 0) {
@@ -967,7 +967,7 @@ const BlogsContext = ({ props }: any) => {
         // Swal.fire("Item added successfully", "", "success");
         // sessionStorage.removeItem("bannerId");
         setTimeout(async () => {
-          Swal.fire("Item saved successfully", "", "success");
+         // Swal.fire("Item saved successfully", "", "success");
           dismissModal();
           setAnnouncementData(await getBlog(sp));
           window.location.href = `${siteUrl}/SitePages/Blogs.aspx`;
@@ -1308,7 +1308,7 @@ const BlogsContext = ({ props }: any) => {
                                 </div>
                               </div>
 
-                              <div className="col-lg-6">
+                              <div className="col-lg-12">
                                 <div className="mb-3">
                                   <label
                                     htmlFor="overview"
@@ -1331,7 +1331,7 @@ const BlogsContext = ({ props }: any) => {
                                 </div>
                               </div>
 
-                              <div className="col-lg-6">
+                              <div className="col-lg-12">
                                 <div className="mb-3">
                                   <label
                                     htmlFor="description"
@@ -1361,7 +1361,7 @@ const BlogsContext = ({ props }: any) => {
                                       }}
                                       style={{
                                         width: "100%",
-                                        fontSize: "6px",
+                                        fontSize: "14px",
                                         // height: "100px",
                                       }}
                                     />

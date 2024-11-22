@@ -126,7 +126,6 @@ const SocialFeedContext = ({ props }: any) => {
 
   }
   const fetchUserInformationList = async () => {
-    
     try {
       const currentUser = await sp.web.currentUser();
       let FollowedIds: any[] = [];
@@ -534,8 +533,6 @@ const SocialFeedContext = ({ props }: any) => {
       followersCheck = followers.map(f => f.Follower)
  
       setfollowwerLength(followersCheck.length)
-
-      
       if (followersCheck.length > 0) {//chhaya
         followersCheck.forEach(async element => {
           try {
@@ -1009,7 +1006,7 @@ const SocialFeedContext = ({ props }: any) => {
         FollowedId: itemId
       });
       fetchUserInformationList()
-      //Swal.fire("User followed successfully", "", "success");
+      Swal.fire("User followed successfully", "", "success");
       setFollowStatus((prevStatus) => ({
         ...prevStatus,
         [itemId]: true,

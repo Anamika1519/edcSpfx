@@ -53,10 +53,12 @@ export const getApprovalConfiguration = async (sp,EntityId) => {
   debugger
   let arr = []
   let sampleDataArray=[]
-  await sp.web.lists.getByTitle("ARGApprovalConfiguration").items.select("*,Users/ID,Users/Title,Users/EMail,Level/Id,Level/Level").expand("Users,Level").filter(`EntityId eq ${EntityId}`).getAll().then((res) => {
-    arr = res
-    console.log(arr, 'arr');
-  })
+  arr= await sp.web.lists.getByTitle("ARGApprovalConfiguration").items.select("*,Users/ID,Users/Title,Users/EMail,Level/Id,Level/Level").expand("Users,Level").filter(`EntityId eq ${EntityId}`).getAll();
+  
+  // .then((res) => {
+  //   arr = res
+  //   console.log(arr, 'arr');
+  // })
   return arr
 }
 export const AddContentLevelMaster = async (sp, itemData) => {
@@ -70,6 +72,14 @@ export const AddContentLevelMaster = async (sp, itemData) => {
 export const AddContentMaster = async (sp, itemData) => {
   let arr = []
   await sp.web.lists.getByTitle("ARGContentMaster").items.add(itemData).then((res) => {
+    arr = res
+    console.log(arr, 'arr');
+  })
+  return arr
+}
+export const UpdateContentMaster = async (sp,contentmasteritemid, itemData) => {
+  let arr;
+  await sp.web.lists.getByTitle("ARGContentMaster").items.getById(contentmasteritemid).update(itemData).then((res) => {
     arr = res
     console.log(arr, 'arr');
   })

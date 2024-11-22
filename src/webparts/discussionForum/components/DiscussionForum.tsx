@@ -1026,6 +1026,9 @@ const DiscussionForumContext = ({ props }: any) => {
                 DiscussionForumCategoryId: Number(formData.category),
                 InviteMemebersId: selectedIds,
                 ARGDiscussionStatus: "Ongoing",
+                DiscussionInProgress:"In Progress",
+                DiscussionFileManager:`/sites/SPFXDemo/ARGDiscussionFiles/${formData.topic}`,
+                DiscussionFolderName:formData.topic
               };
             }
             else {
@@ -1036,11 +1039,15 @@ const DiscussionForumContext = ({ props }: any) => {
                 EntityId: Number(formData.entity),
                 GroupType: formData.GroupType,
                 DiscussionForumCategoryId: Number(formData.category),
-                ARGDiscussionStatus: "Ongoing"
+                ARGDiscussionStatus: "Ongoing",               
+                DiscussionInProgress:"In Progress",
+                DiscussionFileManager:`/sites/SPFXDemo/ARGDiscussionFiles/${formData.topic}`,
+                DiscussionFolderName:formData.topic
               };
             }
 
             const postResult = await addItem(postPayload, sp);
+
             const postId = postResult?.data?.ID;
             if (!postId) {
               console.error("Post creation failed.");
@@ -1294,7 +1301,7 @@ const DiscussionForumContext = ({ props }: any) => {
                       </div>
                       <div className="modal-body">
                         <form className="row">
-                          <div className="col-lg-4">
+                          <div className="col-lg-6">
                             <div className="mb-3">
                               <label htmlFor="topic" className="form-label">
                                 Topic <span className="text-danger">*</span>
@@ -1313,7 +1320,7 @@ const DiscussionForumContext = ({ props }: any) => {
                             </div>
                           </div>
 
-                          <div className="col-lg-4">
+                          <div className="col-lg-6">
                             <div className="mb-3">
                               <label htmlFor="category" className="form-label">
                                 Category <span className="text-danger">*</span>
@@ -1336,7 +1343,7 @@ const DiscussionForumContext = ({ props }: any) => {
                               </select>
                             </div>
                           </div>
-                          <div className="col-lg-4">
+                          <div className="col-lg-6">
                             <div className="mb-3">
                               <label htmlFor="entity" className="form-label">
                                 Entity <span className="text-danger">*</span>
@@ -1366,7 +1373,7 @@ const DiscussionForumContext = ({ props }: any) => {
                             </div>
                           </div>
 
-                          <div className="col-lg-4">
+                          {/* <div className="col-lg-4">
                             <div className="mb-3">
                               <div className="d-flex justify-content-between">
                                 <div>
@@ -1430,9 +1437,9 @@ const DiscussionForumContext = ({ props }: any) => {
                                 }
                               />
                             </div>
-                          </div>
+                          </div> */}
 
-                          <div className="col-lg-4">
+                          {/* <div className="col-lg-4">
                             <div className="mb-3">
                               <div className="d-flex justify-content-between">
                                 <div>
@@ -1483,8 +1490,8 @@ const DiscussionForumContext = ({ props }: any) => {
                                 }
                               />
                             </div>
-                          </div>
-                          <div className="col-lg-4">
+                          </div> */}
+                          <div className="col-lg-6">
                             <div className="mb-3">
                               <label htmlFor="Type" className="form-label">
                                 Private or Public{" "}
@@ -1532,17 +1539,17 @@ const DiscussionForumContext = ({ props }: any) => {
                               </div>
                             </div>
                           )}
-                          <div className="col-lg-9">
+                          <div className="col-lg-12">
                             <div className="mb-3">
                               <label htmlFor="overview" className="form-label">
-                                Overview <span className="text-danger">*</span>
+                              Discussion  Overview <span className="text-danger">*</span>
                               </label>
                               <textarea
                                 className="form-control inputcss"
                                 id="overview"
-                                placeholder="Enter Overview"
+                                placeholder="Enter discussion overview here"
                                 name="overview"
-                                style={{ height: "90px" }}
+                                style={{ minHeight: "120px",maxHeight: "120px" }}
                                 value={formData.overview}
                                 onChange={(e) =>
                                   onChange(e.target.name, e.target.value)
@@ -1551,7 +1558,7 @@ const DiscussionForumContext = ({ props }: any) => {
                             </div>
                           </div>
 
-                          <div className="col-lg-12">
+                          {/* <div className="col-lg-12">
                             <div className="mb-3">
                               <label
                                 htmlFor="description"
@@ -1586,7 +1593,7 @@ const DiscussionForumContext = ({ props }: any) => {
                                 />
                               </div>
                             </div>
-                          </div>
+                          </div> */}
 
                           <div className="text-center butncss mt-5">
                             <div
@@ -1702,10 +1709,10 @@ const DiscussionForumContext = ({ props }: any) => {
                         <tr>
                           <th
                             style={{
-                              borderBottomLeftRadius: "10px",
+                              borderBottomLeftRadius: "0px",
                               minWidth: "50px",
                               maxWidth: "50px",
-                              borderTopLeftRadius: "10px",
+                              borderTopLeftRadius: "0px",
                             }}
                           >
                             <div
@@ -1727,7 +1734,7 @@ const DiscussionForumContext = ({ props }: any) => {
                               />
                             </div> */}
                           </th>
-                          <th style={{ minWidth: "150px", maxWidth: "150px" }}>
+                          <th style={{ minWidth: "130px", maxWidth: "130px" }}>
                             <div className="d-flex flex-column bd-highlight ">
                               <div
                                 className="d-flex"
@@ -1751,7 +1758,7 @@ const DiscussionForumContext = ({ props }: any) => {
                               </div> */}
                             </div>
                           </th>
-                          <th style={{ minWidth: "150px", maxWidth: "150px" }}>
+                          <th style={{ minWidth: "130px", maxWidth: "130px" }}>
                             <div className="d-flex flex-column bd-highlight ">
                               <div
                                 className="d-flex"
@@ -1804,25 +1811,24 @@ const DiscussionForumContext = ({ props }: any) => {
                               </div> */}
                             </div>
                           </th>
-                          <th style={{ minWidth: "70px", maxWidth: "70px" }}>
-                            <div className="d-flex flex-column bd-highlight ">
+                          <th style={{ minWidth: "110px", maxWidth: "110px" }}>
+                            <div className=" ">
                               <div
-                                className="d-flex "
-                                style={{ justifyContent: "space-between" }}
+                                className=""
+                               
                               >
-                                <span>Users</span>
+                                <span>Contributor</span>
                               </div>
                              
                             </div>
                           </th>
 
                           <th style={{
-                            minWidth: "50px", maxWidth: "50px", textAlign: "center"
+                            minWidth: "60px", maxWidth: "60px", textAlign: "center"
                           }}>
-                            <div className="d-flex flex-column bd-highlight ">
-                              <div
-                                className="d-flex"
-                                style={{ justifyContent: "space-between" }}
+                            <div className=" ">
+                              <div className=""
+                               
                               >
                                 <span>Replies</span>
                               </div>
@@ -1832,10 +1838,10 @@ const DiscussionForumContext = ({ props }: any) => {
                           <th style={{
                             minWidth: "50px", maxWidth: "50px", textAlign: "center"
                           }}>
-                            <div className="d-flex flex-column bd-highlight ">
+                            <div className=" ">
                               <div
-                                className="d-flex "
-                                style={{ justifyContent: "space-between" }}
+                                className=" "
+                                
                               >
                                 <span>Likes</span>
                               </div>
@@ -1843,13 +1849,10 @@ const DiscussionForumContext = ({ props }: any) => {
                             </div>
                           </th>
                           <th style={{
-                            minWidth: "110px", maxWidth: "110px", textAlign: "center"
+                            minWidth: "60px", maxWidth: "60px", textAlign: "center"
                           }}>
-                            <div className="d-flex flex-column bd-highlight ">
-                              <div
-                                className="d-flex  pb-0"
-                                style={{ justifyContent: "space-between" }}
-                              >
+                            <div className=" ">
+                              <div>
                                 <span>Response</span>
                               </div>
                              
@@ -1894,7 +1897,8 @@ const DiscussionForumContext = ({ props }: any) => {
                                   minWidth: "50px",
                                   maxWidth: "50px",
                                 }}>
-                                {startIndex + index + 1}
+                                  
+                              <span className="indexdesign">  {startIndex + index + 1}</span>
                               </td>
                               <td style={{ minWidth: "150px", maxWidth: "150px", textTransform: 'capitalize' }}  onClick={() => handleClick(item.Id)}>{item.Topic}</td>
                               <td style={{ minWidth: "150px", maxWidth: "150px" }}>{item.Overview}</td>
@@ -1902,11 +1906,10 @@ const DiscussionForumContext = ({ props }: any) => {
                                 {item?.DiscussionForumCategory?.CategoryName}
                               </td>
 
-                              <td style={{ minWidth: "70px", maxWidth: "70px" }}>
+                              <td style={{ minWidth: "110px", maxWidth: "110px" }}>
                                 <div
                                   style={{
-                                    minWidth: "70px",
-                                    maxWidth: "100%",
+                                  
                                     position: "relative",
                                   }}
                                 >
@@ -1925,7 +1928,7 @@ const DiscussionForumContext = ({ props }: any) => {
                                               src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
                                               className="rounded-circlecss img-thumbnail avatar-xl"
                                               alt="profile-image"
-                                            />
+                                            /> 
                                           );
                                         }
                                       }
@@ -1933,7 +1936,7 @@ const DiscussionForumContext = ({ props }: any) => {
                                     {item?.InviteMemebers?.length > 3 && (
                                       <div
                                         className=""
-                                        onClick={() => toggleDropdown1(item.Id)}
+                                        // onClick={() => toggleDropdown1(item.Id)}
                                         key={item.Id}
                                       >
                                         <div
@@ -1944,9 +1947,9 @@ const DiscussionForumContext = ({ props }: any) => {
                                                 ? "0 0 0 0"
                                                 : "0 0 0px -12px",
                                           }}
-                                          className="rounded-circlecss img-thumbnail avatar-xl"
+                                          className=""
                                         >
-                                          +
+                                          + 3 more
                                         </div>
                                       </div>
                                     )}
@@ -1985,8 +1988,8 @@ const DiscussionForumContext = ({ props }: any) => {
                                 </div>
                               </td>
                               {/* Replies Count */}
-        <td style={{ minWidth: "50px", maxWidth: "50px" }}>
-        <img
+        <td style={{ minWidth: "60px", maxWidth: "60px" }}>
+        <img style={{width:'16px', verticalAlign:'text-bottom', marginRight:'5px'}} 
                                             src={require("../assets/noun-reply.png")}
                                             
                                             alt="Check"
@@ -1995,16 +1998,12 @@ const DiscussionForumContext = ({ props }: any) => {
 
         {/* Likes Count */}
         <td style={{ minWidth: "50px", maxWidth: "50px" }}>
-        <img
-                                            src={require("../assets/noun-like.png")}
-                                           
-                                            alt="Check"
-                                          /> {item.likesCount ? item.likesCount : 0}
+        <img style={{width:'16px', verticalAlign:'text-bottom', marginRight:'5px'}}  src={require("../assets/glike.png")} alt="Check" /> {item.likesCount ? item.likesCount : 0}
         </td>
 
         {/* Comments Count */}
-        <td style={{ minWidth: "110px", maxWidth: "110px", textAlign: "center" }}>
-          {item.commentsLength ? item.commentsLength : 0}
+        <td style={{ minWidth: "60px", maxWidth: "60px", textAlign: "center" }}>
+        <img style={{width:'16px', verticalAlign:'text-bottom', marginRight:'5px'}}src={require("../assets/ccomment.png")} alt="Check"/>  {item.commentsLength ? item.commentsLength : 0}
         </td>
 
                               {/* <td style={{ minWidth: "80px", maxWidth: "80px" }}>

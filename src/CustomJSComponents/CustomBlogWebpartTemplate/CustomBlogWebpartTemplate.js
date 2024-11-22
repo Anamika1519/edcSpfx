@@ -931,7 +931,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
         setItemsToShow(itemsToShow + 5); // Increase the number by 8
     };
     return (
-        <><div className="row mt-0" style={{ paddingLeft: '0.5rem' }}>
+        <><div className="row mt-3">
             {blogData.length > 0 ?
                 blogData.filter(x => x.Status == "Published").slice(0, 1).map(item => {
                     const AnnouncementandNewsBannerImage = item.BlogBannerImage == undefined || item.BlogBannerImage == null ? ""

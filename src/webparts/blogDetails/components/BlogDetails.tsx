@@ -127,10 +127,14 @@ const BlogDetailsContext = ({ props }: any) => {
     const originalString = ids;
     const idNum = originalString.substring(1);
     // const queryString = decryptId(Number(updatedString));
-
-    setArrDetails(await getBlogDetailsById(sp, Number(idNum)));
-    let Blogsdata = await getAllBlogsnonselected(sp, Number(idNum));
-    setArrtopBlogs(Blogsdata);
+    const blogDetail =  await getBlogDetailsById(sp, Number(idNum));
+    setArrDetails(blogDetail)
+     
+   console.log(ArrDetails[0]);
+   if(blogDetail){
+    let Blogsdata = await getAllBlogsnonselected(sp, Number(idNum),blogDetail[0][0].BlogCategory!=null?blogDetail[0][0].BlogCategory.ID:null);
+     setArrtopBlogs(Blogsdata);
+   }
   };
   const getApiData = () => {
     let initialComments: any[] = [];
@@ -465,7 +469,7 @@ const BlogDetailsContext = ({ props }: any) => {
     },
     {
       ChildComponent: "Blog Details",
-      ChildComponentURl: `${siteUrl}/SitePages/Announcements.aspx`,
+      ChildComponentURl: `${siteUrl}/SitePages/Blogs.aspx`,
     },
   ];
   //#endregion
@@ -570,7 +574,7 @@ const BlogDetailsContext = ({ props }: any) => {
                                         className="img-fluid imgcssscustom"
                                         alt="work-thumbnail"
                                         data-themekey="#"
-                                        style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "15px" }}
+                                        style={{ width: "100%", height: "100%", cursor:'auto', objectFit: "cover", borderRadius: "13px" }}
                                       />
                                     </a>
                                   </div>
@@ -631,7 +635,7 @@ const BlogDetailsContext = ({ props }: any) => {
                             className="form-control text-dark form-control-light mb-2"
                             value={newComment}
                             onChange={(e) => setNewComment(e.target.value)}
-                            placeholder="Add a new comment..."
+                            placeholder="Type your comment here..."
                             rows={3}
                             style={{ borderRadius: "unset" }}
                           />
@@ -679,7 +683,7 @@ const BlogDetailsContext = ({ props }: any) => {
               <div style={{  position:'sticky', top:'90px' }} className="card  postion8">
                   <div className="card-body">
                     <h4 className="header-title text-dark  fw-bold mb-0">
-                      <span style={{ fontSize: '20px' }}>Related Blogs</span>    <a className="font-11 btn btn-primary  waves-effect waves-light view-all cursor-pointer" href="#" onClick={NavigatetoEvents} style={{ float: 'right', lineHeight: '18px' }}>View All</a></h4>
+                      <span style={{ fontSize: '20px' }}>Related Latest Blogs</span>    <a className="font-11 btn btn-primary  waves-effect waves-light view-all cursor-pointer" href="#" onClick={NavigatetoEvents} style={{ float: 'right', lineHeight: '18px' }}>View All</a></h4>
                     {console.log("Arrtopblogsss", ArrtopBlogs)}
                     {ArrtopBlogs && ArrtopBlogs.map((res: any) => {
                       return (

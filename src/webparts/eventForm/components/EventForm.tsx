@@ -25,9 +25,15 @@ import { uploadFile, uploadFileToLibrary } from '../../../APISearvice/Announceme
 import { Modal } from 'react-bootstrap';
 import { getSP } from '../loc/pnpjsConfig';
 import HorizontalNavbar from '../../horizontalNavBar/components/HorizontalNavBar';
-import { AddContentLevelMaster, AddContentMaster, getApprovalConfiguration, getLevel } from '../../../APISearvice/ApprovalService';
+import { AddContentLevelMaster, AddContentMaster, getApprovalConfiguration, getLevel, UpdateContentMaster } from '../../../APISearvice/ApprovalService';
 import { Delete, PlusCircle } from 'react-feather';
 import Multiselect from 'multiselect-react-dropdown';
+import { WorkflowAction } from '../../../CustomJSComponents/WorkflowAction/WorkflowAction';
+import { getUrlParameterValue } from '../../../Shared/Helper';
+import { FormSubmissionMode } from '../../../Shared/Interfaces';
+import { WorkflowAuditHistory } from '../../../CustomJSComponents/WorkflowAuditHistory/WorkflowAuditHistory';
+import { CONTENTTYPE_Event, LIST_TITLE_ContentMaster, LIST_TITLE_EventMaster } from '../../../Shared/Constants';
+
 const HelloWorldContext = ({ props }: any) => {
   const sp: SPFI = getSP();
   console.log(sp, 'sp');
@@ -60,6 +66,12 @@ const HelloWorldContext = ({ props }: any) => {
 
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedRegistrationDueDate, setSelectedRegistrationDueDate] = useState("");
+
+  const [ApprovalMode, setApprovalMode] = React.useState(false);
+  const [ApprovalRequestItem, setApprovalRequestItem] = React.useState(null);
+  const [InputDisabled, setInputDisabled] = React.useState(false);
+  const [ValidDraft, setValidDraft] = React.useState(true);
+  const [ValidSubmit, setValidSubmit] = React.useState(true);
 
   //#region State to hold form data
   //  const [formData, setFormData] = React.useState({
@@ -96,6 +108,20 @@ const HelloWorldContext = ({ props }: any) => {
   //#endregion
   React.useEffect(() => {
     ApiCallFunc()
+
+    let mode=getUrlParameterValue('mode');
+    if(mode && mode=='approval')
+    {
+       setApprovalMode(true);
+       let requestid=getUrlParameterValue('requestid');
+       setInputDisabled(true);
+       sp.web.lists.getByTitle('ARGMyRequest').items.getById(Number(requestid))().then(itm=>{
+          setApprovalRequestItem(itm);
+          setInputDisabled(true && (!itm.IsRework || itm.IsRework =="No"))
+          //setInputDisabled(ApprovalMode)
+       })
+    }
+  
     console.log('This function is called only once', useHide);
 
     const showNavbar = (
@@ -149,7 +175,7 @@ const HelloWorldContext = ({ props }: any) => {
     }));
   };
   const onChange = async (name: string, value: any) => {
-    debugger
+    //debugger
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
@@ -200,33 +226,55 @@ const HelloWorldContext = ({ props }: any) => {
       [{ "color": ["#000000", "#e60000", "#ff9900", "#ffff00", "#008a00", "#0066cc", "#9933ff", "#ffffff", "#facccc", "#ffebcc", "#ffffcc", "#cce8cc", "#cce0f5", "#ebd6ff", "#bbbbbb", "#f06666", "#ffc266", "#ffff66", "#66b966", "#66a3e0", "#c285ff", "#888888", "#a10000", "#b26b00", "#b2b200", "#006100", "#0047b2", "#6b24b2", "#444444", "#5c0000", "#663d00", "#666600", "#003700", "#002966", "#3d1466", 'custom-color'] }],
     ]
   };
-  const validateForm = () => {
+  const validateForm = (formsubmode:FormSubmissionMode) => {
     const { EventName, EventDate, EventAgenda, RegistrationDueDate, EntityId, Overview } = formData;
     const { description } = richTextValues;
     let valid = true;
 
-    if (!EventName) {
-      Swal.fire('Error', 'Event Name is required!', 'error');
-      valid = false;
-    } else if (!EventDate) {
-      Swal.fire('Error', 'Event Date is required!', 'error');
-      valid = false;
+    //$(".border-on-error").removeClass("border-on-error");
+    //$("#InitiativerequestTitle").addClass("border-on-error");
+    //$()
+    setValidDraft(true);
+    setValidSubmit(true);
+
+    if(formsubmode==FormSubmissionMode.DRAFT)
+    {
+      if (!EventName) {
+        valid = false;
+      }
+      setValidDraft(valid);
     }
-    //else if (!overview) {
-    //   Swal.fire('Error', 'Overview is required!', 'error');
-    //   valid = false;
-    // } else if (!description) {
-    //   Swal.fire('Error', 'Description is required!', 'error');
-    //   valid = false;
-    // }
-    else if (!RegistrationDueDate) {
-      Swal.fire('Error', 'Registration Due Date is required!', 'error');
-      valid = false;
+    else
+    {
+      if (!EventName) {
+        // Swal.fire('Error', 'Event Name is required!', 'error');
+        valid = false;
+      } else if (!EventDate) {
+        // Swal.fire('Error', 'Event Date is required!', 'error');
+        valid = false;
+      }
+
+      //else if (!overview) {
+      //   Swal.fire('Error', 'Overview is required!', 'error');
+      //   valid = false;
+      // } else if (!description) {
+      //   Swal.fire('Error', 'Description is required!', 'error');
+      //   valid = false;
+      // }
+      else if (!RegistrationDueDate) {
+        // Swal.fire('Error', 'Registration Due Date is required!', 'error');
+        valid = false;
+      }
+      else if (!EntityId) {
+        // Swal.fire('Error', 'Entity is required!', 'error');
+        valid = false;
+      }
+      setValidSubmit(valid)
+
     }
-    else if (!EntityId) {
-      Swal.fire('Error', 'Entity is required!', 'error');
-      valid = false;
-    }
+   
+    if(!valid)
+      Swal.fire('Error', 'Please fill the mandatory fields.', 'error');
 
     return valid;
   };
@@ -234,21 +282,21 @@ const HelloWorldContext = ({ props }: any) => {
   //#endregion
   //#region  Submit Form
   const handleFormSubmit = async () => {
-    if (validateForm()) {
+    if (validateForm(FormSubmissionMode.SUBMIT)) {
       if (editForm) {
         Swal.fire({
-          title: 'Do you want to update?',
+          title: 'Do you want to submit this request?',
           showConfirmButton: true,
           showCancelButton: true,
-          confirmButtonText: "Save",
-          cancelButtonText: "Cancel",
+          confirmButtonText: "Yes",
+          cancelButtonText: "No",
           icon: 'warning'
         }
         ).then(async (result) => {
           console.log(result)
           if (result.isConfirmed) {
             //console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
-            debugger
+            //debugger
             let bannerImageArray: any = {};
             let galleryIds: any[] = [];
             let documentIds: any[] = [];
@@ -263,6 +311,10 @@ const HelloWorldContext = ({ props }: any) => {
                 //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
                 bannerImageArray = await uploadFileBanner(file, sp, "Documents", "https://officeindia.sharepoint.com");
               }
+            }
+            else if(BnnerImagepostArr.length > 0)
+            {
+              bannerImageArray=BnnerImagepostArr[0];
             }
             else {
               bannerImageArray = null
@@ -286,7 +338,7 @@ const HelloWorldContext = ({ props }: any) => {
 
             const postResult = await updateItem(postPayload, sp, editID);
             const postId = postResult?.data?.ID;
-            debugger
+            //debugger
             // if (!postId) {
             //   console.log("Post creation failed.");
             //   return;
@@ -391,14 +443,29 @@ const HelloWorldContext = ({ props }: any) => {
             let arr = {
               ContentID: editID,
               ContentName: "ARGEventMaster",
-              Status: "Panding",
+              Status: "Pending",
               EntityId: Number(formData.EntityId),
               SourceName: "Event"
             }
-            await AddContentMaster(sp, arr)
-            const boolval = await handleClick(editID, "Event", Number(formData.EntityId))
+
+            let boolval=false;
+            if(ApprovalRequestItem && ApprovalRequestItem.IsRework && ApprovalRequestItem.IsRework=='Yes')
+             {
+              const ctmasteritm=await sp.web.lists.getByTitle(LIST_TITLE_ContentMaster).items.filter('ContentID eq '+ApprovalRequestItem.ContentId+" and SourceName eq '"+CONTENTTYPE_Event+"'")();
+              if(ctmasteritm && ctmasteritm.length>0)
+                 {
+                  await UpdateContentMaster(sp,ctmasteritm[0].Id,{'Status':'Pending'});
+                  await sp.web.lists.getByTitle(LIST_TITLE_EventMaster).items.getById(editID).update({'Status':'Submitted'});
+                  boolval=true;
+                 }
+             }
+            else
+               {
+                await AddContentMaster(sp, arr)
+                boolval = await handleClick(editID, "Event", Number(formData.EntityId))
+              }
             if (boolval == true) {
-              Swal.fire('Item update successfully', '', 'success');
+              Swal.fire('Submitted successfully.', '', 'success');
               sessionStorage.removeItem("EventId")
               setTimeout(() => {
                 window.location.href = `${siteUrl}/SitePages/EventMaster.aspx`;
@@ -410,17 +477,18 @@ const HelloWorldContext = ({ props }: any) => {
       }
       else {
         Swal.fire({
-          title: 'Do you want to save?',
+          // title: 'Do you want to save?',
+          title: 'Do you want to submit this request?',
           showConfirmButton: true,
           showCancelButton: true,
-          confirmButtonText: "Save",
-          cancelButtonText: "Cancel",
+          confirmButtonText: "Yes",
+          cancelButtonText: "No",
           icon: 'warning'
         }
         ).then(async (result) => {
           //console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
           if (result.isConfirmed) {
-            debugger
+            //debugger
             let bannerImageArray: any = {};
             let galleryIds: any[] = [];
             let documentIds: any[] = [];
@@ -438,7 +506,7 @@ const HelloWorldContext = ({ props }: any) => {
                 bannerImageArray = await uploadFileBanner(file, sp, "Documents", "https://officeindia.sharepoint.com");
               }
             }
-            debugger
+            //debugger
             const eventDate = new Date(formData.EventDate).toISOString().split("T")[0];
             const RegistrationDueDate = new Date(formData.RegistrationDueDate).toISOString().split("T")[0];
             // Create Post
@@ -457,7 +525,7 @@ const HelloWorldContext = ({ props }: any) => {
 
             const postResult = await addItem(postPayload, sp);
             const postId = postResult?.data?.ID;
-            debugger
+            //debugger
             if (!postId) {
               console.error("Post creation failed.");
               return;
@@ -503,14 +571,14 @@ const HelloWorldContext = ({ props }: any) => {
             let arr = {
               ContentID: postId,
               ContentName: "ARGEventMaster",
-              Status: "Panding",
+              Status: "Pending",
               EntityId: Number(formData.EntityId),
               SourceName: "Event"
             }
             await AddContentMaster(sp, arr)
             const boolval = await handleClick(postId, "Event", Number(formData.EntityId))
             if (boolval == true) {
-              Swal.fire('Item add successfully', '', 'success');
+              Swal.fire('Submitted successfully.', '', 'success');
               sessionStorage.removeItem("bannerId")
               setTimeout(() => {
                 window.location.href = `${siteUrl}/SitePages/EventMaster.aspx`;
@@ -528,21 +596,22 @@ const HelloWorldContext = ({ props }: any) => {
   //#region  save as draft
 
   const handleSaveAsDraft = async () => {
-    if (validateForm()) {
+    if (validateForm(FormSubmissionMode.DRAFT)) {
       if (editForm) {
         Swal.fire({
-          title: 'Do you want to update?',
+          // title: 'Do you want to update?',
+          title: 'Do you want to save this request?',
           showConfirmButton: true,
           showCancelButton: true,
-          confirmButtonText: "Save",
-          cancelButtonText: "Cancel",
+          confirmButtonText: "Yes",
+          cancelButtonText: "No",
           icon: 'warning'
         }
         ).then(async (result) => {
           console.log(result)
           if (result.isConfirmed) {
             //console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
-            debugger
+            //debugger
             let bannerImageArray: any = {};
             let galleryIds: any[] = [];
             let documentIds: any[] = [];
@@ -580,7 +649,7 @@ const HelloWorldContext = ({ props }: any) => {
 
             const postResult = await updateItem(postPayload, sp, editID);
             const postId = postResult?.data?.ID;
-            debugger
+            //debugger
             // if (!postId) {
             //   console.log("Post creation failed.");
             //   return;
@@ -684,7 +753,7 @@ const HelloWorldContext = ({ props }: any) => {
             }
           }
 
-          Swal.fire('Item update successfully', '', 'success');
+          Swal.fire('Saved successfully.', '', 'success');
           sessionStorage.removeItem("EventId")
           setTimeout(() => {
             window.location.href = `${siteUrl}/SitePages/EventMaster.aspx`;
@@ -696,17 +765,17 @@ const HelloWorldContext = ({ props }: any) => {
       }
       else {
         Swal.fire({
-          title: 'Do you want to save?',
+          title: 'Do you want to save this request?',
           showConfirmButton: true,
           showCancelButton: true,
-          confirmButtonText: "Save",
-          cancelButtonText: "Cancel",
+          confirmButtonText: "Yes",
+          cancelButtonText: "No",
           icon: 'warning'
         }
         ).then(async (result) => {
           //console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
           if (result.isConfirmed) {
-            debugger
+            //debugger
             let bannerImageArray: any = {};
             let galleryIds: any[] = [];
             let documentIds: any[] = [];
@@ -724,7 +793,7 @@ const HelloWorldContext = ({ props }: any) => {
                 bannerImageArray = await uploadFileBanner(file, sp, "Documents", "https://officeindia.sharepoint.com");
               }
             }
-            debugger
+            //debugger
             const eventDate = new Date(formData.EventDate).toISOString().split("T")[0];
             const RegistrationDueDate = new Date(formData.RegistrationDueDate).toISOString().split("T")[0];
             // Create Post
@@ -743,7 +812,7 @@ const HelloWorldContext = ({ props }: any) => {
 
             const postResult = await addItem(postPayload, sp);
             const postId = postResult?.data?.ID;
-            debugger
+            //debugger
             if (!postId) {
               console.error("Post creation failed.");
               return;
@@ -788,7 +857,7 @@ const HelloWorldContext = ({ props }: any) => {
             }
 
 
-            Swal.fire('Item add successfully in the draft', '', 'success');
+            Swal.fire('Saved successfully.', '', 'success');
             sessionStorage.removeItem("bannerId")
             setTimeout(() => {
               window.location.href = `${siteUrl}/SitePages/EventMaster.aspx`;
@@ -806,7 +875,7 @@ const HelloWorldContext = ({ props }: any) => {
 
 
   const handleCancel = () => {
-    debugger
+    //debugger
     window.location.href = `${siteUrl}/SitePages/EventMaster.aspx`;
   }
   //#region flatArray
@@ -832,7 +901,7 @@ const HelloWorldContext = ({ props }: any) => {
       console.log(setEventById, 'setEventById');
 
       if (setEventById.length > 0) {
-        debugger
+        //debugger
         setEditID(Number(setEventById[0].ID))
         setEditForm(true)
         // setCategoryData(await getCategory(sp, Number(setBannerById[0]?.TypeMaster))) // Category
@@ -906,7 +975,7 @@ const HelloWorldContext = ({ props }: any) => {
 
   //#region onFileChange
   const onFileChange = async (event: React.ChangeEvent<HTMLInputElement>, libraryName: string, docLib: string) => {
-    debugger;
+    //debugger;
     event.preventDefault();
     let uloadDocsFiles: any[] = [];
     let uloadDocsFiles1: any[] = [];
@@ -1063,7 +1132,7 @@ const HelloWorldContext = ({ props }: any) => {
 
   //#region deleteLocalFile
   const deleteLocalFile = (index: number, filArray: any[], name: string) => {
-    debugger
+    //debugger
     console.log(filArray, 'filArray');
 
     // Remove the file at the specified index
@@ -1199,7 +1268,7 @@ const HelloWorldContext = ({ props }: any) => {
             <div className="card mt-3">
               <div className="card-body">
                 <div className="row mt-2">
-                  <form className='row' >
+                  <form className='row'  >
                     <div className="col-lg-4">
                       <div className="mb-3">
                         <label htmlFor="title" className="form-label">
@@ -1210,9 +1279,10 @@ const HelloWorldContext = ({ props }: any) => {
                           id="title"
                           name="EventName"
                           placeholder='Enter Event Name'
-                          className="form-control inputcss"
+                          className={`form-control inputcs ${(!ValidDraft)?"border-on-error":""} ${(!ValidSubmit)?"border-on-error":""}`}
                           value={formData.EventName}
                           onChange={(e) => onChange(e.target.name, e.target.value)}
+                          disabled={InputDisabled}
                         />
                       </div>
                     </div>
@@ -1226,10 +1296,11 @@ const HelloWorldContext = ({ props }: any) => {
                           id="EventDate"
                           name="EventDate"
                           placeholder='Enter Event Date'
-                          className="form-control inputcss"
+                          className={`form-control inputcs ${(!ValidSubmit)?"border-on-error":""}`}
                           value={formData.EventDate}
                           // value={formData.EventDate}
                           onChange={(e) => onChange(e.target.name, e.target.value)}
+                          disabled={InputDisabled}
                         />
                       </div>
                     </div>
@@ -1244,9 +1315,10 @@ const HelloWorldContext = ({ props }: any) => {
                           name="RegistrationDueDate"
                           value={formData.RegistrationDueDate}
                           placeholder='Enter Registration Due Date'
-                          className="form-control inputcss"
+                          className={`form-control inputcs ${(!ValidSubmit)?"border-on-error":""}`}
                           // value={formData.RegistrationDueDate}
                           onChange={(e) => onChange(e.target.name, e.target.value)}
+                          disabled={InputDisabled}
                         />
                       </div>
                     </div>
@@ -1258,11 +1330,12 @@ const HelloWorldContext = ({ props }: any) => {
                           Entity <span className="text-danger">*</span>
                         </label>
                         <select
-                          className="form-select inputcss"
+                          className={`form-control inputcs ${(!ValidSubmit)?"border-on-error":""}`}
                           id="EntityId"
                           name="EntityId"
                           value={formData.EntityId}
                           onChange={(e) => onChange(e.target.name, e.target.value)}
+                          disabled={InputDisabled}
                         >
                           <option value="">Select</option>
                           {
@@ -1306,6 +1379,7 @@ const HelloWorldContext = ({ props }: any) => {
                           name="bannerImage"
                           className="form-control inputcss"
                           onChange={(e) => onFileChange(e, "bannerimg", "Document")}
+                          disabled={InputDisabled}
                         />
                       </div>
                     </div>
@@ -1342,6 +1416,7 @@ const HelloWorldContext = ({ props }: any) => {
                           className="form-control inputcss"
                           multiple
                           onChange={(e) => onFileChange(e, "Gallery", "EventGallery")}
+                          disabled={InputDisabled}
                         />
                       </div>
                     </div>
@@ -1375,6 +1450,7 @@ const HelloWorldContext = ({ props }: any) => {
                           className="form-control inputcss"
                           multiple
                           onChange={(e) => onFileChange(e, "Docs", "EventThumbnail")}
+                          disabled={InputDisabled}
                         />
                       </div>
                     </div>
@@ -1393,6 +1469,7 @@ const HelloWorldContext = ({ props }: any) => {
                           style={{ height: "100px" }}
                           value={formData.Overview}
                           onChange={(e) => onChange(e.target.name, e.target.value)}
+                          disabled={InputDisabled}
                         ></textarea>
                       </div>
                     </div>
@@ -1413,15 +1490,15 @@ const HelloWorldContext = ({ props }: any) => {
                             style={{ height: "100px" }}
                             value={formData.EventAgenda}
                             onChange={(e) => onChange(e.target.name, e.target.value)}
+                            disabled={InputDisabled}
                           ></textarea>
                         </div>
 
                       </div>
                     </div>
 
-
-
-                    <div className="text-center butncss">
+                {  
+                    !InputDisabled?(<div className="text-center butncss">
                       <div className="btn btn-success waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleSaveAsDraft}>
                         <div className='d-flex' style={{ justifyContent: 'space-around' }}>
                           <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} alt="Check" /> Save As Draft
@@ -1437,19 +1514,19 @@ const HelloWorldContext = ({ props }: any) => {
                           className='me-1' alt="x" />
                         Cancel
                       </button>
-                    </div>
+                    </div>):(<div></div>)}
                   </form>
                 </div>
               </div>
             </div>
             {
-              rows != null && rows.length > 0 && (
+              rows != null && rows.length > 0 && !ApprovalMode && (
                 <div className="container mt-2">
                   <div className="card cardborder p-4">
                     <div className="font-16">
                       <strong>Approval Hierarchy</strong>
                     </div>
-                    <div className="d-flex justify-content-between align-items-center">
+                    {/* <div className="d-flex justify-content-between align-items-center">
                       <p className="font-14 mb-3 flex-grow-1">
                         Define approval hierarchy for the documents submitted by Team members in this folder.
                       </p>
@@ -1460,7 +1537,7 @@ const HelloWorldContext = ({ props }: any) => {
                           </div>
                         </span>
                       </div>
-                    </div>
+                    </div> */}
 
                     <div className="d-flex flex-column">
                       <div className="row mb-2">
@@ -1516,7 +1593,7 @@ const HelloWorldContext = ({ props }: any) => {
                             />
                           </div>
 
-                          <div className="col-12 col-md-2 d-flex align-items-center" style={{ gap: '10px' }}>
+                          {/* <div className="col-12 col-md-2 d-flex align-items-center" style={{ gap: '10px' }}>
                             <div className="d-flex align-items-center">
                               <input
                                 className="form-check-input custom-radio"
@@ -1552,7 +1629,7 @@ const HelloWorldContext = ({ props }: any) => {
                                 <Delete />
                               </a>
                             )}
-                          </div>
+                          </div> */}
                         </div>
                       ))}
                     </div>
@@ -1571,6 +1648,14 @@ const HelloWorldContext = ({ props }: any) => {
 
               // <ApprovalHierarchy data={ApprovalConfigurationData} levels={levels} usersitem={usersitem} IsAdded={IsAdded}/>
 
+            }
+            {
+              <WorkflowAuditHistory ContentItemId={editID} ContentType={CONTENTTYPE_Event} ctx={props.context} />
+            }
+            {
+              InputDisabled&&ApprovalRequestItem?(
+                <WorkflowAction currentItem={ApprovalRequestItem} ctx={props.context} />
+              ):(<div></div>)
             }
             {/* Modal to display uploaded files */}
             <Modal show={showModal} onHide={() => setShowModal(false)} size='lg' >

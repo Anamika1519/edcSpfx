@@ -28,6 +28,9 @@ import HorizontalNavbar from '../../horizontalNavBar/components/HorizontalNavBar
 import { AddContentLevelMaster, AddContentMaster, getApprovalConfiguration, getLevel } from '../../../APISearvice/ApprovalService';
 import { Delete, PlusCircle } from 'react-feather';
 import Multiselect from 'multiselect-react-dropdown';
+import { WorkflowAction } from '../../../CustomJSComponents/WorkflowAction/WorkflowAction';
+import { getUrlParameterValue } from '../../../Shared/Helper';
+import { FormSubmissionMode } from '../../../Shared/Interfaces';
 
 interface FormField {
   type: string;
@@ -101,6 +104,9 @@ const AddannouncementContext = ({ props }: any) => {
   const [ApprovalConfigurationData, setApprovalConfiguration] = React.useState([]);
 
   const [rows, setRows] = React.useState<any>([]);
+  const [ApprovalMode, setApprovalMode] = React.useState(false);
+  const [ApprovalRequestItem, setApprovalRequestItem] = React.useState(null);
+
   console.log(ApprovalConfigurationData, 'ApprovalConfigurationData');
   //#endregion
   const handleChangeCheckBox = (name: string, value: string | boolean) => {
@@ -126,6 +132,16 @@ const AddannouncementContext = ({ props }: any) => {
   React.useEffect(() => {
     ApiCallFunc()
 
+    let mode=getUrlParameterValue('mode');
+    if(mode && mode=='approval')
+    {
+       setApprovalMode(true);
+       let requestid=getUrlParameterValue('requestid');
+       sp.web.lists.getByTitle('ARGMyRequest').items.getById(Number(requestid))().then(itm=>{
+          setApprovalRequestItem(itm);
+       })
+    }
+  
     console.log('This function is called only once', useHide);
 
     const showNavbar = (
@@ -284,11 +300,12 @@ const AddannouncementContext = ({ props }: any) => {
   //#endregion
 
 
-  const validateForm = () => {
+  const validateForm = (fmode:FormSubmissionMode) => {
     const { title, Type, category, entity, overview, FeaturedAnnouncement } = formData;
     const { description } = richTextValues;
     let valid = true;
-
+    if(fmode==FormSubmissionMode.SUBMIT)
+      {
     if (!title) {
       Swal.fire('Error', 'Title is required!', 'error');
       valid = false;
@@ -301,6 +318,15 @@ const AddannouncementContext = ({ props }: any) => {
     } else if (!entity) {
       Swal.fire('Error', 'Entity is required!', 'error');
       valid = false;
+    }
+  }
+  else{
+    if (!title) {
+      Swal.fire('Error', 'Title is required!', 'error');
+      valid = false;} else if (!Type) {
+        Swal.fire('Error', 'Type is required!', 'error');
+        valid = false;
+      }
     }
     //else if (!overview) {
     //   Swal.fire('Error', 'Overview is required!', 'error');
@@ -319,7 +345,7 @@ const AddannouncementContext = ({ props }: any) => {
   // Handle form submission
   //#region  Submit Form
   const handleFormSubmit = async () => {
-    if (validateForm()) {
+    if (validateForm(FormSubmissionMode.SUBMIT)) {
       if (editForm) {
         Swal.fire({
           title: 'Do you want to update?',
@@ -581,18 +607,20 @@ const AddannouncementContext = ({ props }: any) => {
               }
             }
             // ARGContentMaster
-            let TypeMasterData: any = [];
-            const TypeMaster = await getAnnouncementandNewsTypeMaster(sp, Number(formData.Type))
+           // let TypeMasterData: any = [];
+            let TypeMasterData:any = await getAnnouncementandNewsTypeMaster(sp, Number(formData.Type))
             let arr = {
               ContentID: editID,
               ContentName: "ARGAnnouncementAndNews",
               Status: "Panding",
               EntityId: Number(formData.entity),
-              SourceName: TypeMasterData.TypeMaster
+              //SourceName: TypeMasterData.TypeMaster
+              SourceName: TypeMasterData?.TypeMaster
+         
             }
             await AddContentMaster(sp, arr)
 
-            const boolval = await handleClick(editID, TypeMasterData.TypeMaster, Number(formData.entity))
+            const boolval = await handleClick(editID, TypeMasterData?.TypeMaster, Number(formData.entity))
             if (boolval == true) {
               Swal.fire('Item update successfully', '', 'success');
               sessionStorage.removeItem("announcementId")
@@ -705,7 +733,7 @@ const AddannouncementContext = ({ props }: any) => {
             let arr = {
               ContentID: postId,
               ContentName: "ARGAnnouncementAndNews",
-              Status: "Panding",
+              Status: "Pending",
               EntityId: Number(formData.entity),
               SourceName: TypeMasterData?.TypeMaster
             }
@@ -732,7 +760,7 @@ const AddannouncementContext = ({ props }: any) => {
   // start save as draft
 
   const handleSaveAsDraft = async () => {
-    if (validateForm()) {
+    if (validateForm(FormSubmissionMode.DRAFT)) {
       if (editForm) {
         Swal.fire({
           title: 'Do you want to update?',
@@ -1503,6 +1531,7 @@ const AddannouncementContext = ({ props }: any) => {
                           className="form-control inputcss"
                           value={formData.title}
                           onChange={(e) => onChange(e.target.name, e.target.value)}
+                          disabled={ApprovalMode}
                         />
                       </div>
                     </div>
@@ -1517,6 +1546,7 @@ const AddannouncementContext = ({ props }: any) => {
                           name="Type"
                           value={formData.Type}
                           onChange={(e) => onChange(e.target.name, e.target.value)}
+                          disabled={ApprovalMode}
                         >
                           <option>Select</option>
                           {
@@ -1541,6 +1571,7 @@ const AddannouncementContext = ({ props }: any) => {
                           name="category"
                           value={formData.category}
                           onChange={(e) => onChange(e.target.name, e.target.value)}
+                          disabled={ApprovalMode}
                         >
                           <option>Select</option>
                           {
@@ -1566,6 +1597,7 @@ const AddannouncementContext = ({ props }: any) => {
                           name="entity"
                           value={formData.entity}
                           onChange={(e) => onChange(e.target.name, e.target.value)}
+                          disabled={ApprovalMode}
                         >
                           <option value="">Select</option>
                           {
@@ -1606,6 +1638,7 @@ const AddannouncementContext = ({ props }: any) => {
                           name="bannerImage"
                           className="form-control inputcss"
                           onChange={(e) => onFileChange(e, "bannerimg", "Document")}
+                          disabled={ApprovalMode}
                         />
                       </div>
                     </div>
@@ -1641,6 +1674,7 @@ const AddannouncementContext = ({ props }: any) => {
                           className="form-control inputcss"
                           multiple
                           onChange={(e) => onFileChange(e, "Gallery", "AnnouncementAndNewsGallary")}
+                          disabled={ApprovalMode}
                         />
                       </div>
                     </div>
@@ -1674,6 +1708,7 @@ const AddannouncementContext = ({ props }: any) => {
                           className="form-control inputcss"
                           multiple
                           onChange={(e) => onFileChange(e, "Docs", "ARGAnnouncementAndNewsDocs")}
+                          disabled={ApprovalMode}
                         />
                       </div>
                     </div>
@@ -1691,6 +1726,7 @@ const AddannouncementContext = ({ props }: any) => {
                             name="FeaturedAnnouncement"
                             checked={formData.FeaturedAnnouncement}
                             onChange={(e) => handleChangeCheckBox(e.target.name, e.target.checked)}
+                            disabled={ApprovalMode}
                             className="form-check-input inputcss"
                           />
                         </div>
@@ -1710,6 +1746,7 @@ const AddannouncementContext = ({ props }: any) => {
                           style={{ height: "100px" }}
                           value={formData.overview}
                           onChange={(e) => onChange(e.target.name, e.target.value)}
+                          disabled={ApprovalMode}
                         ></textarea>
                       </div>
                     </div>
@@ -1737,6 +1774,9 @@ const AddannouncementContext = ({ props }: any) => {
                         </div>
                       </div>
                     </div>
+                    {
+                     !ApprovalMode?
+                     (
                     <div className="text-center" style={{ marginTop: '3rem' }}>
                       <div className="btn btn-success waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleSaveAsDraft}>
                         <div className='d-flex' style={{ justifyContent: 'space-around' }}>
@@ -1753,13 +1793,16 @@ const AddannouncementContext = ({ props }: any) => {
                           className='me-1' alt="x" />
                         Cancel
                       </button>
-                    </div>
+                      </div>):(<div></div>)
+                    }
                   </form>
                 </div>
               </div>
             </div>
             {
-              rows != null && rows.length > 0 && (
+              //rows != null && rows.length > 0 && (
+                !ApprovalMode?
+                (
                 <div className="container mt-2">
                   <div className="card cardborder p-4">
                     <div className="font-16">
@@ -1883,10 +1926,14 @@ const AddannouncementContext = ({ props }: any) => {
                   </div> */}
                   </div>
                 </div>
-              )
+                ):(<div></div>)
 
               // <ApprovalHierarchy data={ApprovalConfigurationData} levels={levels} usersitem={usersitem} IsAdded={IsAdded}/>
-
+            }
+            {
+              ApprovalMode&&ApprovalRequestItem?(
+                <WorkflowAction currentItem={ApprovalRequestItem} ctx={props.context} />
+              ):(<div></div>)
             }
             {/* Modal to display uploaded files */}
             <Modal show={showModal} onHide={() => setShowModal(false)} size='lg' >

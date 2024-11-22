@@ -40,11 +40,17 @@
   border-radius: 1000px;}
   .alignright{    position: absolute;
     right: 20px; width:21px;
-    top: 13;
+    top: 19px;
 }
+.css-13cymwt-control{float: left; width: 100%; margin: 10px 0px;}
 .action-icon{
   position: absolute;
-    right: -3px;
+    right: -3px; top:19px;
+}
+.newdrop{
+  position: absolute !important;
+  top: 17px;
+  right: 21px;
 }
 .action-icon svg{
   height:20px;
@@ -106,6 +112,16 @@ textarea:focus{outline: none;}
     border: 1px solid #ccc;
     border-radius: 4px;
   }
+  .plusiconalign{min-width: 30px;
+    padding: 0;
+    background: transparent;
+    border: 0;
+    position: absolute;
+    right: 8px;
+    top: 13px;}
+    .plusiconalign img{
+      width: 32px;
+    }
   .popup h2{    font-size: 18px;
     color: #3c3c3c;}
     .popup  .close-btn{
