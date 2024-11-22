@@ -860,7 +860,7 @@ setDocumentpostArr1([])
                       </div>
                       <div className="modal-body">
                         <form className="row">
-                          <div className="col-lg-4">
+                          <div className="col-lg-6">
                             <div className="mb-3">
                               <label
                                 htmlFor=" Project Name"
@@ -914,7 +914,7 @@ setDocumentpostArr1([])
                             </div>
                           </div> */}
 
-                          <div className="col-lg-4">
+                          {/* <div className="col-lg-4">
                             <div className="mb-3">
                               <label
                                 htmlFor="Project Privacy"
@@ -948,25 +948,7 @@ setDocumentpostArr1([])
                                     Private
                                   </label>
                                 </div>
-                                {/* <div className="form-check">
-                                  <input
-                                    id="ProjectPrivacyTeam"
-                                    name="ProjectPrivacy"
-                                    className="form-check-input"
-                                    type="radio"
-                                    value="Team"
-                                    checked={formData.ProjectPrivacy === "Team"}
-                                    onChange={(e) =>
-                                      onChange(e.target.name, e.target.value)
-                                    }
-                                  />
-                                  <label
-                                    className="form-check-label"
-                                    htmlFor="ProjectPrivacyTeam"
-                                  >
-                                    Team
-                                  </label>
-                                </div> */}
+                               
                                 <div className="form-check">
                                   <input
                                     id="ProjectPrivacyPublic"
@@ -990,9 +972,9 @@ setDocumentpostArr1([])
                                 </div>
                               </div>
                             </div>
-                          </div>
+                          </div> */}
                           {/* Start Date Field */}
-                          <div className="col-lg-4">
+                          <div className="col-lg-3">
                             <div className="mb-3">
                               <label htmlFor="startDate" className="form-label">
                                 Start Date{" "}
@@ -1012,7 +994,7 @@ setDocumentpostArr1([])
                           </div>
 
                           {/* Due Date Field */}
-                          <div className="col-lg-4">
+                          <div className="col-lg-3">
                             <div className="mb-3">
                               <label htmlFor="dueDate" className="form-label">
                                 End Date
@@ -1104,13 +1086,13 @@ setDocumentpostArr1([])
                           </div> */}
 
                           {/* {IsinvideHide && ( */}
-                          <div className="col-lg-4">
+                          <div className="col-lg-12">
                             <div className="mb-3">
                               <label
                                 htmlFor="invitemembers"
                                 className="form-label"
                               >
-                               Select project Team{" "}
+                               Select Project Team{" "}
                                 {/* <span className="text-danger">*</span> */}
                               </label>
 
@@ -1159,7 +1141,7 @@ setDocumentpostArr1([])
                               </label>
                               <textarea
                                 className="form-control inputcss"
-                                id="ProjectOverview"
+                                id="ProjectOverview" rows={4}
                                 placeholder="Enter Project Overview"
                                 name="ProjectOverview"
                                 style={{ height: "auto" }}

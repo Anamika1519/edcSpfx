@@ -753,7 +753,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
                             <div className="col-md-12 col-xl-12">
 
-                              <p className="mb-2 mt-1 d-block font-14 eventtextnew">
+                              <p className="mb-2 mt-1 text-dark d-block font-14 eventtextnew">
 
                                 <span className="pe-2 text-nowrap mb-0 d-inline-block">
 
@@ -791,7 +791,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
 
 
-                            <p style={{ lineHeight: '22px' }} className="d-block text-muted mt-2 font-14">
+                            <p style={{ lineHeight: '22px',fontSize:'15px' }} className="d-block text-dark mt-2 font-14">
 
                               {item.Overview}
 
@@ -845,7 +845,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
                           </div><div className="row mt-2">
 
-                            <p style={{ lineHeight: '22px' }} className="d-block text-muted mt-2 mb-0 font-14">
+                            <p style={{ lineHeight: '22px',fontSize:'15px' }} className="d-block newpara text-dark mt-2 mb-0 font-14">
 
                               <div
 
@@ -1005,8 +1005,8 @@ const NewsdetailsContext = ({ props }: any) => {
                       return (
                         <div className="mainevent mt-2">
                           <div className="bordernew">
-                            <h3 className="twolinewrap font-14  text-dark fw-bold mb-2 cursor-pointer" style={{ cursor: "pointer" }}  onClick={() => gotoNewsDetails(res)}>{res.Title}</h3>
-                            <p style={{ lineHeight: '20px' }} className="font-12 text-muted twolinewrap">{res.Overview}</p>
+                            <h3 className="twolinewrap font-16  text-dark fw-bold mb-2 cursor-pointer" style={{ cursor: "pointer" }}  onClick={() => gotoNewsDetails(res)}>{res.Title}</h3>
+                            <p style={{ lineHeight: '20px', fontSize:'15px' }} className=" text-muted twolinewrap">{res.Overview}</p>
                             <div className="row">
                               <div className="col-sm-12"> <span style={{ marginTop: "4px" }} className="date-color font-12 float-start  mb-1 ng-binding"><i className="fe-calendar"></i> {moment(res.Created).format("DD-MMM-YYYY")}</span>  &nbsp; &nbsp; &nbsp; <span className="font-12" style={{ color: '#009157', fontWeight: '600' }}>  </span></div>
 

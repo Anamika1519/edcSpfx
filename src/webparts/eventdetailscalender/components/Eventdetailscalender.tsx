@@ -686,7 +686,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
 
                                       return (
                                         <>
-                                          {item1.EMail ? <span style={{ margin: index == 0 ? '0 0 0 0' : '0 0 0px -12px' }}>&nbsp; | &nbsp;<img src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item1.EMail}`} className="attendeesImg" /> </span> :
+                                          {item1.EMail ? <span style={{ margin: index == 0 ? '0 0 0 0' : '0 0 0px -12px' }}>&nbsp; | &nbsp;&nbsp;&nbsp;<img src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item1.EMail}`} className="attendeesImg" /> </span> :
                                             <span> <AvtarComponents Name={item1.Title} /> </span>
                                           }
                                         </>

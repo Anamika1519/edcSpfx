@@ -15,9 +15,32 @@
     max-width: 100%;
     vertical-align: middle;
 }
+.content-page{top:-25px !important;}
 .modal-dialog {min-width: 80% !important; border-radius: 20px !important;}
 .modal-content {min-width: 80% !important; border-radius: 20px !important;}
 .modal-dialog .carousel-item{height: 500px;}
+.mediagallery .modal-header{
+    padding: 0px !important; border: 0px !important;
+    position: absolute;
+      width: 42px;
+      background: #fff;
+      right: 22px;
+      height: 42px;
+      border-radius: 1000px !important;
+      z-index: 999;
+      top: 27px;
+  }
+  .mediagallery .btn-close{
+  
+      /* background: #fff; */
+      opacity: 1;
+      /* color: #fff; */
+      right: 7px !important;
+      top: 8px !important; z-index: 90
+      ;
+      position: absolute;
+  
+  }
 .modal-dialog .carousel-item img{border-radius: 15px; width: 100% ; height: 100% !important; object-fit: cover !important;}
 .carousel-indicators {
     bottom: 0;

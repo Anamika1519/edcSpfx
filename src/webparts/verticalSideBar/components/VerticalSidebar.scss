@@ -989,6 +989,10 @@ background-color: rgb(167, 30, 132);
   height: 100%;
 }
 .btn-primary{height: auto !important;}
+.btn-primary:hover{
+  background: #1fb0e5 !important;
+  border-color: #1fb0e5 !important;
+}
 .heightcard {
   height: 160px !important;
 }

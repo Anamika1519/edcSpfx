@@ -19,11 +19,12 @@
     .projectmemeber{display: flex; border-bottom: 1px solid #efefef; padding: 5px 0px;   gap:5px; position: relative;align-items: center;
       font-size: 14px;}
       .projectmemeber:last-child{border-bottom: 0px solid #efefef;  }
-    .minw80 .modal-dialog{min-width: 65% !important;}
-    .minw80 .moday-body{max-height: 470px;  overflow-y: auto;}
-    .newaligntext{padding: 0px; min-width: auto !important;}
-    .newaligntext button{padding: 0px; min-width: auto !important;}
-
+      .minw80 .modal-dialog{min-width: 85% !important;}
+      .minw80 .moday-body{max-height: 470px;  overflow-y: auto;}
+      .newaligntext{padding: 0px; min-width: auto !important;}
+      .newaligntext button{padding: 0px; min-width: auto !important;}
+      .widtsvg svg{width: 18px !important; margin-top: 2px;}
+.team-fedd .dropdown svg{font-size: 24px;}
     .newaligntext div{
       min-width: auto;
       padding: 0px 20px;
@@ -48,6 +49,40 @@
 .action-icon svg{
   height:20px;
 }
+.btn-secondary{    background: #6c757d !important;
+  width: 100%;
+  color: #fff;
+  text-align: left;}
+  .chosefile{
+    margin-right: -2px;
+   
+    align-items: center;
+    gap: 10px;
+    border: 1px dashed #3c3c3c;
+
+    border-radius: 5;
+    padding: 5px 200px;
+    border-radius: 5px;
+    float: left;
+  }
+  .chosefile img{
+    width: 25px !important;
+float: left;
+  }
+  .chosefile  span{
+    margin-top: 1px;
+float: left;
+margin-left: 5px;
+}
+ .listnew {list-style: none;
+  margin: 0;
+  border-bottom: 1px solid #3c3c3c;
+  margin-bottom: 28px !important;
+  padding-bottom: 14px;}
+ .listnew li{display: inline-block; padding: 0px 5px;} 
+.juss{justify-content: flex-start;
+gap: 15px;
+align-items: center;}
 textarea{border: none;}
 textarea:focus{outline: none;}
 .ht{padding: 9px;}
