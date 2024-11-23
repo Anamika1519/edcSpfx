@@ -77,7 +77,8 @@ const SocialFeedContext = ({ props }: any) => {
   const [loadingLike, setLoadingLike] = useState<boolean>(false);
   const [Currentusercompany, setCurrentusercompany] = useState("");
   const [IsCall, setIsCall] = useState(true);
-
+  const [CurrentDataAll, setCurrentDataAll] = useState<any>([])
+  
   const menuRef = useRef(null);
   useEffect(() => {
     // Load posts from localStorage when the component mounts
@@ -184,7 +185,8 @@ const SocialFeedContext = ({ props }: any) => {
  
       setUsersArr(userList);
       const filteredEmployeeData = await applyFiltersAndSorting(userList, Currentusercompany);
-      setCurrentData(filteredEmployeeData.slice(0, 5))
+      setCurrentData(filteredEmployeeData.slice(0, 5));
+      setCurrentDataAll(filteredEmployeeData);
     } catch (error) {
       console.error("Error fetching users:", error);
     }
@@ -1005,7 +1007,13 @@ const SocialFeedContext = ({ props }: any) => {
         FollowerId: currentUser.Id,
         FollowedId: itemId
       });
-      fetchUserInformationList()
+      let UnFolloweduserID = CurrentDataAll.filter((x: any) => { return x.ID != itemId });
+     
+      setCurrentData(UnFolloweduserID.slice(0,5));
+      setCurrentDataAll(UnFolloweduserID);
+      console.log("UnFolloweduser",  CurrentDataAll, CurrentData, UnFolloweduserID);
+      
+      //fetchUserInformationList()
       Swal.fire("User followed successfully", "", "success");
       setFollowStatus((prevStatus) => ({
         ...prevStatus,

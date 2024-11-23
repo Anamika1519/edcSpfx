@@ -1255,7 +1255,7 @@ const DiscussionForumContext = ({ props }: any) => {
         <div
           className="content"
           style={{
-            marginLeft: `${!useHide ? "240px" : "80px"}`, marginTop: '0.5rem'
+            marginLeft: `${!useHide ? "240px" : "80px"}`, marginTop: '-5px'
           }}
         >
           <div className="container-fluid paddb">
@@ -1935,7 +1935,7 @@ const DiscussionForumContext = ({ props }: any) => {
                                       }
                                     )}
                                     {item?.InviteMemebers?.length > 3 && (
-                                      <div
+                                      <div style={{marginTop:'7px'}}
                                         className=""
                                         // onClick={() => toggleDropdown1(item.Id)}
                                         key={item.Id}

@@ -821,7 +821,7 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
         <HorizontalNavbar _context={sp} siteUrl={siteUrl} />
         <div
           className="content "
-          style={{ marginLeft: `${!useHide ? "240px" : "80px"}`, marginTop: '1rem' }}
+          style={{ marginLeft: `${!useHide ? "240px" : "80px"}` }}
         >
           <div className="container-fluid  paddb">
             {isPopupVisible && (

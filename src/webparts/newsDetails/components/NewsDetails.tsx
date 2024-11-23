@@ -248,7 +248,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
     // const queryString = decryptId(Number(updatedString));
     setArrDetails(await getAnnouncementDetailsById(sp, Number(idNum)));
-    let Newsdata = await getAllAnnouncementnonselected(sp, Number(idNum));
+    let Newsdata = await getAllAnnouncementnonselected(sp, Number(idNum),'News');
     setArrtopNews(Newsdata);
     // let arr = []
 
@@ -375,7 +375,7 @@ const NewsdetailsContext = ({ props }: any) => {
   }
   useEffect(() => {
     getApiData()
-  })
+  },[])
   const ApICallData = async () => {
 
     debugger
@@ -791,7 +791,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
 
 
-                            <p style={{ lineHeight: '22px',fontSize:'15px' }} className="d-block text-dark mt-2 font-14">
+                            <p style={{ lineHeight: '22px',fontSize:'15px' }} className="d-block text-dark mt-2">
 
                               {item.Overview}
 
@@ -996,7 +996,7 @@ const NewsdetailsContext = ({ props }: any) => {
               </div>
 
               <div className="col-lg-4">
-                <div className="card mt-4 postion8">
+                <div style={{position:'sticky', top:'90px'}} className="card mt-4 postion8">
                   <div className="card-body">
                     <h4 className="header-title text-dark  fw-bold mb-0">
                       <span style={{ fontSize: '20px' }}>Latest News</span>    <a className="font-11 btn btn-primary  waves-effect waves-light view-all cursor-pointer" href="#" onClick={NavigatetoEvents} style={{ float: 'right', lineHeight: '12px' }}>View All</a></h4>

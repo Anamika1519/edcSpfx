@@ -1922,7 +1922,7 @@ const handleRemoveUser = async (userId: number) => {
                           </h1></div>
     </div>
 
-<div className="card mobile-5 mt-2"  style={{ borderRadius: "22px", position:'sticky', top:'230px' }}>
+<div className="card mobile-5 mt-2"  style={{ borderRadius: "22px", position:'sticky', top:'310px' }}>
   <div className="card-body pb-3 gheight">
     <h4 className="header-title font-16 text-dark fw-bold mb-3"  style={{ fontSize: "20px" }}>Project Members</h4>
     {item.Author.EMail === currentUserEmailRef.current && (

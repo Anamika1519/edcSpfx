@@ -361,7 +361,21 @@ a.nav-linkcss.px-4.py-3 {
   grid-row: 1 / 3;
   /* Spans across two rows */
 }
-
+.modal-dialog {min-width: 80% !important; border-radius: 20px !important;}
+.modal-content {min-width: 80% !important; border-radius: 20px !important;}
+.modal-dialog .carousel-item{height: 500px;}
+.modal-header{
+    padding: 0px !important; border: 0px !important;
+    position: absolute;
+      width: 42px;
+      background: #fff;
+      right: 22px;
+      height: 42px;
+      border-radius: 1000px !important;
+      z-index: 999;
+      top: 27px;
+  }
+  .btn-close{position: absolute;}
 .small-image {
   grid-column: 2 / 3;
   /* Occupies the second column */

@@ -842,7 +842,7 @@ setDocumentpostArr1([])
       <div className="content-page">
         <HorizontalNavbar _context={sp} siteUrl={siteUrl} />
         <div
-          className="content mt-2"
+          className="content"
           style={{ marginLeft: `${!useHide ? "240px" : "80px"}` }}
         >
           <div className="container-fluid paddb">
