@@ -35,7 +35,7 @@ export const fetchBookmarkBlogdata = async (_sp) => {
     .orderBy("Created", false).getAll().then(async (resnew) => {
       console.log("resnew", resnew);
       if (resnew.length > 0) {
-        debugger
+        
         for (let i = 0; i < resnew.length; i++) {
           await _sp.web.lists.getByTitle("ARGBlogs")
             .items.select("*,Author/ID,Author/Title").expand("Author")
@@ -168,11 +168,11 @@ export const updateItem = async (itemData, sp, id) => {
 };
  
 export const addItem = async (itemData, _sp) => {
-  debugger
+  
   let resultArr = []
   try {
     const newItem = await _sp.web.lists.getByTitle('ARGBlogs').items.add(itemData);
-    debugger
+    
     console.log('Item added successfully:', newItem);
  
     resultArr = newItem
@@ -189,7 +189,7 @@ export const addItem = async (itemData, _sp) => {
 
 export const uploadFile = async (file, _sp, docLib, siteUrl) => {
   let arr = {};
-  debugger
+  
   const uploadResult = await sp.web.lists.getByTitle(docLib).rootFolder.files.addChunked(file.name, file, data => {
     console.log(`progress`, data);
   }, true);
@@ -215,7 +215,7 @@ export const uploadFile = async (file, _sp, docLib, siteUrl) => {
   return arr;
 };
 export const uploadFileToLibrary = async (file, _sp, docLib) => {
-  debugger
+  
   let arrFIleData = [];
   let fileSize = 0
   try {
@@ -263,7 +263,7 @@ export const uploadFileToLibrary = async (file, _sp, docLib) => {
 };
 
 export const getBlogByID = async (_sp, id) => {
-  debugger
+  
   let arr = []
   let arrs = []
   let bannerimg = []
@@ -302,7 +302,7 @@ export const getBlogByID = async (_sp, id) => {
   return arr;
 }
 export const getBlogsByID = async (_sp, id) => {
-  debugger
+  
   let arr = []
   let arrs = []
   let bannerimg = []
@@ -421,7 +421,7 @@ export const getBlogDetailsById = async (_sp, idNum) => {
 // };
 export const uploadFileBlog = async (file, sp, docLib, siteUrl) => {
   let arr = {};
-  debugger
+  
   const uploadResult = await sp.web.lists.getByTitle(docLib).rootFolder.files.addChunked(file.name, file, data => {
     console.log(`progress`, data);
   }, true);
@@ -462,7 +462,7 @@ export const fetchBlogdatatop = async (_sp) => {
 }
 export const uploadFileBanner = async (file, sp, docLib, siteUrl) => {
   let arr = {};
-debugger
+
   const uploadResult = await sp.web.lists.getByTitle(docLib).rootFolder.files.addChunked(file.name, file, data => {
     console.log(`progress`, data);
   }, true);

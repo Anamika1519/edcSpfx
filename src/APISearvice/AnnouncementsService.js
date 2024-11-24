@@ -85,7 +85,7 @@ export const getAnnouncementandNewsTypeMaster = async (_sp,Id) => {
 
 }
 export const uploadFileToLibrary = async (file, sp, docLib) => {
-  debugger
+
   let arrFIleData = [];
   let fileSize = 0
   try {
@@ -146,7 +146,7 @@ export const uploadFileToLibrary = async (file, sp, docLib) => {
 
 export const uploadFile = async (file, sp, docLib, siteUrl) => {
   let arr = {};
-  debugger
+ 
   const uploadResult = await sp.web.lists.getByTitle(docLib).rootFolder.files.addChunked(file.name, file, data => {
     console.log(`progress`, data);
   }, true);
@@ -210,11 +210,11 @@ export const AddAnncouncementanNews = async (_sp) => {
   return arr;
 }
 export const addItem = async (itemData, _sp) => {
-  debugger
+  
   let resultArr = []
   try {
     const newItem = await _sp.web.lists.getByTitle('ARGAnnouncementAndNews').items.add(itemData);
-    debugger
+ 
     console.log('Item added successfully:', newItem);
     // Swal.fire('Item added successfully', '', 'success');
 
@@ -257,7 +257,7 @@ export const DeleteAnnouncementAPI = async (_sp, id) => {
   return resultArr;
 }
 export const getAnncouncementByID = async (_sp, id) => {
-  debugger
+  
   let arr = []
   let arrs = []
   let bannerimg = []
@@ -296,7 +296,7 @@ export const getAnncouncementByID = async (_sp, id) => {
   return arr;
 }
 export const getAllAnnouncementnonselected = async (_sp, Idnum,text) => {
-  debugger
+  
   let arr = []
   let str = "Announcements"
   await _sp.web.lists.getByTitle("ARGAnnouncementAndNews").items

@@ -27,7 +27,7 @@ export const DeleteBannerAPI = async (_sp, id) => {
 }
 
 export const getBannerByID = async (_sp, id) => {
-    debugger
+    
     let arr = []
     let arrs = []
     await _sp.web.lists.getByTitle("DynamicBanners").items.getById(id).select("ID","Title","URL","IsImage","BannerImage","Description","BannerImageJSON")()
@@ -56,11 +56,11 @@ export const getBannerByID = async (_sp, id) => {
 }
 
 export const addItem = async (itemData, _sp) => {
-    debugger
+    
     let resultArr = []
     try {
         const newItem = await _sp.web.lists.getByTitle('DynamicBanners').items.add(itemData);
-        debugger
+        
         console.log('Item added successfully:', newItem);
         Swal.fire('Item added successfully', '', 'success');
 
@@ -92,7 +92,7 @@ export const updateItem = async (itemData,_sp,id) => {
  
 export const uploadFile = async (file, sp, docLib, siteUrl) => {
     let arr = {};
-  debugger
+  
     const uploadResult = await sp.web.lists.getByTitle(docLib).rootFolder.files.addChunked(file.name, file, data => {
       console.log(`progress`, data);
     }, true);
@@ -118,7 +118,7 @@ export const uploadFile = async (file, sp, docLib, siteUrl) => {
     return arr;
   };
   export const getUrl = async (sp) => {
-    debugger
+    
     const url = await sp.web.currentUser.getContextInfo();
     console.log(url.WebFullUrl, 'WebFullUrl');
     return url.WebFullUrl

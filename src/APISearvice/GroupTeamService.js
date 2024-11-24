@@ -39,7 +39,7 @@ export const fetchNotFollowedGroupdata = async (_sp) => {
     .orderBy("Created", false).getAll().then(async (resnew) => {
       console.log("resnew", resnew);
       if (resnew.length > 0) {
-        debugger
+        
         let filterquery = [];
         for (let i = 0; i < resnew.length; i++) {
           filterquery.push(`ID ne ${resnew[i].GroupIDId}`)

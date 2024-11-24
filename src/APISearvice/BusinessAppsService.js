@@ -13,11 +13,11 @@ export const fetchAutomationDepartment = async (_sp) => {
     return arr;
   }
   export const addItem = async (itemData, _sp) => {
-    debugger
+    
     let resultArr = []
     try {
       const newItem = await _sp.web.lists.getByTitle('ARGBusinessApps').items.add(itemData);
-      debugger
+      
       console.log('Item added successfully:', newItem);
       // Swal.fire('Item added successfully', '', 'success');
   
@@ -125,7 +125,7 @@ export const fetchAutomationDepartment = async (_sp) => {
     };
   
     export const uploadFileToLibrary = async (file, sp, docLib) => {
-      debugger
+      
       let arrFIleData = [];
       let fileSize=0
       try {
@@ -163,7 +163,7 @@ export const fetchAutomationDepartment = async (_sp) => {
     };
     export const uploadFile = async (file, sp, docLib, siteUrl) => {
       let arr = {};
-    debugger
+    
       const uploadResult = await sp.web.lists.getByTitle(docLib).rootFolder.files.addChunked(file.name, file, data => {
         console.log(`progress`, data);
       }, true);
@@ -189,7 +189,7 @@ export const fetchAutomationDepartment = async (_sp) => {
       return arr;
     };
     export const getBusinessAppsByID = async (_sp, id) => {
-      debugger
+      
       let arr = []
       let arrs = []
       await _sp.web.lists.getByTitle("ARGMediaGallery").items.getById(id).select("*,EntityMaster/Id,EntityMaster/Entity,MediaGalleryCategory/Id,MediaGalleryCategory/CategoryName").expand("EntityMaster,MediaGalleryCategory")()
@@ -250,7 +250,7 @@ export const fetchAutomationDepartment = async (_sp) => {
     }
     export const ARGBusinessAppCategory =async (sp)=>
       {
-        debugger
+        
         let arr = []
         let arrs = []
         await sp.web.lists.getByTitle("BusinessAppsCategory").items.orderBy("Created",false).getAll().then((res) => {
@@ -306,7 +306,7 @@ export const fetchAutomationDepartment = async (_sp) => {
       .then((res) => {
         console.log("AllApprovallists",res);
         let AllApprovalArr = [];
-        debugger
+        
         for (let i = 0; i < res.length; i++) {
           getMyApprovalsdata(_sp,res[i].Title).then((resData)=>{
             for (let j = 0; j < resData.length; j++) { 
@@ -365,7 +365,7 @@ export const fetchAutomationDepartment = async (_sp) => {
       .then((res) => {
         console.log("AllRequestLists",res);
         let AllRequestArr = [];
-        debugger
+        
         for (let i = 0; i < res.length; i++) {
           getMyRequestsdata(_sp,res[i].Title).then((resData)=>{
             for (let j = 0; j < resData.length; j++) { 

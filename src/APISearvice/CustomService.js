@@ -203,7 +203,7 @@ export const getFollowing = async (sp) => {
   return arr;
 }
 export const addActivityLeaderboard = async (sp, Action) => {
-  debugger;
+  
   const trimmedAction = Action.trim();
  console.log(Action,'Action');
  
@@ -454,11 +454,11 @@ export const getLeaderTop = async (sp) => {
   return sumPointsByUser();
 };
 export const addNotification = async (itemData, _sp) => {
-  debugger
+  
   let resultArr = []
   try {
     const newItem = await _sp.web.lists.getByTitle('ARGNotificationHistory').items.add(itemData);
-    debugger
+    
     console.log('Item added successfully:', newItem);
     // Swal.fire('Item added successfully', '', 'success');
 
@@ -473,12 +473,12 @@ export const addNotification = async (itemData, _sp) => {
   return resultArr;
 };
 export const UpdateNotification = async (itemId, _sp) => {
-  debugger
+  
   let resultArr = []
   try {
     let arr = { ReadStatus: true }
     const newItem = await _sp.web.lists.getByTitle('ARGNotificationHistory').items.getById(itemId).update(arr);
-    debugger
+    
     console.log('update added successfully:', newItem);
     // Swal.fire('Item added successfully', '', 'success');
 
@@ -493,12 +493,12 @@ export const UpdateNotification = async (itemId, _sp) => {
   return resultArr;
 };
 export const getARGNotificationHistory = async (sp) => {
-  debugger
+  
   let resultArr = []
   const currentUser = await sp.web.currentUser();
   try {
     const newItem = await sp.web.lists.getByTitle('ARGNotificationHistory').items.select("*,NotifiedUser/Id,NotifiedUser/Title,ActionUser/Id,ActionUser/Title").expand("NotifiedUser,ActionUser").filter(`NotifiedUserId eq ${currentUser.Id} and ReadStatus eq false`).getAll();
-    debugger
+    
     console.log('Item added successfully:', newItem);
     // Swal.fire('Item added successfully', '', 'success');
 
@@ -513,7 +513,7 @@ export const getARGNotificationHistory = async (sp) => {
   return resultArr;
 }
 export const getAllARGNotificationHistory = async (sp) => {
-  debugger
+  
   let resultArr = []
   const currentUser = await sp.web.currentUser();
   try {

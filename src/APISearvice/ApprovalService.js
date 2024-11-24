@@ -50,7 +50,7 @@ export const GetARGApprovalConfiguration = async (sp) => {
   return sampleDataArray
 }
 export const getApprovalConfiguration = async (sp,EntityId) => {
-  debugger
+ 
   let arr = []
   let sampleDataArray=[]
   arr= await sp.web.lists.getByTitle("ARGApprovalConfiguration").items.select("*,Users/ID,Users/Title,Users/EMail,Level/Id,Level/Level").expand("Users,Level").filter(`EntityId eq ${EntityId}`).getAll();
@@ -112,7 +112,7 @@ export const getMyApproval = async (sp,listName) => {
   await sp.web.lists.getByTitle("AllApprovalLists").items.orderBy("Created", false).getAll()
     .then(async (res) => {
       console.log("AllApprovallists", res);
-      debugger
+      
       for (let i = 0; i < res.length; i++) {
         await sp.web.lists.getByTitle(`${res[i].Title}`).items
         //.select("*,Requester/Id,Requester/Title,Approver/Id,Approver/Title")
@@ -145,7 +145,7 @@ export const getApprovalListsData = async (_sp) => {
     .then((res) => {
       console.log("AllApprovallists", res);
       let AllApprovalArr = [];
-      debugger
+      
       for (let i = 0; i < res.length; i++) {
         getMyApproval(_sp, res[i].Title).then((resData) => {
           for (let j = 0; j < resData.length; j++) {
@@ -192,7 +192,7 @@ export const getMyApprovalsdata = async (_sp, listName) => {
   return arr;
 }
 export const getDataByID = async (_sp,id,ContentName) => {
-  debugger
+  
   let arr = []
   let arrs = []
   let bannerimg = []

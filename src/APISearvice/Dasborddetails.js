@@ -136,7 +136,7 @@ export const fetchPinnedUser = async (sp) => {
   return arr;
 };
 export const fetchComments = async (sp, Id) => {
-  debugger
+  
 
   let arr = []
   try {
@@ -160,7 +160,7 @@ export const fetchComments = async (sp, Id) => {
   return arr;
 };
 export const fetchLikes = async (sp, Id) => {
-  debugger
+  
   let arr = 0
   try {
     const userList = await sp.web.lists.getByTitle("ARGAnnouncementAndNewsUserLikes").items.select("*,AnnouncementAndNewsComments/Id").expand("AnnouncementAndNewsComments").filter(`AnnouncementAndNewsComments eq ${Id}`)();

@@ -162,7 +162,7 @@ export const addItem = async (itemData, _sp) => {
     let resultArr = []
     try {
         const newItem = await _sp.web.lists.getByTitle('ARGDiscussionForum').items.add(itemData);
-        debugger
+        
         console.log('Item added successfully:', newItem);
 
         resultArr = newItem
@@ -189,7 +189,7 @@ export const fetchTrendingDiscussionBasedOn = async (_sp) => {
 }
 
 export const getDiscussionForumByID = async (_sp, id) => {
-    debugger
+    
     let arr = []
     let arrs = []
     let bannerimg = []
@@ -402,7 +402,7 @@ export const getDiscussionCommentsByID = async (sp, Id) => {
     let arrUsers = []
     let CreatedDate = ""
     await sp.web.lists.getByTitle("ARGDiscussionComments").items.select("*,Author/Id,Author/Title,Author/EMail").expand("Author").filter(`DiscussionForumId eq ${Id}`)().then(res => {
-        debugger
+        
         let arrs;
         console.log(res, 'resres');
 
@@ -418,7 +418,7 @@ export const getDiscussionComments = async (sp, Id) => {
     let arrUsers = []
     let CreatedDate = ""
     await sp.web.lists.getByTitle("ARGDiscussionComments").items.select("*,Author/Id,Author/Title,Author/EMail").expand("Author").filter(`DiscussionForumId eq ${Id}`)().then(res => {
-        debugger
+        
         let arrs;
         console.log(res, 'resres');
 
@@ -430,7 +430,7 @@ export const getDiscussionComments = async (sp, Id) => {
             }
             arrUsers.push(arrs)
         }
-        debugger
+        
         const uniqueArray = arrUsers.filter((item, index) => arrUsers.indexOf(item) === index);
 
         console.log(uniqueArray);

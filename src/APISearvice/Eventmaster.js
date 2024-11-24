@@ -115,7 +115,7 @@ export const uploadFileToLibrary = async (file, sp, docLib) => {
 
 export const uploadFile = async (file, sp, docLib, siteUrl) => {
   let arr = {};
-  debugger
+  
   const uploadResult = await sp.web.lists.getByTitle(docLib).rootFolder.files.addChunked(file.name, file, data => {
     console.log(`progress`, data);
   }, true);
@@ -252,7 +252,7 @@ export const DeleteEntityMasterAPI = async (_sp, id) => {
   return resultArr;
 }
 export const getEventByID = async (_sp, id) => {
-  debugger
+  
   let arr = []
   let arrs = []
   let bannerimg = []
@@ -312,7 +312,7 @@ export const getARGEventMasterDetailsById = async (_sp, idNum) => {
 }
 export const uploadFileBanner = async (file, sp, docLib, siteUrl) => {
   let arr = {};
-  debugger
+  
   const uploadResult = await sp.web.lists.getByTitle(docLib).rootFolder.files.addChunked(file.name, file, data => {
     console.log(`progress`, data);
   }, true);
