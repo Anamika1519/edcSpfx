@@ -14,6 +14,7 @@ import "../../../CustomCss/mainCustom.scss";
 import "../../verticalSideBar/components/VerticalSidebar.scss";
 let INGLOBAL : any
 let currentuseridglobal : any
+let isProjectCompleted: any
 // import "../components/announcementdetails.scss";
 import Multiselect from "multiselect-react-dropdown";
 import Provider from "../../../GlobalContext/provider";
@@ -119,22 +120,35 @@ const [options, setOpions] = useState([]);
       //   console.error('Error fetching users:', error);
       // }
       try {
-        // Fetch all users and filter out groups
-        const siteUsers = await sp.web.siteUsers();
-  
-        // Filter users by checking the PrincipalType and ensure it's not a group
-        const usersOnly = siteUsers.filter(user => user.PrincipalType === 1);
-        const formattedOptions = usersOnly.map((item) => ({
-          name: item.Title, // Adjust according to your list schema
-          id: item.Id,
-      }));
-  
-      setUsers(formattedOptions);
-        console.log(usersOnly, 'usersOnly');
-        return usersOnly;
+        // Fetch all site users and filter out groups
+        const userList = await sp.web.siteUsers();
+        
+        // Filter users by checking the PrincipalType (1 represents Users)
+        const userOptions = userList
+            .filter(user => user.PrincipalType === 1)
+            .map(user => ({
+                label: user.Title,   // Display name of the user
+                value: user.Id       // Unique user ID
+            }));
+    
+        setUsers(userOptions);  // Set the options for Select and Multiselect
     } catch (error) {
         console.error('Error fetching users:', error);
     }
+    //   try {
+    //     const items = await sp.web.siteUsers()
+  
+    //     console.log(items, 'itemsitemsitems');
+  
+    //     const formattedOptions = items.map((item) => ({
+    //       label: item.Title, // Adjust according to your list schema
+    //       value: item.Id,
+    //     }));
+  
+    //     setOpions(formattedOptions);
+    // } catch (error) {
+    //     console.error('Error fetching options:', error);
+    // }
     };
 
     fetchUsers();
@@ -181,40 +195,40 @@ const [options, setOpions] = useState([]);
 
 
   // const [users, setUsers] = useState([]);
-  useEffect(() => {
-    // Fetch users from SharePoint when the component mounts
-    const fetchUsers = async () => {
-      // try {
-      //   const userList = await sp.web.siteUsers();  // Fetch users from the site
-      //   const userOptions = userList.map(user => ({
-      //     label: user.Title,   // Display name of the user
-      //     value: user.Id       // Unique user ID
-      //   }));
-      //   setUsers(userOptions);  // Set the options for Select and Multiselect
-      // } catch (error) {
-      //   console.error('Error fetching users:', error);
-      // }
-      try {
+  // useEffect(() => {
+  //   // Fetch users from SharePoint when the component mounts
+  //   const fetchUsers = async () => {
+  //     // try {
+  //     //   const userList = await sp.web.siteUsers();  // Fetch users from the site
+  //     //   const userOptions = userList.map(user => ({
+  //     //     label: user.Title,   // Display name of the user
+  //     //     value: user.Id       // Unique user ID
+  //     //   }));
+  //     //   setUsers(userOptions);  // Set the options for Select and Multiselect
+  //     // } catch (error) {
+  //     //   console.error('Error fetching users:', error);
+  //     // }
+  //     try {
        
-        const siteUsers = await sp.web.siteUsers();
+  //       const siteUsers = await sp.web.siteUsers();
   
 
-        const usersOnly = siteUsers.filter(user => user.PrincipalType === 1);
-        const formattedOptions = usersOnly.map((item) => ({
-          name: item.Title, 
-          id: item.Id,
-      }));
+  //       const usersOnly = siteUsers.filter(user => user.PrincipalType === 1);
+  //       const formattedOptions = usersOnly.map((item) => ({
+  //         name: item.Title, 
+  //         id: item.Id,
+  //     }));
   
-      setUsers(formattedOptions);
-        console.log(usersOnly, 'usersOnly');
-        return usersOnly;
-    } catch (error) {
-        console.error('Error fetching users:', error);
-    }
-    };
+  //     setUsers(formattedOptions);
+  //       console.log(usersOnly, 'usersOnly');
+  //       return usersOnly;
+  //   } catch (error) {
+  //       console.error('Error fetching users:', error);
+  //   }
+  //   };
 
-    fetchUsers();
-  }, []);
+  //   fetchUsers();
+  // }, []);
   const currentUserEmailRef = useRef('');
   // const getCurrrentuser=async()=>{
   //   const userdata = await sp.web.currentUser();
@@ -1311,7 +1325,7 @@ const togglevalue = (e:any) => {
           icon: 'success',
           confirmButtonText: 'OK',
       });
-       
+      ApiLocalStorageData()
         }
        
      
@@ -1519,6 +1533,7 @@ const handleRemoveUser = async (userId: number) => {
           icon: "success",
           confirmButtonText: "OK",
       });
+      ApiLocalStorageData()
   } catch (error) {
       console.error("Error removing user:", error);
 
@@ -1619,17 +1634,44 @@ const handleRemoveUser = async (userId: number) => {
                 if(item.Author.EMail === currentUserEmailRef.current){
         
                 }
-                if (item.ProjectStatus === "Close") {
-                  var div = document.querySelector('.col-md-6.mobile-w2') as HTMLElement;
-                  if (div) {
-                      div.style.pointerEvents = 'none';
-                      div.style.opacity = '0.5'; // Optional: Makes the div look disabled
-                  } else {
-                      console.error("Element not found: .col-md-6.mobile-w2");
-                  }
-              }
+              //   if (item.ProjectStatus === "Completed") {
+              //     var div = document.querySelector('.col-md-6.mobile-w2') as HTMLElement;
+              //     if (div) {
+              //         div.style.pointerEvents = 'none';
+              //         div.style.opacity = '0.5'; // Optional: Makes the div look disabled
+              //     } else {
+              //         console.error("Element not found: .col-md-6.mobile-w2");
+              //     }
+              // }
               
-              
+              if (item.ProjectStatus === "Completed") {
+                isProjectCompleted = "Completed"
+                const div = document.querySelector('.col-md-6.mobile-w2') as HTMLElement;
+                if (div) {
+                    // Make all input fields and other form elements read-only
+                    const formElements = div.querySelectorAll('input, textarea, select, button');
+                    formElements.forEach(element => {
+                        if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA' || element.tagName === 'SELECT') {
+                            (element as HTMLInputElement).readOnly = true;
+                        } else if (element.tagName === 'BUTTON') {
+                            (element as HTMLButtonElement).disabled = true;
+                        }
+                    });
+            
+                    // Optionally, set pointer-events to none to visually indicate disabled state
+                    div.style.pointerEvents = 'none';
+                    div.style.opacity = '0.5';
+            
+                    // Optional: Add a message indicating the section is read-only
+                    const message = document.createElement('div');
+                    // message.innerText = "This section is read-only.";
+                    message.style.color = "red";
+                    message.style.fontSize = "14px";
+                    div.appendChild(message);
+                } else {
+                    console.error("Element not found: .col-md-6.mobile-w2");
+                }
+            }
               
                 const ProjectsDocsJSON =
                   item.ProjectsDocsJSON == undefined ||
@@ -2015,44 +2057,33 @@ alt="Call"
                       <Modal show={showModal} onHide={closeModal} className="minw80">
                         <h3 style={{width:'100%', textAlign:'left',borderBottom:'0px solid #efefef',  padding:'15px', fontSize:'18px'}} className="modal-title">Documents</h3>
                         <Modal.Header closeButton style={{position:'absolute', display:'flex', gap:'20px', top:'-6px', right:'0px', borderBottom:'0px solid #ccc'}}>
-                          {/* <Modal.Title> {ProjectsDocsJSON.length} Documents</Modal.Title> */}
-                          {/* <Button variant="success" onClick={() => uploadfileinfolder()}>
-            Upload File
-          </Button> */}
-        
-                          <label>
-
-<div>
-<div className="chosefile">
-<img onClick={() => handleImageChange} 
-                                            src={require("../assets/cloud-computing.png")}
-                                            style={{ width: '40px', opacity:'0.5' }}
-                                            alt="Check"
-                                          />  <span>Click To Upload </span>
-                                          </div>
-  {/* <Link style={{ width: "20px", height: "16px" }} onClick={() => handleImageChange} /> */}
-
-  <input
-
-    type="file"
-
-    multiple
-
-    accept="image/*"
-
-    onChange={handleImageChange}
-
-    className="fs-6 w-50" aria-rowspan={5} style={{ display: 'none' }}
-
-  />
-
-</div>
-
-</label>
-<Button variant="success" onClick={() => uploadfileinfolder()}>
-            Upload File
-          </Button>
-                        </Modal.Header>
+  <label>
+    <div>
+      <div className="chosefile">
+        <img 
+          onClick={isProjectCompleted ? null : (e:any) => handleImageChange(e)} 
+          src={require("../assets/cloud-computing.png")}
+          style={{ width: '40px', opacity: isProjectCompleted ? '0.5' : '1', pointerEvents: isProjectCompleted ? 'none' : 'auto' }}
+          alt="Check"
+        />  
+        <span style={{ opacity: isProjectCompleted ? '0.5' : '1' }}>Click To Upload</span>
+      </div>
+      <input
+        type="file"
+        multiple
+        accept="image/*"
+        onChange={handleImageChange}
+        className="fs-6 w-50"
+        aria-rowspan={5}
+        style={{ display: 'none' }}
+        disabled={isProjectCompleted} // Disable the file input if project is completed
+      />
+    </div>
+  </label>
+  <Button variant="success" onClick={() => uploadfileinfolder()} disabled={isProjectCompleted}>
+    Upload File
+  </Button>
+</Modal.Header>
                         <Modal.Body>
                         <div className="file-cards row">
                         <ul className="listnew">
@@ -2094,7 +2125,10 @@ alt="Call"
                     <Dropdown.Item onClick={() => handlePreviewFile(file.ServerRelativeUrl)} style={{fontSize:'12px', textAlign:'center'  }}>
                       Preview
                     </Dropdown.Item>
-                    <Dropdown.Item onClick={() => Handledeletefile(file.UniqueId)} style={{fontSize:'12px', textAlign:'center'  }}>
+                    <Dropdown.Item 
+                    onClick={() => Handledeletefile(file.UniqueId)} disabled={isProjectCompleted}
+                    // onClick={() => Handledeletefile(file.UniqueId)} 
+                    style={{fontSize:'12px', textAlign:'center'  }}>
                       Delete File
                     </Dropdown.Item>
                     {/* Add more options if needed */}

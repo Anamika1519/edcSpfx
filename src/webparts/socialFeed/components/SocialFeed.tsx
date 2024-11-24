@@ -720,7 +720,8 @@ const SocialFeedContext = ({ props }: any) => {
             await sp.web.lists
               .getByTitle("ARGSocialFeed") // SharePoint list name
               .items.select("*,SocialFeedComments/Id,SocialFeedComments/Comments,SocialFeedImages/Id,SocialFeedUserLikes/Id,Author/Id,Author/Title")
-              .expand("SocialFeedComments,SocialFeedImages,SocialFeedUserLikes,Author").filter(filterQuery).orderBy("Created", false)().then((item: any) => {
+              .expand("SocialFeedComments,SocialFeedImages,SocialFeedUserLikes,Author")
+              .filter(`AuthorId eq ${cuurentID}`).orderBy("Created", false)().then((item: any) => {
                 console.log(item, 'ihhhpostsME');
  
                 if (item.length > 0) {
@@ -1406,6 +1407,7 @@ const SocialFeedContext = ({ props }: any) => {
                               sp={sp}
                               siteUrl={siteUrl}
                               currentUserName={currentUsername}
+                              CurrentUser={CurrentUser}
                               currentEmail={currentEmail}
                               editload={fetchPosts}
                               post={{

@@ -19,7 +19,7 @@ export const getDiscussionForum = async (_sp) => {
     //   if (!currentUser) return arr; // Return empty array if user fetch failed
 
     await _sp.web.lists.getByTitle("ARGDiscussionForum")
-        .items.select("*,DiscussionForumCategory/Id,DiscussionForumCategory/CategoryName,Author/ID,Author/Title,InviteMemebers/Id,InviteMemebers/Title,InviteMemebers/EMail,GroupType")
+        .items.select("*,DiscussionForumCategory/Id,DiscussionForumCategory/CategoryName,Author/ID,Author/Title,Author/EMail,InviteMemebers/Id,InviteMemebers/Title,InviteMemebers/EMail,GroupType")
         .expand("DiscussionForumCategory,Author,InviteMemebers").orderBy("Created", false).getAll()
         .then((res) => {
             console.log("--discussion", res);

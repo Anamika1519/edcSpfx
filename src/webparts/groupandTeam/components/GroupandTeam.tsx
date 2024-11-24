@@ -278,8 +278,18 @@ const GroupandTeamcontext = ({ props }: any) => {
     setActiveTab(tab);
     debugger;
     if (tab === "allgroups") {
-      setGroupsData(await getGroupTeam(sp));
-    } else if (tab === "groupsyoucreated") {
+      const allGroups = await getGroupTeam(sp);
+      const filteredGroups = allGroups.filter(item => {
+          if (item.GroupType === "Selected Members") {
+              // Check if current user is in InviteMemebers
+              alert(`currentuser id ${currentUser.Id}`)
+              return item.InviteMemebers.some((invitee:any) => invitee.Id === currentUser.Id || item.Author.ID === currentUser);
+          }
+          return true;
+      });
+      setGroupsData(filteredGroups);
+  } 
+   else if (tab === "groupsyoucreated") {
       const res = groupsData.filter(item =>
         // Include public groups or private groups where the current user is in the InviteMembers array
         item.Author.Title == currentUser.Title);

@@ -1811,13 +1811,45 @@ const DiscussionForumContext = ({ props }: any) => {
                               </div> */}
                             </div>
                           </th>
+                          <th style={{ minWidth: "100px", maxWidth: "100px" }}>
+                            <div className="d-flex flex-column bd-highlight ">
+                              <div
+                                className="d-flex "
+                                style={{ justifyContent: "space-between" }}
+                              >
+                                <span>Status</span>{" "}
+                                <span
+                                  onClick={() => handleSortChange("Category")}
+                                >
+                                  <FontAwesomeIcon icon={faSort} />{" "}
+                                </span>
+                              </div>
+                              
+                            </div>
+                          </th>
+                          <th style={{ minWidth: "100px", maxWidth: "100px" }}>
+                            <div className="d-flex flex-column bd-highlight ">
+                              <div
+                                className="d-flex "
+                                style={{ justifyContent: "space-between" }}
+                              >
+                                <span>Type</span>{" "}
+                                <span
+                                  onClick={() => handleSortChange("Category")}
+                                >
+                                  <FontAwesomeIcon icon={faSort} />{" "}
+                                </span>
+                              </div>
+                              
+                            </div>
+                          </th>
                           <th style={{ minWidth: "110px", maxWidth: "110px" }}>
                             <div className=" ">
                               <div
                                 className=""
                                
                               >
-                                <span>Contributor</span>
+                                <span>Owner</span>
                               </div>
                              
                             </div>
@@ -1905,9 +1937,20 @@ const DiscussionForumContext = ({ props }: any) => {
                               <td style={{ minWidth: "100px", maxWidth: "100px" }}>
                                 {item?.DiscussionForumCategory?.CategoryName}
                               </td>
-
+                              <td style={{ minWidth: "100px", maxWidth: "100px" }}>
+                                {item?.ARGDiscussionStatus}
+                              </td>
+                              <td style={{ minWidth: "100px", maxWidth: "100px" }}>
+                                {item?.GroupType}
+                              </td>
                               <td style={{ minWidth: "110px", maxWidth: "110px" }}>
-                                <div
+                              <img 
+          src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item?.Author?.EMail}`}
+          className="rounded-circlenu img-thumbnail avatar-xl"          
+          alt="profile-image"
+        />
+        {item?.Author?.Title}
+                                {/* <div
                                   style={{
                                   
                                     position: "relative",
@@ -1986,7 +2029,7 @@ const DiscussionForumContext = ({ props }: any) => {
                                         )}
                                     </div>
                                   )}
-                                </div>
+                                </div> */}
                               </td>
                               {/* Replies Count */}
         <td style={{ minWidth: "60px", maxWidth: "60px" }}>

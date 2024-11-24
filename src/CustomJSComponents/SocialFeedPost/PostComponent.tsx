@@ -570,7 +570,9 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
                     <div className="post-content">
                         {(
                             <><>
-                            </><div className="post-actions">
+                            </>
+                            {CurrentUser.Id === post.AutherId && (
+                            <div className="post-actions">
                                     <div className="menu-toggle" onClick={toggleMenu}>
                                         <MoreVertical size={20} />
                                     </div>
@@ -580,7 +582,9 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
                                             <button onClick={(e) => handleDeletePost(e, post.postId)} disabled={post.AutherId != CurrentUser.Id}>Delete</button>
                                         </div>
                                     )}
-                                </div></>
+                                </div>
+                            )}
+                                </>
                         )}
                     </div>
                 </div>

@@ -95,6 +95,45 @@ export const additemtoFollowedGroup = async (_sp, itemData) => {
   }
   return resultArr;
 };
+// export const getGroupTeam = async (_sp) => {
+//   let arr = [];
+//   let currentUser;
+
+//   // Fetch the current user
+//   await _sp.web.currentUser()
+//     .then(user => {
+//       currentUser = user.Id; // Get the current user's ID
+//     })
+//     .catch(error => {
+//       console.error("Error fetching current user: ", error);
+//       return [];
+//     });
+
+//   if (!currentUser) return arr; // Return empty array if user fetch failed
+
+//   await _sp.web.lists
+//     .getByTitle("ARGGroupandTeam")
+//     .items.select("*,Author/Title,Author/ID,GroupName,GroupType,InviteMemebers/Id")
+//     .expand("Author,InviteMemebers")
+//     .orderBy("Created", false)
+//     .getAll()
+//     .then((res) => {
+//       console.log("--------group", res);
+//       // Add logic to truncate GroupName if its length is more than 50 characters
+//       arr = res.map(item => ({
+//         ...item,
+//         TruncatedGroupName: item.GroupName.length > 50 
+//           ? `${item.GroupName.slice(0, 50)}...` 
+//           : item.GroupName,
+//       }));
+//     })
+//     .catch((error) => {
+//       console.error("Error fetching data: ", error);
+//     });
+
+//   return arr;
+// };
+
 export const getGroupTeam = async (_sp) => {
   let arr = [];
   let currentUser;
@@ -118,22 +157,35 @@ export const getGroupTeam = async (_sp) => {
     .orderBy("Created", false)
     .getAll()
     .then((res) => {
+      // alert("res", JSON.parse(JSON.stringify(res)))
+      debugger
       console.log("--------group", res);
-      // Add logic to truncate GroupName if its length is more than 50 characters
-      arr = res.map(item => ({
-        ...item,
-        TruncatedGroupName: item.GroupName.length > 50 
-          ? `${item.GroupName.slice(0, 50)}...` 
-          : item.GroupName,
-      }));
+
+    // Add logic to filter based on GroupType and check if current user is in InviteMemebers
+    arr = res
+    .filter(item => {
+      console.log("item.GroupType", item.GroupType)
+      if (item.GroupType === "Selected Members") {
+        alert(item.GroupType)
+        // Check if current user is in InviteMemebers
+        return item?.InviteMemebers?.some(invitee => invitee.Id === currentUser || item.Author.ID === currentUser);
+      }
+      return true; // Include other groups
     })
-    .catch((error) => {
-      console.error("Error fetching data: ", error);
-    });
+    .map(item => ({
+      ...item,
+      TruncatedGroupName: item.GroupName.length > 50 
+        ? `${item.GroupName.slice(0, 50)}...` 
+        : item.GroupName,
+    }));
+})
+.catch((error) => {
+  console.error("Error fetching data: ", error);
+});
+
 
   return arr;
 };
-
 
 export const updateItem = async (itemData, _sp, id) => {
   let resultArr = [];

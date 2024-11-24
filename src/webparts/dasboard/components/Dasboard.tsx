@@ -1127,7 +1127,7 @@ alt="pin"
                                               alt="profile-image" 
                                            />
                                             <span className="gfg_text">
-                                            A Computer science portal
+                                            {id?.Title}
                                         </span>
 
                                         </div>

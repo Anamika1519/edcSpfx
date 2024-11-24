@@ -29,7 +29,7 @@ export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentU
     // const [gcomments, setGComments] = useState(post.gcomments || []);
     const [SocialFeedImagesJson, setImages] = useState([]);
     const [authorId, setAuthorId] = useState(0);
-    const [editedContent, setEditedContent] = useState(post.Comments);
+    const [editedContent, setEditedContent] = useState(post.Contentpost);
     const [newComment, setNewComment] = useState('');
     const [isEditing, setIsEditing] = useState(false);
     const isPostAuthor = post.userName === currentUsername;
@@ -481,17 +481,18 @@ export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentU
             </div>
 
             {/* Post Content */}
-            <div className="post-content" onClick={() => sendanEmailStop()}>
+            <div className="post-content" onClick={() => sendanEmailStop()} style={{ whiteSpace: "pre-wrap" }}>
                 {isEditing ? (
                     <textarea
                         value={editedContent}
                         onChange={(e) => setEditedContent(e.target.value)}
                         rows={4}
                         className="edit-post-textarea"
+                        style={{ whiteSpace: "pre-wrap" }}
                         onKeyDown={handleSaveOnEnter}
                     />
                 ) : (
-                    <p>{post.Comments}   {/* Edit Button */}
+                    <p style={{ whiteSpace: "pre-wrap" }}>{post.Contentpost}   {/* Edit Button */}
                     </p>
                 )}
 

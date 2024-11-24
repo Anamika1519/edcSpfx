@@ -276,7 +276,7 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
           ActionUserId: CurrentUser.Id,
           DeatilPage: "DiscussionForumDetail",
           ReadStatus: false,
-          
+
         }
         const nofiArr = await addNotification(notifiedArr, sp)
         console.log(nofiArr, 'nofiArr');
@@ -392,7 +392,7 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
                   ActionUserId: CurrentUser.Id,
                   DeatilPage: "DiscussionDetails",
                   ReadStatus: false,
-                  
+
                 }
                 const nofiArr = await addNotification(notifiedArr, sp)
                 console.log(nofiArr, 'nofiArr');
@@ -743,17 +743,24 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
   const getImpressionCountDetails = () => {
     let cCount = 0;
     let lCount = 0;
-
+    let repliesCount = 0;
     commentData.forEach((comment) => {
       if (comment.CommentsCount === null) {
         cCount++;
       } else {
         cCount += comment.CommentsCount;
       }
+      // if (comment.CommentsCount != null) {
+      //   cCount += comment.CommentsCount;
+      //  } 
+      //else {
+      //   cCount += comment.CommentsCount;
+      // }
       if (comment.LikesCount !== null) {
         lCount += comment.LikesCount;
       }
     })
+    //repliesCount = cCount;
     commentCount = cCount;
     likeCount = lCount;
     console.log("commentCount", cCount);
@@ -1215,16 +1222,16 @@ alt="Check"
 
                           {item.Topic}
                         </p>
-                        <div  className="row ">
+                        <div className="row ">
                           <p
-                            style={{ lineHeight: "22px", fontSize:'15px'}}
+                            style={{ lineHeight: "22px", fontSize: '15px' }}
                             className="d-block text-dark mt-2"
                           >
                             {item.Overview}
                           </p>
 
                         </div>
-                        <div style={{position:'sticky', top:'90px'}}  className="row mt-2">
+                        <div style={{ position: 'sticky', top: '90px' }} className="row mt-2">
                           <div className="col-md-12 col-xl-12">
                             {/* <div className="tabcss sameh mb-2 mt-2 me-1 activenew">
 
@@ -1238,31 +1245,31 @@ alt="Check"
                             <div className="tabcss mb-2 mt-2 me-1 newalign">
                               <span className="pe-2 widtsvg text-nowrap mb-0 d-inline-block"
                                 onClick={(e: any) => openModal(e)}>
-                                <FilePlus size={14}  /> <span className="docu"> Documents</span>
+                                <FilePlus size={14} /> <span className="docu"> Documents</span>
                               </span>
                             </div>
                             <div className="tabcss mb-2 mt-2 me-1 newalign">
                               <span className="pe-2 text-nowrap mb-0 d-inline-block">
                                 <Calendar size={14} />{" "}
-                                <span className="docu">Start Date:&nbsp; {moment(item.Created).format("DD-MMM-YYYY")}{" "}</span> 
+                                <span className="docu">Start Date:&nbsp; {moment(item.Created).format("DD-MMM-YYYY")}{" "}</span>
 
                               </span>
                             </div>
                             <div className="tabcss mb-2 sameh mt-2 me-1 ">
                               <span className="text-nowrap mb-0 d-inline-block" onClick={() => sendanEmail(item)} >
-                                <Share size={14} className="alignright123" /> <span className="docu">Share by email</span> 
+                                <Share size={14} className="alignright123" /> <span className="docu">Share by email</span>
                               </span>
                             </div>
-                            <div className="tabcss mb-2 sameh mt-2 me-1 ">
+                            {/* <div className="tabcss mb-2 sameh mt-2 me-1 ">
                               <span
                                 className="text-nowrap mb-0 d-inline-block"
                                 onClick={togglePopup}
                               >
-                                {/* <FilePlus size={14} /> */}
+                               
                                 <img  src={require("../assets/createf.png")} className="alignright123"/>
                                 <span className="docu"> Create Folder</span> 
                               </span>
-                            </div>
+                            </div> */}
                             {/* <div className="tabcss mb-2 sameh mt-2 me-1 ">
                               <span
                                 className="text-nowrap mb-0 d-inline-block"
@@ -1275,8 +1282,8 @@ alt="Check"
                                 className="text-nowrap mb-0 d-inline-block"
                                 onClick={() => UpdateDiscussion(item.Id, item.Author.ID, item.ARGDiscussionStatus)}
                               >
-                                <img src={require("../assets/closed.png")} className="alignright123"/>
-                              <span className="docu"> Click to close discussion</span> 
+                                <img src={require("../assets/closed.png")} className="alignright123" />
+                                <span className="docu"> Click to close discussion</span>
                               </span>
                             </div>
                             {/* <div className="tabcss sameh mb-3 mt-2 me-1 ">
@@ -1302,7 +1309,65 @@ alt="Check"
                                   position: "relative",
                                 }}
                               >
-                                <div style={{ display: "flex", marginTop: "6px" }} className="ml90">
+                                 
+                                {item?.InviteMemebers?.length > 0 &&
+                                <div>
+                                          <h4 className="header-title font-16 text-dark fw-bold mb-0">
+                               Contributor List 
+
+                            </h4>
+                                  {item?.InviteMemebers?.map((member: any, idx: any) => (
+                                    <div className="projectmemeber">
+                                      <div className="itemalign">
+                                        <img
+                                          // style={{
+                                          //   margin:
+                                          //     index == 0
+                                          //       ? "0 0 0 0"
+                                          //       : "0 0 0px -12px",
+                                          // }}
+                                          src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${member?.EMail}`}
+                                          className="rounded-circlenu img-thumbnail avatar-xl"
+                                          alt="profile-image"
+                                        />
+                                        <p className='mb-0'>{member?.Title} </p>
+                                      </div>
+                                      {/* {item.Author.EMail === currentUserEmailRef.current && (
+        <div>
+        <button onClick={()=>handleRemoveUser(id?.ID)}>Remove</button>
+        </div>
+
+        )
+        
+        } */}
+
+                                      <img
+
+                                        src={require("../assets/calling.png")}
+
+                                        className="alignright"
+
+                                        onClick={() =>
+
+                                          window.open(
+
+                                            `https://teams.microsoft.com/l/call/0/0?users=${member.EMail}`,
+
+                                            "_blank"
+
+                                          )
+
+                                        }
+
+                                        alt="Call"
+
+                                      />
+                                    </div>
+
+                                  ))}
+                                </div>
+                                  }
+                                {/* <div style={{ display: "flex", marginTop: "6px" }} className="ml90">
                                   {item?.InviteMemebers?.map(
                                     (id: any, idx: any) => {
                                       if (idx < 3) {
@@ -1321,7 +1386,7 @@ alt="Check"
                                             alt="profile-image"
                                           />
                                           <span className="gfg_text">
-            A Computer science portal
+                                          {id?.Title}
         </span>
 
         </div>
@@ -1332,8 +1397,7 @@ alt="Check"
                                   {item?.InviteMemebers?.length > 3 && (
                                     <div
                                       className="pimg"
-                                      // onClick={() => toggleDropdown(item.Id)}
-                                      key={item.Id}
+                                          key={item.Id}
                                     >
                                       <div
                                         style={{
@@ -1346,11 +1410,11 @@ alt="Check"
                                         }}
                                         className="rounded-circlecss  text-center img-thumbnail avatar-xl"
                                       >
-                                        +
+                                        + {item?.InviteMemebers?.length - 3}
                                       </div>
                                     </div>
                                   )}
-                                </div>
+                                </div> */}
                                 {showDropdownId === item.Id && (
                                   <div
                                     className="card"
@@ -1386,89 +1450,58 @@ alt="Check"
                         </div>
 
 
-
-                      
-                        {/* <div className="row internalmedia filterable-content mt-3">
-                      <Modal show={showModal} onHide={closeModal}>
-
-                        <Modal.Header closeButton>
-                          <Modal.Title> {ProjectsDocsJSON.length} Documents</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>
-                          {ProjectsDocsJSON.length > 0 ? (
-                            ProjectsDocsJSON.map((res: any) => {
-                              return (
-                                <div>
-                                  <div className="">
-                                    <p className="font-14"
-
-                                      onClick={(e) => openDocument(e, res.ID)}
-                                    >
-                                      <FileIcon fileType={res.fileType} />  {res?.fileName}
-                                    </p>
-                                  </div>
-                                </div>
-                              );
-                            })
-                          ) : (
-                            <></>
-                          )}
-
-                        </Modal.Body>
-                      </Modal>
-                    </div> */}
                         <Modal show={showModal} onHide={closeModal} className="minw80">
                           <h3 style={{ width: '100%', textAlign: 'left', borderBottom: '0px solid #efefef', padding: '15px', fontSize: '18px' }} className="modal-title">Documents</h3>
-                          <Modal.Header closeButton style={{ position: 'absolute', right: '0px', display:'flex', gap:'10px', top:'-6px', borderBottom: '0px solid #ccc' }}>
+                          <Modal.Header closeButton style={{ position: 'absolute', right: '0px', display: 'flex', gap: '10px', top: '-6px', borderBottom: '0px solid #ccc' }}>
                             {/* <Modal.Title> {ProjectsDocsJSON.length} Documents</Modal.Title> */}
-                            
-                            
-                           
-                            
+
+
+
+
                             <label>
 
-<div>
-  <div className="chosefile">
-<img onClick={() => handleImageChange} 
-                                            src={require("../assets/cloud-computing.png")}
-                                            style={{ width: '40px', opacity:'0.5' }}
-                                            alt="Check"
-                                          />  <span>Click To Upload </span>
-                                          </div>
-  {/* <Link style={{ width: "20px", height: "16px" }} onClick={() => handleImageChange} /> */}
+                              <div>
+                                <div className="chosefile">
+                                  <img onClick={() => handleImageChange}
+                                    src={require("../assets/cloud-computing.png")}
+                                    style={{ width: '40px', opacity: '0.5' }}
+                                    alt="Check"
+                                  />  <span>Click To Upload </span>
+                                </div>
+                                {/* <Link style={{ width: "20px", height: "16px" }} onClick={() => handleImageChange} /> */}
 
-  <input
+                                <input
 
-    type="file"
+                                  type="file"
 
-    multiple
+                                  multiple
 
-    accept="image/*"
+                                  accept="image/*"
 
-    onChange={handleImageChange}
+                                  onChange={handleImageChange}
 
-    className="fs-6 w-50" aria-rowspan={5} style={{ display: 'none' }}
+                                  className="fs-6 w-50" aria-rowspan={5} style={{ display: 'none' }}
 
-  />
+                                />
 
-</div>
+                              </div>
 
-</label>      <Button variant="success" onClick={() => uploadfileinfolder()}>
+                            </label>      <Button variant="success" onClick={() => uploadfileinfolder()}>
                               Upload File
                             </Button>
-                          
-                           
+
+
                           </Modal.Header>
                           <Modal.Body>
-                          <div className="file-cards row">
-                          <ul className="listnew">
-                              {selectedFiles.map((file, index) => (
-                                <li key={index}>
-                                  {file.name}
-                                  <button onClick={() => removeFile(file.name)} style={{ marginLeft: '10px', color: 'red' }}>❌</button>
-                                </li>
-                              ))}
-                            </ul>
+                            <div className="file-cards row">
+                              <ul className="listnew">
+                                {selectedFiles.map((file, index) => (
+                                  <li key={index}>
+                                    {file.name}
+                                    <button onClick={() => removeFile(file.name)} style={{ marginLeft: '10px', color: 'red' }}>❌</button>
+                                  </li>
+                                ))}
+                              </ul>
                               {/* {files.map((file) => (
             <Card key={file.UniqueId}style={{  marginBottom: '10px', height:'82px' }}>
               <Card.Body>
@@ -1644,9 +1677,9 @@ alt="Check"
                           ))}
                         </div>
                       </div>
-                      <div  className="col-md-3 mobile-w3">
+                      <div className="col-md-3 mobile-w3">
 
-                        <div className="card mobile-5 mt-2" style={{ borderRadius: "22px",position:'sticky', top:'90px' }}>
+                        <div className="card mobile-5 mt-2" style={{ borderRadius: "22px", position: 'sticky', top: '90px' }}>
                           <div className="card-body pb-3 gheight">
                             <h4 className="header-title font-16 text-dark fw-bold mb-0" style={{ fontSize: "20px" }}>Discussion Owner</h4>
                             <h1 className="text-muted font-14 mt-3"><p className="text-dark font-16 text-center mb-2">{item.Author.Title}</p>
@@ -1656,43 +1689,43 @@ alt="Check"
                         </div>
 
                         {/* Impression code */}
-                        <div className="card mobile-5 mt-3" style={{ borderRadius: "22px",position:'sticky', top:'260px' }}>
+                        <div className="card mobile-5 mt-3" style={{ borderRadius: "22px", position: 'sticky', top: '260px' }}>
                           <div className="card-body pb-3 gheight">
                             <h4 className="header-title font-16 text-dark fw-bold mb-0" style={{ fontSize: "20px" }}>Impression Count</h4>
                             <h1 className="text-muted font-14 mt-3">
                               <div className="row">
-                                 <div className="col-lg-12">
-                                    <div className="card1 mb-1">
-                                      <div className="d-flex juss">
-                                    <img src={require("../assets/glike.png")} className="alignright12"/>
-                                    <p className="text-dark font-14 text-center mb-0">Likes</p>
-                                  
+                                <div className="col-lg-12">
+                                  <div className="card1 mb-1">
+                                    <div className="d-flex juss">
+                                      <img src={require("../assets/glike.png")} className="alignright12" />
+                                      <p className="text-dark font-14 text-center mb-0">Likes</p>
+
                                     </div>
 
                                     <span className="likecount">{likeCount}</span>
 
 
-                                      </div>                                
+                                  </div>
 
-                                    
-                                    <div className="card1 bodernone mt-3 pb-0">
+
+                                  <div className="card1 bodernone mt-3 pb-0">
                                     <div className="d-flex juss">
-                                    <img src={require("../assets/ccomment.png")} className="alignright12"/>
-                                    <p className="text-dark font-14 text-center mb-0">Response & Reply</p>
-                                  
+                                      <img src={require("../assets/ccomment.png")} className="alignright12" />
+                                      <p className="text-dark font-14 text-center mb-0">Response & Reply</p>
+
                                     </div>
-                                      <span className="likecount">{commentCount}</span>
-                                    
-                                       
-                                      </div>                               
-                                      
-                                        </div>
-                                      {/* <p className="text-muted font-12 text-center">{likeCount}</p> */}
+                                    <span className="likecount">{commentCount}</span>
+
+
+                                  </div>
+
+                                </div>
+                                {/* <p className="text-muted font-12 text-center">{likeCount}</p> */}
 
                               </div>
                               {/* <p className="text-dark font-16 text-center mb-2">{item.Author.Title}</p> */}
                               {/* <p className="text-muted font-14 text-center mb-1">Total Comments {commentCount}</p> */}
-                             
+
                             </h1></div>
                         </div>
                       </div>

@@ -251,12 +251,22 @@ setDocumentpostArr1([])
   };
 
   const onChange = (name: string, value: string) => {
+    console.log(selectedValue, 'selectedValue');
+    if (formData.startDate>value) {
+      Swal.fire("Error", "End Date to be greater than Start Date", "error");
+      setFormData((prevState) => ({
+        ...prevState,
+        [name]: "",
+      }));
+    }
+    else{
     console.log("name-->>", name);
     console.log("value-->>", value);
     setFormData((prevState) => ({
       ...prevState,
       [name]: value,
     }));
+  }
   };
 
   const handleCancel = () => {
@@ -1290,10 +1300,10 @@ setDocumentpostArr1([])
                             <li className="nav-item" role="presentation">
                               <a
 
-                                onClick={() => handleTabClick("Close")}
-                                className={`nav-link ${activeTab === "Close" ? "active" : ""
+                                onClick={() => handleTabClick("Completed")}
+                                className={`nav-link ${activeTab === "Completed" ? "active" : ""
                                   }`}
-                                aria-selected={activeTab === "Close"}
+                                aria-selected={activeTab === "Completed"}
                                 role="tab"
                                 tabIndex={-1}
                               >
@@ -1360,27 +1370,9 @@ setDocumentpostArr1([])
                                     </a>
                                     ongoing mb-3
                                   </h4>
-                                  <p>{project?.ProjectStatus}</p>
+                                  
+
                                   <a>
-{
-      project?.ProjectStatus === null 
-      ? null // Don't display anything if ProjectStatus is null
-      : (
-          <a className="ongoing mb-3"
-              style={{ 
-                  background: project?.ProjectStatus === 'Completed' ? '#cce7dc' : '#6c757d',
-                  color: project?.ProjectStatus === 'Completed' ? '#008751' : '#fff',
-                  padding: '5px',
-                  borderRadius: '4px',
-                  textDecoration: 'none'
-              }}
-          >
-              {project?.ProjectStatus === 'Ongoing' ? 'Ongoing' : 'Completed'}
-          </a>
-      )
-}
-</a>
-                                  {/* <a>
 
 {
       project?.ProjectStatus === null 
@@ -1389,26 +1381,6 @@ setDocumentpostArr1([])
           <a className="ongoing mb-3"
               style={{ 
                   background: project?.ProjectStatus === 'Completed' ? '#cce7dc' : '#6c757d',
-                  color: project?.ProjectStatus === 'Completed' ? '#008751' : '#fff',
-                  padding: '5px',
-                  borderRadius: '4px',
-                  textDecoration: 'none'
-              }}
-          >
-              {project?.ProjectStatus === 'Ongoing' ? 'Ongoing' : 'Completed'}
-          </a>
-      )
-}
-</a> */}
-  <a>
-
-{
-      project?.ProjectStatus === null 
-      ? null // Don't display anything if ProjectStatus is null
-      : (
-          <a className="ongoing mb-3"
-              style={{ 
-                 background: project?.ProjectStatus === 'Completed' ? '#cce7dc' : '#6c757d',
                   color: project?.ProjectStatus === 'Completed' ? '#008751' : '#fff',
                   padding: '5px',
                   borderRadius: '4px',
@@ -1482,7 +1454,7 @@ setDocumentpostArr1([])
                                                 alt="profile-image"
                                               />
                                                 <span className="gfg_text">
-                                            A Computer science portal
+                                                {id?.Title}
                                         </span>
 
                                         </div>
@@ -1615,7 +1587,26 @@ setDocumentpostArr1([])
                                       {project.ProjectName}
                                     </a>
                                   </h4>
+                                  <a>
 
+{
+      project?.ProjectStatus === null 
+      ? null // Don't display anything if ProjectStatus is null
+      : (
+          <a className="ongoing mb-3"
+              style={{ 
+                  background: project?.ProjectStatus === 'Completed' ? '#cce7dc' : '#6c757d',
+                  color: project?.ProjectStatus === 'Completed' ? '#008751' : '#fff',
+                  padding: '5px',
+                  borderRadius: '4px',
+                  textDecoration: 'none'
+              }}
+          >
+              {project?.ProjectStatus === 'Ongoing' ? 'Ongoing' : 'Completed'}
+          </a>
+      )
+}
+</a>
 
                                   <p className="mb-1 text-muted font-12">
                                     <span
@@ -1633,7 +1624,7 @@ setDocumentpostArr1([])
                                       <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />   <b>{project. CommentsCount || 0}</b> Comments
                                     </span>
                                   </p>
-
+                                 
                                   {/* Task info */}
                                   {/* <p className="mb-1 font-12">
                               <span
@@ -1677,7 +1668,7 @@ setDocumentpostArr1([])
                                                 alt="profile-image"
                                               />
                                               <span className="gfg_text">
-                                            A Computer science portal
+                                              {id?.Title}
                                         </span>
 
                                         </div>
@@ -1809,6 +1800,26 @@ setDocumentpostArr1([])
                                         "Untitled Project"}
                                     </a>
                                   </h4>
+                                  <a>
+
+{
+      project?.ProjectStatus === null 
+      ? null // Don't display anything if ProjectStatus is null
+      : (
+          <a className="ongoing mb-3"
+              style={{ 
+                  background: project?.ProjectStatus === 'Completed' ? '#cce7dc' : '#6c757d',
+                  color: project?.ProjectStatus === 'Completed' ? '#008751' : '#fff',
+                  padding: '5px',
+                  borderRadius: '4px',
+                  textDecoration: 'none'
+              }}
+          >
+              {project?.ProjectStatus === 'Ongoing' ? 'Ongoing' : 'Completed'}
+          </a>
+      )
+}
+</a>
                                   {/* <div className="finish mb-2">
                                     {project.status || "Finished"}
                                   </div> */}
@@ -1870,7 +1881,7 @@ setDocumentpostArr1([])
                                                 alt="profile-image"
                                               />
                                                <span className="gfg_text">
-                                            A Computer science portal
+                                               {id?.Title}
                                         </span>
 
                                         </div>
@@ -1947,7 +1958,7 @@ setDocumentpostArr1([])
                   {/* Map through the projects array and display a card for each */}
                   {Dataproject.length > 0 ? (
                     <div className="row">
-                      {Dataproject.slice(0, itemsToShow).map((project, index) => {
+                      {Dataproject.slice(0, itemsToShow).map((project:any, index:any) => {
                         if (project?.AuthorId == userId) {
                           return (
                             <div key={index} className="col-lg-4 col-md-6 mb-0">
@@ -1999,6 +2010,7 @@ setDocumentpostArr1([])
                               
                                 
                                   <a>
+
 {
       project?.ProjectStatus === null 
       ? null // Don't display anything if ProjectStatus is null
@@ -2026,7 +2038,7 @@ setDocumentpostArr1([])
     "No description available..."}{" "}
                              
                                   </p>
-
+ 
                                   <p className="mb-1 font-12">
                                     <span
                                       
@@ -2086,7 +2098,7 @@ setDocumentpostArr1([])
                                                 alt="profile-image"
                                               />
                                                <span className="gfg_text">
-                                            A Computer science portal
+                                               {id?.Title}
                                         </span>
 
                                         </div>
@@ -2241,7 +2253,7 @@ setDocumentpostArr1([])
 
                                         onClick={() => UpdatProject(project.Id)}
                                       >
-                                        Closed Project
+                                        Mark Completed
                                       </a>
                                     </div>
                                   </div>
@@ -2257,7 +2269,6 @@ setDocumentpostArr1([])
                                     </a>
                                   </h4>
                                   
-
                                   <a>
 
 {
@@ -2266,7 +2277,7 @@ setDocumentpostArr1([])
       : (
           <a className="ongoing mb-3"
               style={{ 
-                 background: project?.ProjectStatus === 'Completed' ? '#cce7dc' : '#6c757d',
+                  background: project?.ProjectStatus === 'Completed' ? '#cce7dc' : '#6c757d',
                   color: project?.ProjectStatus === 'Completed' ? '#008751' : '#fff',
                   padding: '5px',
                   borderRadius: '4px',
@@ -2349,7 +2360,7 @@ setDocumentpostArr1([])
                                                 alt="profile-image"
                                               />
                                                 <span className="gfg_text">
-                                            A Computer science portal
+                                                {id?.Title}
                                         </span>
 
                                         </div>
@@ -2496,6 +2507,14 @@ setDocumentpostArr1([])
                                       >
                                         View Detail
                                       </a>
+                                      {project?.AuthorId === userId && (
+        <a
+            className="dropdown-item font-12"
+            onClick={() => UpdatProject(project.Id)}
+        >
+            Mark Completed
+        </a>
+    )}
                                     </div>
                                   </div>
 
@@ -2601,7 +2620,7 @@ setDocumentpostArr1([])
                                                 alt="profile-image"
                                               />
                                               <span className="gfg_text">
-                                              A Computer science portal
+                                              {id?.Title}
                                           </span>
   
                                           </div>
@@ -2711,14 +2730,14 @@ setDocumentpostArr1([])
                 </div>
               </div>
             )}
-            {activeTab === "Close" && (
+            {activeTab === "Completed" && (
               <div className="row mt-3">
                 <div className="">
                   {/* Map through the projects array and display a card for each */}
                   {Dataproject.length > 0 ? (
                     <div className="row">
                       {Dataproject.slice(0, itemsToShow).map((project, index) => {
-                        if (project?.ProjectStatus === "Closed") {
+                        if (project?.ProjectStatus === "Completed") {
                           return (
                             <div key={index} className="col-lg-4 col-md-6 mb-0">
                               <div className="card project-box">
@@ -2852,7 +2871,7 @@ setDocumentpostArr1([])
                                                 alt="profile-image"
                                               />
                                               <span className="gfg_text">
-                                              A Computer science portal
+                                              {id?.Title}
                                           </span>
   
                                           </div>

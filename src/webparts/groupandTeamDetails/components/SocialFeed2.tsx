@@ -212,7 +212,7 @@ const SocialFeedContext = ({ props }: any) => {
     debugger;
     const getgroup1 = await sp.web.lists
       .getByTitle("ARGGroupandTeam")
-      .items.getById(idNum2).select("*,InviteMemebers/Id,InviteMemebers/Title,InviteMemebers/EMail,GroupType , Author/ID,Author/Title,Author/EMail").expand("InviteMemebers , Author")()
+      .items.getById(idNum2).select("*,GroupFollowers/Id,GroupFollowers/Title,GroupFollowers/EMail,InviteMemebers/Id,InviteMemebers/Title,InviteMemebers/EMail,GroupType , Author/ID,Author/Title,Author/EMail").expand("InviteMemebers , GroupFollowers , Author")()
       .then((res) => {
         // arr=res;
         GroupName = res.GroupName
@@ -377,6 +377,7 @@ const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         GroupTeamsImagesId: ImagesIdss
       });
     //useState('');
+    getAllAPI()
     setContent('');
     setImages([]);
     fetchPosts();
@@ -424,7 +425,7 @@ const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
 
     try {
       sp.web.lists.getByTitle("ARGGroupandTeamComments")
-        .items.select("*,GroupTeamComments/Id,GroupTeamComments/Comments,GroupTeamsImages/Id,GroupTeamLikes/Id,Author/Id,Author/Title")
+      .items.select("*,GroupTeamComments/Id,GroupTeamComments/Comments,GroupTeamsImages/Id,GroupTeamLikes/Id,Author/Id,Author/Title,Author/EMail")
         .expand("GroupTeamComments,GroupTeamsImages,GroupTeamLikes,Author")
         .orderBy("Created", false)
         .filter(`GroupandTeamId eq ${idNum}`)().then((results: IGroupAndTeamPosts[]) => {
@@ -760,6 +761,28 @@ const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
                               Group Members 
 
                             </h4>
+                            {ArrDetails[0]?.GroupType === "All" && 
+    ArrDetails[0]?.GroupFollowers?.length > 0 && ArrDetails[0].GroupFollowers.map((follower:any, idx:any) => (
+    
+        <div className="projectmemeber" key={idx}>
+            <img
+                src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${follower?.EMail}`}
+                className="rounded-circlecss6 img-thumbnail avatar-xl"
+                alt="profile-image"
+            />
+            <p>
+                {follower?.Title}
+                <img
+                    src={require("../assets/calling.png")}
+                    className="alignright"
+                    onClick={() => window.open(`https://teams.microsoft.com/l/call/0/0?users=${follower.EMail}`, "_blank")}
+                    alt="Call"
+                />
+            </p>
+        </div>
+    ))
+}
+
                             {/* <p>{GroupName}</p> */}
                             {/* <>{ArrDetails[0].GroupType}</> */}
                             {ArrDetails[0]?.InviteMemebers?.length > 0 && 
@@ -1030,6 +1053,7 @@ alt="Call"
                               siteUrl={siteUrl}
                               currentUserName={currentUsername}
                               currentEmail={currentEmail}
+                              editload={fetchPosts}
                               post={{
                                 userName: post.userName,
                                 Created: post.Created,
@@ -1061,6 +1085,7 @@ alt="Call"
                               siteUrl={siteUrl}
                               currentUserName={currentUsername}
                               currentEmail={currentEmail}
+                              editload={fetchPosts}
                               post={{
                                 userName: post.userName,
                                 Created: post.Created,
@@ -1780,6 +1805,11 @@ alt="Call"
                       ) : null
 
                     } */}
+                       <img
+          src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${ArrDetails[0]?.Author.EMail}`}
+          className="rounded-circlecss6 img-thumbnail avatar-xl"
+          alt="profile-image"
+        />
                     <h1 className='text-muted font-14 mt-3'>
                       <p className='text-dark font-16 text-center mb-2'> {currentUsername}</p>
                       <p className='text-muted font-14 text-center mb-1'>{userJobTitle}</p>

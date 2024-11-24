@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 export const fetchprojectdata = async (_sp) => {
   let arr = []
 
-  await _sp.web.lists.getByTitle("ARGProject").items.select("*,TeamMembers/ID,TeamMembers/EMail,TeamMembers/Title").expand("TeamMembers").getAll().then(async (res) => {
+  await _sp.web.lists.getByTitle("ARGProject").items.select("*,TeamMembers/ID,TeamMembers/EMail,TeamMembers/Title, Author/ID,Author/Title,Author/EMail ").expand("TeamMembers , Author").getAll().then(async (res) => {
     console.log("checking the data of project---->>>", res);
     for (var i = 0; i < res.length; i++) {
      const ARGProjectComment= await _sp.web.lists.getByTitle("ARGProjectComments").items.filter(`ARGProjectId eq ${res[i].Id}`)();
