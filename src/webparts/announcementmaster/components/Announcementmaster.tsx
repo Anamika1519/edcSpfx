@@ -1535,7 +1535,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                               </th>
 
-                              <th style={{ textAlign: 'center', borderBottomRightRadius: '10px', borderTopRightRadius: '10px' }}> <div className="d-flex flex-column bd-highlight pb-2">
+                              <th style={{ textAlign: 'center', borderBottomRightRadius: '0px', borderTopRightRadius: '0px' }}> <div className="d-flex flex-column bd-highlight pb-2">
 
                                 <div className="d-flex  pb-2" style={{ justifyContent: 'space-between' }}>  <span >Action</span> <div className="dropdown">
 
@@ -1588,7 +1588,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                   <td style={{ minWidth: "50px", maxWidth: "50px" }}>
                                   <div className='indexdesign'>  {startIndex + index + 1}</div>  
-                                    {startIndex + index + 1}
+                                  
 
                                   </td>
 

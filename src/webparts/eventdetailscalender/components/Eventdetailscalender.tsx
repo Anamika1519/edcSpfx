@@ -723,7 +723,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
                                       title="Screenshot-1"
                                     >
                                       <img
-                                        src={`https://officeindia.sharepoint.com${res.fileUrl}`}
+                                        src={`https://alrostamanigroupae.sharepoint.com${res.fileUrl}`}
                                         className="img-fluid imgcssscustom"
                                         alt="work-thumbnail"
                                         data-themekey="#"

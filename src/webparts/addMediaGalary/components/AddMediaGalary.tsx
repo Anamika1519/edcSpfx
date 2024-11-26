@@ -816,7 +816,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
                 //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
 
-                bannerImageArray = await uploadFile(file, sp, "Documents", "https://officeindia.sharepoint.com");
+                bannerImageArray = await uploadFile(file, sp, "Documents", "https://alrostamanigroupae.sharepoint.com");
 
               }
 
@@ -1203,7 +1203,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
                 //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
 
-                bannerImageArray = await uploadFile(file, sp, "Documents", "https://officeindia.sharepoint.com");
+                bannerImageArray = await uploadFile(file, sp, "Documents", "https://alrostamanigroupae.sharepoint.com");
 
               }
 
@@ -1392,7 +1392,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
                 //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
 
-                bannerImageArray = await uploadFile(file, sp, "Documents", "https://officeindia.sharepoint.com");
+                bannerImageArray = await uploadFile(file, sp, "Documents", "https://alrostamanigroupae.sharepoint.com");
 
               }
 
@@ -1727,7 +1727,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
                 //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
 
-                bannerImageArray = await uploadFile(file, sp, "Documents", "https://officeindia.sharepoint.com");
+                bannerImageArray = await uploadFile(file, sp, "Documents", "https://alrostamanigroupae.sharepoint.com");
 
               }
 

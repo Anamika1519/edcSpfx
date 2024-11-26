@@ -38,7 +38,7 @@ export default class AdToSpGroupSync extends React.Component<IAdToSpGroupSyncPro
       
       const adGroups = await this._graph.groups.filter("securityEnabled eq true")();      
       const spGroups = await this._sp.web.siteGroups();
-
+      alert(adGroups.length)
       this.setState({
         adGroups: adGroups.map(group => ({ key: group.id, text: group.displayName })),
         spGroups: spGroups.map(group => ({ key: group.Id, text: group.Title })),
@@ -49,6 +49,63 @@ export default class AdToSpGroupSync extends React.Component<IAdToSpGroupSyncPro
   }
 
   // Fetch users in the selected Azure AD group
+  // private fetchADGroupUsers = async () => {
+  //   try {
+  //     const { selectedADGroup } = this.state;
+
+  //     if (!selectedADGroup) {
+  //       this.setState({ status: "Please select an Azure AD group." });
+  //       return;
+  //     }
+
+  //     const members = await this._graph.groups.getById(selectedADGroup).members();
+  //     const users = members
+  //       //.filter(member => member.userType === "#microsoft.graph.user")
+  //       .map(( member , index) => ({
+  //         index : index+1,
+  //         displayName: member.displayName,
+  //         email: member.mail || member.userPrincipalName,
+  //       }));
+
+  //     this.setState({ adGroupUsers: users, status: "" });
+  //   } catch (error) {
+  //     console.error("Error fetching AD group users:", error);
+  //     //alert("Error fetching AD group users:", error);
+  //   }
+  // };
+  // private fetchADGroupUsers = async () => {
+  //   try {
+  //     const { selectedADGroup } = this.state;
+  
+  //     if (!selectedADGroup) {
+  //       this.setState({ status: "Please select an Azure AD group." });
+  //       return;
+  //     }
+  
+  //     let allMembers:any = [];
+  //     let nextPage:any = await this._graph.groups.getById(selectedADGroup).members();
+  
+  //     // Fetch members in a loop until all pages are processed
+  //     while (nextPage) {
+  //       allMembers = [...allMembers, ...nextPage];
+  //       // Check if there's another page of data
+  //       nextPage = nextPage["@odata.nextLink"]
+  //           ? await grpahpnp.graphGet(nextPage["@odata.nextLink"])
+  //         : null;
+  //     }
+  
+  //     const users = allMembers.map((member:any, index:any) => ({
+  //       index: index + 1,
+  //       displayName: member.displayName,
+  //       email: member.mail || member.userPrincipalName,
+  //     }));
+  //     alert(`${allMembers.length} "allMembers.length"`)
+  //     this.setState({ adGroupUsers: users, status: "" });
+  //   } catch (error) {
+  //     console.error("Error fetching AD group users:", error);
+  //     this.setState({ status: "Error fetching AD group users." });
+  //   }
+  // };
   private fetchADGroupUsers = async () => {
     try {
       const { selectedADGroup } = this.state;
@@ -58,10 +115,13 @@ export default class AdToSpGroupSync extends React.Component<IAdToSpGroupSyncPro
         return;
       }
 
-      const members = await this._graph.groups.getById(selectedADGroup).members();
+      //const members = await this._graph.groups.getById(selectedADGroup).members();
+      
+      const members = await this.getAllGroupMembers(selectedADGroup);
       const users = members
         //.filter(member => member.userType === "#microsoft.graph.user")
-        .map(member => ({
+        .map((member, index) => ({
+          index : index+1,
           displayName: member.displayName,
           email: member.mail || member.userPrincipalName,
         }));
@@ -73,6 +133,22 @@ export default class AdToSpGroupSync extends React.Component<IAdToSpGroupSyncPro
     }
   };
 
+  getAllGroupMembers=async(groupId: string): Promise<any[]> =>{
+    const allMembers = [];
+    let nextPage = await this._graph.groups.getById(groupId).members.top(999).paged(); // Get the first page of members
+    
+    // Add the members from the first page
+    allMembers.push(...nextPage.value);
+
+    // Continue fetching while there are more pages
+    while (nextPage.hasNext) {
+        nextPage = await nextPage.next();
+        allMembers.push(...nextPage.value);
+    }
+     alert(`All member of AD ${allMembers.length}`)
+    return allMembers;
+}
+   
   // Sync Azure AD group with SharePoint group
   private syncGroups = async () => {
     try {
@@ -82,7 +158,7 @@ export default class AdToSpGroupSync extends React.Component<IAdToSpGroupSyncPro
         this.setState({ status: "Please select a SharePoint group." });
         return;
       }
-
+   
       const spGroup = await this._sp.web.siteGroups.getById(Number(selectedSPGroup))();
       const spGroupUsers = await this._sp.web.siteGroups.getById(spGroup.Id).users();
       const spUserEmails = spGroupUsers.map(user => user.Email);
@@ -96,15 +172,26 @@ export default class AdToSpGroupSync extends React.Component<IAdToSpGroupSyncPro
       for (const email of usersToAdd) {
         //const ensureresult= await this._sp.web.ensureUser("i:0#.f|membership|"+email);
         //if(ensureresult.data)
-        await this._sp.web.siteGroups.getById(spGroup.Id).users.add("i:0#.f|membership|"+email);
+        try {
+          await this._sp.web.siteGroups.getById(spGroup.Id).users.add("i:0#.f|membership|"+email);
+        } catch (error) {
+           console.log(error, "error adding user")
+        }
+     
       }
 
       // Remove users from SharePoint group
       for (const email of usersToRemove) {
-        const user = spGroupUsers.find(u => u.Email === email);
-        if (user) {
-          await this._sp.web.siteGroups.getById(spGroup.Id).users.removeById(user.Id);
+        try {
+          const user = spGroupUsers.find(u => u.Email === email);
+          if (user) {
+            await this._sp.web.siteGroups.getById(spGroup.Id).users.removeById(user.Id);
+          }
+          
+        } catch (error) {
+          console.log(error, "error adding user")
         }
+     
       }
 
       this.setState({ status: "Sync completed successfully!" });
@@ -138,6 +225,10 @@ export default class AdToSpGroupSync extends React.Component<IAdToSpGroupSyncPro
         <DetailsList
           items={adGroupUsers}
           columns={[
+            { 
+              key: "index", name: "index", fieldName: "index", minWidth: 10, 
+            
+            },
             { key: "displayName", name: "Name", fieldName: "displayName", minWidth: 100 },
             { key: "email", name: "Email", fieldName: "email", minWidth: 150 },
           ]}

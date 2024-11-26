@@ -1084,7 +1084,7 @@ const GroupandTeamcontext = ({ props }: any) => {
                   file,
                   sp,
                   "Documents",
-                  "https://officeindia.sharepoint.com"
+                  "https://alrostamanigroupae.sharepoint.com"
                 );
               }
             } else {
@@ -1545,7 +1545,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
             //       "Documents",
 
-            //       "https://officeindia.sharepoint.com"
+            //       "https://alrostamanigroupae.sharepoint.com"
 
             //     );
 

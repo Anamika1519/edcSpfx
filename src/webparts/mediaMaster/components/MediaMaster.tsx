@@ -312,14 +312,14 @@ const MediaMastercontext = ({ props }: any) => {
                 </div>
               </div>
             </div>
-            <div className="card cardCss mt-4" style={{ maxHeight: '655px' }}>
+            <div className="card cardCss mt-4">
               <div className="card-body">
                 <div id="cardCollpase4" className="collapse show">
                   <div className="table-responsive pt-0">
-                    <table className="mtable pt-0 table-centered table-nowrap table-borderless mb-0">
+                    <table className="mtable mt-0 pt-0 table-centered table-nowrap table-borderless mb-0">
                       <thead>
                         <tr>
-                          <th style={{ borderBottomLeftRadius: '0px', minWidth: '0px', maxWidth: '50px', borderTopLeftRadius: '10px' }}>
+                          <th style={{ borderBottomLeftRadius: '0px', minWidth: '0px', maxWidth: '50px', borderTopLeftRadius: '0px' }}>
  
                             <div className="d-flex pb-2"
                               style={{ justifyContent: 'space-between' }}>

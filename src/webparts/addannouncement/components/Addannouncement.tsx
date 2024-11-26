@@ -419,7 +419,7 @@ const AddannouncementContext = ({ props }: any) => {
             if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
               for (const file of BnnerImagepostArr[0].files) {
                 //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
-                bannerImageArray = await uploadFile(file, sp, "Documents", "https://officeindia.sharepoint.com");
+                bannerImageArray = await uploadFile(file, sp, "Documents", "https://alrostamanigroupae.sharepoint.com");
               }
             }
             else if(BnnerImagepostArr.length > 0)
@@ -731,7 +731,7 @@ const AddannouncementContext = ({ props }: any) => {
             if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
               for (const file of BnnerImagepostArr[0].files) {
                 //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
-                bannerImageArray = await uploadFile(file, sp, "Documents", "https://officeindia.sharepoint.com");
+                bannerImageArray = await uploadFile(file, sp, "Documents", "https://alrostamanigroupae.sharepoint.com");
               }
             }
             debugger
@@ -862,7 +862,7 @@ const AddannouncementContext = ({ props }: any) => {
             if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
               for (const file of BnnerImagepostArr[0].files) {
                 //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
-                bannerImageArray = await uploadFile(file, sp, "Documents", "https://officeindia.sharepoint.com");
+                bannerImageArray = await uploadFile(file, sp, "Documents", "https://alrostamanigroupae.sharepoint.com");
               }
             }
             else {
@@ -1131,7 +1131,7 @@ const AddannouncementContext = ({ props }: any) => {
             if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
               for (const file of BnnerImagepostArr[0].files) {
                 //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
-                bannerImageArray = await uploadFile(file, sp, "Documents", "https://officeindia.sharepoint.com");
+                bannerImageArray = await uploadFile(file, sp, "Documents", "https://alrostamanigroupae.sharepoint.com");
               }
             }
             debugger
@@ -1898,7 +1898,7 @@ const AddannouncementContext = ({ props }: any) => {
               // rows != null && rows.length > 0 && 
               rows != null && rows.length > 0 && !ApprovalMode?
               (
-                <div className="container mt-2">
+                <div className="mt-2">
                   <div className="card cardborder p-4">
                     <div className="font-16">
                       <strong>Approval Hierarchy</strong>

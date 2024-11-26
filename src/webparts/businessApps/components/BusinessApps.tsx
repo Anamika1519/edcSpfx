@@ -481,7 +481,7 @@ const HelloWorldContext = ({ props }: any) => {
                     onChange(e.target.name, e.target.value)
                   }
                 />
-                <span   style={{ color: "red" }}> {AppNameErr}</span>
+                <span style={{ color: "red" }}> {AppNameErr}</span>
               </div>
             </div>
 
@@ -506,7 +506,7 @@ const HelloWorldContext = ({ props }: any) => {
                     </option>
                   ))}
                 </select>
-                <span   style={{ color: "red" }}> {CategoryErr}</span>
+                <span style={{ color: "red" }}> {CategoryErr}</span>
               </div>
             </div>
 
@@ -573,7 +573,7 @@ const HelloWorldContext = ({ props }: any) => {
                     )
                   }
                 />
-                <span  style={{ color: "red" }}> {ImageErr}</span>
+                <span style={{ color: "red" }}> {ImageErr}</span>
               </div>
             </div>
             <div className="col-lg-9">
@@ -592,7 +592,7 @@ const HelloWorldContext = ({ props }: any) => {
                     onChange(e.target.name, e.target.value)
                   }
                 ></textarea>
-                <span   style={{ color: "red" }}> {LinkErr}</span>
+                <span style={{ color: "red" }}> {LinkErr}</span>
               </div>
             </div>
             <div className="text-center butncss mt-5">
@@ -699,7 +699,7 @@ const HelloWorldContext = ({ props }: any) => {
                   <div className="card-body">
                     <div className="row">
                       <div className="col-md-12">
-                        <div style={{gap:'5px'}} className="text-center filter-menu d-flex justify-content-center">
+                        <div style={{ gap: '5px' }} className="text-center filter-menu d-flex justify-content-center">
                           {/* Main tabs */}
 
                           <a
@@ -784,12 +784,13 @@ const HelloWorldContext = ({ props }: any) => {
                 const imageData = item.Image ? JSON.parse(item.Image) : null;
                 let siteIdAl = '338f2337-8cbb-4cd1-bed1-593e9336cd0e,e2837b3f-b207-41eb-940b-71c74da3d214';
                 let listIDAl = '8dcfeaca-69f6-484b-b1aa-a31085726174';
-
+                let listIDUAT = 'c291ee97-e81e-40d3-8735-6b169303831e';
+                let siteIDUAT ='9237fda3-7d32-4ee0-abca-1268fc460cfc';
                 let siteId = siteUrl.toLowerCase().includes('alrostmani') ? siteIdAl : '02993535-33e8-44d1-9edf-0d484e642ea1,d9374a3d-ae79-4d2a-8d36-d48f86e3201e';
                 let listID = siteUrl.toLowerCase().includes('alrostmani') ? listIDAl : '729bbd2a-ade1-448b-be41-d9ea695e7407';
 
                 let img1 = imageData && imageData.fileName ? `${siteUrl}/_api/v2.1/sites('${siteId}')/lists('${listID}')/items('${item.ID}')/attachments('${imageData.fileName}')/thumbnails/0/c400x400/content?prefer=noredirect%2Cclosestavailablesize` : ""
-                let img = imageData && imageData.serverRelativeUrl ? `https://officeindia.sharepoint.com${imageData.serverRelativeUrl}`:img1
+                let img = imageData && imageData.serverRelativeUrl ? `https://alrostamanigroupae.sharepoint.com${imageData.serverRelativeUrl}` : img1
                 const imageUrl = imageData
                   //? `${siteUrl}/SiteAssets/Lists/ea596702-57db-4833-8023-5dcd2bba46e3/${imageData.fileName}`
                   //? `${imageData.serverUrl}${imageData.serverRelativeUrl}`
@@ -810,7 +811,7 @@ const HelloWorldContext = ({ props }: any) => {
                           <div className="col-3">
                             <div style={{ background: '#fff', width: '45px', height: '45px' }}
                               className="avatar-lg d-flex justify-content-center align-items-center rounded-circle bg-soft-primary border-primary border">
-                              <img style={{ width: '30px', marginTop:'10px' }} src={imageUrl} />
+                              <img style={{ width: '30px', marginTop: '10px' }} src={imageUrl} />
                             </div>
                           </div>
                           <div className="col-9 d-flex justify-content-left align-items-center">

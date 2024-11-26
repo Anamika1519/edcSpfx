@@ -386,14 +386,6 @@
         }
       ]
     },
-    "manage-master-web-part": {
-      "components": [
-        {
-          "entrypoint": "./lib/webparts/manageMaster/ManageMasterWebPart.js",
-          "manifest": "./src/webparts/manageMaster/ManageMasterWebPart.manifest.json"
-        }
-      ]
-    },
     "manage-master-m-web-part": {
       "components": [
         {

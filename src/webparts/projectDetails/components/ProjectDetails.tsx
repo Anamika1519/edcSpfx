@@ -530,7 +530,7 @@ if (projectDetails ) {
         //       try {
         //         alert("f")
         //         // Upload the file to the document library
-        //         const uploadFolder = sp.web.getFolderByServerRelativePath(`/sites/AlRostmaniSpfx2/ARGProjectsFiles/${projectname}`);
+        //         const uploadFolder = sp.web.getFolderByServerRelativePath(`/sites/IntranetUAT/ARGProjectsFiles/${projectname}`);
         //         const uploadResult = await uploadFolder.files.addChunked(file.name, file);
              
         //         const listItem = await uploadResult.file.getItem();
@@ -971,8 +971,8 @@ const sanitizeFileName = (name:any) => {
 };
 const uploadfileinfolder = async () => {
   console.log("Entering upload function");
- 
-  try {
+   if(selectedFiles.length > 0 ){
+    try {
       for (const file of selectedFiles) {
           console.log(`Uploading file: ${file.name}`);
           console.log(`filemanager: ${filemanager}`);
@@ -1003,6 +1003,14 @@ const uploadfileinfolder = async () => {
   } catch (error) {
       console.error(`Error uploading file`, error);
   }
+   }else{
+    await Swal.fire(
+      'File Empty!',
+      'Please select Files ',
+      'warning'
+  );
+   }
+
 };
  
 
@@ -1072,8 +1080,8 @@ const uploadfileinfolder = async () => {
   }
   
   // Example usage
-  //const docLibraryUrl = '/sites/AlRostmaniSpfx2/ARGProjectsFiles/';
-  //const subsiteUrl = '/sites/AlRostmaniSpfx2/test/test11';
+  //const docLibraryUrl = '/sites/IntranetUAT/ARGProjectsFiles/';
+  //const subsiteUrl = '/sites/IntranetUAT/test/test11';
   
   //console.log(isDocumentLibrary(docLibraryUrl)); // true
   //console.log(isSubsite(docLibraryUrl)); // false
@@ -1084,7 +1092,7 @@ const uploadfileinfolder = async () => {
     // try {
 
     //   console.log(projectname , "projectname")
-    //   const response = await sp.web.getFolderByServerRelativePath(`/sites/AlRostmaniSpfx2/ARGProjectsFiles/${projectname}`).files();
+    //   const response = await sp.web.getFolderByServerRelativePath(`/sites/IntranetUAT/ARGProjectsFiles/${projectname}`).files();
     //     setProjectallfiles(response)
     //     console.log(response, "response ")
     //   console.log('Files in the folder:', response);

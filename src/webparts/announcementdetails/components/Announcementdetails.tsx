@@ -705,7 +705,7 @@ const AnnouncementdetailsContext = ({ props }: any) => {
                                   <div className="col-sm-6 col-xl-4 filter-item all web illustrator">
                                     <div className="gal-box">
                                       <a data-bs-toggle="modal" data-bs-target="#centermodal" className="image-popup mb-2" title="Screenshot-1">
-                                        <img src={`https://officeindia.sharepoint.com${res.fileUrl}`} className="img-fluid imgcssscustom"
+                                        <img src={`https://alrostamanigroupae.sharepoint.com${res.fileUrl}`} className="img-fluid imgcssscustom"
                                           alt="work-thumbnail" data-themekey="#" style={{ width: '100%', height: '100%' }} />
                                       </a>
                                     </div>

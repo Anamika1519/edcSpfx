@@ -272,7 +272,7 @@ const HelloWorldContext = ({ props }: any) => {
   const handleCancel = () => {
     debugger;
     window.location.href =
-      "https://officeindia.sharepoint.com/sites/AlRostmani/SitePages/Project.aspx";
+      "https://alrostamanigroupae.sharepoint.com/sites/AlRostmani/SitePages/Project.aspx";
   };
 
   const saveProjectData = async (formData: {
@@ -331,11 +331,11 @@ const HelloWorldContext = ({ props }: any) => {
         // // Budget: formData.Budget,
         ProjectOverview: formData.ProjectOverview,
         TeamMembersId: selectedIds,
-        ProjectFileManager: `/sites/AlRostmaniSpfx2/ARGProjectsFiles/${formData.ProjectName}`,
+        ProjectFileManager: `/sites/IntranetUAT/ARGProjectsFiles/${formData.ProjectName}`,
         ProjectStatus: "Ongoing",
         ProjectFolderName: formData.ProjectName,
         FolderInProgress: 'In Progress'
-        //  ProjectFileManager : `/sites/AlRostmaniSpfx2/ARGProjectsFiles/${formData.ProjectName}`,
+        //  ProjectFileManager : `/sites/IntranetUAT/ARGProjectsFiles/${formData.ProjectName}`,
         //  ProjectStatus: "Ongoing",
         //  ProjectFolderName: formData.ProjectName,
         //  FolderInProgress: 'In Progress'
@@ -525,6 +525,8 @@ const HelloWorldContext = ({ props }: any) => {
   };
   const ApiCall = async () => {
     debugger
+    let test = await sp.web.currentUser();
+    console.log("testtest",test)
     fetchOptions();
     const res = await getCurrentUserNameId(sp);
     setUserId(res);

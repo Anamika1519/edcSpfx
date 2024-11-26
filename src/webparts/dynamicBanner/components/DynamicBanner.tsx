@@ -416,7 +416,7 @@ const DynamicBannercontext = ({ props }: any) => {
                                 {/* <td>
                                   {ImageUrl.serverRelativeUrl != null ?
                                      <img src={ImageUrl.serverUrl+ ImageUrl.serverRelativeUrl} alt=""  style={{maxHeight:'40px'}} /> : ""
-                                    // <img src="https://officeindia.sharepoint.com/sites/AlRostmani/Shared%20Documents/news.png" alt=""  style={{maxHeight:'40px'}} /> : ""
+                                    // <img src="https://alrostamanigroupae.sharepoint.com/sites/AlRostmani/Shared%20Documents/news.png" alt=""  style={{maxHeight:'40px'}} /> : ""
 
                                   }
                                 

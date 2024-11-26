@@ -346,10 +346,13 @@ const VerticalContext = ({ _context }: any) => {
               <FontAwesomeIcon icon={getIcon(item.Icon)} /> */}
                 </span>
                 <a className="link_name1" style={{ textDecoration: 'unset', paddingLeft: '1rem' }} target=''
-                >   <span className={classNames('navlink', {
-                  active: item.ID == useActive && !useHide
+                >  
+                 <span 
+                //  className={classNames('navlink', {
+                //   active: item.ID == useActive && !useHide
 
-                })} style={dynamicStyle}>{item.Title}</span>
+                // })}
+                 style={dynamicStyle}>{item.Title}</span>
 
                 </a>
 

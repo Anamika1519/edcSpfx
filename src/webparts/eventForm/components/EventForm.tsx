@@ -315,7 +315,7 @@ const HelloWorldContext = ({ props }: any) => {
             if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
               for (const file of BnnerImagepostArr[0].files) {
                 //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
-                bannerImageArray = await uploadFileBanner(file, sp, "Documents", "https://officeindia.sharepoint.com");
+                bannerImageArray = await uploadFileBanner(file, sp, "Documents", "https://alrostamanigroupae.sharepoint.com");
               }
             }
             else if(BnnerImagepostArr.length > 0)
@@ -513,7 +513,7 @@ const HelloWorldContext = ({ props }: any) => {
             if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
               for (const file of BnnerImagepostArr[0].files) {
                 //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
-                bannerImageArray = await uploadFileBanner(file, sp, "Documents", "https://officeindia.sharepoint.com");
+                bannerImageArray = await uploadFileBanner(file, sp, "Documents", "https://alrostamanigroupae.sharepoint.com");
               }
             }
             //debugger
@@ -635,7 +635,7 @@ const HelloWorldContext = ({ props }: any) => {
             if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
               for (const file of BnnerImagepostArr[0].files) {
                 //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
-                bannerImageArray = await uploadFileBanner(file, sp, "Documents", "https://officeindia.sharepoint.com");
+                bannerImageArray = await uploadFileBanner(file, sp, "Documents", "https://alrostamanigroupae.sharepoint.com");
               }
             }
             else {
@@ -801,7 +801,7 @@ const HelloWorldContext = ({ props }: any) => {
             if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
               for (const file of BnnerImagepostArr[0].files) {
                 //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
-                bannerImageArray = await uploadFileBanner(file, sp, "Documents", "https://officeindia.sharepoint.com");
+                bannerImageArray = await uploadFileBanner(file, sp, "Documents", "https://alrostamanigroupae.sharepoint.com");
               }
             }
             //debugger

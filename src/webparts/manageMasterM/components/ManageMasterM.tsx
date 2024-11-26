@@ -9,7 +9,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "../../../CustomCss/mainCustom.scss";
 import "../../verticalSideBar/components/VerticalSidebar.scss"
 import Provider from '../../../GlobalContext/provider';
-import "../components/manageMasterM.scss";
+import "../components/ManageMasterM.scss";
 import CustomBreadcrumb from '../../../CustomJSComponents/CustomBreadcrumb/CustomBreadcrumb';
 import "../../horizontalNavBar/components/horizontalNavbar.scss";
 import "../../../Assets/Figtree/Figtree-VariableFont_wght.ttf";

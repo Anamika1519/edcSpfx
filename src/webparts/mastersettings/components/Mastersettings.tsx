@@ -191,7 +191,7 @@ export const MastersettingContext = ({ props }: any) => {
               <div className="col-lg-3">
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
               </div>
-              <div className="row manage-master mt-3">
+              <div className="row manage-master mt-0">
                 {
                   IsUserAlllowed?
                   settingArray.map((item: any) => {

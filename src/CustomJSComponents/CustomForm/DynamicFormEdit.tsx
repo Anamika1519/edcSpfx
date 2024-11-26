@@ -244,7 +244,7 @@
 //         //         fileName: "blog1.png",
 //         //         serverRelativeUrl: "/sites/AlRostmani/SiteAssets/Lists/a6432673-c28a-4d23-b736-7cc02ca46a53/blog1.png",
 //         //         id: "15c3f514-0d0f-48b5-b937-a4f7ada9bd70",
-//         //         serverUrl: "https://officeindia.sharepoint.com",
+//         //         serverUrl: "https://alrostamanigroupae.sharepoint.com",
 //         //     },
 //         //     AnnouncementsAndNewsDocsId: [30, 31],
 //         //     AnnouncementAndNewsGallaryId: [1, 3, 4, 2],

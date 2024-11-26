@@ -34,9 +34,9 @@
 .btn-primary svg, .btn-secondary svg{height: 13px;
   vertical-align: text-top;
   margin-top: 2px;}
-.mtable td{font-size: 14px; color: #3c3c3c;  border-bottom: 1px solid #efefef !important;  vertical-align: middle;}
-.mtable td:first-child{border-top-left-radius: 8px; border-bottom-left-radius: 8px;}
-.mtable td:last-child{border-top-right-radius: 8px; border-bottom-right-radius: 8px;}
+
+.mtable td:first-child{border-top-left-radius: 0px; border-bottom-left-radius: 0%;}
+.mtable td:last-child{border-top-right-radius: 0px; border-bottom-right-radius: 0px;}
 input.form-control.inputcss {
   display: block;
   width: 100%;
@@ -70,7 +70,7 @@ input.form-control.inputcss {
     background-color: #fff !important;
 }
 .mtable tbody tr:hover {
-  box-shadow: 0 0 8px #ccc !important;
+  box-shadow: 0 0 0px #ccc !important;
 }
 .content-page{top: 0rem !important;}
 .mtable td{color: #6c757d;}
@@ -105,3 +105,4 @@ input.form-control.inputcss {
   {
     display: block;
   }
+  .mtable td{font-size: 14px; color: #3c3c3c;  border-bottom: 1px solid #efefef !important;  vertical-align: middle;}
