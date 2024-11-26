@@ -39,9 +39,9 @@
   color: var(--coloradd) !important;
   left: 0 !important;
   padding: 15px 30px !important;
-  position: fixed !important;
+  position: sticky  !important;
   top: 0px !important;
-  width: 99.1% !important;
+  width: 100% !important;
 }
 .dropdown #myDropdown{  padding:10px 0px 0px 0px !important;  min-width: 323px !important;}
 .navcss{padding-right: 6px;}

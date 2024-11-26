@@ -30,7 +30,8 @@ import { Image } from "react-feather";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperclip } from '@fortawesome/free-solid-svg-icons';
 import ModalStructure, { ModalSize } from '../../../GlobalContext/ModalStructure';
-
+let siteID: any;
+let response: any;
 const HelloWorldContext = ({ props }: any) => {
   const sp: SPFI = getSP();
   // console.log(sp, "sp");
@@ -320,6 +321,10 @@ const HelloWorldContext = ({ props }: any) => {
   };
 
   const ApiCall = async () => {
+    let listTitle = 'ARGBusinessApps'
+    let CurrentsiteID = props.context.pageContext.site.id;
+    siteID = CurrentsiteID;
+    response = await sp.web.lists.getByTitle(listTitle).select('Id')();
     const CategoryArr = await fetchAutomationCategory(sp);
     setShowModal(false)
     setCategoryData(CategoryArr);
@@ -786,9 +791,10 @@ const HelloWorldContext = ({ props }: any) => {
                 let listIDAl = '8dcfeaca-69f6-484b-b1aa-a31085726174';
                 let listIDUAT = 'c291ee97-e81e-40d3-8735-6b169303831e';
                 let siteIDUAT ='9237fda3-7d32-4ee0-abca-1268fc460cfc';
-                let siteId = siteUrl.toLowerCase().includes('alrostmani') ? siteIdAl : '02993535-33e8-44d1-9edf-0d484e642ea1,d9374a3d-ae79-4d2a-8d36-d48f86e3201e';
-                let listID = siteUrl.toLowerCase().includes('alrostmani') ? listIDAl : '729bbd2a-ade1-448b-be41-d9ea695e7407';
-
+                //let siteId = siteUrl.toLowerCase().includes('alrostmani') ? siteIdAl : '02993535-33e8-44d1-9edf-0d484e642ea1,d9374a3d-ae79-4d2a-8d36-d48f86e3201e';
+                //let listID = siteUrl.toLowerCase().includes('alrostmani') ? listIDAl : '729bbd2a-ade1-448b-be41-d9ea695e7407';
+                let siteId = siteID;
+                let listID = response.Id;
                 let img1 = imageData && imageData.fileName ? `${siteUrl}/_api/v2.1/sites('${siteId}')/lists('${listID}')/items('${item.ID}')/attachments('${imageData.fileName}')/thumbnails/0/c400x400/content?prefer=noredirect%2Cclosestavailablesize` : ""
                 let img = imageData && imageData.serverRelativeUrl ? `https://alrostamanigroupae.sharepoint.com${imageData.serverRelativeUrl}` : img1
                 const imageUrl = imageData

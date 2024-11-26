@@ -729,7 +729,7 @@ const MyApprovalContext = ({ props }: any) => {
 
     // sessionStorage.setItem("announcementId", encryptedId);
 
-    // location.href="https://alrostamanigroupae.sharepoint.com/sites/IntranetUAT/SitePages/AddAnnouncement.aspx"+"?requestid="+Item?.Id+"&mode=approval";
+    // location.href="https://alrostamanigroupae.sharepoint.com/sites/intranetuat/SitePages/AddAnnouncement.aspx"+"?requestid="+Item?.Id+"&mode=approval";
 
 
   };
