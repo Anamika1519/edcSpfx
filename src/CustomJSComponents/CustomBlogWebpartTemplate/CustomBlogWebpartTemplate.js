@@ -1024,7 +1024,8 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
             <div className="tab-content mt-2">
                 <div className="tab-pane show active" id="home1" role="tabpanel">
                     {filteredBlogItems.length > 0 ?
-                        filteredBlogItems.slice(0, itemsToShow).map(item => {
+                        // filteredBlogItems.slice(0, itemsToShow).map(item => {
+                        filteredBlogItems.map(item => {
                             const AnnouncementandNewsBannerImage = item.BlogBannerImage == undefined || item.BlogBannerImage == null ? ""
                                 : JSON.parse(item.BlogBannerImage);
                             // console.log("AnnouncementandNewsBannerImage", AnnouncementandNewsBannerImage, item);
@@ -1504,13 +1505,13 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                         ) : null}
 
                 </div>
-                {itemsToShow < blogData.length && (
+                {/* {itemsToShow < blogData.length && (
                     <div className="col-12 text-center mt-3 mb-3">
                         <button type='button' onClick={loadMore} className="btn btn-primary">
                             Load More
                         </button>
                     </div>
-                )}
+                )} */}
             </div></>
 
     )

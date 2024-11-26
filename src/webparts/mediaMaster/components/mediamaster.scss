@@ -7,7 +7,34 @@
   font-size: .875rem !important;
   font-weight: 400 !important;
 }
-.mtable td{font-size: 14px;    vertical-align: middle;}
+.btn-light{
+  border-radius: 30px;
+  font-size: 13px;
+  color: #3c3c3c;
+  background: #fff;
+  border: 1px solid #efefef;
+}
+.indexdesign {
+  background: #d2effa !important;
+  border: none;
+  border-radius: 1000px;
+  color: #1fb0e5 !important;
+  display: flex
+;
+  font-size: 16px !important;
+  font-weight: 600;
+  height: 28px !important;
+  justify-content: center;
+  line-height: 30px !important;
+  margin-left: 0;
+  margin-top: 0 !important;
+  padding: 0 1px !important;
+  width: 28px !important;
+}
+.btn-primary svg, .btn-secondary svg{height: 13px;
+  vertical-align: text-top;
+  margin-top: 2px;}
+.mtable td{font-size: 14px; color: #3c3c3c;  border-bottom: 1px solid #efefef !important;  vertical-align: middle;}
 .mtable td:first-child{border-top-left-radius: 8px; border-bottom-left-radius: 8px;}
 .mtable td:last-child{border-top-right-radius: 8px; border-bottom-right-radius: 8px;}
 input.form-control.inputcss {
@@ -39,8 +66,11 @@ input.form-control.inputcss {
     cursor: pointer;
   }
 
-  .mtable tbody tr:nth-of-type(2n) {
-    background-color: #fff;
+  .mtable tbody tr:nth-of-type(2n), .mtable tbody tr:hover {
+    background-color: #fff !important;
+}
+.mtable tbody tr:hover {
+  box-shadow: 0 0 8px #ccc !important;
 }
 .content-page{top: 0rem !important;}
 .mtable td{color: #6c757d;}

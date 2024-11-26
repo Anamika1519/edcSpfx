@@ -411,7 +411,7 @@ const DynamicBannercontext = ({ props }: any) => {
                             const ImageUrl = item.BannerImage == undefined || item.BannerImage == null ? "" : JSON.parse(item.BannerImage);
                             return(
                               <tr key={index}>
-                                <td style={{ minWidth: '50px', maxWidth: '50px' }}>{index + 1}</td>
+                                <td style={{ minWidth: '50px', maxWidth: '50px' }}><div className='indexdesign'> {index + 1}</div>  </td>
                                 <td>{item.Title}</td>
                                 {/* <td>
                                   {ImageUrl.serverRelativeUrl != null ?

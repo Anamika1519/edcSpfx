@@ -57,7 +57,7 @@ export const MastersettingContext = ({ props }: any) => {
       grptitle.push(userGroups[i].Title.toLowerCase());
     }
      
-    let sidebarnavitems=await sp.web.lists.getByTitle("ARGSidebarNavigation").items.select("Title,Url,Icon,ParentId,ID,EnableAudienceTargeting,Audience/Title").expand("Audience").getAll();
+    let sidebarnavitems=await sp.web.lists.getByTitle("ARGSidebarNavigation").items.select("Title,Url,Icon,ParentId,ID,EnableAudienceTargeting,Audience/Title").expand("Audience").orderBy("Order0", true).getAll();
         
     let securednavitems= sidebarnavitems.filter((nav:any)=>
       {

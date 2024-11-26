@@ -130,9 +130,9 @@ const BlogDetailsContext = ({ props }: any) => {
     const blogDetail =  await getBlogDetailsById(sp, Number(idNum));
     setArrDetails(blogDetail)
      
-   console.log(ArrDetails[0]);
+   console.log("ArrDetails[0]",ArrDetails[0],blogDetail);
    if(blogDetail){
-    let Blogsdata = await getAllBlogsnonselected(sp, Number(idNum),blogDetail[0][0].BlogCategory!=null?blogDetail[0][0].BlogCategory.ID:null);
+    let Blogsdata = await getAllBlogsnonselected(sp, Number(idNum),blogDetail[0].BlogCategory!=null?blogDetail[0].BlogCategory.ID:null);
      setArrtopBlogs(Blogsdata);
    }
   };

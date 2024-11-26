@@ -136,7 +136,7 @@ const HelloWorldContext = ({ props }: any) => {
   const [placeholder, setPlaceholder] = useState("Select")
   const toggleDropdown = (itemId: any) => {
     if (showDropdownId === itemId) {
-      setShowDropdownId(null); 
+      setShowDropdownId(null);
     } else {
       setShowDropdownId(itemId); // Open the dropdown for the clicked item
     }
@@ -202,71 +202,71 @@ const HelloWorldContext = ({ props }: any) => {
     Budget: "",
     TeamMembers: "",
     ProjectOverview: "",
-    ProjectFileManager : ""
-  
+    ProjectFileManager: ""
+
   });
   const clearstates = () => {
     event.preventDefault()
     // alert('clear')
-// setFormData({ ...formData, ProjectName: "" , ProjectPriority : "" , ProjectPrivacy : "" , startDate : "" , dueDate : "" , Budget : "" , TeamMembers : "" , ProjectOverview : ""});
-// Use capital 'D'
-// alert('clear');
-setFormData({
-  ProjectName: "",
-  ProjectPriority: "",
-  ProjectPrivacy: "",
-  startDate: "",
-  dueDate: "",
-  Budget: "",
-  TeamMembers: "",
-  ProjectOverview: "",
-  ProjectFileManager: "",
-  
-});
-setSelectedValue([]),
-setDocumentpostArr1([])
+    // setFormData({ ...formData, ProjectName: "" , ProjectPriority : "" , ProjectPrivacy : "" , startDate : "" , dueDate : "" , Budget : "" , TeamMembers : "" , ProjectOverview : ""});
+    // Use capital 'D'
+    // alert('clear');
+    setFormData({
+      ProjectName: "",
+      ProjectPriority: "",
+      ProjectPrivacy: "",
+      startDate: "",
+      dueDate: "",
+      Budget: "",
+      TeamMembers: "",
+      ProjectOverview: "",
+      ProjectFileManager: "",
+
+    });
+    setSelectedValue([]),
+      setDocumentpostArr1([])
   }//   const clearstates = () => {
-//     event.preventDefault()
-//     // alert('clear')
-// // setFormData({ ...formData, ProjectName: "" , ProjectPriority : "" , ProjectPrivacy : "" , startDate : "" , dueDate : "" , Budget : "" , TeamMembers : "" , ProjectOverview : ""});
-// // Use capital 'D'
-// alert('clear');
-// setFormData({
-//   ProjectName: "",
-//   ProjectPriority: "",
-//   ProjectPrivacy: "",
-//   startDate: "",
-//   dueDate: "",
-//   Budget: "",
-//   TeamMembers: "",
-//   ProjectOverview: "",
-//   ProjectFileManager: "",
-  
-// });
-// setSelectedValue([]),
-// setDocumentpostArr1([])
-//   }
+  //     event.preventDefault()
+  //     // alert('clear')
+  // // setFormData({ ...formData, ProjectName: "" , ProjectPriority : "" , ProjectPrivacy : "" , startDate : "" , dueDate : "" , Budget : "" , TeamMembers : "" , ProjectOverview : ""});
+  // // Use capital 'D'
+  // alert('clear');
+  // setFormData({
+  //   ProjectName: "",
+  //   ProjectPriority: "",
+  //   ProjectPrivacy: "",
+  //   startDate: "",
+  //   dueDate: "",
+  //   Budget: "",
+  //   TeamMembers: "",
+  //   ProjectOverview: "",
+  //   ProjectFileManager: "",
+
+  // });
+  // setSelectedValue([]),
+  // setDocumentpostArr1([])
+  //   }
   const flatArray = (arr: any[]): any[] => {
     return arr.reduce((acc, val) => acc.concat(val), []);
   };
 
   const onChange = (name: string, value: string) => {
     console.log(selectedValue, 'selectedValue');
-    if (formData.startDate>value) {
+    if (formData.startDate > value) {
       Swal.fire("Error", "End Date to be greater than Start Date", "error");
       setFormData((prevState) => ({
         ...prevState,
         [name]: "",
       }));
     }
-    else{
-    console.log("name-->>", name);
-    console.log("value-->>", value);
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  }
+    else {
+      console.log("name-->>", name);
+      console.log("value-->>", value);
+      setFormData((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
+    }
   };
 
   const handleCancel = () => {
@@ -296,7 +296,7 @@ setDocumentpostArr1([])
           DueDate: formData.dueDate,
           // Budget: formData.Budget,
           ProjectOverview: formData.ProjectOverview,
-        
+
         })
         .then((item: any) => {
           console.log("checking the arrid ---->>>", item);
@@ -306,7 +306,7 @@ setDocumentpostArr1([])
       console.log("Project data saved successfully.");
 
 
-  
+
     } catch (error) {
       console.error("Error saving project data: ", error);
     }
@@ -331,11 +331,11 @@ setDocumentpostArr1([])
         // // Budget: formData.Budget,
         ProjectOverview: formData.ProjectOverview,
         TeamMembersId: selectedIds,
-         ProjectFileManager : `/sites/SPFXDemo/ARGProjectsFiles/${formData.ProjectName}`,
-         ProjectStatus: "Ongoing",
-         ProjectFolderName: formData.ProjectName,
-         FolderInProgress: 'In Progress'
-        //  ProjectFileManager : `/sites/SPFXDemo/ARGProjectsFiles/${formData.ProjectName}`,
+        ProjectFileManager: `/sites/AlRostmaniSpfx2/ARGProjectsFiles/${formData.ProjectName}`,
+        ProjectStatus: "Ongoing",
+        ProjectFolderName: formData.ProjectName,
+        FolderInProgress: 'In Progress'
+        //  ProjectFileManager : `/sites/AlRostmaniSpfx2/ARGProjectsFiles/${formData.ProjectName}`,
         //  ProjectStatus: "Ongoing",
         //  ProjectFolderName: formData.ProjectName,
         //  FolderInProgress: 'In Progress'
@@ -438,7 +438,7 @@ setDocumentpostArr1([])
             Budget: "",
             TeamMembers: "",
             ProjectOverview: "",
-            ProjectFileManager : ""
+            ProjectFileManager: ""
           });
           // window.location.reload(); //forNow
           setSelectedValue([])
@@ -524,6 +524,7 @@ setDocumentpostArr1([])
     }
   };
   const ApiCall = async () => {
+    debugger
     fetchOptions();
     const res = await getCurrentUserNameId(sp);
     setUserId(res);
@@ -553,7 +554,7 @@ setDocumentpostArr1([])
             Budget: "",
             TeamMembers: "",
             ProjectOverview: "",
-            ProjectFileManager:""
+            ProjectFileManager: ""
           });
 
           setDataproject(await fetchprojectdata(sp));
@@ -562,7 +563,7 @@ setDocumentpostArr1([])
       }
     });
   };
-  const UpdatProject= (Id:any)=>{
+  const UpdatProject = (Id: any) => {
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -800,14 +801,14 @@ setDocumentpostArr1([])
       const formattedOptions = usersOnly.map((item) => ({
         name: item.Title, // Adjust according to your list schema
         id: item.Id,
-    }));
+      }));
 
-    setOpions(formattedOptions);
+      setOpions(formattedOptions);
       console.log(usersOnly, 'usersOnly');
       return usersOnly;
-  } catch (error) {
+    } catch (error) {
       console.error('Error fetching users:', error);
-  }
+    }
   };
 
   const onSelect = (
@@ -815,12 +816,12 @@ setDocumentpostArr1([])
     selectedItem: any
   ) => {
     setSelectedValue(selectedList);
-    if(selectedList.length > 0){
+    if (selectedList.length > 0) {
       setPlaceholder("");
-    }else{
+    } else {
       setPlaceholder("Select");
     }
-	
+
     console.log("Selected item:", selectedItem, "selectedList", selectedList);
   };
 
@@ -829,12 +830,12 @@ setDocumentpostArr1([])
     removedItem: any
   ) => {
     setSelectedValue(selectedList);
-    if(selectedList.length > 0){
+    if (selectedList.length > 0) {
       setPlaceholder("");
-    }else{
+    } else {
       setPlaceholder("Select");
     }
-	
+
     console.log("Removed item:", removedItem);
   };
 
@@ -869,7 +870,7 @@ setDocumentpostArr1([])
                     data-bs-target="#discussionModal"
                     className="btn btn-secondary waves-effect waves-light"
                   >
-                    <i className="fe-plus-circle"></i> New Request 
+                    <i className="fe-plus-circle"></i> New Request
                   </button>
                 </div>
 
@@ -893,7 +894,7 @@ setDocumentpostArr1([])
                           className="btn-close"
                           data-bs-dismiss="modal"
                           aria-label="Completed"
-                          onClick={()=>clearstates()}
+                          onClick={() => clearstates()}
                         ></button>
                       </div>
                       <div className="modal-body">
@@ -1048,7 +1049,7 @@ setDocumentpostArr1([])
                                 }
                               />
                             </div>
-                          </div> 
+                          </div>
 
                           {/* <div className="col-lg-4">
                             <div className="mb-3">
@@ -1130,7 +1131,7 @@ setDocumentpostArr1([])
                                 htmlFor="invitemembers"
                                 className="form-label"
                               >
-                               Select Project Team{" "}
+                                Select Project Team{" "}
                                 {/* <span className="text-danger">*</span> */}
                               </label>
 
@@ -1140,7 +1141,7 @@ setDocumentpostArr1([])
                                 onSelect={onSelect}
                                 onRemove={onRemove}
                                 displayValue="name"
-                                placeholder={placeholder} 
+                                placeholder={placeholder}
                               />
                             </div>
                           </div>
@@ -1341,9 +1342,9 @@ setDocumentpostArr1([])
                                       data-bs-toggle="dropdown"
                                       aria-expanded="false"
                                     >
-                                          <img className="morealign" src={require('../assets/more.png')} />
+                                      <img className="morealign" src={require('../assets/more.png')} />
                                     </a>
-                                    <div style={{padding:"0px", top:"15px", minWidth:"auto", textAlign:"center"}} className="dropdown-menu newheight dropdown-menu-end">
+                                    <div style={{ padding: "0px", top: "15px", minWidth: "auto", textAlign: "center" }} className="dropdown-menu newheight dropdown-menu-end">
                                       <a
                                         className="dropdown-item font-12"
 
@@ -1365,42 +1366,42 @@ setDocumentpostArr1([])
                                   <h4 className="mt-0 mb-1 one-line">
                                     <a onClick={() => GotoNextPage(project)}
                                       className="text-dark fw-bold font-16">
-                                        {truncateText(project.ProjectName , 40)}
+                                      {truncateText(project.ProjectName, 40)}
                                       {/* {project.ProjectName} */}
                                     </a>
                                     ongoing mb-3
                                   </h4>
-                                  
+
 
                                   <a>
 
-{
-      project?.ProjectStatus === null 
-      ? null // Don't display anything if ProjectStatus is null
-      : (
-          <a className="ongoing mb-3"
-              style={{ 
-                  background: project?.ProjectStatus === 'Completed' ? '#cce7dc' : '#6c757d',
-                  color: project?.ProjectStatus === 'Completed' ? '#008751' : '#fff',
-                  padding: '5px',
-                  borderRadius: '4px',
-                  textDecoration: 'none'
-              }}
-          >
-              {project?.ProjectStatus === 'Ongoing' ? 'Ongoing' : 'Completed'}
-          </a>
-      )
-}
-</a>
+                                    {
+                                      project?.ProjectStatus === null
+                                        ? null // Don't display anything if ProjectStatus is null
+                                        : (
+                                          <a className="ongoing mb-3"
+                                            style={{
+                                              background: project?.ProjectStatus === 'Completed' ? '#cce7dc' : '#6c757d',
+                                              color: project?.ProjectStatus === 'Completed' ? '#008751' : '#fff',
+                                              padding: '5px',
+                                              borderRadius: '4px',
+                                              textDecoration: 'none'
+                                            }}
+                                          >
+                                            {project?.ProjectStatus === 'Ongoing' ? 'Ongoing' : 'Completed'}
+                                          </a>
+                                        )
+                                    }
+                                  </a>
 
-<p
-                                 
+                                  <p
+
                                     className="date-color text-muted two-line font-14 mb-3 sp-line-2"
                                   >
-                                   
-                                   {truncateText(project.ProjectOverview , 100) ||
-    "No description available..."}{" "}
-                             
+
+                                    {truncateText(project.ProjectOverview, 100) ||
+                                      "No description available..."}{" "}
+
                                   </p>
 
                                   {/* Description */}
@@ -1414,25 +1415,25 @@ setDocumentpostArr1([])
                                   </p> */}
 
                                   {/* Task info */}
-                                  <p style={{display:'flex', gap:'10px'}} className="mb-1  text-muted font-12">
+                                  <p style={{ display: 'flex', gap: '10px' }} className="mb-1  text-muted font-12">
                                     <span
-                                     
+
                                       className="pe-2 text-nowrap mb-1 d-inline-block"
                                     >
-                                      
+
                                       <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} />     <b>{project?.ProjectsDocsId?.length}</b> Documents
                                     </span>
                                     <span
-                                     
+
                                       className="text-nowrap mb-1 d-inline-block"
                                     >
-                                      
-                                      <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />  <b>{project. CommentsCount || 0}</b> Comments
+
+                                      <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />  <b>{project.CommentsCount || 0}</b> Comments
                                     </span>
                                   </p>
                                   <div
                                     style={{
-                                      display:'flex'
+                                      display: 'flex'
                                     }}
                                   >
                                     <div style={{ display: 'flex' }} className="ml20">
@@ -1440,24 +1441,24 @@ setDocumentpostArr1([])
                                         (id: any, idx: any) => {
                                           if (idx < 3) {
                                             return (
-                                              <div style={{width:'40px', marginLeft:'-7px'}} className="gfg_tooltip">
-                                              <img
-                                                style={{
-                                                  margin:
-                                                    index == 0
-                                                      ? "0 0 0 0"
-                                                      : "0 0 0px -12px",
-                                                         float:"left"
-                                                }}
-                                                src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                                                className="circlecssnew img-thumbnail avatar-xl"
-                                                alt="profile-image"
-                                              />
+                                              <div style={{ width: '40px', marginLeft: '-7px' }} className="gfg_tooltip">
+                                                <img
+                                                  style={{
+                                                    margin:
+                                                      index == 0
+                                                        ? "0 0 0 0"
+                                                        : "0 0 0px -12px",
+                                                    float: "left"
+                                                  }}
+                                                  src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+                                                  className="circlecssnew img-thumbnail avatar-xl"
+                                                  alt="profile-image"
+                                                />
                                                 <span className="gfg_text">
-                                                {id?.Title}
-                                        </span>
+                                                  {id?.Title}
+                                                </span>
 
-                                        </div>
+                                              </div>
                                             );
                                           }
                                         }
@@ -1492,7 +1493,7 @@ setDocumentpostArr1([])
                                           </div>
                                         </div>
                                       } */}
-                                       {
+                                      {
                                         project?.TeamMembers?.length > 3 &&
                                         <div>
                                           <div className="moreuser text-muted" >
@@ -1558,9 +1559,9 @@ setDocumentpostArr1([])
                                       data-bs-toggle="dropdown"
                                       aria-expanded="false"
                                     >
-                                       <img className="morealign" src={require('../assets/more.png')} />
+                                      <img className="morealign" src={require('../assets/more.png')} />
                                     </a>
-                                    <div style={{padding:"0px", top:"15px", minWidth:"auto", textAlign:"center"}} className="dropdown-menu newheight dropdown-menu-end">
+                                    <div style={{ padding: "0px", top: "15px", minWidth: "auto", textAlign: "center" }} className="dropdown-menu newheight dropdown-menu-end">
                                       <a
                                         className="dropdown-item"
 
@@ -1589,42 +1590,42 @@ setDocumentpostArr1([])
                                   </h4>
                                   <a>
 
-{
-      project?.ProjectStatus === null 
-      ? null // Don't display anything if ProjectStatus is null
-      : (
-          <a className="ongoing mb-3"
-              style={{ 
-                  background: project?.ProjectStatus === 'Completed' ? '#cce7dc' : '#6c757d',
-                  color: project?.ProjectStatus === 'Completed' ? '#008751' : '#fff',
-                  padding: '5px',
-                  borderRadius: '4px',
-                  textDecoration: 'none'
-              }}
-          >
-              {project?.ProjectStatus === 'Ongoing' ? 'Ongoing' : 'Completed'}
-          </a>
-      )
-}
-</a>
+                                    {
+                                      project?.ProjectStatus === null
+                                        ? null // Don't display anything if ProjectStatus is null
+                                        : (
+                                          <a className="ongoing mb-3"
+                                            style={{
+                                              background: project?.ProjectStatus === 'Completed' ? '#cce7dc' : '#6c757d',
+                                              color: project?.ProjectStatus === 'Completed' ? '#008751' : '#fff',
+                                              padding: '5px',
+                                              borderRadius: '4px',
+                                              textDecoration: 'none'
+                                            }}
+                                          >
+                                            {project?.ProjectStatus === 'Ongoing' ? 'Ongoing' : 'Completed'}
+                                          </a>
+                                        )
+                                    }
+                                  </a>
 
                                   <p className="mb-1 text-muted font-12">
                                     <span
-                                    
+
                                       className="pe-2 text-nowrap mb-1 d-inline-block"
                                     >
-                                      
+
                                       <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} />     <b>{project?.ProjectsDocsId?.length}</b> Documents
                                     </span>
                                     <span
-                                    
+
                                       className="text-nowrap mb-1 d-inline-block"
                                     >
-                                      
-                                      <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />   <b>{project. CommentsCount || 0}</b> Comments
+
+                                      <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />   <b>{project.CommentsCount || 0}</b> Comments
                                     </span>
                                   </p>
-                                 
+
                                   {/* Task info */}
                                   {/* <p className="mb-1 font-12">
                               <span
@@ -1644,9 +1645,9 @@ setDocumentpostArr1([])
                             </p> */}
                                   <div
                                     style={{
-                                     
+
                                       position: "relative",
-                                      display:'flex'
+                                      display: 'flex'
                                     }}
                                   >
                                     <div style={{ display: 'flex' }} className="ml20">
@@ -1654,24 +1655,24 @@ setDocumentpostArr1([])
                                         (id: any, idx: any) => {
                                           if (idx < 3) {
                                             return (
-                                              <div style={{width:'40px', marginLeft:'-7px'}} className="gfg_tooltip">
-                                              <img
-                                                style={{
-                                                  margin:
-                                                    index == 0
-                                                      ? "0 0 0 0"
-                                                      : "0 0 0px -12px",
-                                                      float:"left"
-                                                }}
-                                                src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                                                className="circlecssnew img-thumbnail avatar-xl"
-                                                alt="profile-image"
-                                              />
-                                              <span className="gfg_text">
-                                              {id?.Title}
-                                        </span>
+                                              <div style={{ width: '40px', marginLeft: '-7px' }} className="gfg_tooltip">
+                                                <img
+                                                  style={{
+                                                    margin:
+                                                      index == 0
+                                                        ? "0 0 0 0"
+                                                        : "0 0 0px -12px",
+                                                    float: "left"
+                                                  }}
+                                                  src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+                                                  className="circlecssnew img-thumbnail avatar-xl"
+                                                  alt="profile-image"
+                                                />
+                                                <span className="gfg_text">
+                                                  {id?.Title}
+                                                </span>
 
-                                        </div>
+                                              </div>
                                             );
                                           }
                                         }
@@ -1692,12 +1693,12 @@ setDocumentpostArr1([])
                                                 index == 0
                                                   ? "0 0 0 0"
                                                   : "0 0 0px -12px",
-                                                     float:"left",
-                                                     display:'flex',
-                                                     alignItems:'center',
-                                                     justifyContent:'center',
-                                                      position:'relative',
-                                                     width:'40px'
+                                              float: "left",
+                                              display: 'flex',
+                                              alignItems: 'center',
+                                              justifyContent: 'center',
+                                              position: 'relative',
+                                              width: '40px'
 
                                             }}
                                             className="circlecssnew mlnew0 text-center img-thumbnail avatar-xl"
@@ -1708,13 +1709,13 @@ setDocumentpostArr1([])
                                       }
                                     </div>
                                     {
-                                        project?.TeamMembers?.length > 3 &&
-                                        <div>
-                                          <div className="moreuser text-muted" >
-                                            +{project?.TeamMembers?.length - 3} more
-                                          </div>
+                                      project?.TeamMembers?.length > 3 &&
+                                      <div>
+                                        <div className="moreuser text-muted" >
+                                          +{project?.TeamMembers?.length - 3} more
                                         </div>
-                                      }
+                                      </div>
+                                    }
                                     {/* {showDropdownId === project.Id && (
                                       <div
                                         className=""
@@ -1771,9 +1772,9 @@ setDocumentpostArr1([])
                                       data-bs-toggle="dropdown"
                                       aria-expanded="false"
                                     >
-                                       <img className="morealign" src={require('../assets/more.png')} />
+                                      <img className="morealign" src={require('../assets/more.png')} />
                                     </a>
-                                    <div style={{padding:"0px", top:"15px", minWidth:"auto", textAlign:"center"}} className="dropdown-menu newheight dropdown-menu-end">
+                                    <div style={{ padding: "0px", top: "15px", minWidth: "auto", textAlign: "center" }} className="dropdown-menu newheight dropdown-menu-end">
                                       <a
                                         className="dropdown-item font-12"
                                         href="#"
@@ -1794,7 +1795,7 @@ setDocumentpostArr1([])
                                   {/* Title */}
                                   <h4 className="mt-0 mb-1 one-line">
                                     <a
-                                      className="text-dark fw-bold font-16"   onClick={() => GotoNextPage(project)}
+                                      className="text-dark fw-bold font-16" onClick={() => GotoNextPage(project)}
                                     >
                                       {project.ProjectName ||
                                         "Untitled Project"}
@@ -1802,31 +1803,31 @@ setDocumentpostArr1([])
                                   </h4>
                                   <a>
 
-{
-      project?.ProjectStatus === null 
-      ? null // Don't display anything if ProjectStatus is null
-      : (
-          <a className="ongoing mb-3"
-              style={{ 
-                  background: project?.ProjectStatus === 'Completed' ? '#cce7dc' : '#6c757d',
-                  color: project?.ProjectStatus === 'Completed' ? '#008751' : '#fff',
-                  padding: '5px',
-                  borderRadius: '4px',
-                  textDecoration: 'none'
-              }}
-          >
-              {project?.ProjectStatus === 'Ongoing' ? 'Ongoing' : 'Completed'}
-          </a>
-      )
-}
-</a>
+                                    {
+                                      project?.ProjectStatus === null
+                                        ? null // Don't display anything if ProjectStatus is null
+                                        : (
+                                          <a className="ongoing mb-3"
+                                            style={{
+                                              background: project?.ProjectStatus === 'Completed' ? '#cce7dc' : '#6c757d',
+                                              color: project?.ProjectStatus === 'Completed' ? '#008751' : '#fff',
+                                              padding: '5px',
+                                              borderRadius: '4px',
+                                              textDecoration: 'none'
+                                            }}
+                                          >
+                                            {project?.ProjectStatus === 'Ongoing' ? 'Ongoing' : 'Completed'}
+                                          </a>
+                                        )
+                                    }
+                                  </a>
                                   {/* <div className="finish mb-2">
                                     {project.status || "Finished"}
                                   </div> */}
 
                                   {/* Description */}
                                   <p
-                                    
+
                                     className="date-color text-muted two-line font-14 mb-3 sp-line-2"
                                   >
                                     {project.ProjectOverview ||
@@ -1841,25 +1842,25 @@ setDocumentpostArr1([])
                                   </p>
 
                                   {/* Task info */}
-                                  <p style={{display:'flex', gap:'10px'}} className="mb-1 text-muted font-12">
+                                  <p style={{ display: 'flex', gap: '10px' }} className="mb-1 text-muted font-12">
                                     <span
-                                     
+
                                       className="pe-2 text-nowrap mb-1 d-inline-block"
                                     >
-                                      
+
                                       <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} /> <b>{project?.ProjectsDocsId?.length}</b> Documents
                                     </span>
                                     <span
-                                     
+
                                       className="text-nowrap mb-1 d-inline-block"
                                     >
-                                   
-                                   <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />    <b>{project. CommentsCount || 0}</b> Comments
+
+                                      <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />    <b>{project.CommentsCount || 0}</b> Comments
                                     </span>
                                   </p>
                                   <div
                                     style={{
-                                      display:'flex'
+                                      display: 'flex'
                                     }}
                                   >
                                     <div className="ml20">
@@ -1867,24 +1868,24 @@ setDocumentpostArr1([])
                                         (id: any, idx: any) => {
                                           if (idx < 3) {
                                             return (
-                                              <div style={{width:'40px', marginLeft:'-7px'}} className="gfg_tooltip">
-                                              <img
-                                                style={{
-                                                  margin:
-                                                    index == 0
-                                                      ? "0 0 0 0"
-                                                      : "0 0 0px -12px",
-                                                         float:"left"
-                                                }}
-                                                src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                                                className="circlecssnew img-thumbnail avatar-xl"
-                                                alt="profile-image"
-                                              />
-                                               <span className="gfg_text">
-                                               {id?.Title}
-                                        </span>
+                                              <div style={{ width: '40px', marginLeft: '-7px' }} className="gfg_tooltip">
+                                                <img
+                                                  style={{
+                                                    margin:
+                                                      index == 0
+                                                        ? "0 0 0 0"
+                                                        : "0 0 0px -12px",
+                                                    float: "left"
+                                                  }}
+                                                  src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+                                                  className="circlecssnew img-thumbnail avatar-xl"
+                                                  alt="profile-image"
+                                                />
+                                                <span className="gfg_text">
+                                                  {id?.Title}
+                                                </span>
 
-                                        </div>
+                                              </div>
                                             );
                                           }
                                         }
@@ -1939,12 +1940,12 @@ setDocumentpostArr1([])
                         return null;
                       })}
                       {itemsToShow < Dataproject.length && (
-                      <div className="col-12 text-center mb-5 mt-3">
-                        <button onClick={loadMore} className="btn btn-primary">
-                          Load More
-                        </button>
-                      </div>
-                    )}
+                        <div className="col-12 text-center mb-5 mt-3">
+                          <button onClick={loadMore} className="btn btn-primary">
+                            Load More
+                          </button>
+                        </div>
+                      )}
                     </div>
                   ) : (
                     <p>Loading projects...</p>
@@ -1958,7 +1959,7 @@ setDocumentpostArr1([])
                   {/* Map through the projects array and display a card for each */}
                   {Dataproject.length > 0 ? (
                     <div className="row">
-                      {Dataproject.slice(0, itemsToShow).map((project:any, index:any) => {
+                      {Dataproject.slice(0, itemsToShow).map((project: any, index: any) => {
                         if (project?.AuthorId == userId) {
                           return (
                             <div key={index} className="col-lg-4 col-md-6 mb-0">
@@ -1971,9 +1972,9 @@ setDocumentpostArr1([])
                                       data-bs-toggle="dropdown"
                                       aria-expanded="false"
                                     >
-                                     <img className="morealign" src={require('../assets/more.png')} />
+                                      <img className="morealign" src={require('../assets/more.png')} />
                                     </a>
-                                    <div style={{padding:"0px", top:"15px", minWidth:"auto", textAlign:"center"}} className="dropdown-menu newheight dropdown-menu-end">
+                                    <div style={{ padding: "0px", top: "15px", minWidth: "auto", textAlign: "center" }} className="dropdown-menu newheight dropdown-menu-end">
                                       <a
                                         className="dropdown-item font-12"
 
@@ -2007,52 +2008,52 @@ setDocumentpostArr1([])
                                       {project.ProjectName}
                                     </a>
                                   </h4>
-                              
-                                
+
+
                                   <a>
 
-{
-      project?.ProjectStatus === null 
-      ? null // Don't display anything if ProjectStatus is null
-      : (
-          <a className="ongoing mb-3"
-              style={{ 
-                  background: project?.ProjectStatus === 'Completed' ? '#cce7dc' : '#6c757d',
-                  color: project?.ProjectStatus === 'Completed' ? '#008751' : '#fff',
-                  padding: '5px',
-                  borderRadius: '4px',
-                  textDecoration: 'none'
-              }}
-          >
-              {project?.ProjectStatus === 'Ongoing' ? 'Ongoing' : 'Completed'}
-          </a>
-      )
-}
-</a>
-<p
-                                 
+                                    {
+                                      project?.ProjectStatus === null
+                                        ? null // Don't display anything if ProjectStatus is null
+                                        : (
+                                          <a className="ongoing mb-3"
+                                            style={{
+                                              background: project?.ProjectStatus === 'Completed' ? '#cce7dc' : '#6c757d',
+                                              color: project?.ProjectStatus === 'Completed' ? '#008751' : '#fff',
+                                              padding: '5px',
+                                              borderRadius: '4px',
+                                              textDecoration: 'none'
+                                            }}
+                                          >
+                                            {project?.ProjectStatus === 'Ongoing' ? 'Ongoing' : 'Completed'}
+                                          </a>
+                                        )
+                                    }
+                                  </a>
+                                  <p
+
                                     className="date-color two-line text-muted font-14 mb-3 sp-line-2"
                                   >
-                                   
-                                   {truncateText(project.ProjectOverview , 100) ||
-    "No description available..."}{" "}
-                             
+
+                                    {truncateText(project.ProjectOverview, 100) ||
+                                      "No description available..."}{" "}
+
                                   </p>
- 
+
                                   <p className="mb-1 font-12">
                                     <span
-                                      
+
                                       className="pe-2 text-muted text-nowrap mb-1 d-inline-block"
                                     >
-                                     
-                                     <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} />  <b>{project?.ProjectsDocsId?.length}</b> Documents
+
+                                      <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} />  <b>{project?.ProjectsDocsId?.length}</b> Documents
                                     </span>
                                     <span
-                                     
+
                                       className="text-nowrap mb-1 d-inline-block"
                                     >
-                                    <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />
-                                      <b>{project. CommentsCount || 0}</b> Comments
+                                      <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />
+                                      <b>{project.CommentsCount || 0}</b> Comments
                                     </span>
                                   </p>
                                   {/* Task info */}
@@ -2074,9 +2075,9 @@ setDocumentpostArr1([])
                             </p> */}
                                   <div
                                     style={{
-                                     
+
                                       position: "relative",
-                                       display:'flex'
+                                      display: 'flex'
                                     }}
                                   >
                                     <div style={{ display: 'flex' }} className="ml20">
@@ -2084,24 +2085,24 @@ setDocumentpostArr1([])
                                         (id: any, idx: any) => {
                                           if (idx < 3) {
                                             return (
-                                              <div style={{width:'40px', marginLeft:'-7px'}} className="gfg_tooltip">
-                                              <img
-                                                style={{
-                                                  margin:
-                                                    index == 0
-                                                      ? "0 0 0 0"
-                                                      : "0 0 0px -12px",
-                                                         float:"left"
-                                                }}
-                                                src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                                                className="circlecssnew img-thumbnail avatar-xl"
-                                                alt="profile-image"
-                                              />
-                                               <span className="gfg_text">
-                                               {id?.Title}
-                                        </span>
+                                              <div style={{ width: '40px', marginLeft: '-7px' }} className="gfg_tooltip">
+                                                <img
+                                                  style={{
+                                                    margin:
+                                                      index == 0
+                                                        ? "0 0 0 0"
+                                                        : "0 0 0px -12px",
+                                                    float: "left"
+                                                  }}
+                                                  src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+                                                  className="circlecssnew img-thumbnail avatar-xl"
+                                                  alt="profile-image"
+                                                />
+                                                <span className="gfg_text">
+                                                  {id?.Title}
+                                                </span>
 
-                                        </div>
+                                              </div>
                                             );
                                           }
                                         }
@@ -2136,7 +2137,7 @@ setDocumentpostArr1([])
                                           </div>
                                         </div>
                                       } */}
-                                       {
+                                      {
                                         project?.TeamMembers?.length > 3 &&
 
                                         <div
@@ -2197,13 +2198,13 @@ setDocumentpostArr1([])
                         }
                         return null;
                       })}
-                           {itemsToShow < Dataproject.length && (
-                      <div className="col-12 text-center mb-5 mt-3">
-                        <button onClick={loadMore} className="btn btn-primary">
-                          Load More 
-                        </button>
-                      </div>
-                    )}
+                      {itemsToShow < Dataproject.length && (
+                        <div className="col-12 text-center mb-5 mt-3">
+                          <button onClick={loadMore} className="btn btn-primary">
+                            Load More
+                          </button>
+                        </div>
+                      )}
                     </div>
                   ) : (
                     <p>Loading projects...</p>
@@ -2230,10 +2231,10 @@ setDocumentpostArr1([])
                                       data-bs-toggle="dropdown"
                                       aria-expanded="false"
                                     >
-                                        <img className="morealign" src={require('../assets/more.png')} />
+                                      <img className="morealign" src={require('../assets/more.png')} />
                                       {/* <i className="fe-more-horizontal- m-0 text-muted h3"></i> */}
                                     </a>
-                                    <div style={{padding:"0px", top:"15px", minWidth:"auto", textAlign:"center"}} className="dropdown-menu newheight dropdown-menu-end">
+                                    <div style={{ padding: "0px", top: "15px", minWidth: "auto", textAlign: "center" }} className="dropdown-menu newheight dropdown-menu-end">
                                       <a
                                         className="dropdown-item font-12"
 
@@ -2268,52 +2269,52 @@ setDocumentpostArr1([])
                                         "Untitled Project"}
                                     </a>
                                   </h4>
-                                  
+
                                   <a>
 
-{
-      project?.ProjectStatus === null 
-      ? null // Don't display anything if ProjectStatus is null
-      : (
-          <a className="ongoing mb-3"
-              style={{ 
-                  background: project?.ProjectStatus === 'Completed' ? '#cce7dc' : '#6c757d',
-                  color: project?.ProjectStatus === 'Completed' ? '#008751' : '#fff',
-                  padding: '5px',
-                  borderRadius: '4px',
-                  textDecoration: 'none'
-              }}
-          >
-              {project?.ProjectStatus === 'Ongoing' ? 'Ongoing' : 'Completed'}
-          </a>
-      )
-}
-</a>
+                                    {
+                                      project?.ProjectStatus === null
+                                        ? null // Don't display anything if ProjectStatus is null
+                                        : (
+                                          <a className="ongoing mb-3"
+                                            style={{
+                                              background: project?.ProjectStatus === 'Completed' ? '#cce7dc' : '#6c757d',
+                                              color: project?.ProjectStatus === 'Completed' ? '#008751' : '#fff',
+                                              padding: '5px',
+                                              borderRadius: '4px',
+                                              textDecoration: 'none'
+                                            }}
+                                          >
+                                            {project?.ProjectStatus === 'Ongoing' ? 'Ongoing' : 'Completed'}
+                                          </a>
+                                        )
+                                    }
+                                  </a>
 
-<p
-                                   
+                                  <p
+
                                     className="date-color text-muted two-line font-14 mb-3 sp-line-2"
                                   >
-                                   
-                                   {truncateText(project.ProjectOverview , 100) ||
-    "No description available..."}{" "}
-                             
+
+                                    {truncateText(project.ProjectOverview, 100) ||
+                                      "No description available..."}{" "}
+
                                   </p>
 
                                   <p className="mb-1 font-12">
                                     <span
-                                    
+
                                       className="pe-2 text-muted text-nowrap mb-1 d-inline-block"
                                     >
-                                       <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} /> 
+                                      <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} />
                                       <b>{project?.ProjectsDocsId?.length}</b> Documents
                                     </span>
                                     <span
-                                 
+
                                       className="text-nowrap mb-1 d-inline-block"
                                     >
-                                      
-                                      <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />   <b>{project. CommentsCount || 0}</b> Comments
+
+                                      <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />   <b>{project.CommentsCount || 0}</b> Comments
                                     </span>
                                   </p>
 
@@ -2336,9 +2337,9 @@ setDocumentpostArr1([])
                             </p> */}
                                   <div
                                     style={{
-                                    
+
                                       position: "relative",
-                                       display:'flex'
+                                      display: 'flex'
                                     }}
                                   >
                                     <div style={{ display: 'flex' }} className="ml20">
@@ -2346,24 +2347,24 @@ setDocumentpostArr1([])
                                         (id: any, idx: any) => {
                                           if (idx < 3) {
                                             return (
-                                              <div style={{width:'40px', marginLeft:'-7px'}} className="gfg_tooltip">
-                                              <img
-                                                style={{
-                                                  margin:
-                                                    index == 0
-                                                      ? "0 0 0 0"
-                                                      : "0 0 0px -12px",
-                                                         float:"left"
-                                                }}
-                                                src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                                                className="rounded-circlecss img-thumbnail avatar-xl"
-                                                alt="profile-image"
-                                              />
+                                              <div style={{ width: '40px', marginLeft: '-7px' }} className="gfg_tooltip">
+                                                <img
+                                                  style={{
+                                                    margin:
+                                                      index == 0
+                                                        ? "0 0 0 0"
+                                                        : "0 0 0px -12px",
+                                                    float: "left"
+                                                  }}
+                                                  src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+                                                  className="rounded-circlecss img-thumbnail avatar-xl"
+                                                  alt="profile-image"
+                                                />
                                                 <span className="gfg_text">
-                                                {id?.Title}
-                                        </span>
+                                                  {id?.Title}
+                                                </span>
 
-                                        </div>
+                                              </div>
                                             );
                                           }
                                         }
@@ -2394,12 +2395,12 @@ setDocumentpostArr1([])
                                           </div>
                                         </div>
                                       } */}
-                                       {
+                                      {
                                         project?.TeamMembers?.length > 3 &&
 
                                         <div className="moreuser text-muted"
                                         >
-                                          <div 
+                                          <div
                                           >
                                             +{project?.TeamMembers?.length - 3} more
                                           </div>
@@ -2456,12 +2457,12 @@ setDocumentpostArr1([])
                         return null;
                       })}
                       {itemsToShow < Dataproject.length && (
-                      <div className="col-12 text-center mb-5 mt-3">
-                        <button onClick={loadMore} className="btn btn-primary">
-                          Load More 
-                        </button>
-                      </div>
-                    )}
+                        <div className="col-12 text-center mb-5 mt-3">
+                          <button onClick={loadMore} className="btn btn-primary">
+                            Load More
+                          </button>
+                        </div>
+                      )}
                     </div>
                   ) : (
                     <p>Loading projects...</p>
@@ -2474,10 +2475,10 @@ setDocumentpostArr1([])
                 <div className="">
                   {/* Map through the projects array and display a card for each */}
                   {Dataproject.length > 0 ? (
-                  
+
                     <div className="row">
                       {Dataproject.slice(0, itemsToShow).map((project, index) => {
-                
+
                         if (project?.ProjectStatus === "Ongoing") {
                           return (
                             <div key={index} className="col-lg-4 col-md-6 mb-0">
@@ -2492,7 +2493,7 @@ setDocumentpostArr1([])
                                     >
                                       <img className="morealign" src={require('../assets/more.png')} />
                                     </a>
-                                    <div style={{padding:"0px", top:"15px", minWidth:"auto", textAlign:"center"}} className="dropdown-menu newheight dropdown-menu-end">
+                                    <div style={{ padding: "0px", top: "15px", minWidth: "auto", textAlign: "center" }} className="dropdown-menu newheight dropdown-menu-end">
                                       <a
                                         className="dropdown-item font-12"
 
@@ -2508,13 +2509,13 @@ setDocumentpostArr1([])
                                         View Detail
                                       </a>
                                       {project?.AuthorId === userId && (
-        <a
-            className="dropdown-item font-12"
-            onClick={() => UpdatProject(project.Id)}
-        >
-            Mark Completed
-        </a>
-    )}
+                                        <a
+                                          className="dropdown-item font-12"
+                                          onClick={() => UpdatProject(project.Id)}
+                                        >
+                                          Mark Completed
+                                        </a>
+                                      )}
                                     </div>
                                   </div>
 
@@ -2528,52 +2529,52 @@ setDocumentpostArr1([])
                                         "Untitled Project"}
                                     </a>
                                   </h4>
-                                 
+
                                   <a>
 
-{
-      project?.ProjectStatus === null 
-      ? null // Don't display anything if ProjectStatus is null
-      : (
-          <a className="ongoing mb-3"
-              style={{ 
-                  background: project?.ProjectStatus === 'Completed' ? '#cce7dc' : '#6c757d',
-                  color: project?.ProjectStatus === 'Completed' ? '#008751' : '#fff',
-                  padding: '5px',
-                  borderRadius: '4px',
-                  textDecoration: 'none'
-              }}
-          >
-              {project?.ProjectStatus === 'Ongoing' ? 'Ongoing' : 'Completed'}
-          </a>
-      )
-}
-</a>
+                                    {
+                                      project?.ProjectStatus === null
+                                        ? null // Don't display anything if ProjectStatus is null
+                                        : (
+                                          <a className="ongoing mb-3"
+                                            style={{
+                                              background: project?.ProjectStatus === 'Completed' ? '#cce7dc' : '#6c757d',
+                                              color: project?.ProjectStatus === 'Completed' ? '#008751' : '#fff',
+                                              padding: '5px',
+                                              borderRadius: '4px',
+                                              textDecoration: 'none'
+                                            }}
+                                          >
+                                            {project?.ProjectStatus === 'Ongoing' ? 'Ongoing' : 'Completed'}
+                                          </a>
+                                        )
+                                    }
+                                  </a>
 
-<p
-                                   
+                                  <p
+
                                     className="date-color text-muted two-line font-14 mb-3 sp-line-2"
                                   >
-                                   
-                                   {truncateText(project.ProjectOverview , 100) ||
-    "No description available..."}{" "}
-                             
+
+                                    {truncateText(project.ProjectOverview, 100) ||
+                                      "No description available..."}{" "}
+
                                   </p>
 
                                   <p className="mb-1 text-muted font-12">
                                     <span
-                                     
+
                                       className="pe-2 text-nowrap mb-1 d-inline-block"
                                     >
-                                       <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} /> 
+                                      <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} />
                                       <b>{project?.ProjectsDocsId?.length}</b> Documents
                                     </span>
                                     <span
-                                      
+
                                       className="text-nowrap mb-1 d-inline-block"
                                     >
-                                        <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />
-                                      <b>{project. CommentsCount || 0}</b> Comments
+                                      <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />
+                                      <b>{project.CommentsCount || 0}</b> Comments
                                     </span>
                                   </p>
 
@@ -2596,9 +2597,9 @@ setDocumentpostArr1([])
                             </p> */}
                                   <div
                                     style={{
-                                    
+
                                       position: "relative",
-                                       display:'flex'
+                                      display: 'flex'
                                     }}
                                   >
                                     <div style={{ display: 'flex' }} className="ml20">
@@ -2606,24 +2607,24 @@ setDocumentpostArr1([])
                                         (id: any, idx: any) => {
                                           if (idx < 3) {
                                             return (
-                                              <div style={{width:'40px', marginLeft:'-7px'}} className="gfg_tooltip">
-                                              <img
-                                                style={{
-                                                  margin:
-                                                    index == 0
-                                                      ? "0 0 0 0"
-                                                      : "0 0 0px -12px",
-                                                         float:"left"
-                                                }}
-                                                src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                                                className="rounded-circlecss img-thumbnail avatar-xl"
-                                                alt="profile-image"
-                                              />
-                                              <span className="gfg_text">
-                                              {id?.Title}
-                                          </span>
-  
-                                          </div>
+                                              <div style={{ width: '40px', marginLeft: '-7px' }} className="gfg_tooltip">
+                                                <img
+                                                  style={{
+                                                    margin:
+                                                      index == 0
+                                                        ? "0 0 0 0"
+                                                        : "0 0 0px -12px",
+                                                    float: "left"
+                                                  }}
+                                                  src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+                                                  className="rounded-circlecss img-thumbnail avatar-xl"
+                                                  alt="profile-image"
+                                                />
+                                                <span className="gfg_text">
+                                                  {id?.Title}
+                                                </span>
+
+                                              </div>
                                             );
                                           }
                                         }
@@ -2655,12 +2656,12 @@ setDocumentpostArr1([])
                                           </div>
                                         </div>
                                       } */}
-                                       {
+                                      {
                                         project?.TeamMembers?.length > 3 &&
 
-                                       <div className="moreuser text-muted"
-                                        ><div 
-                                          >
+                                        <div className="moreuser text-muted"
+                                        ><div
+                                        >
                                             +{project?.TeamMembers?.length - 3} more
                                           </div>
                                         </div>
@@ -2717,12 +2718,12 @@ setDocumentpostArr1([])
                         return null;
                       })}
                       {itemsToShow < Dataproject?.length && (
-                      <div className="col-12 text-center mb-5 mt-3">
-                        <button onClick={loadMore} className="btn btn-primary">
-                          Load More 
-                        </button>
-                      </div>
-                    )}
+                        <div className="col-12 text-center mb-5 mt-3">
+                          <button onClick={loadMore} className="btn btn-primary">
+                            Load More
+                          </button>
+                        </div>
+                      )}
                     </div>
                   ) : (
                     <p>Loading projects...</p>
@@ -2749,9 +2750,9 @@ setDocumentpostArr1([])
                                       data-bs-toggle="dropdown"
                                       aria-expanded="false"
                                     >
-                                     <img className="morealign" src={require('../assets/more.png')} />
+                                      <img className="morealign" src={require('../assets/more.png')} />
                                     </a>
-                                    <div style={{padding:"0px", top:"15px", minWidth:"auto", textAlign:"center"}} className="dropdown-menu newheight dropdown-menu-end">
+                                    <div style={{ padding: "0px", top: "15px", minWidth: "auto", textAlign: "center" }} className="dropdown-menu newheight dropdown-menu-end">
                                       <a
                                         className="dropdown-item font-12"
 
@@ -2779,52 +2780,52 @@ setDocumentpostArr1([])
                                         "Untitled Project"}
                                     </a>
                                   </h4>
-                                
+
 
                                   <a>
 
-{
-      project?.ProjectStatus === null 
-      ? null // Don't display anything if ProjectStatus is null
-      : (
-          <a className="ongoing mb-3"
-              style={{ 
-                   background: project?.ProjectStatus === 'Completed' ? '#cce7dc' : '#6c757d',
-                  color: project?.ProjectStatus === 'Completed' ? '#008751' : '#fff',
-                  padding: '5px',
-                  borderRadius: '4px',
-                  textDecoration: 'none'
-              }}
-          >
-              {project?.ProjectStatus === 'Ongoing' ? 'Ongoing' : 'Completed'}
-          </a>
-      )
-}
-</a>
+                                    {
+                                      project?.ProjectStatus === null
+                                        ? null // Don't display anything if ProjectStatus is null
+                                        : (
+                                          <a className="ongoing mb-3"
+                                            style={{
+                                              background: project?.ProjectStatus === 'Completed' ? '#cce7dc' : '#6c757d',
+                                              color: project?.ProjectStatus === 'Completed' ? '#008751' : '#fff',
+                                              padding: '5px',
+                                              borderRadius: '4px',
+                                              textDecoration: 'none'
+                                            }}
+                                          >
+                                            {project?.ProjectStatus === 'Ongoing' ? 'Ongoing' : 'Completed'}
+                                          </a>
+                                        )
+                                    }
+                                  </a>
 
-<p
-                                    
+                                  <p
+
                                     className="date-color text-muted two-line font-14 mb-3 sp-line-2"
                                   >
-                                   
-                                   {truncateText(project.ProjectOverview , 100) ||
-    "No description available..."}{" "}
-                             
+
+                                    {truncateText(project.ProjectOverview, 100) ||
+                                      "No description available..."}{" "}
+
                                   </p>
                                   <p className="mb-1 text-muted font-12">
                                     <span
-                                      
+
                                       className="pe-2 text-nowrap mb-1 d-inline-block"
                                     >
-                                     <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} />
+                                      <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} />
                                       <b>{project?.ProjectsDocsId?.length}</b> Documents
                                     </span>
                                     <span
-                                    
+
                                       className="text-nowrap mb-1 d-inline-block"
                                     >
-                                       <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />
-                                      <b>{project. CommentsCount || 0}</b> Comments
+                                      <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />
+                                      <b>{project.CommentsCount || 0}</b> Comments
                                     </span>
                                   </p>
 
@@ -2847,9 +2848,9 @@ setDocumentpostArr1([])
                             </p> */}
                                   <div
                                     style={{
-                                    
+
                                       position: "relative",
-                                       display:'flex'
+                                      display: 'flex'
                                     }}
                                   >
                                     <div style={{ display: 'flex' }} className="ml20">
@@ -2857,24 +2858,24 @@ setDocumentpostArr1([])
                                         (id: any, idx: any) => {
                                           if (idx < 3) {
                                             return (
-                                              <div style={{width:'40px', marginLeft:'-7px'}} className="gfg_tooltip">
-                                              <img
-                                                style={{
-                                                  margin:
-                                                    index == 0
-                                                      ? "0 0 0 0"
-                                                      : "0 0 0px -12px",
-                                                         float:"left"
-                                                }}
-                                                src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                                                className="rounded-circlecss img-thumbnail avatar-xl"
-                                                alt="profile-image"
-                                              />
-                                              <span className="gfg_text">
-                                              {id?.Title}
-                                          </span>
-  
-                                          </div>
+                                              <div style={{ width: '40px', marginLeft: '-7px' }} className="gfg_tooltip">
+                                                <img
+                                                  style={{
+                                                    margin:
+                                                      index == 0
+                                                        ? "0 0 0 0"
+                                                        : "0 0 0px -12px",
+                                                    float: "left"
+                                                  }}
+                                                  src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+                                                  className="rounded-circlecss img-thumbnail avatar-xl"
+                                                  alt="profile-image"
+                                                />
+                                                <span className="gfg_text">
+                                                  {id?.Title}
+                                                </span>
+
+                                              </div>
                                             );
                                           }
                                         }
@@ -2907,12 +2908,12 @@ setDocumentpostArr1([])
                                           </div>
                                         </div>
                                       } */}
-                                       {
+                                      {
                                         project?.TeamMembers?.length > 3 &&
 
-                                       <div className="moreuser text-muted"
-                                        ><div 
-                                          >
+                                        <div className="moreuser text-muted"
+                                        ><div
+                                        >
                                             +{project?.TeamMembers?.length - 3} more
                                           </div>
                                         </div>
@@ -2968,24 +2969,24 @@ setDocumentpostArr1([])
                         return null;
                       })}
                       {itemsToShow < Dataproject?.length && (
-                      <div className="col-12 text-center mb-5 mt-3">
-                        <button onClick={loadMore} className="btn btn-primary">
-                          Load More 
-                        </button>
-                      </div>
-                    )}
+                        <div className="col-12 text-center mb-5 mt-3">
+                          <button onClick={loadMore} className="btn btn-primary">
+                            Load More
+                          </button>
+                        </div>
+                      )}
                     </div>
                   ) : (
                     <p>Loading projects...</p>
                   )}
                 </div>
-               
+
               </div>
             )}
           </div>
         </div>
       </div>
-      <div style={{height:'50px'}}></div>
+      <div style={{ height: '50px' }}></div>
     </div>
 
   );

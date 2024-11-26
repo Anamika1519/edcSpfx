@@ -231,6 +231,15 @@ const MediaMastercontext = ({ props }: any) => {
   }
   //#endregion
  
+
+  const ViewFormReadOnly = (id: any) => {
+    // debugger
+    // setUseId(id)
+    const encryptedId = encryptId(String(id));
+    sessionStorage.setItem("mediaId", encryptedId)
+    window.location.href = `${siteUrl}/SitePages/MediaGalleryForm.aspx?mode=view`;
+  }
+
   //#region
   const Deletemedia = (id: any) => {
     Swal.fire({
@@ -278,7 +287,7 @@ const MediaMastercontext = ({ props }: any) => {
       </div>
       <div className="content-page">
         <HorizontalNavbar _context={sp} siteUrl={siteUrl} />
-        <div className="content" style={{ marginLeft: `${!useHide ? '240px' : '80px'}`, marginTop: '0.6rem' }}>
+        <div className="content" style={{ marginLeft: `${!useHide ? '240px' : '80px'}`}}>
           <div className="container-fluid  paddb">
             <div className="row pt-0">
               <div className="col-lg-3">
@@ -310,7 +319,7 @@ const MediaMastercontext = ({ props }: any) => {
                     <table className="mtable pt-0 table-centered table-nowrap table-borderless mb-0">
                       <thead>
                         <tr>
-                          <th style={{ borderBottomLeftRadius: '10px', minWidth: '50px', maxWidth: '50px', borderTopLeftRadius: '10px' }}>
+                          <th style={{ borderBottomLeftRadius: '0px', minWidth: '0px', maxWidth: '50px', borderTopLeftRadius: '10px' }}>
  
                             <div className="d-flex pb-2"
                               style={{ justifyContent: 'space-between' }}>
@@ -347,7 +356,10 @@ const MediaMastercontext = ({ props }: any) => {
                               </div>
                             </div>
                           </th>
-                          <th>
+                          <th style={{
+                                    minWidth: "80px",
+                                    maxWidth: "80px",
+                                  }}>
                             <div className="d-flex flex-column bd-highlight ">
                               <div className="d-flex pb-2" style={{ justifyContent: 'space-between' }}>
                                 <span >Status</span>  <span onClick={() => handleSortChange('Status')}><FontAwesomeIcon icon={faSort} /> </span></div>
@@ -365,7 +377,7 @@ const MediaMastercontext = ({ props }: any) => {
                                 className='inputcss' style={{ width: '100%' }} />
                             </div>
                           </div></th>
-                          <th style={{ textAlign: 'center' }}>
+                          <th style={{ textAlign: 'center', minWidth:'80px', maxWidth:'80px' }}>
                             <div className="d-flex flex-column bd-highlight pb-2">
                               <div className="d-flex  pb-0" style={{ justifyContent: 'space-between' }}>  <span >Action</span> <div className="dropdown">
                                 <FontAwesomeIcon icon={faEllipsisV} onClick={toggleDropdown} size='xl' />
@@ -397,18 +409,22 @@ const MediaMastercontext = ({ props }: any) => {
                                     maxWidth: "50px",
                                   }}
                                 >
-                                  {index + 1}
+                               <div className='indexdesign'> {index + 1}</div>     
                                 </td>
                                 <td>{item.Title}</td>
                                 <td>{item?.EntityMaster?.Entity}</td>
-                                <td>{item.Status}</td>
+                                <td   style={{
+                                    minWidth: "80px",
+                                    maxWidth: "80px",
+                                  }}>{item.Status}</td>
                                 <td
                                   style={{
                                     minWidth: "80px",
                                     maxWidth: "80px",
                                   }}
                                 >
-                                  {moment(item.Created).format("L")}
+                                  <div className='btn  btn-light'>
+                                  {moment(item.Created).format("L")}</div>
                                 </td>
                                 <td
                                   style={{
@@ -419,7 +435,7 @@ const MediaMastercontext = ({ props }: any) => {
                                 >
                                   <div
                                     className="d-flex pb-2"
-                                    style={{ justifyContent: "space-around" }}
+                                    style={{ justifyContent: "start", gap:'10px' }}
                                   >
                                     {/* Conditionally render the edit button based on status */}
                                     <span>
@@ -431,7 +447,7 @@ const MediaMastercontext = ({ props }: any) => {
                                         onClick={
                                           item.Status === "Save as draft"
                                             ? () => Editmedia(item.ID)
-                                            : null
+                                            :  () => ViewFormReadOnly(item.ID)
                                         }
                                         style={{
                                           cursor:
@@ -444,12 +460,12 @@ const MediaMastercontext = ({ props }: any) => {
                                       </a>
                                     </span>
                                     <span>
-                                      <a
+                                    {(item.Status === "Save as draft")?(  <a
                                         className="action-icon text-danger"
                                         onClick={() => Deletemedia(item.ID)}
                                       >
                                         <FontAwesomeIcon icon={faTrashAlt} />
-                                      </a>
+                                      </a>):(<div></div>)}
                                     </span>
                                   </div>
                                 </td>

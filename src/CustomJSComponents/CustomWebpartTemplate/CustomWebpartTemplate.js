@@ -107,7 +107,8 @@ const CustomWebpartTemplate = ({ _sp, SiteUrl }) => {
         <>
         <div className="row mt-5">
             {AnnouncementData && AnnouncementData.length > 0 ?
-                AnnouncementData.filter(x => x.FeaturedAnnouncement != false).slice(0, 1).map(item => {
+            //.filter(x => x.FeaturedAnnouncement != false)
+                AnnouncementData.slice(0, 1).map(item => {
                     const AnnouncementandNewsBannerImage = item.AnnouncementandNewsBannerImage == undefined || item.AnnouncementandNewsBannerImage == null ? ""
                         : JSON.parse(item.AnnouncementandNewsBannerImage);
                     return (

@@ -21,6 +21,13 @@ import { encryptId } from "../../../APISearvice/CryptoService";
 import HorizontalNavbar from "../../horizontalNavBar/components/HorizontalNavBar";
 import CustomBreadcrumb from "../../../CustomJSComponents/CustomBreadcrumb/CustomBreadcrumb";
 import { Image } from "react-feather";
+import Multiselect from 'multiselect-react-dropdown';
+import { WorkflowAction } from '../../../CustomJSComponents/WorkflowAction/WorkflowAction';
+import { getUrlParameterValue } from '../../../Shared/Helper';
+import { FormSubmissionMode } from '../../../Shared/Interfaces';
+import { WorkflowAuditHistory } from '../../../CustomJSComponents/WorkflowAuditHistory/WorkflowAuditHistory';
+import { CONTENTTYPE_Media, LIST_TITLE_MediaGallery, LIST_TITLE_EventMaster } from '../../../Shared/Constants';
+
 const HelloWorldContext = ({props}:any) => {
   const sp: SPFI = getSP();
   // console.log(sp, "sp");
@@ -32,6 +39,13 @@ const HelloWorldContext = ({props}:any) => {
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(true);
   const { setHide }: any = context;
   const [isDarkMode, setIsDarkMode] = React.useState(false);
+  const [ApprovalMode, setApprovalMode] = React.useState(false);
+  const [ApprovalRequestItem, setApprovalRequestItem] = React.useState(null);
+  const [InputDisabled, setInputDisabled] = React.useState(false);
+  const [ValidDraft, setValidDraft] = React.useState(true);
+  const [ValidSubmit, setValidSubmit] = React.useState(true);
+ 
+
   React.useEffect(() => {
     // console.log("This function is called only once", useHide);
  

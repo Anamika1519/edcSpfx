@@ -282,7 +282,7 @@ const GroupandTeamcontext = ({ props }: any) => {
       const filteredGroups = allGroups.filter(item => {
           if (item.GroupType === "Selected Members") {
               // Check if current user is in InviteMemebers
-              alert(`currentuser id ${currentUser.Id}`)
+             // alert(`currentuser id ${currentUser.Id}`)
               return item.InviteMemebers.some((invitee:any) => invitee.Id === currentUser.Id || item.Author.ID === currentUser);
           }
           return true;

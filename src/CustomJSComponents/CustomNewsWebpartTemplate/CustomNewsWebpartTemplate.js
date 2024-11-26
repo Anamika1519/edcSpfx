@@ -97,7 +97,8 @@ const CustomNewsWebpartTemplate = ({ _sp, SiteUrl }) => {
     return (
         <><div className="row mt-5" >
             {NewsData.length > 0 ?
-                NewsData.filter(x => x.FeaturedAnnouncement != false).slice(0, 1).map(item => {
+            //.filter(x => x.FeaturedAnnouncement != false)
+                NewsData.slice(0, 1).map(item => {
                     const AnnouncementandNewsBannerImage = item.AnnouncementandNewsBannerImage == undefined || item.AnnouncementandNewsBannerImage == null ? ""
                         : JSON.parse(item.AnnouncementandNewsBannerImage);
                     return (

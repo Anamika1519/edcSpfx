@@ -249,6 +249,14 @@ const EntityMastercontext = ({ props }: any) => {
   }
   //#endregion
 
+  const ViewFormReadOnly = (id: any) => {
+    // debugger
+    // setUseId(id)
+    const encryptedId = encryptId(String(id));
+    sessionStorage.setItem("EventId", encryptedId)
+    window.location.href = `${siteUrl}/SitePages/EventMasterForm.aspx?mode=view`;
+  }
+
   //#region 
   const DeleteBanner = (id: any) => {
     Swal.fire({
@@ -500,7 +508,7 @@ const EntityMastercontext = ({ props }: any) => {
 
       >
 
-        {index + 1}
+<div className='indexdesign'> {index + 1}</div>  
 
       </td>
 
@@ -509,8 +517,10 @@ const EntityMastercontext = ({ props }: any) => {
 
 
       <td>
-
-        {moment(item.EventDate).format("DD/MM/yyyy")}
+      <div className='btn  btn-light'>
+      {moment(item.EventDate).format("DD/MM/yyyy")}
+      </div>
+        
 
       </td>
 
@@ -564,7 +574,8 @@ const EntityMastercontext = ({ props }: any) => {
 
                   ? () => EditBanner(item.ID)
 
-                  : null
+                  : () => ViewFormReadOnly(item.ID)
+                  // : null
 
               }
 
@@ -596,7 +607,7 @@ const EntityMastercontext = ({ props }: any) => {
 
           <span>
 
-            <a
+            {(item.Status === "Save as draft")?(<a
 
               className="action-icon text-danger"
 
@@ -606,7 +617,7 @@ const EntityMastercontext = ({ props }: any) => {
 
               <FontAwesomeIcon icon={faTrashAlt} />
 
-            </a>
+            </a>):(<div></div>)}
 
           </span>
 

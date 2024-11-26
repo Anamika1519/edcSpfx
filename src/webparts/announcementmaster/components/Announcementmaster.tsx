@@ -58,6 +58,7 @@ import moment from 'moment';
 
 import HorizontalNavbar from '../../horizontalNavBar/components/HorizontalNavBar';
 
+//# region Commented code
 // const Announcementmastercontext = ({ props }: any) => {
 
 //   const sp = getSP();
@@ -790,6 +791,8 @@ import HorizontalNavbar from '../../horizontalNavBar/components/HorizontalNavBar
 
 // }
 
+//# endregion
+
 const Announcementmastercontext = ({ props }: any) => {
 
   const sp = getSP();
@@ -1084,6 +1087,14 @@ const Announcementmastercontext = ({ props }: any) => {
     window.location.href = `${siteUrl}/SitePages/AddAnnouncement.aspx`;
 
   };
+
+  const ViewFormReadOnly = (id: any) => {
+    // debugger
+    // setUseId(id)
+    const encryptedId = encryptId(String(id));
+    sessionStorage.setItem("announcementId", encryptedId)
+    window.location.href = `${siteUrl}/SitePages/AddAnnouncement.aspx?mode=view`;
+  }
 
 
   const DeleteAnnouncement = (id: any) => {
@@ -1412,7 +1423,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                             <tr>
 
-                              <th style={{ borderBottomLeftRadius: '10px', minWidth: '50px', maxWidth: '50px', borderTopLeftRadius: '10px' }}>
+                              <th style={{ borderBottomLeftRadius: '0px', minWidth: '50px', maxWidth: '50px', borderTopLeftRadius: '0px' }}>
 
                                 <div className="d-flex pb-2" style={{ justifyContent: 'space-between' }}>
 
@@ -1576,7 +1587,7 @@ const Announcementmastercontext = ({ props }: any) => {
                                 <tr key={index}>
 
                                   <td style={{ minWidth: "50px", maxWidth: "50px" }}>
-
+                                  <div className='indexdesign'>  {startIndex + index + 1}</div>  
                                     {startIndex + index + 1}
 
                                   </td>
@@ -1591,8 +1602,10 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                   <td style={{ minWidth: "80px", maxWidth: "80px" }}>
 
+                                   
+                                    <div className='btn  btn-light'>
                                     {moment(item.Created).format("L")}
-
+      </div>
                                   </td>
 
                                   <td style={{ minWidth: "50px", maxWidth: "50px" }} className="ng-binding">
@@ -1609,7 +1622,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                             }`}
 
-                                          onClick={item.Status === "Save as draft" ? () => EditAnnouncement(item.ID) : null}
+                                          onClick={item.Status === "Save as draft" ? () => EditAnnouncement(item.ID) :  () => ViewFormReadOnly(item.ID)}
 
                                           style={{
 
@@ -1625,7 +1638,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                       </span>
 
-                                      <span>
+                                      {item.Status === "Save as draft" ?(<span>
 
                                         <a
 
@@ -1639,7 +1652,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                         </a>
 
-                                      </span>
+                                      </span>):(<div></div>)}
 
                                     </div>
 
@@ -2039,7 +2052,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                                   EditAnnouncement(item.ID)
 
-                                                : null
+                                                : () => ViewFormReadOnly(item.ID)
 
                                             }
 
@@ -2071,7 +2084,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                         <span>
 
-                                          <a
+                                          {/* <a
 
                                             className="action-icon text-danger"
 
@@ -2091,7 +2104,29 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                             />
 
-                                          </a>
+                                          </a> */}
+
+                                          {(item.Status === "Save as draft")?(<a
+
+                                            className="action-icon text-danger"
+
+                                            onClick={() =>
+
+                                              DeleteAnnouncement(item.ID)
+
+                                            }
+
+                                          >
+
+                                            <FontAwesomeIcon
+
+                                              icon={faTrashAlt}
+
+                                              fontSize={18}
+
+                                            />
+
+                                          </a>):(<div></div>)}
 
                                         </span>
 

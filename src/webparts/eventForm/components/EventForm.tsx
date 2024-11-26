@@ -32,7 +32,7 @@ import { WorkflowAction } from '../../../CustomJSComponents/WorkflowAction/Workf
 import { getUrlParameterValue } from '../../../Shared/Helper';
 import { FormSubmissionMode } from '../../../Shared/Interfaces';
 import { WorkflowAuditHistory } from '../../../CustomJSComponents/WorkflowAuditHistory/WorkflowAuditHistory';
-import { CONTENTTYPE_Event, LIST_TITLE_ContentMaster, LIST_TITLE_EventMaster } from '../../../Shared/Constants';
+import { CONTENTTYPE_Event, LIST_TITLE_ContentMaster, LIST_TITLE_EventMaster, LIST_TITLE_MyRequest } from '../../../Shared/Constants';
 
 const HelloWorldContext = ({ props }: any) => {
   const sp: SPFI = getSP();
@@ -72,6 +72,7 @@ const HelloWorldContext = ({ props }: any) => {
   const [InputDisabled, setInputDisabled] = React.useState(false);
   const [ValidDraft, setValidDraft] = React.useState(true);
   const [ValidSubmit, setValidSubmit] = React.useState(true);
+  const [FormItemId, setFormItemId] = React.useState(null);
 
   //#region State to hold form data
   //  const [formData, setFormData] = React.useState({
@@ -121,6 +122,11 @@ const HelloWorldContext = ({ props }: any) => {
           //setInputDisabled(ApprovalMode)
        })
     }
+    else if(mode && mode=='view')
+    {
+      setInputDisabled(true);       
+    }
+
   
     console.log('This function is called only once', useHide);
 
@@ -274,7 +280,7 @@ const HelloWorldContext = ({ props }: any) => {
     }
    
     if(!valid)
-      Swal.fire('Error', 'Please fill the mandatory fields.', 'error');
+      Swal.fire('Please fill the mandatory fields.');
 
     return valid;
   };
@@ -445,7 +451,8 @@ const HelloWorldContext = ({ props }: any) => {
               ContentName: "ARGEventMaster",
               Status: "Pending",
               EntityId: Number(formData.EntityId),
-              SourceName: "Event"
+              SourceName: "Event",
+              ReworkRequestedBy:"Initiator"
             }
 
             let boolval=false;
@@ -454,7 +461,10 @@ const HelloWorldContext = ({ props }: any) => {
               const ctmasteritm=await sp.web.lists.getByTitle(LIST_TITLE_ContentMaster).items.filter('ContentID eq '+ApprovalRequestItem.ContentId+" and SourceName eq '"+CONTENTTYPE_Event+"'")();
               if(ctmasteritm && ctmasteritm.length>0)
                  {
-                  await UpdateContentMaster(sp,ctmasteritm[0].Id,{'Status':'Pending'});
+                  let updaterec={'Status':'Pending','ReworkRequestedBy':'Initiator'}
+                  if(ApprovalRequestItem.LevelSequence==1) updaterec.ReworkRequestedBy="Level 1";
+                  await UpdateContentMaster(sp,ctmasteritm[0].Id,updaterec);
+                  await sp.web.lists.getByTitle(LIST_TITLE_MyRequest).items.getById(ApprovalRequestItem.Id).update({'Status':'Submitted'});
                   await sp.web.lists.getByTitle(LIST_TITLE_EventMaster).items.getById(editID).update({'Status':'Submitted'});
                   boolval=true;
                  }
@@ -518,7 +528,7 @@ const HelloWorldContext = ({ props }: any) => {
               Status: "Submitted",
               RegistrationDueDate: RegistrationDueDate,
               EventDate: eventDate,
-              AuthorId: currentUser.Id,
+              AuthorId: currentUser.Id,              
               image: bannerImageArray != "{}" && JSON.stringify(bannerImageArray)
             };
             console.log(postPayload);
@@ -573,7 +583,8 @@ const HelloWorldContext = ({ props }: any) => {
               ContentName: "ARGEventMaster",
               Status: "Pending",
               EntityId: Number(formData.EntityId),
-              SourceName: "Event"
+              SourceName: "Event",
+              ReworkRequestedBy:"Initiator"
             }
             await AddContentMaster(sp, arr)
             const boolval = await handleClick(postId, "Event", Number(formData.EntityId))
@@ -892,11 +903,28 @@ const HelloWorldContext = ({ props }: any) => {
     setLevel(await getLevel(sp))
     setBaseUrl(await (getUrl(sp, siteUrl))) //baseUrl
     await fetchUserInformationList();
+    let formitemid;
     //#region getdataByID
     if (sessionStorage.getItem("EventId") != undefined) {
       const iD = sessionStorage.getItem("EventId")
       let iDs = decryptId(iD)
-      const setEventById = await getEventByID(sp, Number(iDs))
+      formitemid=Number(iDs);
+      setFormItemId(Number(iDs))
+      }
+      else
+      {
+        let formitemidparam=getUrlParameterValue('contentid');
+        if(formitemidparam) {
+          formitemid=Number(formitemidparam);         
+          setFormItemId(Number(formitemid));
+        }
+      }
+    if (formitemid) {
+      // const iD = sessionStorage.getItem("EventId")
+      // let iDs = decryptId(iD)
+      // setFormItemId(Number(iDs))   
+      // const setEventById = await getEventByID(sp, Number(iDs))
+      const setEventById = await getEventByID(sp, formitemid)
 
       console.log(setEventById, 'setEventById');
 
@@ -1521,7 +1549,7 @@ const HelloWorldContext = ({ props }: any) => {
             </div>
             {
               rows != null && rows.length > 0 && !ApprovalMode && (
-                <div className="container mt-2">
+                <div className="mt-2">
                   <div className="card cardborder p-4">
                     <div className="font-16">
                       <strong>Approval Hierarchy</strong>
@@ -1540,14 +1568,14 @@ const HelloWorldContext = ({ props }: any) => {
                     </div> */}
 
                     <div className="d-flex flex-column">
-                      <div className="row mb-2">
+                      {/* <div className="row mb-2">
                         <div className="col-12 col-md-5">
                           <label className="form-label">Level</label>
                         </div>
                         <div className="col-12 col-md-5">
                           <label className="form-label">Approver</label>
                         </div>
-                      </div>
+                      </div> */}
 
                       {rows.map((row: any) => (
                         <div className="row mb-2" key={row.id}>
@@ -1560,6 +1588,8 @@ const HelloWorldContext = ({ props }: any) => {
                               id={`Level-${row.id}`}
                               name="Level"
                               value={row.LevelId}
+                              disabled={true}
+
                               onChange={(e) => {
                                 const selectedLevel = e.target.value;
                                 setRows((prevRows: any) =>
@@ -1590,6 +1620,7 @@ const HelloWorldContext = ({ props }: any) => {
                               onSelect={(selected) => handleUserSelect(selected, row.id)}
                               onRemove={(selected) => handleUserSelect(selected, row.id)}
                               displayValue="name"
+                              disable={true}
                             />
                           </div>
 
@@ -1649,13 +1680,19 @@ const HelloWorldContext = ({ props }: any) => {
               // <ApprovalHierarchy data={ApprovalConfigurationData} levels={levels} usersitem={usersitem} IsAdded={IsAdded}/>
 
             }
+           
             {
-              <WorkflowAuditHistory ContentItemId={editID} ContentType={CONTENTTYPE_Event} ctx={props.context} />
+              //let forrework=ApprovalRequestItem && ApprovalRequestItem.IsRework=='Yes'&& ApprovalRequestItem.LevelSequence!=0;
+              (InputDisabled&&ApprovalRequestItem)||(ApprovalRequestItem && ApprovalRequestItem.IsRework=='Yes'&& ApprovalRequestItem.LevelSequence!=0)?(
+                <WorkflowAction currentItem={ApprovalRequestItem} ctx={props.context} 
+                   DisableApproval={ApprovalRequestItem && ApprovalRequestItem.IsRework=='Yes'&& ApprovalRequestItem.LevelSequence!=0}
+                   DisableCancel={ApprovalRequestItem && ApprovalRequestItem.IsRework=='Yes'&& ApprovalRequestItem.LevelSequence!=0}
+                   //DisableReject={ApprovalRequestItem && ApprovalRequestItem.IsRework=='Yes'&& ApprovalRequestItem.LevelSequence!=0}
+                />
+              ):(<div></div>)
             }
             {
-              InputDisabled&&ApprovalRequestItem?(
-                <WorkflowAction currentItem={ApprovalRequestItem} ctx={props.context} />
-              ):(<div></div>)
+              <WorkflowAuditHistory ContentItemId={editID} ContentType={CONTENTTYPE_Event} ctx={props.context} />
             }
             {/* Modal to display uploaded files */}
             <Modal show={showModal} onHide={() => setShowModal(false)} size='lg' >
@@ -1705,7 +1742,7 @@ const HelloWorldContext = ({ props }: any) => {
                             <thead style={{ background: '#eef6f7' }}>
                               <tr>
                                 <th>Serial No.</th>
-                                <th style={{ width: '100px' }}> Image </th>
+                                <th> Image </th>
                                 <th>File Name</th>
                                 <th>File Size</th>
                                 <th className='text-center'>Action</th>
@@ -1715,8 +1752,8 @@ const HelloWorldContext = ({ props }: any) => {
                               {EventGalleryArr1.map((file: any, index: number) => (
                                 <tr key={index}>
                                   <td className='text-center'>{index + 1}</td>
-                                  <td>  <img src={`${siteUrl}/EventGallery/${file.fileName}`}
-                                    style={{ maxWidth: '150px', maxHeight: '200px' }} /></td>
+                                  <td>  <img className='imagefe' src={`${siteUrl}/EventGallery/${file.fileName}`}
+                                     /></td>
 
                                   <td>{file.fileName}</td>
                                   <td className='text-right'>{file.fileSize}</td>
@@ -1727,7 +1764,7 @@ const HelloWorldContext = ({ props }: any) => {
                             </tbody>
                           </table></>
                       )}
-                    <div className="force-overflow"></div>
+
                   </div>
                 }
 

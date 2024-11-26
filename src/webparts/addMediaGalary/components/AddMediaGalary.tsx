@@ -40,17 +40,23 @@ import "../../verticalSideBar/components/VerticalSidebar.scss";
 
 import { Modal } from 'react-bootstrap';
 
-// import "../components/AddMediaGalary.scss"
+ import "../components/AddMediaGalary.scss";
 
 import HorizontalNavbar from '../../horizontalNavBar/components/HorizontalNavBar';
 
 import context from '../../../GlobalContext/context';
 
-import { AddContentLevelMaster, AddContentMaster, getApprovalConfiguration, getLevel } from '../../../APISearvice/ApprovalService';
+import { AddContentLevelMaster, AddContentMaster, getApprovalConfiguration, getLevel, UpdateContentMaster } from '../../../APISearvice/ApprovalService';
 
 import { Delete, PlusCircle } from 'react-feather';
 
 import Multiselect from 'multiselect-react-dropdown';
+
+import { WorkflowAction } from '../../../CustomJSComponents/WorkflowAction/WorkflowAction';
+import { getUrlParameterValue } from '../../../Shared/Helper';
+import { FormSubmissionMode } from '../../../Shared/Interfaces';
+import { WorkflowAuditHistory } from '../../../CustomJSComponents/WorkflowAuditHistory/WorkflowAuditHistory';
+import { CONTENTTYPE_Media, LIST_TITLE_ContentMaster, LIST_TITLE_MediaGallery, LIST_TITLE_MyRequest } from '../../../Shared/Constants';
 
 const AddMediaGalaryContext = ({ props }: any) => {
 
@@ -140,6 +146,13 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
   const [rows, setRows] = React.useState<any>([]);
 
+  const [ApprovalMode, setApprovalMode] = React.useState(false);
+  const [ApprovalRequestItem, setApprovalRequestItem] = React.useState(null);
+  const [InputDisabled, setInputDisabled] = React.useState(false);
+  const [ValidDraft, setValidDraft] = React.useState(true);
+  const [ValidSubmit, setValidSubmit] = React.useState(true);
+  const [FormItemId, setFormItemId] = React.useState(null);
+
   //#region Breadcrumb
 
   const Breadcrumb = [
@@ -169,6 +182,23 @@ const AddMediaGalaryContext = ({ props }: any) => {
   React.useEffect(() => {
 
     ApiCallFunc();
+
+    let mode=getUrlParameterValue('mode');
+    if(mode && mode=='approval')
+    {
+       setApprovalMode(true);
+       let requestid=getUrlParameterValue('requestid');
+       setInputDisabled(true);
+       sp.web.lists.getByTitle('ARGMyRequest').items.getById(Number(requestid))().then(itm=>{
+          setApprovalRequestItem(itm);
+          setInputDisabled(true && (!itm.IsRework || itm.IsRework =="No"))
+          //setInputDisabled(ApprovalMode)
+       })
+    }
+    else if(mode && mode=='view')
+    {
+      setInputDisabled(true);       
+    }
 
 
     console.log('This function is called only once', useHide);
@@ -257,17 +287,34 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
     setEnityData(await getEntity(sp)) //Entity
 
-
+    let formitemid;
+    //#region getdataByID
     if (sessionStorage.getItem("mediaId") != undefined) {
-
       const iD = sessionStorage.getItem("mediaId")
-
-      console.log(iD, 'iDssss');
-
-
       let iDs = decryptId(iD)
+      formitemid=Number(iDs);
+      setFormItemId(Number(iDs))
+      }
+      else
+      {
+        let formitemidparam=getUrlParameterValue('contentid');
+        if(formitemidparam) {
+          formitemid=Number(formitemidparam);         
+          setFormItemId(Number(formitemid));
+        }
+      }
 
-      const setMediaById = await getMediaByID(sp, Number(iDs))
+    // if (sessionStorage.getItem("mediaId") != undefined) {
+      if (formitemid) {
+
+      // const iD = sessionStorage.getItem("mediaId")
+
+      // console.log(iD, 'iDssss');
+
+
+      // let iDs = decryptId(iD)
+
+      const setMediaById = await getMediaByID(sp, Number(formitemid))
 
 
       console.log(setMediaById, 'setMediaById');
@@ -632,7 +679,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
   }
 
 
-  const validateForm = () => {
+  const validateForm = (formsubmode:FormSubmissionMode) => {
 
     debugger
 
@@ -641,30 +688,52 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
     let valid = true;
 
+    setValidDraft(true);
+    setValidSubmit(true);
+    if(formsubmode==FormSubmissionMode.DRAFT)
+    {
+        if (!title) {
 
-    if (!title) {
+          //Swal.fire('Error', 'Title is required!', 'error');
 
-      Swal.fire('Error', 'Title is required!', 'error');
+          valid = false;
 
-      valid = false;
+        }
+        setValidDraft(valid);
+
+       
+    } 
+    else
+    {
+      if (!title) {
+
+        //Swal.fire('Error', 'Title is required!', 'error');
+
+        valid = false;
+
+      }
+
+      else if (!entity) {
+
+        //Swal.fire('Error', 'Entity is required!', 'error');
+
+        valid = false;
+
+      }
+
+      else if (!Category) {
+
+        //Swal.fire('Error', 'Category is required!', 'error');
+
+        valid = false;
+
+      }
+
+      setValidSubmit(valid)
+
 
     }
 
-    else if (!entity) {
-
-      Swal.fire('Error', 'Entity is required!', 'error');
-
-      valid = false;
-
-    }
-
-    else if (!Category) {
-
-      Swal.fire('Error', 'Category is required!', 'error');
-
-      valid = false;
-
-    }
 
     //else if (!overview) {
 
@@ -686,7 +755,8 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
     // }
 
-
+    if(!valid)
+      Swal.fire('Please fill the mandatory fields.');
     return valid;
 
   };
@@ -696,13 +766,13 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
   const handleFormSubmit = async () => {
 
-    if (validateForm()) {
+    if (validateForm(FormSubmissionMode.SUBMIT)) {
 
       if (editForm) {
 
         Swal.fire({
 
-          title: 'Do you want to update?',
+          title: 'Do you want to submit this request?',
 
           showConfirmButton: true,
 
@@ -751,6 +821,10 @@ const AddMediaGalaryContext = ({ props }: any) => {
               }
 
             }
+            else if(BnnerImagepostArr.length > 0)
+              {
+                bannerImageArray=BnnerImagepostArr[0];
+              }
 
             else {
 
@@ -1031,29 +1105,53 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
               ContentName: "ARGMediaGallery",
 
-              Status: "Panding",
+              Status: "Pending",
 
               EntityId: Number(formData.entity),
 
-              SourceName: "Media"
+              SourceName: "Media",
+              ReworkRequestedBy:"Initiator"
+
 
             }
 
-            await AddContentMaster(sp, arr)
+            // await AddContentMaster(sp, arr)
 
-            const boolval = await handleClick(editID, "Media", Number(formData.entity))
+            // const boolval = await handleClick(editID, "Media", Number(formData.entity))
 
+            let boolval=false;
+            if(ApprovalRequestItem && ApprovalRequestItem.IsRework && ApprovalRequestItem.IsRework=='Yes')
+             {
+              const ctmasteritm=await sp.web.lists.getByTitle(LIST_TITLE_ContentMaster).items.filter('ContentID eq '+ApprovalRequestItem.ContentId+" and SourceName eq '"+CONTENTTYPE_Media+"'")();
+              if(ctmasteritm && ctmasteritm.length>0)
+                 {
+                  let updaterec={'Status':'Pending','ReworkRequestedBy':'Initiator'}
+                  if(ApprovalRequestItem.LevelSequence==1) updaterec.ReworkRequestedBy="Level 1";
+                  await UpdateContentMaster(sp,ctmasteritm[0].Id,updaterec);
+                  await sp.web.lists.getByTitle(LIST_TITLE_MyRequest).items.getById(ApprovalRequestItem.Id).update({'Status':'Submitted'});
+                  await sp.web.lists.getByTitle(LIST_TITLE_MediaGallery).items.getById(editID).update({'Status':'Submitted'});
+                  boolval=true;
+                 }
+             }
+            else
+               {
+                console.log(" form edit content master");
+                await AddContentMaster(sp, arr)
+                console.log(" form edit content master - added content master");
+
+                boolval = await handleClick(editID, "Media", Number(formData.entity))
+              }
             if (boolval == true) {
 
-              Swal.fire('Item update successfully', '', 'success');
+              Swal.fire('Submitted successfully.', '', 'success');
 
-              sessionStorage.removeItem("EventId")
+              sessionStorage.removeItem("mediaId")
 
-              setTimeout(() => {
+              // setTimeout(() => {
 
-                window.location.href = `${siteUrl}/SitePages/EventMaster.aspx`;
+              //   window.location.href = `${siteUrl}/SitePages/MediaGalleryMaster.aspx`;
 
-              }, 2000);
+              // }, 2000);
 
             }
 
@@ -1068,15 +1166,15 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
         Swal.fire({
 
-          title: 'Do you want to save?',
+          title: 'Do you want to submit this request?',
 
           showConfirmButton: true,
 
           showCancelButton: true,
 
-          confirmButtonText: "Save",
+          confirmButtonText: "Yes ",
 
-          cancelButtonText: "Cancel",
+          cancelButtonText: "No",
 
           icon: 'warning'
 
@@ -1197,11 +1295,13 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
               ContentName: "ARGMediaGallery",
 
-              Status: "Panding",
+              Status: "Pending",
 
               EntityId: Number(formData.entity),
 
-              SourceName: "Media"
+              SourceName: "Media",
+              ReworkRequestedBy:"Initiator"
+
 
             }
 
@@ -1211,7 +1311,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
             if (boolval == true) {
 
-              Swal.fire('Item added successfully', '', 'success');
+              Swal.fire('Submitted successfully.', '', 'success');
 
               // sessionStorage.removeItem("bannerId")
 
@@ -1242,21 +1342,21 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
   const handleSaveAsDraft = async () => {
 
-    if (validateForm()) {
+    if (validateForm(FormSubmissionMode.DRAFT)) {
 
       if (editForm) {
 
         Swal.fire({
 
-          title: 'Do you want to update?',
+          title: 'Do you want to save this request?',
 
           showConfirmButton: true,
 
           showCancelButton: true,
 
-          confirmButtonText: "Save",
+          confirmButtonText: "Yes",
 
-          cancelButtonText: "Cancel",
+          cancelButtonText: "No",
 
           icon: 'warning'
 
@@ -1570,7 +1670,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
             }
 
-            Swal.fire('Item update successfully', '', 'success');
+            Swal.fire('Saved successfully.', '', 'success');
 
             sessionStorage.removeItem("mediaId")
 
@@ -1590,15 +1690,15 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
         Swal.fire({
 
-          title: 'Do you want to save?',
+          title: 'Do you want to save this request?',
 
           showConfirmButton: true,
 
           showCancelButton: true,
 
-          confirmButtonText: "Save",
+          confirmButtonText: "Yes",
 
-          cancelButtonText: "Cancel",
+          cancelButtonText: "No",
 
           icon: 'warning'
 
@@ -1633,15 +1733,15 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
             }
 
-            debugger
+            // debugger
 
             // Create Post
 
-            const postPayload = {
+            let postPayload:any = {
 
               Title: formData.title,
 
-              EntityMasterId: Number(formData.entity),
+              //EntityMasterId: Number(formData.entity),
 
               Status: "Save as draft",
 
@@ -1649,10 +1749,19 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
               Image: JSON.stringify(bannerImageArray),
 
-              MediaGalleryCategoryId: formData.Category
+              //MediaGalleryCategoryId: (formData.Category && formData.Category!="")?Number(formData.Category):0
 
             };
 
+            if(formData.entity && formData.entity!="")
+              {
+                postPayload.EntityMasterId=Number(formData.entity);
+              }
+
+            if(formData.Category && formData.Category!="")
+            {
+              postPayload.MediaGalleryCategoryId=Number(formData.Category);
+            }
             console.log(postPayload);
 
 
@@ -1713,7 +1822,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
             }
 
-            Swal.fire('Item added successfully in draft', '', 'success');
+            Swal.fire('Saved successfully.', '', 'success');
 
             // sessionStorage.removeItem("bannerId")
 
@@ -1895,7 +2004,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
       const addedData = await AddContentLevelMaster(sp, arrPost)
 
-      console.log(addedData);
+      console.log("created content level master items",addedData);
 
 
     }
@@ -1972,11 +2081,13 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
                           placeholder='Enter title'
 
-                          className="form-control inputcss"
+                          className={`form-control inputcs ${(!ValidDraft)?"border-on-error":""} ${(!ValidSubmit)?"border-on-error":""}`}
 
                           value={formData.title}
+                          disabled={InputDisabled}
 
                           onChange={(e) => onChange(e.target.name, e.target.value)} />
+                          
 
                       </div>
 
@@ -1994,13 +2105,15 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
                         <select
 
-                          className="form-select inputcss"
+                          className={`form-control inputcs ${(!ValidSubmit)?"border-on-error":""}`}
 
                           id="entity"
 
                           name="entity"
 
                           value={formData.entity}
+                          disabled={InputDisabled}
+
 
                           onChange={(e) => onChange(e.target.name, e.target.value)}
 
@@ -2036,13 +2149,14 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
                         <select
 
-                          className="form-select inputcss"
+                          className={`form-control inputcs ${(!ValidSubmit)?"border-on-error":""}`}
 
                           id="Category"
 
                           name="Category"
 
                           value={formData.Category}
+                          disabled={InputDisabled}
 
                           onChange={(e) => onChange(e.target.name, e.target.value)}
 
@@ -2110,6 +2224,9 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
                           className="form-control inputcss"
 
+                          disabled={InputDisabled}
+
+
                           onChange={(e) => onFileChange(e, "bannerimg", "Document")} />
 
                       </div>
@@ -2174,6 +2291,8 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
                           multiple
 
+                          disabled={InputDisabled}
+
                           onChange={(e) => onFileChange(e, "Gallery", "MediaGallery")}
 
                         />
@@ -2183,41 +2302,41 @@ const AddMediaGalaryContext = ({ props }: any) => {
                     </div>
 
 
-                    <div className="text-center butncss">
+                  {!InputDisabled?(<div className="text-center butncss">
 
-                      <div className="btn btn-success waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleSaveAsDraft}>
+                    <div className="btn btn-success waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleSaveAsDraft}>
 
-                        <div className='d-flex' style={{ justifyContent: 'space-around' }}>
+                      <div className='d-flex' style={{ justifyContent: 'space-around' }}>
 
-                          <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} alt="Check" /> Save As Draft
-
-                        </div>
-
-                      </div>
-
-                      <div className="btn btn-success waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleFormSubmit}>
-
-                        <div className='d-flex' style={{ justifyContent: 'space-around', width: '70px' }}>
-
-                          <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} alt="Check" /> Submit
-
-                        </div>
-
-                      </div>
-
-                      <div className="btn btn-light waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleCancel}>
-
-                        <div className='d-flex' style={{ justifyContent: 'space-around', width: '70px' }}>
-
-                          <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }} className='me-1' alt="x" />
-
-                          Cancel
-
-                        </div>
+                        <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} alt="Check" /> Save As Draft
 
                       </div>
 
                     </div>
+
+                    <div className="btn btn-success waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleFormSubmit}>
+
+                      <div className='d-flex' style={{ justifyContent: 'space-around', width: '70px' }}>
+
+                        <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} alt="Check" /> Submit
+
+                      </div>
+
+                    </div>
+
+                    <div className="btn btn-light waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleCancel}>
+
+                      <div className='d-flex' style={{ justifyContent: 'space-around', width: '70px' }}>
+
+                        <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }} className='me-1' alt="x" />
+
+                        Cancel
+
+                      </div>
+
+                    </div>
+
+                  </div>):(<div></div>)}
 
                   </form>
 
@@ -2229,7 +2348,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
             {
 
-              rows != null && rows.length > 0 && (
+              rows != null && rows.length > 0 && !ApprovalMode && (
 
                 <div className="container mt-2">
 
@@ -2241,7 +2360,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
                     </div>
 
-                    <div className="d-flex justify-content-between align-items-center">
+                    {/* <div className="d-flex justify-content-between align-items-center">
 
                       <p className="font-14 mb-3 flex-grow-1">
 
@@ -2263,12 +2382,12 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
                       </div>
 
-                    </div>
+                    </div> */}
 
 
                     <div className="d-flex flex-column">
 
-                      <div className="row mb-2">
+                      {/* <div className="row mb-2">
 
                         <div className="col-12 col-md-5">
 
@@ -2282,7 +2401,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
                         </div>
 
-                      </div>
+                      </div> */}
 
 
                       {rows.map((row: any) => (
@@ -2306,6 +2425,8 @@ const AddMediaGalaryContext = ({ props }: any) => {
                               name="Level"
 
                               value={row.LevelId}
+                              disabled={true}
+
 
                               onChange={(e) => {
 
@@ -2365,13 +2486,14 @@ const AddMediaGalaryContext = ({ props }: any) => {
                               onRemove={(selected) => handleUserSelect(selected, row.id)}
 
                               displayValue="name"
+                              disable={true}
 
                             />
 
                           </div>
 
 
-                          <div className="col-12 col-md-2 d-flex align-items-center" style={{ gap: '10px' }}>
+                          {/* <div className="col-12 col-md-2 d-flex align-items-center" style={{ gap: '10px' }}>
 
                             <div className="d-flex align-items-center">
 
@@ -2441,7 +2563,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
                             )}
 
-                          </div>
+                          </div> */}
 
                         </div>
 
@@ -2477,6 +2599,20 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
 
             }
+            
+            {
+              //let forrework=ApprovalRequestItem && ApprovalRequestItem.IsRework=='Yes'&& ApprovalRequestItem.LevelSequence!=0;
+              (InputDisabled&&ApprovalRequestItem)||(ApprovalRequestItem && ApprovalRequestItem.IsRework=='Yes'&& ApprovalRequestItem.LevelSequence!=0)?(
+                <WorkflowAction currentItem={ApprovalRequestItem} ctx={props.context} 
+                   DisableApproval={ApprovalRequestItem && ApprovalRequestItem.IsRework=='Yes'&& ApprovalRequestItem.LevelSequence!=0}
+                   DisableCancel={ApprovalRequestItem && ApprovalRequestItem.IsRework=='Yes'&& ApprovalRequestItem.LevelSequence!=0}
+                  //  DisableReject={ApprovalRequestItem && ApprovalRequestItem.IsRework=='Yes'&& ApprovalRequestItem.LevelSequence!=0}
+                />
+              ):(<div></div>)
+            }
+             {
+              <WorkflowAuditHistory ContentItemId={editID} ContentType={CONTENTTYPE_Media} ctx={props.context} />
+             }
 
             {/* Modal to display uploaded files */}
 
@@ -2496,7 +2632,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
                     <>
 
-                      <table className="table table-bordered" style={{ fontSize: '0.75rem' }}>
+                      <table className="mtable table-bordered" style={{ fontSize: '0.75rem' }}>
 
                         <thead style={{ background: '#eef6f7' }}>
 
@@ -2504,7 +2640,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
                             <th>Serial No.</th>
 
-                            <th style={{ width: '100px' }}> Image </th>
+                            <th > Image </th>
 
                             <th>File Name</th>
 
@@ -2524,9 +2660,9 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
                               <td className='text-center'>{index + 1}</td>
 
-                              <td>  <img src={`${siteUrl}/MediaGallery/${file.fileName}`}
+                              <td>  <img className='imagefe' src={`${siteUrl}/MediaGallery/${file.fileName}`}
 
-                                style={{ maxWidth: '150px', maxHeight: '200px' }} /></td>
+                               /></td>
 
 
                               <td>{file.fileName}</td>
@@ -2546,7 +2682,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
                   )}
 
-                <div className="force-overflow"></div>
+             
 
               </Modal.Body>
 

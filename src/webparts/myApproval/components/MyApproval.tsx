@@ -11,7 +11,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 import "../../../CustomCss/mainCustom.scss";
 
-// import "../components/MyApproval.scss";
+import "../components/MyApproval.scss";
 
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 
@@ -541,7 +541,7 @@ const MyApprovalContext = ({ props }: any) => {
 
     {
 
-      ChildComponent: "My Approve",
+      ChildComponent: "My Approval",
 
       ChildComponentURl: `${siteUrl}/SitePages/MyApprovals.aspx`,
 
@@ -697,33 +697,39 @@ const MyApprovalContext = ({ props }: any) => {
 
     setisActivedata(true)
 
-    let sessionkey="";
-    let redirecturl="";
-    if(Item?.ProcessName)
-    {
-      switch(Item?.ProcessName)
-      {
+    let sessionkey = "";
+    let redirecturl = "";
+    if (Item?.ProcessName) {
+      switch (Item?.ProcessName) {
         case "Announcement":
-          sessionkey="announcementId";
-          redirecturl=`${siteUrl}/SitePages/AddAnnouncement.aspx`+"?requestid="+Item?.Id+"&mode=approval";
+          sessionkey = "announcementId";
+          redirecturl = `${siteUrl}/SitePages/AddAnnouncement.aspx` + "?requestid=" + Item?.Id + "&mode=approval";
           break;
+          case "News":
+            sessionkey = "announcementId";
+            redirecturl = `${siteUrl}/SitePages/AddAnnouncement.aspx` + "?requestid=" + Item?.Id + "&mode=approval";
+            break;
         case "Event":
-          sessionkey="EventId";
-          redirecturl=`${siteUrl}/SitePages/EventMasterForm.aspx`+"?requestid="+Item?.Id+"&mode=approval";
-        break;
-        default:;
-     }
+          sessionkey = "EventId";
+          redirecturl = `${siteUrl}/SitePages/EventMasterForm.aspx` + "?requestid=" + Item?.Id + "&mode=approval";
+          break;
+        case "Media":
+          sessionkey = "mediaId";
+          redirecturl = `${siteUrl}/SitePages/MediaGalleryForm.aspx` + "?requestid=" + Item?.Id + "&mode=approval";
+          break;
+        default: ;
+      }
 
       const encryptedId = encryptId(String(Item?.ContentId));
       sessionStorage.setItem(sessionkey, encryptedId);
-      location.href=redirecturl;
+      location.href = redirecturl;
 
     }
     // const encryptedId = encryptId(String(Item?.ContentId));
 
     // sessionStorage.setItem("announcementId", encryptedId);
 
-    // location.href="https://officeindia.sharepoint.com/sites/SPFXDemo/SitePages/AddAnnouncement.aspx"+"?requestid="+Item?.Id+"&mode=approval";
+    // location.href="https://officeindia.sharepoint.com/sites/AlRostmaniSpfx2/SitePages/AddAnnouncement.aspx"+"?requestid="+Item?.Id+"&mode=approval";
 
 
   };
@@ -739,7 +745,7 @@ const MyApprovalContext = ({ props }: any) => {
       Remark: formData.Remark,
 
       Status: Status,
-      TriggerUpdateFlow:true
+      TriggerUpdateFlow: true
 
     };
 
@@ -784,7 +790,7 @@ const MyApprovalContext = ({ props }: any) => {
 
             marginLeft: `${!useHide ? "240px" : "80px"}`,
 
-            marginTop: "0.5rem",
+            marginTop: "0rem",
 
           }}
 
@@ -816,7 +822,7 @@ const MyApprovalContext = ({ props }: any) => {
 
                         <table
 
-                          className="mtable table-centered table-nowrap table-borderless mb-0"
+                          className="mtable mt-0 table-centered table-nowrap table-borderless mb-0"
 
                           style={{ position: "relative" }}
 
@@ -830,13 +836,13 @@ const MyApprovalContext = ({ props }: any) => {
 
                                 style={{
 
-                                  borderBottomLeftRadius: "10px",
+                                  borderBottomLeftRadius: "0px",
 
                                   minWidth: "40px",
 
                                   maxWidth: "40px",
 
-                                  borderTopLeftRadius: "10px",
+                                  borderTopLeftRadius: "0px",
 
                                 }}
 
@@ -1160,9 +1166,9 @@ const MyApprovalContext = ({ props }: any) => {
 
                                   maxWidth: "50px",
 
-                                  borderBottomRightRadius: "10px",
+                                  borderBottomRightRadius: "0px",
 
-                                  borderTopRightRadius: "10px",
+                                  borderTopRightRadius: "0px",
 
                                   textAlign: "center",
 
@@ -1260,16 +1266,9 @@ const MyApprovalContext = ({ props }: any) => {
                                   style={{ cursor: "pointer" }}
 
                                 >
+                                  <td style={{ minWidth: '40px', maxWidth: '40px' }}><div className='indexdesign'>   {startIndex + index + 1}</div>  </td>
 
-                                  <td
 
-                                    style={{ minWidth: "40px", maxWidth: "40px" }}
-
-                                  >
-
-                                    {startIndex + index + 1}
-
-                                  </td>
 
                                   <td
 
@@ -1314,8 +1313,9 @@ const MyApprovalContext = ({ props }: any) => {
                                     style={{ minWidth: "100px", maxWidth: "100px" }}
 
                                   >
-
-                                    {new Date(item?.Created).toLocaleDateString()}
+                                    <div className="btn btn-light">
+                                      {new Date(item?.Created).toLocaleDateString()}
+                                    </div>
 
                                   </td>
 
@@ -1324,9 +1324,9 @@ const MyApprovalContext = ({ props }: any) => {
                                     style={{ minWidth: "80px", maxWidth: "80px" }}
 
                                   >
-
-                                    {item?.Status}
-
+                                    <div className="btn btn-status">
+                                      {item?.Status}
+                                    </div>
                                   </td>
 
                                   <td
@@ -1802,26 +1802,26 @@ const MyApprovalContext = ({ props }: any) => {
                     {/* card five */}
 
 
-                 {
+                    {
 
-                  currentItem.Status == "Submitted" &&(
+                      currentItem.Status == "Submitted" && (
 
-                    <div className="card">
+                        <div className="card">
 
-                    <div className="card-body">
+                          <div className="card-body">
 
-                      {/* <h4 className="header-title mb-0">GCFO's Approval</h4> */}
+                            {/* <h4 className="header-title mb-0">GCFO's Approval</h4> */}
 
-                      {/* <p className="sub-header">
+                            {/* <p className="sub-header">
 
                         Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.
 
                       </p> */}
 
 
-                      <div className="row">
+                            <div className="row">
 
-                        {/* <div className="col-lg-4">
+                              {/* <div className="col-lg-4">
 
                           <div className="mb-3">
 
@@ -1876,7 +1876,7 @@ const MyApprovalContext = ({ props }: any) => {
                         </div> */}
 
 
-                        {/* <div className="col-lg-4">
+                              {/* <div className="col-lg-4">
 
                           <div className="mb-3">
 
@@ -1889,7 +1889,7 @@ const MyApprovalContext = ({ props }: any) => {
                         </div> */}
 
 
-                        {/* <div className="col-lg-4">
+                              {/* <div className="col-lg-4">
 
                           <div className="mb-3">
 
@@ -1902,7 +1902,7 @@ const MyApprovalContext = ({ props }: any) => {
                         </div> */}
 
 
-                        {/* <div className="col-lg-12">
+                              {/* <div className="col-lg-12">
 
                           <div className="mb-3">
 
@@ -1923,90 +1923,90 @@ const MyApprovalContext = ({ props }: any) => {
                         </div> */}
 
 
-                        {
+                              {
 
-                          currentItem.Status == "Submitted" && (<div className="col-lg-12">
+                                currentItem.Status == "Submitted" && (<div className="col-lg-12">
 
-                            <div className="mb-0" >
+                                  <div className="mb-0" >
 
-                              <label htmlFor="example-textarea" className="form-label text-dark font-14">Remarks:</label>
+                                    <label htmlFor="example-textarea" className="form-label text-dark font-14">Remarks:</label>
 
-                              <textarea className="form-control" id="example-textarea" rows={5} name="Remark" value={formData.Remark}
+                                    <textarea className="form-control" id="example-textarea" rows={5} name="Remark" value={formData.Remark}
 
-                                onChange={(e) => onChange(e.target.name, e.target.value)}></textarea>
+                                      onChange={(e) => onChange(e.target.name, e.target.value)}></textarea>
+
+                                  </div>
+
+                                </div>)
+
+                              }
+
 
                             </div>
 
-                          </div>)
-
-                        }
+                            {
 
 
-                      </div>
+                              currentItem.Status == "Submitted" && (
 
-                      {
+                                <div className="row mt-3">
 
+                                  <div className="col-12 text-center">
 
-                        currentItem.Status == "Submitted" && (
+                                    <a href="my-approval.html">
 
-                          <div className="row mt-3">
+                                      <button type="button" className="btn btn-success waves-effect waves-light m-1" onClick={(e) => handleFromSubmit(e, 'Approved')}>
 
-                            <div className="col-12 text-center">
+                                        <i className="fe-check-circle me-1"></i> Approve
 
-                              <a href="my-approval.html">
+                                      </button>
 
-                                <button type="button" className="btn btn-success waves-effect waves-light m-1" onClick={(e) => handleFromSubmit(e, 'Approved')}>
+                                    </a>
 
-                                  <i className="fe-check-circle me-1"></i> Approve
+                                    <a href="my-approval.html">
 
-                                </button>
+                                      <button type="button" className="btn btn-warning waves-effect waves-light m-1" onClick={(e) => handleFromSubmit(e, 'Rework')}>
 
-                              </a>
+                                        <i className="fe-corner-up-left me-1"></i> Rework
 
-                              <a href="my-approval.html">
+                                      </button>
 
-                                <button type="button" className="btn btn-warning waves-effect waves-light m-1" onClick={(e) => handleFromSubmit(e, 'Rework')}>
+                                    </a>
 
-                                  <i className="fe-corner-up-left me-1"></i> Rework
+                                    <a href="my-approval.html">
 
-                                </button>
+                                      <button type="button" className="btn btn-danger waves-effect waves-light m-1" onClick={(e) => handleFromSubmit(e, 'Reject')}>
 
-                              </a>
+                                        <i className="fe-x-circle me-1"></i> Reject
 
-                              <a href="my-approval.html">
+                                      </button>
 
-                                <button type="button" className="btn btn-danger waves-effect waves-light m-1" onClick={(e) => handleFromSubmit(e, 'Reject')}>
+                                    </a>
 
-                                  <i className="fe-x-circle me-1"></i> Reject
+                                    <button type="button" className="btn btn-light waves-effect waves-light m-1">
 
-                                </button>
+                                      <i className="fe-x me-1"></i> Cancel
 
-                              </a>
+                                    </button>
 
-                              <button type="button" className="btn btn-light waves-effect waves-light m-1">
+                                  </div>
 
-                                <i className="fe-x me-1"></i> Cancel
+                                </div>
 
-                              </button>
+                              )
 
-                            </div>
+                            }
+
 
                           </div>
 
-                        )
+                        </div>
 
-                      }
+                      )
+
+                    }
 
 
-                    </div>
-
-                  </div>
-
-                  )
-
-                 }   
-
-               
 
 
                   </div>

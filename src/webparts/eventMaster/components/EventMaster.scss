@@ -79,3 +79,31 @@ div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm)
 {
     background-color: #1abc9c !important;
 }
+.btn-light{
+    border-radius: 30px;
+    font-size: 13px;
+    color: #3c3c3c;
+    background: #fff;
+    border: 1px solid #efefef;
+  }
+  .indexdesign {
+    background: #d2effa !important;
+    border: none;
+    border-radius: 1000px;
+    color: #1fb0e5 !important;
+    display: flex
+  ;
+    font-size: 16px !important;
+    font-weight: 600;
+    height: 28px !important;
+    justify-content: center;
+    line-height: 30px !important;
+    margin-left: 0;
+    margin-top: 0 !important;
+    padding: 0 1px !important;
+    width: 28px !important;
+  }
+  .btn-primary svg, .btn-secondary svg{height: 13px;
+    vertical-align: text-top;
+    margin-top: 2px;}
+  

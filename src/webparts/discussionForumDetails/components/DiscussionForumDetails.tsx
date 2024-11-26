@@ -1299,6 +1299,10 @@ alt="Check"
                               )}
                             </span>
                         </div> */}
+                        <div className="card">
+                          <div className="card-body">
+
+                         
                             <p className="mb-2 mt-1 newt6 font-14">
 
 
@@ -1447,6 +1451,8 @@ alt="Check"
                               </div>
                             </p>
                           </div>
+                        </div>
+                        </div>
                         </div>
 
 

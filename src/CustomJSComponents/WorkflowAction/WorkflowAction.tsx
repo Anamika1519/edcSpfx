@@ -10,6 +10,10 @@ export interface IWorkflowActionProps
 {
     currentItem:any;
     ctx:WebPartContext;
+    DisableApproval?:boolean;
+    DisableRework?:boolean;
+    DisableReject?:boolean;
+    DisableCancel?:boolean;
 
 }
 
@@ -52,10 +56,22 @@ export const WorkflowAction=(props: IWorkflowActionProps) => {
         };
     
         console.log(postPayload);
-       let confirmation="";
-       if(Status=='Approved') confirmation="Do you want to approve this request?";
-       else if(Status=='Rejected') confirmation="Do you want to reject this request?";
-       else if(Status=='Rework') confirmation="Do you want to rework this request?";
+       let confirmation,resultmessage="";
+
+       if(Status=='Approved') 
+        {
+          confirmation="Do you want to approve this request?";
+          resultmessage='Approved successfully.'
+
+        }
+       else if(Status=='Rejected') {
+         confirmation="Do you want to reject this request?";
+         resultmessage='Rejected successfully.'}
+
+       else if(Status=='Rework') { 
+        confirmation="Do you want to rework this request?";
+        resultmessage='Sent for rework.'
+       }
 
        Swal.fire({
         // title: 'Do you want to save?',
@@ -72,7 +88,7 @@ export const WorkflowAction=(props: IWorkflowActionProps) => {
           const postResult = await updateItemApproval(postPayload, sp, props.currentItem.Id);
     
           if (postResult) {
-              Swal.fire('Request '+Status.toLowerCase()+' successfully.', '', 'success');
+              Swal.fire(resultmessage, '', 'success');
               setTimeout(() => {
         
                 // window.location.reload()
@@ -126,7 +142,7 @@ export const WorkflowAction=(props: IWorkflowActionProps) => {
 
                             <div className="col-12 text-center">
 
-                              <a href="my-approval.html">
+                              {!props.DisableApproval? (<a href="my-approval.html">
 
                                 <button type="button" className="btn btn-success waves-effect waves-light m-1" onClick={(e) => handleFromSubmit(e, 'Approved')}>
 
@@ -134,9 +150,9 @@ export const WorkflowAction=(props: IWorkflowActionProps) => {
 
                                 </button>
 
-                              </a>
+                              </a>):(<div></div>)}
 
-                              <a href="my-approval.html">
+                              { !props.DisableRework?(<a href="my-approval.html">
 
                                 <button type="button" className="btn btn-warning waves-effect waves-light m-1" onClick={(e) => handleFromSubmit(e, 'Rework')}>
 
@@ -144,9 +160,9 @@ export const WorkflowAction=(props: IWorkflowActionProps) => {
 
                                 </button>
 
-                              </a>
+                              </a>):(<div></div>)}
 
-                              <a href="my-approval.html">
+                              {!props.DisableReject?(<a href="my-approval.html">
 
                                 <button type="button" className="btn btn-danger waves-effect waves-light m-1" onClick={(e) => handleFromSubmit(e, 'Rejected')}>
 
@@ -154,13 +170,13 @@ export const WorkflowAction=(props: IWorkflowActionProps) => {
 
                                 </button>
 
-                              </a>
+                              </a>):(<div></div>)}
 
-                              <button type="button" className="btn btn-light waves-effect waves-light m-1">
+                              {!props.DisableCancel?(<button type="button" className="btn btn-light waves-effect waves-light m-1">
 
                                 <i className="fe-x me-1"></i> Cancel
 
-                              </button>
+                              </button>):(<div></div>)}
 
                             </div>
 

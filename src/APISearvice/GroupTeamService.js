@@ -166,7 +166,7 @@ export const getGroupTeam = async (_sp) => {
     .filter(item => {
       console.log("item.GroupType", item.GroupType)
       if (item.GroupType === "Selected Members") {
-        alert(item.GroupType)
+        //alert(item.GroupType)
         // Check if current user is in InviteMemebers
         return item?.InviteMemebers?.some(invitee => invitee.Id === currentUser || item.Author.ID === currentUser);
       }

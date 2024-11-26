@@ -40,6 +40,7 @@ export const WorkflowAuditHistory=(props: IWorkflowAuditHistoryProps) => {
  
       if(props.ContentItemId)
       {
+
        sp.web.lists.getByTitle("ARGMyRequest").items.select("*,Requester/Id,Requester/Title,Approver/Id,Approver/Title").expand("Approver,Requester").filter('ContentId eq '+props.ContentItemId+"and ProcessName eq '"+props.ContentType+"'").orderBy('Created')().then(datarows=>{
           setAuditHistoryRows(datarows);
        })
@@ -56,7 +57,8 @@ export const WorkflowAuditHistory=(props: IWorkflowAuditHistoryProps) => {
 
       <div className="card-body">
 
-        <div id="cardCollpase8" className="collapse show">
+        <div id="cardCollpase4" className="collapse show">
+          <h3 className="font-16 fw-bold text-dark">Audit History</h3>
 
           <div className="table-responsive pt-0">
 
@@ -69,41 +71,51 @@ export const WorkflowAuditHistory=(props: IWorkflowAuditHistoryProps) => {
             >
               <thead>
               <tr>
-                <th>
-                  Requester
-                </th>
-                <th>
-                  Created
+                 <th style={{minWidth:'60px', maxWidth:'60px'}}>
+                  S.No.
                 </th>
                 <th>
                   Level
                 </th>
                 <th>
-                  Approver
-                </th>                
+                  Assigned To
+                </th>  
                 <th>
-                  Status
+                  Requester Name
                 </th>
                 <th>
-                  Modified
-                </th>
+                  Requested Date
+                </th>               
+                <th>
+                  Action Taken By
+                </th>            
+                <th>
+                  Action Taken On
+                </th>   
+                             
                 <th>
                   Remarks
                 </th>
+                <th>
+                  Status
+                </th> 
                 
               </tr>
               </thead>
               <tbody>
                {
-              AuditHistoryRows.map(row=>
+              AuditHistoryRows.map((row:any,index:number)=>
                  <tr>
-                  <td> {row.Requester.Title}</td>
-                  <td> {(new Date(row.Created)).toLocaleString()}</td>
-                  <td> Level{row.LevelId}</td>
+                  <td style={{minWidth:'60px', maxWidth:'60px'}}> {index+1}</td>
+                  <td> {(row.LevelId=0)?"Initiator":`Level ${row.LevelId}`}</td>
                   <td> {row.Approver.Title}</td>
-                  <td>{row.Status}</td>
-                  <td>{(new Date(row.Modified)).toLocaleString()}</td>
+                  <td> {row.Requester.Title}</td>
+                  <td> {(new Date(row.Created)).toLocaleString()}</td>                 
+                  <td> {(row.Status!='Pending')?(row.Approver.Title):""}</td>
+                  <td>{(row.Status!='Pending')?((new Date(row.Modified)).toLocaleString()):""}</td>
                   <td> {row.Remark}</td>
+                  <td>{row.Status}</td>                  
+
                  </tr>
 
               )

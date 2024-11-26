@@ -385,6 +385,30 @@
           "manifest": "./src/webparts/addBusinessApp/AddBusinessAppWebPart.manifest.json"
         }
       ]
+    },
+    "manage-master-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/manageMaster/ManageMasterWebPart.js",
+          "manifest": "./src/webparts/manageMaster/ManageMasterWebPart.manifest.json"
+        }
+      ]
+    },
+    "manage-master-m-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/manageMasterM/ManageMasterMWebPart.js",
+          "manifest": "./src/webparts/manageMasterM/ManageMasterMWebPart.manifest.json"
+        }
+      ]
+    },
+    "master-manage-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/masterManage/MasterManageWebPart.js",
+          "manifest": "./src/webparts/masterManage/MasterManageWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {
@@ -446,6 +470,9 @@
     "CommingsoonWebPartStrings": "lib/webparts/commingsoon/loc/{locale}.js",
     "BusinessAppMasterWebPartStrings": "lib/webparts/businessAppMaster/loc/{locale}.js",
     "AdToSpGroupSyncWebPartStrings": "lib/webparts/adToSpGroupSync/loc/{locale}.js",
-    "AddBusinessAppWebPartStrings": "lib/webparts/addBusinessApp/loc/{locale}.js"
+    "AddBusinessAppWebPartStrings": "lib/webparts/addBusinessApp/loc/{locale}.js",
+    "ManageMasterWebPartStrings": "lib/webparts/manageMaster/loc/{locale}.js",
+    "ManageMasterMWebPartStrings": "lib/webparts/manageMasterM/loc/{locale}.js",
+    "MasterManageWebPartStrings": "lib/webparts/masterManage/loc/{locale}.js"
   }
 }

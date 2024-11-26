@@ -555,3 +555,7 @@ box-shadow: 4px 0px 11px -9px rgba(204,204,204,1);
   margin: 0px 0px 10px 0px;
   line-height: normal;
 }
+.border-on-error {
+  border-color: red !important;
+  background-color: #ffe6e6 !important;
+}

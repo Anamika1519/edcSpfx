@@ -2,6 +2,7 @@ import Swal from "sweetalert2";
 
 
 export const fetchprojectdata = async (_sp) => {
+  debugger
   let arr = []
 
   await _sp.web.lists.getByTitle("ARGProject").items.select("*,TeamMembers/ID,TeamMembers/EMail,TeamMembers/Title, Author/ID,Author/Title,Author/EMail ").expand("TeamMembers , Author").getAll().then(async (res) => {

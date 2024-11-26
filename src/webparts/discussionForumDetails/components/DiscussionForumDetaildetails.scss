@@ -377,6 +377,19 @@ button:hover {
     border: 1px solid #ccc;
     border-radius: 4px;
   }
+  .projectmemeber{border-bottom: 1px solid #efefef; position: relative; padding: 6px 0px;}
+  .itemalign{
+    display: flex
+;
+    align-items: center;
+    gap: 10px;
+  }
+  .alignright{
+    position: absolute;
+    right: 10px;
+    top: 27px;
+}
+  
   .popup h2{    font-size: 18px;
     color: #3c3c3c;}
     .popup  .close-btn{
