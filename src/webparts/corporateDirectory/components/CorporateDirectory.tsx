@@ -387,9 +387,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
         .getByTitle("User Information List")
         .items
         .select("ID", "Title", "EMail", "Department", "JobTitle", "Picture", "MobilePhone", "WorkPhone", "Name")
-        .filter(`ContentType eq 'Person' and EMail ne null and ID ne ${currentUser.Id} `)
-
-        ();
+        .filter(`ContentType eq 'Person' and EMail ne null and ID ne ${currentUser.Id} `)();
 
       console.log("userList", userListSP);
       // let currentWPContext:WebPartContext=props.props.context;  
@@ -400,7 +398,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
         .version("v1.0")
         .select("displayName,mail,jobTitle,mobilePhone,companyName,userPrincipalName")
         .get();
-      // console.log("m265userList",m265userList);
+       console.log("m265userList",m265userList);
 
       //Adding dummy companies to users for testing
       //m265userList.value=m265userList.value.map((m:any)=>{let x=m; x['companyName']='dunnycommpany'; return x;});

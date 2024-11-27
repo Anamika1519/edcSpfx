@@ -712,7 +712,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
         <div className="content" style={{ marginLeft: `${!useHide ? '240px' : '80px'}`, marginTop: '1rem' }}>
 
-          <div className="container-fluid  paddb">
+          <div style={{paddingLeft:'1.3rem', paddingRight:'1.3rem'}} className="container-fluid  paddb">
             <div className='row'>
               <div className='col-lg-8'>
                 <div>

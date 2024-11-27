@@ -38,14 +38,14 @@
   margin-top: 2px;
   margin-right: 5px;}
 .paddb {
- padding: 35px 17px 30px 15px;
+ padding: 50px 34px 30px 18px;
 }
 .card .card-body .quill{max-height: 300px !important; height: 300px !important; overflow-y: auto !important;}
 .carousel-control-next, .carousel-control-prev{
   opacity: 1 !important;
 }
 .paddbnew{
-  padding: 35px 17px 30px 15px;
+  padding: 30px 17px 30px 15px;
 }
 .sub-menu .test{padding: 0px 10px !important;    height: 30px;
   line-height: 10px;}
@@ -196,7 +196,7 @@ a:hover, a:active {
 .mainevent{border-bottom: 1px solid #ccc; padding: 10px 0px;}
 .mainevent:last-child{border-bottom: 0px !important;}
 
-.footer{background: #d4d4d3; width: 99.6%; bottom: 0px; position: fixed; padding: 4px 10px; text-align: right;}
+.footer{background: #d4d4d3;bottom:0px;padding: 8px 10px;position: fixed;text-align: right; width: 100%;}
 .dropcss{padding: 0px;}
 .dropcss a{display: block; text-align: center; font-size: 12px; padding: 10px; }
 .text-dark-new{color: #343a40 !important;}
@@ -284,7 +284,7 @@ a:hover, a:active {
 .menu_items {
   padding: 0;
   list-style: none;
-  max-height: 800px;
+ 
   overflow-y: hidden;
   overflow-x: hidden;
 }
@@ -1019,6 +1019,7 @@ margin: 10px 0px !important ;
    
       height: 96px;
   }
+  .footer{bottom: 0px;position: fixed;}
   .font-11 {
     font-size: 14px !important;
   }
@@ -1099,6 +1100,7 @@ margin: 10px 0px !important ;
      
       height: 370px;
   }
+  .menu_items{max-height: 800px;}
   .twolinewrap1{height: 85px;}
 }
 @media(max-width:1800px)
@@ -1119,6 +1121,10 @@ margin: 10px 0px !important ;
   .internalmedia .gal-box .image-popup {
       height: 250px !important;
   }
+
+  .paddbnew {
+    padding: 30px 15px 30px 8px;
+}
   .view-all{height: 25px !important;}
   .twolinewrap1{height: 68px;}
   .heightcard {
@@ -1204,6 +1210,9 @@ margin: 10px 0px !important ;
   .internalmedia .gal-box .image-popup {
       height: 225px !important;
   }
+  .paddbnew {
+    padding: 30px 17px 30px 4px;
+}
   .view-all{height: 24px !important;}
   .twolinewrap1 {
     height: 60px;

@@ -1330,7 +1330,7 @@ const HelloWorldContext = ({ props }: any) => {
                   {/* Map through the projects array and display a card for each */}
                   {Dataproject.length > 0 ? (
                     <div className="row">
-                      {Dataproject.slice(0, itemsToShow).map((project, index) => {
+                      {Dataproject.map((project, index) => {
                         console.log("project>>>>>>>>>>>>>", project);
                         if (project.ProjectPrivacy == "Public") {
                           return (
@@ -1941,13 +1941,13 @@ const HelloWorldContext = ({ props }: any) => {
 
                         return null;
                       })}
-                      {itemsToShow < Dataproject.length && (
+                      {/* {itemsToShow < Dataproject.length && (
                         <div className="col-12 text-center mb-5 mt-3">
                           <button onClick={loadMore} className="btn btn-primary">
                             Load More
                           </button>
                         </div>
-                      )}
+                      )} */}
                     </div>
                   ) : (
                     <p>Loading projects...</p>
@@ -2220,7 +2220,7 @@ const HelloWorldContext = ({ props }: any) => {
                   {/* Map through the projects array and display a card for each */}
                   {Dataproject.length > 0 ? (
                     <div className="row">
-                      {Dataproject.slice(0, itemsToShow).map((project, index) => {
+                      {Dataproject.map((project, index) => {
                         if (project?.TeamMembersId?.includes(userId)) {
                           return (
                             <div key={index} className="col-lg-4 col-md-6 mb-0">
@@ -2479,7 +2479,7 @@ const HelloWorldContext = ({ props }: any) => {
                   {Dataproject.length > 0 ? (
 
                     <div className="row">
-                      {Dataproject.slice(0, itemsToShow).map((project, index) => {
+                      {Dataproject.map((project, index) => {
 
                         if (project?.ProjectStatus === "Ongoing") {
                           return (
@@ -2739,7 +2739,7 @@ const HelloWorldContext = ({ props }: any) => {
                   {/* Map through the projects array and display a card for each */}
                   {Dataproject.length > 0 ? (
                     <div className="row">
-                      {Dataproject.slice(0, itemsToShow).map((project, index) => {
+                      {Dataproject.map((project, index) => {
                         if (project?.ProjectStatus === "Completed") {
                           return (
                             <div key={index} className="col-lg-4 col-md-6 mb-0">

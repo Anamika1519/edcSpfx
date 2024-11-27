@@ -167,32 +167,44 @@ export default class AdToSpGroupSync extends React.Component<IAdToSpGroupSyncPro
       // Calculate users to add and remove
       const usersToAdd = adUserEmails.filter(email => !spUserEmails.includes(email));
       const usersToRemove = spUserEmails.filter(email => !adUserEmails.includes(email));
-
+      const Erroronuser = []; 
       // Add users to SharePoint group
-      for (const email of usersToAdd) {
+      for (const email  of usersToAdd) {
         //const ensureresult= await this._sp.web.ensureUser("i:0#.f|membership|"+email);
         //if(ensureresult.data)
+      
         try {
           await this._sp.web.siteGroups.getById(spGroup.Id).users.add("i:0#.f|membership|"+email);
         } catch (error) {
-           console.log(error, "error adding user")
+           console.log(error , "error adding users ")
+           Erroronuser.push(email)
         }
-     
       }
+    console.log(Erroronuser , "Erroronuser")
+      // for (const email of usersToAdd) {
+      //   //const ensureresult= await this._sp.web.ensureUser("i:0#.f|membership|"+email);
+      //   //if(ensureresult.data)
+      //   try {
+      //     await this._sp.web.siteGroups.getById(spGroup.Id).users.add("i:0#.f|membership|"+email);
+      //   } catch (error) {
+      //      console.log(error, "errror adding user")
+      //   }
+     
+      // }
 
       // Remove users from SharePoint group
-      for (const email of usersToRemove) {
-        try {
-          const user = spGroupUsers.find(u => u.Email === email);
-          if (user) {
-            await this._sp.web.siteGroups.getById(spGroup.Id).users.removeById(user.Id);
-          }
+      // for (const email of usersToRemove) {
+      //   try {
+      //     const user = spGroupUsers.find(u => u.Email === email);
+      //     if (user) {
+      //       await this._sp.web.siteGroups.getById(spGroup.Id).users.removeById(user.Id);
+      //     }
           
-        } catch (error) {
-          console.log(error, "error adding user")
-        }
+      //   } catch (error) {
+      //     console.log(error, "errror adding user")
+      //   }
      
-      }
+      // }
 
       this.setState({ status: "Sync completed successfully!" });
     } catch (error) {
