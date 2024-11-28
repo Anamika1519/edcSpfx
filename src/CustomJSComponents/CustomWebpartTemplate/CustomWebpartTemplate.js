@@ -135,7 +135,7 @@ const CustomWebpartTemplate = ({ _sp, SiteUrl }) => {
                                             <p className="mb-2 mt-1 text-dark d-block customhead">
                                                 <span style={{ fontWeight: '400' }} className="pe-2 text-nowrap color-new font-14 mb-0 d-inline-block">
                                                     <Calendar size={12}  strokeWidth={1} className="pl-2" style={{ fontWeight: '400' }} />&nbsp;&nbsp;
-                                                    {moment(item.Created).format("DD-MMM-YYYY HH:mm")} &nbsp;  &nbsp;  &nbsp;|
+                                                    {moment(item.Modified).format("DD-MMM-YYYY")} &nbsp;  &nbsp;  &nbsp;|
                                                 </span>
                                                 <span style={{ fontWeight: '400' }} className="text-nowrap mb-0 color-new font-14 d-inline-block">
                                                     Author: <span style={{ color: '#009157', fontWeight: '600' }}>{item.Author.Title} &nbsp;  &nbsp;  &nbsp;
@@ -180,7 +180,7 @@ const CustomWebpartTemplate = ({ _sp, SiteUrl }) => {
                                             <span className="font-12 date-color float-start mt-0 mb-1 ng-binding" style={{ color: '#6b6b6b', fontSize: '12px', paddingRight: '0.2rem' }}>
                                                 <Calendar size={12} color="#6b6b6b" strokeWidth={2} style={{ fontWeight: '400' }} /></span>
 
-                                            <span className="font-12 date-color float-start mt-0 mb-1 ng-binding" style={{ color: '#6b6b6b', fontSize: '12px' }}>{moment(item.Created).format("DD-MMM-YYYY")}</span>
+                                            <span className="font-12 date-color float-start mt-0 mb-1 ng-binding" style={{ color: '#6b6b6b', fontSize: '12px' }}>{moment(item.Modified).format("DD-MMM-YYYY")}</span>
                                         </div>
                                     </div>
                                     <a onClick={() => gotoAnnouncementDetails(item)}>

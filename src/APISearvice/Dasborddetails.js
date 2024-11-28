@@ -21,9 +21,9 @@
 //             res[i].CommentCount = 0
 //             res[i].LikeCount = 0
 //           }
-        
+
 //         });
-       
+
 //     }
 //     arr = res
 
@@ -36,47 +36,50 @@
 export const getAnncouncementone = async (_sp) => {
   let arr = [];
   let str = "Announcement";
-  
+
   try {
     let res = await _sp.web.lists
       .getByTitle("ARGAnnouncementAndNews")
       .items.select("*,AnnouncementandNewsTypeMaster/Id,AnnouncementandNewsTypeMaster/TypeMaster,Category/Id,Category/Category")
       .expand("AnnouncementandNewsTypeMaster,Category")
-      .filter(`AnnouncementandNewsTypeMaster/TypeMaster eq '${str}'`)
+      .filter(`AnnouncementandNewsTypeMaster/TypeMaster eq '${str}' and Status eq 'Approved'`)
+      .orderBy("Modified", false)
       .top(2)();
-    
+
     // Iterate over the results
     for (let i = 0; i < res.length; i++) {
       let announcementId = res[i].Id;
-      
+
       // Fetch comments and like counts
       let comments = await _sp.web.lists
         .getByTitle("ARGAnnouncementandNewsComments")
         .items.select("*,AnnouncementAndNews/Id")
         .expand("AnnouncementAndNews")
         .filter(`AnnouncementAndNewsId eq ${announcementId}`)();
-      
+
       // Set comment and like counts
       res[i].CommentCount = comments.length;
       res[i].LikeCount = comments.length > 0 ? comments.reduce((acc, comment) => acc + (comment.LikesCount || 0), 0) : 0;
     }
-    
+
     arr = res;
   } catch (error) {
     console.log("Error fetching data: ", error);
   }
-  
+
   return arr;
 };
 export const getNewsone = async (_sp) => {
   let arr = []
   let str = "News"
-  await _sp.web.lists.getByTitle("ARGAnnouncementAndNews").items.select("*,AnnouncementandNewsTypeMaster/Id,AnnouncementandNewsTypeMaster/TypeMaster,Category/Id,Category/Category").expand("AnnouncementandNewsTypeMaster,Category").filter(`AnnouncementandNewsTypeMaster/TypeMaster eq '${str}'`).top(2)().then((res) => {
-    console.log(res);
+  await _sp.web.lists.getByTitle("ARGAnnouncementAndNews").items.select("*,AnnouncementandNewsTypeMaster/Id,AnnouncementandNewsTypeMaster/TypeMaster,Category/Id,Category/Category").expand("AnnouncementandNewsTypeMaster,Category")
+    .filter(`AnnouncementandNewsTypeMaster/TypeMaster eq '${str}' and Status eq 'Approved'`)
+    .orderBy("Modified", false).top(2)().then((res) => {
+      console.log(res);
 
-    //res.filter(x=>x.Category?.Category==str)
-    arr = res;
-  })
+      //res.filter(x=>x.Category?.Category==str)
+      arr = res;
+    })
     .catch((error) => {
       console.log("Error fetching data: ", error);
     });
@@ -86,12 +89,18 @@ export const getNewsone = async (_sp) => {
 export const fetchEventdataone = async (_sp) => {
   let arr = []
 
-  await _sp.web.lists.getByTitle("ARGEventMaster").items.top(4)().then((res) => {
-    console.log(res);
+  await _sp.web.lists.getByTitle("ARGEventMaster").items
+    .select("*")
+    .filter(`Status eq 'Approved'`)
+    .orderBy("EventDate", true)
+    .top(4)()
 
-    //res.filter(x=>x.Category?.Category==str)
-    arr = res;
-  })
+    .then((res) => {
+      console.log(res);
+
+      //res.filter(x=>x.Category?.Category==str)
+      arr = res;
+    })
     .catch((error) => {
       console.log("Error fetching data: ", error);
     });
@@ -112,21 +121,21 @@ export const fetchUserInformationList = async (sp) => {
 export const fetchPinnedUser = async (sp) => {
   let currentUser;
   await sp.web.currentUser()
-      .then(user => {
-          currentUser = user.Id; // Get the current user's ID
-      })
-      .catch(error => {
-          console.error("Error fetching current user: ", error);
-          return [];
-      });
+    .then(user => {
+      currentUser = user.Id; // Get the current user's ID
+    })
+    .catch(error => {
+      console.error("Error fetching current user: ", error);
+      return [];
+    });
   let arr = []
   try {
     const userList = await sp.web.lists.getByTitle("ARGPinned").items
-    .select("*,Pinned/ID,Pinned/Title,Pinned/EMail,Pinned/Department,Pinned/WorkPhone,Pinned/WorkPhone")
-    .expand("Pinned")
-    //.select("ID", "Title", "EMail", "Department", "JobTitle", "Picture")
-    .filter(`PinnedById eq ${currentUser}`)    
-    .top(4)();
+      .select("*,Pinned/ID,Pinned/Title,Pinned/EMail,Pinned/Department,Pinned/WorkPhone,Pinned/WorkPhone")
+      .expand("Pinned")
+      //.select("ID", "Title", "EMail", "Department", "JobTitle", "Picture")
+      .filter(`PinnedById eq ${currentUser}`)
+      .top(4)();
     console.log(userList, 'userList');
     arr = userList
     // setUsersArr(userList);
@@ -136,7 +145,7 @@ export const fetchPinnedUser = async (sp) => {
   return arr;
 };
 export const fetchComments = async (sp, Id) => {
-  
+
 
   let arr = []
   try {
@@ -160,7 +169,7 @@ export const fetchComments = async (sp, Id) => {
   return arr;
 };
 export const fetchLikes = async (sp, Id) => {
-  
+
   let arr = 0
   try {
     const userList = await sp.web.lists.getByTitle("ARGAnnouncementAndNewsUserLikes").items.select("*,AnnouncementAndNewsComments/Id").expand("AnnouncementAndNewsComments").filter(`AnnouncementAndNewsComments eq ${Id}`)();

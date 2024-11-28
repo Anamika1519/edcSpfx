@@ -239,9 +239,9 @@ const SocialFeedContext = ({ props }: any) => {
     debugger;
     const getAllgroup = await sp.web.lists
       .getByTitle("ARGGroupandTeam")
-      .items.select("*,InviteMemebers/Id,InviteMemebers/Title,InviteMemebers/EMail,GroupType").expand("InviteMemebers")()
+      .items.select("*,InviteMemebers/Id,InviteMemebers/Title,GroupType").expand("InviteMemebers")()
       .then((getAllgroup) => {
-        // arr=res;
+        // arr=res;,InviteMemebers/EMail
         console.log(getAllgroup, ":response")
         // debugger
         console.log("getAllgroup------", getAllgroup)

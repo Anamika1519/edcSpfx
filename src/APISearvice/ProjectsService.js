@@ -40,7 +40,7 @@ export const fetchprojectdataTop = async (_sp) => {
   fertchprojectcomments
 }
 export const fertchprojectcomments = async (_sp) => {
-
+  let arr = [];
   arggroups.forEach(async (item) => {
       console.log(" here is my items ", item);
       const ARGProjectComment= await _sp.web.lists.getByTitle("ARGProjectComments").items.filter(`ARGProjectId eq ${item.Id}`)();

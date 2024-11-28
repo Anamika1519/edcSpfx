@@ -303,7 +303,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
           setFormItemId(Number(formitemid));
         }
       }
-
+console.log("formitemid",formitemid)
     // if (sessionStorage.getItem("mediaId") != undefined) {
       if (formitemid) {
 

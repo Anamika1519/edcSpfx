@@ -114,20 +114,21 @@ export const getOldDiscussionForum = async (_sp) => {
     await _sp.web.lists.getByTitle("ARGDiscussionForum")
         .items.select("*,DiscussionForumCategory/Id,DiscussionForumCategory/CategoryName,Author/ID,Author/Title,InviteMemebers/Id,InviteMemebers/Title,InviteMemebers/EMail,GroupType")
         .expand("DiscussionForumCategory,Author,InviteMemebers")
-        .filter(`Created ge '${lastWeekStr}T00:00:00Z' and Created le '${todayStr}T23:59:59Z'`) // Filter by date range only
+        .filter(`GroupType eq 'Public'`) // Filter by date range only
         .orderBy("Created", false) // Order by 'Created' field in descending order
         .getAll()
         .then((res) => {
-            console.log("--discussion", res);
+            console.log("--discussion old", res);
             arr1 = res;
         })
         .catch((error) => {
             console.log("Error fetching data: ", error);
         });
 
-    arr = arr1.filter(item =>
-        item?.Author?.ID != currentUser && item.InviteMemebersId != null ? ((item.InviteMemebersId || item.InviteMemebersId.includes(currentUser))) : (item?.Author?.ID == currentUser && item)
-    );
+    arr = arr1
+    // .filter(item =>
+    //     item?.Author?.ID != currentUser && item.InviteMemebersId != null ? ((item.InviteMemebersId || item.InviteMemebersId.includes(currentUser))) : (item?.Author?.ID == currentUser && item)
+    // );
 
     return arr;
 }

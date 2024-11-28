@@ -19,6 +19,7 @@ export const fetchMediaGallerydata = async (_sp) => {
        await _sp.web.lists.getByTitle("ARGMediaGallery").items.select("*,MediaGalleryCategory/Id,MediaGalleryCategory/CategoryName")
        .expand("MediaGalleryCategory")
        .filter("Status eq 'Approved'")
+       .orderBy("Modified", false)
        ().then((res) => {
         console.log("response-->>>",res);
      

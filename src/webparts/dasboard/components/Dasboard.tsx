@@ -143,7 +143,7 @@ const HelloWorldContext = ({ props }: any) => {
   const [dataofevent, setDataofEvent] = useState<any[]>([]);
   const [usersitem, setUsersArr] = useState<any[]>([]);
   const [pinUsersitem, setPinUsersArr] = useState<any[]>([]);
- 
+
   const scrollContainerRef = useRef(null);
   const handleScroll = () => {
     if (headerRef.current) {
@@ -202,7 +202,7 @@ const HelloWorldContext = ({ props }: any) => {
 
     setUsersArr(await fetchUserInformationList(sp))
     setPinUsersArr(await fetchPinnedUser(sp))
-    console.log("pin",pinUsersitem)
+    console.log("pin", pinUsersitem)
     // setProjects(await fetchprojectdataTop(sp))
 
     async function updateProjects(sp: SPFI) {
@@ -239,8 +239,8 @@ const HelloWorldContext = ({ props }: any) => {
   const GotoNextPageMediaDetails = (item: any) => {
     console.log("item-->>>>", item);
     const encryptedId = encryptId(String(item.ID));
-     sessionStorage.setItem("mediaId", encryptedId);
-     sessionStorage.setItem("dataID", item.Id)
+    sessionStorage.setItem("mediaId", encryptedId);
+    sessionStorage.setItem("dataID", item.Id)
     window.location.href = `${siteUrl}/SitePages/MediaDetails.aspx?${item.ID}`;
   };
   const GotoNextPage = (item: any) => {
@@ -275,19 +275,19 @@ const HelloWorldContext = ({ props }: any) => {
     const encryptedId = encryptId(String(item.ID));
     window.location.href = `${siteUrl}/SitePages/Leaderboard.aspx`;
   };
-  const NavigatetoAnnouncement = (e:any,item: number) => {
+  const NavigatetoAnnouncement = (e: any, item: number) => {
     console.log("NavigatetoAnnouncement-->>>>", item)
     debugger
-   
+
     const encryptedId = encryptId(String(item));
     window.location.href = `${siteUrl}/SitePages/AnnouncementDetails.aspx?${item}`;
   };
-  const NavigatetoEvent = (e:any,item: number) => {
+  const NavigatetoEvent = (e: any, item: number) => {
     console.log("NavigatetoEvent-->>>>", item)
     const encryptedId = encryptId(String(item));
     window.location.href = `${siteUrl}/SitePages/EventDetailsCalendar.aspx?${item}`;
-  };   
-  const Navigatetonews = (e:any,item: number) => {
+  };
+  const Navigatetonews = (e: any, item: number) => {
     console.log("Navigatetonews-->>>>", item)
     const encryptedId = encryptId(String(item));
     window.location.href = `${siteUrl}/SitePages/NewsDetails.aspx?${item}`;
@@ -296,9 +296,8 @@ const HelloWorldContext = ({ props }: any) => {
 
   function truncateString(str: any, project: any) {
     const maxLength = 87; // The number of characters before truncation
-    if (str)
-    {
-      if (str &&  str.length > maxLength)  {
+    if (str) {
+      if (str && str.length > maxLength) {
         const truncatedString = str.substring(0, maxLength);
         return (
           <>
@@ -445,7 +444,7 @@ const HelloWorldContext = ({ props }: any) => {
                         >
                           Latest Announcement
                           <a
-                            style={{ float: "right",cursor:"pointer" }}
+                            style={{ float: "right", cursor: "pointer" }}
                             className="font-11 fw-normal btn  rounded-pill waves-effect waves-light view-all"
                             onClick={(e) => GotoNextPagefour(e)}
                           >
@@ -453,52 +452,67 @@ const HelloWorldContext = ({ props }: any) => {
                           </a>
                         </h4>
 
-                        {dataofann.map((announcement, index) => (
-                          <div key={index} className="border-bottom mt-2">
-                            <h4
-                              className="mb-0 twolinewrap text-dark fw-bold font-14 mt-0"
-                              style={{ fontSize: "14px", fontWeight: "bold",cursor:"pointer" }}
-                              onClick={(e) => NavigatetoAnnouncement(e,announcement.ID)}
-                            >
-                              {announcement.Title}
-                            </h4>
-                            <p
-                              // style={{ marginTop: "5px", lineHeight: "18px" }}
-                              style={{
-                                marginTop: "5px",
-                                lineHeight: "18px",
-                                //   height: "54px",  18px line height * 2 lines
-                                overflow: "hidden",
-                                textOverflow: "ellipsis",
-                                display: "-webkit-box",
-                                WebkitBoxOrient: "vertical",
-                                WebkitLineClamp: 2, // Limit to 2 lines
-                              }}
-                              className="mb-0 font-13"
-                            >
-                              {announcement.Overview}
-                            </p>
-                            <div className="mt-1 d-flex justify-between mb-0">
-                              <a
-
-                                className="btn btn-sm btn-link text-muted mb-0 font-18 ps-0"
+                        {dataofann.map((announcement, index) => {
+                          const eventDate = new Date(announcement.Modified);
+                          const formattedDate = eventDate.toLocaleDateString(
+                            "default",
+                            {
+                              day: "2-digit", // To display the day with two digits
+                              month: "short", // To display the abbreviated month (e.g., Jul, Sep)
+                              year: "numeric", // To display the full year (e.g., 2024)
+                            }
+                          );
+                          return (
+                            <div key={index} className="border-bottom mt-2">
+                              <h4
+                                className="mb-0 twolinewrap text-dark fw-bold font-14 mt-0"
+                                style={{ fontSize: "14px", fontWeight: "bold", cursor: "pointer" }}
+                                onClick={(e) => NavigatetoAnnouncement(e, announcement.ID)}
                               >
-                                <ThumbsUp size={15} color="#4fc6e1" />
-                                <span className="font-12  mx-1 margin01 float-right floatl">{announcement.LikeCount} Likes</span>
-                              </a>
-                              <a
-
-                                className="btn btn-sm btn-link text-muted mb-0 font-18"
+                                {announcement.Title}
+                              </h4>
+                              <p
+                                // style={{ marginTop: "5px", lineHeight: "18px" }}
+                                style={{
+                                  marginTop: "5px",
+                                  lineHeight: "18px",
+                                  //   height: "54px",  18px line height * 2 lines
+                                  overflow: "hidden",
+                                  textOverflow: "ellipsis",
+                                  display: "-webkit-box",
+                                  WebkitBoxOrient: "vertical",
+                                  WebkitLineClamp: 2, // Limit to 2 lines
+                                }}
+                                className="mb-0 font-13"
                               >
-                                <MessageSquare size={15} color="#f7b84b" />
-                                <span className="font-12 margin01 mx-1  float-right floatl">
-                                  {announcement.CommentCount} Comments
-                                </span>
-                              </a>
+                                {announcement.Overview}
+                              </p>
+                              <p className="mb-3 font-12">
+                              {moment(announcement.Modified).format("DD-MMM-YYYY")}
+                              </p>
+                              <div className="mt-1 d-flex justify-between mb-0">
+                                <a
+
+                                  className="btn btn-sm btn-link text-muted mb-0 font-18 ps-0"
+                                >
+                                  <ThumbsUp size={15} color="#4fc6e1" />
+                                  <span className="font-12  mx-1 margin01 float-right floatl">{announcement.LikeCount} Likes</span>
+                                </a>
+                                <a
+
+                                  className="btn btn-sm btn-link text-muted mb-0 font-18"
+                                >
+                                  <MessageSquare size={15} color="#f7b84b" />
+                                  <span className="font-12 margin01 mx-1  float-right floatl">
+                                    {announcement.CommentCount} Comments
+                                  </span>
+                                </a>
+                              </div>
+
                             </div>
-
-                          </div>
-                        ))}
+                          )
+                        }
+                        )}
                       </div>
                     </div>
                   </div>
@@ -514,7 +528,7 @@ const HelloWorldContext = ({ props }: any) => {
                         <h4 className="header-title font-16 text-dark fw-bold mb-0">
                           Corporate Directory
                           <a
-                            style={{ float: "right" ,cursor:"pointer"}}
+                            style={{ float: "right", cursor: "pointer" }}
                             className="font-11 view-all fw-normal btn  rounded-pill waves-effect waves-light"
                             onClick={(e) => GotoNextPageone(e)}
                           >
@@ -522,74 +536,74 @@ const HelloWorldContext = ({ props }: any) => {
                           </a>
                         </h4>
                         <div className="inbox-widget" style={{ marginTop: '1rem' }}>
-                        {pinUsersitem.length === 0 ? 
-                         <div className="align-items-center text-center mt-5"
-                         >
-                             
-<img style={{ cursor: "pointer", marginTop:'50px', width:'32px' }} src={require("../assets/noun-pin-7368310.png")} className="mb-3"
-alt="pin"
+                          {pinUsersitem.length === 0 ?
+                            <div className="align-items-center text-center mt-5"
+                            >
 
-/>
+                              <img style={{ cursor: "pointer", marginTop: '50px', width: '32px' }} src={require("../assets/noun-pin-7368310.png")} className="mb-3"
+                                alt="pin"
 
-<p className="font-14 text-muted text-center">Pin users from Corporate Directory </p>
-
-                         </div>
-                         : pinUsersitem.map((user, index) => (
-                          <div
-                            key={index}
-                            className="d-flex border-bottom heit8 align-items-start w-100 justify-content-between mb-1"
-                          >
-                            <div className="col-sm-2">
-                              <a href="contacts-profile.html">
-                              <img
-                                  // src={user.Picture != null ? `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${user.EMail}` : require("../assets/users.jpg")}
-                                  src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${user.Pinned.EMail}`}
-                                  className="rounded-circle"
-                                  width="50"
-                                  alt={user.Pinned.Title}
-                                />
-                              </a>
-                            </div>
-                            <div style={{ cursor: "pointer" }} className="col-sm-8">
-                              <a href="contacts-profile.html">
-                                <p className="fw-bold font-14 mb-2 text-dark">
-                                {user.Pinned.Title} | {user.Pinned.EMail != null ? user.Pinned.EMail : 'NA'}
-                                </p>
-                              </a>
-                              <p
-                                style={{
-                                  color: "#6b6b6b",
-                                  fontWeight: "500",
-                                }}
-                                className="font-12"
-                              >
-                                {user.Pinned.MobilePhone}
-                                {/* Mob: {user.mobile} */}
-                              </p>
-                            </div>
-                            <div className="col-sm-2">
-                            <img
-                                src={require("../assets/calling.png")}
-                                onClick={() =>
-
-                                  window.open(
-
-                                    `https://teams.microsoft.com/l/call/0/0?users=${user.Pinned.EMail}`,
-
-                                    "_blank"
-
-                                  )
-
-                                }
-                                className="alignright"
-                                alt="call"
-                                width="25"
                               />
+
+                              <p className="font-14 text-muted text-center">Pin users from Corporate Directory </p>
+
                             </div>
-                          </div>
-                        ))}
-                          
-                          
+                            : pinUsersitem.map((user, index) => (
+                              <div
+                                key={index}
+                                className="d-flex border-bottom heit8 align-items-start w-100 justify-content-between mb-1"
+                              >
+                                <div className="col-sm-2">
+                                  <a href="contacts-profile.html">
+                                    <img
+                                      // src={user.Picture != null ? `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${user.EMail}` : require("../assets/users.jpg")}
+                                      src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${user.Pinned.EMail}`}
+                                      className="rounded-circle"
+                                      width="50"
+                                      alt={user.Pinned.Title}
+                                    />
+                                  </a>
+                                </div>
+                                <div style={{ cursor: "pointer" }} className="col-sm-8">
+                                  <a href="contacts-profile.html">
+                                    <p className="fw-bold font-14 mb-2 text-dark">
+                                      {user.Pinned.Title} | {user.Pinned.EMail != null ? user.Pinned.EMail : 'NA'}
+                                    </p>
+                                  </a>
+                                  <p
+                                    style={{
+                                      color: "#6b6b6b",
+                                      fontWeight: "500",
+                                    }}
+                                    className="font-12"
+                                  >
+                                    {user.Pinned.MobilePhone}
+                                    {/* Mob: {user.mobile} */}
+                                  </p>
+                                </div>
+                                <div className="col-sm-2">
+                                  <img
+                                    src={require("../assets/calling.png")}
+                                    onClick={() =>
+
+                                      window.open(
+
+                                        `https://teams.microsoft.com/l/call/0/0?users=${user.Pinned.EMail}`,
+
+                                        "_blank"
+
+                                      )
+
+                                    }
+                                    className="alignright"
+                                    alt="call"
+                                    width="25"
+                                  />
+                                </div>
+                              </div>
+                            ))}
+
+
                         </div>
                       </div>
                     </div>
@@ -608,7 +622,7 @@ alt="pin"
                           Upcoming Events
                           <a
 
-                            style={{ float: "right",cursor:"pointer" }}
+                            style={{ float: "right", cursor: "pointer" }}
                             className="font-11 fw-normal btn  rounded-pill waves-effect waves-light view-all"
                             // href="SitePages/Mediadetails.aspx"
                             onClick={(e) => GotoNextPage(e)}
@@ -676,9 +690,9 @@ alt="pin"
                                         display: "-webkit-box",
                                         WebkitBoxOrient: "vertical",
                                         WebkitLineClamp: 1,
-                                        cursor:"pointer"
+                                        cursor: "pointer"
                                       }}
-                                      onClick={(e) => NavigatetoEvent(e,event.ID)}
+                                      onClick={(e) => NavigatetoEvent(e, event.ID)}
                                     >
                                       {event.EventName} {/* Event title */}
                                     </h4>
@@ -707,7 +721,7 @@ alt="pin"
                         <h4 className="header-title text-dark font-16 fw-bold mb-0">
                           Gallery
                           <a
-                            style={{ float: "right",cursor:"pointer" }}
+                            style={{ float: "right", cursor: "pointer" }}
                             className="font-11 fw-normal btn  rounded-pill waves-effect waves-light view-all"
                             onClick={(e) => GotoNextPagethree(e)}
                           >
@@ -792,7 +806,7 @@ alt="pin"
                                       <i className="fa fa-clock-o"></i>&nbsp;
                                       {moment(item.Created).format("DD-MMM-YYYY")}
                                     </p>
-                                    <p style={{ cursor: "pointer" }}  onClick={() => GotoNextPageMediaDetails(item)}>{item.Title}</p>
+                                    <p style={{ cursor: "pointer" }} onClick={() => GotoNextPageMediaDetails(item)}>{item.Title}</p>
                                   </div>
                                 </div>
                               );
@@ -818,7 +832,7 @@ alt="pin"
                     >
                       Latest News
                       <a
-                        style={{ float: "right" ,cursor:"pointer"}}
+                        style={{ float: "right", cursor: "pointer" }}
                         className="font-11 fw-normal btn  rounded-pill waves-effect waves-light view-all"
                         onClick={(e) => GotoNextPagetwo(e)}
                       >
@@ -840,13 +854,22 @@ alt="pin"
                             ? ""
                             : JSON.parse(news.AnnouncementandNewsBannerImage);
 
-                        const submittedDate = new Date(news.Created);
-                        const formattedSubmittedDate =
-                          submittedDate.toLocaleDateString("default", {
-                            day: "2-digit", // 2-digit day format (e.g., 01, 15)
-                            month: "short", // Abbreviated month name (e.g., Jan, Feb)
-                            year: "numeric", // Full year (e.g., 2024)
-                          });
+                        // const submittedDate = new Date(news.Modified);
+                        // const formattedSubmittedDate =
+                        //   submittedDate.toLocaleDateString("default", {
+                        //     day: "2-digit", // 2-digit day format (e.g., 01, 15)
+                        //     month: "short", // Abbreviated month name (e.g., Jan, Feb)
+                        //     year: "numeric", // Full year (e.g., 2024)
+                        //   });
+                        const eventDate = new Date(news.Modified);
+                        const formattedDate = eventDate.toLocaleDateString(
+                          "default",
+                          {
+                            day: "2-digit", // To display the day with two digits
+                            month: "short", // To display the abbreviated month (e.g., Jul, Sep)
+                            year: "numeric", // To display the full year (e.g., 2024)
+                          }
+                        );
 
                         return (
                           <div
@@ -873,10 +896,10 @@ alt="pin"
                               style={{
                                 lineHeight: "22px",
                                 fontSize: "16px",
-                                cursor:"pointer"
+                                cursor: "pointer"
                               }}
                               className="fw-bold font-16 mt-2 mb-2 twolinewrap text-dark"
-                              onClick={(e) => Navigatetonews(e,news.ID)}
+                              onClick={(e) => Navigatetonews(e, news.ID)}
                             >
                               {news.Title}
                             </h4>
@@ -887,7 +910,7 @@ alt="pin"
                               {news.Overview}
                             </p>
                             <p className="mb-3 font-12">
-                              {moment(news.Created).format("DD-MMM-YYYY HH:mm")}
+                              {moment(news.Modified).format("DD-MMM-YYYY")}
                             </p>
                           </div>
                         );
@@ -903,7 +926,7 @@ alt="pin"
                       <h4 className="header-title font-16 text-dark fw-bold mb-0">
                         Leaderboard
                         <a
-                          style={{ float: "right",cursor:"pointer" }}
+                          style={{ float: "right", cursor: "pointer" }}
                           className="font-11 view-all fw-normal btn  rounded-pill waves-effect waves-light"
                           onClick={(e) => GotoNextPageLeaderboard(e)}
                         >
@@ -1038,7 +1061,7 @@ alt="pin"
                       <a
                         href={`${siteUrl}/SitePages/Project.aspx`}
                         className="font-11 view-all fw-normal btn rounded-pill waves-effect waves-light"
-                        style={{ float: "right", top: "0",cursor:"pointer" }}
+                        style={{ float: "right", top: "0", cursor: "pointer" }}
                       >
                         View All
                       </a>
@@ -1057,7 +1080,7 @@ alt="pin"
                                   <img className="morealign" src={require('../assets/more.png')} />
 
                                 </a>
-                                <div style={{cursor:"pointer", padding: "0px", top: "15px", minWidth: "auto", textAlign: "center" }} className="dropdown-menu newheight dropdown-menu-end">
+                                <div style={{ cursor: "pointer", padding: "0px", top: "15px", minWidth: "auto", textAlign: "center" }} className="dropdown-menu newheight dropdown-menu-end">
                                   <a className="dropdown-item font-12" onClick={() => GotoNextPageProject(project)} >
                                     View Detail
                                   </a>
@@ -1065,7 +1088,7 @@ alt="pin"
                               </div>
                               <h4 className="mt-0 mb-1 newalignv">
                                 <a
-                                  style={{ textTransform: 'capitalize',cursor:"pointer" }}
+                                  style={{ textTransform: 'capitalize', cursor: "pointer" }}
                                   className="text-dark fw-bold font-16" onClick={() => GotoNextPageProject(project)}
                                 >
                                   {project.ProjectName}
@@ -1073,23 +1096,23 @@ alt="pin"
                               </h4>
                               <div
                                 className="finish  mb-3"
-                                
+
                               >
-                           {project?.ProjectStatus}
+                                {project?.ProjectStatus}
                               </div>
                               <p
                                 className="date-color para8 font-12 mb-3"
-                                style={{ color: "#98a6ad", height: "40px",}}
+                                style={{ color: "#98a6ad", height: "40px", }}
                               >
                                 {truncateString(project.ProjectOverview, project)}
                                 {/* <a   className="fw-bold text-muted">
                                     view more
                                   </a> */}
                               </p>
-                            
-                              <p style={{display:'flex', color: '#6e767e', gap:'10px'}} className="mb-1 mt-2 font-12">
+
+                              <p style={{ display: 'flex', color: '#6e767e', gap: '10px' }} className="mb-1 mt-2 font-12">
                                 <span
-                                  
+
                                   className="pe-2 text-nowrap"
                                 >
                                   <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} /> <b>{project?.ProjectsDocsId?.length}</b> Documents
@@ -1114,27 +1137,27 @@ alt="pin"
                                       (id: any, idx: any) => {
                                         if (idx < 3) {
                                           return (
-                                            <div style={{marginLeft:'-12px'}} className="gfg_tooltip">
-                                            <img
-                                              style={{
-                                                margin:
-                                                  index == 0
-                                                    ? "0 0 0 0"
-                                                    : "0 0 0px -12px",
-                                              }}
-                                              src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                                              className="rounded-circlecss newminus img-thumbnail avatar-xl "
-                                              alt="profile-image" 
-                                           />
-                                            <span className="gfg_text">
-                                            {id?.Title}
-                                        </span>
+                                            <div style={{ marginLeft: '-12px' }} className="gfg_tooltip">
+                                              <img
+                                                style={{
+                                                  margin:
+                                                    index == 0
+                                                      ? "0 0 0 0"
+                                                      : "0 0 0px -12px",
+                                                }}
+                                                src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+                                                className="rounded-circlecss newminus img-thumbnail avatar-xl "
+                                                alt="profile-image"
+                                              />
+                                              <span className="gfg_text">
+                                                {id?.Title}
+                                              </span>
 
-                                        </div>
+                                            </div>
 
-                                           
+
                                           );
-                                        
+
 
                                         }
                                       }

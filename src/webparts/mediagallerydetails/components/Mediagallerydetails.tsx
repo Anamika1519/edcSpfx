@@ -77,22 +77,26 @@ const HelloWorldContext = ({props}:any) => {
   }, [useHide]);
 
   React.useEffect(() => {
-    if (sessionStorage.getItem("mediaId") != undefined) {
-      const iD = sessionStorage.getItem("mediaId");
-      let iDs = decryptId(iD);
-      callAPI();
-    }
+    // if (sessionStorage.getItem("mediaId") != undefined) {
+    //   const iD = sessionStorage.getItem("mediaId");
+    //   let iDs = decryptId(iD);
+    //   callAPI();
+    // }
+    callAPI();
   }, [props]);
 
   const callAPI = async () => {
-    const ID = sessionStorage.getItem("dataID");
-    const getMediaGalleryData = await fetchMediaGalleryInsideData(sp, ID);
-    console.log(getMediaGalleryData);
-    
+    const ids = window.location.search;
+    const originalString = ids;
+    const idNum = originalString.substring(1);
+    console.log("idddd", idNum, originalString, ids);
+    debugger
+    const getMediaGalleryData = await fetchMediaGalleryInsideData(sp, Number(idNum));
+
     setMediaData(getMediaGalleryData);
   
     const catdata = await fetchMediaGallerydata(sp);
-    const selectedData = catdata.find(item => item.ID === Number(ID));
+    const selectedData = catdata.find(item => item.ID === Number(idNum));
     if (selectedData) {
       setTitle(selectedData.Title);
       console.log(selectedData.MediaGalleryCategory?.CategoryName);

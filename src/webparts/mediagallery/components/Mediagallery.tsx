@@ -151,7 +151,7 @@ const HelloWorldContext = ({props}:any) => {
     const encryptedId = encryptId(String(item.ID));
     sessionStorage.setItem("mediaId", encryptedId);
     sessionStorage.setItem("dataID", item.Id)
-    window.location.href = `${siteUrl}/SitePages/Mediadetails.aspx`;
+    window.location.href = `${siteUrl}/SitePages/Mediadetails.aspx?${item.Id}`;
   };
   const Breadcrumb = [
     {

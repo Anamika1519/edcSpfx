@@ -132,7 +132,7 @@ const BlogDetailsContext = ({ props }: any) => {
      
    console.log("ArrDetails[0]",ArrDetails[0],blogDetail);
    if(blogDetail){
-    let Blogsdata = await getAllBlogsnonselected(sp, Number(idNum),blogDetail[0].BlogCategory!=null?blogDetail[0].BlogCategory.ID:null);
+    let Blogsdata = await getAllBlogsnonselected(sp, Number(idNum),blogDetail[0]?.BlogCategory!=null?blogDetail[0]?.BlogCategory.ID:null);
      setArrtopBlogs(Blogsdata);
    }
   };
@@ -494,7 +494,7 @@ const BlogDetailsContext = ({ props }: any) => {
         <HorizontalNavbar _context={sp} siteUrl={siteUrl} />
         <div
           className="content "
-          style={{ marginLeft: `${!useHide ? "240px" : "80px"}`, marginTop: '1rem' }}
+          style={{ marginLeft: `${!useHide ? "240px" : "80px"}`, marginTop: '0rem' }}
         >
           <div className="container-fluid  paddb">
             <div className="row " >

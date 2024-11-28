@@ -1689,7 +1689,7 @@ alt="Check"
                           <div className="card-body pb-3 gheight">
                             <h4 className="header-title font-16 text-dark fw-bold mb-0" style={{ fontSize: "20px" }}>Discussion Owner</h4>
                             <h1 className="text-muted font-14 mt-3"><p className="text-dark font-16 text-center mb-2">{item.Author.Title}</p>
-                              <p className="text-muted font-14 text-center mb-1">Cloud Infrastructure Alchemist</p>
+                              <p className="text-muted font-14 text-center mb-1">{item.Title}</p>
                               <p className="text-muted font-12 text-center">{item.Author.EMail}</p>
                             </h1></div>
                         </div>

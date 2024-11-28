@@ -463,7 +463,6 @@
     "BusinessAppMasterWebPartStrings": "lib/webparts/businessAppMaster/loc/{locale}.js",
     "AdToSpGroupSyncWebPartStrings": "lib/webparts/adToSpGroupSync/loc/{locale}.js",
     "AddBusinessAppWebPartStrings": "lib/webparts/addBusinessApp/loc/{locale}.js",
-    "ManageMasterWebPartStrings": "lib/webparts/manageMaster/loc/{locale}.js",
     "ManageMasterMWebPartStrings": "lib/webparts/manageMasterM/loc/{locale}.js",
     "MasterManageWebPartStrings": "lib/webparts/masterManage/loc/{locale}.js"
   }

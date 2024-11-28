@@ -1071,7 +1071,7 @@ const SocialFeedContext = ({ props }: any) => {
 
         <HorizontalNavbar _context={sp} siteUrl={siteUrl} />
 
-        <div className="content" style={{ marginLeft: `${!useHide ? '240px' : '80px'}`, marginTop: '1rem' }}>
+        <div className="content" style={{ marginLeft: `${!useHide ? '240px' : '80px'}`, marginTop: '0rem' }}>
 
           <div className="container-fluid paddb">
 

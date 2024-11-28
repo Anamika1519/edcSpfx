@@ -272,7 +272,7 @@ const HelloWorldContext = ({ props }: any) => {
   const handleCancel = () => {
     debugger;
     window.location.href =
-      "https://alrostamanigroupae.sharepoint.com/sites/intranetuat/SitePages/Project.aspx";
+      "https://alrostamanigroupae.sharepoint.com/sites/IntranetUAT/SitePages/Project.aspx";
   };
 
   const saveProjectData = async (formData: {
@@ -331,11 +331,11 @@ const HelloWorldContext = ({ props }: any) => {
         // // Budget: formData.Budget,
         ProjectOverview: formData.ProjectOverview,
         TeamMembersId: selectedIds,
-        ProjectFileManager: `/sites/intranetuat/ARGProjectsFiles/${formData.ProjectName}`,
+        ProjectFileManager: `/sites/IntranetUAT/ARGProjectsFiles/${formData.ProjectName}`,
         ProjectStatus: "Ongoing",
         ProjectFolderName: formData.ProjectName,
         FolderInProgress: 'In Progress'
-        //  ProjectFileManager : `/sites/intranetuat/ARGProjectsFiles/${formData.ProjectName}`,
+        //  ProjectFileManager : `/sites/IntranetUAT/ARGProjectsFiles/${formData.ProjectName}`,
         //  ProjectStatus: "Ongoing",
         //  ProjectFolderName: formData.ProjectName,
         //  FolderInProgress: 'In Progress'
@@ -526,7 +526,7 @@ const HelloWorldContext = ({ props }: any) => {
   const ApiCall = async () => {
     debugger
     let test = await sp.web.currentUser();
-    console.log("testtest",test)
+    console.log("testtest", test)
     fetchOptions();
     const res = await getCurrentUserNameId(sp);
     setUserId(res);
@@ -1331,7 +1331,7 @@ const HelloWorldContext = ({ props }: any) => {
                   {Dataproject.length > 0 ? (
                     <div className="row">
                       {Dataproject.map((project, index) => {
-                        console.log("project>>>>>>>>>>>>>", project);
+                        console.log("project>>>>>>>>>>>>>", activeTab, project);
                         if (project.ProjectPrivacy == "Public") {
                           return (
                             <div key={index} className="col-lg-4 col-md-6 mb-0">
@@ -1348,14 +1348,14 @@ const HelloWorldContext = ({ props }: any) => {
                                     </a>
                                     <div style={{ padding: "0px", top: "15px", minWidth: "auto", textAlign: "center" }} className="dropdown-menu newheight dropdown-menu-end">
                                       <a
-                                        className="dropdown-item font-12"
+                                        className="dropdown-item"
 
                                         onClick={() => handleDelete(project.Id)}
                                       >
                                         Delete
                                       </a>
                                       <a
-                                        className="dropdown-item font-12"
+                                        className="dropdown-item"
 
                                         onClick={() => GotoNextPage(project)}
                                       >
@@ -1610,7 +1610,15 @@ const HelloWorldContext = ({ props }: any) => {
                                         )
                                     }
                                   </a>
+                                  <p
 
+                                    className="date-color text-muted two-line font-14 mb-3 sp-line-2"
+                                  >
+
+                                    {truncateText(project.ProjectOverview, 100) ||
+                                      "No description available..."}{" "}
+
+                                  </p>
                                   <p className="mb-1 text-muted font-12">
                                     <span
 
@@ -1778,14 +1786,14 @@ const HelloWorldContext = ({ props }: any) => {
                                     </a>
                                     <div style={{ padding: "0px", top: "15px", minWidth: "auto", textAlign: "center" }} className="dropdown-menu newheight dropdown-menu-end">
                                       <a
-                                        className="dropdown-item font-12"
+                                        className="dropdown-item"
                                         href="#"
                                         onClick={() => handleDelete(project.Id)}
                                       >
                                         Delete
                                       </a>
                                       <a
-                                        className="dropdown-item font-12"
+                                        className="dropdown-item"
                                         href="#"
                                         onClick={() => GotoNextPage(project)}
                                       >
@@ -1832,7 +1840,7 @@ const HelloWorldContext = ({ props }: any) => {
 
                                     className="date-color text-muted two-line font-14 mb-3 sp-line-2"
                                   >
-                                    {project.ProjectOverview ||
+                                    {truncateText(project.ProjectOverview, 100) ||
                                       "No description available..."}{" "}
                                     {/* <a
                                       href="javascript:void(0);"
@@ -1978,26 +1986,28 @@ const HelloWorldContext = ({ props }: any) => {
                                     </a>
                                     <div style={{ padding: "0px", top: "15px", minWidth: "auto", textAlign: "center" }} className="dropdown-menu newheight dropdown-menu-end">
                                       <a
-                                        className="dropdown-item font-12"
+                                        className="dropdown-item"
 
                                         onClick={() => handleDelete(project.Id)}
                                       >
                                         Delete
                                       </a>
                                       <a
-                                        className="dropdown-item font-12"
+                                        className="dropdown-item"
 
                                         onClick={() => GotoNextPage(project)}
                                       >
                                         View Detail
                                       </a>
-                                      <a
-                                        className="dropdown-item font-12"
+                                      {project?.ProjectStatus === 'Ongoing' &&
+                                        <a
+                                          className="dropdown-item"
 
-                                        onClick={() => UpdatProject(project.Id)}
-                                      >
-                                        Mark Completed
-                                      </a>
+                                          onClick={() => UpdatProject(project.Id)}
+                                        >
+                                          Mark Completed
+                                        </a>
+                                      }
                                     </div>
                                   </div>
 
@@ -2238,26 +2248,28 @@ const HelloWorldContext = ({ props }: any) => {
                                     </a>
                                     <div style={{ padding: "0px", top: "15px", minWidth: "auto", textAlign: "center" }} className="dropdown-menu newheight dropdown-menu-end">
                                       <a
-                                        className="dropdown-item font-12"
+                                        className="dropdown-item"
 
                                         onClick={() => handleDelete(project.Id)}
                                       >
                                         Delete
                                       </a>
                                       <a
-                                        className="dropdown-item font-12"
+                                        className="dropdown-item"
 
                                         onClick={() => GotoNextPage(project)}
                                       >
                                         View Detail
                                       </a>
-                                      <a
-                                        className="dropdown-item font-12"
+                                      {project?.ProjectStatus === 'Ongoing' &&
+                                        <a
+                                          className="dropdown-item"
 
-                                        onClick={() => UpdatProject(project.Id)}
-                                      >
-                                        Mark Completed
-                                      </a>
+                                          onClick={() => UpdatProject(project.Id)}
+                                        >
+                                          Mark Completed
+                                        </a>
+                                      }
                                     </div>
                                   </div>
 
@@ -2497,22 +2509,23 @@ const HelloWorldContext = ({ props }: any) => {
                                     </a>
                                     <div style={{ padding: "0px", top: "15px", minWidth: "auto", textAlign: "center" }} className="dropdown-menu newheight dropdown-menu-end">
                                       <a
-                                        className="dropdown-item font-12"
+                                        className="dropdown-item"
 
                                         onClick={() => handleDelete(project.Id)}
                                       >
                                         Delete
                                       </a>
                                       <a
-                                        className="dropdown-item font-12"
+                                        className="dropdown-item"
 
                                         onClick={() => GotoNextPage(project)}
                                       >
                                         View Detail
                                       </a>
-                                      {project?.AuthorId === userId && (
+                                      {project?.AuthorId === userId && project?.ProjectStatus === 'Ongoing' &&
+                                      (
                                         <a
-                                          className="dropdown-item font-12"
+                                          className="dropdown-item"
                                           onClick={() => UpdatProject(project.Id)}
                                         >
                                           Mark Completed
@@ -2756,14 +2769,14 @@ const HelloWorldContext = ({ props }: any) => {
                                     </a>
                                     <div style={{ padding: "0px", top: "15px", minWidth: "auto", textAlign: "center" }} className="dropdown-menu newheight dropdown-menu-end">
                                       <a
-                                        className="dropdown-item font-12"
+                                        className="dropdown-item"
 
                                         onClick={() => handleDelete(project.Id)}
                                       >
                                         Delete
                                       </a>
                                       <a
-                                        className="dropdown-item font-12"
+                                        className="dropdown-item"
 
                                         onClick={() => GotoNextPage(project)}
                                       >

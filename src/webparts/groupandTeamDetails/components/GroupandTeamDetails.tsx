@@ -788,7 +788,7 @@ try{
           className="content"
           style={{
             marginLeft: `${!useHide ? "240px" : "80px"}`,
-            marginTop: "1rem",
+            marginTop: "0rem",
           }}
         >
           <div className="container-fluid  paddb">

@@ -644,7 +644,7 @@ const AnnouncementdetailsContext = ({ props }: any) => {
       </div>
       <div className="content-page">
         <HorizontalNavbar _context={sp} siteUrl={siteUrl} />
-        <div className="content mt-3" style={{ marginLeft: `${!useHide ? '240px' : '80px'}` }}>
+        <div className="content mt-0" style={{ marginLeft: `${!useHide ? '240px' : '80px'}` }}>
 
           <div className="container-fluid  paddb">
 

@@ -19,7 +19,7 @@ export const getAllEventMasternonselected = async (_sp,Idnum) => {
   let arr = []
   let str = "Announcements"
   await _sp.web.lists.getByTitle("ARGEventMaster").items.select("*,Entity/ID,Entity/Entity").expand("Entity").filter(`ID ne ${Idnum}`)
-  .top(3).orderBy("EventDate",false).getAll()
+  .top(3).orderBy("EventDate",true).getAll()
     .then((res) => {
       
 
@@ -178,7 +178,7 @@ const handleFileChange = async (event) => {
   const file = event.target.files[0];
   if (file) {
     try {
-      const folderUrl = `/sites/intranetuat/${docLib}`; // Replace with your folder URL
+      const folderUrl = `/sites/IntranetUAT/${docLib}`; // Replace with your folder URL
       const fileName = file.name;
 
       const fileBlob = new Blob([file], { type: file.type });

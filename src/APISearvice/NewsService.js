@@ -5,7 +5,7 @@ export const getNews = async (_sp) => {
      let str ="News"
      await _sp.web.lists.getByTitle("ARGAnnouncementAndNews")
      .items.select("*,AnnouncementandNewsTypeMaster/Id,AnnouncementandNewsTypeMaster/TypeMaster,Category/Id,Category/Category,Author/ID,Author/Title").expand("AnnouncementandNewsTypeMaster,Category,Author")
-     .filter(`AnnouncementandNewsTypeMaster/TypeMaster eq '${str}' and Status eq 'Approved'`).orderBy("Created",false)
+     .filter(`AnnouncementandNewsTypeMaster/TypeMaster eq '${str}' and Status eq 'Approved'`).orderBy("Modified",false)
      ()
      .then((res) => {
       console.log(res);
@@ -95,7 +95,7 @@ const handleFileChange = async (event) => {
   const file = event.target.files[0];
   if (file) {
     try {
-      const folderUrl = `/sites/intranetuat/${docLib}`; // Replace with your folder URL
+      const folderUrl = `/sites/IntranetUAT/${docLib}`; // Replace with your folder URL
       const fileName = file.name;
 
       const fileBlob = new Blob([file], { type: file.type });

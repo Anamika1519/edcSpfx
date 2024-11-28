@@ -74,6 +74,7 @@ const DiscussionForumContext = ({ props }: any) => {
   const [selectedValue, setSelectedValue] = useState([]);
   const [EnityData, setEnityData] = React.useState([]);
   const [showDropdownId, setShowDropdownId] = React.useState(null);
+  const [AllDiscussionItems, setAllDiscussionItems] = React.useState([]);
   type UserEntityData = {
     companyName: string;
   };
@@ -128,20 +129,20 @@ const DiscussionForumContext = ({ props }: any) => {
     setActiveTab(tab);
     if (tab == "home1") {
 
-      const announcementArr = await getDiscussionForum(sp);
-      let lengArr: any;
-      setAnnouncementData(announcementArr)
-      for (var i = 0; i < announcementArr.length; i++) {
-        lengArr = await getDiscussionComments(sp, announcementArr[i].ID)
-        console.log(lengArr, 'rrr');
-        announcementArr[i].commentsLength = lengArr.commentsLength; // Number of comments
-        announcementArr[i].likesCount = lengArr.totalLikes;         // Number of likes
-        announcementArr[i].repliesCount = lengArr.totalRepliesCount;
+      // const announcementArr = await getDiscussionForum(sp);
+      // let lengArr: any;
+      // setAnnouncementData(announcementArr)
+      // for (var i = 0; i < announcementArr.length; i++) {
+      //   lengArr = await getDiscussionComments(sp, announcementArr[i].ID)
+      //   console.log(lengArr, 'rrr');
+      //   announcementArr[i].commentsLength = lengArr.commentsLength; // Number of comments
+      //   announcementArr[i].likesCount = lengArr.totalLikes;         // Number of likes
+      //   announcementArr[i].repliesCount = lengArr.totalRepliesCount;
 
-          announcementArr[i].Users = lengArr.arrUser,
-          announcementArr[i].CreatedDate = lengArr.CreatedDate
-      }
-
+      //     announcementArr[i].Users = lengArr.arrUser,
+      //     announcementArr[i].CreatedDate = lengArr.CreatedDate
+      // }
+      setAnnouncementData(AllDiscussionItems);
     }
     else if (tab == "lastsevenDays") {
 
@@ -149,11 +150,11 @@ const DiscussionForumContext = ({ props }: any) => {
       let lengArr: any;
       for (var i = 0; i < announcementArr.length; i++) {
         lengArr = await getDiscussionComments(sp, announcementArr[i].ID)
-        console.log(lengArr, 'rrr');
+        console.log(lengArr, 'rrr 7');
         announcementArr[i].commentsLength = lengArr.arrLength,
-        announcementArr[i].likesCount = lengArr.totalLikes;         // Number of likes
+          announcementArr[i].likesCount = lengArr.totalLikes;         // Number of likes
         announcementArr[i].repliesCount = lengArr.totalRepliesCount;
-          announcementArr[i].Users = lengArr.arrUser
+        announcementArr[i].Users = lengArr.arrUser
         announcementArr[i].CreatedDate = lengArr.CreatedDate
       }
       setAnnouncementData(announcementArr)
@@ -163,15 +164,25 @@ const DiscussionForumContext = ({ props }: any) => {
       let lengArr: any;
       for (var i = 0; i < announcementArr.length; i++) {
         lengArr = await getDiscussionComments(sp, announcementArr[i].ID)
-        console.log(lengArr, 'rrr');
+        console.log(lengArr, 'rrr old',announcementArr[i]);
         announcementArr[i].commentsLength = lengArr.arrLength,
-        announcementArr[i].likesCount = lengArr.totalLikes;         // Number of likes
+          announcementArr[i].likesCount = lengArr.totalLikes;         // Number of likes
         announcementArr[i].repliesCount = lengArr.totalRepliesCount;
-          announcementArr[i].Users = lengArr.arrUser,
+        announcementArr[i].Users = lengArr.arrUser,
           announcementArr[i].CreatedDate = lengArr.CreatedDate
       }
-
-      setAnnouncementData(announcementArr.sort((a, b) => b.commentsLength - a.commentsLength))
+      let filteredarray = [];
+       filteredarray = announcementArr.filter((x) => (
+        x.likesCount + x.repliesCount + x.commentsLength )
+       
+       > 10)
+      if(filteredarray .length >0){
+        setAnnouncementData(filteredarray.sort((a, b) => b.likesCount - a.likesCount))
+      } else {
+        setAnnouncementData(filteredarray)
+      }
+      console.log("filteredarray",filteredarray,announcementArr)
+      
     }
   };
 
@@ -179,26 +190,33 @@ const DiscussionForumContext = ({ props }: any) => {
 
     sessionStorage.removeItem("announcementId");
     ApiCall();
+    // if (activeTab == "home1") {
+    //   setAnnouncementData(announcementData)
+    // }
 
   }, [useHide]);
 
   const ApiCall = async () => {
+    let useremail = await sp.web.getUserById(94);
+    console.log("useremail", useremail);
     const announcementArr = await getDiscussionForum(sp);
+    setActiveTab('home1');
     let lengArr: any;
     for (var i = 0; i < announcementArr.length; i++) {
       lengArr = await getDiscussionComments(sp, announcementArr[i].ID)
       console.log(lengArr, 'rrr');
       announcementArr[i].commentsLength = lengArr.arrLength,
-      announcementArr[i].likesCount = lengArr.totalLikes;         // Number of likes
+        announcementArr[i].likesCount = lengArr.totalLikes;         // Number of likes
       announcementArr[i].repliesCount = lengArr.totalRepliesCount;
-        announcementArr[i].Users = lengArr.arrUser
-        
+      announcementArr[i].Users = lengArr.arrUser
+
     }
     fetchOptions()
     // const categorylist = await GetCategory(sp);
     setCategoryData(await GetCategory(sp));
     setEnityData(await getEntity(sp)); //Entity
     setAnnouncementData(announcementArr);
+    setAllDiscussionItems(announcementArr);
     const NewsArr = await getNews(sp);
     setNewsData(NewsArr);
     setGroupTypeData(
@@ -313,7 +331,7 @@ const DiscussionForumContext = ({ props }: any) => {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentData = filteredAnnouncementData.slice(startIndex, endIndex);
-  console.log("check the data of comment of like",currentData)
+  console.log("check the data of comment of like", currentData)
   const newsCurrentData = filteredNewsData.slice(startIndex, endIndex);
   const [editID, setEditID] = React.useState(null);
   const [ImagepostIdsArr, setImagepostIdsArr] = React.useState([]);
@@ -1026,9 +1044,9 @@ const DiscussionForumContext = ({ props }: any) => {
                 DiscussionForumCategoryId: Number(formData.category),
                 InviteMemebersId: selectedIds,
                 ARGDiscussionStatus: "Ongoing",
-                DiscussionInProgress:"In Progress",
-                DiscussionFileManager:`/sites/intranetuat/ARGDiscussionFiles/${formData.topic}`,
-                DiscussionFolderName:formData.topic
+                DiscussionInProgress: "In Progress",
+                DiscussionFileManager: `/sites/IntranetUAT/ARGDiscussionFiles/${formData.topic}`,
+                DiscussionFolderName: formData.topic
               };
             }
             else {
@@ -1039,10 +1057,10 @@ const DiscussionForumContext = ({ props }: any) => {
                 EntityId: Number(formData.entity),
                 GroupType: formData.GroupType,
                 DiscussionForumCategoryId: Number(formData.category),
-                ARGDiscussionStatus: "Ongoing",               
-                DiscussionInProgress:"In Progress",
-                DiscussionFileManager:`/sites/intranetuat/ARGDiscussionFiles/${formData.topic}`,
-                DiscussionFolderName:formData.topic
+                ARGDiscussionStatus: "Ongoing",
+                DiscussionInProgress: "In Progress",
+                DiscussionFileManager: `/sites/IntranetUAT/ARGDiscussionFiles/${formData.topic}`,
+                DiscussionFolderName: formData.topic
               };
             }
 
@@ -1150,7 +1168,7 @@ const DiscussionForumContext = ({ props }: any) => {
 
   const handleCancel = () => {
     window.location.href =
-      "https://alrostamanigroupae.sharepoint.com/sites/intranetuat/SitePages/Blogs.aspx";
+      "https://alrostamanigroupae.sharepoint.com/sites/IntranetUAT/SitePages/Blogs.aspx";
   };
 
   const formats = [
@@ -1244,7 +1262,7 @@ const DiscussionForumContext = ({ props }: any) => {
     }
   };
   return (
-    
+
     <div id="wrapper" ref={elementRef}>
       <div className="app-menu" id="myHeader">
         <VerticalSideBar _context={sp} />
@@ -1542,14 +1560,14 @@ const DiscussionForumContext = ({ props }: any) => {
                           <div className="col-lg-12">
                             <div className="mb-3">
                               <label htmlFor="overview" className="form-label">
-                              Discussion  Overview <span className="text-danger">*</span>
+                                Discussion  Overview <span className="text-danger">*</span>
                               </label>
                               <textarea
                                 className="form-control inputcss"
                                 id="overview"
                                 placeholder="Enter discussion overview here"
                                 name="overview"
-                                style={{ minHeight: "120px",maxHeight: "120px" }}
+                                style={{ minHeight: "120px", maxHeight: "120px" }}
                                 value={formData.overview}
                                 onChange={(e) =>
                                   onChange(e.target.name, e.target.value)
@@ -1824,7 +1842,7 @@ const DiscussionForumContext = ({ props }: any) => {
                                   <FontAwesomeIcon icon={faSort} />{" "}
                                 </span>
                               </div>
-                              
+
                             </div>
                           </th>
                           <th style={{ minWidth: "100px", maxWidth: "100px" }}>
@@ -1840,18 +1858,18 @@ const DiscussionForumContext = ({ props }: any) => {
                                   <FontAwesomeIcon icon={faSort} />{" "}
                                 </span>
                               </div>
-                              
+
                             </div>
                           </th>
                           <th style={{ minWidth: "110px", maxWidth: "110px" }}>
                             <div className=" ">
                               <div
                                 className=""
-                               
+
                               >
                                 <span>Owner</span>
                               </div>
-                             
+
                             </div>
                           </th>
 
@@ -1860,11 +1878,11 @@ const DiscussionForumContext = ({ props }: any) => {
                           }}>
                             <div className=" ">
                               <div className=""
-                               
+
                               >
                                 <span>Replies</span>
                               </div>
-                             
+
                             </div>
                           </th>
                           <th style={{
@@ -1873,11 +1891,11 @@ const DiscussionForumContext = ({ props }: any) => {
                             <div className=" ">
                               <div
                                 className=" "
-                                
+
                               >
                                 <span>Likes</span>
                               </div>
-                             
+
                             </div>
                           </th>
                           <th style={{
@@ -1887,8 +1905,8 @@ const DiscussionForumContext = ({ props }: any) => {
                               <div>
                                 <span>Response</span>
                               </div>
-                             
-                              
+
+
                             </div>
                           </th>
                           {/* <th style={{
@@ -1908,6 +1926,7 @@ const DiscussionForumContext = ({ props }: any) => {
                         </tr>
                       </thead>
                       <tbody>
+                      {console.log("currentDatacurrentData",currentData)}
                         {currentData.length === 0 ? (
                           <div
                             className="no-results"
@@ -1918,10 +1937,11 @@ const DiscussionForumContext = ({ props }: any) => {
                             No results found
                           </div>
                         ) : (
+                          
                           currentData.map((item: any, index: number) => (
-                           
+
                             <tr
-                             
+
                               key={index}
                               style={{ cursor: "pointer" }}>
                               <td
@@ -1929,10 +1949,10 @@ const DiscussionForumContext = ({ props }: any) => {
                                   minWidth: "50px",
                                   maxWidth: "50px",
                                 }}>
-                                  
-                              <span className="indexdesign">  {startIndex + index + 1}</span>
+
+                                <span className="indexdesign">  {startIndex + index + 1}</span>
                               </td>
-                              <td style={{ minWidth: "130px", maxWidth: "130px", textTransform: 'capitalize' }}  onClick={() => handleClick(item.Id)}>{item.Topic}</td>
+                              <td style={{ minWidth: "130px", maxWidth: "130px", textTransform: 'capitalize' }} onClick={() => handleClick(item.Id)}>{item.Topic}</td>
                               <td style={{ minWidth: "130px", maxWidth: "130px" }}>{item.Overview}</td>
                               <td style={{ minWidth: "100px", maxWidth: "100px" }}>
                                 {item?.DiscussionForumCategory?.CategoryName}
@@ -1944,12 +1964,12 @@ const DiscussionForumContext = ({ props }: any) => {
                                 {item?.GroupType}
                               </td>
                               <td style={{ minWidth: "110px", maxWidth: "110px" }}>
-                              <img 
-          src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item?.Author?.EMail}`}
-          className="rounded-circlenu img-thumbnail avatar-xl"          
-          alt="profile-image"
-        />
-        {item?.Author?.Title}
+                                <img
+                                  src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item?.Author?.EMail}`}
+                                  className="rounded-circlenu img-thumbnail avatar-xl"
+                                  alt="profile-image"
+                                />
+                                {item?.Author?.Title}
                                 {/* <div
                                   style={{
                                   
@@ -2032,23 +2052,23 @@ const DiscussionForumContext = ({ props }: any) => {
                                 </div> */}
                               </td>
                               {/* Replies Count */}
-        <td style={{ minWidth: "60px", maxWidth: "60px" }}>
-        <img style={{width:'16px', verticalAlign:'text-bottom', marginRight:'5px'}} 
-                                            src={require("../assets/noun-reply.png")}
-                                            
-                                            alt="Check"
-                                          /> {item.repliesCount ? item.repliesCount : 0}
-        </td>
+                              <td style={{ minWidth: "60px", maxWidth: "60px" }}>
+                                <img style={{ width: '16px', verticalAlign: 'text-bottom', marginRight: '5px' }}
+                                  src={require("../assets/noun-reply.png")}
 
-        {/* Likes Count */}
-        <td style={{ minWidth: "50px", maxWidth: "50px" }}>
-        <img style={{width:'16px', verticalAlign:'text-bottom', marginRight:'5px'}}  src={require("../assets/glike.png")} alt="Check" /> {item.likesCount ? item.likesCount : 0}
-        </td>
+                                  alt="Check"
+                                /> {item.repliesCount ? item.repliesCount : 0}
+                              </td>
 
-        {/* Comments Count */}
-        <td style={{ minWidth: "60px", maxWidth: "60px", textAlign: "center" }}>
-        <img style={{width:'16px', verticalAlign:'text-bottom', marginRight:'5px'}}src={require("../assets/ccomment.png")} alt="Check"/>  {item.commentsLength ? item.commentsLength : 0}
-        </td>
+                              {/* Likes Count */}
+                              <td style={{ minWidth: "50px", maxWidth: "50px" }}>
+                                <img style={{ width: '16px', verticalAlign: 'text-bottom', marginRight: '5px' }} src={require("../assets/glike.png")} alt="Check" /> {Number(item.likesCount) > 0 ? item.likesCount : 0}
+                              </td>
+
+                              {/* Comments Count */}
+                              <td style={{ minWidth: "60px", maxWidth: "60px", textAlign: "center" }}>
+                                <img style={{ width: '16px', verticalAlign: 'text-bottom', marginRight: '5px' }} src={require("../assets/ccomment.png")} alt="Check" />  {Number(item.commentsLength) > 0 ? item.commentsLength : 0}
+                              </td>
 
                               {/* <td style={{ minWidth: "80px", maxWidth: "80px" }}>
                               

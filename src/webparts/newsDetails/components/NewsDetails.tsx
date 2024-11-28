@@ -710,9 +710,9 @@ const NewsdetailsContext = ({ props }: any) => {
 
         <HorizontalNavbar _context={sp} siteUrl={siteUrl} />
 
-        <div className="content" style={{ marginLeft: `${!useHide ? '240px' : '80px'}`, marginTop: '1rem' }}>
+        <div className="content" style={{ marginLeft: `${!useHide ? '240px' : '80px'}`, marginTop: '0rem' }}>
 
-          <div style={{paddingLeft:'1.3rem', paddingRight:'1.3rem'}} className="container-fluid  paddb">
+          <div style={{paddingLeft:'1.3rem', paddingRight:'2.3rem'}} className="container-fluid  paddb">
             <div className='row'>
               <div className='col-lg-8'>
                 <div>

@@ -51,7 +51,10 @@ import { WebPartContext } from "@microsoft/sp-webpart-base";
 import { MSGraphClientV3 } from "@microsoft/sp-http";
 import { toLower } from "lodash";
 import Swal from "sweetalert2";
-
+export interface IUserListResponse {
+  value: any[]; // Adjust this type to match the structure of your list items
+  "@odata.nextLink"?: string; // Define the nextLink property explicitly
+}
 export interface IUserItem {
   displayName: string;
   mail: string;
@@ -103,7 +106,11 @@ const CorporateDirectoryContext = ({ props }: any) => {
   console.log(sp, "sp");
 
   const [usersitem, setUsersArr] = useState<any[]>([]);
+  const [Listusersitem, setListUsersArr] = useState<any[]>([]);
   const [usersitemcopy, setUsersitemcopy] = useState<any[]>([]);
+  const [M365User, setM365User] = useState<any[]>([]);
+
+  
   // const { useHide }: any = React.useContext(UserContext);
 
   // const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
@@ -120,7 +127,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
   const [isDarkMode, setIsDarkMode] = React.useState(false);
   const [ShowPin, setShowPin] = React.useState(false);
-
+  const [smallestRecord, setSmallestRecord] = useState(null);
   const [sortConfig, setSortConfig] = React.useState({
 
     key: "",
@@ -136,7 +143,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const siteUrl = props.siteUrl;
-  const [itemsToShow, setItemsToShow] = useState(8); // Initial number of items to show
+  const [itemsToShow, setItemsToShow] = useState(16); // Initial number of items to show
 
   const [filters, setFilters] = React.useState({
 
@@ -167,7 +174,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
     console.log("This function is called only once", useHide);
 
-    fetchUserInformationList();
+    fetchUserInformationList("onload");
 
 
     const showNavbar = (
@@ -372,7 +379,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
 
 
-  const fetchUserInformationList = async () => {
+  const fetchUserInformationList = async (loadVar:any) => {
 
     try {
 
@@ -381,14 +388,37 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
 
       // Fetch the user list, excluding the current user
-
-      const userListSP = await sp.web.lists
-
+      let nextLink: string | null = null;
+      let userListSP: any[] = [];
+      if(loadVar == "onload"){
+        userListSP = await sp.web.lists
         .getByTitle("User Information List")
         .items
         .select("ID", "Title", "EMail", "Department", "JobTitle", "Picture", "MobilePhone", "WorkPhone", "Name")
-        .filter(`ContentType eq 'Person' and EMail ne null and ID ne ${currentUser.Id} `)();
+        .filter(`ContentType eq 'Person' and EMail ne null and ID ne ${currentUser.Id}`)
+        .orderBy("Id",false)
+        .top(17)
+        ();
 
+      }
+      else{
+        if (usersitem.length > 0) {
+          const smallest = usersitem.reduce((min, item) => (item.ID < min.ID ? item : min), usersitem[0]);
+          setSmallestRecord(smallest);
+          userListSP = await sp.web.lists
+          .getByTitle("User Information List")
+          .items
+          .select("ID", "Title", "EMail", "Department", "JobTitle", "Picture", "MobilePhone", "WorkPhone", "Name")
+          .filter(`ContentType eq 'Person' and EMail ne null and ID ne ${currentUser.Id} and ID lt ${smallest.ID}`)
+          .orderBy("Id",false)
+          .top(17)
+          ();
+        }
+       
+      }
+     
+      
+      //nextLink = userListSP["@odata.nextLink"];
       console.log("userList", userListSP);
       // let currentWPContext:WebPartContext=props.props.context;  
       let currentWPContext: WebPartContext = props.context;
@@ -399,7 +429,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
         .select("displayName,mail,jobTitle,mobilePhone,companyName,userPrincipalName")
         .get();
        console.log("m265userList",m265userList);
-
+       // setM365User(m265userList);
       //Adding dummy companies to users for testing
       //m265userList.value=m265userList.value.map((m:any)=>{let x=m; x['companyName']='dunnycommpany'; return x;});
 
@@ -527,8 +557,13 @@ const CorporateDirectoryContext = ({ props }: any) => {
       setPinStatus(initialPinStatus);
 
       setLoadingUsers(initialLoadingStatus);
-
+      if(loadVar == "onload"){
       setUsersArr(userList);
+      }
+      else{
+        setUsersArr((prevData) => [...prevData, ...userList]);
+      }
+      //setUsersArr(userList);
       setUsersitemcopy(userList);
 
 
@@ -638,9 +673,34 @@ const CorporateDirectoryContext = ({ props }: any) => {
   >("cardView");
 
 
-  const handleTabChange = (tab: "cardView" | "listView" | "calendarView") => {
+  const handleTabChange = async (tab:any,usersitem:any) => {
+    if(tab == "listView"){
+     let ListuserListSP = await sp.web.lists
+      .getByTitle("User Information List")
+      .items
+      .select("ID", "Title", "EMail", "Department", "JobTitle", "Picture", "MobilePhone", "WorkPhone", "Name")
+      .filter(`ContentType eq 'Person' and EMail ne null`)
+      .orderBy("Id",false)
+      .top(4999)
+      ();
+      let userList: any[] = [];
 
-    setActiveTab(tab);
+      // userList = ListuserListSP.map(usr => {
+      //   let musrs = M365User.filter((usr1: any) => { return toLower(usr1.mail) == toLower(usr.EMail) });
+      //   if (musrs.length > 0) {
+      //     usr['companyName'] = musrs[0]['companyName'];
+      //   }
+      //   else usr['companyName'] = 'NA';
+      //   return usr;
+      // })
+      setActiveTab(tab);
+      setListUsersArr(ListuserListSP);
+      //setUsersArr(ListuserListSP);
+    }
+    else{
+      setActiveTab(tab);
+      fetchUserInformationList("onload");
+    }
 
   };
 
@@ -696,7 +756,10 @@ const CorporateDirectoryContext = ({ props }: any) => {
     field: string
 
   ) => {
-debugger
+
+if(field == "Name"){
+  setCurrentPage(1);
+}
     setFilters({
 
       ...filters,
@@ -797,22 +860,32 @@ debugger
   };
 
 
-  const filteredEmployeeData = applyFiltersAndSorting(usersitem);
+  const filteredEmployeeData = applyFiltersAndSorting(Listusersitem);
 
 
   const [currentPage, setCurrentPage] = React.useState(1);
-
+  const [currentGroup, setCurrentGroup] = React.useState(1);
   const itemsPerPage = 10;
+  const pagesPerGroup = 10; 
 
   const totalPages = Math.ceil(filteredEmployeeData.length / itemsPerPage);
+  const totalGroups = Math.ceil(totalPages / pagesPerGroup);
 
+  const handleGroupChange = (direction: "next" | "prev") => {
+    const newGroup = currentGroup + (direction === "next" ? 1 : -1);
+    if (newGroup > 0 && newGroup <= totalGroups) {
+      setCurrentGroup(newGroup);
+      setCurrentPage((newGroup - 1) * pagesPerGroup + 1); // Go to the first page of the new group
+    }
+  };
 
   const handlePageChange = (pageNumber: any) => {
 
     if (pageNumber > 0 && pageNumber <= totalPages) {
 
       setCurrentPage(pageNumber);
-
+      const newGroup = Math.ceil(pageNumber / pagesPerGroup);
+      setCurrentGroup(newGroup);
     }
 
   };
@@ -824,6 +897,8 @@ debugger
 
   const currentData = filteredEmployeeData.slice(startIndex, endIndex);
 
+  const startPage = (currentGroup - 1) * pagesPerGroup + 1;
+  const endPage = Math.min(currentGroup * pagesPerGroup, totalPages);
   const [isOpenNews, setIsOpenNews] = React.useState(false);
 
   const toggleDropdownNews = () => {
@@ -834,7 +909,7 @@ debugger
 
   const handleNewsExportClick = () => {
 
-    const exportData = currentData.map((item, index) => ({
+    const exportData = Listusersitem.map((item, index) => ({
 
       Name: item.Title,
       Email: item.EMail,
@@ -869,18 +944,33 @@ debugger
     setIsOpen(!isOpen);
 
   };
-  const handleSearch: React.ChangeEventHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-
+  const handleSearch: React.ChangeEventHandler = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if(activeTab == "listView")
+        setActiveTab("cardView");
     let txtSearch = (document.getElementById('searchInput') as HTMLInputElement).value;
-    let filteredusers = usersitemcopy.filter(usr => {
-      return usr.Title.toLowerCase().includes(txtSearch) ||
-        usr.EMail.toLowerCase().includes(txtSearch) ||
-        usr.Name.toLowerCase().includes(txtSearch) ||
-        ((usr.Department) ? usr.Department.toLowerCase().includes(txtSearch) : false) ||
-        ((usr.companyName) ? usr.companyName.toLowerCase().includes(txtSearch) : false)
-    });
+    if(txtSearch.length >1){
+    let filteredusers = await sp.web.lists
+        .getByTitle("User Information List")
+        .items
+        .select("ID", "Title", "EMail", "Department", "JobTitle", "Picture", "MobilePhone", "WorkPhone", "Name")
+        .filter(`ContentType eq 'Person' and EMail ne null and substringof('${txtSearch}', Title)`)
+        .top(500)
+        ();
+        setUsersArr(filteredusers);
+    }
 
-    setUsersArr(filteredusers);
+    else {
+      fetchUserInformationList("onload");
+    }
+    // let filteredusers = usersitemcopy.filter(usr => {
+    //   return usr.Title.toLowerCase().includes(txtSearch) ||
+    //     usr.EMail.toLowerCase().includes(txtSearch) ||
+    //     usr.Name.toLowerCase().includes(txtSearch) ||
+    //     ((usr.Department) ? usr.Department.toLowerCase().includes(txtSearch) : false) ||
+    //     ((usr.companyName) ? usr.companyName.toLowerCase().includes(txtSearch) : false)
+    // });
+
+    
 
 
   }
@@ -890,8 +980,8 @@ debugger
     e.preventDefault();
 
     setLoadingUsers((prev) => ({ ...prev, [item.ID]: true })); // Set loading state for the specific user
-
-
+    //await fetchUserDetails(item);
+    
     try {
 
       const currentUser = await sp.web.currentUser();
@@ -922,7 +1012,29 @@ debugger
         });
 
         setFollowStatus((prev) => ({ ...prev, [item.ID]: true })); // Update follow status
+        const followersCount = await sp.web.lists.getByTitle("ARGFollows").items
 
+        .filter(`FollowedId eq ${item.ID}`)
+
+        .select("Id")
+
+        .getAll();
+
+
+
+      const followingCount = await sp.web.lists.getByTitle("ARGFollows").items
+
+        .filter(`FollowerId eq ${item.ID}`)
+
+        .select("Id")
+
+        .getAll();
+
+
+
+        item.followersCount = followersCount.length;
+
+        item.followingCount = followingCount.length;
       }
 
     } catch (error) {
@@ -936,7 +1048,7 @@ debugger
 
     } finally {
 
-      fetchUserInformationList()
+      //fetchUserInformationList()
 
       setLoadingUsers((prev) => ({ ...prev, [item.ID]: false })); // End loading state for the specific user
 
@@ -1013,7 +1125,7 @@ debugger
  
     } finally {
  
-      fetchUserInformationList()
+      //fetchUserInformationList()
  
       setLoadingUsers((prev) => ({ ...prev, [item.ID]: false })); // End loading state for the specific user
  
@@ -1026,7 +1138,10 @@ debugger
   const loadMore = () => {
     event.preventDefault()
     event.stopImmediatePropagation()
-    setItemsToShow(itemsToShow + 8); // Increase the number by 8
+    
+    
+    setItemsToShow(itemsToShow + 16);
+    fetchUserInformationList("loadmore") // Increase the number by 8
   };
 
   return (
@@ -1051,7 +1166,7 @@ debugger
 
             marginLeft: `${!useHide ? "240px" : "80px"}`,
 
-            marginTop: "1.5rem",
+            marginTop: "0rem",
 
           }}
 
@@ -1090,7 +1205,7 @@ debugger
 
                         id="searchInput"
 
-                        placeholder="Search by name..."
+                        placeholder="Search by name in card view..."
                         onChange={handleSearch}
 
                       />
@@ -1140,7 +1255,7 @@ debugger
 
             </div>
 
-            <div className="row mt-2">
+            <div className="row mt-4">
 
               <div className="col-12">
 
@@ -1182,7 +1297,7 @@ debugger
 
                             role="tab"
 
-                            onClick={() => handleTabChange("cardView")}
+                            onClick={() => handleTabChange("cardView",usersitem)}
 
                           >
 
@@ -1204,7 +1319,7 @@ debugger
 
                             role="tab"
 
-                            onClick={() => handleTabChange("listView")}
+                            onClick={() => handleTabChange("listView",usersitem)}
 
 
                           // onClick={() => handleTabChange("listView")}
@@ -1247,7 +1362,7 @@ debugger
 
                     {console.log("usersssitem", usersitem, followStatus, pinStatus)}
 
-                    {usersitem.slice(0, itemsToShow).map((item) => (
+                    {usersitem.map((item) => (
 
                       <div className="col-lg-3 col-md-4" key={item.Title}>
 
@@ -2166,21 +2281,20 @@ debugger
 
                                 <li
 
-                                  className={`page-item ${currentPage === 1 ? "disabled" : ""
-
-                                    }`}
-
+                                  className={`prevPage page-item ${currentGroup === 1 ? "disabled" : ""
+                                     }`}
+                                     onClick={() => handleGroupChange("prev")}
                                 >
 
                                   <a
 
                                     className="page-link"
 
-                                    onClick={() =>
+                                    // onClick={() =>
 
-                                      handlePageChange(currentPage - 1)
+                                    //   handlePageChange(currentPage - 1)
 
-                                    }
+                                    // }
 
                                     aria-label="Previous"
 
@@ -2194,15 +2308,17 @@ debugger
 
                                 {Array.from(
 
-                                  { length: totalPages },
+                                  { length: endPage - startPage + 1 },
 
-                                  (_, num) => (
+                                  (_, num) => {
+                                    const pageNum = startPage + num;
+                                    return (
 
                                     <li
 
-                                      key={num}
+                                      key={pageNum}
 
-                                      className={`page-item ${currentPage === num + 1 ? "active" : ""
+                                      className={`page-item ${currentPage === pageNum ? "active" : ""
 
                                         }`}
 
@@ -2214,28 +2330,28 @@ debugger
 
                                         onClick={() =>
 
-                                          handlePageChange(num + 1)
+                                          handlePageChange(pageNum)
 
                                         }
 
                                       >
 
-                                        {num + 1}
+                                        {pageNum}
 
                                       </a>
 
                                     </li>
 
-                                  )
+                                  )}
 
                                 )}
 
                                 <li
 
-                                  className={`page-item ${currentPage === totalPages ? "disabled" : ""
+                                  className={`nextPage page-item ${currentGroup === totalGroups ? "disabled" : ""
 
                                     }`}
-
+                                    onClick={() => handleGroupChange("next")}
                                 >
 
                                   <a
