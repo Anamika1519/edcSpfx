@@ -93,13 +93,22 @@ export const fetchEventdataone = async (_sp) => {
     .select("*")
     .filter(`Status eq 'Approved'`)
     .orderBy("EventDate", true)
-    .top(4)()
+    ()
 
     .then((res) => {
       console.log(res);
-
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); 
+ 
+      
+      const filteredEvents = res.filter(event => {
+          const eventDate = new Date(event.EventDate);
+          return eventDate >= today;
+      });
+      //const limitedEvents = filteredEvents.slice(0, 4);
       //res.filter(x=>x.Category?.Category==str)
-      arr = res;
+      arr = filteredEvents.slice(0, 4);
+
     })
     .catch((error) => {
       console.log("Error fetching data: ", error);

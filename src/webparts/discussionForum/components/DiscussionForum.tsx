@@ -129,8 +129,9 @@ const DiscussionForumContext = ({ props }: any) => {
     setActiveTab(tab);
     if (tab == "home1") {
 
-      // const announcementArr = await getDiscussionForum(sp);
-      // let lengArr: any;
+       const announcementAllArr = await getDiscussionForum(sp);
+       console.log("Alldiscu",announcementAllArr);
+       let lengArr: any;
       // setAnnouncementData(announcementArr)
       // for (var i = 0; i < announcementArr.length; i++) {
       //   lengArr = await getDiscussionComments(sp, announcementArr[i].ID)
@@ -202,6 +203,7 @@ const DiscussionForumContext = ({ props }: any) => {
     const announcementArr = await getDiscussionForum(sp);
     setActiveTab('home1');
     let lengArr: any;
+    if(announcementArr.length>0){
     for (var i = 0; i < announcementArr.length; i++) {
       lengArr = await getDiscussionComments(sp, announcementArr[i].ID)
       console.log(lengArr, 'rrr');
@@ -211,6 +213,7 @@ const DiscussionForumContext = ({ props }: any) => {
       announcementArr[i].Users = lengArr.arrUser
 
     }
+  }
     fetchOptions()
     // const categorylist = await GetCategory(sp);
     setCategoryData(await GetCategory(sp));
@@ -1045,7 +1048,7 @@ const DiscussionForumContext = ({ props }: any) => {
                 InviteMemebersId: selectedIds,
                 ARGDiscussionStatus: "Ongoing",
                 DiscussionInProgress: "In Progress",
-                DiscussionFileManager: `/sites/IntranetUAT/ARGDiscussionFiles/${formData.topic}`,
+                DiscussionFileManager: `/sites/AlRostmaniSpfx2/ARGDiscussionFiles/${formData.topic}`,
                 DiscussionFolderName: formData.topic
               };
             }
@@ -1059,7 +1062,7 @@ const DiscussionForumContext = ({ props }: any) => {
                 DiscussionForumCategoryId: Number(formData.category),
                 ARGDiscussionStatus: "Ongoing",
                 DiscussionInProgress: "In Progress",
-                DiscussionFileManager: `/sites/IntranetUAT/ARGDiscussionFiles/${formData.topic}`,
+                DiscussionFileManager: `/sites/AlRostmaniSpfx2/ARGDiscussionFiles/${formData.topic}`,
                 DiscussionFolderName: formData.topic
               };
             }
@@ -1168,7 +1171,7 @@ const DiscussionForumContext = ({ props }: any) => {
 
   const handleCancel = () => {
     window.location.href =
-      "https://alrostamanigroupae.sharepoint.com/sites/IntranetUAT/SitePages/Blogs.aspx";
+      "https://alrostamanigroupae.sharepoint.com/sites/AlRostmaniSpfx2/SitePages/Blogs.aspx";
   };
 
   const formats = [

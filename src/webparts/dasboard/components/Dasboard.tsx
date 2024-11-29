@@ -487,7 +487,7 @@ const HelloWorldContext = ({ props }: any) => {
                               >
                                 {announcement.Overview}
                               </p>
-                              <p className="mb-3 font-12">
+                              <p className="mb-1 font-12">
                               {moment(announcement.Modified).format("DD-MMM-YYYY")}
                               </p>
                               <div className="mt-1 d-flex justify-between mb-0">

@@ -156,7 +156,7 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
       .getByTitle("ARGDiscussionComments")
       .items.select("*,DiscussionForum/Id")
       .expand("DiscussionForum")
-      .filter(`DiscussionForumId eq ${Number(idNum)}`)()
+      .filter(`DiscussionForumId eq ${Number(idNum)}`).orderBy("Modified" , false )()
       .then(async (result: any) => {
         console.log(result, "ARGDiscussionComments");
         setCommentData(result);
@@ -265,7 +265,8 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
           userHasLiked: false, // Initialize as false
           UserProfile: ress.data.UserProfile,
         };
-        setComments((prevComments) => [...prevComments, newCommentData1]);
+        getApiData();
+        //setComments((prevComments) => [...prevComments, newCommentData1]);
         setNewComment("");
         setLoading(false);
         let notifiedArr = {
@@ -484,8 +485,8 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
       MainComponentURl: `${siteUrl}/SitePages/Dashboard.aspx`,
     },
     {
-      ChildComponent: "Discussion Forum Details ",
-      ChildComponentURl: `${siteUrl}/SitePages/DiscussionForumDetail.aspx`,
+      ChildComponent: "Discussion Forum ",
+      ChildComponentURl: `${siteUrl}/SitePages/DiscussionForum.aspx`,
     },
   ];
   //#endregion
@@ -1299,6 +1300,8 @@ alt="Check"
                               )}
                             </span>
                         </div> */}
+                    {item?.InviteMemebers?.length > 0 && item?.GroupType == "Private" &&
+                        <div>
                         <div className="card">
                           <div className="card-body">
 
@@ -1314,10 +1317,10 @@ alt="Check"
                                 }}
                               >
                                  
-                                {item?.InviteMemebers?.length > 0 &&
+                               
                                 <div>
                                           <h4 className="header-title font-16 text-dark fw-bold mb-0">
-                               Contributor List 
+                               Private Members
 
                             </h4>
                                   {item?.InviteMemebers?.map((member: any, idx: any) => (
@@ -1370,7 +1373,7 @@ alt="Check"
 
                                   ))}
                                 </div>
-                                  }
+                                  
                                 {/* <div style={{ display: "flex", marginTop: "6px" }} className="ml90">
                                   {item?.InviteMemebers?.map(
                                     (id: any, idx: any) => {
@@ -1452,6 +1455,8 @@ alt="Check"
                             </p>
                           </div>
                         </div>
+                        </div>
+              }
                         </div>
                         </div>
 
@@ -1688,6 +1693,12 @@ alt="Check"
                         <div className="card mobile-5 mt-2" style={{ borderRadius: "22px", position: 'sticky', top: '90px' }}>
                           <div className="card-body pb-3 gheight">
                             <h4 className="header-title font-16 text-dark fw-bold mb-0" style={{ fontSize: "20px" }}>Discussion Owner</h4>
+                            <div className="displcenter">
+                              <img 
+                                src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item?.Author?.EMail}`}
+                                className="rounded-circlecss68 img-thumbnail avatar-xl"
+                                alt="profile-image"
+                              /></div>
                             <h1 className="text-muted font-14 mt-3"><p className="text-dark font-16 text-center mb-2">{item.Author.Title}</p>
                               <p className="text-muted font-14 text-center mb-1">{item.Title}</p>
                               <p className="text-muted font-12 text-center">{item.Author.EMail}</p>

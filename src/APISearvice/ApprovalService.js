@@ -100,7 +100,10 @@ export const getMyApproval = async (sp)=>
   {
     const currentUser = await sp.web.currentUser();
     let arr = []
-    await sp.web.lists.getByTitle("ARGMyRequest").items.select("*,Requester/Id,Requester/Title,Approver/Id,Approver/Title").expand("Approver,Requester").filter(`ApproverId eq ${currentUser.Id}`).getAll().then((res) => {
+    await sp.web.lists.getByTitle("ARGMyRequest").items.select("*,Requester/Id,Requester/Title,Approver/Id,Approver/Title").expand("Approver,Requester")
+    .filter(`ApproverId eq ${currentUser.Id} and Status eq 'Pending'`)
+    .orderBy("Created",false)
+    .getAll().then((res) => {
       arr = res
       console.log(arr, 'arr');
     })

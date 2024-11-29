@@ -80,7 +80,8 @@
   font-weight: bold;
   color: #333;
 }
-
+.displcenter{display: flex; margin-top: 10px; justify-content: center; text-align:center;}
+.displcenter img{width: 5rem !important; height: 5rem !important; border-radius: 1000px !important; }
 .comment-user {
   color: #007bff;
 }

@@ -28,11 +28,13 @@ export const getDiscussionForum = async (_sp) => {
         .catch((error) => {
             console.log("Error fetching data: ", error);
         });
-
+//item?.Author?.ID == currentUser && 
+    // arr = arr1.filter(item =>
+    //     item?.Author?.ID != currentUser && item.InviteMemebersId != null ? ((item.InviteMemebersId && item.InviteMemebersId.includes(currentUser))) : (item)
+    // );
     arr = arr1.filter(item =>
-        item?.Author?.ID != currentUser && item.InviteMemebersId != null ? ((item.InviteMemebersId || item.InviteMemebersId.includes(currentUser))) : (item?.Author?.ID == currentUser && item)
-    );
-
+        item.GroupType == "Private" ? (item?.Author?.ID != currentUser && item.InviteMemebersId != null ? ((item.InviteMemebersId && item.InviteMemebersId.includes(currentUser))):item?.Author?.ID == currentUser) : (item)
+      );
     return arr;
 }
 export const get7DaysDiscussionForum = async (_sp) => {
@@ -70,15 +72,15 @@ export const get7DaysDiscussionForum = async (_sp) => {
         .orderBy("Created", false) // Order by 'Created' field in descending order
         .getAll()
         .then((res) => {
-            console.log("--discussion", res);
+            console.log("--discussion", res);   
             arr1 = res;
         })
         .catch((error) => {
             console.log("Error fetching data: ", error);
         });
-
+//item?.Author?.ID == currentUser &&    
     arr = arr1.filter(item =>
-        item?.Author?.ID != currentUser && item.InviteMemebersId != null ? ((item.InviteMemebersId || item.InviteMemebersId.includes(currentUser))) : (item?.Author?.ID == currentUser && item)
+      item.GroupType == "Private" ? (item?.Author?.ID != currentUser && item.InviteMemebersId != null ? ((item.InviteMemebersId && item.InviteMemebersId.includes(currentUser))):item?.Author?.ID == currentUser) : (item)
     );
 
     return arr;
@@ -465,4 +467,4 @@ export const getChoiceFieldOption = async (_sp, listName, fieldName) => {
     arr = field2["Choices"]
 
     return arr;
-}
+}   
