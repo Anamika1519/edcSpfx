@@ -47,6 +47,7 @@ const HelloWorldContext = ({ props }: any) => {
   const { setHide }: any = context;
   const [isDarkMode, setIsDarkMode] = React.useState(false);
   const siteUrl = props.siteUrl;
+  const tenantUrl = props.siteUrl.split("/sites/")[0];
   const [currentUser, setCurrentUser] = React.useState(null)
   const [EnityData, setEnityData] = React.useState([])
   const [editForm, setEditForm] = React.useState(false);
@@ -249,6 +250,11 @@ const HelloWorldContext = ({ props }: any) => {
         // Swal.fire('Error', 'Event Date is required!', 'error');
         valid = false;
       }
+      else if (EventDate && RegistrationDueDate && new Date(RegistrationDueDate) > new Date(EventDate)) {
+        // Swal.fire('Error', 'Event Date is required!', 'error');
+        valid = false;
+      }
+     
       setValidDraft(valid);
     }
     else {
@@ -271,6 +277,10 @@ const HelloWorldContext = ({ props }: any) => {
         // Swal.fire('Error', 'Registration Due Date is required!', 'error');
         valid = false;
       }
+      else if (EventDate && RegistrationDueDate && new Date(RegistrationDueDate) > new Date(EventDate)) {
+        // Swal.fire('Error', 'Event Date is required!', 'error');
+        valid = false;
+      }
       else if (!EntityId) {
         // Swal.fire('Error', 'Entity is required!', 'error');
         valid = false;
@@ -279,9 +289,16 @@ const HelloWorldContext = ({ props }: any) => {
 
     }
 
+    if (!valid && (EventDate && RegistrationDueDate && new Date(RegistrationDueDate) > new Date(EventDate))) {
+      Swal.fire('Registration date cannot be more than Event date');
+    }else
     if (!valid && (EventDate && new Date(EventDate) >= new Date())) {
       Swal.fire('Please fill the mandatory fields.');
-    }
+    }else
+    if (!valid && ((EventDate && new Date(EventDate) >= new Date()) &&
+      (EventDate && RegistrationDueDate && new Date(RegistrationDueDate) <= new Date(EventDate)))) {
+      Swal.fire('Please fill the mandatory fields.');
+    }else
     if (!valid && (EventDate && new Date(EventDate) < new Date())) {
       Swal.fire('Event date cannot be less than today');
     }
@@ -320,7 +337,7 @@ const HelloWorldContext = ({ props }: any) => {
             if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
               for (const file of BnnerImagepostArr[0].files) {
                 //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
-                bannerImageArray = await uploadFileBanner(file, sp, "Documents", "https://alrostamanigroupae.sharepoint.com");
+                bannerImageArray = await uploadFileBanner(file, sp, "Documents", tenantUrl);
               }
             }
             else if (BnnerImagepostArr.length > 0) {
@@ -516,7 +533,7 @@ const HelloWorldContext = ({ props }: any) => {
             if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
               for (const file of BnnerImagepostArr[0].files) {
                 //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
-                bannerImageArray = await uploadFileBanner(file, sp, "Documents", "https://alrostamanigroupae.sharepoint.com");
+                bannerImageArray = await uploadFileBanner(file, sp, "Documents", tenantUrl);
               }
             }
             //debugger
@@ -640,7 +657,7 @@ const HelloWorldContext = ({ props }: any) => {
             if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
               for (const file of BnnerImagepostArr[0].files) {
                 //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
-                bannerImageArray = await uploadFileBanner(file, sp, "Documents", "https://alrostamanigroupae.sharepoint.com");
+                bannerImageArray = await uploadFileBanner(file, sp, "Documents", tenantUrl);
               }
             }
             else {
@@ -807,7 +824,7 @@ const HelloWorldContext = ({ props }: any) => {
             if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
               for (const file of BnnerImagepostArr[0].files) {
                 //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
-                bannerImageArray = await uploadFileBanner(file, sp, "Documents", "https://alrostamanigroupae.sharepoint.com");
+                bannerImageArray = await uploadFileBanner(file, sp, "Documents", tenantUrl);
               }
             }
             //debugger
@@ -1353,7 +1370,7 @@ const HelloWorldContext = ({ props }: any) => {
                           name="RegistrationDueDate"
                           value={formData.RegistrationDueDate}
                           placeholder='Enter Registration Due Date'
-                          className={`form-control inputcs ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                          className={`form-control inputcs ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
                           // value={formData.RegistrationDueDate}
                           onChange={(e) => onChange(e.target.name, e.target.value)}
                           disabled={InputDisabled}
@@ -1390,7 +1407,7 @@ const HelloWorldContext = ({ props }: any) => {
                         <div className='d-flex justify-content-between'>
                           <div>
                             <label htmlFor="bannerImage" className="form-label">
-                              Banner Image <span className="text-danger">*</span>
+                              Event Image <span className="text-danger">*</span>
                             </label>
                           </div>
                           <div>
@@ -1637,6 +1654,8 @@ const HelloWorldContext = ({ props }: any) => {
                               onRemove={(selected) => handleUserSelect(selected, row.id)}
                               displayValue="name"
                               disable={true}
+                              placeholder=''
+                              hidePlaceholder={true}
                             />
                           </div>
 

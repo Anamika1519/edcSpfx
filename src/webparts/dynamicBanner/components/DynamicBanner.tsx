@@ -354,7 +354,7 @@ const DynamicBannercontext = ({ props }: any) => {
                                     </div>
                                   </div>
                             </th> */}
-                            <th style={{ minWidth: '100px', maxWidth: '100px' }}>
+                            {/* <th style={{ minWidth: '100px', maxWidth: '100px' }}>
                             <div className="d-flex flex-column bd-highlight ">
                                     <div className="d-flex pb-2" style={{ justifyContent: 'space-between' }}>  
                                       <span >Url</span>  <span onClick={() => handleSortChange('URL')}><FontAwesomeIcon icon={faSort} /> </span></div>
@@ -363,7 +363,7 @@ const DynamicBannercontext = ({ props }: any) => {
                                         className='inputcss' style={{ width: '100%' }} />
                                     </div>
                                   </div>
-                            </th>
+                            </th> */}
                             <th style={{ minWidth: '100px', maxWidth: '100px' }}>
                             <div className="d-flex flex-column bd-highlight ">
                                     <div className="d-flex pb-2" style={{ justifyContent: 'space-between' }}>  
@@ -416,14 +416,14 @@ const DynamicBannercontext = ({ props }: any) => {
                                 {/* <td>
                                   {ImageUrl.serverRelativeUrl != null ?
                                      <img src={ImageUrl.serverUrl+ ImageUrl.serverRelativeUrl} alt=""  style={{maxHeight:'40px'}} /> : ""
-                                    // <img src="https://alrostamanigroupae.sharepoint.com/sites/AlRostmani/Shared%20Documents/news.png" alt=""  style={{maxHeight:'40px'}} /> : ""
+                                    // <img src="https://officeindia.sharepoint.com/sites/AlRostmani/Shared%20Documents/news.png" alt=""  style={{maxHeight:'40px'}} /> : ""
 
                                   }
                                 
                                 </td> */}
-                                <td>
+                                {/* <td>
                                   {item.URL}
-                                </td>
+                                </td> */}
                                 <td>{item.Status}</td>
                                 <td style={{ minWidth: '80px', maxWidth: '80px' }}>{item.Created}</td>
                                 <td style={{ minWidth: '50px', maxWidth: '50px' }} className="ng-binding">

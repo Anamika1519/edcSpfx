@@ -94,7 +94,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
   const [Loading, setLoading] = React.useState(false);
 
   const siteUrl = props.siteUrl;
-
+  const tenantUrl = props.siteUrl.split("/sites/")[0];
   console.log(siteUrl);
 
 
@@ -835,7 +835,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
                 //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
 
-                bannerImageArray = await uploadFile(file, sp, "Documents", "https://alrostamanigroupae.sharepoint.com");
+                bannerImageArray = await uploadFile(file, sp, "Documents", tenantUrl);
 
               }
 
@@ -1220,7 +1220,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
                 //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
 
-                bannerImageArray = await uploadFile(file, sp, "Documents", "https://alrostamanigroupae.sharepoint.com");
+                bannerImageArray = await uploadFile(file, sp, "Documents", tenantUrl);
 
               }
 
@@ -1409,7 +1409,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
                 //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
 
-                bannerImageArray = await uploadFile(file, sp, "Documents", "https://alrostamanigroupae.sharepoint.com");
+                bannerImageArray = await uploadFile(file, sp, "Documents", tenantUrl);
 
               }
 
@@ -1744,7 +1744,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
                 //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
 
-                bannerImageArray = await uploadFile(file, sp, "Documents", "https://alrostamanigroupae.sharepoint.com");
+                bannerImageArray = await uploadFile(file, sp, "Documents", tenantUrl);
 
               }
 
@@ -2211,7 +2211,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
                             <label htmlFor="bannerImage" className="form-label">
 
-                              Banner Image<span className="text-danger">*</span>
+                              Media Image<span className="text-danger">*</span>
 
                             </label>
 
@@ -2654,7 +2654,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
               <Modal.Header closeButton>
 
-                {ImagepostArr1.length > 0 && showBannerModal && <Modal.Title>Banner Images</Modal.Title>}
+                {ImagepostArr1.length > 0 && showBannerModal && <Modal.Title>Media Images</Modal.Title>}
 
               </Modal.Header>
 

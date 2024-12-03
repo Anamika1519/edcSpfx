@@ -21,7 +21,7 @@ import { PostComponent } from '../../../CustomJSComponents/SocialFeedPost/PostCo
 import { fetchBlogdatatop, fetchBookmarkBlogdata } from '../../../APISearvice/BlogService'
 import AvtarComponents from '../../../CustomJSComponents/AvtarComponents/AvtarComponents'
 import { fetchUserInformationList } from '../../../APISearvice/Dasborddetails'
-import { getDiscussion, getDiscussionFilter, fetchTrendingDiscussionBasedOn } from '../../../APISearvice/DiscussionForumService'
+import { getDiscussion, getDiscussionFilter, fetchTrendingDiscussionBasedOn, getOldDiscussionForum, getDiscussionComments } from '../../../APISearvice/DiscussionForumService'
 import { WebPartContext } from "@microsoft/sp-webpart-base";
 import { MSGraphClientV3 } from "@microsoft/sp-http";
 import { toLower } from "lodash";
@@ -204,8 +204,27 @@ const SocialFeedContext = ({ props }: any) => {
 
 
   const FilterDiscussionData = async () => {
-
-    setDiscussion(await getDiscussionFilter(sp))
+    const announcementArr = await getOldDiscussionForum(sp);
+    let lengArr: any;
+    for (var i = 0; i < announcementArr.length; i++) {
+      lengArr = await getDiscussionComments(sp, announcementArr[i].ID)
+      console.log(lengArr, 'rrr old social feed', announcementArr[i]);
+      announcementArr[i].commentsLength = lengArr.arrLength,
+        announcementArr[i].likesCount = lengArr.totalLikes;         // Number of likes
+      announcementArr[i].repliesCount = lengArr.totalRepliesCount;
+      announcementArr[i].Users = lengArr.arrUser,
+        announcementArr[i].CreatedDate = lengArr.CreatedDate
+    }
+    let filteredarray = [];
+    filteredarray = announcementArr.filter((x) => (
+      x.likesCount + x.repliesCount + x.commentsLength)
+ 
+      > 10)
+    if (filteredarray.length > 0) {
+      setDiscussion(filteredarray.sort((a, b) => b.likesCount - a.likesCount))
+    }
+    console.log("filteredarray social feed", filteredarray);
+    //setDiscussion(await getDiscussionFilter(sp))    
   }
   // Function to get list of users following the current user
   const fetchFollowerList = async () => {
@@ -501,7 +520,7 @@ const SocialFeedContext = ({ props }: any) => {
     setHideCreatePost(true)
 
     setHideShowPost(false)
-
+    fetchPosts()
   }
 
   const [post, setPost] = useState("");

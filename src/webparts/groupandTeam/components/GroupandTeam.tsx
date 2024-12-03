@@ -99,7 +99,7 @@ const GroupandTeamcontext = ({ props }: any) => {
   const { setUseId, useId }: any = context;
 
   const [groupsData, setGroupsData] = React.useState([]);
-
+  const [groupsDataAll, setGroupsDataAll] = React.useState([]);
   const [tempgroupsData, settempGroupsData] = React.useState([]);
 
 
@@ -278,35 +278,36 @@ const GroupandTeamcontext = ({ props }: any) => {
     setActiveTab(tab);
     debugger;
     if (tab === "allgroups") {
-      const allGroups = await getGroupTeam(sp);
-      const filteredGroups = allGroups.filter(item => {
-          if (item.GroupType === "Selected Members") {
-              // Check if current user is in InviteMemebers
-             // alert(`currentuser id ${currentUser.Id}`)
-              return item.InviteMemebers.some((invitee:any) => invitee.Id === currentUser.Id || item.Author.ID === currentUser);
-          }
-          return true;
-      });
-      setGroupsData(filteredGroups);
-  } 
-   else if (tab === "groupsyoucreated") {
-      const res = groupsData.filter(item =>
+      // const allGroups = await getGroupTeam(sp);
+      // const filteredGroups = allGroups.filter(item => {
+      //     if (item.GroupType === "Selected Members") {
+      //         // Check if current user is in InviteMemebers
+      //        // alert(`currentuser id ${currentUser.Id}`)
+      //         return item.InviteMemebers.some((invitee:any) => invitee.Id === currentUser.Id || item.Author.ID === currentUser);
+      //     }
+      //     return true;
+      // });
+      setGroupsData(groupsDataAll);
+    }
+    else if (tab === "groupsyoucreated") {
+      let res: any[] = [];
+      res = groupsDataAll.filter(item =>
         // Include public groups or private groups where the current user is in the InviteMembers array
-        item.Author.Title == currentUser.Title);
+        item.Author.EMail == currentUser.Email);
       setGroupsData(res);
-      if (res.length < 0) {
-        const res = tempgroupsData.filter(item =>
-          // Include public groups or private groups where the current user is in the InviteMembers array
-          item.Author.Title == currentUser.Title);
-        setGroupsData(res);
-      }
+      // if (res.length < 0) {
+      //   const res = tempgroupsData.filter(item =>
+      //     // Include public groups or private groups where the current user is in the InviteMembers array
+      //     item.Author.Title == currentUser.Title);
+      //   setGroupsData(res);
+      // }
     }
     else if (tab === "groupsyoufollow") {
-
-      const res = groupsData.filter(item =>
+      let resfollow: any[] = [];
+      resfollow = groupsDataAll.filter(item =>
         // Include public groups or private groups where the current user is in the InviteMembers array
-        item.GroupFollowersId == currentUser.Id);
-      setGroupsData(res);
+        item.GroupFollowersId.indexOf(currentUser.Id) > -1);
+      setGroupsData(resfollow);
     }
     settempGroupsData(await getGroupTeam(sp));
   };
@@ -333,7 +334,7 @@ const GroupandTeamcontext = ({ props }: any) => {
     );
 
     console.log("announcementArr----------", announcementArr);
-
+    setGroupsDataAll(announcementArr);
     setGroupsData(announcementArr);
 
     // setAnnouncementData(announcementArr);
@@ -1084,7 +1085,7 @@ const GroupandTeamcontext = ({ props }: any) => {
                   file,
                   sp,
                   "Documents",
-                  "https://alrostamanigroupae.sharepoint.com"
+                  "https://officeindia.sharepoint.com"
                 );
               }
             } else {
@@ -1545,7 +1546,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
             //       "Documents",
 
-            //       "https://alrostamanigroupae.sharepoint.com"
+            //       "https://officeindia.sharepoint.com"
 
             //     );
 

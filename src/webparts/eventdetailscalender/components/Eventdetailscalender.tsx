@@ -513,8 +513,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
   const AddAttendees = async (Item: any) => {
     debugger
     let arr: any[] = []
-    console.log(Item, 'Item attenees', Item?.AttendeesId, Item?.AttendeesId.indexOf(CurrentUser.Id), "CurrentUser.Id", CurrentUser.Id);
-
+   
     if (Item?.AttendeesId != null) {
       // const flatArrayAttendees = Item?.AttendeesId[0];
       // //  const attendees = flatArray(flatArrayAttendees)
@@ -529,7 +528,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
           arr.push(Item.AttendeesId[i])
         }
 
-        if (Item?.Attendees?.length > 0 && Item?.AttendeesId.indexOf(CurrentUser.Id) == 0) {
+        if (Item?.Attendees?.length > 0 && Item?.AttendeesId.indexOf(CurrentUser.Id) > -1) {
           arr = arr.filter((x) => x != CurrentUser.Id)
           console.log("arrrr if", arr);
         } else {
@@ -726,7 +725,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
                                       title="Screenshot-1"
                                     >
                                       <img
-                                        src={`https://alrostamanigroupae.sharepoint.com${res.fileUrl}`}
+                                        src={`https://officeindia.sharepoint.com${res.fileUrl}`}
                                         className="img-fluid imgcssscustom"
                                         alt="work-thumbnail"
                                         data-themekey="#"

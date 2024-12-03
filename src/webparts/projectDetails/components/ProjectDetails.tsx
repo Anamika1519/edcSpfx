@@ -530,7 +530,7 @@ if (projectDetails ) {
         //       try {
         //         alert("f")
         //         // Upload the file to the document library
-        //         const uploadFolder = sp.web.getFolderByServerRelativePath(`/sites/Intranetuat/ARGProjectsFiles/${projectname}`);
+        //         const uploadFolder = sp.web.getFolderByServerRelativePath(`/sites/AlRostmaniSpfx2/ARGProjectsFiles/${projectname}`);
         //         const uploadResult = await uploadFolder.files.addChunked(file.name, file);
              
         //         const listItem = await uploadResult.file.getItem();
@@ -1080,8 +1080,8 @@ const uploadfileinfolder = async () => {
   }
   
   // Example usage
-  //const docLibraryUrl = '/sites/Intranetuat/ARGProjectsFiles/';
-  //const subsiteUrl = '/sites/Intranetuat/test/test11';
+  //const docLibraryUrl = '/sites/AlRostmaniSpfx2/ARGProjectsFiles/';
+  //const subsiteUrl = '/sites/AlRostmaniSpfx2/test/test11';
   
   //console.log(isDocumentLibrary(docLibraryUrl)); // true
   //console.log(isSubsite(docLibraryUrl)); // false
@@ -1092,7 +1092,7 @@ const uploadfileinfolder = async () => {
     // try {
 
     //   console.log(projectname , "projectname")
-    //   const response = await sp.web.getFolderByServerRelativePath(`/sites/Intranetuat/ARGProjectsFiles/${projectname}`).files();
+    //   const response = await sp.web.getFolderByServerRelativePath(`/sites/AlRostmaniSpfx2/ARGProjectsFiles/${projectname}`).files();
     //     setProjectallfiles(response)
     //     console.log(response, "response ")
     //   console.log('Files in the folder:', response);

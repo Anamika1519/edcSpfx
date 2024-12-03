@@ -229,7 +229,7 @@ const EntityMastercontext = ({ props }: any) => {
   const Breadcrumb = [
     {
       "MainComponent": "Settings",
-      "MainComponentURl": `${siteUrl}SitePages/Settings.aspx`
+      "MainComponentURl": `${siteUrl}/SitePages/Settings.aspx`
     },
     {
       "ChildComponent": "Event Master",
@@ -508,7 +508,7 @@ const EntityMastercontext = ({ props }: any) => {
 
       >
 
-<div className='indexdesign'> {index + 1}</div>  
+<div className='indexdesign'> {startIndex + index + 1}</div>  
 
       </td>
 

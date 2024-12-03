@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react'
 import HorizontalNavbar from '../../horizontalNavBar/components/HorizontalNavBar'
 import VerticalSideBar from '../../verticalSideBar/components/VerticalSideBar'
@@ -12,10 +11,14 @@ import {
   addItem,
   additemtoFollowedGroup,
 
+  fetchgrouppandteammaybeInterested,
+
   fetchNotFollowedGroupdata,
   getGroupTeam,
 
   getGroupTeamByID,
+
+  getGroupTeamDetailsById,
 
   getType,
 
@@ -113,11 +116,12 @@ const SocialFeedContext = ({ props }: any) => {
   const [activeTab, setActiveTab] = useState("allgroups");
   const [gallerydata, setGalleryData] = useState<any[]>([]);
   const [Loading1, setLoading1] = useState(false);
+  const [IsEdit, setIsEdit] = useState<boolean>(false);
   // const [formData, setFormData] = React.useState({
   //   Post: "",
-    
+
   // });
-  const[argcurrentgroupuser, setArgcurrentgroupuser] = useState([])
+  const [argcurrentgroupuser, setArgcurrentgroupuser] = useState([])
   useEffect(() => {
     // Load posts from localStorage when the component mounts
     // const storedPosts = JSON.parse(localStorage.getItem('posts') || '[]');
@@ -128,24 +132,24 @@ const SocialFeedContext = ({ props }: any) => {
     // getuserprofile()
 
   }, [props]);
-  async function  fetchDetailbyProjectName() {
+  async function fetchDetailbyProjectName() {
     console.log(GroupName, "GroupName")
     const ids = window.location.search;
     const originalString = ids;
     const idNum = originalString.substring(1);
     try {
-     
-        
-     // alert(GroupName)
+
+
+      // alert(GroupName)
       const getargmember = await sp.web.lists.getByTitle('ARGGroupandTeam').items.filter(`GroupName eq '${GroupName}'`).select("*,InviteMemebers/ID,InviteMemebers/EMail,InviteMemebers/Title , Author/ID,Author/Title,Author/EMail").expand("InviteMemebers ,Author")();
       console.log(getargmember, "getargmember")
-  
+
       setArgcurrentgroupuser(getargmember)
     } catch (error) {
-      
+
     }
- 
-   
+
+
   }
 
   console.log(argcurrentgroupuser, "ARGGroupandTeam member")
@@ -220,7 +224,9 @@ const SocialFeedContext = ({ props }: any) => {
         console.log(res, ":response")
         // debugger
         console.log("res------", res)
-        setArrDetails([res])
+        let arrr :any[]=[];
+        arrr.push(res)
+        setArrDetails(arrr)
         debugger
 
         userList.forEach(function (element, index, array) {
@@ -237,9 +243,10 @@ const SocialFeedContext = ({ props }: any) => {
         console.log("Error fetching data: ", error);
       });
     debugger;
-    const getAllgroup = await sp.web.lists
-      .getByTitle("ARGGroupandTeam")
-      .items.select("*,InviteMemebers/Id,InviteMemebers/Title,GroupType").expand("InviteMemebers")()
+    const getAllgroup = await fetchgrouppandteammaybeInterested(sp)
+      // await sp.web.lists
+      //   .getByTitle("ARGGroupandTeam")
+      //   .items.select("*,InviteMemebers/Id,InviteMemebers/Title,GroupType").expand("InviteMemebers")()
       .then((getAllgroup) => {
         // arr=res;,InviteMemebers/EMail
         console.log(getAllgroup, ":response")
@@ -251,9 +258,24 @@ const SocialFeedContext = ({ props }: any) => {
         console.log("Error fetching data: ", error);
       });
   }
-  console.log(ArrDetails , "ArrDetails data success")
-  console.log(ArrDetails , "ArrDetails data success")
+  console.log(ArrDetails, "ArrDetails data success")
+  console.log(ArrDetails, "ArrDetails data success")
   const getAllAPI = async () => {
+    const ids = window.location.search;
+    const originalString = ids;
+    const idNum = originalString.substring(1);
+    const currentUser = await getCurrentUserNameId(sp);
+    let currentGroup = await getGroupTeamDetailsById(sp, Number(idNum));
+    setArrDetails(currentGroup);
+    console.log(currentGroup,"currentGroup");
+    if (currentGroup[0].GroupType === "Selected Members" &&
+      currentGroup[0]?.InviteMemebers?.some((invitee: any) => invitee.Id === currentUser || currentGroup[0].Author.ID === currentUser)) {
+      setIsEdit(true);
+    } else if (currentGroup[0].GroupType === "All" && currentGroup[0]?.GroupFollowers &&
+      currentGroup[0]?.GroupFollowers?.some((invitee: any) => invitee.Id === currentUser || currentGroup[0].Author.ID === currentUser)) {
+      setIsEdit(true);
+    } 
+    
     const galleryItemsone = await fetchMediaGallerydata(sp);
     setGalleryData(galleryItemsone);
     setCurrentEmail(await getCurrentUserProfileEmail(sp))
@@ -274,7 +296,7 @@ const SocialFeedContext = ({ props }: any) => {
   //   let ImagesIds: any[] = [];
   //   for (const file of files) {
   //     try {
-      
+
   //       const uploadedImage = await uploadFileToLibrary(file, sp, "SocialFeedImages");
 
   //       uploadedImages.push(uploadedImage); 
@@ -286,7 +308,7 @@ const SocialFeedContext = ({ props }: any) => {
 
 
 
-    
+
 
   //   setImages(flatArray(uploadedImages)); 
 
@@ -294,8 +316,8 @@ const SocialFeedContext = ({ props }: any) => {
 
   // };
 
- 
-const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []); // Ensure files is an array of type File[]
     let uploadedImages: any[] = [];
     let ImagesIds: any[] = [];
@@ -308,7 +330,7 @@ const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
           sp,
           "SocialFeedImages"
         );
- 
+
         uploadedImages.push(uploadedImage); // Store uploaded image data
         console.log(uploadedImage, "Uploaded file data");
       } catch (error) {
@@ -319,12 +341,12 @@ const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
       }
     }
     // Set state after uploading all images
- 
+
     setImages(flatArray(uploadedImages)); // Store all uploaded images
- 
+
     setUploadFile(flatArray(uploadedImages)); // Optional: Track the uploaded file(s) in another state
   };
- 
+
   //#region flatArray
 
   const flatArray = (arr: any[]): any[] => {
@@ -336,8 +358,8 @@ const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
   //#endregion
 
   console.log(SocialFeedImagesJson, 'SocialFeedImagesJson');
-  const validateForm = () => {   
-    
+  const validateForm = () => {
+
     let valid = true;
 
     if (!Contentpost) {
@@ -349,7 +371,7 @@ const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
 
   const [errorMessage, setErrorMessage] = useState('');
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  //if (validateForm()) {
+    //if (validateForm()) {
     if (!Contentpost) {
       event.preventDefault()
       setErrorMessage('Please write something in the post.');
@@ -365,7 +387,7 @@ const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const ids = window.location.search;
     const originalString = ids;
     const idNum = originalString.substring(1);
-    
+
     await sp.web.lists.getByTitle("ARGGroupandTeamComments")
       .items.add({
         Comments: Contentpost,
@@ -381,7 +403,7 @@ const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setContent('');
     setImages([]);
     fetchPosts();
-  //}
+    //}
   };
 
 
@@ -425,7 +447,7 @@ const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
 
     try {
       sp.web.lists.getByTitle("ARGGroupandTeamComments")
-      .items.select("*,GroupTeamComments/Id,GroupTeamComments/Comments,GroupTeamsImages/Id,GroupTeamLikes/Id,Author/Id,Author/Title,Author/EMail")
+        .items.select("*,GroupTeamComments/Id,GroupTeamComments/Comments,GroupTeamsImages/Id,GroupTeamLikes/Id,Author/Id,Author/Title,Author/EMail")
         .expand("GroupTeamComments,GroupTeamsImages,GroupTeamLikes,Author")
         .orderBy("Created", false)
         .filter(`GroupandTeamId eq ${idNum}`)().then((results: IGroupAndTeamPosts[]) => {
@@ -665,7 +687,7 @@ const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const postResult = await additemtoFollowedGroup(sp, Itemdata);
     const postId = postResult?.data?.ID;
     Swal.fire("Group followed successfully", "", "success");
-    setgetAllgroup(await fetchNotFollowedGroupdata(sp));
+    setgetAllgroup(await fetchgrouppandteammaybeInterested(sp));
     debugger
     if (!postId) {
       console.error("Post creation failed.");
@@ -732,7 +754,7 @@ const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
                       whiteSpace: 'nowrap',
 
                       display: 'flex',
-                      fontWeight:'700',
+                      fontWeight: '700',
                       textWrap: 'inherit',
                       alignItems: 'center'
 
@@ -741,12 +763,12 @@ const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
                     <span style={{
                       fontSize: '15px',
                       color: 'black',
-                      
+
 
                       display: 'flex',
 
                       alignItems: 'center',
-                      lineHeight:'22px',
+                      lineHeight: '22px',
                       textWrap: 'inherit'
 
                     }}>{GroupDescription}</span>
@@ -754,55 +776,56 @@ const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
 
                     <br />
                     <div className="row mt-0">
-                      <div style={{position:'sticky', top:'90px' }}>
-                        <div className="card" style={{ borderRadius: "1rem"}}>
+                      <div style={{ position: 'sticky', top: '90px' }}>
+                        <div className="card" style={{ borderRadius: "1rem" }}>
                           <div className="card-body pb-0 gheight">
                             <h4 className="header-title font-16 text-dark fw-bold mb-0">
-                              Group Members 
+                              Group Members
 
                             </h4>
-                            {ArrDetails[0]?.GroupType === "All" && 
-    ArrDetails[0]?.GroupFollowers?.length > 0 && ArrDetails[0].GroupFollowers.map((follower:any, idx:any) => (
-    
-        <div className="projectmemeber" key={idx}>
-            <img
-                src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${follower?.EMail}`}
-                className="rounded-circlecss6 img-thumbnail avatar-xl"
-                alt="profile-image"
-            />
-            <p>
-                {follower?.Title}
-                <img
-                    src={require("../assets/calling.png")}
-                    className="alignright"
-                    onClick={() => window.open(`https://teams.microsoft.com/l/call/0/0?users=${follower.EMail}`, "_blank")}
-                    alt="Call"
-                />
-            </p>
-        </div>
-    ))
-}
+                            {console.log("ArrDetails[0]ArrDetails[0]", ArrDetails[0])}
+                            {ArrDetails[0]?.GroupType === "All" &&
+                              ArrDetails[0]?.GroupFollowers?.length > 0 && ArrDetails[0].GroupFollowers.map((follower: any, idx: any) => (
+
+                                <div className="projectmemeber" key={idx}>
+                                  <img
+                                    src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${follower?.EMail}`}
+                                    className="rounded-circlecss6 img-thumbnail avatar-xl"
+                                    alt="profile-image"
+                                  />
+                                  <p>
+                                    {follower?.Title}
+                                    <img
+                                      src={require("../assets/calling.png")}
+                                      className="alignright"
+                                      onClick={() => window.open(`https://teams.microsoft.com/l/call/0/0?users=${follower.EMail}`, "_blank")}
+                                      alt="Call"
+                                    />
+                                  </p>
+                                </div>
+                              ))
+                            }
 
                             {/* <p>{GroupName}</p> */}
                             {/* <>{ArrDetails[0].GroupType}</> */}
-                            {ArrDetails[0]?.InviteMemebers?.length > 0 && 
-                          ArrDetails[0]?.InviteMemebers.map((member:any, idx:any) => (
-        <div className="projectmemeber">
-          <div className="itemalign">
-<img
-          // style={{
-          //   margin:
-          //     index == 0
-          //       ? "0 0 0 0"
-          //       : "0 0 0px -12px",
-          // }}
-          src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${member?.EMail}`}
-          className="rounded-circlenu img-thumbnail avatar-xl"
-          alt="profile-image"
-        />
-        <p className='mb-0'>{member?.Title} </p>
-        </div>
-        {/* {item.Author.EMail === currentUserEmailRef.current && (
+                            {ArrDetails[0]?.InviteMemebers?.length > 0 &&
+                              ArrDetails[0]?.InviteMemebers.map((member: any, idx: any) => (
+                                <div className="projectmemeber">
+                                  <div className="itemalign">
+                                    <img
+                                      // style={{
+                                      //   margin:
+                                      //     index == 0
+                                      //       ? "0 0 0 0"
+                                      //       : "0 0 0px -12px",
+                                      // }}
+                                      src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${member?.EMail}`}
+                                      className="rounded-circlenu img-thumbnail avatar-xl"
+                                      alt="profile-image"
+                                    />
+                                    <p className='mb-0'>{member?.Title} </p>
+                                  </div>
+                                  {/* {item.Author.EMail === currentUserEmailRef.current && (
         <div>
         <button onClick={()=>handleRemoveUser(id?.ID)}>Remove</button>
         </div>
@@ -810,31 +833,31 @@ const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         )
         
         } */}
-      
-              <img
 
-src={require("../assets/calling.png")}
+                                  <img
 
-className="alignright"
+                                    src={require("../assets/calling.png")}
 
-onClick={() =>
+                                    className="alignright"
 
-  window.open(
+                                    onClick={() =>
 
-    `https://teams.microsoft.com/l/call/0/0?users=${member.EMail}`,
+                                      window.open(
 
-    "_blank"
+                                        `https://teams.microsoft.com/l/call/0/0?users=${member.EMail}`,
 
-  )
+                                        "_blank"
 
-}
+                                      )
 
-alt="Call"
+                                    }
 
-/>
-        </div>
-        
-      ))}
+                                    alt="Call"
+
+                                  />
+                                </div>
+
+                              ))}
                             {/* <div className="inbox-widget" style={{ marginTop: '1rem' }}>
                               {groupmembers.map((user, index) => (
                                 <div
@@ -901,7 +924,7 @@ alt="Call"
                           </li>
 
                         </ul>
-
+                        {console.log("IsEditIsEdit", IsEdit)}
                         {hideCreatePost &&
 
                           <div className="tab-content pt-0">
@@ -919,10 +942,11 @@ alt="Call"
                                     placeholder="Write something in this group..."
 
                                     value={Contentpost}
-                                    
+
                                     rows={4}
 
                                     onChange={(e) => setContent(e.target.value)}
+                                    disabled={!IsEdit}
 
                                   />
 
@@ -933,9 +957,9 @@ alt="Call"
                                     <label>
 
                                       <div>
-
-                                        <Link style={{ width: "20px", height: "16px" }} onClick={() => handleImageChange} />
-
+                                        {IsEdit &&
+                                          <Link style={{ width: "20px", height: "16px" }} onClick={() => handleImageChange} />
+                                        }
                                         <input
 
                                           type="file"
@@ -985,44 +1009,44 @@ alt="Call"
                                     </div> */}
 
 
- 
-                      <div className="image-preview mt-2">
-                                         {Loading1 ? (
-                                           <div
-                                             className="spinner-border text-primary"
-                                             role="status"
-                                           >
-                                             <span className="sr-only">
-                                               Loading...
-                                             </span>
-                                           </div>
-                                         ) : (
-                                           SocialFeedImagesJson.map(
-                                             (image: any, index) => {
-                                               var imageUrl =
-                                                 mergeAndRemoveDuplicates(
-                                                   siteUrl,
-                                                   image.fileUrl
-                                                 );
-                                               console.log(imageUrl);
-  
-                                               return (
-                                                 <img
-                                                   key={index}
-                                                   src={imageUrl}
-                                                   alt={`preview-${index}`}
-                                                   style={{
-                                                     width: "100px",
-                                                     marginRight: "10px",
-                                                   }}
-                                                 />
-                                               );
-                                             }
-                                           )
-                                         )}
-                                       </div>
-  
-                                    <button type="submit" className="btn btn-sm btn-success font-121">
+
+                                    <div className="image-preview mt-2">
+                                      {Loading1 ? (
+                                        <div
+                                          className="spinner-border text-primary"
+                                          role="status"
+                                        >
+                                          <span className="sr-only">
+                                            Loading...
+                                          </span>
+                                        </div>
+                                      ) : (
+                                        SocialFeedImagesJson.map(
+                                          (image: any, index) => {
+                                            var imageUrl =
+                                              mergeAndRemoveDuplicates(
+                                                siteUrl,
+                                                image.fileUrl
+                                              );
+                                            console.log(imageUrl);
+
+                                            return (
+                                              <img
+                                                key={index}
+                                                src={imageUrl}
+                                                alt={`preview-${index}`}
+                                                style={{
+                                                  width: "100px",
+                                                  marginRight: "10px",
+                                                }}
+                                              />
+                                            );
+                                          }
+                                        )
+                                      )}
+                                    </div>
+
+                                    <button type="submit" className="btn btn-sm btn-success font-121" disabled={!IsEdit}>
 
                                       <FontAwesomeIcon icon={faPaperPlane} /> Post
 
@@ -1805,11 +1829,11 @@ alt="Call"
                       ) : null
 
                     } */}
-                       <img
-          src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${ArrDetails[0]?.Author.EMail}`}
-          className="rounded-circlecss6 img-thumbnail avatar-xl"
-          alt="profile-image"
-        />
+                    <img
+                      src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${ArrDetails[0]?.Author.EMail}`}
+                      className="rounded-circlecss6 img-thumbnail avatar-xl"
+                      alt="profile-image"
+                    />
                     <h1 className='text-muted font-14 mt-3'>
                       <p className='text-dark font-16 text-center mb-2'> {currentUsername}</p>
                       <p className='text-muted font-14 text-center mb-1'>{userJobTitle}</p>
@@ -1822,14 +1846,14 @@ alt="Call"
 
 
 
-                <div className="card mobile-6" style={{ borderRadius: "1rem", position:'sticky', top:'90px' }}>
+                <div className="card mobile-6" style={{ borderRadius: "1rem", position: 'sticky', top: '90px' }}>
 
                   <div className="card-body pb-0 gheight">
 
                     <h4 className="header-title font-16 text-dark fw-bold mb-0" style={{ fontSize: '20px' }}>
 
                       Group you might be interested in
-                      <a className="font-11 view-all  btn btn-primary  waves-effect waves-light" style={{float: 'right', lineHeight: '21px', right: '10px'}}>View All</a>
+                      <a className="font-11 view-all  btn btn-primary  waves-effect waves-light" style={{ float: 'right', lineHeight: '21px', right: '10px' }}>View All</a>
                       {/* <a
 
                         style={{ float: "right" }}
@@ -1847,7 +1871,7 @@ alt="Call"
                     </h4>
 
                     <div className="inbox-widget mt-4">
-
+                      {console.log("getAllgroup getAllgroup", getAllgroup)}
                       {getAllgroup.map((user: any, index: 0) => (
 
                         <div
@@ -1881,18 +1905,18 @@ alt="Call"
                           <div className="col-sm-10">
 
                             <a>
-                            <div style={{width:'160px'}} className="gfg_tooltip">
+                              <div style={{ width: '160px' }} className="gfg_tooltip">
 
-                              <p className="fw-bold mt-1 font-14 mb-0 text-dark namcss" style={{ fontSize: '14px' }}>
+                                <p className="fw-bold mt-1 font-14 mb-0 text-dark namcss" style={{ fontSize: '14px' }}>
 
-                                {user.GroupName}
+                                  {user.GroupName}
 
-                              </p>
-                              <span style={{left:'50%'}} className="gfg_text">
-                              {user.GroupName}
-                                        </span>
+                                </p>
+                                <span style={{ left: '50%' }} className="gfg_text">
+                                  {user.GroupName}
+                                </span>
 
-                                        </div>
+                              </div>
 
                             </a>
 
@@ -1902,7 +1926,7 @@ alt="Call"
 
                           <div className="col-sm-2 txtr">
 
-                            <PlusCircle   onClick={() => addFollowedGroup(user)} size={20} color='#008751' />
+                            <PlusCircle onClick={() => addFollowedGroup(user)} size={20} color='#008751' />
 
                           </div>
 
@@ -1964,8 +1988,8 @@ alt="Call"
                           className="card-title fw-bold font-20 mb-1 mt-0"
 
                         >
-  
-                        {groupItem.GroupName} ({groupItem.GroupType})
+
+                          {groupItem.GroupName} ({groupItem.GroupType})
 
                         </h4>
 

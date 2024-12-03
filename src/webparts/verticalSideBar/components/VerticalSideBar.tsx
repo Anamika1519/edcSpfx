@@ -215,7 +215,7 @@ const VerticalContext = ({ _context }: any) => {
     setSubmenuOpen(prevIndex => (prevIndex === index ? null : index));
   };
   const gotoPage = (url: string, Id: number) => {
-    debugger
+    
     localStorage.setItem("NavId", "")
     if (url != null) {
       localStorage.setItem("NavId", String(Id))

@@ -37,6 +37,7 @@ const AddDynamicBannerContext = ({ props }: any) => {
   const { setHide }: any = context;
   const siteUrl = props.siteUrl;
   const [BnnerImagepostArr, setBannerImagepostArr]:any = React.useState();
+  const [ValidSubmit, setValidSubmit] = React.useState(true);
   const [bannerByIDArr, setBannerByIdArr] = React.useState({
     title: '',
     description: "",
@@ -61,18 +62,23 @@ const AddDynamicBannerContext = ({ props }: any) => {
      const { title, URL,description } = formData;
     
     let valid = true;
-  
+    setValidSubmit(true);
     if (!title) {
-      Swal.fire('Error', 'Title is required!', 'error');
-      valid = false;
-    } else if (!URL) {
-      Swal.fire('Error', 'Type is required!', 'error');
-      valid = false;
-    } else if (!description) {
-      Swal.fire('Error', 'Category is required!', 'error');
+      
       valid = false;
     }
-  
+    else if (!description) {
+     
+      valid = false;
+    } else if (BnnerImagepostArr.length == 0)
+      {
+     
+        valid = false;
+      }
+      setValidSubmit(valid);
+      if(!valid) 
+        Swal.fire('Please fill all the mandatory fields.');
+     
     return valid;
   };
 
@@ -220,7 +226,7 @@ console.log(siteUrl)
           setBannerImagepostArr(uloadBannerImageFiles);
 
         } else {
-          Swal.fire("only image & video can be upload")
+          Swal.fire("Only image can be uploaded")
         }
       }
     }
@@ -252,19 +258,21 @@ console.log(siteUrl)
   // Handle form submission
   //#region  Submit Form
   const handleFormSubmit = async () => {
+   
+    if (validateForm()) {
     Swal.fire({
       title: 'Do you want to save',
       showConfirmButton: true,
       showCancelButton: true,
-      confirmButtonText: "Save",
-      cancelButtonText: "Cancel",
+      confirmButtonText: "Yes",
+      cancelButtonText: "No",
       icon: 'warning'
     }
     ).then(async (result) => {
       //console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
       if (result.isConfirmed) {
         // Swal.fire("Saved!", "", "success");
-        debugger
+        
         let bannerImageArray: any=[];
         let galleryIds: any[] = [];
         let documentIds: any[] = [];
@@ -279,7 +287,7 @@ console.log(siteUrl)
             for (const file of BnnerImagepostArr) {
               if (!file.serverRelativeUrl) {
                 // const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
-                bannerImageArray = await uploadFile(file, sp, "Documents", "https://alrostamanigroupae.sharepoint.com");
+                bannerImageArray = await uploadFile(file, sp, "Documents", "https://officeindia.sharepoint.com");
               }
 
             }
@@ -346,7 +354,7 @@ console.log(siteUrl)
           if (BnnerImagepostArr.length > 0) {
             for (const file of BnnerImagepostArr) {
               // const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
-              bannerImageArray = await uploadFile(file, sp, "Documents", "https://alrostamanigroupae.sharepoint.com");
+              bannerImageArray = await uploadFile(file, sp, "Documents", "https://officeindia.sharepoint.com");
             }
           }
           debugger
@@ -388,6 +396,7 @@ console.log(siteUrl)
       Swal.fire("Changes are not saved", "", "info");
     }
     )
+  }
   }
 
   //#endregion
@@ -506,7 +515,7 @@ console.log(siteUrl)
                           </textarea>
                         </div>
                       </div>
-                      <div className="col-lg-6">
+                      {/* <div className="col-lg-6">
                         <div className="mb-3">
                           <label htmlFor="url" className="form-label">
                             URL <span className="text-danger">*</span>
@@ -521,7 +530,7 @@ console.log(siteUrl)
                             onChange={(e) => onChange(e.target.name, e.target.value)}>
                           </textarea>
                         </div>
-                      </div>
+                      </div> */}
                     {/* {BnnerImagepostArr!=undefined&&BnnerImagepostArr.length>0?
                     (<><div>{BnnerImagepostArr[0].fileName}</div><img src={BnnerImagepostArr[0].fileName} /></>):""} */}
                       <div className="text-center butncss">

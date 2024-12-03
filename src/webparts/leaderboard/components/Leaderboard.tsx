@@ -66,7 +66,7 @@ const LeaderboardContext = ({ props }: any) => {
 
     console.log("This function is called only once", useHide);
     fetchUserInformationList();
-    fetchCurrentUserEntity();
+    //fetchCurrentUserEntity();
 
     const showNavbar = (
       toggleId: string,
@@ -231,7 +231,7 @@ const LeaderboardContext = ({ props }: any) => {
           item?.AuthorTitle.toLowerCase().includes(filters.AuthorTitle.toLowerCase())) &&
         (filters.AuthorEMail === "" ||
           item?.AuthorEMail.toLowerCase().includes(filters.AuthorEMail.toLowerCase())) &&
-        (filters.AuthorDepartment === '' || item?.AuthorDepartment.toLowerCase().includes(filters.AuthorDepartment.toLowerCase()))
+          (filters.AuthorDepartment === '' || item?.AuthorDepartment && item?.AuthorDepartment.toLowerCase().includes(filters.AuthorDepartment.toLowerCase()))
           // (filters.Department === '' || item?.Department.toLowerCase().includes(filters.Department.toLowerCase()))
 
          /*  (filters.Name === "" ||
@@ -286,14 +286,16 @@ const LeaderboardContext = ({ props }: any) => {
   const [isOpenNews, setIsOpenNews] = React.useState(false);
 
   const handleNewsExportClick = () => {
-    const exportData = currentData.map((item, index) => ({
-      Name: item.Title,
-      "Employee Id": item.ID,
-      Email: item.EMail,
-      Department: item?.Department != null ? item?.Department : "NA",
+    const exportData = leaderboard.map((item, index) => ({
+      Name: item.AuthorTitle,     
+      Email: item.AuthorEMail,
+      TotalPoints: item.TotalPoints,
+      Ratting: item.Ratting,
+      CompanyName:  item?.companyName != null ? item?.companyName : "NA",
+      Department: item?.AuthorDepartment != null ? item?.AuthorDepartment : "NA",
     }));
 
-    exportToExcel(exportData, "Employe List");
+    exportToExcel(exportData, "Leaderboard List");
   };
 
   const exportToExcel = (data: any[], fileName: string) => {
@@ -306,7 +308,24 @@ const LeaderboardContext = ({ props }: any) => {
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
+  const handleSearch: React.ChangeEventHandler = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if(activeTab == "listView")
+        setActiveTab("cardView");
+    let txtSearch = (document.getElementById('searchInput') as HTMLInputElement).value;
+    if(txtSearch.length >1){
+   
+    const filteredusers = leaderboard.filter((user: any) =>      
+      user.AuthorTitle.toLowerCase().includes(txtSearch.toLowerCase())
+    );
+   // let arr =[];
+   // arr=filteredusers;
+        setUsersArr(filteredusers);
+    }
 
+    else {
+      fetchUserInformationList();
+    }   
+  }
   const fetchCurrentUserEntity = async () => {
     try {
 
@@ -361,7 +380,8 @@ const LeaderboardContext = ({ props }: any) => {
                         type="search"
                         className="form-control my-1 my-md-0"
                         id="searchInput"
-                        placeholder="Search..."
+                        placeholder="Search by name..."
+                        onChange={handleSearch}
                       />
                       <span
                         style={{

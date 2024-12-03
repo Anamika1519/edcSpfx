@@ -48,7 +48,7 @@ export const fetchNotFollowedGroupdata = async (_sp) => {
         console.log("finalqueryfinalquery", finalquery);
         await _sp.web.lists
           .getByTitle("ARGGroupandTeam")
-          .items.select("*,Author/Title,Author/ID,GroupName,GroupType,InviteMemebers/Id")
+          .items.select("*,Author/Title,Author/ID,Author/EMail,GroupName,GroupType,InviteMemebers/Id")
           .filter(`${finalquery}`)
           .expand("Author,InviteMemebers")
           .orderBy("Created", false)
@@ -75,6 +75,65 @@ export const fetchNotFollowedGroupdata = async (_sp) => {
       }
     })
   console.log("bookmarkarrbookmarkarr", arr);
+  //arr = bookmarkarr;
+  return arr;
+}
+export const fetchgrouppandteammaybeInterested = async (_sp) => {
+  let arr = []
+  let bookmarkarr = [];
+  let currentUser;
+  await _sp.web.currentUser()
+    .then(user => {
+      console.log("user", user);
+      currentUser = user; // Get the current user's Email
+    })
+    .catch(error => {
+      console.error("Error fetching current user: ", error);
+      return [];
+    });
+
+  await _sp.web.lists.getByTitle("ARGGroupandTeamFollow")
+    .items.select("*,GroupID/ID,GroupID/Title,FollowedBy/ID,FollowedBy/Title,FollowedBy/EMail").expand("GroupID,FollowedBy")
+    .filter(`FollowedBy/EMail eq '${currentUser.Email}'`)
+    .orderBy("Created", false).getAll().then(async (resnew) => {
+      console.log("resnew", resnew);
+      if (resnew.length > 0) {
+
+        let filterquery = [];
+        for (let i = 0; i < resnew.length; i++) {
+          filterquery.push(`ID ne ${resnew[i].GroupIDId}`)
+        }
+        let finalquery = filterquery.map((x) => x).join(' and ');
+        console.log("finalqueryfinalquery", finalquery);
+        await _sp.web.lists
+          .getByTitle("ARGGroupandTeam")
+          .items.select("*,Author/Title,Author/EMail,Author/ID,GroupName,GroupType,InviteMemebers/Id")
+          .expand("Author,InviteMemebers")
+          .filter(`${finalquery} and GroupType eq 'All'`)
+          .orderBy("Created", false)
+          .getAll()
+          .then((res) => {
+            console.log("group you may be interested in", res);
+            arr = res
+            // Filter items based on GroupType and InviteMembers
+             //arr = res.filter(item =>
+            // // Include public groups or private groups where the current user is in the InviteMembers array
+            // //item.ID != 5 && item.ID != 18
+            // // &&
+            //  (item.GroupType === "All" ||
+            //    (item.GroupType === "Selected Members" && item.InviteMemebers && item.InviteMemebers.some(member => member.Id === currentUser.Id)))
+
+            //  );
+
+            //bookmarkarr = arr
+          })
+          .catch((error) => {
+            console.log("Error fetching data: ", error);
+          });
+
+      }
+    })
+  console.log("intestred in may be", arr);
   //arr = bookmarkarr;
   return arr;
 }
@@ -135,56 +194,89 @@ export const additemtoFollowedGroup = async (_sp, itemData) => {
 // };
 
 export const getGroupTeam = async (_sp) => {
+ 
   let arr = [];
+ 
   let currentUser;
-
+ 
+ 
   // Fetch the current user
+ 
   await _sp.web.currentUser()
+ 
     .then(user => {
+ 
       currentUser = user.Id; // Get the current user's ID
+ 
     })
+ 
     .catch(error => {
+ 
       console.error("Error fetching current user: ", error);
+ 
       return [];
+ 
     });
-
+ 
+ 
   if (!currentUser) return arr; // Return empty array if user fetch failed
-
+ 
+ 
   await _sp.web.lists
+ 
     .getByTitle("ARGGroupandTeam")
-    .items.select("*,Author/Title,Author/ID,GroupName,GroupType,InviteMemebers/Id")
+ 
+    .items.select("*,Author/Title,Author/ID,Author/EMail,GroupName,GroupType,InviteMemebers/Id,InviteMemebers/Title")
+ 
     .expand("Author,InviteMemebers")
+ 
     .orderBy("Created", false)
+ 
     .getAll()
+ 
     .then((res) => {
+ 
       // alert("res", JSON.parse(JSON.stringify(res)))
+ 
       debugger
+ 
       console.log("--------group", res);
-
+ 
+ 
     // Add logic to filter based on GroupType and check if current user is in InviteMemebers
-    arr = res
-    .filter(item => {
-      console.log("item.GroupType", item.GroupType)
-      if (item.GroupType === "Selected Members") {
-        //alert(item.GroupType)
-        // Check if current user is in InviteMemebers
-        return item?.InviteMemebers?.some(invitee => invitee.Id === currentUser || item.Author.ID === currentUser);
-      }
-      return true; // Include other groups
-    })
-    .map(item => ({
+ 
+    arr = res.filter((item) => item.GroupType === "All"
+ 
+      || (item.GroupType === "Selected Members" && item?.InviteMemebersId?.indexOf(currentUser) > -1)
+ 
+      || item.Author.ID === currentUser
+ 
+    ).map(item => ({
+ 
       ...item,
-      TruncatedGroupName: item.GroupName.length > 50 
-        ? `${item.GroupName.slice(0, 50)}...` 
+ 
+      TruncatedGroupName: item.GroupName.length > 50
+ 
+        ? `${item.GroupName.slice(0, 50)}...`
+ 
         : item.GroupName,
+ 
     }));
+ 
+      console.log("--------group final", arr);
+ 
 })
+ 
 .catch((error) => {
+ 
   console.error("Error fetching data: ", error);
+ 
 });
-
-
+ 
+ 
+ 
   return arr;
+ 
 };
 
 export const updateItem = async (itemData, _sp, id) => {
@@ -327,22 +419,40 @@ export const getGroupTeamByID = async (_sp, id) => {
 };
 
 export const getGroupTeamDetailsById = async (_sp, idNum) => {
+ 
   let arr = [];
+ 
   let arr1 = [];
+ 
   await _sp.web.lists
+ 
     .getByTitle("ARGGroupandTeam")
-    .items.getById(idNum).select("*,InviteMemebers/Id,InviteMemebers/Title,InviteMemebers/EMail,GroupType").expand("InviteMemebers")()
+ 
+    .items.getById(idNum).select("*,InviteMemebers/Id,InviteMemebers/Title,InviteMemebers/EMail,GroupFollowers/Id,GroupFollowers/Title,GroupFollowers/EMail,Author/Title,Author/ID,Author/EMail,GroupType")
+ 
+    .expand("Author,InviteMemebers,GroupFollowers")()
+ 
     .then((res) => {
+ 
       // arr=res;
+ 
       console.log("res------",res)
+ 
       arr1.push(res);
+ 
       arr = arr1;
+ 
     })
+ 
     .catch((error) => {
+ 
       console.log("Error fetching data: ", error);
+ 
     });
+ 
   return arr;
-};
+ 
+}
 
 export const getType = async (_sp) => {
   let arr = [];

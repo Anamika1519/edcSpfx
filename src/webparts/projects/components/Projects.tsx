@@ -272,7 +272,7 @@ const HelloWorldContext = ({ props }: any) => {
   const handleCancel = () => {
     debugger;
     window.location.href =
-      "https://alrostamanigroupae.sharepoint.com/sites/Intranetuat/SitePages/Project.aspx";
+      "https://officeindia.sharepoint.com/sites/AlRostmaniSpfx2/SitePages/Project.aspx";
   };
 
   const saveProjectData = async (formData: {
@@ -331,11 +331,11 @@ const HelloWorldContext = ({ props }: any) => {
         // // Budget: formData.Budget,
         ProjectOverview: formData.ProjectOverview,
         TeamMembersId: selectedIds,
-        ProjectFileManager: `/sites/Intranetuat/ARGProjectsFiles/${formData.ProjectName}`,
+        ProjectFileManager: `/sites/AlRostmaniSpfx2/ARGProjectsFiles/${formData.ProjectName}`,
         ProjectStatus: "Ongoing",
         ProjectFolderName: formData.ProjectName,
         FolderInProgress: 'In Progress'
-        //  ProjectFileManager : `/sites/Intranetuat/ARGProjectsFiles/${formData.ProjectName}`,
+        //  ProjectFileManager : `/sites/AlRostmaniSpfx2/ARGProjectsFiles/${formData.ProjectName}`,
         //  ProjectStatus: "Ongoing",
         //  ProjectFolderName: formData.ProjectName,
         //  FolderInProgress: 'In Progress'

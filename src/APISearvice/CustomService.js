@@ -274,70 +274,67 @@ export const addActivityLeaderboard = async (sp, Action) => {
 //   // Return the result
 //   return sumPointsByUser();
 // };
-export const getLeader = async (sp) => {
-  let arr = [];
+// export const getLeader = async (sp) => {
+//   let arr = [];
 
-  // Fetching the leaderboard data
-  await sp.web.lists
-    .getByTitle("ARGLeaderboard")
-    .items.select("*,Author/ID,Author/Title,Author/EMail,Author/Department")
-    .expand("Author")
-    .getAll()
-    .then((res) => {
-      console.log(res, "Fetched data");
+ 
+//   await sp.web.lists
+//     .getByTitle("ARGLeaderboard")
+//     .items.select("*,Author/ID,Author/Title,Author/EMail,Author/Department")
+//     .expand("Author")
+//     .getAll()
+//     .then((res) => {
+//       console.log(res, "Fetched data");
 
-      // Storing the fetched data in the array
-      arr = res;
-    });
-
-  // Grouping and summing points by AuthorId
-  const sumPointsByUser = async () => {
-    const userPoints = {};
-    const followRecords = await sp.web.lists.getByTitle("ARGLeaderboardRattingLevel").items
-      .getAll()
-
-    console.log(followRecords, 'ARGLeaderboardRattingLevel');
-
-    // Loop through each item in the fetched results
-    arr.forEach((item) => {
-      const authorId = item.Author.ID; // Author ID
-      const points = item.Points; // Points for the action
-      const authorTitle = item.Author.Title; // Author Title
-      const authorEMail = item.Author.EMail; // Author Email
-      const authorDepartment = item.Author.Department; // Author Email
+//       arr = res;
+//     });
 
 
-      // Sum points for each AuthorId
-      if (userPoints[authorId]) {
-        userPoints[authorId].TotalPoints += points;
-      } else {
-        userPoints[authorId] = {
-          TotalPoints: points,
-          AuthorTitle: authorTitle,
-          AuthorEMail: authorEMail,
-          AuthorDepartment: authorDepartment
-        };
-      }
-    });
+//   const sumPointsByUser = async () => {
+//     const userPoints = {};
+//     const followRecords = await sp.web.lists.getByTitle("ARGLeaderboardRattingLevel").items
+//       .getAll()
 
-    for (let i = 0; i < followRecords.length; i++) {
+//     console.log(followRecords, 'ARGLeaderboardRattingLevel');
+
+   
+//     arr.forEach((item) => {
+//       const authorId = item.Author.ID; 
+//       const points = item.Points; 
+//       const authorTitle = item.Author.Title; 
+//       const authorEMail = item.Author.EMail; 
+//       const authorDepartment = item.Author.Department; 
 
 
-      // Convert the object to an array of users with total points and other details
-      return Object.keys(userPoints).map((authorId) => ({
-        AuthorId: authorId,
-        TotalPoints: userPoints[authorId].TotalPoints,
-        AuthorTitle: userPoints[authorId].AuthorTitle,
-        AuthorEMail: userPoints[authorId].AuthorEMail,
-        AuthorDepartment: userPoints[authorId].AuthorDepartment,
-        AutherRatting: userPoints[authorId].TotalPoints
-      }));
-    }
-  };
+    
+//       if (userPoints[authorId]) {
+//         userPoints[authorId].TotalPoints += points;
+//       } else {
+//         userPoints[authorId] = {
+//           TotalPoints: points,
+//           AuthorTitle: authorTitle,
+//           AuthorEMail: authorEMail,
+//           AuthorDepartment: authorDepartment
+//         };
+//       }
+//     });
 
-  // Return the result
-  return sumPointsByUser();
-};
+//     for (let i = 0; i < followRecords.length; i++) {
+
+
+//       return Object.keys(userPoints).map((authorId) => ({
+//         AuthorId: authorId,
+//         TotalPoints: userPoints[authorId].TotalPoints,
+//         AuthorTitle: userPoints[authorId].AuthorTitle,
+//         AuthorEMail: userPoints[authorId].AuthorEMail,
+//         AuthorDepartment: userPoints[authorId].AuthorDepartment,
+//         AutherRatting: userPoints[authorId].TotalPoints
+//       }));
+//     }
+//   };
+
+//   return sumPointsByUser();
+// };
 
 
 
@@ -409,7 +406,7 @@ export const getLeaderTop = async (sp) => {
 
     if (currentMonthRecords.length === 0) {
       console.log("No leaderboard is available");
-      alert("No leaderboard is available");
+      //alert("No leaderboard is available");
       return []; // No data for the current month
     }
 
@@ -420,7 +417,7 @@ export const getLeaderTop = async (sp) => {
       const authorTitle = item.Author.Title; // Author Title
       const authorEMail = item.Author.EMail; // Author Email
       const authorDepartment = item.Author.Department; // Author Department
-
+      
       // Sum points for each AuthorId
       if (userPoints[authorId]) {
         userPoints[authorId].TotalPoints += points;
@@ -430,6 +427,7 @@ export const getLeaderTop = async (sp) => {
           AuthorTitle: authorTitle,
           AuthorEMail: authorEMail,
           AuthorDepartment: authorDepartment,
+         
         };
       }
     });
@@ -442,6 +440,7 @@ export const getLeaderTop = async (sp) => {
       AuthorEMail: userPoints[authorId].AuthorEMail,
       AuthorDepartment: userPoints[authorId].AuthorDepartment,
       AutherRatting: userPoints[authorId].TotalPoints,
+      Ratting:getRating(RATINGSTHRESHOLDS, userPoints[authorId].TotalPoints)
     }));
 
     // Sort users by TotalPoints in descending order
@@ -452,6 +451,22 @@ export const getLeaderTop = async (sp) => {
 
   // Return the result with total points and rating, sorted by points
   return sumPointsByUser();
+};
+const getRating = (RATINGSTHRESHOLDS, totalPoints) => {
+  // Sort thresholds by minPoints in ascending order
+  const sortedThresholds = RATINGSTHRESHOLDS.sort((a, b) => a.minPoints - b.minPoints);
+
+  // Find the rating where minPoints <= totalPoints
+  let rating = 0; // Default rating if no threshold is met
+  for (let i = 0; i < sortedThresholds.length; i++) {
+    if (totalPoints >= sortedThresholds[i].minPoints) {
+      rating = sortedThresholds[i].rating;
+    } else {
+      break; // No need to check further
+    }
+  }
+
+  return rating;
 };
 export const addNotification = async (itemData, _sp) => {
   

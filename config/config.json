@@ -401,6 +401,14 @@
           "manifest": "./src/webparts/masterManage/MasterManageWebPart.manifest.json"
         }
       ]
+    },
+    "notification-master-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/notificationMaster/NotificationMasterWebPart.js",
+          "manifest": "./src/webparts/notificationMaster/NotificationMasterWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {
@@ -464,6 +472,7 @@
     "AdToSpGroupSyncWebPartStrings": "lib/webparts/adToSpGroupSync/loc/{locale}.js",
     "AddBusinessAppWebPartStrings": "lib/webparts/addBusinessApp/loc/{locale}.js",
     "ManageMasterMWebPartStrings": "lib/webparts/manageMasterM/loc/{locale}.js",
-    "MasterManageWebPartStrings": "lib/webparts/masterManage/loc/{locale}.js"
+    "MasterManageWebPartStrings": "lib/webparts/masterManage/loc/{locale}.js",
+    "NotificationMasterWebPartStrings": "lib/webparts/notificationMaster/loc/{locale}.js"
   }
 }

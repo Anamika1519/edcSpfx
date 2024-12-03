@@ -210,8 +210,8 @@ const MediaMastercontext = ({ props }: any) => {
   const Breadcrumb = [
     {
       "MainComponent": "Settings",
-      "MainComponentURl": `${siteUrl}SitePages/Settings.aspx`
-    },
+      "MainComponentURl": `${siteUrl}/SitePages/Settings.aspx`
+     },
     {
       "ChildComponent": "Media Master",
       "ChildComponentURl": `${siteUrl}/SitePages/MediaGalleryMaster.aspx`
@@ -409,7 +409,7 @@ const MediaMastercontext = ({ props }: any) => {
                                     maxWidth: "50px",
                                   }}
                                 >
-                               <div className='indexdesign'> {index + 1}</div>     
+                               <div className='indexdesign'> {startIndex + index + 1}</div>     
                                 </td>
                                 <td>{item.Title}</td>
                                 <td>{item?.EntityMaster?.Entity}</td>

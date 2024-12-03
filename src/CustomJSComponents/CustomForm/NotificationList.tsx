@@ -1,6 +1,7 @@
 import React from 'react';
 import moment from 'moment';
-import { X } from 'react-feather';
+
+import { X,Settings } from 'react-feather';
  
 interface Notification {
     Id: string;
@@ -52,6 +53,13 @@ const NotificationList = ({ NotificationArray, handleNotificationClick }: any) =
         console.log(baseUrl); // Output: https://example.com/webUrl/sites/AlRostmani/SitePages
         window.location.href = `${baseUrl}/NotificationDetails.aspx`;
     }
+    const goToSettings = () => {
+   
+        let webUrl = window.location.href;
+        const baseUrl = webUrl.substring(0, webUrl.lastIndexOf("/SitePages") + "/SitePages".length);
+        console.log(baseUrl); // Output: https://example.com/webUrl/sites/AlRostmani/SitePages
+        window.location.href = `${baseUrl}/ManageNotification.aspx`;
+    }
     return (
         <div>
             <div className="flex">
@@ -60,7 +68,7 @@ const NotificationList = ({ NotificationArray, handleNotificationClick }: any) =
                         <h5 className="p-1 font-16 text-dark">Notifications</h5>
                     </div>
                     <div style={{textAlign:'right'}} className="col-md-4">
-                        <h5 style={{textDecoration:'underline'}} className="pt-2 font-12" onClick={goToNext}>Close</h5>
+                        <h5 style={{textDecoration:'underline'}} className="pt-2 font-12" onClick={goToNext}>Clear All</h5>
                     </div>
                 </div>
             </div>
@@ -157,7 +165,8 @@ const NotificationList = ({ NotificationArray, handleNotificationClick }: any) =
                 <p>No notifications</p>
             )}
         </div>
-        <h5 style={{textDecoration:'underline'}} className="p-1 font-12 text-center" onClick={goToNext}>View All</h5>
+        <h5 style={{textDecoration:'underline',float:'left'}} className="p-1 font-12 text-center" onClick={goToNext}>View All</h5>
+        <h5 style={{float:'right'}} className="p-1 font-12 text-center" onClick={goToSettings}> <Settings size={18} /> </h5>
         </div>
     );
 };

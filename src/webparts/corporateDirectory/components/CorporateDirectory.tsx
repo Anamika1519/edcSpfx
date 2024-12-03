@@ -802,7 +802,7 @@ if(field == "Name"){
         (filters.Email === "" ||
 
           item?.EMail.toLowerCase().includes(filters.Email.toLowerCase())) &&
-        (filters.MobilePhone === '' || item?.MobilePhone.toLowerCase().includes(filters.MobilePhone.toLowerCase())) &&
+          (filters.MobilePhone === '' || item?.MobilePhone && item?.MobilePhone.toLowerCase().includes(filters.MobilePhone.toLowerCase())) &&
 
         (filters.companyName === '' || ((item?.companyName) ? item?.companyName.toLowerCase().includes(filters.companyName.toLowerCase()) : false))
 
@@ -920,7 +920,7 @@ if(field == "Name"){
     }));
 
 
-    exportToExcel(exportData, "Employe List");
+    exportToExcel(exportData, "Corporate Directory List");
 
   };
 
@@ -1012,6 +1012,7 @@ if(field == "Name"){
         });
 
         setFollowStatus((prev) => ({ ...prev, [item.ID]: true })); // Update follow status
+      }
         const followersCount = await sp.web.lists.getByTitle("ARGFollows").items
 
         .filter(`FollowedId eq ${item.ID}`)
@@ -1035,7 +1036,7 @@ if(field == "Name"){
         item.followersCount = followersCount.length;
 
         item.followingCount = followingCount.length;
-      }
+     
 
     } catch (error) {
 
