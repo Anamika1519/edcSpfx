@@ -402,7 +402,7 @@ export const getLeaderTop = async (sp) => {
     const currentMonthRecords = arr.filter((record) => {
       const recordDate = new Date(record.Created); // Assuming `Created` is the date field
       return (
-        recordDate.getMonth() === currentMonth &&
+        recordDate.getMonth() === currentMonth -1 &&
         recordDate.getFullYear() === currentYear
       );
     });

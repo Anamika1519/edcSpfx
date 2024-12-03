@@ -178,7 +178,7 @@ const handleFileChange = async (event) => {
   const file = event.target.files[0];
   if (file) {
     try {
-      const folderUrl = `/sites/AlRostmaniSpfx2/${docLib}`; // Replace with your folder URL
+      const folderUrl = `/sites/Intranetuat/${docLib}`; // Replace with your folder URL
       const fileName = file.name;
 
       const fileBlob = new Blob([file], { type: file.type });

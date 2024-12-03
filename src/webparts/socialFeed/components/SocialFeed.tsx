@@ -1409,7 +1409,7 @@ const SocialFeedContext = ({ props }: any) => {
                               currentUserName={currentUsername}
                               CurrentUser={CurrentUser}
                               currentEmail={currentEmail}
-                              editload={fetchPosts}
+                              editload={fetchPostsMe}                             
                               post={{
                                 userName: post.userName,
                                 Created: post.Created,

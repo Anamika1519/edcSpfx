@@ -134,17 +134,17 @@ const EventdetailscalenderContext = ({ props }: any) => {
   // getApiData()
   // }, 1000)
   const ApiLocalStorageData = async () => {
-    debugger;
-    debugger
+
     const ids = window.location.search;
     const originalString = ids;
     const idNum = originalString.substring(1);
     setId(Number(idNum))
     // let arr = [];
+    let currentEvent = await getARGEventMasterDetailsById(sp, Number(idNum))
     setArrDetails(await getARGEventMasterDetailsById(sp, Number(idNum)));
     let Eventsdata = await getAllEventMasternonselected(sp, Number(idNum));
     setArrtopEvents(Eventsdata);
-    console.log("EventsdataEventsdata", Eventsdata, ArrtopEvents);
+    console.log("EventsdataEventsdata", ArrDetails, currentEvent);
     // if (
     //   localStorage.getItem("EventArr") != undefined &&
     //   localStorage.getItem("EventArr") != null &&
@@ -254,10 +254,10 @@ const EventdetailscalenderContext = ({ props }: any) => {
       });
   }
   const ApICallData = async () => {
-    debugger;
+
     setCurrentUser(await getCurrentUser(sp, siteUrl));
     setCurrentUserProfile(await getCurrentUserProfile(sp, siteUrl));
-    debugger
+
 
   };
 
@@ -326,7 +326,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
   // Add a like to a comment
 
   const handleLikeToggle = async (commentIndex: number) => {
-    debugger
+
     setLoadingLike(true);
     try {
       const updatedComments = [...comments];
@@ -427,7 +427,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
 
   // Add a reply to a comment
   const handleAddReply = async (commentIndex: number, replyText: string) => {
-    debugger;
+
     setLoadingReply(true);
     try {
       if (replyText.trim() === "") return;
@@ -511,8 +511,9 @@ const EventdetailscalenderContext = ({ props }: any) => {
     window.location.href = mailtoLink;
   };
   const AddAttendees = async (Item: any) => {
+    debugger
     let arr: any[] = []
-    console.log(Item, 'Item');
+    console.log(Item, 'Item attenees', Item?.AttendeesId, Item?.AttendeesId.indexOf(CurrentUser.Id), "CurrentUser.Id", CurrentUser.Id);
 
     if (Item?.AttendeesId != null) {
       // const flatArrayAttendees = Item?.AttendeesId[0];
@@ -520,7 +521,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
       // arr.push(flatArrayAttendees)
       try {
         let arrNew: any[] = [];
-        
+
 
         const email = await getCurrentUserProfileEmail(sp);
 
@@ -528,16 +529,17 @@ const EventdetailscalenderContext = ({ props }: any) => {
           arr.push(Item.AttendeesId[i])
         }
 
-        if (Item?.Attendees?.length > 0 && Item?.AttendeesId.indexOf(CurrentUser.Id) > 0) {
-          arr = arr.filter((x) => x != CurrentUser.Id ) 
+        if (Item?.Attendees?.length > 0 && Item?.AttendeesId.indexOf(CurrentUser.Id) == 0) {
+          arr = arr.filter((x) => x != CurrentUser.Id)
+          console.log("arrrr if", arr);
         } else {
-          console.log("arrrr", arr);
+          console.log("arrrr else", arr);
           const userId = await getUserId(email);
           arr.push(userId);
         }
-        
+
         // Get the user's SharePoint ID
-       
+
 
         //arr = arr.filter(x => !arr.includes(userId));
         console.log("arr,,,,", arr);
@@ -587,7 +589,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
   }
 
   const gotoNewsDetails = (valurArr: any) => {
-    debugger;
+
     localStorage.setItem("EventId", valurArr.Id);
     localStorage.setItem("EventArr", JSON.stringify(valurArr));
     setTimeout(() => {
@@ -612,7 +614,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
       <div className="content-page">
         <HorizontalNavbar _context={sp} siteUrl={siteUrl} />
         <div className="content" style={{ marginLeft: `${!useHide ? '240px' : '80px'}`, marginTop: '0rem' }}>
-          <div style={{paddingLeft:'1.3rem',paddingRight:'1.3rem'}} className="container-fluid  paddb">
+          <div style={{ paddingLeft: '1.3rem', paddingRight: '1.3rem' }} className="container-fluid  paddb">
             <div className="row">
               <div className="col-lg-8">
 
@@ -621,6 +623,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
                     <CustomBreadcrumb Breadcrumb={Breadcrumb} />
                   </div>
                 </div>
+                {console.log(ArrDetails, "ArrDetails events details", CurrentUser)}
                 {ArrDetails.length > 0
                   ? ArrDetails.map((item: any) => {
                     const EventGalleryJson =
@@ -628,7 +631,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
                         item.EventGalleryJson == null
                         ? ""
                         : JSON.parse(item.EventGalleryJson);
-                    console.log(EventGalleryJson);
+                    console.log(item, "itemmmmm", CurrentUser);
                     return (
                       <>
                         <div>
@@ -672,18 +675,18 @@ const EventdetailscalenderContext = ({ props }: any) => {
                               <p className="d-flex">
                                 {new Date(item.RegistrationDueDate) > new Date() ? (<div className="EventAttendes mt-4 rounded-pill"
                                   onClick={() => AddAttendees(item)}><Users size={14} />
-                                  {item?.Attendees?.length > 0 && item?.AttendeesId.indexOf(CurrentUser.Id) == -1 ?
+                                  {item?.AttendeesId == null || (item?.Attendees?.length > 0 && item?.AttendeesId.indexOf(CurrentUser.Id) == -1) ?
                                     "Register" : "Un-Register"}
                                 </div>) : (<div className="EventAttendesGray  mt-4 rounded-pill" >! Registration Expired
                                 </div>)}
                                 {/* {new Date(item.RegistrationDueDate) > new Date() ? (<div className="EventAttendes mt-4 rounded-pill" onClick={() => AddAttendees(item)}><Users size={14} /> Register
                                 </div>) : (<div className="EventAttendesGray  mt-4 rounded-pill" >! Event Expired
                                 </div>)} */}
-                               
-                                <span style={{ display: 'flex', gap: '0.2rem', marginLeft:'10px', marginTop:'30px' }}>
-                                  { 
-                                    item?.Attendees?.length > 0 && item?.Attendees.map((item1: any, index: 0) => {
 
+                                <span style={{ display: 'flex', gap: '0.2rem', marginLeft: '10px', marginTop: '30px' }}>
+                                  {
+                                    item?.Attendees?.length > 0 && item?.Attendees.map((item1: any, index: 0) => {
+                                      console.log("item1item1", item1)
                                       return (
                                         <>
                                           {item1.EMail ? <span style={{ margin: index == 0 ? '0 0 0 0' : '0 0 0px -12px' }}>&nbsp; | &nbsp;&nbsp;&nbsp;<img src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item1.EMail}`} className="attendeesImg" /> </span> :
@@ -693,7 +696,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
                                       )
                                     })
                                   }
-                                  {item?.Attendees?.length > 0 && (<span className="font-14" style={{ paddingTop: '3px', paddingLeft: '3px' }}>Registered</span>)}
+                                  {item?.Attendees?.length > 0 && item?.AttendeesId.indexOf(CurrentUser.Id) == 0 && (<span className="font-14" style={{ paddingTop: '3px', paddingLeft: '3px' }}>Registered</span>)}
                                 </span>
                               </p>
                             </div>

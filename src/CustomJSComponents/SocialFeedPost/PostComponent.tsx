@@ -510,7 +510,8 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
         }
     };
 
-    const copyToClipboard = (Id: number) => {
+    const copyToClipboard = (Id:number) => {
+        
         const link = `${siteUrl}/SitePages/SocialFeed.aspx?${Id}`;
         navigator.clipboard.writeText(link)
             .then(() => {
@@ -521,7 +522,6 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
                 setCopySuccess('Failed to copy link');
             });
     };
-
     const sendanEmail = (item: any) => {
 
         // window.open("https://outlook.office365.com/mail/deeplink/compose?subject=Share%20Info&body=");

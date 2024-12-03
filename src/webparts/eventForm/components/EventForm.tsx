@@ -33,7 +33,7 @@ import { getUrlParameterValue } from '../../../Shared/Helper';
 import { FormSubmissionMode } from '../../../Shared/Interfaces';
 import { WorkflowAuditHistory } from '../../../CustomJSComponents/WorkflowAuditHistory/WorkflowAuditHistory';
 import { CONTENTTYPE_Event, LIST_TITLE_ContentMaster, LIST_TITLE_EventMaster, LIST_TITLE_MyRequest } from '../../../Shared/Constants';
-
+let mode = "";
 const HelloWorldContext = ({ props }: any) => {
   const sp: SPFI = getSP();
   console.log(sp, 'sp');
@@ -73,7 +73,7 @@ const HelloWorldContext = ({ props }: any) => {
   const [ValidDraft, setValidDraft] = React.useState(true);
   const [ValidSubmit, setValidSubmit] = React.useState(true);
   const [FormItemId, setFormItemId] = React.useState(null);
-
+  const [Loading, setLoading] = React.useState(false);
   //#region State to hold form data
   //  const [formData, setFormData] = React.useState({
   //   title: "",
@@ -110,24 +110,22 @@ const HelloWorldContext = ({ props }: any) => {
   React.useEffect(() => {
     ApiCallFunc()
 
-    let mode=getUrlParameterValue('mode');
-    if(mode && mode=='approval')
-    {
-       setApprovalMode(true);
-       let requestid=getUrlParameterValue('requestid');
-       setInputDisabled(true);
-       sp.web.lists.getByTitle('ARGMyRequest').items.getById(Number(requestid))().then(itm=>{
-          setApprovalRequestItem(itm);
-          setInputDisabled(true && (!itm.IsRework || itm.IsRework =="No"))
-          //setInputDisabled(ApprovalMode)
-       })
+     mode = getUrlParameterValue('mode');
+    if (mode && mode == 'approval') {
+      setApprovalMode(true);
+      let requestid = getUrlParameterValue('requestid');
+      setInputDisabled(true);
+      sp.web.lists.getByTitle('ARGMyRequest').items.getById(Number(requestid))().then(itm => {
+        setApprovalRequestItem(itm);
+        setInputDisabled(true && (!itm.IsRework || itm.IsRework == "No"))
+        //setInputDisabled(ApprovalMode)
+      })
     }
-    else if(mode && mode=='view')
-    {
-      setInputDisabled(true);       
+    else if (mode && mode == 'view') {
+      setInputDisabled(true);
     }
 
-  
+
     console.log('This function is called only once', useHide);
 
     const showNavbar = (
@@ -232,7 +230,7 @@ const HelloWorldContext = ({ props }: any) => {
       [{ "color": ["#000000", "#e60000", "#ff9900", "#ffff00", "#008a00", "#0066cc", "#9933ff", "#ffffff", "#facccc", "#ffebcc", "#ffffcc", "#cce8cc", "#cce0f5", "#ebd6ff", "#bbbbbb", "#f06666", "#ffc266", "#ffff66", "#66b966", "#66a3e0", "#c285ff", "#888888", "#a10000", "#b26b00", "#b2b200", "#006100", "#0047b2", "#6b24b2", "#444444", "#5c0000", "#663d00", "#666600", "#003700", "#002966", "#3d1466", 'custom-color'] }],
     ]
   };
-  const validateForm = (formsubmode:FormSubmissionMode) => {
+  const validateForm = (formsubmode: FormSubmissionMode) => {
     const { EventName, EventDate, EventAgenda, RegistrationDueDate, EntityId, Overview } = formData;
     const { description } = richTextValues;
     let valid = true;
@@ -243,19 +241,21 @@ const HelloWorldContext = ({ props }: any) => {
     setValidDraft(true);
     setValidSubmit(true);
 
-    if(formsubmode==FormSubmissionMode.DRAFT)
-    {
+    if (formsubmode == FormSubmissionMode.DRAFT) {
       if (!EventName) {
+        valid = false;
+      }
+      else if (EventDate && new Date(EventDate) < new Date()) {
+        // Swal.fire('Error', 'Event Date is required!', 'error');
         valid = false;
       }
       setValidDraft(valid);
     }
-    else
-    {
+    else {
       if (!EventName) {
         // Swal.fire('Error', 'Event Name is required!', 'error');
         valid = false;
-      } else if (!EventDate) {
+      } else if (!EventDate || (EventDate && new Date(EventDate) < new Date())) {
         // Swal.fire('Error', 'Event Date is required!', 'error');
         valid = false;
       }
@@ -278,9 +278,13 @@ const HelloWorldContext = ({ props }: any) => {
       setValidSubmit(valid)
 
     }
-   
-    if(!valid)
+
+    if (!valid && (EventDate && new Date(EventDate) >= new Date())) {
       Swal.fire('Please fill the mandatory fields.');
+    }
+    if (!valid && (EventDate && new Date(EventDate) < new Date())) {
+      Swal.fire('Event date cannot be less than today');
+    }
 
     return valid;
   };
@@ -303,6 +307,7 @@ const HelloWorldContext = ({ props }: any) => {
           if (result.isConfirmed) {
             //console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
             //debugger
+            setLoading(true);
             let bannerImageArray: any = {};
             let galleryIds: any[] = [];
             let documentIds: any[] = [];
@@ -318,9 +323,8 @@ const HelloWorldContext = ({ props }: any) => {
                 bannerImageArray = await uploadFileBanner(file, sp, "Documents", "https://alrostamanigroupae.sharepoint.com");
               }
             }
-            else if(BnnerImagepostArr.length > 0)
-            {
-              bannerImageArray=BnnerImagepostArr[0];
+            else if (BnnerImagepostArr.length > 0) {
+              bannerImageArray = BnnerImagepostArr[0];
             }
             else {
               bannerImageArray = null
@@ -452,29 +456,27 @@ const HelloWorldContext = ({ props }: any) => {
               Status: "Pending",
               EntityId: Number(formData.EntityId),
               SourceName: "Event",
-              ReworkRequestedBy:"Initiator"
+              ReworkRequestedBy: "Initiator"
             }
 
-            let boolval=false;
-            if(ApprovalRequestItem && ApprovalRequestItem.IsRework && ApprovalRequestItem.IsRework=='Yes')
-             {
-              const ctmasteritm=await sp.web.lists.getByTitle(LIST_TITLE_ContentMaster).items.filter('ContentID eq '+ApprovalRequestItem.ContentId+" and SourceName eq '"+CONTENTTYPE_Event+"'")();
-              if(ctmasteritm && ctmasteritm.length>0)
-                 {
-                  let updaterec={'Status':'Pending','ReworkRequestedBy':'Initiator'}
-                  if(ApprovalRequestItem.LevelSequence==1) updaterec.ReworkRequestedBy="Level 1";
-                  await UpdateContentMaster(sp,ctmasteritm[0].Id,updaterec);
-                  await sp.web.lists.getByTitle(LIST_TITLE_MyRequest).items.getById(ApprovalRequestItem.Id).update({'Status':'Submitted'});
-                  await sp.web.lists.getByTitle(LIST_TITLE_EventMaster).items.getById(editID).update({'Status':'Submitted'});
-                  boolval=true;
-                 }
-             }
-            else
-               {
-                await AddContentMaster(sp, arr)
-                boolval = await handleClick(editID, "Event", Number(formData.EntityId))
+            let boolval = false;
+            if (ApprovalRequestItem && ApprovalRequestItem.IsRework && ApprovalRequestItem.IsRework == 'Yes') {
+              const ctmasteritm = await sp.web.lists.getByTitle(LIST_TITLE_ContentMaster).items.filter('ContentID eq ' + ApprovalRequestItem.ContentId + " and SourceName eq '" + CONTENTTYPE_Event + "'")();
+              if (ctmasteritm && ctmasteritm.length > 0) {
+                let updaterec = { 'Status': 'Pending', 'ReworkRequestedBy': 'Initiator' }
+                if (ApprovalRequestItem.LevelSequence == 1) updaterec.ReworkRequestedBy = "Level 1";
+                await UpdateContentMaster(sp, ctmasteritm[0].Id, updaterec);
+                await sp.web.lists.getByTitle(LIST_TITLE_MyRequest).items.getById(ApprovalRequestItem.Id).update({ 'Status': 'Submitted' });
+                await sp.web.lists.getByTitle(LIST_TITLE_EventMaster).items.getById(editID).update({ 'Status': 'Submitted' });
+                boolval = true;
               }
+            }
+            else {
+              await AddContentMaster(sp, arr)
+              boolval = await handleClick(editID, "Event", Number(formData.EntityId))
+            }
             if (boolval == true) {
+              setLoading(false);
               Swal.fire('Submitted successfully.', '', 'success');
               sessionStorage.removeItem("EventId")
               setTimeout(() => {
@@ -499,6 +501,7 @@ const HelloWorldContext = ({ props }: any) => {
           //console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
           if (result.isConfirmed) {
             //debugger
+            setLoading(true);
             let bannerImageArray: any = {};
             let galleryIds: any[] = [];
             let documentIds: any[] = [];
@@ -528,7 +531,7 @@ const HelloWorldContext = ({ props }: any) => {
               Status: "Submitted",
               RegistrationDueDate: RegistrationDueDate,
               EventDate: eventDate,
-              AuthorId: currentUser.Id,              
+              AuthorId: currentUser.Id,
               image: bannerImageArray != "{}" && JSON.stringify(bannerImageArray)
             };
             console.log(postPayload);
@@ -584,11 +587,12 @@ const HelloWorldContext = ({ props }: any) => {
               Status: "Pending",
               EntityId: Number(formData.EntityId),
               SourceName: "Event",
-              ReworkRequestedBy:"Initiator"
+              ReworkRequestedBy: "Initiator"
             }
             await AddContentMaster(sp, arr)
             const boolval = await handleClick(postId, "Event", Number(formData.EntityId))
             if (boolval == true) {
+              setLoading(false);
               Swal.fire('Submitted successfully.', '', 'success');
               sessionStorage.removeItem("bannerId")
               setTimeout(() => {
@@ -623,6 +627,7 @@ const HelloWorldContext = ({ props }: any) => {
           if (result.isConfirmed) {
             //console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
             //debugger
+            setLoading(true);
             let bannerImageArray: any = {};
             let galleryIds: any[] = [];
             let documentIds: any[] = [];
@@ -763,7 +768,7 @@ const HelloWorldContext = ({ props }: any) => {
               console.log("Update Result:", updateResult);
             }
           }
-
+          setLoading(false);
           Swal.fire('Saved successfully.', '', 'success');
           sessionStorage.removeItem("EventId")
           setTimeout(() => {
@@ -787,6 +792,7 @@ const HelloWorldContext = ({ props }: any) => {
           //console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
           if (result.isConfirmed) {
             //debugger
+            setLoading(true);
             let bannerImageArray: any = {};
             let galleryIds: any[] = [];
             let documentIds: any[] = [];
@@ -867,7 +873,7 @@ const HelloWorldContext = ({ props }: any) => {
               console.log("Update Result:", updateResult);
             }
 
-
+            setLoading(false);
             Swal.fire('Saved successfully.', '', 'success');
             sessionStorage.removeItem("bannerId")
             setTimeout(() => {
@@ -908,21 +914,20 @@ const HelloWorldContext = ({ props }: any) => {
     if (sessionStorage.getItem("EventId") != undefined) {
       const iD = sessionStorage.getItem("EventId")
       let iDs = decryptId(iD)
-      formitemid=Number(iDs);
+      formitemid = Number(iDs);
       setFormItemId(Number(iDs))
+    }
+    else {
+      let formitemidparam = getUrlParameterValue('contentid');
+      if (formitemidparam) {
+        formitemid = Number(formitemidparam);
+        setFormItemId(Number(formitemid));
       }
-      else
-      {
-        let formitemidparam=getUrlParameterValue('contentid');
-        if(formitemidparam) {
-          formitemid=Number(formitemidparam);         
-          setFormItemId(Number(formitemid));
-        }
-      }
+    }
     if (formitemid) {
       // const iD = sessionStorage.getItem("EventId")
       // let iDs = decryptId(iD)
-      // setFormItemId(Number(iDs))   
+      // setFormItemId(Number(iDs))  
       // const setEventById = await getEventByID(sp, Number(iDs))
       const setEventById = await getEventByID(sp, formitemid)
 
@@ -1258,7 +1263,7 @@ const HelloWorldContext = ({ props }: any) => {
     for (let i = 0; i < rows.length; i++) {
       const userIds = rows[i].approvedUserListupdate.map((user: any) => user.id);
       let arrPost = {
-        LevelSequence:i+1,
+        LevelSequence: i + 1,
         ContentId: contentId,
         ContentName: "ARGEventMaster",
         EntityMasterId: EntityId,
@@ -1296,6 +1301,11 @@ const HelloWorldContext = ({ props }: any) => {
             <div className="card mt-3">
               <div className="card-body">
                 <div className="row mt-2">
+                  {Loading &&
+                    <div className="loadercss" role="status">Loading...
+                      <img src={require('../../../Assets/ExtraImage/loader.gif')} style={{ height: '80px', width: '70px' }} alt="Check" />
+                    </div>
+                  }
                   <form className='row'  >
                     <div className="col-lg-4">
                       <div className="mb-3">
@@ -1307,7 +1317,7 @@ const HelloWorldContext = ({ props }: any) => {
                           id="title"
                           name="EventName"
                           placeholder='Enter Event Name'
-                          className={`form-control inputcs ${(!ValidDraft)?"border-on-error":""} ${(!ValidSubmit)?"border-on-error":""}`}
+                          className={`form-control inputcs ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
                           value={formData.EventName}
                           onChange={(e) => onChange(e.target.name, e.target.value)}
                           disabled={InputDisabled}
@@ -1324,7 +1334,7 @@ const HelloWorldContext = ({ props }: any) => {
                           id="EventDate"
                           name="EventDate"
                           placeholder='Enter Event Date'
-                          className={`form-control inputcs ${(!ValidSubmit)?"border-on-error":""}`}
+                          className={`form-control inputcs ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
                           value={formData.EventDate}
                           // value={formData.EventDate}
                           onChange={(e) => onChange(e.target.name, e.target.value)}
@@ -1343,7 +1353,7 @@ const HelloWorldContext = ({ props }: any) => {
                           name="RegistrationDueDate"
                           value={formData.RegistrationDueDate}
                           placeholder='Enter Registration Due Date'
-                          className={`form-control inputcs ${(!ValidSubmit)?"border-on-error":""}`}
+                          className={`form-control inputcs ${(!ValidSubmit) ? "border-on-error" : ""}`}
                           // value={formData.RegistrationDueDate}
                           onChange={(e) => onChange(e.target.name, e.target.value)}
                           disabled={InputDisabled}
@@ -1358,7 +1368,7 @@ const HelloWorldContext = ({ props }: any) => {
                           Entity <span className="text-danger">*</span>
                         </label>
                         <select
-                          className={`form-control inputcs ${(!ValidSubmit)?"border-on-error":""}`}
+                          className={`form-control inputcs ${(!ValidSubmit) ? "border-on-error" : ""}`}
                           id="EntityId"
                           name="EntityId"
                           value={formData.EntityId}
@@ -1449,7 +1459,7 @@ const HelloWorldContext = ({ props }: any) => {
                       </div>
                     </div>
 
-                    <div className="col-lg-4">
+                    {/* <div className="col-lg-4">
                       <div className="mb-3">
 
                         <div className='d-flex justify-content-between'>
@@ -1481,7 +1491,7 @@ const HelloWorldContext = ({ props }: any) => {
                           disabled={InputDisabled}
                         />
                       </div>
-                    </div>
+                    </div> */}
 
 
                     <div className="col-lg-8">
@@ -1525,24 +1535,30 @@ const HelloWorldContext = ({ props }: any) => {
                       </div>
                     </div>
 
-                {  
-                    !InputDisabled?(<div className="text-center butncss">
-                      <div className="btn btn-success waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleSaveAsDraft}>
-                        <div className='d-flex' style={{ justifyContent: 'space-around' }}>
-                          <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} alt="Check" /> Save As Draft
+                    {
+                      !InputDisabled ? (<div className="text-center butncss">
+                        <div className="btn btn-success waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleSaveAsDraft}>
+                          <div className='d-flex' style={{ justifyContent: 'space-around' }}>
+                            <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} alt="Check" /> Save As Draft
+                          </div>
                         </div>
-                      </div>
-                      <div className="btn btn-success waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleFormSubmit}>
-                        <div className='d-flex' style={{ justifyContent: 'space-around', width: '70px' }}>
-                          <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} alt="Check" /> Submit
+                        <div className="btn btn-success waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleFormSubmit}>
+                          <div className='d-flex' style={{ justifyContent: 'space-around', width: '70px' }}>
+                            <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} alt="Check" /> Submit
+                          </div>
                         </div>
-                      </div>
-                      <button type="button" className="btn btn-light waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleCancel}>
-                        <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }}
-                          className='me-1' alt="x" />
-                        Cancel
-                      </button>
-                    </div>):(<div></div>)}
+                        <button type="button" className="btn btn-light waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleCancel}>
+                          <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }}
+                            className='me-1' alt="x" />
+                          Cancel
+                        </button>
+                      </div>) : (<div className="text-center butncss">
+                          <button type="button" className="btn btn-light waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleCancel}>
+                            <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }}
+                              className='me-1' alt="x" />
+                            Cancel
+                          </button>
+                      </div>)}
                   </form>
                 </div>
               </div>
@@ -1680,16 +1696,16 @@ const HelloWorldContext = ({ props }: any) => {
               // <ApprovalHierarchy data={ApprovalConfigurationData} levels={levels} usersitem={usersitem} IsAdded={IsAdded}/>
 
             }
-           
+
             {
               //let forrework=ApprovalRequestItem && ApprovalRequestItem.IsRework=='Yes'&& ApprovalRequestItem.LevelSequence!=0;
-              (InputDisabled&&ApprovalRequestItem)||(ApprovalRequestItem && ApprovalRequestItem.IsRework=='Yes'&& ApprovalRequestItem.LevelSequence!=0)?(
-                <WorkflowAction currentItem={ApprovalRequestItem} ctx={props.context} 
-                   DisableApproval={ApprovalRequestItem && ApprovalRequestItem.IsRework=='Yes'&& ApprovalRequestItem.LevelSequence!=0}
-                   DisableCancel={ApprovalRequestItem && ApprovalRequestItem.IsRework=='Yes'&& ApprovalRequestItem.LevelSequence!=0}
-                   //DisableReject={ApprovalRequestItem && ApprovalRequestItem.IsRework=='Yes'&& ApprovalRequestItem.LevelSequence!=0}
+              (InputDisabled && ApprovalRequestItem) || (ApprovalRequestItem && ApprovalRequestItem.IsRework == 'Yes' && ApprovalRequestItem.LevelSequence != 0) ? (
+                <WorkflowAction currentItem={ApprovalRequestItem} ctx={props.context}
+                  DisableApproval={ApprovalRequestItem && ApprovalRequestItem.IsRework == 'Yes' && ApprovalRequestItem.LevelSequence != 0}
+                  DisableCancel={ApprovalRequestItem && ApprovalRequestItem.IsRework == 'Yes' && ApprovalRequestItem.LevelSequence != 0}
+                //DisableReject={ApprovalRequestItem && ApprovalRequestItem.IsRework=='Yes'&& ApprovalRequestItem.LevelSequence!=0}
                 />
-              ):(<div></div>)
+              ) : (<div></div>)
             }
             {
               <WorkflowAuditHistory ContentItemId={editID} ContentType={CONTENTTYPE_Event} ctx={props.context} />
@@ -1713,7 +1729,9 @@ const HelloWorldContext = ({ props }: any) => {
                                 <th>Serial No.</th>
                                 <th>File Name</th>
                                 <th>File Size</th>
+                              {mode != 'view' &&
                                 <th className='text-center'>Action</th>
+                              }
                               </tr>
                             </thead>
                             <tbody>
@@ -1722,7 +1740,9 @@ const HelloWorldContext = ({ props }: any) => {
                                   <td className='text-center'>{index + 1}</td>
                                   <td>{file.fileName}</td>
                                   <td className='text-right'>{file.fileSize}</td>
-                                  <td className='text-center'> <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, EventThumbnailArr1, "docs")} /> </td>
+                                  {mode != 'view' &&
+                                    <td className='text-center'> <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, EventThumbnailArr1, "docs")} /> </td>
+                                  }
                                 </tr>
                               ))}
                             </tbody>
@@ -1745,7 +1765,9 @@ const HelloWorldContext = ({ props }: any) => {
                                 <th> Image </th>
                                 <th>File Name</th>
                                 <th>File Size</th>
+                              {mode != 'view' &&
                                 <th className='text-center'>Action</th>
+                              }
                               </tr>
                             </thead>
                             <tbody>
@@ -1753,12 +1775,13 @@ const HelloWorldContext = ({ props }: any) => {
                                 <tr key={index}>
                                   <td className='text-center'>{index + 1}</td>
                                   <td>  <img className='imagefe' src={`${siteUrl}/EventGallery/${file.fileName}`}
-                                     /></td>
+                                  /></td>
 
                                   <td>{file.fileName}</td>
                                   <td className='text-right'>{file.fileSize}</td>
+                                  {mode != 'view' &&
                                   <td className='text-center'> <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, EventGalleryArr1, "Gallery")} /> </td>
-
+                                  }
                                 </tr>
                               ))}
                             </tbody>
@@ -1786,4 +1809,3 @@ const EventForm: React.FC<IEventFormProps> = (props) => {
 }
 
 export default EventForm
-

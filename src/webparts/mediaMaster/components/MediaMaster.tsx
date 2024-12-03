@@ -450,10 +450,15 @@ const MediaMastercontext = ({ props }: any) => {
                                             :  () => ViewFormReadOnly(item.ID)
                                         }
                                         style={{
-                                          cursor:
-                                            item.Status === "Save as draft"
-                                              ? "pointer"
-                                              : "not-allowed",
+ 
+                                          cursor:'pointer'
+                           
+                                            // item.Status === "Save as draft"
+                           
+                                            //   ? "pointer"
+                           
+                                            //   : "not-allowed",
+                           
                                         }}
                                       >
                                         <FontAwesomeIcon icon={faEdit} />

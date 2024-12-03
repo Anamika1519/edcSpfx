@@ -1225,7 +1225,7 @@ alt="Check"
                         </p>
                         <div className="row ">
                           <p
-                            style={{ lineHeight: "22px", fontSize: '15px' }}
+                            style={{whiteSpace:"pre-wrap", lineHeight: "22px", fontSize: '15px' }}
                             className="d-block text-dark mt-2"
                           >
                             {item.Overview}
@@ -1244,8 +1244,10 @@ alt="Check"
                         </button>
                         </div> */}
                             <div className="tabcss mb-2 mt-2 me-1 newalign">
-                              <span className="pe-2 widtsvg text-nowrap mb-0 d-inline-block"
-                                onClick={(e: any) => openModal(e)}>
+                              <span   onClick={isClosed ? null : (e: any) => openModal(e)}
+                               style={{cursor:"pointer"}} className="pe-2 widtsvg text-nowrap mb-0 d-inline-block"
+                               //</div> onClick={(e: any) => openModal(e)}
+                               >
                                 <FilePlus size={14} /> <span className="docu"> Documents</span>
                               </span>
                             </div>
@@ -1257,7 +1259,7 @@ alt="Check"
                               </span>
                             </div>
                             <div className="tabcss mb-2 sameh mt-2 me-1 ">
-                              <span className="text-nowrap mb-0 d-inline-block" onClick={() => sendanEmail(item)} >
+                              <span style={{cursor:"pointer"}} className="text-nowrap mb-0 d-inline-block" onClick={() => sendanEmail(item)} >
                                 <Share size={14} className="alignright123" /> <span className="docu">Share by email</span>
                               </span>
                             </div>

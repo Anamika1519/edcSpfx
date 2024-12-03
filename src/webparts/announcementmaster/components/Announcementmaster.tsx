@@ -1626,7 +1626,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                           style={{
 
-                                            cursor: item.Status === "Save as draft" ? "pointer" : "not-allowed"
+                                            cursor: item.Status === "Save as draft" ? "pointer" : "pointer"
 
                                           }}
 

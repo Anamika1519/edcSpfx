@@ -580,15 +580,15 @@ const EntityMastercontext = ({ props }: any) => {
               }
 
               style={{
-
-                cursor:
-
-                  item.Status === "Save as draft"
-
-                    ? "pointer"
-
-                    : "not-allowed",
-
+ 
+                cursor:'pointer'
+ 
+                  // item.Status === "Save as draft"
+ 
+                  //   ? "pointer"
+ 
+                  //   : "not-allowed",
+ 
               }}
 
             >

@@ -1048,7 +1048,7 @@ const DiscussionForumContext = ({ props }: any) => {
                 InviteMemebersId: selectedIds,
                 ARGDiscussionStatus: "Ongoing",
                 DiscussionInProgress: "In Progress",
-                DiscussionFileManager: `/sites/AlRostmaniSpfx2/ARGDiscussionFiles/${formData.topic}`,
+                DiscussionFileManager: `/sites/Intranetuat/ARGDiscussionFiles/${formData.topic}`,
                 DiscussionFolderName: formData.topic
               };
             }
@@ -1062,7 +1062,7 @@ const DiscussionForumContext = ({ props }: any) => {
                 DiscussionForumCategoryId: Number(formData.category),
                 ARGDiscussionStatus: "Ongoing",
                 DiscussionInProgress: "In Progress",
-                DiscussionFileManager: `/sites/AlRostmaniSpfx2/ARGDiscussionFiles/${formData.topic}`,
+                DiscussionFileManager: `/sites/Intranetuat/ARGDiscussionFiles/${formData.topic}`,
                 DiscussionFolderName: formData.topic
               };
             }
@@ -1171,7 +1171,7 @@ const DiscussionForumContext = ({ props }: any) => {
 
   const handleCancel = () => {
     window.location.href =
-      "https://alrostamanigroupae.sharepoint.com/sites/AlRostmaniSpfx2/SitePages/Blogs.aspx";
+      "https://alrostamanigroupae.sharepoint.com/sites/Intranetuat/SitePages/Blogs.aspx";
   };
 
   const formats = [

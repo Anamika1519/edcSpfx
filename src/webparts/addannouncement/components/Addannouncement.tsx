@@ -67,21 +67,23 @@ const AddannouncementContext = ({ props }: any) => {
   const [showImgModal, setShowImgTable] = React.useState(false);
   const [showBannerModal, setShowBannerTable] = React.useState(false);
   const siteUrl = props.siteUrl;
+  const tenantUrl = props.siteUrl.split("/sites/")[0];
   const [editID, setEditID] = React.useState(null);
   const [selectedUsers, setSelectedUsers] = React.useState<any[]>([]);
   const [errorsForUserSelection, setErrorsForUserSelection] = React.useState<{
     [key: number]: { userSelect?: string };
   }>({});
   const [IsAdded, setIsAdded] = React.useState(false);
+  const [modeValue, setmode] = React.useState("");
 
-
+  const [Loading, setLoading] = React.useState(false);
   //#region State to hold form data
   const [formData, setFormData] = React.useState({
     title: "",
     category: "",
     entity: "",
     Type: "",
-    // bannerImage: null,
+    bannerImage: null,
     // announcementGallery: null,
     // announcementThumbnail: null,
     description: "",
@@ -112,15 +114,15 @@ const AddannouncementContext = ({ props }: any) => {
   const [ValidDraft, setValidDraft] = React.useState(true);
   const [ValidSubmit, setValidSubmit] = React.useState(true);
   const [FormItemId, setFormItemId] = React.useState(null);
-
+  //const [placeholder, setPlaceholder] = React.useState("")
   console.log(ApprovalConfigurationData, 'ApprovalConfigurationData');
   //#endregion
-  const handleChangeCheckBox = (name: string, value: string | boolean) => {
-    setFormData((prevValues) => ({
-      ...prevValues,
-      [name]: value === true ? true : false, // Ensure the correct boolean value is set for checkboxes
-    }));
-  };
+  // const handleChangeCheckBox = (name: string, value: string | boolean) => {
+  //   setFormData((prevValues) => ({
+  //     ...prevValues,
+  //     [name]: value === true ? true : false, // Ensure the correct boolean value is set for checkboxes
+  //   }));
+  // };
   //#region Breadcrumb
   const Breadcrumb = [
     {
@@ -129,18 +131,22 @@ const AddannouncementContext = ({ props }: any) => {
     },
     {
       "ChildComponent": "Add Announcement & News",
-      "ChildComponentURl": `${siteUrl}/SitePages/AddAnnouncement.aspx`
+      "ChildComponentURl": `${siteUrl}/SitePages/announcementmaster.aspx`
     }
   ]
   //#endregion
 
   //#region UseEffact
   React.useEffect(() => {
+    
+
+    //window.location.href = url
     ApiCallFunc()
 
     // Determine whether the form in opened for approval
 
     let mode=getUrlParameterValue('mode');
+    setmode(mode);
     if(mode && mode=='approval')
     {
        setApprovalMode(true);
@@ -201,7 +207,7 @@ const AddannouncementContext = ({ props }: any) => {
   //#endregion
 
   //#region ApiCallFunc
-  const ApiCallFunc = async () => {
+  const ApiCallFunc = async () => {   
     setLevel(await getLevel(sp))
     await fetchUserInformationList();
 
@@ -245,10 +251,10 @@ const AddannouncementContext = ({ props }: any) => {
           category: setBannerById[0]?.Category,
           entity: setBannerById[0]?.Entity,
           Type: setBannerById[0]?.TypeMaster,
-          // bannerImage: setBannerById[0]?.BannerImage,
+           bannerImage: setBannerById[0]?.BannerImage,
           description: setBannerById[0].description,
           overview: setBannerById[0].overview,
-          FeaturedAnnouncement: setBannerById[0].FeaturedAnnouncement === true ? true : false,
+          FeaturedAnnouncement:  true,
           // announcementGallery: setBannerById[0].AnnouncementAndNewsGallaryJSON,
           // announcementThumbnail: setBannerById[0].AnnouncementAndNewsDocsJSON,
         }
@@ -337,7 +343,7 @@ const AddannouncementContext = ({ props }: any) => {
 
 
   const validateForm = (fmode:FormSubmissionMode) => {
-    const { title, Type, category, entity, overview, FeaturedAnnouncement } = formData;
+    const { title, Type, category, entity, overview } = formData;
     const { description } = richTextValues;
     let valid = true;
     setValidDraft(true);
@@ -357,6 +363,14 @@ const AddannouncementContext = ({ props }: any) => {
       } else if (!entity) {
         //Swal.fire('Error', 'Entity is required!', 'error');
         valid = false;
+      }else if (!overview) {
+        //Swal.fire('Error', 'Entity is required!', 'error');
+        valid = false;
+      }
+      else if(BnnerImagepostArr.length == 0 ){
+        valid = false;
+      }else if(ImagepostArr.length == 0){
+        valid = false;
       }
 
       setValidSubmit(valid);
@@ -370,7 +384,7 @@ const AddannouncementContext = ({ props }: any) => {
         valid = false;
       }
 
-     setValidDraft(true);
+     setValidDraft(valid);
 
     }
     //else if (!overview) {
@@ -383,9 +397,11 @@ const AddannouncementContext = ({ props }: any) => {
     //   Swal.fire('Error', 'Featured Announcement is required!', 'error');
     //   valid = false;
     // }
-    if(!valid)
-      Swal.fire('Please fill the mandatory fields.');
-
+    if(!valid && fmode==FormSubmissionMode.SUBMIT) 
+      Swal.fire('Please fill all the mandatory fields.');
+    else{
+      Swal.fire('Please fill the mandatory fields for draft - Title and Type');
+    }
     return valid;
   };
 
@@ -398,13 +414,14 @@ const AddannouncementContext = ({ props }: any) => {
           title: 'Do you want to submit this request?',
           showConfirmButton: true,
           showCancelButton: true,
-          confirmButtonText: "Save",
-          cancelButtonText: "Cancel",
+          confirmButtonText: "Yes",
+          cancelButtonText: "No",
           icon: 'warning'
         }
         ).then(async (result) => {
           console.log(result)
           if (result.isConfirmed) {
+            setLoading(true);
             //console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
             // debugger
             let bannerImageArray: any = {};
@@ -419,7 +436,7 @@ const AddannouncementContext = ({ props }: any) => {
             if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
               for (const file of BnnerImagepostArr[0].files) {
                 //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
-                bannerImageArray = await uploadFile(file, sp, "Documents", "https://alrostamanigroupae.sharepoint.com");
+                bannerImageArray = await uploadFile(file, sp, "Documents", tenantUrl);
               }
             }
             else if(BnnerImagepostArr.length > 0)
@@ -440,7 +457,7 @@ const AddannouncementContext = ({ props }: any) => {
                 EntityId: Number(formData.entity),
                 CategoryId: Number(formData.category),
                 AnnouncementandNewsTypeMasterId: Number(formData.Type),
-                FeaturedAnnouncement: formData.FeaturedAnnouncement === true ? true : false,
+                FeaturedAnnouncement: true,
                 Status: "Submitted",
                 AuthorId: currentUser.Id,
                 AnnouncementandNewsBannerImage: bannerImageArray != "{}" && JSON.stringify(bannerImageArray)
@@ -485,29 +502,29 @@ const AddannouncementContext = ({ props }: any) => {
               }
 
               // Upload Documents
-              if (DocumentpostArr[0]?.files?.length > 0) {
-                for (const file of DocumentpostArr[0].files) {
-                  const uploadedDocument = await uploadFileToLibrary(file, sp, "ARGAnnouncementAndNewsDocs");
-                  documentIds = documentIds.concat(uploadedDocument.map((item: { ID: any }) => item.ID));
-                  if (DocumentpostArr1.length > 0) {
-                    DocumentpostArr1.push(uploadedDocument[0])
-                    const updatedData = DocumentpostArr1.filter(item => item.ID !== 0);
-                    console.log(updatedData, 'updatedData');
-                    documentArray = updatedData;
-                    // documentArray.push(DocumentpostArr1)
-                    DocumentpostIdsArr.push(documentIds[0])//.push(DocumentpostIdsArr)
-                    documentIds = DocumentpostIdsArr
-                  }
-                  else {
-                    documentArray.push(uploadedDocument);
-                  }
+              // if (DocumentpostArr[0]?.files?.length > 0) {
+              //   for (const file of DocumentpostArr[0].files) {
+              //     const uploadedDocument = await uploadFileToLibrary(file, sp, "ARGAnnouncementAndNewsDocs");
+              //     documentIds = documentIds.concat(uploadedDocument.map((item: { ID: any }) => item.ID));
+              //     if (DocumentpostArr1.length > 0) {
+              //       DocumentpostArr1.push(uploadedDocument[0])
+              //       const updatedData = DocumentpostArr1.filter(item => item.ID !== 0);
+              //       console.log(updatedData, 'updatedData');
+              //       documentArray = updatedData;
+              //       // documentArray.push(DocumentpostArr1)
+              //       DocumentpostIdsArr.push(documentIds[0])//.push(DocumentpostIdsArr)
+              //       documentIds = DocumentpostIdsArr
+              //     }
+              //     else {
+              //       documentArray.push(uploadedDocument);
+              //     }
 
-                }
-              }
-              else {
-                documentIds = DocumentpostIdsArr
-                documentArray = DocumentpostArr1
-              }
+              //   }
+              // }
+              // else {
+              //   documentIds = DocumentpostIdsArr
+              //   documentArray = DocumentpostArr1
+              // }
               if (galleryArray.length > 0) {
                 let ars = galleryArray.filter(x => x.ID == 0)
                 if (ars.length > 0) {
@@ -555,7 +572,8 @@ const AddannouncementContext = ({ props }: any) => {
                 EntityId: Number(formData.entity),
                 CategoryId: Number(formData.category),
                 AnnouncementandNewsTypeMasterId: Number(formData.Type),
-                FeaturedAnnouncement: formData.FeaturedAnnouncement === true ? true : false,
+                //FeaturedAnnouncement: formData.FeaturedAnnouncement === true ? true : false,
+                FeaturedAnnouncement:true,
                 Status: "Submitted",
                 AuthorId: currentUser.Id
               };
@@ -599,29 +617,29 @@ const AddannouncementContext = ({ props }: any) => {
               }
 
               // Upload Documents
-              if (DocumentpostArr[0]?.files?.length > 0) {
-                for (const file of DocumentpostArr[0].files) {
-                  const uploadedDocument = await uploadFileToLibrary(file, sp, "ARGAnnouncementAndNewsDocs");
-                  documentIds = documentIds.concat(uploadedDocument.map((item: { ID: any }) => item.ID));
-                  if (DocumentpostArr1.length > 0) {
-                    DocumentpostArr1.push(uploadedDocument[0])
-                    const updatedData = DocumentpostArr1.filter(item => item.ID !== 0);
-                    console.log(updatedData, 'updatedData');
-                    documentArray = updatedData;
-                    // documentArray.push(DocumentpostArr1)
-                    DocumentpostIdsArr.push(documentIds[0])//.push(DocumentpostIdsArr)
-                    documentIds = DocumentpostIdsArr
-                  }
-                  else {
-                    documentArray.push(uploadedDocument);
-                  }
+              // if (DocumentpostArr[0]?.files?.length > 0) {
+              //   for (const file of DocumentpostArr[0].files) {
+              //     const uploadedDocument = await uploadFileToLibrary(file, sp, "ARGAnnouncementAndNewsDocs");
+              //     documentIds = documentIds.concat(uploadedDocument.map((item: { ID: any }) => item.ID));
+              //     if (DocumentpostArr1.length > 0) {
+              //       DocumentpostArr1.push(uploadedDocument[0])
+              //       const updatedData = DocumentpostArr1.filter(item => item.ID !== 0);
+              //       console.log(updatedData, 'updatedData');
+              //       documentArray = updatedData;
+              //       // documentArray.push(DocumentpostArr1)
+              //       DocumentpostIdsArr.push(documentIds[0])//.push(DocumentpostIdsArr)
+              //       documentIds = DocumentpostIdsArr
+              //     }
+              //     else {
+              //       documentArray.push(uploadedDocument);
+              //     }
 
-                }
-              }
-              else {
-                documentIds = DocumentpostIdsArr;
-                documentArray = DocumentpostArr1;
-              }
+              //   }
+              // }
+              // else {
+              //   documentIds = DocumentpostIdsArr;
+              //   documentArray = DocumentpostArr1;
+              // }
               if (galleryArray.length > 0) {
                 let ars = galleryArray.filter(x => x.ID == 0)
                 if (ars.length > 0) {
@@ -694,11 +712,12 @@ const AddannouncementContext = ({ props }: any) => {
                 boolval = await handleClick(editID, TypeMasterData?.TypeMaster, Number(formData.entity))
             }
             if (boolval == true) {
+              setLoading(false);
               Swal.fire('Submitted successfully.', '', 'success');
               sessionStorage.removeItem("announcementId")
               setTimeout(() => {
                 window.location.href = `${siteUrl}/SitePages/Announcementmaster.aspx`;
-              }, 2000);
+              }, 1000);
             }
           }
 
@@ -709,14 +728,14 @@ const AddannouncementContext = ({ props }: any) => {
           title: 'Do you want to submit this request?',
           showConfirmButton: true,
           showCancelButton: true,
-          confirmButtonText: "Save",
-          cancelButtonText: "Cancel",
+          confirmButtonText: "yes",
+          cancelButtonText: "No",
           icon: 'warning'
         }
         ).then(async (result) => {
           //console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
           if (result.isConfirmed) {
-            debugger
+            setLoading(true);
             let bannerImageArray: any = {};
             let galleryIds: any[] = [];
             let documentIds: any[] = [];
@@ -731,7 +750,7 @@ const AddannouncementContext = ({ props }: any) => {
             if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
               for (const file of BnnerImagepostArr[0].files) {
                 //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
-                bannerImageArray = await uploadFile(file, sp, "Documents", "https://alrostamanigroupae.sharepoint.com");
+                bannerImageArray = await uploadFile(file, sp, "Documents", tenantUrl);
               }
             }
             debugger
@@ -743,7 +762,8 @@ const AddannouncementContext = ({ props }: any) => {
               EntityId: Number(formData.entity),
               CategoryId: Number(formData.category),
               AnnouncementandNewsTypeMasterId: Number(formData.Type),
-              FeaturedAnnouncement: formData.FeaturedAnnouncement === true ? true : false,
+              //FeaturedAnnouncement: formData.FeaturedAnnouncement === true ? true : false,
+              FeaturedAnnouncement:true,
               Status: "Submitted",
               AuthorId: currentUser.Id,
               AnnouncementandNewsBannerImage: JSON.stringify(bannerImageArray)
@@ -772,13 +792,13 @@ const AddannouncementContext = ({ props }: any) => {
             }
 
             // Upload Documents
-            if (DocumentpostArr.length > 0) {
-              for (const file of DocumentpostArr[0]?.files) {
-                const uploadedDocument = await uploadFileToLibrary(file, sp, "ARGAnnouncementAndNewsDocs");
-                documentIds = documentIds.concat(uploadedDocument.map((item: { ID: any }) => item.ID));
-                documentArray.push(uploadedDocument);
-              }
-            }
+            // if (DocumentpostArr.length > 0) {
+            //   for (const file of DocumentpostArr[0]?.files) {
+            //     const uploadedDocument = await uploadFileToLibrary(file, sp, "ARGAnnouncementAndNewsDocs");
+            //     documentIds = documentIds.concat(uploadedDocument.map((item: { ID: any }) => item.ID));
+            //     documentArray.push(uploadedDocument);
+            //   }
+            // }
 
             // Update Post with Gallery and Document Information
             const updatePayload = {
@@ -816,11 +836,12 @@ const AddannouncementContext = ({ props }: any) => {
             const boolval = await handleClick(postId, TypeMasterData?.TypeMaster, Number(formData.entity))
 
             if (boolval == true) {
+              setLoading(false);
               Swal.fire('Submitted successfully.', '', 'success');
               // sessionStorage.removeItem("bannerId")
               setTimeout(() => {
                 window.location.href = `${siteUrl}/SitePages/Announcementmaster.aspx`;
-              }, 5000);
+              }, 1000);
             }
 
           }
@@ -841,15 +862,16 @@ const AddannouncementContext = ({ props }: any) => {
           title: 'Do you want to save this request?',
           showConfirmButton: true,
           showCancelButton: true,
-          confirmButtonText: "Save",
-          cancelButtonText: "Cancel",
+          confirmButtonText: "Yes",
+          cancelButtonText: "No",
           icon: 'warning'
         }
         ).then(async (result) => {
           console.log(result)
           if (result.isConfirmed) {
+            setLoading(true);
             //console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
-            debugger
+            
             let bannerImageArray: any = {};
             let galleryIds: any[] = [];
             let documentIds: any[] = [];
@@ -862,7 +884,7 @@ const AddannouncementContext = ({ props }: any) => {
             if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
               for (const file of BnnerImagepostArr[0].files) {
                 //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
-                bannerImageArray = await uploadFile(file, sp, "Documents", "https://alrostamanigroupae.sharepoint.com");
+                bannerImageArray = await uploadFile(file, sp, "Documents", tenantUrl);
               }
             }
             else {
@@ -878,7 +900,8 @@ const AddannouncementContext = ({ props }: any) => {
                 EntityId: Number(formData.entity),
                 CategoryId: Number(formData.category),
                 AnnouncementandNewsTypeMasterId: Number(formData.Type),
-                FeaturedAnnouncement: formData.FeaturedAnnouncement === true ? true : false,
+                //FeaturedAnnouncement: formData.FeaturedAnnouncement === true ? true : false,
+                FeaturedAnnouncement:true,
                 Status: "Save as draft",
                 AuthorId: currentUser.Id,
                 AnnouncementandNewsBannerImage: bannerImageArray != "{}" && JSON.stringify(bannerImageArray)
@@ -923,29 +946,29 @@ const AddannouncementContext = ({ props }: any) => {
               }
 
               // Upload Documents
-              if (DocumentpostArr[0]?.files?.length > 0) {
-                for (const file of DocumentpostArr[0].files) {
-                  const uploadedDocument = await uploadFileToLibrary(file, sp, "ARGAnnouncementAndNewsDocs");
-                  documentIds = documentIds.concat(uploadedDocument.map((item: { ID: any }) => item.ID));
-                  if (DocumentpostArr1.length > 0) {
-                    DocumentpostArr1.push(uploadedDocument[0])
-                    const updatedData = DocumentpostArr1.filter(item => item.ID !== 0);
-                    console.log(updatedData, 'updatedData');
-                    documentArray = updatedData;
-                    // documentArray.push(DocumentpostArr1)
-                    DocumentpostIdsArr.push(documentIds[0])//.push(DocumentpostIdsArr)
-                    documentIds = DocumentpostIdsArr
-                  }
-                  else {
-                    documentArray.push(uploadedDocument);
-                  }
+              // if (DocumentpostArr[0]?.files?.length > 0) {
+              //   for (const file of DocumentpostArr[0].files) {
+              //     const uploadedDocument = await uploadFileToLibrary(file, sp, "ARGAnnouncementAndNewsDocs");
+              //     documentIds = documentIds.concat(uploadedDocument.map((item: { ID: any }) => item.ID));
+              //     if (DocumentpostArr1.length > 0) {
+              //       DocumentpostArr1.push(uploadedDocument[0])
+              //       const updatedData = DocumentpostArr1.filter(item => item.ID !== 0);
+              //       console.log(updatedData, 'updatedData');
+              //       documentArray = updatedData;
+              //       // documentArray.push(DocumentpostArr1)
+              //       DocumentpostIdsArr.push(documentIds[0])//.push(DocumentpostIdsArr)
+              //       documentIds = DocumentpostIdsArr
+              //     }
+              //     else {
+              //       documentArray.push(uploadedDocument);
+              //     }
 
-                }
-              }
-              else {
-                documentIds = DocumentpostIdsArr
-                documentArray = DocumentpostArr1
-              }
+              //   }
+              // }
+              // else {
+              //   documentIds = DocumentpostIdsArr
+              //   documentArray = DocumentpostArr1
+              // }
               if (galleryArray.length > 0) {
                 let ars = galleryArray.filter(x => x.ID == 0)
                 if (ars.length > 0) {
@@ -992,7 +1015,8 @@ const AddannouncementContext = ({ props }: any) => {
                 EntityId: Number(formData.entity),
                 CategoryId: Number(formData.category),
                 AnnouncementandNewsTypeMasterId: Number(formData.Type),
-                FeaturedAnnouncement: formData.FeaturedAnnouncement === true ? true : false,
+                //FeaturedAnnouncement: formData.FeaturedAnnouncement === true ? true : false,
+                FeaturedAnnouncement:true,
                 Status: "Save as draft",
                 AuthorId: currentUser.Id
               };
@@ -1036,29 +1060,29 @@ const AddannouncementContext = ({ props }: any) => {
               }
 
               // Upload Documents
-              if (DocumentpostArr[0]?.files?.length > 0) {
-                for (const file of DocumentpostArr[0].files) {
-                  const uploadedDocument = await uploadFileToLibrary(file, sp, "ARGAnnouncementAndNewsDocs");
-                  documentIds = documentIds.concat(uploadedDocument.map((item: { ID: any }) => item.ID));
-                  if (DocumentpostArr1.length > 0) {
-                    DocumentpostArr1.push(uploadedDocument[0])
-                    const updatedData = DocumentpostArr1.filter(item => item.ID !== 0);
-                    console.log(updatedData, 'updatedData');
-                    documentArray = updatedData;
-                    // documentArray.push(DocumentpostArr1)
-                    DocumentpostIdsArr.push(documentIds[0])//.push(DocumentpostIdsArr)
-                    documentIds = DocumentpostIdsArr
-                  }
-                  else {
-                    documentArray.push(uploadedDocument);
-                  }
+              // if (DocumentpostArr[0]?.files?.length > 0) {
+              //   for (const file of DocumentpostArr[0].files) {
+              //     const uploadedDocument = await uploadFileToLibrary(file, sp, "ARGAnnouncementAndNewsDocs");
+              //     documentIds = documentIds.concat(uploadedDocument.map((item: { ID: any }) => item.ID));
+              //     if (DocumentpostArr1.length > 0) {
+              //       DocumentpostArr1.push(uploadedDocument[0])
+              //       const updatedData = DocumentpostArr1.filter(item => item.ID !== 0);
+              //       console.log(updatedData, 'updatedData');
+              //       documentArray = updatedData;
+              //       // documentArray.push(DocumentpostArr1)
+              //       DocumentpostIdsArr.push(documentIds[0])//.push(DocumentpostIdsArr)
+              //       documentIds = DocumentpostIdsArr
+              //     }
+              //     else {
+              //       documentArray.push(uploadedDocument);
+              //     }
 
-                }
-              }
-              else {
-                documentIds = DocumentpostIdsArr;
-                documentArray = DocumentpostArr1;
-              }
+              //   }
+              // }
+              // else {
+              //   documentIds = DocumentpostIdsArr;
+              //   documentArray = DocumentpostArr1;
+              // }
               if (galleryArray.length > 0) {
                 let ars = galleryArray.filter(x => x.ID == 0)
                 if (ars.length > 0) {
@@ -1095,11 +1119,12 @@ const AddannouncementContext = ({ props }: any) => {
                 console.log("Update Result:", updateResult);
               }
             }
+            setLoading(false);
             Swal.fire('Saved successfully.', '', 'success');
             sessionStorage.removeItem("announcementId")
             setTimeout(() => {
               window.location.href = `${siteUrl}/SitePages/Announcementmaster.aspx`;
-            }, 2000);
+            }, 1000);
           }
 
         })
@@ -1109,14 +1134,14 @@ const AddannouncementContext = ({ props }: any) => {
           title: 'Do you want to save this request?',
           showConfirmButton: true,
           showCancelButton: true,
-          confirmButtonText: "Save",
-          cancelButtonText: "Cancel",
+          confirmButtonText: "Yes",
+          cancelButtonText: "No",
           icon: 'warning'
         }
         ).then(async (result) => {
           //console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
           if (result.isConfirmed) {
-            debugger
+            setLoading(true);
             let bannerImageArray: any = {};
             let galleryIds: any[] = [];
             let documentIds: any[] = [];
@@ -1131,7 +1156,7 @@ const AddannouncementContext = ({ props }: any) => {
             if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
               for (const file of BnnerImagepostArr[0].files) {
                 //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
-                bannerImageArray = await uploadFile(file, sp, "Documents", "https://alrostamanigroupae.sharepoint.com");
+                bannerImageArray = await uploadFile(file, sp, "Documents", tenantUrl);
               }
             }
             debugger
@@ -1143,7 +1168,8 @@ const AddannouncementContext = ({ props }: any) => {
               EntityId: Number(formData.entity),
               CategoryId: Number(formData.category),
               AnnouncementandNewsTypeMasterId: Number(formData.Type),
-              FeaturedAnnouncement: formData.FeaturedAnnouncement === true ? true : false,
+              //FeaturedAnnouncement: formData.FeaturedAnnouncement === true ? true : false,
+              FeaturedAnnouncement:true,
               Status: "Save as draft",
               AuthorId: currentUser.Id,
               AnnouncementandNewsBannerImage: JSON.stringify(bannerImageArray)
@@ -1171,13 +1197,13 @@ const AddannouncementContext = ({ props }: any) => {
             }
 
             // Upload Documents
-            if (DocumentpostArr.length > 0) {
-              for (const file of DocumentpostArr[0]?.files) {
-                const uploadedDocument = await uploadFileToLibrary(file, sp, "ARGAnnouncementAndNewsDocs");
-                documentIds = documentIds.concat(uploadedDocument.map((item: { ID: any }) => item.ID));
-                documentArray.push(uploadedDocument);
-              }
-            }
+            // if (DocumentpostArr.length > 0) {
+            //   for (const file of DocumentpostArr[0]?.files) {
+            //     const uploadedDocument = await uploadFileToLibrary(file, sp, "ARGAnnouncementAndNewsDocs");
+            //     documentIds = documentIds.concat(uploadedDocument.map((item: { ID: any }) => item.ID));
+            //     documentArray.push(uploadedDocument);
+            //   }
+            // }
 
             // Update Post with Gallery and Document Information
             const updatePayload = {
@@ -1195,11 +1221,12 @@ const AddannouncementContext = ({ props }: any) => {
               const updateResult = await updateItem(updatePayload, sp, postId);
               console.log("Update Result:", updateResult);
             }
+            setLoading(false);
             Swal.fire('Saved successfully.', '', 'success');
             // sessionStorage.removeItem("bannerId")
             setTimeout(() => {
               window.location.href = `${siteUrl}/SitePages/Announcementmaster.aspx`;
-            }, 2000);
+            }, 1000);
           }
         })
 
@@ -1232,67 +1259,67 @@ const AddannouncementContext = ({ props }: any) => {
     if (event.target.files && event.target.files.length > 0) {
       const files = Array.from(event.target.files);
 
-      if (libraryName === "Docs") {
-        const docFiles = files.filter(file =>
-          file.type === 'application/pdf' ||
-          file.type === 'application/msword' ||
-          file.type === 'application/xsls' ||
-          file.type === 'text/csv' || file.type === 'text/csv' ||
-          file.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
-          file.type === "application/vnd.openxmlformats-officedocument.presentationml.presentation" || file.type === 'text/'
-        );
+      // if (libraryName === "Docs") {
+      //   const docFiles = files.filter(file =>
+      //     file.type === 'application/pdf' ||
+      //     file.type === 'application/msword' ||
+      //     file.type === 'application/xsls' ||
+      //     file.type === 'text/csv' || file.type === 'text/csv' ||
+      //     file.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
+      //     file.type === "application/vnd.openxmlformats-officedocument.presentationml.presentation" || file.type === 'text/'
+      //   );
 
-        if (docFiles.length > 0) {
-          const arr = {
-            files: docFiles,
-            libraryName: libraryName,
-            docLib: docLib
-          };
-          uloadDocsFiles.push(arr);
-          setDocumentpostArr(uloadDocsFiles);
-          if (DocumentpostArr1.length > 0) {
-            //  uloadDocsFiles1.push(DocumentpostArr1)
-            docFiles.forEach(ele => {
-              let arr1 = {
-                "ID": 0,
-                "Createdby": "",
-                "Modified": "",
-                "fileUrl": "",
-                "fileSize": ele.size,
-                "fileType": ele.type,
-                "fileName": ele.name
-              }
-              DocumentpostArr1.push(arr1);
+      //   if (docFiles.length > 0) {
+      //     const arr = {
+      //       files: docFiles,
+      //       libraryName: libraryName,
+      //       docLib: docLib
+      //     };
+      //     uloadDocsFiles.push(arr);
+      //     setDocumentpostArr(uloadDocsFiles);
+      //     if (DocumentpostArr1.length > 0) {
+      //       //  uloadDocsFiles1.push(DocumentpostArr1)
+      //       docFiles.forEach(ele => {
+      //         let arr1 = {
+      //           "ID": 0,
+      //           "Createdby": "",
+      //           "Modified": "",
+      //           "fileUrl": "",
+      //           "fileSize": ele.size,
+      //           "fileType": ele.type,
+      //           "fileName": ele.name
+      //         }
+      //         DocumentpostArr1.push(arr1);
 
-            }
-            )
+      //       }
+      //       )
 
-            setDocumentpostArr1(DocumentpostArr1);
-          }
-          else {
-            docFiles.forEach(ele => {
-              let arr1 = {
-                "ID": 0,
-                "Createdby": "",
-                "Modified": "",
-                "fileUrl": "",
-                "fileSize": ele.size,
-                "fileType": ele.type,
-                "fileName": ele.name
-              }
-              uloadDocsFiles1.push(arr1);
+      //       setDocumentpostArr1(DocumentpostArr1);
+      //     }
+      //     else {
+      //       docFiles.forEach(ele => {
+      //         let arr1 = {
+      //           "ID": 0,
+      //           "Createdby": "",
+      //           "Modified": "",
+      //           "fileUrl": "",
+      //           "fileSize": ele.size,
+      //           "fileType": ele.type,
+      //           "fileName": ele.name
+      //         }
+      //         uloadDocsFiles1.push(arr1);
 
-            }
-            )
+      //       }
+      //       )
 
-            setDocumentpostArr1(uloadDocsFiles1);
-          }
+      //       setDocumentpostArr1(uloadDocsFiles1);
+      //     }
 
 
-        } else {
-          Swal.fire("only document can be upload")
-        }
-      }
+      //   } else {
+      //     Swal.fire("only document can be upload")
+      //   }
+      // }
       if (libraryName === "Gallery" || libraryName === "bannerimg") {
         const imageVideoFiles = files.filter(file =>
           file.type.startsWith('image/') ||
@@ -1592,6 +1619,11 @@ const AddannouncementContext = ({ props }: any) => {
             <div className="card mt-3" >
               <div className="card-body">
                 <div className="row mt-2">
+                {Loading &&
+                    <div className="loadercss" role="status">Loading...
+                      <img src={require('../../../Assets/ExtraImage/loader.gif')} style={{ height: '80px', width: '70px' }} alt="Check" />
+                    </div>
+                  }
                   <form className='row' >
                     <div className="col-lg-4">
                       <div className="mb-3">
@@ -1698,7 +1730,7 @@ const AddannouncementContext = ({ props }: any) => {
                         <div className='d-flex justify-content-between'>
                           <div>
                             <label htmlFor="bannerImage" className="form-label">
-                              Banner Image <span className="text-danger">*</span>
+                              Announcement Image <span className="text-danger">*</span>
                             </label>
                           </div>
                           <div>
@@ -1720,11 +1752,12 @@ const AddannouncementContext = ({ props }: any) => {
                           type="file"
                           id="bannerImage"
                           name="bannerImage"
-                          className="form-control inputcss"
+                          className={`form-control inputcss ${(!ValidSubmit)?"border-on-error":""}`}
+                         // className="form-control inputcss"
                           onChange={(e) => onFileChange(e, "bannerimg", "Document")}
                           // disabled={ApprovalMode}
                           disabled={InputDisabled}
-
+                              
                         />
                       </div>
                     </div>
@@ -1757,7 +1790,8 @@ const AddannouncementContext = ({ props }: any) => {
                           type="file"
                           id="announcementGallery"
                           name="announcementGallery"
-                          className="form-control inputcss"
+                          //className="form-control inputcss"
+                          className={`form-control inputcss ${(!ValidSubmit)?"border-on-error":""}`}                        
                           multiple
                           onChange={(e) => onFileChange(e, "Gallery", "AnnouncementAndNewsGallary")}
                           // disabled={ApprovalMode}
@@ -1767,7 +1801,7 @@ const AddannouncementContext = ({ props }: any) => {
                       </div>
                     </div>
 
-                    <div className="col-lg-4">
+                    {/* <div className="col-lg-4">
                       <div className="mb-3">
 
                         <div className='d-flex justify-content-between'>
@@ -1801,9 +1835,9 @@ const AddannouncementContext = ({ props }: any) => {
 
                         />
                       </div>
-                    </div>
+                    </div> */}
 
-                    <div className="col-lg-3">
+                    {/* <div className="col-lg-3">
                       <div className="mb-3">
                         <label htmlFor="FeaturedAnnouncement" className="form-label">
                           Featured Announcement <span className="text-danger">*</span>
@@ -1824,7 +1858,7 @@ const AddannouncementContext = ({ props }: any) => {
                           />
                         </div>
                       </div>
-                    </div>
+                    </div> */}
 
                     <div className="col-lg-12">
                       <div className="mb-3">
@@ -1832,7 +1866,8 @@ const AddannouncementContext = ({ props }: any) => {
                           Overview <span className="text-danger">*</span>
                         </label>
                         <textarea
-                          className="form-control inputcss"
+                        className={`form-control inputcss ${(!ValidSubmit)?"border-on-error":""}`}  
+                         // className="form-control inputcss"
                           id="overview"
                           placeholder='Enter Overview'
                           name="overview"
@@ -1849,7 +1884,8 @@ const AddannouncementContext = ({ props }: any) => {
                     <div className="col-lg-12">
                       <div className="mb-3">
                         <label htmlFor="description" className="form-label">
-                          Description <span className="text-danger">*</span>
+                          Description 
+                          {/* <span className="text-danger">*</span> */}
                         </label>
                         <div style={{ display: "contents", justifyContent: "start" }}>
                           <ReactQuill
@@ -1863,9 +1899,9 @@ const AddannouncementContext = ({ props }: any) => {
                                 ...prevValues,
                                 ["description"]: content,
                               }));
-                            }}
+                            }}                           
                             style={{ width: '100%', fontSize: '6px', height: '100px' }}
-                            
+                            readOnly={InputDisabled}
                           />
                         </div>
                       </div>
@@ -1888,7 +1924,11 @@ const AddannouncementContext = ({ props }: any) => {
                           className='me-1' alt="x" />
                         Cancel
                       </button>
-                    </div>):(<div></div>)
+                    </div>):(<div className="text-center" style={{ marginTop: '3rem' }}><button type="button" className="btn btn-light waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleCancel}>
+                        <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }}
+                          className='me-1' alt="x" />
+                        Cancel
+                      </button></div>)
                     }
                   </form>
                 </div>
@@ -1969,6 +2009,8 @@ const AddannouncementContext = ({ props }: any) => {
                               onRemove={(selected) => handleUserSelect(selected, row.id)}
                               displayValue="name"
                               disable={true}
+                              placeholder=''
+                              hidePlaceholder={true}                              
                             />
                           </div>
 
@@ -2070,7 +2112,7 @@ const AddannouncementContext = ({ props }: any) => {
                           {DocumentpostArr1.map((file: any, index: number) => (
                             <tr key={index}>
                               <td className='text-center'>{index + 1}</td>
-                              <td>{file.fileName.replace("/sites/AlRostmaniSpfx2", "")}</td>
+                              <td>{file.fileName.replace("/sites/Intranetuat", "")}</td>
                               <td className='text-right'>{file.fileSize}</td>
                               <td className='text-center'> <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, DocumentpostArr1, "docs")} /> </td>
                             </tr>
@@ -2089,7 +2131,8 @@ const AddannouncementContext = ({ props }: any) => {
                             <th> Image </th>
                             <th>File Name</th>
                             <th>File Size</th>
-                            <th className='text-center'>Action</th>
+                            {modeValue !='view' && <th className='text-center'>Action</th>
+                            }
                           </tr>
                         </thead>
                         <tbody>
@@ -2101,8 +2144,11 @@ const AddannouncementContext = ({ props }: any) => {
 
                               <td>{file.fileName}</td>
                               <td className='text-right'>{file.fileSize}</td>
-                              <td className='text-center'> <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, ImagepostArr1, "Gallery")} /> </td>
-
+                              {modeValue !='view' && <td className='text-center'> 
+                                 <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, ImagepostArr1, "Gallery")} /> 
+                                
+                                </td>
+                              }
                             </tr>
                           ))}
                         </tbody>

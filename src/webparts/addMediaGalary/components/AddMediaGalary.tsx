@@ -40,7 +40,7 @@ import "../../verticalSideBar/components/VerticalSidebar.scss";
 
 import { Modal } from 'react-bootstrap';
 
- import "../components/AddMediaGalary.scss";
+import "../components/AddMediaGalary.scss";
 
 import HorizontalNavbar from '../../horizontalNavBar/components/HorizontalNavBar';
 
@@ -57,7 +57,7 @@ import { getUrlParameterValue } from '../../../Shared/Helper';
 import { FormSubmissionMode } from '../../../Shared/Interfaces';
 import { WorkflowAuditHistory } from '../../../CustomJSComponents/WorkflowAuditHistory/WorkflowAuditHistory';
 import { CONTENTTYPE_Media, LIST_TITLE_ContentMaster, LIST_TITLE_MediaGallery, LIST_TITLE_MyRequest } from '../../../Shared/Constants';
-
+let mode = "";
 const AddMediaGalaryContext = ({ props }: any) => {
 
   const sp: SPFI = getSP();
@@ -91,7 +91,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
   const [EnityData, setEnityData] = React.useState([])
 
   const [mediaCategorydata, setMediaCategory] = React.useState([])
-
+  const [Loading, setLoading] = React.useState(false);
 
   const siteUrl = props.siteUrl;
 
@@ -183,21 +183,19 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
     ApiCallFunc();
 
-    let mode=getUrlParameterValue('mode');
-    if(mode && mode=='approval')
-    {
-       setApprovalMode(true);
-       let requestid=getUrlParameterValue('requestid');
-       setInputDisabled(true);
-       sp.web.lists.getByTitle('ARGMyRequest').items.getById(Number(requestid))().then(itm=>{
-          setApprovalRequestItem(itm);
-          setInputDisabled(true && (!itm.IsRework || itm.IsRework =="No"))
-          //setInputDisabled(ApprovalMode)
-       })
+    mode = getUrlParameterValue('mode');
+    if (mode && mode == 'approval') {
+      setApprovalMode(true);
+      let requestid = getUrlParameterValue('requestid');
+      setInputDisabled(true);
+      sp.web.lists.getByTitle('ARGMyRequest').items.getById(Number(requestid))().then(itm => {
+        setApprovalRequestItem(itm);
+        setInputDisabled(true && (!itm.IsRework || itm.IsRework == "No"))
+        //setInputDisabled(ApprovalMode)
+      })
     }
-    else if(mode && mode=='view')
-    {
-      setInputDisabled(true);       
+    else if (mode && mode == 'view') {
+      setInputDisabled(true);
     }
 
 
@@ -266,6 +264,23 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
 
   //#region  all api call
+  const fetchAudithistory = async () => {
+    let mode = getUrlParameterValue('mode');
+    if (mode && mode == 'approval') {
+      setApprovalMode(true);
+      let requestid = getUrlParameterValue('requestid');
+      setInputDisabled(true);
+      sp.web.lists.getByTitle('ARGMyRequest').items.getById(Number(requestid))().then(itm => {
+        setApprovalRequestItem(itm);
+        setInputDisabled(true && (!itm.IsRework || itm.IsRework == "No"))
+        //setInputDisabled(ApprovalMode)
+      })
+    }
+    else if (mode && mode == 'view') {
+      setInputDisabled(true);
+    }
+
+  }
 
   const ApiCallFunc = async () => {
 
@@ -292,20 +307,19 @@ const AddMediaGalaryContext = ({ props }: any) => {
     if (sessionStorage.getItem("mediaId") != undefined) {
       const iD = sessionStorage.getItem("mediaId")
       let iDs = decryptId(iD)
-      formitemid=Number(iDs);
+      formitemid = Number(iDs);
       setFormItemId(Number(iDs))
+    }
+    else {
+      let formitemidparam = getUrlParameterValue('contentid');
+      if (formitemidparam) {
+        formitemid = Number(formitemidparam);
+        setFormItemId(Number(formitemid));
       }
-      else
-      {
-        let formitemidparam=getUrlParameterValue('contentid');
-        if(formitemidparam) {
-          formitemid=Number(formitemidparam);         
-          setFormItemId(Number(formitemid));
-        }
-      }
-console.log("formitemid",formitemid)
+    }
+    console.log("formitemid", formitemid)
     // if (sessionStorage.getItem("mediaId") != undefined) {
-      if (formitemid) {
+    if (formitemid) {
 
       // const iD = sessionStorage.getItem("mediaId")
 
@@ -679,7 +693,7 @@ console.log("formitemid",formitemid)
   }
 
 
-  const validateForm = (formsubmode:FormSubmissionMode) => {
+  const validateForm = (formsubmode: FormSubmissionMode) => {
 
     debugger
 
@@ -690,21 +704,19 @@ console.log("formitemid",formitemid)
 
     setValidDraft(true);
     setValidSubmit(true);
-    if(formsubmode==FormSubmissionMode.DRAFT)
-    {
-        if (!title) {
+    if (formsubmode == FormSubmissionMode.DRAFT) {
+      if (!title) {
 
-          //Swal.fire('Error', 'Title is required!', 'error');
+        //Swal.fire('Error', 'Title is required!', 'error');
 
-          valid = false;
+        valid = false;
 
-        }
-        setValidDraft(valid);
+      }
+      setValidDraft(valid);
 
-       
-    } 
-    else
-    {
+
+    }
+    else {
       if (!title) {
 
         //Swal.fire('Error', 'Title is required!', 'error');
@@ -722,6 +734,13 @@ console.log("formitemid",formitemid)
       }
 
       else if (!Category) {
+
+        //Swal.fire('Error', 'Category is required!', 'error');
+
+        valid = false;
+
+      }
+      else if (BnnerImagepostArr.length == 0) {
 
         //Swal.fire('Error', 'Category is required!', 'error');
 
@@ -755,7 +774,7 @@ console.log("formitemid",formitemid)
 
     // }
 
-    if(!valid)
+    if (!valid)
       Swal.fire('Please fill the mandatory fields.');
     return valid;
 
@@ -791,7 +810,7 @@ console.log("formitemid",formitemid)
           //console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
 
           if (result.isConfirmed) {
-
+            setLoading(true);
             debugger
 
             let bannerImageArray: any = {};
@@ -821,10 +840,9 @@ console.log("formitemid",formitemid)
               }
 
             }
-            else if(BnnerImagepostArr.length > 0)
-              {
-                bannerImageArray=BnnerImagepostArr[0];
-              }
+            else if (BnnerImagepostArr.length > 0) {
+              bannerImageArray = BnnerImagepostArr[0];
+            }
 
             else {
 
@@ -1110,7 +1128,7 @@ console.log("formitemid",formitemid)
               EntityId: Number(formData.entity),
 
               SourceName: "Media",
-              ReworkRequestedBy:"Initiator"
+              ReworkRequestedBy: "Initiator"
 
 
             }
@@ -1119,39 +1137,38 @@ console.log("formitemid",formitemid)
 
             // const boolval = await handleClick(editID, "Media", Number(formData.entity))
 
-            let boolval=false;
-            if(ApprovalRequestItem && ApprovalRequestItem.IsRework && ApprovalRequestItem.IsRework=='Yes')
-             {
-              const ctmasteritm=await sp.web.lists.getByTitle(LIST_TITLE_ContentMaster).items.filter('ContentID eq '+ApprovalRequestItem.ContentId+" and SourceName eq '"+CONTENTTYPE_Media+"'")();
-              if(ctmasteritm && ctmasteritm.length>0)
-                 {
-                  let updaterec={'Status':'Pending','ReworkRequestedBy':'Initiator'}
-                  if(ApprovalRequestItem.LevelSequence==1) updaterec.ReworkRequestedBy="Level 1";
-                  await UpdateContentMaster(sp,ctmasteritm[0].Id,updaterec);
-                  await sp.web.lists.getByTitle(LIST_TITLE_MyRequest).items.getById(ApprovalRequestItem.Id).update({'Status':'Submitted'});
-                  await sp.web.lists.getByTitle(LIST_TITLE_MediaGallery).items.getById(editID).update({'Status':'Submitted'});
-                  boolval=true;
-                 }
-             }
-            else
-               {
-                console.log(" form edit content master");
-                await AddContentMaster(sp, arr)
-                console.log(" form edit content master - added content master");
-
-                boolval = await handleClick(editID, "Media", Number(formData.entity))
+            let boolval = false;
+            if (ApprovalRequestItem && ApprovalRequestItem.IsRework && ApprovalRequestItem.IsRework == 'Yes') {
+              const ctmasteritm = await sp.web.lists.getByTitle(LIST_TITLE_ContentMaster).items.filter('ContentID eq ' + ApprovalRequestItem.ContentId + " and SourceName eq '" + CONTENTTYPE_Media + "'")();
+              if (ctmasteritm && ctmasteritm.length > 0) {
+                let updaterec = { 'Status': 'Pending', 'ReworkRequestedBy': 'Initiator' }
+                if (ApprovalRequestItem.LevelSequence == 1) updaterec.ReworkRequestedBy = "Level 1";
+                await UpdateContentMaster(sp, ctmasteritm[0].Id, updaterec);
+                await sp.web.lists.getByTitle(LIST_TITLE_MyRequest).items.getById(ApprovalRequestItem.Id).update({ 'Status': 'Submitted' });
+                await sp.web.lists.getByTitle(LIST_TITLE_MediaGallery).items.getById(editID).update({ 'Status': 'Submitted' });
+                boolval = true;
               }
-            if (boolval == true) {
+            }
+            else {
 
+              console.log(" form edit content master");
+              debugger
+              await AddContentMaster(sp, arr)
+              console.log(" form edit content master - added content master");
+
+              boolval = await handleClick(editID, "Media", Number(formData.entity))
+            }
+            if (boolval == true) {
+              setLoading(false);
               Swal.fire('Submitted successfully.', '', 'success');
 
               sessionStorage.removeItem("mediaId")
 
-              // setTimeout(() => {
+              setTimeout(() => {
 
-              //   window.location.href = `${siteUrl}/SitePages/MediaGalleryMaster.aspx`;
+                window.location.href = `${siteUrl}/SitePages/MediaGalleryMaster.aspx`;
 
-              // }, 2000);
+              }, 2000);
 
             }
 
@@ -1185,7 +1202,7 @@ console.log("formitemid",formitemid)
           if (result.isConfirmed) {
 
             //console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
-
+            setLoading(true);
             debugger
 
             let bannerImageArray: any = {};
@@ -1300,7 +1317,7 @@ console.log("formitemid",formitemid)
               EntityId: Number(formData.entity),
 
               SourceName: "Media",
-              ReworkRequestedBy:"Initiator"
+              ReworkRequestedBy: "Initiator"
 
 
             }
@@ -1310,7 +1327,7 @@ console.log("formitemid",formitemid)
             const boolval = await handleClick(postId, "Media", Number(formData.entity))
 
             if (boolval == true) {
-
+              setLoading(false);
               Swal.fire('Submitted successfully.', '', 'success');
 
               // sessionStorage.removeItem("bannerId")
@@ -1329,7 +1346,7 @@ console.log("formitemid",formitemid)
 
 
       }
-
+      fetchAudithistory();
     }
 
 
@@ -1367,7 +1384,7 @@ console.log("formitemid",formitemid)
           //console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
 
           if (result.isConfirmed) {
-
+            setLoading(true);
             debugger
 
             let bannerImageArray: any = {};
@@ -1669,7 +1686,7 @@ console.log("formitemid",formitemid)
               }
 
             }
-
+             setLoading(false);
             Swal.fire('Saved successfully.', '', 'success');
 
             sessionStorage.removeItem("mediaId")
@@ -1707,7 +1724,7 @@ console.log("formitemid",formitemid)
         ).then(async (result) => {
 
           if (result.isConfirmed) {
-
+            setLoading(true);
             //console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
 
             debugger
@@ -1737,7 +1754,7 @@ console.log("formitemid",formitemid)
 
             // Create Post
 
-            let postPayload:any = {
+            let postPayload: any = {
 
               Title: formData.title,
 
@@ -1753,14 +1770,12 @@ console.log("formitemid",formitemid)
 
             };
 
-            if(formData.entity && formData.entity!="")
-              {
-                postPayload.EntityMasterId=Number(formData.entity);
-              }
+            if (formData.entity && formData.entity != "") {
+              postPayload.EntityMasterId = Number(formData.entity);
+            }
 
-            if(formData.Category && formData.Category!="")
-            {
-              postPayload.MediaGalleryCategoryId=Number(formData.Category);
+            if (formData.Category && formData.Category != "") {
+              postPayload.MediaGalleryCategoryId = Number(formData.Category);
             }
             console.log(postPayload);
 
@@ -1821,14 +1836,14 @@ console.log("formitemid",formitemid)
               console.log("Update Result:", updateResult);
 
             }
-
+            setLoading(false);
             Swal.fire('Saved successfully.', '', 'success');
 
             // sessionStorage.removeItem("bannerId")
 
             setTimeout(() => {
 
-              window.location.href = `${siteUrl}/SitePages/MediaGalleryMaster.aspx`;
+              //window.location.href = `${siteUrl}/SitePages/MediaGalleryMaster.aspx`;
 
             }, 2000);
 
@@ -1985,7 +2000,7 @@ console.log("formitemid",formitemid)
       const userIds = rows[i].approvedUserListupdate.map((user: any) => user.id);
 
       let arrPost = {
-        LevelSequence:i+1,
+        LevelSequence: i + 1,
         ContentId: contentId,
 
         ContentName: "ARGMediaGallery",
@@ -2004,7 +2019,7 @@ console.log("formitemid",formitemid)
 
       const addedData = await AddContentLevelMaster(sp, arrPost)
 
-      console.log("created content level master items",addedData);
+      console.log("created content level master items", addedData);
 
 
     }
@@ -2057,8 +2072,14 @@ console.log("formitemid",formitemid)
 
               <div className="card-body">
 
-                <div className="row mt-2">
 
+                <div className="row mt-2" >
+
+                  {Loading &&
+                    <div className="loadercss" role="status">Loading...
+                      <img src={require('../../../Assets/ExtraImage/loader.gif')} style={{ height: '80px', width: '70px' }} alt="Check" />
+                    </div>
+                  }
                   <form className='row' >
 
                     <div className="col-lg-4">
@@ -2081,13 +2102,13 @@ console.log("formitemid",formitemid)
 
                           placeholder='Enter title'
 
-                          className={`form-control inputcs ${(!ValidDraft)?"border-on-error":""} ${(!ValidSubmit)?"border-on-error":""}`}
+                          className={`form-control inputcs ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
 
                           value={formData.title}
                           disabled={InputDisabled}
 
                           onChange={(e) => onChange(e.target.name, e.target.value)} />
-                          
+
 
                       </div>
 
@@ -2105,7 +2126,7 @@ console.log("formitemid",formitemid)
 
                         <select
 
-                          className={`form-control inputcs ${(!ValidSubmit)?"border-on-error":""}`}
+                          className={`form-control inputcs ${(!ValidSubmit) ? "border-on-error" : ""}`}
 
                           id="entity"
 
@@ -2149,7 +2170,7 @@ console.log("formitemid",formitemid)
 
                         <select
 
-                          className={`form-control inputcs ${(!ValidSubmit)?"border-on-error":""}`}
+                          className={`form-control inputcs ${(!ValidSubmit) ? "border-on-error" : ""}`}
 
                           id="Category"
 
@@ -2190,7 +2211,7 @@ console.log("formitemid",formitemid)
 
                             <label htmlFor="bannerImage" className="form-label">
 
-                              Banner Image
+                              Banner Image<span className="text-danger">*</span>
 
                             </label>
 
@@ -2221,8 +2242,8 @@ console.log("formitemid",formitemid)
                           id="bannerImage"
 
                           name="bannerImage"
-
-                          className="form-control inputcss"
+                          className={`form-control inputcss ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                          //className="form-control inputcss"
 
                           disabled={InputDisabled}
 
@@ -2302,46 +2323,57 @@ console.log("formitemid",formitemid)
                     </div>
 
 
-                  {!InputDisabled?(<div className="text-center butncss">
+                    {!InputDisabled ? (<div className="text-center butncss">
 
-                    <div className="btn btn-success waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleSaveAsDraft}>
+                      <div className="btn btn-success waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleSaveAsDraft}>
 
-                      <div className='d-flex' style={{ justifyContent: 'space-around' }}>
+                        <div className='d-flex' style={{ justifyContent: 'space-around' }}>
 
-                        <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} alt="Check" /> Save As Draft
+                          <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} alt="Check" /> Save As Draft
 
-                      </div>
-
-                    </div>
-
-                    <div className="btn btn-success waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleFormSubmit}>
-
-                      <div className='d-flex' style={{ justifyContent: 'space-around', width: '70px' }}>
-
-                        <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} alt="Check" /> Submit
+                        </div>
 
                       </div>
 
-                    </div>
+                      <div className="btn btn-success waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleFormSubmit}>
 
-                    <div className="btn btn-light waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleCancel}>
+                        <div className='d-flex' style={{ justifyContent: 'space-around', width: '70px' }}>
 
-                      <div className='d-flex' style={{ justifyContent: 'space-around', width: '70px' }}>
+                          <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} alt="Check" /> Submit
 
-                        <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }} className='me-1' alt="x" />
-
-                        Cancel
+                        </div>
 
                       </div>
 
-                    </div>
+                      <div className="btn btn-light waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleCancel}>
 
-                  </div>):(<div></div>)}
+                        <div className='d-flex' style={{ justifyContent: 'space-around', width: '70px' }}>
+
+                          <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }} className='me-1' alt="x" />
+
+                          Cancel
+
+                        </div>
+
+                      </div>
+
+                    </div>) : (<div className="text-center butncss">
+                        <div className="btn btn-light waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleCancel}>
+
+                          <div className='d-flex' style={{ justifyContent: 'space-around', width: '70px' }}>
+
+                            <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }} className='me-1' alt="x" />
+
+                            Cancel
+
+                          </div>
+
+                        </div>
+                    </div>)}
 
                   </form>
 
                 </div>
-
               </div>
 
             </div>
@@ -2487,6 +2519,8 @@ console.log("formitemid",formitemid)
 
                               displayValue="name"
                               disable={true}
+                              placeholder=''
+                              hidePlaceholder={true}
 
                             />
 
@@ -2599,20 +2633,20 @@ console.log("formitemid",formitemid)
 
 
             }
-            
+
             {
               //let forrework=ApprovalRequestItem && ApprovalRequestItem.IsRework=='Yes'&& ApprovalRequestItem.LevelSequence!=0;
-              (InputDisabled&&ApprovalRequestItem)||(ApprovalRequestItem && ApprovalRequestItem.IsRework=='Yes'&& ApprovalRequestItem.LevelSequence!=0)?(
-                <WorkflowAction currentItem={ApprovalRequestItem} ctx={props.context} 
-                   DisableApproval={ApprovalRequestItem && ApprovalRequestItem.IsRework=='Yes'&& ApprovalRequestItem.LevelSequence!=0}
-                   DisableCancel={ApprovalRequestItem && ApprovalRequestItem.IsRework=='Yes'&& ApprovalRequestItem.LevelSequence!=0}
-                  //  DisableReject={ApprovalRequestItem && ApprovalRequestItem.IsRework=='Yes'&& ApprovalRequestItem.LevelSequence!=0}
+              (InputDisabled && ApprovalRequestItem) || (ApprovalRequestItem && ApprovalRequestItem.IsRework == 'Yes' && ApprovalRequestItem.LevelSequence != 0) ? (
+                <WorkflowAction currentItem={ApprovalRequestItem} ctx={props.context}
+                  DisableApproval={ApprovalRequestItem && ApprovalRequestItem.IsRework == 'Yes' && ApprovalRequestItem.LevelSequence != 0}
+                  DisableCancel={ApprovalRequestItem && ApprovalRequestItem.IsRework == 'Yes' && ApprovalRequestItem.LevelSequence != 0}
+                //  DisableReject={ApprovalRequestItem && ApprovalRequestItem.IsRework=='Yes'&& ApprovalRequestItem.LevelSequence!=0}
                 />
-              ):(<div></div>)
+              ) : (<div></div>)
             }
-             {
+            {
               <WorkflowAuditHistory ContentItemId={editID} ContentType={CONTENTTYPE_Media} ctx={props.context} />
-             }
+            }
 
             {/* Modal to display uploaded files */}
 
@@ -2645,9 +2679,9 @@ console.log("formitemid",formitemid)
                             <th>File Name</th>
 
                             <th>File Size</th>
-
-                            <th className='text-center'>Action</th>
-
+                            {mode != 'view' &&
+                              <th className='text-center'>Action</th>
+                            }
                           </tr>
 
                         </thead>
@@ -2662,16 +2696,18 @@ console.log("formitemid",formitemid)
 
                               <td>  <img className='imagefe' src={`${siteUrl}/MediaGallery/${file.fileName}`}
 
-                               /></td>
+                              /></td>
 
 
                               <td>{file.fileName}</td>
 
                               <td className='text-right'>{file.fileSize}</td>
+                              {mode != 'view' &&
+                                <td className='text-center'> <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }}
 
-                              <td className='text-center'> <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, ImagepostArr1, "Gallery")} /> </td>
+                                  onClick={() => deleteLocalFile(index, ImagepostArr1, "Gallery")} /> </td>
 
-
+                              }
                             </tr>
 
                           ))}
@@ -2682,7 +2718,7 @@ console.log("formitemid",formitemid)
 
                   )}
 
-             
+
 
               </Modal.Body>
 

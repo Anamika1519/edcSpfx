@@ -53,7 +53,7 @@ export const fetchBookmarkBlogdata = async (_sp) => {
       }
     })
   console.log("bookmarkarrbookmarkarr", bookmarkarr);
-  arr = bookmarkarr;
+  arr = bookmarkarr.slice(0, 3);
   return arr;
 }
 export const fetchPinstatus = async (_sp) => {
