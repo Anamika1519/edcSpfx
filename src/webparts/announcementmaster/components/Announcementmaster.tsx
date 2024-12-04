@@ -839,9 +839,17 @@ const Announcementmastercontext = ({ props }: any) => {
 
 
   const ApiCall = async () => {
+    let announcementArr:any[] = [];
+    const userGroups = await sp.web.currentUser.groups();
+let groupTitles: string[] = userGroups.map((group) => group.Title.toLowerCase());
 
-    const announcementArr = await getAnncouncementMaster(sp);
-
+if (groupTitles.includes("intranetadmin")) {
+  announcementArr = await getAnncouncementMaster(sp,"yes");
+}
+else if (groupTitles.includes("intranetcontentcontributor")){
+   announcementArr = await getAnncouncementMaster(sp,"No");
+}
+    
     setAnnouncementData(announcementArr);
 
     const NewsArr = await getNewsMaster(sp);

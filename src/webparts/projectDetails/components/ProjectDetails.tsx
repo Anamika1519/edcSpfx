@@ -523,34 +523,7 @@ if (projectDetails ) {
         }
         const nofiArr = await addNotification(notifiedArr, sp)
         console.log(nofiArr, 'nofiArr');
-        // const handleSubmitFiles = async () => {
-        //   setLoading(true);
-        //   try {
-        //     for (const file of selectedFiles) {
-        //       try {
-        //         alert("f")
-        //         // Upload the file to the document library
-        //         const uploadFolder = sp.web.getFolderByServerRelativePath(`/sites/AlRostmaniSpfx2/ARGProjectsFiles/${projectname}`);
-        //         const uploadResult = await uploadFolder.files.addChunked(file.name, file);
-             
-        //         const listItem = await uploadResult.file.getItem();
-           
-        //         (payload as any).CommentID=ress.data.Id;
-        //         await listItem.update(payload);
-        //         console.log(uploadResult, 'Uploaded file data');
-        //       } catch (error) {
-        //         console.log("Error uploading file:", file.name, error);
-        //       }
-        //     }
-        //     alert('Files uploaded successfully!');
-        //     setSelectedFiles([]); // Clear the selected files after upload
-        //   } catch (error) {
-        //     console.error('Error uploading files:', error);
-        //   } finally {
-        //     setLoading(false);
-        //   }
-        // };
-        // handleSubmitFiles()
+        
         setNewComment("");
         setLoading(false);
       });
@@ -1080,28 +1053,12 @@ const uploadfileinfolder = async () => {
   }
   
   // Example usage
-  //const docLibraryUrl = '/sites/AlRostmaniSpfx2/ARGProjectsFiles/';
-  //const subsiteUrl = '/sites/AlRostmaniSpfx2/test/test11';
+
   
   //console.log(isDocumentLibrary(docLibraryUrl)); // true
   //console.log(isSubsite(docLibraryUrl)); // false
   
-  //console.log(isDocumentLibrary(subsiteUrl)); // false
-  //console.log(isSubsite(subsiteUrl)); // true
-  
-    // try {
-
-    //   console.log(projectname , "projectname")
-    //   const response = await sp.web.getFolderByServerRelativePath(`/sites/AlRostmaniSpfx2/ARGProjectsFiles/${projectname}`).files();
-    //     setProjectallfiles(response)
-    //     console.log(response, "response ")
-    //   console.log('Files in the folder:', response);
-
-    //   return response; // Return or handle the response as needed
-    // } catch (error) {
-    //   console.error('Error fetching files:', error);
-    // }
-    // console.log(projectallfile, "projectallfile")
+ 
   }
 
 

@@ -20,7 +20,7 @@ interface CategorizedNotifications {
     earlier: Notification[];
 }
  
-const NotificationList = ({ NotificationArray, handleNotificationClick }: any) => {
+const NotificationList = ({ NotificationArray, handleNotificationClick, OnClearall }: any) => {
     // Function to categorize notifications
    
  
@@ -68,7 +68,7 @@ const NotificationList = ({ NotificationArray, handleNotificationClick }: any) =
                         <h5 className="p-1 font-16 text-dark">Notifications</h5>
                     </div>
                     <div style={{textAlign:'right'}} className="col-md-4">
-                        <h5 style={{textDecoration:'underline'}} className="pt-2 font-12" onClick={goToNext}>Clear All</h5>
+                    <h5 style={{ textDecoration: 'underline', cursor: 'pointer' }} className="pt-2 font-12" onClick={() => OnClearall('Clear')} >Clear All</h5>
                     </div>
                 </div>
             </div>

@@ -33,6 +33,7 @@ import { getUrlParameterValue } from '../../../Shared/Helper';
 import { FormSubmissionMode } from '../../../Shared/Interfaces';
 import { WorkflowAuditHistory } from '../../../CustomJSComponents/WorkflowAuditHistory/WorkflowAuditHistory';
 import { CONTENTTYPE_Event, LIST_TITLE_ContentMaster, LIST_TITLE_EventMaster, LIST_TITLE_MyRequest } from '../../../Shared/Constants';
+import moment from 'moment';
 let mode = "";
 const HelloWorldContext = ({ props }: any) => {
   const sp: SPFI = getSP();
@@ -235,74 +236,53 @@ const HelloWorldContext = ({ props }: any) => {
     const { EventName, EventDate, EventAgenda, RegistrationDueDate, EntityId, Overview } = formData;
     const { description } = richTextValues;
     let valid = true;
-
-    //$(".border-on-error").removeClass("border-on-error");
-    //$("#InitiativerequestTitle").addClass("border-on-error");
-    //$()
     setValidDraft(true);
     setValidSubmit(true);
-
     if (formsubmode == FormSubmissionMode.DRAFT) {
       if (!EventName) {
         valid = false;
       }
-      else if (EventDate && new Date(EventDate) < new Date()) {
-        // Swal.fire('Error', 'Event Date is required!', 'error');
+      else if (EventDate && moment(new Date(EventDate)).format("DD-MM-YYYY") < moment(new Date()).format("DD-MM-YYYY")) {
         valid = false;
       }
-      else if (EventDate && RegistrationDueDate && new Date(RegistrationDueDate) > new Date(EventDate)) {
-        // Swal.fire('Error', 'Event Date is required!', 'error');
+      else if (EventDate && RegistrationDueDate && moment(new Date(RegistrationDueDate)).format("DD-MM-YYYY") > moment(new Date(EventDate)).format("DD-MM-YYYY")) {
         valid = false;
       }
-     
       setValidDraft(valid);
     }
     else {
       if (!EventName) {
-        // Swal.fire('Error', 'Event Name is required!', 'error');
         valid = false;
-      } else if (!EventDate || (EventDate && new Date(EventDate) < new Date())) {
-        // Swal.fire('Error', 'Event Date is required!', 'error');
+      } else if (!EventDate || (EventDate && moment(new Date(EventDate)).format("DD-MM-YYYY") < moment(new Date()).format("DD-MM-YYYY"))) {
         valid = false;
       }
-
-      //else if (!overview) {
-      //   Swal.fire('Error', 'Overview is required!', 'error');
-      //   valid = false;
-      // } else if (!description) {
-      //   Swal.fire('Error', 'Description is required!', 'error');
-      //   valid = false;
-      // }
       else if (!RegistrationDueDate) {
-        // Swal.fire('Error', 'Registration Due Date is required!', 'error');
         valid = false;
       }
-      else if (EventDate && RegistrationDueDate && new Date(RegistrationDueDate) > new Date(EventDate)) {
-        // Swal.fire('Error', 'Event Date is required!', 'error');
+      else if (EventDate && RegistrationDueDate && moment(new Date(RegistrationDueDate)).format("DD-MM-YYYY") > moment(new Date(EventDate)).format("DD-MM-YYYY")) {
         valid = false;
       }
       else if (!EntityId) {
-        // Swal.fire('Error', 'Entity is required!', 'error');
         valid = false;
       }
       setValidSubmit(valid)
-
     }
-
-    if (!valid && (EventDate && RegistrationDueDate && new Date(RegistrationDueDate) > new Date(EventDate))) {
+    console.log("new Date(RegistrationDueDate) > new Date(EventDate)", new Date(RegistrationDueDate) ,
+      moment(EventDate).format("DD-MMM-YYYY"), new Date(EventDate),new Date())
+    if (!valid && (EventDate && RegistrationDueDate && moment(new Date(RegistrationDueDate)).format("DD-MM-YYYY") > moment(new Date(EventDate)).format("DD-MM-YYYY"))) {
       Swal.fire('Registration date cannot be more than Event date');
     }else
-    if (!valid && (EventDate && new Date(EventDate) >= new Date())) {
+      if (!valid && (EventDate && moment(new Date(EventDate)).format("DD-MM-YYYY") >= moment(new Date()).format("DD-MM-YYYY"))) {
       Swal.fire('Please fill the mandatory fields.');
     }else
-    if (!valid && ((EventDate && new Date(EventDate) >= new Date()) &&
-      (EventDate && RegistrationDueDate && new Date(RegistrationDueDate) <= new Date(EventDate)))) {
+    if (!valid && (EventDate && moment(new Date(EventDate)).format("DD-MM-YYYY") >= moment(new Date()).format("DD-MM-YYYY")) &&
+      (EventDate && RegistrationDueDate && moment(new Date(RegistrationDueDate)).format("DD-MM-YYYY") <= moment(new Date(EventDate)).format("DD-MM-YYYY"))) {
       Swal.fire('Please fill the mandatory fields.');
     }else
-    if (!valid && (EventDate && new Date(EventDate) < new Date())) {
+      if (!valid && (EventDate && moment(new Date(EventDate)).format("DD-MM-YYYY") < moment(new Date()).format("DD-MM-YYYY"))) {
       Swal.fire('Event date cannot be less than today');
     }
-
+ 
     return valid;
   };
 

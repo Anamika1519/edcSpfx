@@ -221,7 +221,7 @@ const GroupandTeamcontext = ({ props }: any) => {
   const [IsinvideHide, setIsinvideHide] = React.useState(false);
 
 
-
+  const tenantUrl = props.siteUrl.split("/sites/")[0];
   const [Url, setBaseUrl] = React.useState("");
 
   const [richTextValues, setRichTextValues] = React.useState<{
@@ -273,8 +273,10 @@ const GroupandTeamcontext = ({ props }: any) => {
       const updateResult = await updateGroupUnFollowItem(updatedata, sp, groupItem.Id);
 
     }
+    handleTabClick(activeTab);
   }
   const handleTabClick = async (tab: React.SetStateAction<string>) => {
+    handleTabClick(activeTab);
     setActiveTab(tab);
     debugger;
     if (tab === "allgroups") {
@@ -304,9 +306,8 @@ const GroupandTeamcontext = ({ props }: any) => {
     }
     else if (tab === "groupsyoufollow") {
       let resfollow: any[] = [];
-      resfollow = groupsDataAll.filter(item =>
-        // Include public groups or private groups where the current user is in the InviteMembers array
-        item.GroupFollowersId.indexOf(currentUser.Id) > -1);
+      resfollow = groupsDataAll.filter(item =>item.GroupType == "All" &&
+        item.GroupFollowersId && item.GroupFollowersId.indexOf(currentUser.Id) > -1);
       setGroupsData(resfollow);
     }
     settempGroupsData(await getGroupTeam(sp));
@@ -1085,7 +1086,7 @@ const GroupandTeamcontext = ({ props }: any) => {
                   file,
                   sp,
                   "Documents",
-                  "https://officeindia.sharepoint.com"
+                  tenantUrl
                 );
               }
             } else {
@@ -2496,7 +2497,9 @@ const GroupandTeamcontext = ({ props }: any) => {
 
 
 
-                      <div>{renderContent(groupItem)}</div>
+                  {groupItem.GroupType == "All" &&
+                  <div> {renderContent(groupItem)}</div>
+                      }
                       <div className="card-body">
 
                         <a key={index}>
@@ -2561,7 +2564,9 @@ const GroupandTeamcontext = ({ props }: any) => {
 
 
 
-                      <div>{renderContent(groupItem)}</div>
+{groupItem.GroupType == "All" &&
+< div > {renderContent(groupItem)}</div>
+                      }
 
                       <div className="card-body">
 
@@ -2626,7 +2631,9 @@ const GroupandTeamcontext = ({ props }: any) => {
 
 
 
-                      <div>{renderContent(groupItem)}</div>
+                  {groupItem.GroupType == "All" &&
+                  < div > {renderContent(groupItem)}</div>
+                   }
 
 
 

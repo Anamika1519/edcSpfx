@@ -413,17 +413,7 @@ const DynamicBannercontext = ({ props }: any) => {
                               <tr key={index}>
                                 <td style={{ minWidth: '50px', maxWidth: '50px' }}><div className='indexdesign'> {index + 1}</div>  </td>
                                 <td>{item.Title}</td>
-                                {/* <td>
-                                  {ImageUrl.serverRelativeUrl != null ?
-                                     <img src={ImageUrl.serverUrl+ ImageUrl.serverRelativeUrl} alt=""  style={{maxHeight:'40px'}} /> : ""
-                                    // <img src="https://officeindia.sharepoint.com/sites/AlRostmani/Shared%20Documents/news.png" alt=""  style={{maxHeight:'40px'}} /> : ""
-
-                                  }
-                                
-                                </td> */}
-                                {/* <td>
-                                  {item.URL}
-                                </td> */}
+                               
                                 <td>{item.Status}</td>
                                 <td style={{ minWidth: '80px', maxWidth: '80px' }}>{item.Created}</td>
                                 <td style={{ minWidth: '50px', maxWidth: '50px' }} className="ng-binding">

@@ -1924,7 +1924,8 @@ const AddannouncementContext = ({ props }: any) => {
                           className='me-1' alt="x" />
                         Cancel
                       </button>
-                    </div>):(<div className="text-center" style={{ marginTop: '3rem' }}><button type="button" className="btn btn-light waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleCancel}>
+                    </div>):
+                    (modeValue == 'view') && (<div className="text-center" style={{ marginTop: '3rem' }}><button type="button" className="btn btn-light waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleCancel}>
                         <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }}
                           className='me-1' alt="x" />
                         Cancel
@@ -2131,7 +2132,7 @@ const AddannouncementContext = ({ props }: any) => {
                             <th> Image </th>
                             <th>File Name</th>
                             <th>File Size</th>
-                            {modeValue !='view' && <th className='text-center'>Action</th>
+                            {modeValue == 'null' && <th className='text-center'>Action</th>
                             }
                           </tr>
                         </thead>
@@ -2144,7 +2145,7 @@ const AddannouncementContext = ({ props }: any) => {
 
                               <td>{file.fileName}</td>
                               <td className='text-right'>{file.fileSize}</td>
-                              {modeValue !='view' && <td className='text-center'> 
+                              {modeValue =='null' && <td className='text-center'> 
                                  <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, ImagepostArr1, "Gallery")} /> 
                                 
                                 </td>

@@ -507,6 +507,25 @@ export const UpdateNotification = async (itemId, _sp) => {
   }
   return resultArr;
 };
+export const updateNotifications = async (sp) => {
+  let resultArr = "waiting";
+  try {
+    await getARGNotificationHistory(sp).then(async (x) => {
+      for (let i = 0; i < x.length; i++) {
+        await sp.web.lists
+          .getByTitle("ARGNotificationHistory").items.getById(x[i].Id).update({
+            ReadStatus: true
+          })
+      }
+      resultArr = "Updated"
+    })
+  } catch (error) {
+    console.log('Error adding item:', error);
+    // Handle errors appropriately
+    resultArr = null
+  }
+  return resultArr;
+}
 export const getARGNotificationHistory = async (sp) => {
   
   let resultArr = []

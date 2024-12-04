@@ -110,7 +110,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
   const [usersitemcopy, setUsersitemcopy] = useState<any[]>([]);
   const [M365User, setM365User] = useState<any[]>([]);
 
-  
+  const [loading, setLoading] = useState(true); 
   // const { useHide }: any = React.useContext(UserContext);
 
   // const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
@@ -143,7 +143,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const siteUrl = props.siteUrl;
-  const [itemsToShow, setItemsToShow] = useState(16); // Initial number of items to show
+  const [itemsToShow, setItemsToShow] = useState(9); // Initial number of items to show
 
   const [filters, setFilters] = React.useState({
 
@@ -380,7 +380,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
 
   const fetchUserInformationList = async (loadVar:any) => {
-
+    
     try {
 
       const currentUser = await sp.web.currentUser();
@@ -391,13 +391,14 @@ const CorporateDirectoryContext = ({ props }: any) => {
       let nextLink: string | null = null;
       let userListSP: any[] = [];
       if(loadVar == "onload"){
+        setLoading(true);
         userListSP = await sp.web.lists
         .getByTitle("User Information List")
         .items
         .select("ID", "Title", "EMail", "Department", "JobTitle", "Picture", "MobilePhone", "WorkPhone", "Name")
         .filter(`ContentType eq 'Person' and EMail ne null and ID ne ${currentUser.Id}`)
         .orderBy("Id",false)
-        .top(17)
+        .top(10)
         ();
 
       }
@@ -411,7 +412,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
           .select("ID", "Title", "EMail", "Department", "JobTitle", "Picture", "MobilePhone", "WorkPhone", "Name")
           .filter(`ContentType eq 'Person' and EMail ne null and ID ne ${currentUser.Id} and ID lt ${smallest.ID}`)
           .orderBy("Id",false)
-          .top(17)
+          .top(10)
           ();
         }
        
@@ -557,6 +558,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
       setPinStatus(initialPinStatus);
 
       setLoadingUsers(initialLoadingStatus);
+      setLoading(false);
       if(loadVar == "onload"){
       setUsersArr(userList);
       }
@@ -699,6 +701,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
     }
     else{
       setActiveTab(tab);
+      setItemsToShow(9);
       fetchUserInformationList("onload");
     }
 
@@ -1141,7 +1144,7 @@ if(field == "Name"){
     event.stopImmediatePropagation()
     
     
-    setItemsToShow(itemsToShow + 16);
+    setItemsToShow(itemsToShow + 9);
     fetchUserInformationList("loadmore") // Increase the number by 8
   };
 
@@ -1358,7 +1361,20 @@ if(field == "Name"){
                 {activeTab === "cardView" && (
 
                   // Card View Content (only displayed when "cardView" is active)
-
+                  <div>
+                  {loading && (
+                    <div className="loadernewadd">
+                      <span>Loading </span>{" "}
+                      <span>
+                        <img
+                          src={require("../assets/argloader.gif")}
+                          className="alignrightl"
+                          alt="Loading..."
+                        />
+                      </span>
+                    </div>
+                  )}
+                  {!loading && (
                   <div className="row card-view">
 
                     {console.log("usersssitem", usersitem, followStatus, pinStatus)}
@@ -1748,9 +1764,11 @@ if(field == "Name"){
                       </div>
                     )}
                   </div>
-
+                 
+                  
                 )}
-
+                </div>
+                )}
 
                 {activeTab === "listView" && (
 

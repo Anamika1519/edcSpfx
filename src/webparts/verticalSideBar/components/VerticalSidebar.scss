@@ -38,7 +38,7 @@
   margin-top: 2px;
   margin-right: 5px;}
 .paddb {
- padding: 50px 34px 30px 18px;
+ padding: 50px 34px 30px 18px;min-height: 100vh;
 }
 .card .card-body .quill{max-height: 300px !important; height: 300px !important; overflow-y: auto !important;}
 .carousel-control-next, .carousel-control-prev{
@@ -196,7 +196,7 @@ a:hover, a:active {
 .mainevent{border-bottom: 1px solid #ccc; padding: 10px 0px;}
 .mainevent:last-child{border-bottom: 0px !important;}
 
-.footer{background: #d4d4d3;bottom:0px;padding: 8px 10px;position: fixed;text-align: right; width: 100%;}
+.footer{background: #d4d4d3;bottom:0px;padding: 8px 10px;position: sticky;text-align: right; width: 100%;}
 .dropcss{padding: 0px;}
 .dropcss a{display: block; text-align: center; font-size: 12px; padding: 10px; }
 .text-dark-new{color: #343a40 !important;}

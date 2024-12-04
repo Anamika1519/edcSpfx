@@ -224,7 +224,7 @@ const SocialFeedContext = ({ props }: any) => {
         console.log(res, ":response")
         // debugger
         console.log("res------", res)
-        let arrr :any[]=[];
+        let arrr: any[] = [];
         arrr.push(res)
         setArrDetails(arrr)
         debugger
@@ -267,15 +267,15 @@ const SocialFeedContext = ({ props }: any) => {
     const currentUser = await getCurrentUserNameId(sp);
     let currentGroup = await getGroupTeamDetailsById(sp, Number(idNum));
     setArrDetails(currentGroup);
-    console.log(currentGroup,"currentGroup");
+    console.log(currentGroup, "currentGroup");
     if (currentGroup[0].GroupType === "Selected Members" &&
       currentGroup[0]?.InviteMemebers?.some((invitee: any) => invitee.Id === currentUser || currentGroup[0].Author.ID === currentUser)) {
       setIsEdit(true);
     } else if (currentGroup[0].GroupType === "All" && currentGroup[0]?.GroupFollowers &&
       currentGroup[0]?.GroupFollowers?.some((invitee: any) => invitee.Id === currentUser || currentGroup[0].Author.ID === currentUser)) {
       setIsEdit(true);
-    } 
-    
+    }
+
     const galleryItemsone = await fetchMediaGallerydata(sp);
     setGalleryData(galleryItemsone);
     setCurrentEmail(await getCurrentUserProfileEmail(sp))
@@ -777,88 +777,91 @@ const SocialFeedContext = ({ props }: any) => {
                     <br />
                     <div className="row mt-0">
                       <div style={{ position: 'sticky', top: '90px' }}>
-                        <div className="card" style={{ borderRadius: "1rem" }}>
-                          <div className="card-body pb-0 gheight">
-                            <h4 className="header-title font-16 text-dark fw-bold mb-0">
-                              Group Members
+                        {(ArrDetails[0]?.InviteMemebers?.length > 0 || ArrDetails[0]?.GroupFollowers?.length > 0) &&
+                          <div className="card" style={{ borderRadius: "1rem" }}>
+                            <div className="card-body pb-0 gheight">
 
-                            </h4>
-                            {console.log("ArrDetails[0]ArrDetails[0]", ArrDetails[0])}
-                            {ArrDetails[0]?.GroupType === "All" &&
-                              ArrDetails[0]?.GroupFollowers?.length > 0 && ArrDetails[0].GroupFollowers.map((follower: any, idx: any) => (
+                              <h4 className="header-title font-16 text-dark fw-bold mb-0">
+                                Group Members
 
-                                <div className="projectmemeber" key={idx}>
-                                  <img
-                                    src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${follower?.EMail}`}
-                                    className="rounded-circlecss6 img-thumbnail avatar-xl"
-                                    alt="profile-image"
-                                  />
-                                  <p>
-                                    {follower?.Title}
+                              </h4>
+
+                              {console.log("ArrDetails[0]ArrDetails[0]", ArrDetails[0])}
+                              {ArrDetails[0]?.GroupType === "All" &&
+                                ArrDetails[0]?.GroupFollowers?.length > 0 && ArrDetails[0].GroupFollowers.map((follower: any, idx: any) => (
+
+                                  <div className="projectmemeber" key={idx}>
                                     <img
-                                      src={require("../assets/calling.png")}
-                                      className="alignright"
-                                      onClick={() => window.open(`https://teams.microsoft.com/l/call/0/0?users=${follower.EMail}`, "_blank")}
-                                      alt="Call"
-                                    />
-                                  </p>
-                                </div>
-                              ))
-                            }
-
-                            {/* <p>{GroupName}</p> */}
-                            {/* <>{ArrDetails[0].GroupType}</> */}
-                            {ArrDetails[0]?.InviteMemebers?.length > 0 &&
-                              ArrDetails[0]?.InviteMemebers.map((member: any, idx: any) => (
-                                <div className="projectmemeber">
-                                  <div className="itemalign">
-                                    <img
-                                      // style={{
-                                      //   margin:
-                                      //     index == 0
-                                      //       ? "0 0 0 0"
-                                      //       : "0 0 0px -12px",
-                                      // }}
-                                      src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${member?.EMail}`}
-                                      className="rounded-circlenu img-thumbnail avatar-xl"
+                                      src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${follower?.EMail}`}
+                                      className="rounded-circlecss6 img-thumbnail avatar-xl"
                                       alt="profile-image"
                                     />
-                                    <p className='mb-0'>{member?.Title} </p>
+                                    <p>
+                                      {follower?.Title}
+                                      <img
+                                        src={require("../assets/calling.png")}
+                                        className="alignright"
+                                        onClick={() => window.open(`https://teams.microsoft.com/l/call/0/0?users=${follower.EMail}`, "_blank")}
+                                        alt="Call"
+                                      />
+                                    </p>
                                   </div>
-                                  {/* {item.Author.EMail === currentUserEmailRef.current && (
+                                ))
+                              }
+
+                              {/* <p>{GroupName}</p> */}
+                              {/* <>{ArrDetails[0].GroupType}</> */}
+                              {ArrDetails[0]?.InviteMemebers?.length > 0 &&
+                                ArrDetails[0]?.InviteMemebers.map((member: any, idx: any) => (
+                                  <div className="projectmemeber">
+                                    <div className="itemalign">
+                                      <img
+                                        // style={{
+                                        //   margin:
+                                        //     index == 0
+                                        //       ? "0 0 0 0"
+                                        //       : "0 0 0px -12px",
+                                        // }}
+                                        src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${member?.EMail}`}
+                                        className="rounded-circlenu img-thumbnail avatar-xl"
+                                        alt="profile-image"
+                                      />
+                                      <p className='mb-0'>{member?.Title} </p>
+                                    </div>
+                                    {/* {item.Author.EMail === currentUserEmailRef.current && (
         <div>
         <button onClick={()=>handleRemoveUser(id?.ID)}>Remove</button>
         </div>
-
+ 
         )
-        
+       
         } */}
 
-                                  <img
+                                    <img
 
-                                    src={require("../assets/calling.png")}
+                                      src={require("../assets/calling.png")}
 
-                                    className="alignright"
+                                      className="alignright"
 
-                                    onClick={() =>
+                                      onClick={() =>
 
-                                      window.open(
+                                        window.open(
 
-                                        `https://teams.microsoft.com/l/call/0/0?users=${member.EMail}`,
+                                          `https://teams.microsoft.com/l/call/0/0?users=${member.EMail}`,
 
-                                        "_blank"
+                                          "_blank"
 
-                                      )
+                                        )
 
-                                    }
+                                      }
 
-                                    alt="Call"
+                                      alt="Call"
 
-                                  />
-                                </div>
+                                    />
+                                  </div>
 
-                              ))}
-                            {/* <div className="inbox-widget" style={{ marginTop: '1rem' }}>
+                                ))}
+                              {/* <div className="inbox-widget" style={{ marginTop: '1rem' }}>
                               {groupmembers.map((user, index) => (
                                 <div
                                   key={index}
@@ -879,13 +882,15 @@ const SocialFeedContext = ({ props }: any) => {
                                       </p>
                                     </a>
                                   </div>
-
-
+ 
+ 
                                 </div>
                               ))}
                             </div> */}
+                            </div>
                           </div>
-                        </div>
+                        }
+
                       </div>
 
 
@@ -1829,11 +1834,13 @@ const SocialFeedContext = ({ props }: any) => {
                       ) : null
 
                     } */}
-                    <img
-                      src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${ArrDetails[0]?.Author.EMail}`}
-                      className="rounded-circlecss6 img-thumbnail avatar-xl"
-                      alt="profile-image"
-                    />
+                    <div className="displcenter">
+                      <img
+                        src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${ArrDetails[0]?.Author.EMail}`}
+                        className="rounded-circlecss6 img-thumbnail avatar-xl"
+                        alt="profile-image"
+                      /></div>
+
                     <h1 className='text-muted font-14 mt-3'>
                       <p className='text-dark font-16 text-center mb-2'> {currentUsername}</p>
                       <p className='text-muted font-14 text-center mb-1'>{userJobTitle}</p>

@@ -183,7 +183,9 @@ const MyApprovalContext = ({ props }: any) => {
     Remark: '',
 
   })
-
+  const handleCancel = () => {   
+    window.location.href = `${siteUrl}/SitePages/MyApprovals.aspx`;
+  }
   //#region OnchangeData
 
   const onChange = (name: string, value: string) => {
@@ -729,9 +731,7 @@ const MyApprovalContext = ({ props }: any) => {
 
     // sessionStorage.setItem("announcementId", encryptedId);
 
-    // location.href="https://officeindia.sharepoint.com/sites/AlRostmaniSpfx2/SitePages/AddAnnouncement.aspx"+"?requestid="+Item?.Id+"&mode=approval";
-
-
+    
   };
 
 
@@ -1983,7 +1983,7 @@ const MyApprovalContext = ({ props }: any) => {
 
                                     </a>
 
-                                    <button type="button" className="btn btn-light waves-effect waves-light m-1">
+                                    <button type="button" className="btn btn-light waves-effect waves-light m-1" onClick={(e) => handleCancel()}>
 
                                       <i className="fe-x me-1"></i> Cancel
 

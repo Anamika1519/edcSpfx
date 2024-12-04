@@ -192,7 +192,8 @@ const BlogDetailsContext = ({ props }: any) => {
             })
 
         }
-        setComments(initialArray);
+        setComments(initialArray.sort((a, b) => b.Created - a.Created));
+        //setComments(initialArray);
       });
   }
   const ApICallData = async () => {
@@ -255,8 +256,8 @@ const BlogDetailsContext = ({ props }: any) => {
           userHasLiked: false, // Initialize as false
           UserProfile: ress.data.UserProfile,
         };
-
-        setComments((prevComments) => [...prevComments, newCommentData1]);
+        getApiData();
+       // setComments((prevComments) => [...prevComments, newCommentData1]);
         let notifiedArr = {
           ContentId: ArrDetails[0].Id,
           NotifiedUserId: ArrDetails[0].AuthorId,

@@ -335,7 +335,7 @@ const HelloWorldContext = ({ props }: any) => {
         ProjectStatus: "Ongoing",
         ProjectFolderName: formData.ProjectName,
         FolderInProgress: 'In Progress'
-        //  ProjectFileManager : `/sites/AlRostmaniSpfx2/ARGProjectsFiles/${formData.ProjectName}`,
+        
         //  ProjectStatus: "Ongoing",
         //  ProjectFolderName: formData.ProjectName,
         //  FolderInProgress: 'In Progress'
@@ -1958,7 +1958,17 @@ const HelloWorldContext = ({ props }: any) => {
                       )} */}
                     </div>
                   ) : (
-                    <p>Loading projects...</p>
+                    // <p>Loading projects...</p>
+                    <div className="loadernewadd">
+                      <span>Loading </span>{" "}
+                      <span>
+                        <img
+                          src={require("../assets/argloader.gif")}
+                          className="alignrightl"
+                          alt="Loading..."
+                        />
+                      </span>
+                    </div>
                   )}
                 </div>
               </div>

@@ -510,9 +510,9 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
         }
     };
 
-    const copyToClipboard = (Id:number) => {
-        
-        const link = `${siteUrl}/SitePages/SocialFeed.aspx?${Id}`;
+    const copyToClipboard = (e?: React.MouseEvent<HTMLButtonElement>) => {
+        e?.preventDefault();
+        const link = `${siteUrl}/SitePages/SocialFeed.aspx`;
         navigator.clipboard.writeText(link)
             .then(() => {
                 setCopySuccess('Link copied!');
@@ -525,8 +525,8 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
     const sendanEmail = (item: any) => {
 
         // window.open("https://outlook.office365.com/mail/deeplink/compose?subject=Share%20Info&body=");
-        const subject = "Post link-" + item.Contentpost;
-        const body = 'Here is the link to the Post:' + `${siteUrl}/SitePages/GroupandTeamDetails.aspx?${item.Id}`;
+        const subject = "Post Title -" + item.Contentpost;
+        const body = 'Here is the link to the Post:' + `${siteUrl}/SitePages/SocialFeed.aspx`;
 
         const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
@@ -728,7 +728,7 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
                     {isMenuOpenshare && (
                         <div className="dropdown-menucsspost" ref={menuRef}>
                             <button onClick={(e) => sendanEmail(post)}>Share by email</button>
-                            <button onClick={(e) => copyToClipboard(post.postId)}>Copy link</button>
+                            <button onClick={(e) => copyToClipboard(e)}>Copy link</button>
                             {copySuccess && <span className="text-success">{copySuccess}</span>}
                         </div>
                     )}
