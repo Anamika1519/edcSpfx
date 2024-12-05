@@ -27,6 +27,7 @@ import UserContext from "../../../GlobalContext/context";
 import AvtarComponents from "../../../CustomJSComponents/AvtarComponents/AvtarComponents";
 import { SPFI } from "@pnp/sp/presets/all";
 import { forEach } from "lodash";
+import { Modal } from "react-bootstrap";
 interface Reply {
   Id: number;
   AuthorId: number;
@@ -74,7 +75,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
   const [loadingLike, setLoadingLike] = useState<boolean>(false);
   const [loadingReply, setLoadingReply] = useState<boolean>(false);
   const [ArrtopEvents, setArrtopEvents]: any[] = useState([]);
-
+  const [showModal, setShowModal] = React.useState(false);
 
   const Breadcrumb = [
     {
@@ -681,20 +682,55 @@ const EventdetailscalenderContext = ({ props }: any) => {
                                 {/* {new Date(item.RegistrationDueDate) > new Date() ? (<div className="EventAttendes mt-4 rounded-pill" onClick={() => AddAttendees(item)}><Users size={14} /> Register
                                 </div>) : (<div className="EventAttendesGray  mt-4 rounded-pill" >! Event Expired
                                 </div>)} */}
-
+ 
                                 <span style={{ display: 'flex', gap: '0.2rem', marginLeft: '10px', marginTop: '30px' }}>
                                   {
                                     item?.Attendees?.length > 0 && item?.Attendees.map((item1: any, index: 0) => {
                                       console.log("item1item1", item1)
-                                      return (
-                                        <>
-                                          {item1.EMail ? <span style={{ margin: index == 0 ? '0 0 0 0' : '0 0 0px -12px' }}>&nbsp; | &nbsp;&nbsp;&nbsp;<img src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item1.EMail}`} className="attendeesImg" /> </span> :
-                                            <span> <AvtarComponents Name={item1.Title} /> </span>
-                                          }
-                                        </>
-                                      )
+                                      if (index < 3) {
+                                        return (
+                                          <>
+                                            {item1.EMail ? <span style={{ margin: index == 0 ? '0 0 0 0' : '0 0 0px -12px' }}>&nbsp; | &nbsp;&nbsp;&nbsp;<img src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item1.EMail}`} className="attendeesImg" /> </span> :
+                                              <span> <AvtarComponents Name={item1.Title} /> </span>
+                                            }
+                                          </>
+                                        )
+                                      }
                                     })
                                   }
+                                  {
+                                    item?.Attendees?.length > 3 &&
+ 
+                                    <div className="moreuser text-muted">
+                                      <div onClick={() => setShowModal(true)}>
+                                        +{item?.Attendees?.length - 3} more
+                                      </div>
+                                    </div>
+                                  }
+                                  <Modal show={showModal} onHide={() => setShowModal(false)}>
+                                    <Modal.Header closeButton>
+                                      {item?.Attendees?.length > 3 && <Modal.Title>Attendees</Modal.Title>}
+                                    </Modal.Header>
+                                    <Modal.Body style={{ overflowY: 'auto', maxHeight: '600px' }}>
+                                      <p>{item?.Attendees?.length} Memebers Attending</p>
+                                      {item?.Attendees?.length > 3 &&
+                                        (
+                                          <>
+                                            {item?.Attendees?.length > 3 && item?.Attendees.map((item1: any, index: 0) => (
+                                             // index > 2 &&
+                                              <ul>
+                                                <p>
+                                                    <img style={{borderRadius:'50%',height:'50px',width:'50px'}} src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item1.EMail}`} />
+                                                    <span>{item1.Title}</span>
+                                                </p>
+                                              </ul>
+                                            ))}
+                                          </>
+                                        )
+                                      }
+                                    </Modal.Body>
+ 
+                                  </Modal>
                                   {item?.Attendees?.length > 0 && item?.AttendeesId.indexOf(CurrentUser.Id) == 0 && (<span className="font-14" style={{ paddingTop: '3px', paddingLeft: '3px' }}>Registered</span>)}
                                 </span>
                               </p>

@@ -796,13 +796,15 @@ try{
   const sendanEmail = (item:any) => {
     // window.open("https://outlook.office.com/mail/inbox");
   
-     const subject ="Project link-"+ item.ProjectName;
+     const subject ="Project Title -"+ item.ProjectName;
      const body = 'Here is the link to the Project:'+ `${siteUrl}/SitePages/ProjectDetails.aspx?${item.Id}`;
   
-    const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-  
+    //const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+    window.open(office365MailLink, '_blank');
     // Open the link to launch the default mail client (like Outlook)
-    window.location.href = mailtoLink;
+    //window.location.href = mailtoLink;
    };
 
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);

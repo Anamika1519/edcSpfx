@@ -19,6 +19,7 @@ import "../../../CustomJSComponents/CustomTable/CustomTable.scss";
 import "../components/adddynamicbanner.scss"
 import * as XLSX from 'xlsx';
 import HorizontalNavbar from '../../horizontalNavBar/components/HorizontalNavBar';
+import moment from 'moment';
 const DynamicBannercontext = ({ props }: any) => {
   const sp = getSP();
   const { useHide }: any = React.useContext(UserContext);
@@ -415,7 +416,7 @@ const DynamicBannercontext = ({ props }: any) => {
                                 <td>{item.Title}</td>
                                
                                 <td>{item.Status}</td>
-                                <td style={{ minWidth: '80px', maxWidth: '80px' }}>{item.Created}</td>
+                                <td style={{ minWidth: '80px', maxWidth: '80px' }}> {moment(item.Created).format("DD-MMM-YYYY")}</td>
                                 <td style={{ minWidth: '50px', maxWidth: '50px' }} className="ng-binding">
                                 <div className="d-flex  pb-2" style={{ justifyContent: 'space-around' }}>
                                 <span > <a className="action-icon text-primary" onClick={() => EditBanner(item.ID)}>

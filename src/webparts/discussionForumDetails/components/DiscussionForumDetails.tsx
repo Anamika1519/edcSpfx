@@ -1185,13 +1185,7 @@ alt="Check"
                                   className="image-popup mb-2"
                                   title="Screenshot-1"
                                 >
-                                  <img
-                                    src={`https://officeindia.sharepoint.com${res.fileUrl}`}
-                                    className="img-fluid imgcssscustom"
-                                    alt="work-thumbnail"
-                                    data-themekey="#"
-                                    style={{ width: "100%", height: "100%" }}
-                                  />
+                                  
                                 </a>
                               </div>
                             </div>

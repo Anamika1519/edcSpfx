@@ -276,41 +276,26 @@ const GroupandTeamcontext = ({ props }: any) => {
     handleTabClick(activeTab);
   }
   const handleTabClick = async (tab: React.SetStateAction<string>) => {
-    handleTabClick(activeTab);
+    let Allgroups = await getGroupTeam(sp);
+    setGroupsDataAll(Allgroups);
+    console.log("groupsDataAllgroupsDataAlldsadsa", groupsDataAll);
     setActiveTab(tab);
     debugger;
     if (tab === "allgroups") {
-      // const allGroups = await getGroupTeam(sp);
-      // const filteredGroups = allGroups.filter(item => {
-      //     if (item.GroupType === "Selected Members") {
-      //         // Check if current user is in InviteMemebers
-      //        // alert(`currentuser id ${currentUser.Id}`)
-      //         return item.InviteMemebers.some((invitee:any) => invitee.Id === currentUser.Id || item.Author.ID === currentUser);
-      //     }
-      //     return true;
-      // });
-      setGroupsData(groupsDataAll);
+      setGroupsData(Allgroups);
     }
     else if (tab === "groupsyoucreated") {
       let res: any[] = [];
-      res = groupsDataAll.filter(item =>
-        // Include public groups or private groups where the current user is in the InviteMembers array
+      res = Allgroups.filter(item =>
         item.Author.EMail == currentUser.Email);
       setGroupsData(res);
-      // if (res.length < 0) {
-      //   const res = tempgroupsData.filter(item =>
-      //     // Include public groups or private groups where the current user is in the InviteMembers array
-      //     item.Author.Title == currentUser.Title);
-      //   setGroupsData(res);
-      // }
     }
     else if (tab === "groupsyoufollow") {
       let resfollow: any[] = [];
-      resfollow = groupsDataAll.filter(item =>item.GroupType == "All" &&
+      resfollow = Allgroups.filter(item => item.GroupType == "All" &&
         item.GroupFollowersId && item.GroupFollowersId.indexOf(currentUser.Id) > -1);
       setGroupsData(resfollow);
     }
-    settempGroupsData(await getGroupTeam(sp));
   };
   const ApiCall = async () => {
 
@@ -836,26 +821,26 @@ const GroupandTeamcontext = ({ props }: any) => {
     // }
     try {
       const items = await sp.web.siteUsers
-          .filter("PrincipalType eq 1")();
+        .filter("PrincipalType eq 1")();
 
       console.log(items, 'itemsitemsitems');
 
       const formattedOptions = items.map((item) => ({
-          name: item.Title, // Adjust according to your list schema
-          id: item.Id,
+        name: item.Title, // Adjust according to your list schema
+        id: item.Id,
       }));
 
       setOpions(formattedOptions);
-  } catch (error) {
+    } catch (error) {
       console.error('Error fetching options:', error);
-  }
+    }
 
   };
 
   const onSelect = (selectedList: React.SetStateAction<any[]>, selectedItem: any) => {
-    if(selectedList.length > 0){
+    if (selectedList.length > 0) {
       setPlaceholder("");
-    }else{
+    } else {
       setPlaceholder("Select");
     }
     setSelectedValue(selectedList);
@@ -867,9 +852,9 @@ const GroupandTeamcontext = ({ props }: any) => {
 
 
   const onRemove = (selectedList: React.SetStateAction<any[]>, removedItem: any) => {
-    if(selectedList.length > 0){
+    if (selectedList.length > 0) {
       setPlaceholder("");
-    }else{
+    } else {
       setPlaceholder("Select");
     }
     setSelectedValue(selectedList);
@@ -1547,7 +1532,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
             //       "Documents",
 
-            //       "https://officeindia.sharepoint.com"
+
 
             //     );
 
@@ -1897,7 +1882,7 @@ const GroupandTeamcontext = ({ props }: any) => {
   //#endregion
 
 
-  
+
   return (
 
     <div id="wrapper" ref={elementRef}>
@@ -2284,18 +2269,18 @@ const GroupandTeamcontext = ({ props }: any) => {
                                   displayValue="name"
 
                                 /> */}
-                                  <Multiselect
-                options={options}
-                selectedValues={selectedValue}
-                onSelect={onSelect}
-                onRemove={onRemove}
-                displayValue="name"
-                // showCheckbox={true}
-                placeholder={placeholder} // Change the placeholder text
-                avoidHighlightFirstOption={true} // Option to avoid highlighting the first option by default
-                customCloseIcon={<span>&times;</span>} // Custom icon for removing selected items
-                closeIcon="cancel" // Close icon for clearing selections
-            />
+                                <Multiselect
+                                  options={options}
+                                  selectedValues={selectedValue}
+                                  onSelect={onSelect}
+                                  onRemove={onRemove}
+                                  displayValue="name"
+                                  // showCheckbox={true}
+                                  placeholder={placeholder} // Change the placeholder text
+                                  avoidHighlightFirstOption={true} // Option to avoid highlighting the first option by default
+                                  customCloseIcon={<span>&times;</span>} // Custom icon for removing selected items
+                                  closeIcon="cancel" // Close icon for clearing selections
+                                />
 
                               </div>
 
@@ -2497,8 +2482,8 @@ const GroupandTeamcontext = ({ props }: any) => {
 
 
 
-                  {groupItem.GroupType == "All" &&
-                  <div> {renderContent(groupItem)}</div>
+                      {groupItem.GroupType == "All" && groupItem.Author.ID !== currentUser.Id &&
+                        < div > {renderContent(groupItem)}</div>
                       }
                       <div className="card-body">
 
@@ -2564,8 +2549,8 @@ const GroupandTeamcontext = ({ props }: any) => {
 
 
 
-{groupItem.GroupType == "All" &&
-< div > {renderContent(groupItem)}</div>
+                      {groupItem.GroupType == "All" && groupItem.Author.ID !== currentUser.Id &&
+                        < div > {renderContent(groupItem)}</div>
                       }
 
                       <div className="card-body">
@@ -2631,9 +2616,9 @@ const GroupandTeamcontext = ({ props }: any) => {
 
 
 
-                  {groupItem.GroupType == "All" &&
-                  < div > {renderContent(groupItem)}</div>
-                   }
+                      {groupItem.GroupType == "All" && groupItem.Author.ID !== currentUser.Id &&
+                        < div > {renderContent(groupItem)}</div>
+                      }
 
 
 
@@ -2656,8 +2641,8 @@ const GroupandTeamcontext = ({ props }: any) => {
 
                           >
 
-<p style={{ lineHeight: '20px' }} className="font-12 text-muted twolinewrap">
-{groupItem.GroupName}</p> ({groupItem.GroupType})
+                            <p style={{ lineHeight: '20px' }} className="font-12 text-muted twolinewrap">
+                              {groupItem.GroupName}</p> ({groupItem.GroupType})
 
                           </h4>
 

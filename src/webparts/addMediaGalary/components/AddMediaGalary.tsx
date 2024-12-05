@@ -92,7 +92,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
   const [mediaCategorydata, setMediaCategory] = React.useState([])
   const [Loading, setLoading] = React.useState(false);
-
+  const [modeValue, setmode] = React.useState("");
   const siteUrl = props.siteUrl;
   const tenantUrl = props.siteUrl.split("/sites/")[0];
   console.log(siteUrl);
@@ -184,6 +184,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
     ApiCallFunc();
 
     mode = getUrlParameterValue('mode');
+    setmode(mode);
     if (mode && mode == 'approval') {
       setApprovalMode(true);
       let requestid = getUrlParameterValue('requestid');
@@ -2357,7 +2358,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
                       </div>
 
-                    </div>) : (<div className="text-center butncss">
+                    </div>) : (modeValue == 'view') && (<div className="text-center butncss">
                         <div className="btn btn-light waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleCancel}>
 
                           <div className='d-flex' style={{ justifyContent: 'space-around', width: '70px' }}>
@@ -2679,7 +2680,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
                             <th>File Name</th>
 
                             <th>File Size</th>
-                            {mode != 'view' &&
+                            {modeValue =='null' && 
                               <th className='text-center'>Action</th>
                             }
                           </tr>
@@ -2702,7 +2703,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
                               <td>{file.fileName}</td>
 
                               <td className='text-right'>{file.fileSize}</td>
-                              {mode != 'view' &&
+                              {modeValue =='null' && 
                                 <td className='text-center'> <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }}
 
                                   onClick={() => deleteLocalFile(index, ImagepostArr1, "Gallery")} /> </td>

@@ -110,7 +110,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
   const [usersitemcopy, setUsersitemcopy] = useState<any[]>([]);
   const [M365User, setM365User] = useState<any[]>([]);
 
-  const [loading, setLoading] = useState(true); 
+  const [loading, setLoading] = useState(true);
   // const { useHide }: any = React.useContext(UserContext);
 
   // const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
@@ -151,10 +151,10 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
     Email: "",
 
-    EmployeeID: "",       
+    EmployeeID: "",
 
     companyName: "",
-    Department: "", 
+    Department: "",
     MobilePhone: "",
 
   });
@@ -379,8 +379,8 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
 
 
-  const fetchUserInformationList = async (loadVar:any) => {
-    
+  const fetchUserInformationList = async (loadVar: any) => {
+
     try {
 
       const currentUser = await sp.web.currentUser();
@@ -390,35 +390,35 @@ const CorporateDirectoryContext = ({ props }: any) => {
       // Fetch the user list, excluding the current user
       let nextLink: string | null = null;
       let userListSP: any[] = [];
-      if(loadVar == "onload"){
+      if (loadVar == "onload") {
         setLoading(true);
         userListSP = await sp.web.lists
-        .getByTitle("User Information List")
-        .items
-        .select("ID", "Title", "EMail", "Department", "JobTitle", "Picture", "MobilePhone", "WorkPhone", "Name")
-        .filter(`ContentType eq 'Person' and EMail ne null and ID ne ${currentUser.Id}`)
-        .orderBy("Id",false)
-        .top(10)
-        ();
+          .getByTitle("User Information List")
+          .items
+          .select("ID", "Title", "EMail", "Department", "JobTitle", "Picture", "MobilePhone", "WorkPhone", "Name")
+          .filter(`ContentType eq 'Person' and EMail ne null and ID ne ${currentUser.Id}`)
+          .orderBy("Id", false)
+          .top(10)
+          ();
 
       }
-      else{
+      else {
         if (usersitem.length > 0) {
           const smallest = usersitem.reduce((min, item) => (item.ID < min.ID ? item : min), usersitem[0]);
           setSmallestRecord(smallest);
           userListSP = await sp.web.lists
-          .getByTitle("User Information List")
-          .items
-          .select("ID", "Title", "EMail", "Department", "JobTitle", "Picture", "MobilePhone", "WorkPhone", "Name")
-          .filter(`ContentType eq 'Person' and EMail ne null and ID ne ${currentUser.Id} and ID lt ${smallest.ID}`)
-          .orderBy("Id",false)
-          .top(10)
-          ();
+            .getByTitle("User Information List")
+            .items
+            .select("ID", "Title", "EMail", "Department", "JobTitle", "Picture", "MobilePhone", "WorkPhone", "Name")
+            .filter(`ContentType eq 'Person' and EMail ne null and ID ne ${currentUser.Id} and ID lt ${smallest.ID}`)
+            .orderBy("Id", false)
+            .top(10)
+            ();
         }
-       
+
       }
-     
-      
+
+
       //nextLink = userListSP["@odata.nextLink"];
       console.log("userList", userListSP);
       // let currentWPContext:WebPartContext=props.props.context;  
@@ -429,8 +429,8 @@ const CorporateDirectoryContext = ({ props }: any) => {
         .version("v1.0")
         .select("displayName,mail,jobTitle,mobilePhone,companyName,userPrincipalName")
         .get();
-       console.log("m265userList",m265userList);
-       // setM365User(m265userList);
+      console.log("m265userList", m265userList);
+      // setM365User(m265userList);
       //Adding dummy companies to users for testing
       //m265userList.value=m265userList.value.map((m:any)=>{let x=m; x['companyName']='dunnycommpany'; return x;});
 
@@ -559,10 +559,10 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
       setLoadingUsers(initialLoadingStatus);
       setLoading(false);
-      if(loadVar == "onload"){
-      setUsersArr(userList);
+      if (loadVar == "onload") {
+        setUsersArr(userList);
       }
-      else{
+      else {
         setUsersArr((prevData) => [...prevData, ...userList]);
       }
       //setUsersArr(userList);
@@ -675,16 +675,16 @@ const CorporateDirectoryContext = ({ props }: any) => {
   >("cardView");
 
 
-  const handleTabChange = async (tab:any,usersitem:any) => {
-    if(tab == "listView"){
-     let ListuserListSP = await sp.web.lists
-      .getByTitle("User Information List")
-      .items
-      .select("ID", "Title", "EMail", "Department", "JobTitle", "Picture", "MobilePhone", "WorkPhone", "Name")
-      .filter(`ContentType eq 'Person' and EMail ne null`)
-      .orderBy("Id",false)
-      .top(4999)
-      ();
+  const handleTabChange = async (tab: any, usersitem: any) => {
+    if (tab == "listView") {
+      let ListuserListSP = await sp.web.lists
+        .getByTitle("User Information List")
+        .items
+        .select("ID", "Title", "EMail", "Department", "JobTitle", "Picture", "MobilePhone", "WorkPhone", "Name")
+        .filter(`ContentType eq 'Person' and EMail ne null`)
+        .orderBy("Id", false)
+        .top(4999)
+        ();
       let userList: any[] = [];
 
       // userList = ListuserListSP.map(usr => {
@@ -699,7 +699,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
       setListUsersArr(ListuserListSP);
       //setUsersArr(ListuserListSP);
     }
-    else{
+    else {
       setActiveTab(tab);
       setItemsToShow(9);
       fetchUserInformationList("onload");
@@ -760,9 +760,9 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
   ) => {
 
-if(field == "Name"){
-  setCurrentPage(1);
-}
+    if (field == "Name") {
+      setCurrentPage(1);
+    }
     setFilters({
 
       ...filters,
@@ -805,7 +805,7 @@ if(field == "Name"){
         (filters.Email === "" ||
 
           item?.EMail.toLowerCase().includes(filters.Email.toLowerCase())) &&
-          (filters.MobilePhone === '' || item?.MobilePhone && item?.MobilePhone.toLowerCase().includes(filters.MobilePhone.toLowerCase())) &&
+        (filters.MobilePhone === '' || item?.MobilePhone && item?.MobilePhone.toLowerCase().includes(filters.MobilePhone.toLowerCase())) &&
 
         (filters.companyName === '' || ((item?.companyName) ? item?.companyName.toLowerCase().includes(filters.companyName.toLowerCase()) : false))
 
@@ -869,7 +869,7 @@ if(field == "Name"){
   const [currentPage, setCurrentPage] = React.useState(1);
   const [currentGroup, setCurrentGroup] = React.useState(1);
   const itemsPerPage = 10;
-  const pagesPerGroup = 10; 
+  const pagesPerGroup = 10;
 
   const totalPages = Math.ceil(filteredEmployeeData.length / itemsPerPage);
   const totalGroups = Math.ceil(totalPages / pagesPerGroup);
@@ -910,24 +910,48 @@ if(field == "Name"){
 
   };
 
-  const handleNewsExportClick = () => {
+  const handleNewsExportClick = async () => {
 
-    const exportData = Listusersitem.map((item, index) => ({
+    let ListuserListSP = await sp.web.lists
+      .getByTitle("User Information List")
+      .items
+      .select("ID", "Title", "EMail", "Department", "JobTitle", "Picture", "MobilePhone", "WorkPhone", "Name")
+      .filter(`ContentType eq 'Person' and EMail ne null`)
+      .orderBy("Id", false)
+      .top(4999)
+      ();
+    setListUsersArr(ListuserListSP);
+    if (Listusersitem.length > 0) {
+      const exportData = Listusersitem.map((item, index) => ({
 
-      Name: item.Title,
-      Email: item.EMail,
-      Entity: item?.companyName != null ? item?.companyName : "NA",
-      Department: item?.Department != null ? item?.Department : "NA",
-      WorkPhone: item?.WorkPhone,     
+        Name: item.Title,
+        Email: item.EMail,
+        Entity: item?.companyName != null ? item?.companyName : "NA",
+        Department: item?.Department != null ? item?.Department : "NA",
+        WorkPhone: item?.WorkPhone,
 
-    }));
+      }));
 
 
-    exportToExcel(exportData, "Corporate Directory List");
-
+      exportToExcel(exportData, "Corporate Directory List");
+    }
   };
+  const openTeamsChatWithMessage = (email: string) => {
+    const teamsChatLink = `https://teams.microsoft.com/l/chat/0/0?users=${encodeURIComponent(email)}}`;
+    window.open(teamsChatLink, "_blank");
+  };
+  const openEmailDialog = (email:string) => {
+    const subject = "Let's Connect!";
+    const body = "Hi, I’d like to discuss something important.";
+   // const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
+    //window.location.href = mailtoLink;
+    const outlook365Url = `https://outlook.office.com/mail/deeplink/compose?to=${encodeURIComponent(email)}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    
+    // Open the email in a new tab
+    window.open(outlook365Url, "_blank");
 
+};
   const exportToExcel = (data: any[], fileName: string) => {
 
     const workbook = XLSX.utils.book_new();
@@ -948,18 +972,18 @@ if(field == "Name"){
 
   };
   const handleSearch: React.ChangeEventHandler = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if(activeTab == "listView")
-        setActiveTab("cardView");
+    if (activeTab == "listView")
+      setActiveTab("cardView");
     let txtSearch = (document.getElementById('searchInput') as HTMLInputElement).value;
-    if(txtSearch.length >1){
-    let filteredusers = await sp.web.lists
+    if (txtSearch.length > 1) {
+      let filteredusers = await sp.web.lists
         .getByTitle("User Information List")
         .items
         .select("ID", "Title", "EMail", "Department", "JobTitle", "Picture", "MobilePhone", "WorkPhone", "Name")
         .filter(`ContentType eq 'Person' and EMail ne null and substringof('${txtSearch}', Title)`)
         .top(500)
         ();
-        setUsersArr(filteredusers);
+      setUsersArr(filteredusers);
     }
 
     else {
@@ -973,7 +997,7 @@ if(field == "Name"){
     //     ((usr.companyName) ? usr.companyName.toLowerCase().includes(txtSearch) : false)
     // });
 
-    
+
 
 
   }
@@ -984,7 +1008,7 @@ if(field == "Name"){
 
     setLoadingUsers((prev) => ({ ...prev, [item.ID]: true })); // Set loading state for the specific user
     //await fetchUserDetails(item);
-    
+
     try {
 
       const currentUser = await sp.web.currentUser();
@@ -1016,7 +1040,7 @@ if(field == "Name"){
 
         setFollowStatus((prev) => ({ ...prev, [item.ID]: true })); // Update follow status
       }
-        const followersCount = await sp.web.lists.getByTitle("ARGFollows").items
+      const followersCount = await sp.web.lists.getByTitle("ARGFollows").items
 
         .filter(`FollowedId eq ${item.ID}`)
 
@@ -1036,10 +1060,10 @@ if(field == "Name"){
 
 
 
-        item.followersCount = followersCount.length;
+      item.followersCount = followersCount.length;
 
-        item.followingCount = followingCount.length;
-     
+      item.followingCount = followingCount.length;
+
 
     } catch (error) {
 
@@ -1064,86 +1088,86 @@ if(field == "Name"){
 
 
   const togglePin = async (e: any, item: any) => {
- 
+
     debugger
- 
+
     e.preventDefault();
- 
+
     setLoadingUsers((prev) => ({ ...prev, [item.ID]: true })); // Set loading state for the specific user
- 
- 
+
+
     try {
- 
+
       const currentUser = await sp.web.currentUser();
- 
+
       const pinRecords = await sp.web.lists.getByTitle("ARGPinned").items
- 
+
         .filter(`PinnedById eq ${currentUser.Id} and PinnedId eq ${item.ID}`)();
- 
+
       const MyPinnedCount = await sp.web.lists.getByTitle("ARGPinned").items
- 
+
         .filter(`PinnedById eq ${currentUser.Id}`)
- 
+
         .getAll();
- 
+
       console.log("MyPinnedCount", MyPinnedCount.length);
- 
- 
+
+
       if (pinRecords.length > 0) {
- 
+
         // Unpin logic
- 
+
         await sp.web.lists.getByTitle("ARGPinned").items.getById(pinRecords[0].Id).delete();
- 
+
         setPinStatus((prev) => ({ ...prev, [item.ID]: false })); // Update [pin] status
- 
+
       } else {
         if (MyPinnedCount.length >= 4) {
           Swal.fire("You’ve hit the limit for pinning users to the Home Screen!")
         } else {
           await sp.web.lists.getByTitle("ARGPinned").items.add({
- 
+
             PinnedById: currentUser.Id,
- 
+
             PinnedId: item.ID
- 
+
           });
         }
         // pin logic
- 
- 
- 
+
+
+
         setPinStatus((prev) => ({ ...prev, [item.ID]: true })); // Update pin status
- 
+
       }
- 
- 
+
+
     } catch (error) {
- 
+
       setLoadingUsers((prev) => ({ ...prev, [item.ID]: false })); // End loading state for the specific user
- 
- 
+
+
       console.error("Error toggling pin status:", error);
- 
+
       alert("Failed to toggle pin status. Please try again.");
- 
+
     } finally {
- 
+
       //fetchUserInformationList()
- 
+
       setLoadingUsers((prev) => ({ ...prev, [item.ID]: false })); // End loading state for the specific user
- 
- 
- 
+
+
+
     }
- 
+
   }
 
   const loadMore = () => {
     event.preventDefault()
     event.stopImmediatePropagation()
-    
-    
+
+
     setItemsToShow(itemsToShow + 9);
     fetchUserInformationList("loadmore") // Increase the number by 8
   };
@@ -1301,7 +1325,7 @@ if(field == "Name"){
 
                             role="tab"
 
-                            onClick={() => handleTabChange("cardView",usersitem)}
+                            onClick={() => handleTabChange("cardView", usersitem)}
 
                           >
 
@@ -1323,7 +1347,7 @@ if(field == "Name"){
 
                             role="tab"
 
-                            onClick={() => handleTabChange("listView",usersitem)}
+                            onClick={() => handleTabChange("listView", usersitem)}
 
 
                           // onClick={() => handleTabChange("listView")}
@@ -1362,412 +1386,416 @@ if(field == "Name"){
 
                   // Card View Content (only displayed when "cardView" is active)
                   <div>
-                  {loading && (
-                    <div className="loadernewadd">
-                      <span>Loading </span>{" "}
-                      <span>
-                        <img
-                          src={require("../assets/argloader.gif")}
-                          className="alignrightl"
-                          alt="Loading..."
-                        />
-                      </span>
-                    </div>
-                  )}
-                  {!loading && (
-                  <div className="row card-view">
+                    {loading && (
+                      <div className="loadernewadd">
+                        <span>Loading </span>{" "}
+                        <span>
+                          <img
+                            src={require("../assets/argloader.gif")}
+                            className="alignrightl"
+                            alt="Loading..."
+                          />
+                        </span>
+                      </div>
+                    )}
+                    {!loading && (
+                      <div className="row card-view">
 
-                    {console.log("usersssitem", usersitem, followStatus, pinStatus)}
+                        {console.log("usersssitem", usersitem, followStatus, pinStatus)}
 
-                    {usersitem.map((item) => (
+                        {usersitem.map((item) => (
 
-                      <div className="col-lg-3 col-md-4" key={item.Title}>
+                          <div className="col-lg-3 col-md-4" key={item.Title}>
 
-                        <div
+                            <div
 
-                          style={{ border: "1px solid #54ade0" }}
+                              style={{ border: "1px solid #54ade0" }}
 
-                          className="text-center card mb-3"
+                              className="text-center card mb-3"
 
-                        >
+                            >
 
-                          <div className="card-body">
+                              <div className="card-body">
 
-                            {/* Card Content */}
+                                {/* Card Content */}
 
-                            <div className="pt-2 pb-2">
+                                <div className="pt-2 pb-2">
 
-                              <a style={{ position: "relative" }}>
+                                  <a style={{ position: "relative" }}>
 
-                                <img
+                                    <img
 
-                                  src={require("../assets/calling.png")}
+                                      src={require("../assets/calling.png")}
 
-                                  className="alignright"
+                                      className="alignright"
 
-                                  onClick={() =>
+                                      onClick={() =>
 
-                                    window.open(
+                                        window.open(
 
-                                      `https://teams.microsoft.com/l/call/0/0?users=${item.EMail}`,
+                                          `https://teams.microsoft.com/l/call/0/0?users=${item.EMail}`,
 
-                                      "_blank"
+                                          "_blank"
 
-                                    )
+                                        )
 
-                                  }
+                                      }
 
-                                  alt="Call"
+                                      alt="Call"
 
-                                />
+                                    />
 
-                                <img
+                                    <img
 
-                                  src={
+                                      src={
 
-                                    item.Picture != null
+                                        item.Picture != null
 
-                                      ? `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item.EMail}`
+                                          ? `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item.EMail}`
 
-                                      : require("../assets/users.jpg")
+                                          : require("../assets/users.jpg")
 
-                                  }
+                                      }
 
-                                  className="rounded-circlecss img-thumbnail 
+                                      className="rounded-circlecss img-thumbnail 
 
                                   avatar-xl"
 
-                                  alt="profile-image"
+                                      alt="profile-image"
 
-                                  style={{ cursor: "pointer" }}
+                                      style={{ cursor: "pointer" }}
 
-                                />
+                                    />
 
-                              </a>
+                                  </a>
 
-                              <p>
+                                  <p>
 
-                                <img style={{ cursor: "pointer" }}
+                                    <img style={{ cursor: "pointer" }}
 
-                                  src={pinStatus[item.ID] ? require("../assets/noun-pin-7368310.png") : require("../assets/unpin.png")}
+                                      src={pinStatus[item.ID] ? require("../assets/noun-pin-7368310.png") : require("../assets/unpin.png")}
 
-                                  className="alignrightpin"
+                                      className="alignrightpin"
 
-                                  onClick={(e) => togglePin(e, item)}
-
-
-                                  alt="pin"
-
-                                />
+                                      onClick={(e) => togglePin(e, item)}
 
 
+                                      alt="pin"
 
-                              </p>
-
-                              <h4 className="mt-2 mb-1">
-
-                                <a onClick={() => handleUserClick(item.ID, followStatus[item.ID])}
-
-                                  className="text-dark font-16 fw-bold"
-
-                                  style={{
-
-                                    textDecoration: "unset",
-
-                                    fontSize: "20px",
-
-                                  }}
-
-                                >
+                                    />
 
 
 
-                                  {truncateText(item.Title, 15)}
+                                  </p>
+
+                                  <h4 className="mt-2 mb-1">
+
+                                    <a onClick={() => handleUserClick(item.ID, followStatus[item.ID])}
+
+                                      className="text-dark font-16 fw-bold"
+
+                                      style={{
+
+                                        textDecoration: "unset",
+
+                                        fontSize: "20px",
+
+                                      }}
+
+                                    >
 
 
 
-                                </a>
-
-                              </h4>
+                                      {truncateText(item.Title, 15)}
 
 
-                              <p
 
-                                className="text-muted"
+                                    </a>
 
-                                style={{ fontSize: "14px" }}
-
-                              >
-
-                                <span data-tooltip={item.EMail}>
-
-                                  {truncateText(item.EMail, 15)} | &nbsp;
-
-                                </span>
-
-                                <span
-
-                                  className="pl-2"
-
-                                  style={{ color: "#1fb0e5" }}
-
-                                >
-
-                                  {/* <a className="text-pink" > */}
-
-                                  {truncateText(
-
-                                    item.Department != null
-
-                                      ? item.Department
-
-                                      : " NA ",
-
-                                    10
-
-                                  )}
+                                  </h4>
 
 
-                                  {/* </a> */}
+                                  <p
 
-                                </span>
+                                    className="text-muted"
 
-                              </p>
+                                    style={{ fontSize: "14px" }}
+
+                                  >
+
+                                    <span onClick={() =>
+
+                                      openEmailDialog(item.EMail)
+
+                                    } data-tooltip={item.EMail}>
+
+                                      {truncateText(item.EMail, 15)} | &nbsp;
+
+                                    </span>
+
+                                    <span
+
+                                      className="pl-2"
+
+                                      style={{ color: "#1fb0e5" }}
+
+                                    >
+
+                                      {/* <a className="text-pink" > */}
+
+                                      {truncateText(
+
+                                        item.Department != null
+
+                                          ? item.Department
+
+                                          : " NA ",
+
+                                        10
+
+                                      )}
 
 
-                              <p
+                                      {/* </a> */}
 
-                                className="text-muted"
+                                    </span>
 
-                                style={{ fontSize: "11px" }}
+                                  </p>
 
-                              >
 
-                                <span data-tooltip={item.companyName}>
+                                  <p
 
-                                  {/* {truncateText(item.WorkPhone != null
+                                    className="text-muted"
+
+                                    style={{ fontSize: "11px" }}
+
+                                  >
+
+                                    <span data-tooltip={item.companyName}>
+
+                                      {/* {truncateText(item.WorkPhone != null
 
                                     ? item.WorkPhone
 
                                     : " NA ", 10)} */}
-                                  {
-                                    // truncateText(item.WorkPhone != null
+                                      {
+                                        // truncateText(item.WorkPhone != null
 
-                                    //   ? item.WorkPhone
+                                        //   ? item.WorkPhone
 
-                                    truncateText(item.companyName != null
+                                        truncateText(item.companyName != null
 
-                                      ? item.companyName
+                                          ? item.companyName
 
-                                      : " NA ", 25)}
+                                          : " NA ", 25)}
 
-                                </span>
-
-
-                              </p>
-
-                              <div
-
-                                style={{
-
-                                  display: "flex",
-
-                                  justifyContent: "center",
-
-                                  gap: "0.5rem",
-
-                                }}
-
-                              >
-
-                                <button
-
-                                  type="button"
-
-                                  onClick={() =>
-
-                                    window.open(
-
-                                      "https://teams.microsoft.com",
-
-                                      "_blank"
-
-                                    )
-
-                                  }
-
-                                  className="btn btn-primary btn-sm waves-effect waves-light"
-
-                                >
-
-                                  Message
-
-                                </button>
+                                    </span>
 
 
-                                <div>
+                                  </p>
 
-                                {followStatus[item.ID] ? 
-                                
-                                <button key={item.ID}
+                                  <div
 
-                                    type="button" className="finish"
+                                    style={{
 
-                                    onClick={(!loadingUsers[item.ID]) ? (e) => toggleFollow(e, item) : undefined} disabled={loadingUsers[item.ID]}
+                                      display: "flex",
 
+                                      justifyContent: "center",
+
+                                      gap: "0.5rem",
+
+                                    }}
 
                                   >
-                                    Unfollow
 
-                                  </button> : 
-                                <button key={item.ID}
+                                    <button
 
-                                type="button" style={{background:'#efefef'}} className="btn btn-primary1 text-dark btn-sm waves-effect waves-light"
+                                      type="button"
 
-                                onClick={(!loadingUsers[item.ID]) ? (e) => toggleFollow(e, item) : undefined} disabled={loadingUsers[item.ID]}
+                                      onClick={() =>
+
+                                        window.open(
+
+                                          `https://teams.microsoft.com/l/chat/0/0?users=${item.EMail}`,
+
+                                          "_blank"
+
+                                        )
+
+                                      }
+
+                                      className="btn btn-primary btn-sm waves-effect waves-light"
+
+                                    >
+
+                                      Message
+
+                                    </button>
 
 
-                              >
-                                Follow
-                              </button>                                
-                                
-                                }
-                                 
+                                    <div>
+
+                                      {followStatus[item.ID] ?
+
+                                        <button key={item.ID}
+
+                                          type="button" className="finish"
+
+                                          onClick={(!loadingUsers[item.ID]) ? (e) => toggleFollow(e, item) : undefined} disabled={loadingUsers[item.ID]}
+
+
+                                        >
+                                          Unfollow
+
+                                        </button> :
+                                        <button key={item.ID}
+
+                                          type="button" style={{ background: '#efefef' }} className="btn btn-primary1 text-dark btn-sm waves-effect waves-light"
+
+                                          onClick={(!loadingUsers[item.ID]) ? (e) => toggleFollow(e, item) : undefined} disabled={loadingUsers[item.ID]}
+
+
+                                        >
+                                          Follow
+                                        </button>
+
+                                      }
+
+
+                                    </div>
+
+                                  </div>
+
+                                  <div className="row mt-2">
+
+                                    <div className="col-4">
+
+                                      <div className="mt-3">
+
+                                        <h4
+
+                                          className="fw-bold font-14"
+
+                                          style={{
+
+                                            fontSize: "0.80rem",
+
+                                            color: "#343a40",
+
+                                          }}
+
+                                        >
+
+                                          {item.postCount > 0 ? item.postCount : 0} {/* {item.posts} */}
+
+                                        </h4>
+
+                                        <p className="mb-0 text-muted text-truncate">
+
+                                          Post
+
+                                        </p>
+
+                                      </div>
+
+                                    </div>
+
+                                    <div className="col-4">
+
+                                      <div className="mt-3">
+
+                                        <h4
+
+                                          className="fw-bold font-14"
+
+                                          style={{
+
+                                            fontSize: "0.80rem",
+
+                                            color: "#343a40",
+
+                                          }}
+
+                                        >
+
+                                          {item.followersCount > 0 ? item.followersCount : 0}
+
+                                          {/* {followerCount==0?followerCount:'NA'}  {item.followers} */}
+
+                                        </h4>
+
+                                        <p className="mb-0 text-muted text-truncate">
+
+                                          Followers
+
+                                        </p>
+
+                                      </div>
+
+                                    </div>
+
+                                    <div className="col-4">
+
+                                      <div className="mt-3">
+
+                                        <h4
+
+                                          className="fw-bold font-14"
+
+                                          style={{
+
+                                            fontSize: "0.80rem",
+
+                                            color: "#343a40",
+
+                                          }}
+
+                                        >
+
+
+                                          {item.followingCount > 0 ? item.followingCount : 0}
+
+                                        </h4>
+
+                                        <p className="mb-0 text-muted text-truncate">
+
+                                          Followings
+
+                                        </p>
+
+                                      </div>
+
+                                    </div>
+
+                                  </div>
+
+                                  {/* end row */}
 
                                 </div>
+
+                                {/* end .padding */}
 
                               </div>
-
-                              <div className="row mt-2">
-
-                                <div className="col-4">
-
-                                  <div className="mt-3">
-
-                                    <h4
-
-                                      className="fw-bold font-14"
-
-                                      style={{
-
-                                        fontSize: "0.80rem",
-
-                                        color: "#343a40",
-
-                                      }}
-
-                                    >
-
-                                      {item.postCount > 0 ? item.postCount : 0} {/* {item.posts} */}
-
-                                    </h4>
-
-                                    <p className="mb-0 text-muted text-truncate">
-
-                                      Post
-
-                                    </p>
-
-                                  </div>
-
-                                </div>
-
-                                <div className="col-4">
-
-                                  <div className="mt-3">
-
-                                    <h4
-
-                                      className="fw-bold font-14"
-
-                                      style={{
-
-                                        fontSize: "0.80rem",
-
-                                        color: "#343a40",
-
-                                      }}
-
-                                    >
-
-                                      {item.followersCount > 0 ? item.followersCount : 0}
-
-                                      {/* {followerCount==0?followerCount:'NA'}  {item.followers} */}
-
-                                    </h4>
-
-                                    <p className="mb-0 text-muted text-truncate">
-
-                                      Followers
-
-                                    </p>
-
-                                  </div>
-
-                                </div>
-
-                                <div className="col-4">
-
-                                  <div className="mt-3">
-
-                                    <h4
-
-                                      className="fw-bold font-14"
-
-                                      style={{
-
-                                        fontSize: "0.80rem",
-
-                                        color: "#343a40",
-
-                                      }}
-
-                                    >
-
-
-                                      {item.followingCount > 0 ? item.followingCount : 0}
-
-                                    </h4>
-
-                                    <p className="mb-0 text-muted text-truncate">
-
-                                      Followings
-
-                                    </p>
-
-                                  </div>
-
-                                </div>
-
-                              </div>
-
-                              {/* end row */}
 
                             </div>
 
-                            {/* end .padding */}
+                            {/* end card */}
 
+                          </div> // end col
+
+                        ))}
+                        {itemsToShow < usersitem.length && (
+                          <div className="col-12 text-center mb-3 mt-3">
+                            <button onClick={loadMore} className="btn btn-primary">
+                              Load More
+                            </button>
                           </div>
-
-                        </div>
-
-                        {/* end card */}
-
-                      </div> // end col
-
-                    ))}
-                    {itemsToShow < usersitem.length && (
-                      <div className="col-12 text-center mb-3 mt-3">
-                        <button onClick={loadMore} className="btn btn-primary">
-                          Load More
-                        </button>
+                        )}
                       </div>
+
+
                     )}
                   </div>
-                 
-                  
-                )}
-                </div>
                 )}
 
                 {activeTab === "listView" && (
@@ -1864,7 +1892,7 @@ if(field == "Name"){
 
                                     </div>
 
-                                  </th>                                 
+                                  </th>
 
                                   <th
 
@@ -2301,8 +2329,8 @@ if(field == "Name"){
                                 <li
 
                                   className={`prevPage page-item ${currentGroup === 1 ? "disabled" : ""
-                                     }`}
-                                     onClick={() => handleGroupChange("prev")}
+                                    }`}
+                                  onClick={() => handleGroupChange("prev")}
                                 >
 
                                   <a
@@ -2333,35 +2361,36 @@ if(field == "Name"){
                                     const pageNum = startPage + num;
                                     return (
 
-                                    <li
+                                      <li
 
-                                      key={pageNum}
+                                        key={pageNum}
 
-                                      className={`page-item ${currentPage === pageNum ? "active" : ""
+                                        className={`page-item ${currentPage === pageNum ? "active" : ""
 
-                                        }`}
-
-                                    >
-
-                                      <a
-
-                                        className="page-link"
-
-                                        onClick={() =>
-
-                                          handlePageChange(pageNum)
-
-                                        }
+                                          }`}
 
                                       >
 
-                                        {pageNum}
+                                        <a
 
-                                      </a>
+                                          className="page-link"
 
-                                    </li>
+                                          onClick={() =>
 
-                                  )}
+                                            handlePageChange(pageNum)
+
+                                          }
+
+                                        >
+
+                                          {pageNum}
+
+                                        </a>
+
+                                      </li>
+
+                                    )
+                                  }
 
                                 )}
 
@@ -2370,7 +2399,7 @@ if(field == "Name"){
                                   className={`nextPage page-item ${currentGroup === totalGroups ? "disabled" : ""
 
                                     }`}
-                                    onClick={() => handleGroupChange("next")}
+                                  onClick={() => handleGroupChange("next")}
                                 >
 
                                   <a

@@ -269,10 +269,14 @@ const SocialFeedContext = ({ props }: any) => {
     setArrDetails(currentGroup);
     console.log(currentGroup, "currentGroup");
     if (currentGroup[0].GroupType === "Selected Members" &&
-      currentGroup[0]?.InviteMemebers?.some((invitee: any) => invitee.Id === currentUser || currentGroup[0].Author.ID === currentUser)) {
+      currentGroup[0]?.InviteMemebers?.some((invitee: any) => invitee.Id === currentUser) || currentGroup[0].Author.ID === currentUser) {
       setIsEdit(true);
     } else if (currentGroup[0].GroupType === "All" && currentGroup[0]?.GroupFollowers &&
-      currentGroup[0]?.GroupFollowers?.some((invitee: any) => invitee.Id === currentUser || currentGroup[0].Author.ID === currentUser)) {
+      currentGroup[0]?.GroupFollowers?.some((invitee: any) => invitee.Id === currentUser) || currentGroup[0].Author.ID === currentUser) {
+      setIsEdit(true);
+    }
+    else if (currentGroup[0].GroupType === "All" && currentGroup[0]?.GroupFollowers.length == 0 &&
+      currentGroup[0].Author.ID === currentUser) {
       setIsEdit(true);
     }
 

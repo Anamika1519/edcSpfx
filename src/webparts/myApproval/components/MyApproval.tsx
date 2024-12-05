@@ -97,7 +97,7 @@ import Multiselect from "multiselect-react-dropdown";
 
 import { getSP } from "../loc/pnpjsConfig";
 
-import { Eye } from "react-feather";
+import { Eye,Edit } from "react-feather";
 
 import { getDataByID, getMyApproval, getMyRequest, updateItemApproval } from "../../../APISearvice/ApprovalService";
 
@@ -1368,7 +1368,7 @@ const MyApprovalContext = ({ props }: any) => {
 
                       /> */}
 
-                                    <Eye onClick={(e) =>
+                                    <Edit onClick={(e) =>
 
                                       handleRedirect(e, item)
 
