@@ -190,12 +190,17 @@ a:hover, a:active {
   font-size: 11px !important;
 }
 .sidebar.close .logo_item{
-  width: auto;
+  width: 66px;
+  margin-left: -16px;
 }
+.loadernewadd{color: #1fb0e5;display: flex;font-size: 18px;gap: 0px;font-weight: 700;justify-content: center;
+  align-items: center;vertical-align: middle;}
+.alignrightl{width: 50px; margin-top: 5px;}
+
 .postion8{ width:95%; float: right; margin-top: 92px; }
 .mainevent{border-bottom: 1px solid #ccc; padding: 10px 0px;}
 .mainevent:last-child{border-bottom: 0px !important;}
-
+.ipaddw{width: 10px;}
 .footer{background: #d4d4d3;bottom:0px;padding: 8px 10px;position: sticky;text-align: right; width: 100%;}
 .dropcss{padding: 0px;}
 .dropcss a{display: block; text-align: center; font-size: 12px; padding: 10px; }
@@ -568,12 +573,15 @@ a:hover, a:active {
 .sub-menu {
   display: none; /* Hide the submenu by default */
   position: fixed;
-  left:3.8rem;
+  left:auto;
   background-color: var(--blue-color);
   padding: 10px;
   list-style-type: none;
   margin: 0;
-  width: 172px;
+  width: 172px;margin-left: 60px;
+}
+.close .navlink_icon{
+margin-left: 0px;
 }
 
 .submenu_item:hover .sub-menu {
@@ -1019,6 +1027,12 @@ margin: 10px 0px !important ;
    
       height: 96px;
   }
+  .item {
+    margin: .8rem 7px 0 17px;
+  }
+    .close .sub-menu{left: 3.8rem;margin-left: 0px;}
+    .close.navlink_icon{margin-left: 2px;}
+    
   .footer{bottom: 0px;position: fixed;}
   .font-11 {
     font-size: 14px !important;
@@ -1221,7 +1235,7 @@ margin: 10px 0px !important ;
     width: 50px;
   }
   .item{
-    margin:0.2rem 0.4rem 0rem 0.4rem;
+    margin: .3rem .4rem 0px 18px;
   } 
   .event p{
     font-size: 10px !important;
@@ -1329,7 +1343,7 @@ color: #fff !important;
   max-height: 620px;
 }
 .item {
-margin: .1rem .4rem 0;
+  margin: .3rem .4rem 0px 18px;
 }
   .view-all {
     position: absolute;
@@ -1411,9 +1425,9 @@ margin: .1rem .4rem 0;
   .internalmedia  .filter-item,.internalmedia1  .filter-item{
       width: 25% !important;
   }
-  .card-body{padding: 10px !important;}
-  .item {
-    margin: 0rem .8rem 0;
+  .card-body{padding: 10px !important;} 
+.item {
+  margin: .3rem .4rem 0px 19px;
 }
 .sidebar .nav_link{
   font-size:13.2px;
