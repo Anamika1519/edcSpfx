@@ -45,7 +45,7 @@
   opacity: 1 !important;
 }
 .paddbnew{
-  padding: 30px 17px 30px 15px;
+  padding: 30px 17px 30px 15px;min-height: 100vh;
 }
 .sub-menu .test{padding: 0px 10px !important;    height: 30px;
   line-height: 10px;}
@@ -138,6 +138,14 @@ height:63px;
   
   -webkit-line-clamp: 2;
 }
+.onelinenewd{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 205px; float: left;
+  
+  
+}
 
 .sevenline{
   overflow: hidden;
@@ -155,7 +163,7 @@ height:63px;
   padding: 0.8rem !important;
 }
 
-#myDropdownBell .heightlist{height: 350px;overflow-y: auto; padding: 10px;}
+#myDropdownBell .heightlist{height: 350px;overflow-y: auto;overflow-x: hidden; padding: 10px;}
 #myDropdownBell .heightlist .notify-item
 {border: 0px solid #ccc !important;}
 #myDropdownBell .heightlist .notify-item:nth-child(even)
@@ -201,7 +209,7 @@ a:hover, a:active {
 .mainevent{border-bottom: 1px solid #ccc; padding: 10px 0px;}
 .mainevent:last-child{border-bottom: 0px !important;}
 .ipaddw{width: 10px;}
-.footer{background: #d4d4d3;bottom:0px;padding: 8px 10px;position: sticky;text-align: right; width: 100%;}
+.footer{background: #d4d4d3;bottom:-70px;padding: 8px 10px;position: relative;text-align: right; width: 100%;}
 .dropcss{padding: 0px;}
 .dropcss a{display: block; text-align: center; font-size: 12px; padding: 10px; }
 .text-dark-new{color: #343a40 !important;}
@@ -225,7 +233,7 @@ a:hover, a:active {
   background: #1fb0e5;
 }
 .view-all:hover{
-  background: #1fb0e5;
+  background: #008751;
 }
 
 .annuncementcard h4{color: #343a40 !important;}
@@ -1002,8 +1010,8 @@ background-color: rgb(167, 30, 132);
 }
 .btn-primary{height: auto !important;}
 .btn-primary:hover{
-  background: #1fb0e5 !important;
-  border-color: #1fb0e5 !important;
+  background: #008751 !important;
+  border-color: #008751 !important; color: #fff !important;
 }
 .heightcard {
   height: 160px !important;
@@ -1699,3 +1707,13 @@ span.navlink.active {
 .gfg_tooltip:hover .gfg_text {
     visibility: visible;
 }
+a:hover{color: #1fb0e5 !important; cursor: pointer;}
+.hovertext:hover{color: #1fb0e5 !important; cursor: pointer;}
+.navbar_content svg:hover{color: #1fb0e5 !important; cursor: pointer;}
+.filter-menu a:hover{
+  background: #1fb0e5; color: #fff !important;
+}
+.tabcss:hover{ background: #fff !important; color: #000 !important;}
+.cursor-none{cursor: none !important;}
+.swal2-confirm{background: #1fb0e5 !important; border-color: #1fb0e5 !important;}
+.swal2-confirm:hover{background: #008751 !important; border-color: #008751 !important;}

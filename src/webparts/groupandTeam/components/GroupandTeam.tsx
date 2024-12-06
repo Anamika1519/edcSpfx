@@ -2637,7 +2637,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
                             style={{ lineHeight: "26px", float: "left", color: "#fff", textTransform: 'capitalize' }}
 
-                            className="card-title fw-bold font-20 mb-1 mt-0"
+                            className="card-title textd fw-bold font-20 mb-1 mt-0"
 
                           >
 

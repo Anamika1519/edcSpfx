@@ -503,13 +503,17 @@ const EventdetailscalenderContext = ({ props }: any) => {
   const sendanEmail = (item: any) => {
     // window.open("https://outlook.office.com/mail/inbox");
 
-    const subject = "Event link-" + item.EventName;
+    const subject = "Event Title-" + item.EventName;
     const body = 'Here is the link to the event:' + `${siteUrl}/SitePages/EventDetailsCalendar.aspx?${item.Id}`;
 
-    const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    //const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
     // Open the link to launch the default mail client (like Outlook)
-    window.location.href = mailtoLink;
+    //window.location.href = mailtoLink;
+
+    const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+    window.open(office365MailLink, '_blank');
   };
   const AddAttendees = async (Item: any) => {
     debugger
@@ -662,10 +666,10 @@ const EventdetailscalenderContext = ({ props }: any) => {
                                   <span style={{ paddingTop: '0px' }}>
                                     <Calendar size={18} /> </span> <span>Registration: {moment(item.RegistrationDueDate).format("DD-MMM-YYYY")} </span>  &nbsp;  &nbsp;  &nbsp;|
                                 </span>
-                                <span className="text-nowrap mb-0 d-inline-block" onClick={() => sendanEmail(item)} >
+                                <span className="text-nowrap hovertext mb-0 d-inline-block" onClick={() => sendanEmail(item)} >
                                   <Share size={18} />  Share by email &nbsp;  &nbsp;  &nbsp;|&nbsp;  &nbsp;  &nbsp;
                                 </span>
-                                <span className="text-nowrap mb-0 d-inline-block" onClick={() => copyToClipboard(item.Id)}>
+                                <span className="text-nowrap hovertext mb-0 d-inline-block" onClick={() => copyToClipboard(item.Id)}>
                                   <Link size={18} />    Copy link &nbsp;  &nbsp;  &nbsp;{copySuccess && <span className="text-success">{copySuccess}</span>} &nbsp;  &nbsp;
                                 </span>
 

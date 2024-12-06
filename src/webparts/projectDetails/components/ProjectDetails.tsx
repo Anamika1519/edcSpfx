@@ -796,7 +796,7 @@ try{
   const sendanEmail = (item:any) => {
     // window.open("https://outlook.office.com/mail/inbox");
   
-     const subject ="Project Title -"+ item.ProjectName;
+     const subject ="Project Title-"+ item.ProjectName;
      const body = 'Here is the link to the Project:'+ `${siteUrl}/SitePages/ProjectDetails.aspx?${item.Id}`;
   
     //const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
@@ -1668,7 +1668,7 @@ const handleRemoveUser = async (userId: number) => {
                     </div>
                       <div style={{ position:'sticky', top:'90px'}}  className="row mt-2">
                         <div className="col-md-12 col-xl-12">
-                        <div className="tabcss sameh mb-2 mt-2 me-1 activenew">
+                        <div style={{cursor:'pointer'}} className="tabcss sameh mb-2 mt-2 me-1 activenew">
 
                         <button type="button" className="opend"
                   onClick={(e) => openModal(e)}
@@ -1688,7 +1688,7 @@ const handleRemoveUser = async (userId: number) => {
                              {moment(item.DueDate).format("DD-MMM-YYYY")}{" "} 
                               
                             </span>  </div>
-                            <div className="tabcss mb-2 sameh mt-2 me-1 ">
+                            <div style={{cursor:'pointer'}} className="tabcss mb-2 sameh mt-2 me-1 ">
                             <span className="text-nowrap mb-0 d-inline-block"  onClick={() => sendanEmail(item)} >
                               <Share size={14} /> Share by email 
                             </span>

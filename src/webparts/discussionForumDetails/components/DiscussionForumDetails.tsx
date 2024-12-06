@@ -494,13 +494,17 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
   const sendanEmail = (item: any) => {
     // window.open("https://outlook.office.com/mail/inbox");
 
-    const subject = "Dicussion link-" + item.Topic;
+    const subject = "Dicussion Title-" + item.Topic;
     const body = 'Here is the link to the Dicussion:' + `${siteUrl}/SitePages/DiscussionForumDetail.aspx?${item.Id}`;
 
-    const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+   // const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
     // Open the link to launch the default mail client (like Outlook)
-    window.location.href = mailtoLink;
+    //window.location.href = mailtoLink;
+
+    const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+    window.open(office365MailLink, '_blank');
   };
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [showDropdownId, setShowDropdownId] = React.useState(null);
@@ -902,12 +906,7 @@ className="d-block mt-2 font-28"
 
                             </div>
                             <div className="tabcss mb-0 mt-2 me-1 newalign"> 
-                            <span
-                              className="text-nowrap mb-0 d-inline-block"
-                              onClick={sendanEmail}
-                            >
-                              <Share size={14} /> Share by email 
-                            </span>
+                          
         </div>
 
         <div className="tabcss mb-0 mt-2 me-1 newalign"> 
@@ -1702,7 +1701,7 @@ alt="Check"
                         </div>
 
                         {/* Impression code */}
-                        <div className="card mobile-5 mt-3" style={{ borderRadius: "22px", position: 'sticky', top: '260px' }}>
+                        <div className="card mobile-5 mt-3" style={{ borderRadius: "22px", position: 'sticky', top: '320px' }}>
                           <div className="card-body pb-3 gheight">
                             <h4 className="header-title font-16 text-dark fw-bold mb-0" style={{ fontSize: "20px" }}>Impression Count</h4>
                             <h1 className="text-muted font-14 mt-3">

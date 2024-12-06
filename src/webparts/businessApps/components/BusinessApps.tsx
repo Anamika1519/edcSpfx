@@ -304,7 +304,23 @@ const HelloWorldContext = ({ props }: any) => {
 
     // }
   };
+  const handleSearch: React.ChangeEventHandler = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if(activeTab != "all")
+      setActiveTab("all");
+    let txtSearch = (document.getElementById('searchInput') as HTMLInputElement).value;
+    if(txtSearch.length >1){
+   
+    const filteredApps = mediagallerydata.filter((app: any) =>      
+      app.Title.toLowerCase().includes(txtSearch.toLowerCase())
+    );
+  
+        setFilteredMediaItems(filteredApps);
+    }
 
+    else {
+      ApiCall();
+    }   
+  }
   const dismissModal = () => {
     setShowModal(false);
     setShowModalstr(false);
@@ -658,45 +674,36 @@ const HelloWorldContext = ({ props }: any) => {
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
 
               </div>
-              {/* <div className="col-lg-6">
-                <div
-                  className="btn btn-success waves-effect waves-light m-1"
-                  style={{ fontSize: "0.875rem" }}
-                  onClick={() => showmodalstructure(true)}
-
-                >
-                  <div
-                    className="d-flex"
-                    style={{
-                      justifyContent: "space-around",
-                      width: "180px",
-                    }}
-                  >
-                    <img
-                      src={require("../../../Assets/ExtraImage/checkcircle.svg")}
-                      style={{ width: "1rem" }}
-                      alt="Check"
-                    />{" "}
-                    Add New Business App
-                  </div>
-                </div>
-             
-
-              </div> */}
-              {/* <div className="col-lg-8">
-                  <div className="d-flex flex-wrap align-items-center justify-content-end mt-3">
-                    <form className="d-flex align-items-center justify-content-start">
+              <div className="col-lg-7">
+                <div className="d-flex flex-wrap align-items-center justify-content-end mt-3">
+                  <form className="d-flex flex-wrap align-items-center justify-content-start">
+                    <label htmlFor="searchInput" className="visually-hidden">
+                      Search
+                    </label>
+                    <div className="me-1 position-relative">
                       <input
                         type="search"
                         className="form-control my-1 my-md-0"
                         id="searchInput"
-                        placeholder="Search..."
-                        value={searchTerm}
-                        onChange={handleSearchChange}
+                        placeholder="Search by App Name..."
+                        onChange={handleSearch}
                       />
-                    </form>
-                  </div>
-                </div> */}
+                      <span
+                        style={{
+                          position: "absolute",
+                          right: "11px",
+                          top: "11px",
+                          fontSize: "20px",
+                        }}
+                        className="fe-search"
+                      ></span>
+                    </div>
+
+
+                  </form>
+                </div>
+              </div>
+              
             </div>
             <div className="row mt-3">
               <div className="col-12">
@@ -814,13 +821,13 @@ const HelloWorldContext = ({ props }: any) => {
                     <div className="widget-rounded-circle card hri90" >
                       <div className="card-body" >
                         <div className="row" onClick={() => handleRedirect(item.RedirectionLink)}>
-                          <div className="col-3">
+                          <div className="col-3 newim">
                             <div style={{ background: '#fff', width: '45px', height: '45px' }}
                               className="avatar-lg d-flex justify-content-center align-items-center rounded-circle bg-soft-primary border-primary border">
                               <img style={{ width: '25px', marginTop: '1px' }} src={imageUrl} />
                             </div>
                           </div>
-                          <div className="col-9 d-flex justify-content-left align-items-center">
+                          <div className="col-9 newim2 d-flex justify-content-left align-items-center">
                             <div>
 
                               <p style={{ marginBottom: '5px' }} className="text-dark twolinewrap mb-156 linr56 font-16  mt90">{item.Title}</p>

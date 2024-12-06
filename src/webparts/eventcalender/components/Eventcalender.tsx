@@ -207,14 +207,19 @@ const EventcalenderContext = ({ props }: any) => {
   const sendanEmail = (item:any) => {
     // window.open("https://outlook.office.com/mail/inbox");
   
-     const subject ="Event link-"+ item.EventName;
+     const subject ="Event Title-"+ item.EventName;
      const body = 'Here is the link to the event:'+ `${siteUrl}/SitePages/EventDetailsCalendar.aspx?${item.Id}`;
   
-    const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+   // const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   
     // Open the link to launch the default mail client (like Outlook)
-    window.location.href = mailtoLink;
+   // window.location.href = mailtoLink;
+
+    const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+    window.open(office365MailLink, '_blank');
    };
+
   const toggleDropdown = (itemId: any) => {
     if (showDropdownId === itemId) {
       setShowDropdownId(null); // Close the dropdown if already open
@@ -427,20 +432,20 @@ const EventcalenderContext = ({ props }: any) => {
                                 </div>
                               </div>
 
-                              <a href={item.link} style={{ cursor: "pointer" }}>
+                              <a href={item.link} style={{ cursor: "pointer" }} className="hovertext">
                                 <div
                                   className="w-100"
                                   onClick={() => gotoNewsDetails(item)}
                                 >
                                   <h4
-                                    className="mt-0 mb-1 font-16 fw-bold text-dark-new"
+                                    className="mt-0 mb-1 font-16 hovertext fw-bold text-dark-new"
                                     style={{ fontSize: "16px" }}
                                   >
                                     {truncateText(item.EventName, 90)}
                                   </h4>
                                   <p
                                     style={{ color: "#6b6b6b" , fontSize:'15px'}}
-                                    className="mb-2  text-muted"
+                                    className="mb-2 hovertext text-muted"
                                   >
                                     {truncateText(item.Overview, 200)}
                                   </p>

@@ -917,13 +917,16 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
     const sendanEmail = (item) => {
         // window.open("https://outlook.office.com/mail/inbox");
 
-        const subject = "Blog link-" + item.Title;
+        const subject = "Blog Title -" + item.Title;
         const body = 'Here is the link to the Blog:' + `${SiteUrl}/SitePages/BlogDetails.aspx?${item.Id}`;
 
-        const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        //const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
         // Open the link to launch the default mail client (like Outlook)
-        window.location.href = mailtoLink;
+        //window.location.href = mailtoLink;
+        const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+        window.open(office365MailLink, '_blank');
     };
     const loadMore = () => {
         event.preventDefault()
@@ -969,7 +972,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                                 </span></p>
 
                                             <div style={{ clear: 'both' }}>
-                                                <p style={{fontSize:'15px', lineHeight:'22px'}} className="d-block text-dark customdescription">{truncateText(item.Overview, 300)}</p>
+                                                <p style={{fontSize:'15px', lineHeight:'22px'}} className="d-block text-dark cursor-none customdescription">{truncateText(item.Overview, 300)}</p>
                                             </div>
                                         </div>
                                         <a onClick={() => gotoBlogsDetails(item)} style={{ textDecoration: 'none' }}>
@@ -1066,7 +1069,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                                         </span>
                                                     </div>
                                                 </div>
-                                                <a > <div className="w-100">
+                                                <a> <div className="w-100">
                                                     <h4 className="mt-0 mb-1 font-16 fw-bold ng-binding" style={{ color: '#343a40', fontSize: '16px' }}> {truncateText(item.Title, 90)}
                                                     </h4>
                                                     <p style={{ color: '#6b6b6b', fontSize: '15px', lineHeight:'20px', height: '4rem' }} className="mb-2 ng-binding">

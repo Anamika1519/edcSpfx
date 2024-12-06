@@ -795,9 +795,10 @@ const SocialFeedContext = ({ props }: any) => {
                                 ArrDetails[0]?.GroupFollowers?.length > 0 && ArrDetails[0].GroupFollowers.map((follower: any, idx: any) => (
 
                                   <div className="projectmemeber" key={idx}>
+                                     <div className="itemalign">
                                     <img
                                       src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${follower?.EMail}`}
-                                      className="rounded-circlecss6 img-thumbnail avatar-xl"
+                                      className="rounded-circlenu img-thumbnail avatar-xl"
                                       alt="profile-image"
                                     />
                                     <p>
@@ -809,7 +810,7 @@ const SocialFeedContext = ({ props }: any) => {
                                         alt="Call"
                                       />
                                     </p>
-                                  </div>
+                                  </div></div>
                                 ))
                               }
 
@@ -1054,13 +1055,13 @@ const SocialFeedContext = ({ props }: any) => {
                                         )
                                       )}
                                     </div>
-
+                                    <p style={{ color: 'red', fontSize: '14px', marginTop: '10px' }}>{errorMessage}</p>
                                     <button type="submit" className="btn btn-sm btn-success font-121" disabled={!IsEdit}>
 
                                       <FontAwesomeIcon icon={faPaperPlane} /> Post
 
                                     </button>
-                                    <p style={{ color: 'red', fontSize: '14px', marginTop: '10px' }}>{errorMessage}</p>
+                                   
                                   </div>
 
                                 </form>
@@ -1863,7 +1864,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                     <h4 className="header-title font-16 text-dark fw-bold mb-0" style={{ fontSize: '20px' }}>
 
-                      Group you might be interested in
+                      Group you might <br/> be interested in
                       <a className="font-11 view-all  btn btn-primary  waves-effect waves-light" style={{ float: 'right', lineHeight: '21px', right: '10px' }}>View All</a>
                       {/* <a
 

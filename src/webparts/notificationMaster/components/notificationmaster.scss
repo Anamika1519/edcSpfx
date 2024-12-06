@@ -1105,7 +1105,7 @@ html[data-bs-theme=dark] #light-dark-mode .ri-moon-line::before {
 .alignright {
     position: absolute;
     right: 0;
-    top: 35%;
+    top: 35%;cursor: pointer;
 }
 .carousel,.carousel-inner{height: 100%;}
 .inbox-widget .inbox-item .inbox-item-author {

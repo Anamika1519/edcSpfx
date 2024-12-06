@@ -130,7 +130,7 @@ const UserProfileContext = ({ props }: any) => {
                   <div>
                     {userData ? (
                       // console.log("check the data of userdata--->>>>>>",userData)
-                      <div className="col-lg-4 col-xl-4">
+                      <div className="col-lg-4 mt-3 col-xl-4">
                         <div className="card text-center">
                           <div className="card-body">
                             <img
@@ -143,7 +143,7 @@ const UserProfileContext = ({ props }: any) => {
                               alt="profile-image"
                               style={{ cursor: "pointer", borderRadius: "50%" }}
                             />
-                            <h4 className="mb-0 fw-bold font-18">
+                            <h4 className="mb-0 fw-bold font-16 text-dark">
                               {userData.username}
                             </h4>
                             <p className="text-muted font-14">
@@ -153,7 +153,7 @@ const UserProfileContext = ({ props }: any) => {
                             <button
                               style={{
                                 backgroundColor: "#198754",
-                                marginRight: "3px",
+                                marginRight: "3px", color:'#fff'
                               }}
                               type="button"
                               className=" waves-effect waves-light font-14"

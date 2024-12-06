@@ -849,9 +849,9 @@ if (groupTitles.includes("intranetadmin")) {
 else if (groupTitles.includes("intranetcontentcontributor")){
    announcementArr = await getAnncouncementMaster(sp,"No");
 }
-    
+  //if(announcementArr.length >0)
     setAnnouncementData(announcementArr);
-
+    //setDataloaded(true);
     const NewsArr = await getNewsMaster(sp);
 
     setNewsData(NewsArr);

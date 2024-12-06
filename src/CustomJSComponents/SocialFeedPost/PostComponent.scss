@@ -191,7 +191,7 @@
   z-index: 9999;
   border: none;
   opacity: 99;
-  display: block;
+  display: block; min-width:135px;
 }
 
 .dropdown-menucsspost button {
@@ -200,12 +200,12 @@
   cursor: pointer;
   display: block;
   padding: 8px 12px;
-  text-align: left;
+  text-align: center;
   width: 100%;
   color: #6c757d;
   font-size: 0.85rem;
 }
 
 .dropdown-menucsspost button:hover {
-  background-color: #f0f0f0;
+  background-color: #f0f0f0; color: #1fb0e5;
 }

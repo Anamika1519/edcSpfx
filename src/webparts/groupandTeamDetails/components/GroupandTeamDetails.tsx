@@ -766,13 +766,16 @@ try{
   const sendanEmail = (item:any) => {
     // window.open("https://outlook.office.com/mail/inbox");
   
-     const subject ="Group link-"+ item.GroupName;
+     const subject ="Group Title-"+ item.GroupName;
      const body = 'Here is the link to the group:'+ `${siteUrl}/SitePages/GroupandTeamDetails.aspx?${item.Id}`;
   
-    const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+   // const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   
     // Open the link to launch the default mail client (like Outlook)
-    window.location.href = mailtoLink;
+    //window.location.href = mailtoLink;
+    const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+    window.open(office365MailLink, '_blank');
    };
  
   return (

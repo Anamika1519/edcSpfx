@@ -96,7 +96,7 @@ export const CommentNewsCard: React.FC<{
           <p className="mt-2">{Commenttext}</p>
  
           <div className="mt-0 mb-2 d-flex" style={{gap:'2rem'}}>
-          <div  onClick={!loading ? onLike : undefined}  className="btn btn-sm btn-link text-muted ps-0" style={{
+          <div  onClick={!loading ? onLike : undefined}  className="btn btn-sm btn-link text-muted hovertext ps-0" style={{
               fontSize: '0.765625rem',  pointerEvents: loading ? 'none' : 'auto',  opacity: loading ? 0.5 : 1,
               textDecoration: 'unset' 
             }} >

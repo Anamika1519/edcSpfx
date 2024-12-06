@@ -63,7 +63,10 @@ export const fetchAutomationDepartment = async (_sp) => {
   export const fetchARGAutomationdata = async (_sp) => {
     let arr = []
    
-       await _sp.web.lists.getByTitle("ARGBusinessApps").items.select("*,Category/Id,Category/CategoryName").expand("Category").getAll().then((res) => {
+       await _sp.web.lists.getByTitle("ARGBusinessApps").items.select("*,Category/Id,Category/CategoryName")
+       .expand("Category")      
+       .orderBy("Order0", true)
+       .getAll().then((res) => {
         console.log("response-->>>",res);
      
         //res.filter(x=>x.Category?.Category==str)

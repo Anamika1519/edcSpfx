@@ -748,9 +748,9 @@ const CorporateDirectoryContext = ({ props }: any) => {
   const handleUserClick = (userID: any, currentStatus: any) => {
     console.log("currentStatus", currentStatus)
 
-    sessionStorage.setItem("selectedUserID", userID);
-    sessionStorage.setItem("currentStatus", currentStatus);
-    window.location.href = `${siteUrl}/SitePages/Userprofile.aspx?${userID}`;
+    ///sessionStorage.setItem("selectedUserID", userID);
+    //sessionStorage.setItem("currentStatus", currentStatus);
+   // window.location.href = `${siteUrl}/SitePages/Userprofile.aspx?${userID}`;
   };
   const handleFilterChange = (
 
@@ -1506,7 +1506,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
 
 
-                                      {truncateText(item.Title, 15)}
+                                      {truncateText(item.Title, 28)}
 
 
 
@@ -1517,7 +1517,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                   <p
 
-                                    className="text-muted"
+                                    className="text-muted hovertext"
 
                                     style={{ fontSize: "14px" }}
 
@@ -1529,11 +1529,11 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                     } data-tooltip={item.EMail}>
 
-                                      {truncateText(item.EMail, 15)} | &nbsp;
+                                      {truncateText(item.EMail, 28)}
 
                                     </span>
 
-                                    <span
+                                    {/* <span
 
                                       className="pl-2"
 
@@ -1541,7 +1541,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                     >
 
-                                      {/* <a className="text-pink" > */}
+                                     
 
                                       {truncateText(
 
@@ -1556,12 +1556,43 @@ const CorporateDirectoryContext = ({ props }: any) => {
                                       )}
 
 
-                                      {/* </a> */}
+                                     
 
-                                    </span>
+                                    </span> */}
 
                                   </p>
+                                  <p className="text-muted"
+style={{ fontSize: "14px" }}
 
+>
+<span
+
+  className="pl-2"
+
+  style={{ color: "#1fb0e5" }}
+
+>
+
+ 
+
+  {truncateText(
+
+    item.Department != null
+
+      ? item.Department
+
+      : " NA ",
+
+   28
+
+  )}
+
+
+  {/* </a> */}
+
+</span>
+
+</p>
 
                                   <p
 

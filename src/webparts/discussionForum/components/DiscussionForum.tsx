@@ -1955,7 +1955,7 @@ const DiscussionForumContext = ({ props }: any) => {
 
                                 <span className="indexdesign">  {startIndex + index + 1}</span>
                               </td>
-                              <td style={{ minWidth: "130px", maxWidth: "130px", textTransform: 'capitalize' }} onClick={() => handleClick(item.Id)}>{item.Topic}</td>
+                              <td style={{ minWidth: "130px", maxWidth: "130px", textTransform: 'capitalize' }} onClick={() => handleClick(item.Id)}><span className="text-info">{item.Topic}</span></td>
                               <td style={{ minWidth: "130px", maxWidth: "130px" }}>{item.Overview}</td>
                               <td style={{ minWidth: "100px", maxWidth: "100px" }}>
                                 {item?.DiscussionForumCategory?.CategoryName}

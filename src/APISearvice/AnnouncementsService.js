@@ -325,10 +325,10 @@ export const getAllAnnouncementnonselected = async (_sp, Idnum,text) => {
   await _sp.web.lists.getByTitle("ARGAnnouncementAndNews").items
   .select("*,AnnouncementandNewsTypeMaster/Id,AnnouncementandNewsTypeMaster/TypeMaster,Category/Id,Category/Category,Author/ID,Author/Title")
   .expand("AnnouncementandNewsTypeMaster,Category,Author")
-  .filter(`AnnouncementandNewsTypeMaster/TypeMaster eq '${text}' and ID ne ${Idnum}`)
+  .filter(`AnnouncementandNewsTypeMaster/TypeMaster eq '${text}' and ID ne ${Idnum}  and Status eq 'Approved'`)
     //.filter(`ID ne ${Idnum}`)
     .top(3)
-    .orderBy("Created", false)
+    .orderBy("Modified", false)
     .getAll()
     .then((res) => {
       let resnew= res.slice(0, 3);

@@ -63,7 +63,7 @@ const CustomWebpartTemplate = ({ _sp, SiteUrl }) => {
         }, 1000);
     }
     const copyToClipboard = (Id) => {
-        const link = `${siteUrl}/SitePages/AnnouncementDetails.aspx?${Id}`;
+        const link = `${SiteUrl}/SitePages/AnnouncementDetails.aspx?${Id}`;
         navigator.clipboard.writeText(link)
           .then(() => {
             setCopySuccess('Link copied!');
@@ -87,13 +87,16 @@ const CustomWebpartTemplate = ({ _sp, SiteUrl }) => {
     const sendanEmail = (item) => {
         // window.open("https://outlook.office.com/mail/inbox");
       
-         const subject ="Announcement link-"+ item.Title;
-         const body = 'Here is the link to the Announcement:'+ `${siteUrl}/SitePages/AnnouncementDetails.aspx?${item.Id}`;
+         const subject ="Announcement Title-"+ item.Title;
+         const body = 'Here is the link to the Announcement:'+ `${SiteUrl}/SitePages/AnnouncementDetails.aspx?${item.Id}`;
       
         const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
       
         // Open the link to launch the default mail client (like Outlook)
-        window.location.href = mailtoLink;
+        //window.location.href = mailtoLink;
+        const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+        window.open(office365MailLink, '_blank');
        };
     const [visibleItems, setVisibleItems] = React.useState(5);
 
@@ -112,14 +115,14 @@ const CustomWebpartTemplate = ({ _sp, SiteUrl }) => {
                     const AnnouncementandNewsBannerImage = item.AnnouncementandNewsBannerImage == undefined || item.AnnouncementandNewsBannerImage == null ? ""
                         : JSON.parse(item.AnnouncementandNewsBannerImage);
                     return (
-                        <><div className="col-lg-5" onClick={() => gotoAnnouncementDetails(item)}>
+                        <><div className="col-lg-5" >
                             <div className="imagemani mt-2 me-2">
                                 <img src={AnnouncementandNewsBannerImage?.serverUrl + AnnouncementandNewsBannerImage?.serverRelativeUrl} className="d-flex align-self-center me-3 w-100" lt="Generic placeholder image" />
  
  
                             </div>
                         </div>
-                            <div className="col-lg-7" onClick={() => gotoAnnouncementDetails(item)}>
+                            <div className="col-lg-7">
                                 <div className="row">
                                     <div className="col-sm-4 text-left">
                                         <span style={{ padding: '5px', borderRadius: '4px', fontWeight: '500', color: '#009157', background: 'rgba(0, 135, 81, 0.20)' }} className="font-14 float-start mt-2">
@@ -127,7 +130,7 @@ const CustomWebpartTemplate = ({ _sp, SiteUrl }) => {
  
                                     </div>
                                     <div className="col-lg-12">
-                                        <h4 style={{ lineHeight: '34px' }} className="page-title fw-700 mb-1  pe-5 font-28 titleHeading">
+                                        <h4 onClick={() => gotoAnnouncementDetails(item)} style={{ lineHeight: '34px' }} className="page-title fw-700 mb-1  pe-5 font-28 titleHeading">
                                             {item.Title}</h4>
                                     </div>
                                     <div className="row">
@@ -159,7 +162,7 @@ const CustomWebpartTemplate = ({ _sp, SiteUrl }) => {
             <div className="tab-content mt-4">
             <div className="tab-pane show active" id="home1" role="tabpanel">
         {AnnouncementData && AnnouncementData.length > 0 ?
-            AnnouncementData.slice(0, visibleItems).map(item => {
+            AnnouncementData.slice(1, visibleItems).map(item => {
                 const AnnouncementandNewsBannerImage = item.AnnouncementandNewsBannerImage == undefined || item.AnnouncementandNewsBannerImage == null ? "" : JSON.parse(item.AnnouncementandNewsBannerImage);
 
                 return (

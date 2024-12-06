@@ -37,9 +37,9 @@ export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentU
     const [showMore, setShowMore] = useState(false);
     const menuRef = useRef(null);
     const [showModal, setShowModal] = useState(false);
- 
+
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
- 
+
 
     useEffect(() => {
         GetId()
@@ -397,9 +397,9 @@ export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentU
 
     const copyToClipboard = (Id: number, e?: React.MouseEvent<HTMLButtonElement>) => {
         e?.preventDefault();
-    const ids = window.location.search;
-    const originalString = ids;
-    const idNum = originalString.substring(1); 
+        const ids = window.location.search;
+        const originalString = ids;
+        const idNum = originalString.substring(1);
         const link = `${siteUrl}/SitePages/GroupandTeamDetails.aspx?${idNum}`;
         navigator.clipboard.writeText(link)
             .then(() => {
@@ -413,9 +413,15 @@ export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentU
 
     const sendanEmail = () => {
         const ids = window.location.search;
-    const originalString = ids;
-    const idNum = originalString.substring(1);
-        window.open(`https://outlook.office365.com/mail/deeplink/compose?body= Here is the group link: "${siteUrl}/SitePages/GroupandTeamDetails.aspx?${idNum}"`);
+        const originalString = ids;
+        const idNum = originalString.substring(1);
+        const subject = "Group Details";
+        const body = 'Here is the link to the event:' + `${siteUrl}/SitePages/GroupandTeamDetails.aspx?${idNum}`;
+
+        // window.open(`https://outlook.office365.com/mail/deeplink/compose?body= Here is the group link: "${siteUrl}/SitePages/GroupandTeamDetails.aspx?${idNum}"`);
+        const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+        window.open(office365MailLink, '_blank');
     };
     const OpenImagePreview = (imageurl: any) => {
         //#region Methods
@@ -432,7 +438,7 @@ export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentU
         setShowModal(true);
         setCurrentImageIndex(0);
     };
- 
+
     const sendanEmailStop = () => {
         setIsMenuOpenshare(false);
     }
@@ -566,7 +572,7 @@ export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentU
                         </div>
                     )}
                 </div> */}
-<div className="image-preview mt-2">
+                <div className="image-preview mt-2">
                     <div className="grid-container">
                         {displayedImages.map((image: any, index) => {
                             // Merging and cleaning up the image URL if needed
@@ -583,18 +589,18 @@ export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentU
                                 >
                                     {/* Render the image */}
                                     <img
-                      src={imageUrl}
-                      alt={`Social feed ${index}`}
-                      style={{
-                        width: "100%",
-                        height: "auto",
-                        cursor: "pointer",
-                      }}
-                      onClick={() => {
-                        setShowModal(true); // Open the modal
-                        setCurrentImageIndex(index); // Pass the clicked image index
-                      }}
-                    />
+                                        src={imageUrl}
+                                        alt={`Social feed ${index}`}
+                                        style={{
+                                            width: "100%",
+                                            height: "auto",
+                                            cursor: "pointer",
+                                        }}
+                                        onClick={() => {
+                                            setShowModal(true); // Open the modal
+                                            setCurrentImageIndex(index); // Pass the clicked image index
+                                        }}
+                                    />
                                     {/* Show +X overlay if it is the third image and there are more images to show */}
                                     {isThirdImage && (
                                         <div
@@ -622,9 +628,9 @@ export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentU
                             );
                         })}
                     </div>
- 
+
                     {/* Only display a "Show Less" message if more images are shown */}
- 
+
                     {showMore && (
                         <div
                             className="show-less"
@@ -635,7 +641,7 @@ export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentU
                         </div>
                     )}
                 </div>
-                
+
 
                 {/* <div className="grid-container">
                     {SocialFeedImagesJson.map((image: any, index) => {
@@ -650,34 +656,34 @@ export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentU
                 </div> */}
             </div>
             <Modal show={showModal} onHide={() => setShowModal(false)} centered>
-          <Modal.Header closeButton></Modal.Header>
-          <Modal.Body>
-            <Carousel
-              activeIndex={currentImageIndex} // Show the clicked image first
-              onSelect={(selectedIndex) => setCurrentImageIndex(selectedIndex)}
-            >
-              {SocialFeedImagesJson.map((item: any, index: number) => (
-                <Carousel.Item key={index}>
-                  <img
-                    className="d-block w-100"
-                    src={mergeAndRemoveDuplicates(siteUrl, item.fileUrl)} // Use your image URL merge function
-                    alt={`Slide ${index}`}
-                    style={{ height: "auto", objectFit: "contain" }}
-                  />
-                </Carousel.Item>
-              ))}
-            </Carousel>
-          </Modal.Body>
-        </Modal>
+                <Modal.Header closeButton></Modal.Header>
+                <Modal.Body>
+                    <Carousel
+                        activeIndex={currentImageIndex} // Show the clicked image first
+                        onSelect={(selectedIndex) => setCurrentImageIndex(selectedIndex)}
+                    >
+                        {SocialFeedImagesJson.map((item: any, index: number) => (
+                            <Carousel.Item key={index}>
+                                <img
+                                    className="d-block w-100"
+                                    src={mergeAndRemoveDuplicates(siteUrl, item.fileUrl)} // Use your image URL merge function
+                                    alt={`Slide ${index}`}
+                                    style={{ height: "auto", objectFit: "contain" }}
+                                />
+                            </Carousel.Item>
+                        ))}
+                    </Carousel>
+                </Modal.Body>
+            </Modal>
             {/* Post Interactions */}
 
-            <div className="post-interactions mt-3 mb-3">
-                <div className="likes" onClick={!loadingLike ? (e) => handleLike(e, liked) : undefined}  >
+            <div className="post-interactions hovertext mt-3 mb-3">
+                <div className="likes hovertext" onClick={!loadingLike ? (e) => handleLike(e, liked) : undefined}  >
                     {liked ? <FontAwesomeIcon icon={faThumbsUp} fontSize={25} color="#1fb0e5" /> : <ThumbsUp size={20} color="gray" />}
                     <span>{likesCount} Likes</span>{liked}
                 </div>
                 <span className="likes"><MessageSquare size={20} /> {CommentsCount} Comments</span>
-                <div className="post-actions likes">
+                <div className="post-actions hovertext likes">
                     <div className="menu-toggle" onClick={toggleMenushare}>
                         <Share2 size={20} /> <span className="sahrenew"> Share</span>
                     </div>

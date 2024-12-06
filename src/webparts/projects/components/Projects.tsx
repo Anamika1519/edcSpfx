@@ -64,6 +64,7 @@ const HelloWorldContext = ({ props }: any) => {
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(true);
   const { setHide }: any = context;
   const [isDarkMode, setIsDarkMode] = React.useState(false);
+  const [loading, setLoading] = useState(true);
   React.useEffect(() => {
     console.log("This function is called only once", useHide);
 
@@ -335,7 +336,7 @@ const HelloWorldContext = ({ props }: any) => {
         ProjectStatus: "Ongoing",
         ProjectFolderName: formData.ProjectName,
         FolderInProgress: 'In Progress'
-        
+
         //  ProjectStatus: "Ongoing",
         //  ProjectFolderName: formData.ProjectName,
         //  FolderInProgress: 'In Progress'
@@ -524,15 +525,22 @@ const HelloWorldContext = ({ props }: any) => {
     }
   };
   const ApiCall = async () => {
-    debugger
-    let test = await sp.web.currentUser();
-    console.log("testtest", test)
-    fetchOptions();
-    const res = await getCurrentUserNameId(sp);
-    setUserId(res);
-    setDataproject(await fetchprojectdata(sp));
-    setChoiceValueOne(await Choicedata(sp));
-    await XYZ(sp);
+    setLoading(true); 
+    try {
+      let test = await sp.web.currentUser();
+      console.log("testtest", test)
+      fetchOptions();
+      const res = await getCurrentUserNameId(sp);
+      setUserId(res);
+      setDataproject(await fetchprojectdata(sp));
+      setChoiceValueOne(await Choicedata(sp));
+      await XYZ(sp);
+    } catch (error) {
+      console.error('Error toggling like:', error);
+    }
+    finally {
+      setLoading(false); // Enable the button after the function completes
+    }
   };
 
   const handleDelete = (Id: any) => {
@@ -1328,7 +1336,17 @@ const HelloWorldContext = ({ props }: any) => {
               <div className="row mt-3">
                 <div className="">
                   {/* Map through the projects array and display a card for each */}
-                  {Dataproject.length > 0 ? (
+                  {loading ? (<div className="loadernewadd">
+                      <span>Loading </span>{" "}
+                      <span>
+                        <img
+                          src={require("../assets/argloader.gif")}
+                          className="alignrightl"
+                          alt="Loading..."
+                        />
+                      </span>
+                    </div>):
+                  (Dataproject.length > 0 ? (
                     <div className="row">
                       {Dataproject.map((project, index) => {
                         console.log("project>>>>>>>>>>>>>", activeTab, project);
@@ -1960,6 +1978,18 @@ const HelloWorldContext = ({ props }: any) => {
                   ) : (
                     // <p>Loading projects...</p>
                     <div className="loadernewadd">
+                      <span>No Project found </span>{" "}                   
+                    </div>
+                  ))
+            }
+                </div>
+              </div>
+            )}
+            {activeTab === "profile1" && (
+              <div className="row mt-3">
+                <div className="container">
+                  {/* Map through the projects array and display a card for each */}
+                  {loading ? (<div className="loadernewadd">
                       <span>Loading </span>{" "}
                       <span>
                         <img
@@ -1968,16 +1998,8 @@ const HelloWorldContext = ({ props }: any) => {
                           alt="Loading..."
                         />
                       </span>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-            {activeTab === "profile1" && (
-              <div className="row mt-3">
-                <div className="container">
-                  {/* Map through the projects array and display a card for each */}
-                  {Dataproject.length > 0 ? (
+                    </div>):
+                  (Dataproject.length > 0 ? (
                     <div className="row">
                       {Dataproject.slice(0, itemsToShow).map((project: any, index: any) => {
                         if (project?.AuthorId == userId) {
@@ -2229,8 +2251,11 @@ const HelloWorldContext = ({ props }: any) => {
                       )}
                     </div>
                   ) : (
-                    <p>Loading projects...</p>
-                  )}
+                   <div className="loadernewadd">
+                    <span>No Project found </span>{" "}                   
+                  </div>
+                  ))
+                }
                 </div>
               </div>
             )}
@@ -2238,7 +2263,17 @@ const HelloWorldContext = ({ props }: any) => {
               <div className="row mt-3">
                 <div className="">
                   {/* Map through the projects array and display a card for each */}
-                  {Dataproject.length > 0 ? (
+                  {loading ? (<div className="loadernewadd">
+                      <span>Loading </span>{" "}
+                      <span>
+                        <img
+                          src={require("../assets/argloader.gif")}
+                          className="alignrightl"
+                          alt="Loading..."
+                        />
+                      </span>
+                    </div>):
+                  (Dataproject.length > 0 ? (
                     <div className="row">
                       {Dataproject.map((project, index) => {
                         if (project?.TeamMembersId?.includes(userId)) {
@@ -2489,8 +2524,11 @@ const HelloWorldContext = ({ props }: any) => {
                       )}
                     </div>
                   ) : (
-                    <p>Loading projects...</p>
-                  )}
+                    <div className="loadernewadd">
+                      <span>No Project found </span>{" "}                   
+                    </div>
+                  ))
+                }
                 </div>
               </div>
             )}
@@ -2498,7 +2536,17 @@ const HelloWorldContext = ({ props }: any) => {
               <div className="row mt-3">
                 <div className="">
                   {/* Map through the projects array and display a card for each */}
-                  {Dataproject.length > 0 ? (
+                  {loading ? (<div className="loadernewadd">
+                      <span>Loading </span>{" "}
+                      <span>
+                        <img
+                          src={require("../assets/argloader.gif")}
+                          className="alignrightl"
+                          alt="Loading..."
+                        />
+                      </span>
+                    </div>):
+                  (Dataproject.length > 0 ? (
 
                     <div className="row">
                       {Dataproject.map((project, index) => {
@@ -2533,14 +2581,14 @@ const HelloWorldContext = ({ props }: any) => {
                                         View Detail
                                       </a>
                                       {project?.AuthorId === userId && project?.ProjectStatus === 'Ongoing' &&
-                                      (
-                                        <a
-                                          className="dropdown-item"
-                                          onClick={() => UpdatProject(project.Id)}
-                                        >
-                                          Mark Completed
-                                        </a>
-                                      )}
+                                        (
+                                          <a
+                                            className="dropdown-item"
+                                            onClick={() => UpdatProject(project.Id)}
+                                          >
+                                            Mark Completed
+                                          </a>
+                                        )}
                                     </div>
                                   </div>
 
@@ -2751,8 +2799,11 @@ const HelloWorldContext = ({ props }: any) => {
                       )}
                     </div>
                   ) : (
-                    <p>Loading projects...</p>
-                  )}
+                    <div className="loadernewadd">
+                    <span>No Project found </span>{" "}                   
+                  </div>
+                  ))
+                }
                 </div>
               </div>
             )}
@@ -3002,7 +3053,9 @@ const HelloWorldContext = ({ props }: any) => {
                       )}
                     </div>
                   ) : (
-                    <p>Loading projects...</p>
+                    <div className="loadernewadd">
+                      <span>No Project found </span>{" "}                   
+                    </div>
                   )}
                 </div>
 

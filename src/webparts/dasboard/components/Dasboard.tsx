@@ -367,7 +367,7 @@ const HelloWorldContext = ({ props }: any) => {
       <div className="content-page">
         <HorizontalNavbar _context={sp} siteUrl={siteUrl} />
         <div className="content mt-4" style={{ marginLeft: `${!useHide ? '240px' : '80px'}` }}>
-          <div className="container-fluid  paddbnew">
+          <div className="container-fluid pb-0  paddbnew">
             <div className="row">
               <div
                 //  className=" col-md-10"
@@ -565,11 +565,14 @@ const HelloWorldContext = ({ props }: any) => {
                                   </a>
                                 </div>
                                 <div style={{ cursor: "pointer" }} className="col-sm-8">
-                                  <a href="contacts-profile.html">
-                                    <p className="fw-bold font-14 mb-2 text-dark">
-                                      {user.Pinned.Title} | {user.Pinned.EMail != null ? user.Pinned.EMail : 'NA'}
+                                  
+                                    <p className="fw-bold mt-1 font-14 mb-0 text-dark">
+                                      {user.Pinned.Title} 
                                     </p>
-                                  </a>
+                                    <a href="#" style={{marginLeft:'15px'}} className="onelinenewd font-12 mb-0 text-muted">
+{user.Pinned.EMail != null ? user.Pinned.EMail : 'NA'}
+                                    </a>
+                                  
                                   <p
                                     style={{
                                       color: "#6b6b6b",
@@ -611,7 +614,7 @@ const HelloWorldContext = ({ props }: any) => {
                   <div className="col-xl-7 col-lg-7">
                     {/* Upcoming Events */}
                     <div className="card" style={{ borderRadius: "1rem" }}>
-                      <div className="card-body pb-0">
+                      <div className="card-body gheightnew pb-0">
                         <h4
                           className="header-title text-dark fw-bold mb-0"
                           style={{
@@ -969,9 +972,9 @@ const HelloWorldContext = ({ props }: any) => {
                                   </div>
                                   <div style={{ paddingLeft: "0px" }} className="col-lg-4">
                                     <a
-                                      style={{ marginTop: "3px" }}
+                                      style={{ marginTop: "3px", display:'flex', gap:'2px' }}
                                       href="javascript:void(0);"
-                                      className="btn btn-sm btn-link text-muted ps-3 pe-0"
+                                      className="btn btn-sm btn-link text-muted ps-0 pe-0"
                                     >
                                       {Array(user.Ratting)
                                         .fill(null)
@@ -1055,7 +1058,7 @@ const HelloWorldContext = ({ props }: any) => {
                     marginBottom: "0px",
                   }}
                 >
-                  <div className="pb-3 paddlright">
+                  <div className="pb-0 paddlright">
                     <h4 className="header-title font-16 text-dark fw-bold mb-0">
                       Projects
                       <a

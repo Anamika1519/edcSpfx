@@ -527,11 +527,14 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
         // window.open("https://outlook.office365.com/mail/deeplink/compose?subject=Share%20Info&body=");
         const subject = "Post Title -" + item.Contentpost;
         const body = 'Here is the link to the Post:' + `${siteUrl}/SitePages/SocialFeed.aspx`;
+        const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
-        const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        window.open(office365MailLink, '_blank');
+        //const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
         // Open the link to launch the default mail client (like Outlook)
-        window.location.href = mailtoLink;
+        //window.location.href = mailtoLink;
+        
     };
 
     const handleToggleImages = () => {

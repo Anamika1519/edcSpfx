@@ -2061,7 +2061,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
             <div className="row ">
 
-              <div className="col-lg-3 mt-1">
+              <div className="col-lg-3 mt-0">
 
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
 

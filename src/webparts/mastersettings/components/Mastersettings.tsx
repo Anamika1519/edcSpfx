@@ -186,12 +186,12 @@ export const MastersettingContext = ({ props }: any) => {
       <div className="content-page">
           <HorizontalNavbar  _context={sp} siteUrl={SiteUrl}/>
         <div className="content" style={{marginLeft: `${!useHide ? '240px' : '80px'}`}}>
-          <div className="container-fluid  paddb">
+          <div style={{paddingTop:'15px'}} className="container-fluid  paddb">
             <div className="row pt-0" style={{ paddingLeft: '0.5rem' }}>
               <div className="col-lg-3">
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
               </div>
-              <div className="row manage-master mt-0">
+              <div className="row manage-master mt-3">
                 {
                   IsUserAlllowed?
                   settingArray.map((item: any) => {

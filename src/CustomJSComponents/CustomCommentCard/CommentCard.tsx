@@ -110,7 +110,7 @@ export const CommentCard: React.FC<{
           <p style={{ whiteSpace: 'pre-wrap'}} className="mt-2 font-16">{Commenttext}</p>
 
           <div className="mt-0 mb-2 d-flex" style={{ gap: '2rem' }}>
-            <div  onClick={!loadingLike ? onLike : undefined}  className="btn btn-sm btn-link text-muted ps-0" style={{
+            <div  onClick={!loadingLike ? onLike : undefined}  className="btn btn-sm btn-link text-muted hovertext ps-0" style={{
               fontSize: '0.765625rem',display: 'flex', gap:'5px', alignItems:'center',  pointerEvents: loadingLike ? 'none' : 'auto',  opacity: loadingLike ? 0.5 : 1,
               textDecoration: 'unset' 
             }} >

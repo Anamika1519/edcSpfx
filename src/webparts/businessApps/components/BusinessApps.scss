@@ -5,7 +5,9 @@
     font-size: .875rem !important;
     font-weight: 400 !important;
   }
-  
+  .filter-menu a:hover{
+    background: #1fb0e5; color: #fff;
+  }
   #cardCollpase4 .mtable {
     margin-top: 0px !important;
   }
@@ -119,4 +121,13 @@
     border-radius: 50% !important;
     height: 2rem !important;
     width: 2rem !important;
+  }
+  @media(max-width:1920px){
+    .newim{    width: 17% !important;}
+  }
+  @media(max-width:1600px){
+    .newim{    width: 21% !important;}
+  }
+  @media(max-width:1400px){
+    .newim{    width: 25% !important;}
   }

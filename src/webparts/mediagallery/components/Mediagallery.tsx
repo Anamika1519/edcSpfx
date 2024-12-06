@@ -308,7 +308,7 @@ const HelloWorldContext = ({props}:any) => {
                           />
                         </a>
                         <div className="gall-info">
-                          <h4 className="font-16 twolinewrap  mb-0 text-dark fw-bold mt-0">
+                          <h4 className="font-16 twolinewrap hovertext mb-0 text-dark fw-bold mt-0">
                             {item.Title || "Untitled"}
                           </h4>
                           <div className="mb-1 mt-1 row">

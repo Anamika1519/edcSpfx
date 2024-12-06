@@ -627,13 +627,17 @@ const AnnouncementdetailsContext = ({ props }: any) => {
   const sendanEmail = (item:any) => {
     // window.open("https://outlook.office.com/mail/inbox");
   
-     const subject ="Announcement link-"+ item.Title;
+     const subject ="Announcement Title-"+ item.Title;
      const body = 'Here is the link to the announcement:'+ `${siteUrl}/SitePages/AnnouncementDetails.aspx?${item.Id}`;
   
-    const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    //const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   
     // Open the link to launch the default mail client (like Outlook)
-    window.location.href = mailtoLink;
+    //window.location.href = mailtoLink;
+
+    const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+    window.open(office365MailLink, '_blank');
    };
   return (
     <div id="wrapper" ref={elementRef}>
@@ -673,12 +677,12 @@ const AnnouncementdetailsContext = ({ props }: any) => {
                           <div className="col-md-12 col-xl-12">
                             <p className="mb-2 mt-1 text-dark font-14 d-block eventtextnew">
                               <span className="pe-2 text-nowrap mb-0 d-inline-block">
-                                <Calendar size={18} /> {moment(item.Created).format("DD-MMM-YYYY")}  &nbsp;  &nbsp;  &nbsp;|
+                                <Calendar size={18} /> {moment(item.Modified).format("DD-MMM-YYYY")}  &nbsp;  &nbsp;  &nbsp;|
                               </span>
-                              <span className="text-nowrap mb-0 d-inline-block"  onClick={() => sendanEmail(item)} >
+                              <span style={{cursor:'pointer'}} className="text-nowrap hovertext mb-0 d-inline-block"  onClick={() => sendanEmail(item)} >
                                 <Share size={18} />  Share by email &nbsp;  &nbsp;  &nbsp;|&nbsp;  &nbsp;  &nbsp;
                               </span>
-                              <span className="text-nowrap mb-0 d-inline-block" onClick={() => copyToClipboard(item.Id)}>
+                              <span style={{cursor:'pointer'}} className="text-nowrap hovertext mb-0 d-inline-block" onClick={() => copyToClipboard(item.Id)}>
                                 <Link size={18} />    Copy link &nbsp;  &nbsp;  &nbsp;
                                 {copySuccess && <span className="text-success">{copySuccess}</span>}
                               </span>
@@ -823,10 +827,10 @@ const AnnouncementdetailsContext = ({ props }: any) => {
                       return (
                         <div className="mainevent mt-2">
                           <div className="bordernew" >
-                            <h3 className="twolinewrap font-16  text-dark fw-bold mb-2 cursor-pointer" style={{ cursor: "pointer" }} onClick={() => gotoNewsDetails(res)}>{res.Title}</h3>
+                            <h3 className="twolinewrap font-16  text-dark fw-bold mb-2 hovertext cursor-pointer" style={{ cursor: "pointer" }} onClick={() => gotoNewsDetails(res)}>{res.Title}</h3>
                             <p style={{ lineHeight: '20px', fontSize:'15px' }} className="text-muted twolinewrap">{res.Overview}</p>
                             <div className="row">
-                              <div className="col-sm-12"> <span style={{ marginTop: "4px" }} className="date-color font-12 float-start  mb-1 ng-binding"><i className="fe-calendar"></i> {moment(res.Created).format("DD-MMM-YYYY")}</span>  &nbsp; &nbsp; &nbsp; <span className="font-12" style={{ color: '#009157', fontWeight: '600' }}>  </span></div>
+                              <div className="col-sm-12"> <span style={{ marginTop: "4px" }} className="date-color font-12 float-start  mb-1 ng-binding"><i className="fe-calendar"></i> {moment(res.Modified).format("DD-MMM-YYYY")}</span>  &nbsp; &nbsp; &nbsp; <span className="font-12" style={{ color: '#009157', fontWeight: '600' }}>  </span></div>
 
                             </div>
                           </div>
