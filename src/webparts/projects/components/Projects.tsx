@@ -465,7 +465,7 @@ const HelloWorldContext = ({ props }: any) => {
     let TeamMembersId: any;
     let valid = true;
     console.log(selectedValue, 'selectedValue');
-    if (!ProjectName) {
+    if (!ProjectName.trim()) {
       Swal.fire("Error", "Project Name is required!", "error");
       valid = false;
     }
@@ -1227,7 +1227,7 @@ const HelloWorldContext = ({ props }: any) => {
                               type="button"
                               className="btn btn-light waves-effect waves-light m-1"
                               style={{ fontSize: "0.875rem" }}
-                              onClick={handleCancel}
+                              onClick={dismissModal}
                             >
                               <img
                                 src={require("../../../Assets/ExtraImage/xIcon.svg")}

@@ -1,7 +1,7 @@
 
 import { escape } from "@microsoft/sp-lodash-subset";
 
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import VerticalSideBar from "../../verticalSideBar/components/VerticalSideBar";
 
@@ -15,17 +15,17 @@ import "../components/MyApproval.scss";
 
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 
-import "../../../CustomJSComponents/CustomTable/CustomTable.scss";
+import "./CustomTable.scss";
 
 import "../../verticalSideBar/components/VerticalSidebar.scss";
-//import "./CustomTable.scss";
+
 import { IMyApprovalProps } from "./IMyApprovalProps";
 
 import Provider from "../../../GlobalContext/provider";
 
 import UserContext from "../../../GlobalContext/context";
 
-import CustomBreadcrumb from "../../../CustomJSComponents/CustomBreadcrumb/CustomBreadcrumb";
+// import CustomBreadcrumb from "../../../CustomJSComponents/CustomBreadcrumb/CustomBreadcrumb";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -51,29 +51,29 @@ import moment from "moment";
 
 // import { getApprovalListsData } from "../../../APISearvice/AnnouncementsService";
 
-import {
+// import {
 
-  addItem,
+//   addItem,
 
-  GetCategory,
+//   GetCategory,
 
-  getChoiceFieldOption,
+//   getChoiceFieldOption,
 
-  getDiscussionComments,
+//   getDiscussionComments,
 
-  getDiscussionFilter,
+//   getDiscussionFilter,
 
-  getDiscussionFilterAll,
+//   getDiscussionFilterAll,
 
-  getDiscussionForum,
+//   getDiscussionForum,
 
-  getDiscussionMe,
+//   getDiscussionMe,
 
-  getDiscussionMeAll,
+//   getDiscussionMeAll,
 
-  updateItem,
+//   updateItem,
 
-} from "../../../APISearvice/DiscussionForumService";
+// } from "../../../APISearvice/DiscussionForumService";
 
 import { encryptId } from "../../../APISearvice/CryptoService";
 
@@ -91,9 +91,9 @@ import "react-quill/dist/quill.snow.css";
 
 import { SPFI } from "@pnp/sp/presets/all";
 
-import { fetchUserInformationList } from "../../../APISearvice/GroupTeamService";
+// import { fetchUserInformationList } from "../../../APISearvice/GroupTeamService";
 
-import Multiselect from "multiselect-react-dropdown";
+// import Multiselect from "multiselect-react-dropdown";
 
 import { getSP } from "../loc/pnpjsConfig";
 
@@ -101,6 +101,7 @@ import { Eye,Edit } from "react-feather";
 
 import { getDataByID, getMyApproval, getMyRequest, updateItemApproval } from "../../../APISearvice/ApprovalService";
 import DMSMyApprovalAction from "./ApprovalAction";
+
 const MyApprovalContext = ({ props }: any) => {
 
   const sp: SPFI = getSP();
@@ -161,6 +162,7 @@ const MyApprovalContext = ({ props }: any) => {
   const [isOpen, setIsOpen] = React.useState(false);
 
   const [IsinvideHide, setIsinvideHide] = React.useState(false);
+  
   const [Mylistdata, setMylistdata] = useState([]);
   const handleReturnToMain = (Name:any) => {
     setActiveComponent(Name); // Reset to show the main component
@@ -203,7 +205,7 @@ const MyApprovalContext = ({ props }: any) => {
     currentUserEmailRef.current = userdata.Email;
     getApprovalmasterTasklist();
   }
-  React.useEffect(() => {
+  useEffect(() => {
     getCurrrentuser()
 
   }, []);
@@ -312,43 +314,43 @@ const MyApprovalContext = ({ props }: any) => {
 
   }>({});
 
-  //const [activeTab, setActiveTab] = useState("home1");
   const [activeTab, setActiveTab] = useState("Intranet");
-  const handleTabClick = async (tab: React.SetStateAction<string>) => {
 
-    setActiveTab(tab);
+//   const handleTabClick = async (tab: React.SetStateAction<string>) => {
 
-    if (tab == "profile11") {
+//     setActiveTab(tab);
 
-      FilterDiscussionData("Today");
+//     if (tab == "profile11") {
 
-    } else if (tab == "profile1") {
+//       FilterDiscussionData("Today");
 
-      setAnnouncementData(await getDiscussionMeAll(sp));
+//     } else if (tab == "profile1") {
 
-    } else {
+//       setAnnouncementData(await getDiscussionMeAll(sp));
 
-      const announcementArr = await getDiscussionForum(sp);
+//     } else {
 
-      let lengArr: any;
+//       const announcementArr = await getDiscussionForum(sp);
 
-      for (var i = 0; i < announcementArr.length; i++) {
+//       let lengArr: any;
 
-        lengArr = await getDiscussionComments(sp, announcementArr[i].ID);
+//       for (var i = 0; i < announcementArr.length; i++) {
 
-        console.log(lengArr, "rrr");
+//         lengArr = await getDiscussionComments(sp, announcementArr[i].ID);
 
-        (announcementArr[i].commentsLength = lengArr.arrLength),
+//         console.log(lengArr, "rrr");
 
-          (announcementArr[i].Users = lengArr.arrUser);
+//         (announcementArr[i].commentsLength = lengArr.arrLength),
 
-      }
+//           (announcementArr[i].Users = lengArr.arrUser);
 
-      setAnnouncementData(announcementArr);
+//       }
 
-    }
+//       setAnnouncementData(announcementArr);
 
-  };
+//     }
+
+//   };
 
 
   React.useEffect(() => {
@@ -411,11 +413,11 @@ const MyApprovalContext = ({ props }: any) => {
 
   };
 
-  const FilterDiscussionData = async (optionFilter: string) => {
+//   const FilterDiscussionData = async (optionFilter: string) => {
 
-    setAnnouncementData(await getDiscussionFilterAll(sp, optionFilter));
+//     setAnnouncementData(await getDiscussionFilterAll(sp, optionFilter));
 
-  };
+//   };
 
   const handleFilterChange = (
 
@@ -628,32 +630,32 @@ const MyApprovalContext = ({ props }: any) => {
 
   };
 
-  const fetchOptions = async () => {
+//   const fetchOptions = async () => {
 
-    try {
+//     try {
 
-      const items = await fetchUserInformationList(sp);
+//       const items = await fetchUserInformationList(sp);
 
-      console.log(items, "itemsitemsitems");
+//       console.log(items, "itemsitemsitems");
 
 
-      const formattedOptions = items.map((item: { Title: any; Id: any }) => ({
+//       const formattedOptions = items.map((item: { Title: any; Id: any }) => ({
 
-        name: item.Title, // Adjust according to your list schema
+//         name: item.Title, // Adjust according to your list schema
 
-        id: item.Id,
+//         id: item.Id,
 
-      }));
+//       }));
 
-      setOpions(formattedOptions);
+//       setOpions(formattedOptions);
 
-    } catch (error) {
+//     } catch (error) {
 
-      console.error("Error fetching options:", error);
+//       console.error("Error fetching options:", error);
 
-    }
+//     }
 
-  };
+//   };
 
 
   const handleSortChange = (key: string) => {
@@ -842,7 +844,7 @@ const MyApprovalContext = ({ props }: any) => {
 
       <div className="content-page">
 
-        <HorizontalNavbar _context={sp} siteUrl={siteUrl}/>
+        <HorizontalNavbar />
 
         <div
 

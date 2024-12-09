@@ -1,7 +1,9 @@
 import Swal from 'sweetalert2';
-export const getAllEventMaster = async (_sp) => {
+export const getAllEventMaster = async (_sp,isSuperAdmin) => {
   let arr = []
   let str = "Announcements"
+  const currentUser = await _sp.web.currentUser(); 
+  if(isSuperAdmin == "yes"){
   await _sp.web.lists.getByTitle("ARGEventMaster").items.select("*,Entity/ID,Entity/Entity").expand("Entity").orderBy("Created",false).getAll()
     .then((res) => {
       console.log(res);
@@ -12,6 +14,21 @@ export const getAllEventMaster = async (_sp) => {
     .catch((error) => {
       console.log("Error fetching data: ", error);
     });
+  }else{
+    await _sp.web.lists.getByTitle("ARGEventMaster").items
+    .select("*,Entity/ID,Entity/Entity,Author/ID").expand("Entity,Author")
+    .filter(`AuthorId eq '${currentUser.Id}'`)
+    .orderBy("Created",false).getAll()
+    .then((res) => {
+      console.log(res);
+
+      //res.filter(x=>x.Category?.Category==str)
+      arr = res;
+    })
+    .catch((error) => {
+      console.log("Error fetching data: ", error);
+    });
+  }
   return arr;
 }
 export const getAllEventMasternonselected = async (_sp,Idnum) => {

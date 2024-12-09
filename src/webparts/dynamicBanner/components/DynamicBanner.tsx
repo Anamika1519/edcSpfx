@@ -30,7 +30,17 @@ const DynamicBannercontext = ({ props }: any) => {
   const [bannersData, setBannersData] = React.useState([]);
   const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
   const ApiCall = async () => {
-    const bannersArr = await getDynamicBanner(sp);
+    let bannersArr:any[] = [];
+    const userGroups = await sp.web.currentUser.groups();
+    let groupTitles: string[] = userGroups.map((group) => group.Title.toLowerCase());
+    
+    if (groupTitles.includes("intranetadmin")) {
+      bannersArr = await getDynamicBanner(sp,"yes");
+    }
+    else if (groupTitles.includes("intranetcontentcontributor")){
+      bannersArr = await getDynamicBanner(sp,"No");
+    }
+ 
     setBannersData(bannersArr);
 
   };
@@ -205,7 +215,7 @@ const DynamicBannercontext = ({ props }: any) => {
   const Breadcrumb = [
     {
       "MainComponent": "Settings",
-      "MainComponentURl": `${siteUrl}SitePages/settings.aspx`
+      "MainComponentURl": `${siteUrl}/SitePages/settings.aspx`
     },
     {
       "ChildComponent": "Banner Master",

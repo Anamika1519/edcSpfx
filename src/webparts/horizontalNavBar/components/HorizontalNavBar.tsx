@@ -409,7 +409,7 @@ const HorizontalNavbar = ({ _context, siteUrl }: any) => {
             </div>
           </div>
           <Maximize className='bx bx-bell desktoView' size='22' onClick={toggleFullscreen} />
-          <div className="dropdown notification-lists">
+          <div className="dropdown notification-lists" onClick={toggleDropdownBell}>
 
             <a className="nav-link dropdown-toggle waves-effect waves-light arrow-none" data-bs-toggle="dropdown"
               role="button" aria-haspopup="false" aria-expanded="false">

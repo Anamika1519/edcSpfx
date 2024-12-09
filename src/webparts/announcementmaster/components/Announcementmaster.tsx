@@ -840,20 +840,20 @@ const Announcementmastercontext = ({ props }: any) => {
 
   const ApiCall = async () => {
     let announcementArr:any[] = [];
+    let NewsArr:any[] = [];
     const userGroups = await sp.web.currentUser.groups();
 let groupTitles: string[] = userGroups.map((group) => group.Title.toLowerCase());
 
 if (groupTitles.includes("intranetadmin")) {
   announcementArr = await getAnncouncementMaster(sp,"yes");
+   NewsArr = await getNewsMaster(sp,"yes");
 }
 else if (groupTitles.includes("intranetcontentcontributor")){
    announcementArr = await getAnncouncementMaster(sp,"No");
+    NewsArr = await getNewsMaster(sp,"No");
 }
   //if(announcementArr.length >0)
     setAnnouncementData(announcementArr);
-    //setDataloaded(true);
-    const NewsArr = await getNewsMaster(sp);
-
     setNewsData(NewsArr);
 
   };
@@ -998,7 +998,28 @@ else if (groupTitles.includes("intranetcontentcontributor")){
 
         return sortConfig.direction === 'ascending' ? aIndex - bIndex : bIndex - aIndex;
 
-      } else if (sortConfig.key) {
+      } else if (sortConfig.key === 'Category') {
+ 
+        // Sort by other keys
+        console.log("a[sortConfig.key]", a[sortConfig.key], b[sortConfig.key])
+        const aValue = a[sortConfig.key] ? a[sortConfig.key].Category.toLowerCase() : '';
+ 
+        const bValue = b[sortConfig.key] ? b[sortConfig.key].Category.toLowerCase() : '';
+ 
+ 
+        if (aValue < bValue) {
+ 
+          return sortConfig.direction === 'ascending' ? -1 : 1;
+ 
+        }
+ 
+        if (aValue > bValue) {
+ 
+          return sortConfig.direction === 'ascending' ? 1 : -1;
+ 
+        }}
+      
+      else if (sortConfig.key) {
 
         // Sort by other keys
 

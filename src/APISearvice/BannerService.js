@@ -1,6 +1,9 @@
 import Swal from 'sweetalert2';
-export const getDynamicBanner = async (_sp) => {
+export const getDynamicBanner = async (_sp,isSuperAdmin) => {
     let arr = []
+    const currentUser = await _sp.web.currentUser();
+ 
+  if (isSuperAdmin == "Yes") {
     await _sp.web.lists.getByTitle("DynamicBanners").items.orderBy("Created",false).getAll()
         .then((res) => {
             console.log(res);
@@ -9,6 +12,20 @@ export const getDynamicBanner = async (_sp) => {
         .catch((error) => {
             console.log("Error fetching data: ", error);
         });
+      }else{
+        await _sp.web.lists.getByTitle("DynamicBanners")
+        .items
+        .select("*,Author/ID").expand("Author")
+        .filter(`AuthorId eq '${currentUser.Id}'`)
+        .orderBy("Created",false).getAll()
+        .then((res) => {
+            console.log(res);
+            arr = res;
+        })
+        .catch((error) => {
+            console.log("Error fetching data: ", error);
+        });
+      }
     return arr;
 }
 export const DeleteBannerAPI = async (_sp, id) => {

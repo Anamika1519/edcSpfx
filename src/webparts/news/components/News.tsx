@@ -4,7 +4,6 @@ import CustomNewsWebpartTemplate from '../../../CustomJSComponents/CustomNewsWeb
 import CustomBreadcrumb from '../../../CustomJSComponents/CustomBreadcrumb/CustomBreadcrumb';
 import HorizontalNavbar from '../../horizontalNavBar/components/HorizontalNavBar';
 import VerticalSideBar from '../../verticalSideBar/components/VerticalSideBar';
-import { getNews } from '../../../APISearvice/NewsService';
 import { useMediaQuery } from 'react-responsive';
 import context from '../../../GlobalContext/context';
 import UserContext from '../../../GlobalContext/context';
@@ -84,11 +83,7 @@ const HelloWorldContext = ({props}:any) => {
     document.querySelector(".sidebar")?.classList.toggle("close");
   };
 
-  const getAPIFromService = () => {
-    const allAnncouncement = getNews(sp);
-    console.log(allAnncouncement, 'allAnncouncement');
-
-  }
+ 
 
   return (
     <div id="wrapper" ref={elementRef}>

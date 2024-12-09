@@ -719,12 +719,12 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
             {/* Post Interactions */}
 
             <div className="post-interactions mt-3 mb-3">
-                <div className="likes" onClick={!loadingLike ? (e) => handleLike(e, liked) : undefined}  >
+                <div className="likes hovertext" onClick={!loadingLike ? (e) => handleLike(e, liked) : undefined}  >
                     {liked ? <FontAwesomeIcon icon={faThumbsUp} fontSize={25} color="#1fb0e5" /> : <ThumbsUp size={20} color="gray" />}
                     <span>{likesCount} Likes</span>{liked}
                 </div>
                 <span className="likes"><MessageSquare size={20} /> {CommentsCount} Comments</span>
-                <div className="post-actions likes">
+                <div className="post-actions likes hovertext">
                     <div className="menu-toggle" onClick={toggleMenushare}>
                         <Share2 size={20} /><span className="sahrenew"> Share</span>
                     </div>

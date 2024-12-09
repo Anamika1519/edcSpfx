@@ -18,11 +18,16 @@ export const getNews = async (_sp) => {
     });
   return arr;
 }
-export const getNewsMaster = async (_sp) => {
+export const getNewsMaster = async (_sp,isSuperAdmin) => {
   let arr = []
+  const currentUser = await _sp.web.currentUser(); 
      let str ="News"
+     if(isSuperAdmin == "yes"){
      await _sp.web.lists.getByTitle("ARGAnnouncementAndNews")
-     .items.select("*,AnnouncementandNewsTypeMaster/Id,AnnouncementandNewsTypeMaster/TypeMaster,Category/Id,Category/Category,Author/ID,Author/Title").expand("AnnouncementandNewsTypeMaster,Category,Author").filter(`AnnouncementandNewsTypeMaster/TypeMaster eq '${str}'`).orderBy("Created",false).getAll()
+     .items.select("*,AnnouncementandNewsTypeMaster/Id,AnnouncementandNewsTypeMaster/TypeMaster,Category/Id,Category/Category,Author/ID,Author/Title")
+     .expand("AnnouncementandNewsTypeMaster,Category,Author")
+     .filter(`AnnouncementandNewsTypeMaster/TypeMaster eq '${str}'`)
+     .orderBy("Created",false).getAll()
      .then((res) => {
       console.log(res);
    
@@ -32,6 +37,23 @@ export const getNewsMaster = async (_sp) => {
     .catch((error) => {
       console.log("Error fetching data: ", error);
     });
+  }else{
+    await _sp.web.lists.getByTitle("ARGAnnouncementAndNews")
+    .items.select("*,AnnouncementandNewsTypeMaster/Id,AnnouncementandNewsTypeMaster/TypeMaster,Category/Id,Category/Category,Author/ID,Author/Title")
+    .expand("AnnouncementandNewsTypeMaster,Category,Author")
+    .filter(`AnnouncementandNewsTypeMaster/TypeMaster eq '${str}' and AuthorId eq '${currentUser.Id}'`)
+    .orderBy("Created",false).getAll()
+    .then((res) => {
+     console.log(res);
+  
+     //res.filter(x=>x.Category?.Category==str)
+     arr = res;
+   })
+   .catch((error) => {
+     console.log("Error fetching data: ", error);
+   });
+
+  }
   return arr;
 }
 export const uploadFileToLibrary = async (file, sp, docLib) => {

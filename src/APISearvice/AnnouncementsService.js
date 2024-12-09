@@ -24,7 +24,7 @@ export const getAnncouncementMaster = async (_sp,isSuperAdmin) => {
   const currentUser = await _sp.web.currentUser();  
   let arr = []
   let str = "Announcement"
-  if(isSuperAdmin == "Yes"){
+  if(isSuperAdmin == "yes"){
   await _sp.web.lists.getByTitle("ARGAnnouncementAndNews").items
   .select("*,AnnouncementandNewsTypeMaster/Id,AnnouncementandNewsTypeMaster/TypeMaster,Category/Id,Category/Category,Author/ID,Author/Title")
   .expand("AnnouncementandNewsTypeMaster,Category,Author")

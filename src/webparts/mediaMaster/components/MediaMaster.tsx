@@ -42,7 +42,17 @@ const MediaMastercontext = ({ props }: any) => {
   const [sortConfig, setSortConfig] = React.useState({ key: '', direction: 'ascending' });
  
   const ApiCall = async () => {
-    const mediaArr = await getMedia(sp);
+    let mediaArr:any[] = [];
+    const userGroups = await sp.web.currentUser.groups();
+    let groupTitles: string[] = userGroups.map((group) => group.Title.toLowerCase());
+    
+    if (groupTitles.includes("intranetadmin")) {
+       mediaArr = await getMedia(sp,"yes");
+    }
+    else if (groupTitles.includes("intranetcontentcontributor")){
+       mediaArr = await getMedia(sp,"No");
+    }
+   
     setmediaData(mediaArr);
   };
  
@@ -258,13 +268,14 @@ const MediaMastercontext = ({ props }: any) => {
           title: "Deleted!",
           text: "Item has been deleted.",
           icon: "success"
-        }).then(async res => {
-          setmediaData(await getMedia(sp));
-        }
-        ).catch(async err => {
-          setmediaData(await getMedia(sp));
-        }
-        )
+        })
+        // .then(async res => {
+        //   setmediaData(await getMedia(sp));
+        // }
+        // ).catch(async err => {
+        //   setmediaData(await getMedia(sp));
+        // }
+        //)
  
       }
     })

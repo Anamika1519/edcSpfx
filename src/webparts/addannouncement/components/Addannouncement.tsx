@@ -1,4 +1,4 @@
-import * as React from 'react'
+import * as React from 'react' 
 import VerticalSideBar from '../../verticalSideBar/components/VerticalSideBar';
 import CustomBreadcrumb from '../../../CustomJSComponents/CustomBreadcrumb/CustomBreadcrumb';
 import { useMediaQuery } from 'react-responsive';
@@ -12,7 +12,7 @@ import "../../../CustomCss/mainCustom.scss";
 import "../../verticalSideBar/components/VerticalSidebar.scss";
 import DynamicForm from '../../../CustomJSComponents/CustomForm/DynamicForm';
 import { IAddannouncementProps } from './IAddannouncementProps';
-import { getCategory, getCurrentUser, getEntity, getType } from "../../../APISearvice/CustomService";
+import { AllowAlphaNumericNotStartWithNumbers, allowstringandnumber, allowstringonly, getCategory, getCurrentUser, getEntity, getType } from "../../../APISearvice/CustomService";
 import { addItem, getAnncouncementByID, getAnnouncementandNewsTypeMaster, getUrl, updateItem, uploadFile, uploadFileToLibrary } from '../../../APISearvice/AnnouncementsService';
 import { SPFI } from '@pnp/sp/presets/all';
 import Swal from 'sweetalert2';
@@ -32,7 +32,7 @@ import { WorkflowAction } from '../../../CustomJSComponents/WorkflowAction/Workf
 import { getUrlParameterValue } from '../../../Shared/Helper';
 import { FormSubmissionMode } from '../../../Shared/Interfaces';
 import { WorkflowAuditHistory } from '../../../CustomJSComponents/WorkflowAuditHistory/WorkflowAuditHistory';
-import { CONTENTTYPE_Announcement,CONTENTTYPE_News, LIST_TITLE_ContentMaster, LIST_TITLE_AnnouncementAndNews, LIST_TITLE_MyRequest } from '../../../Shared/Constants';
+import { CONTENTTYPE_Announcement, CONTENTTYPE_News, LIST_TITLE_ContentMaster, LIST_TITLE_AnnouncementAndNews, LIST_TITLE_MyRequest } from '../../../Shared/Constants';
 
 interface FormField {
   type: string;
@@ -138,32 +138,31 @@ const AddannouncementContext = ({ props }: any) => {
 
   //#region UseEffact
   React.useEffect(() => {
-    
+
 
     //window.location.href = url
     ApiCallFunc()
 
     // Determine whether the form in opened for approval
 
-    let mode=getUrlParameterValue('mode');
+    let mode = getUrlParameterValue('mode');
     setmode(mode);
-    if(mode && mode=='approval')
-    {
-       setApprovalMode(true);
-       let requestid=getUrlParameterValue('requestid');
-       setInputDisabled(true);
-       sp.web.lists.getByTitle('ARGMyRequest').items.getById(Number(requestid))().then(itm=>{
-          setApprovalRequestItem(itm);
-          setInputDisabled(true && (!itm.IsRework || itm.IsRework =="No"))
-          //setInputDisabled(ApprovalMode)
-       })
+    if (mode && mode == 'approval') {
+      setApprovalMode(true);
+      let requestid = getUrlParameterValue('requestid');
+      setInputDisabled(true);
+      sp.web.lists.getByTitle('ARGMyRequest').items.getById(Number(requestid))().then(itm => {
+        setApprovalRequestItem(itm);
+       // setInputDisabled(true && (!itm.IsRework || itm.IsRework == "No"))
+        setInputDisabled(false && (itm.IsRework || itm.IsRework == "Yes"))
+        //setInputDisabled(ApprovalMode)
+      })
     }
-    else if(mode && mode=='view')
-    {
-      setInputDisabled(true);       
+    else if (mode && mode == 'view') {
+      setInputDisabled(true);
     }
 
-  
+
 
     //
 
@@ -207,7 +206,7 @@ const AddannouncementContext = ({ props }: any) => {
   //#endregion
 
   //#region ApiCallFunc
-  const ApiCallFunc = async () => {   
+  const ApiCallFunc = async () => {
     setLevel(await getLevel(sp))
     await fetchUserInformationList();
 
@@ -220,21 +219,20 @@ const AddannouncementContext = ({ props }: any) => {
     if (sessionStorage.getItem("announcementId") != undefined) {
       const iD = sessionStorage.getItem("announcementId")
       let iDs = decryptId(iD)
-      formitemid=Number(iDs);
+      formitemid = Number(iDs);
       setFormItemId(Number(iDs))
+    }
+    else {
+      let formitemidparam = getUrlParameterValue('contentid');
+      if (formitemidparam) {
+        formitemid = Number(formitemidparam);
+        setFormItemId(Number(formitemid));
       }
-      else
-      {
-        let formitemidparam=getUrlParameterValue('contentid');
-        if(formitemidparam) {
-          formitemid=Number(formitemidparam);         
-          setFormItemId(Number(formitemid));
-        }
-      }
+    }
 
     //#region getdataByID
     // if (sessionStorage.getItem("announcementId") != undefined) {
-      if (formitemid) {
+    if (formitemid) {
       // const iD = sessionStorage.getItem("announcementId")
       // let iDs = decryptId(iD)
       const setBannerById = await getAnncouncementByID(sp, Number(formitemid))
@@ -251,10 +249,10 @@ const AddannouncementContext = ({ props }: any) => {
           category: setBannerById[0]?.Category,
           entity: setBannerById[0]?.Entity,
           Type: setBannerById[0]?.TypeMaster,
-           bannerImage: setBannerById[0]?.BannerImage,
+          bannerImage: setBannerById[0]?.BannerImage,
           description: setBannerById[0].description,
           overview: setBannerById[0].overview,
-          FeaturedAnnouncement:  true,
+          FeaturedAnnouncement: true,
           // announcementGallery: setBannerById[0].AnnouncementAndNewsGallaryJSON,
           // announcementThumbnail: setBannerById[0].AnnouncementAndNewsDocsJSON,
         }
@@ -342,15 +340,41 @@ const AddannouncementContext = ({ props }: any) => {
   //#endregion
 
 
-  const validateForm = (fmode:FormSubmissionMode) => {
+  const validateForm = async (fmode: FormSubmissionMode) => {
     const { title, Type, category, entity, overview } = formData;
     const { description } = richTextValues;
     let valid = true;
+    let validateOverview:boolean = false;
+    let validatetitlelength = false;
+    let validateTitle = false;
     setValidDraft(true);
     setValidSubmit(true);
-
-    if(fmode==FormSubmissionMode.SUBMIT)
-    {
+    if (title!== "") {
+     validatetitlelength = title.length <= 255;
+      validateTitle = title !== "" && await allowstringonly(title);
+    }
+    if (overview !==""){
+      validateOverview = overview! == "" && await allowstringonly(overview);
+    }
+   
+   
+    let errormsg = "";
+    console.log("validateTitleup", validateTitle, "validatetitlelength", validatetitlelength, title !== "", overview !== "","overview", overview, validateOverview);
+    if (title !== "" && !validateTitle && validatetitlelength) {
+      errormsg = "No special character allowed in Title";
+      valid = false;
+    } else if (title !== "" && validateTitle && !validatetitlelength) {
+      errormsg = "Title must be less than 255 characters";
+      valid = false;
+    // }
+    // else if (overview !== "" && !validateOverview) {
+    //   errormsg = "No special character allowed in Overview";
+    //   valid = false;
+    } else if (ImagepostArr.length > 0 && ImagepostArr.length > 5){
+      errormsg = "More than 5 attachments not allowed";
+      valid = false;
+    }
+    if (fmode == FormSubmissionMode.SUBMIT) {
       if (!title) {
         //Swal.fire('Error', 'Title is required!', 'error');
         valid = false;
@@ -363,28 +387,28 @@ const AddannouncementContext = ({ props }: any) => {
       } else if (!entity) {
         //Swal.fire('Error', 'Entity is required!', 'error');
         valid = false;
-      }else if (!overview) {
+      } else if (!overview) {
         //Swal.fire('Error', 'Entity is required!', 'error');
         valid = false;
       }
-      else if(BnnerImagepostArr.length == 0 ){
+      else if (BnnerImagepostArr.length == 0) {
         valid = false;
-      }else if(ImagepostArr.length == 0){
+      } else if (ImagepostArr.length == 0 || ImagepostArr.length > 5) {
         valid = false;
       }
-
       setValidSubmit(valid);
 
     }
-  else{
-    if (!title) {
-      //Swal.fire('Error', 'Title is required!', 'error');
-      valid = false;} else if (!Type) {
+    else {
+      if (!title) {
+        //Swal.fire('Error', 'Title is required!', 'error');
+        valid = false;
+      } else if (!Type) {
         //Swal.fire('Error', 'Type is required!', 'error');
         valid = false;
       }
 
-     setValidDraft(valid);
+      setValidDraft(valid);
 
     }
     //else if (!overview) {
@@ -397,10 +421,11 @@ const AddannouncementContext = ({ props }: any) => {
     //   Swal.fire('Error', 'Featured Announcement is required!', 'error');
     //   valid = false;
     // }
-    if(!valid && fmode==FormSubmissionMode.SUBMIT) 
-      Swal.fire('Please fill all the mandatory fields.');
-    else{
-      Swal.fire('Please fill the mandatory fields for draft - Title and Type');
+    console.log("validateTitle", validateTitle,"errormsg", errormsg,"valid,", valid, ImagepostArr.length);
+    if (!valid && fmode == FormSubmissionMode.SUBMIT)
+      Swal.fire(errormsg !== "" ?errormsg : 'Please fill all the mandatory fields.');
+    else if (!valid && fmode == FormSubmissionMode.DRAFT) {
+      Swal.fire(errormsg !== "" ? errormsg : 'Please fill the mandatory fields for draft - Title and Type');
     }
     return valid;
   };
@@ -439,13 +464,12 @@ const AddannouncementContext = ({ props }: any) => {
                 bannerImageArray = await uploadFile(file, sp, "Documents", tenantUrl);
               }
             }
-            else if(BnnerImagepostArr.length > 0)
-              {
-                bannerImageArray=BnnerImagepostArr[0];
-              }
-              else {
-                bannerImageArray = null
-              }
+            else if (BnnerImagepostArr.length > 0) {
+              bannerImageArray = BnnerImagepostArr[0];
+            }
+            else {
+              bannerImageArray = null
+            }
 
             // debugger
             if (bannerImageArray != null) {
@@ -573,7 +597,7 @@ const AddannouncementContext = ({ props }: any) => {
                 CategoryId: Number(formData.category),
                 AnnouncementandNewsTypeMasterId: Number(formData.Type),
                 //FeaturedAnnouncement: formData.FeaturedAnnouncement === true ? true : false,
-                FeaturedAnnouncement:true,
+                FeaturedAnnouncement: true,
                 Status: "Submitted",
                 AuthorId: currentUser.Id
               };
@@ -678,7 +702,7 @@ const AddannouncementContext = ({ props }: any) => {
             }
             // ARGContentMaster
             // let TypeMasterData: any = [];
-            let TypeMasterData:any = await getAnnouncementandNewsTypeMaster(sp, Number(formData.Type))
+            let TypeMasterData: any = await getAnnouncementandNewsTypeMaster(sp, Number(formData.Type))
             let arr = {
               ContentID: editID,
               ContentName: "ARGAnnouncementAndNews",
@@ -686,30 +710,27 @@ const AddannouncementContext = ({ props }: any) => {
               EntityId: Number(formData.entity),
               // SourceName: TypeMasterData.TypeMaster
               SourceName: TypeMasterData?.TypeMaster,
-              ReworkRequestedBy:"Initiator"
+              ReworkRequestedBy: "Initiator"
 
             }
             // await AddContentMaster(sp, arr)
 
             // const boolval = await handleClick(editID, TypeMasterData?.TypeMaster, Number(formData.entity))
-            let boolval=false;
-            if(ApprovalRequestItem && ApprovalRequestItem.IsRework && ApprovalRequestItem.IsRework=='Yes')
-             {
-              const ctmasteritm=await sp.web.lists.getByTitle(LIST_TITLE_ContentMaster).items.filter('ContentID eq '+ApprovalRequestItem.ContentId+" and SourceName eq '"+TypeMasterData?.TypeMaster+"'")();
-              if(ctmasteritm && ctmasteritm.length>0)
-                 {
-                  let updaterec={'Status':'Pending','ReworkRequestedBy':'Initiator'}
-                  if(ApprovalRequestItem.LevelSequence==1) updaterec.ReworkRequestedBy="Level 1";
-                  await UpdateContentMaster(sp,ctmasteritm[0].Id,updaterec);
-                  await sp.web.lists.getByTitle(LIST_TITLE_MyRequest).items.getById(ApprovalRequestItem.Id).update({'Status':'Submitted'});
-                  await sp.web.lists.getByTitle(LIST_TITLE_AnnouncementAndNews).items.getById(editID).update({'Status':'Submitted'});
-                  boolval=true;
-                 }
-             }
-            else
-            {
-                await AddContentMaster(sp, arr)
-                boolval = await handleClick(editID, TypeMasterData?.TypeMaster, Number(formData.entity))
+            let boolval = false;
+            if (ApprovalRequestItem && ApprovalRequestItem.IsRework && ApprovalRequestItem.IsRework == 'Yes') {
+              const ctmasteritm = await sp.web.lists.getByTitle(LIST_TITLE_ContentMaster).items.filter('ContentID eq ' + ApprovalRequestItem.ContentId + " and SourceName eq '" + TypeMasterData?.TypeMaster + "'")();
+              if (ctmasteritm && ctmasteritm.length > 0) {
+                let updaterec = { 'Status': 'Pending', 'ReworkRequestedBy': 'Initiator' }
+                if (ApprovalRequestItem.LevelSequence == 1) updaterec.ReworkRequestedBy = "Level 1";
+                await UpdateContentMaster(sp, ctmasteritm[0].Id, updaterec);
+                await sp.web.lists.getByTitle(LIST_TITLE_MyRequest).items.getById(ApprovalRequestItem.Id).update({ 'Status': 'Submitted' });
+                await sp.web.lists.getByTitle(LIST_TITLE_AnnouncementAndNews).items.getById(editID).update({ 'Status': 'Submitted' });
+                boolval = true;
+              }
+            }
+            else {
+              await AddContentMaster(sp, arr)
+              boolval = await handleClick(editID, TypeMasterData?.TypeMaster, Number(formData.entity))
             }
             if (boolval == true) {
               setLoading(false);
@@ -763,7 +784,7 @@ const AddannouncementContext = ({ props }: any) => {
               CategoryId: Number(formData.category),
               AnnouncementandNewsTypeMasterId: Number(formData.Type),
               //FeaturedAnnouncement: formData.FeaturedAnnouncement === true ? true : false,
-              FeaturedAnnouncement:true,
+              FeaturedAnnouncement: true,
               Status: "Submitted",
               AuthorId: currentUser.Id,
               AnnouncementandNewsBannerImage: JSON.stringify(bannerImageArray)
@@ -829,7 +850,7 @@ const AddannouncementContext = ({ props }: any) => {
               Status: "Pending",
               EntityId: Number(formData.entity),
               SourceName: TypeMasterData?.TypeMaster,
-              ReworkRequestedBy:"Initiator"
+              ReworkRequestedBy: "Initiator"
 
             }
             await AddContentMaster(sp, arr)
@@ -871,7 +892,7 @@ const AddannouncementContext = ({ props }: any) => {
           if (result.isConfirmed) {
             setLoading(true);
             //console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
-            
+
             let bannerImageArray: any = {};
             let galleryIds: any[] = [];
             let documentIds: any[] = [];
@@ -901,7 +922,7 @@ const AddannouncementContext = ({ props }: any) => {
                 CategoryId: Number(formData.category),
                 AnnouncementandNewsTypeMasterId: Number(formData.Type),
                 //FeaturedAnnouncement: formData.FeaturedAnnouncement === true ? true : false,
-                FeaturedAnnouncement:true,
+                FeaturedAnnouncement: true,
                 Status: "Save as draft",
                 AuthorId: currentUser.Id,
                 AnnouncementandNewsBannerImage: bannerImageArray != "{}" && JSON.stringify(bannerImageArray)
@@ -1016,7 +1037,7 @@ const AddannouncementContext = ({ props }: any) => {
                 CategoryId: Number(formData.category),
                 AnnouncementandNewsTypeMasterId: Number(formData.Type),
                 //FeaturedAnnouncement: formData.FeaturedAnnouncement === true ? true : false,
-                FeaturedAnnouncement:true,
+                FeaturedAnnouncement: true,
                 Status: "Save as draft",
                 AuthorId: currentUser.Id
               };
@@ -1169,7 +1190,7 @@ const AddannouncementContext = ({ props }: any) => {
               CategoryId: Number(formData.category),
               AnnouncementandNewsTypeMasterId: Number(formData.Type),
               //FeaturedAnnouncement: formData.FeaturedAnnouncement === true ? true : false,
-              FeaturedAnnouncement:true,
+              FeaturedAnnouncement: true,
               Status: "Save as draft",
               AuthorId: currentUser.Id,
               AnnouncementandNewsBannerImage: JSON.stringify(bannerImageArray)
@@ -1320,10 +1341,17 @@ const AddannouncementContext = ({ props }: any) => {
       //     Swal.fire("only document can be upload")
       //   }
       // }
+      let errormsg = "";
+
       if (libraryName === "Gallery" || libraryName === "bannerimg") {
-        const imageVideoFiles = files.filter(file =>
+        if (libraryName === "Gallery") {
+
+        }
+        const imageVideoFiles = libraryName === "Gallery" ? files.filter(file =>
           file.type.startsWith('image/') ||
           file.type.startsWith('video/')
+        ) : files.filter(file =>
+          file.type.startsWith('image/')
         );
 
         if (imageVideoFiles.length > 0) {
@@ -1376,7 +1404,9 @@ const AddannouncementContext = ({ props }: any) => {
             setBannerImagepostArr(uloadBannerImageFiles);
           }
         } else {
-          Swal.fire("only image & video can be upload")
+          setImagepostArr1([]);
+          setImagepostArr1([]);
+          Swal.fire(libraryName === "Gallery" ? "only image & video can be uploaded" : "only image can be uploaded")
         }
       }
     }
@@ -1401,7 +1431,8 @@ const AddannouncementContext = ({ props }: any) => {
     "header", "height", "bold", "italic",
     "underline", "strike", "blockquote",
     "list", "color", "bullet", "indent",
-    "link", "image", "align", "size",
+    //"link",
+     "image", "align", "size",
   ];
 
   const modules = {
@@ -1409,7 +1440,9 @@ const AddannouncementContext = ({ props }: any) => {
       [{ size: ["small", false, "large", "huge"] }],
       ["bold", "italic", "underline", "strike", "blockquote"],
       [{ list: "ordered" }, { list: "bullet" }],
-      ["link", "image"],
+      [
+        //"link",
+         "image"],
       [
         { list: "ordered" },
         { list: "bullet" },
@@ -1579,7 +1612,7 @@ const AddannouncementContext = ({ props }: any) => {
     for (let i = 0; i < rows.length; i++) {
       const userIds = rows[i].approvedUserListupdate.map((user: any) => user.id);
       let arrPost = {
-        LevelSequence:i+1,
+        LevelSequence: i + 1,
         ContentId: contentId,
         ContentName: "ARGAnnouncementAndNews",
         EntityMasterId: EntityId,
@@ -1619,7 +1652,7 @@ const AddannouncementContext = ({ props }: any) => {
             <div className="card mt-3" >
               <div className="card-body">
                 <div className="row mt-2">
-                {Loading &&
+                  {Loading &&
                     <div className="loadercss" role="status">Loading...
                       <img src={require('../../../Assets/ExtraImage/loader.gif')} style={{ height: '80px', width: '70px' }} alt="Check" />
                     </div>
@@ -1636,7 +1669,7 @@ const AddannouncementContext = ({ props }: any) => {
                           name="title"
                           placeholder='Enter Title'
                           // className="form-control inputcss"
-                          className={`form-control inputcs ${(!ValidDraft)?"border-on-error":""} ${(!ValidSubmit)?"border-on-error":""}`}
+                          className={`form-control inputcs ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
                           value={formData.title}
                           onChange={(e) => onChange(e.target.name, e.target.value)}
                           disabled={InputDisabled}
@@ -1655,7 +1688,7 @@ const AddannouncementContext = ({ props }: any) => {
                           name="Type"
                           value={formData.Type}
                           onChange={(e) => onChange(e.target.name, e.target.value)}
-                          className={`form-control inputcs ${(!ValidDraft)?"border-on-error":""} ${(!ValidSubmit)?"border-on-error":""}`}
+                          className={`form-control inputcs ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
                           disabled={InputDisabled}
                         >
                           <option>Select</option>
@@ -1677,7 +1710,7 @@ const AddannouncementContext = ({ props }: any) => {
                         </label>
                         <select
                           // className="form-select inputcss"
-                          className={`form-control inputcs ${(!ValidSubmit)?"border-on-error":""}`}
+                          className={`form-control inputcs ${(!ValidSubmit) ? "border-on-error" : ""}`}
                           id="category"
                           name="category"
                           value={formData.category}
@@ -1706,7 +1739,7 @@ const AddannouncementContext = ({ props }: any) => {
                         </label>
                         <select
                           // className="form-select inputcss"
-                          className={`form-control inputcs ${(!ValidSubmit)?"border-on-error":""}`}
+                          className={`form-control inputcs ${(!ValidSubmit) ? "border-on-error" : ""}`}
                           id="entity"
                           name="entity"
                           value={formData.entity}
@@ -1752,12 +1785,12 @@ const AddannouncementContext = ({ props }: any) => {
                           type="file"
                           id="bannerImage"
                           name="bannerImage"
-                          className={`form-control inputcss ${(!ValidSubmit)?"border-on-error":""}`}
-                         // className="form-control inputcss"
+                          className={`form-control inputcss ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                          // className="form-control inputcss"
                           onChange={(e) => onFileChange(e, "bannerimg", "Document")}
                           // disabled={ApprovalMode}
                           disabled={InputDisabled}
-                              
+
                         />
                       </div>
                     </div>
@@ -1791,8 +1824,9 @@ const AddannouncementContext = ({ props }: any) => {
                           id="announcementGallery"
                           name="announcementGallery"
                           //className="form-control inputcss"
-                          className={`form-control inputcss ${(!ValidSubmit)?"border-on-error":""}`}                        
+                          className={`form-control inputcss ${(!ValidSubmit) ? "border-on-error" : ""}`}
                           multiple
+                          maxLength={5}
                           onChange={(e) => onFileChange(e, "Gallery", "AnnouncementAndNewsGallary")}
                           // disabled={ApprovalMode}
                           disabled={InputDisabled}
@@ -1854,7 +1888,7 @@ const AddannouncementContext = ({ props }: any) => {
                             disabled={InputDisabled}
 
                             className="form-check-input inputcss"
-                            
+                           
                           />
                         </div>
                       </div>
@@ -1866,8 +1900,8 @@ const AddannouncementContext = ({ props }: any) => {
                           Overview <span className="text-danger">*</span>
                         </label>
                         <textarea
-                        className={`form-control inputcss ${(!ValidSubmit)?"border-on-error":""}`}  
-                         // className="form-control inputcss"
+                          className={`form-control inputcss ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                          // className="form-control inputcss"
                           id="overview"
                           placeholder='Enter Overview'
                           name="overview"
@@ -1884,7 +1918,7 @@ const AddannouncementContext = ({ props }: any) => {
                     <div className="col-lg-12">
                       <div className="mb-3">
                         <label htmlFor="description" className="form-label">
-                          Description 
+                          Description
                           {/* <span className="text-danger">*</span> */}
                         </label>
                         <div style={{ display: "contents", justifyContent: "start" }}>
@@ -1899,7 +1933,7 @@ const AddannouncementContext = ({ props }: any) => {
                                 ...prevValues,
                                 ["description"]: content,
                               }));
-                            }}                           
+                            }}
                             style={{ width: '100%', fontSize: '6px', height: '100px' }}
                             readOnly={InputDisabled}
                           />
@@ -1907,44 +1941,44 @@ const AddannouncementContext = ({ props }: any) => {
                       </div>
                     </div>
                     {
-                     !InputDisabled?
-                     (<div className="text-center" style={{ marginTop: '3rem' }}>
-                      <div className="btn btn-success waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleSaveAsDraft}>
-                        <div className='d-flex' style={{ justifyContent: 'space-around' }}>
-                          <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} alt="Check" /> Save As Draft
-                        </div>
-                      </div>
-                      <div className="btn btn-success waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleFormSubmit}>
-                        <div className='d-flex' style={{ justifyContent: 'space-around', width: '70px' }}>
-                          <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} alt="Check" /> Submit
-                        </div>
-                      </div>
-                      <button type="button" className="btn btn-light waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleCancel}>
-                        <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }}
-                          className='me-1' alt="x" />
-                        Cancel
-                      </button>
-                    </div>):
-                    (modeValue == 'view') && (<div className="text-center" style={{ marginTop: '3rem' }}><button type="button" className="btn btn-light waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleCancel}>
-                        <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }}
-                          className='me-1' alt="x" />
-                        Cancel
-                      </button></div>)
+                      !InputDisabled ?
+                        (<div className="text-center" style={{ marginTop: '3rem' }}>
+                          <div className="btn btn-success waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleSaveAsDraft}>
+                            <div className='d-flex' style={{ justifyContent: 'space-around' }}>
+                              <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} alt="Check" /> Save As Draft
+                            </div>
+                          </div>
+                          <div className="btn btn-success waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleFormSubmit}>
+                            <div className='d-flex' style={{ justifyContent: 'space-around', width: '70px' }}>
+                              <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} alt="Check" /> Submit
+                            </div>
+                          </div>
+                          <button type="button" className="btn btn-light waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleCancel}>
+                            <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }}
+                              className='me-1' alt="x" />
+                            Cancel
+                          </button>
+                        </div>) :
+                        (modeValue == 'view') && (<div className="text-center" style={{ marginTop: '3rem' }}><button type="button" className="btn btn-light waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleCancel}>
+                          <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }}
+                            className='me-1' alt="x" />
+                          Cancel
+                        </button></div>)
                     }
                   </form>
                 </div>
               </div>
             </div>
             {
-              // rows != null && rows.length > 0 && 
-              rows != null && rows.length > 0 && !ApprovalMode?
-              (
-                <div className="mt-2">
-                  <div className="card cardborder p-4">
-                    <div className="font-16">
-                      <strong>Approval Hierarchy</strong>
-                    </div>
-                    {/* <div className="d-flex justify-content-between align-items-center">
+              // rows != null && rows.length > 0 &&
+              rows != null && rows.length > 0 && !ApprovalMode ?
+                (
+                  <div className="mt-2">
+                    <div className="card cardborder p-4">
+                      <div className="font-16">
+                        <strong>Approval Hierarchy</strong>
+                      </div>
+                      {/* <div className="d-flex justify-content-between align-items-center">
                       <p className="font-14 mb-3 flex-grow-1">
                         Define approval hierarchy for the documents submitted by Team members in this folder.
                       </p>
@@ -1957,8 +1991,8 @@ const AddannouncementContext = ({ props }: any) => {
                       </div>
                     </div> */}
 
-                    <div className="d-flex flex-column">
-                      {/* <div className="row mb-2">
+                      <div className="d-flex flex-column">
+                        {/* <div className="row mb-2">
                         <div className="col-12 col-md-5">
                           <label className="form-label">Level</label>
                         </div>
@@ -1967,55 +2001,55 @@ const AddannouncementContext = ({ props }: any) => {
                         </div>
                       </div> */}
 
-                      {rows.map((row: any) => (
-                        <div className="row mb-2" key={row.id}>
-                          <div className="col-12 col-md-5">
-                            <label htmlFor={`Level-${row.id}`} className="form-label">
-                              Select Level
-                            </label>
-                            <select
-                              className="form-select"
-                              id={`Level-${row.id}`}
-                              name="Level"
-                              value={row.LevelId}
-                              disabled={true}
-                              onChange={(e) => {
-                                const selectedLevel = e.target.value;
-                                setRows((prevRows: any) =>
-                                  prevRows.map((r: any) =>
-                                    r.id === row.id
-                                      ? { ...r, LevelId: selectedLevel }
-                                      : r
-                                  )
-                                );
-                              }}
-                            >
-                              <option value="">Select</option>
-                              {levels.map((item: any) => (
-                                <option key={item.Id} value={item.Id}>
-                                  {item.Level}
-                                </option>
-                              ))}
-                            </select>
-                          </div>
+                        {rows.map((row: any) => (
+                          <div className="row mb-2" key={row.id}>
+                            <div className="col-12 col-md-5">
+                              <label htmlFor={`Level-${row.id}`} className="form-label">
+                                Select Level
+                              </label>
+                              <select
+                                className="form-select"
+                                id={`Level-${row.id}`}
+                                name="Level"
+                                value={row.LevelId}
+                                disabled={true}
+                                onChange={(e) => {
+                                  const selectedLevel = e.target.value;
+                                  setRows((prevRows: any) =>
+                                    prevRows.map((r: any) =>
+                                      r.id === row.id
+                                        ? { ...r, LevelId: selectedLevel }
+                                        : r
+                                    )
+                                  );
+                                }}
+                              >
+                                <option value="">Select</option>
+                                {levels.map((item: any) => (
+                                  <option key={item.Id} value={item.Id}>
+                                    {item.Level}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
 
-                          <div className="col-12 col-md-5">
-                            <label htmlFor={`approver-${row.id}`} className="form-label">
-                              Select Approver
-                            </label>
-                            <Multiselect
-                              options={row.approvedUserList}
-                              selectedValues={row.approvedUserListupdate}
-                              onSelect={(selected) => handleUserSelect(selected, row.id)}
-                              onRemove={(selected) => handleUserSelect(selected, row.id)}
-                              displayValue="name"
-                              disable={true}
-                              placeholder=''
-                              hidePlaceholder={true}                              
-                            />
-                          </div>
+                            <div className="col-12 col-md-5">
+                              <label htmlFor={`approver-${row.id}`} className="form-label">
+                                Select Approver
+                              </label>
+                              <Multiselect
+                                options={row.approvedUserList}
+                                selectedValues={row.approvedUserListupdate}
+                                onSelect={(selected) => handleUserSelect(selected, row.id)}
+                                onRemove={(selected) => handleUserSelect(selected, row.id)}
+                                displayValue="name"
+                                disable={true}
+                                placeholder=''
+                                hidePlaceholder={true}
+                              />
+                            </div>
 
-                          {/* <div className="col-12 col-md-2 d-flex align-items-center" style={{ gap: '10px' }}>
+                            {/* <div className="col-12 col-md-2 d-flex align-items-center" style={{ gap: '10px' }}>
                             <div className="d-flex align-items-center">
                               <input
                                 className="form-check-input custom-radio"
@@ -2052,11 +2086,11 @@ const AddannouncementContext = ({ props }: any) => {
                               </a>
                             )}
                           </div> */}
-                        </div>
-                      ))}
-                    </div>
+                          </div>
+                        ))}
+                      </div>
 
-                    {/* <div className="text-center butncss">
+                      {/* <div className="text-center butncss">
                     <div className="btn btn-success" onClick={IsAdded?handleClick:null}>
                       Create
                     </div>
@@ -2064,26 +2098,26 @@ const AddannouncementContext = ({ props }: any) => {
                       Cancel
                     </div>
                   </div> */}
+                    </div>
                   </div>
-                </div>
-              ):(<div></div>)
-         
-              
-              
+                ) : (<div></div>)
+
+
+
 
               // <ApprovalHierarchy data={ApprovalConfigurationData} levels={levels} usersitem={usersitem} IsAdded={IsAdded}/>
 
             }
-            
+
             {
               //let forrework=ApprovalRequestItem && ApprovalRequestItem.IsRework=='Yes'&& ApprovalRequestItem.LevelSequence!=0;
-              (InputDisabled&&ApprovalRequestItem)||(ApprovalRequestItem && ApprovalRequestItem.IsRework=='Yes'&& ApprovalRequestItem.LevelSequence!=0)?(
-                <WorkflowAction currentItem={ApprovalRequestItem} ctx={props.context} 
-                   DisableApproval={ApprovalRequestItem && ApprovalRequestItem.IsRework=='Yes'&& ApprovalRequestItem.LevelSequence!=0}
-                   DisableCancel={ApprovalRequestItem && ApprovalRequestItem.IsRework=='Yes'&& ApprovalRequestItem.LevelSequence!=0}
-                   //DisableReject={ApprovalRequestItem && ApprovalRequestItem.IsRework=='Yes'&& ApprovalRequestItem.LevelSequence!=0}
+              (InputDisabled && ApprovalRequestItem) || (ApprovalRequestItem && ApprovalRequestItem.IsRework == 'Yes' && ApprovalRequestItem.LevelSequence != 0) ? (
+                <WorkflowAction currentItem={ApprovalRequestItem} ctx={props.context}
+                  DisableApproval={ApprovalRequestItem && ApprovalRequestItem.IsRework == 'Yes' && ApprovalRequestItem.LevelSequence != 0}
+                  DisableCancel={ApprovalRequestItem && ApprovalRequestItem.IsRework == 'Yes' && ApprovalRequestItem.LevelSequence != 0}
+                //DisableReject={ApprovalRequestItem && ApprovalRequestItem.IsRework=='Yes'&& ApprovalRequestItem.LevelSequence!=0}
                 />
-              ):(<div></div>)
+              ) : (<div></div>)
             }
             {
               <WorkflowAuditHistory ContentItemId={editID} ContentType={CONTENTTYPE_Announcement} ctx={props.context} />
@@ -2141,14 +2175,14 @@ const AddannouncementContext = ({ props }: any) => {
                             <tr key={index}>
                               <td className='text-center'>{index + 1}</td>
                               <td>  <img className='imagefe' src={`${siteUrl}/AnnouncementAndNewsGallary/${file.fileName}`}
-                                /></td>
+                              /></td>
 
                               <td>{file.fileName}</td>
                               <td className='text-right'>{file.fileSize}</td>
-                              {modeValue =='null' && <td className='text-center'> 
-                                 <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, ImagepostArr1, "Gallery")} /> 
-                                
-                                </td>
+                              {modeValue == 'null' && <td className='text-center'>
+                                <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, ImagepostArr1, "Gallery")} />
+
+                              </td>
                               }
                             </tr>
                           ))}
@@ -2181,7 +2215,7 @@ const AddannouncementContext = ({ props }: any) => {
                         </tbody>
                       </table></>
                   )}
-           
+
               </Modal.Body>
 
             </Modal>
@@ -2201,3 +2235,4 @@ const Addannouncement: React.FC<IAddannouncementProps> = (props) => {
   )
 }
 export default Addannouncement
+

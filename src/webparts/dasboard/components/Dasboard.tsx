@@ -554,7 +554,7 @@ const HelloWorldContext = ({ props }: any) => {
                                 className="d-flex border-bottom heit8 align-items-start w-100 justify-content-between mb-1"
                               >
                                 <div className="col-sm-2">
-                                  <a href="contacts-profile.html">
+                                  <a>
                                     <img
                                       // src={user.Picture != null ? `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${user.EMail}` : require("../assets/users.jpg")}
                                       src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${user.Pinned.EMail}`}
