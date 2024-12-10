@@ -154,7 +154,7 @@ export const WorkflowAction=(props: IWorkflowActionProps) => {
 
                               </a>):(<div></div>)}
 
-                              { !props.DisableRework?(<a href="my-approval.html">
+                              { !props.DisableApproval?(<a href="my-approval.html">
 
                                 <button type="button" className="btn btn-warning waves-effect waves-light m-1" onClick={(e) => handleFromSubmit(e, 'Rework')}>
 
@@ -164,7 +164,7 @@ export const WorkflowAction=(props: IWorkflowActionProps) => {
 
                               </a>):(<div></div>)}
 
-                              {!props.DisableReject?(<a href="my-approval.html">
+                              {!props.DisableApproval?(<a href="my-approval.html">
 
                                 <button type="button" className="btn btn-danger waves-effect waves-light m-1" onClick={(e) => handleFromSubmit(e, 'Rejected')}>
 

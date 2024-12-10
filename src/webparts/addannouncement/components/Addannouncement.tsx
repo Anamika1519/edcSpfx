@@ -153,8 +153,8 @@ const AddannouncementContext = ({ props }: any) => {
       setInputDisabled(true);
       sp.web.lists.getByTitle('ARGMyRequest').items.getById(Number(requestid))().then(itm => {
         setApprovalRequestItem(itm);
-       // setInputDisabled(true && (!itm.IsRework || itm.IsRework == "No"))
-        setInputDisabled(false && (itm.IsRework || itm.IsRework == "Yes"))
+        setInputDisabled(true && (!itm.IsRework || itm.IsRework == "No"))
+      //  setInputDisabled(false && (itm.IsRework || itm.IsRework == "Yes"))
         //setInputDisabled(ApprovalMode)
       })
     }

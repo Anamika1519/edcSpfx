@@ -291,7 +291,10 @@ export const getMyRequest = async (sp)=>
 
   let arr = []
 
-  await sp.web.lists.getByTitle("ARGMyRequest").items.select("*,Requester/Id,Requester/Title,Approver/Id,Approver/Title").expand("Approver,Requester").filter(`RequesterId eq ${currentUser.Id}`).getAll().then((res) => {
+  await sp.web.lists.getByTitle("ARGMyRequest").items.select("*,Requester/Id,Requester/Title,Approver/Id,Approver/Title")
+  .expand("Approver,Requester").filter(`RequesterId eq ${currentUser.Id}`)
+  .orderBy("Created",false)
+  .getAll().then((res) => {
 
     arr = res
 

@@ -374,11 +374,11 @@ const MyRequestContext = ({ props }: any) => {
           item.Status.toLowerCase().includes(filters.Status.toLowerCase())) &&
 
           (filters.RequestedBy === "" ||
-            activeTab == "Automation" ? item?.Author?.Title?.toLowerCase().includes(
+           (activeTab == "Automation" ? (item?.Author?.Title?.toLowerCase().includes(
               filters.RequestedBy.toLowerCase()
-            ): item?.RequestedBy?.Title?.toLowerCase().includes(
+            )): (item?.Requester?.Title?.toLowerCase().includes(
               filters.RequestedBy.toLowerCase()
-            ))
+            ))))
 
       );
 
@@ -648,19 +648,52 @@ const MyRequestContext = ({ props }: any) => {
 
   const handleRedirect = async (Item: any) => {
     console.log(Item, "----Item");
+    let redirecturl = "";
     if (activeTab == "Automation"){
-      window.location.href = `${Item.RedirectionLink}`;
+      location.href = `${Item.RedirectionLink}`;
     } else if (activeTab == "Intranet"){
-      if (Item.ProcessName == "Event") {
-        window.location.href = `${siteUrl}/SitePages/EventDetailsCalendar.aspx?${Item.ContentId}`;
-      }
-      else if (Item.ProcessName == "Media") {
-        window.location.href = `${siteUrl}/SitePages/Mediadeatils.aspx`;
-      }
-      else {
-        window.location.href = `${siteUrl}/SitePages/${Item.ProcessName}Details.aspx?${Item.ContentId}`;
+      // if (Item.ProcessName == "Event") {
+      //   location.href = `${siteUrl}/SitePages/EventDetailsCalendar.aspx?${Item.ContentId}`;
+      // }
+      // else if (Item.ProcessName == "Media") {
+      //   location.href = `${siteUrl}/SitePages/Mediadeatils.aspx`;
+      // }
+      // else {
+      //   let id = Item.ContentId;
+      //   const redirectUrl = `${siteUrl}/SitePages/${Item.ProcessName}Details1.aspx?${Item.ContentId}`;
+      //   console.log("Redirect URL:", redirectUrl);
+      //   location.href = redirectUrl;
+      // }
+      let sessionkey = "";
+     
+      if (Item?.ProcessName) {
+        switch (Item?.ProcessName) {
+          case "Announcement":
+            sessionkey = "announcementId";
+            redirecturl = `${siteUrl}/SitePages/AddAnnouncement.aspx` + "?requestid=" + Item?.Id + "&mode=view";
+            break;
+            case "News":
+              sessionkey = "announcementId";
+              redirecturl = `${siteUrl}/SitePages/AddAnnouncement.aspx` + "?requestid=" + Item?.Id + "&mode=view";
+              break;
+          case "Event":
+            sessionkey = "EventId";
+            redirecturl = `${siteUrl}/SitePages/EventMasterForm.aspx` + "?requestid=" + Item?.Id + "&mode=view";
+            break;
+          case "Media":
+            sessionkey = "mediaId";
+            redirecturl = `${siteUrl}/SitePages/MediaGalleryForm.aspx` + "?requestid=" + Item?.Id + "&mode=view";
+            break;
+          default: ;
+        }
+  
+        const encryptedId = encryptId(String(Item?.ContentId));
+        sessionStorage.setItem(sessionkey, encryptedId);
+        location.href = redirecturl;
+  
       }
     } else if (activeTab == "DMS"){
+     
       window.location.href = `${siteUrl}/SitePages/DMS.aspx?${Item.ContentId}`;
     }
   };
