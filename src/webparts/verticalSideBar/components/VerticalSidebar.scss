@@ -30,7 +30,7 @@
   height: .9em;
 }
 .imagemani {
-     
+    
   height: 300px;
 }
 .rounded-circlecss1{    width: 40px !important;
@@ -38,7 +38,7 @@
   margin-top: 2px;
   margin-right: 5px;}
 .paddb {
- padding: 50px 34px 30px 18px;min-height: 100vh;
+padding: 50px 34px 30px 18px;min-height: 100vh;
 }
 .card .card-body .quill{max-height: 300px !important; height: 300px !important; overflow-y: auto !important;}
 .carousel-control-next, .carousel-control-prev{
@@ -162,7 +162,8 @@ height:63px;
 .card-body{
   padding: 0.8rem !important;
 }
-
+#myHeader .dropdown #myDropdown{background: transparent !important; box-shadow: none !important;}
+.mtable th #myDropdown{cursor: pointer;}
 #myDropdownBell .heightlist{height: 350px;overflow-y: auto;overflow-x: hidden; padding: 10px;}
 #myDropdownBell .heightlist .notify-item
 {border: 0px solid #ccc !important;}
@@ -174,6 +175,12 @@ a:hover, a:active {
 }
 .font-12 {
   font-size: 12px !important;
+}
+.mtable th .svg-inline--fa {
+  cursor: pointer !important;
+  height: 23PX !important;
+  position: absolute !important;
+  right: 10px !important;
 }
 .posnew {
   padding: 2px 8px !important;
@@ -201,7 +208,7 @@ a:hover, a:active {
   width: 66px;
   margin-left: -16px;
 }
-.loadernewadd{color: #1fb0e5;display: flex;font-size: 18px;gap: 0px;font-weight: 700;justify-content: center;
+.loadernewadd{color: #1fb0e5;display: block; text-align:center ; font-size: 18px;gap: 0px;font-weight: 700;justify-content: center;
   align-items: center;vertical-align: middle;}
 .alignrightl{width: 50px; margin-top: 5px;}
 
@@ -297,7 +304,7 @@ a:hover, a:active {
 .menu_items {
   padding: 0;
   list-style: none;
- 
+
   overflow-y: hidden;
   overflow-x: hidden;
 }
@@ -366,7 +373,7 @@ a:hover, a:active {
   width: 100%;
   // padding: 4px 15px;
   font-size: 15.2px;
-   border-radius: 0.25rem;
+  border-radius: 0.25rem;
   text-decoration: none;
   color: var(--grey-color);
   white-space: nowrap;
@@ -393,7 +400,7 @@ a:hover, a:active {
   margin:0.8rem 0.8rem 0rem 0.8rem;
 } 
 .logo_item img{margin-left: 5px;}
- .sidebar.close .nav_link:hover {
+.sidebar.close .nav_link:hover {
   background: var(--blue-color);
   color: #fff;
   display: flex;
@@ -450,7 +457,7 @@ a:hover, a:active {
   text-align: center;
   width: 100%;
   color: var(--grey-color);
- 
+
 }
 .bottom i {
   font-size: 20px;
@@ -541,7 +548,7 @@ a:hover, a:active {
 .content {
   transition: margin 0.3s ease;
 }
- 
+
 /* Default styles for larger screens */
 // .sidebar-open {
 //   margin-left: 5.5rem;
@@ -602,7 +609,7 @@ margin-left: 0px;
 }
 
 .dropbtn {
- 
+
   cursor: pointer;
 }
 
@@ -739,7 +746,7 @@ span.navlink:hover {
   .sidebar-open
   {
     opacity: 5;
-   
+  
   }
   .sidebar-closed {
   
@@ -747,7 +754,7 @@ span.navlink:hover {
     background: #eef6f7;
     // margin-top: 5.5rem;
     height: 100vh;
-   
+  
   }
   .sidebar-closedBar
   {
@@ -760,7 +767,7 @@ span.navlink:hover {
   // .sidebar.close
   // {
   //   display: none;
-   
+  
   // }
   .searchcssmobile
   {
@@ -831,7 +838,7 @@ span.navlink:hover {
   .search_bar {
   
     width: 230px;
-     display: block; 
+    display: block; 
 }
 .navcss
 {
@@ -843,7 +850,7 @@ span.navlink:hover {
 {
   display: flex;
   align-items: center;
-   gap:10px
+  gap:10px
 }
 .navbar_content {
   display: flex;
@@ -857,7 +864,7 @@ span.navlink:hover {
 
 // // X-Large devices (large desktops, 1200px and up)
 // @media (min-width: 1200px) { 
- 
+
 //   .sidebar-open {
 //     margin-left: 5.5rem;
 //     transition: margin-left 0.3s;
@@ -957,14 +964,14 @@ span.navlink:hover {
   .search_bar {
 
     width: 230px;
-     display: block; 
- 
+    display: block; 
+
 }
 .dropcssUser
 {
   display: flex;
   align-items: center;
-   gap:10px
+  gap:10px
 }
 .navbar_content {
   display: flex;
@@ -974,14 +981,14 @@ span.navlink:hover {
 .bottom_content.sidebar-openBa {
   display: block;
 }
- }
- .rounded-circle
- {
+}
+.rounded-circle
+{
   border-radius: 50% !important;
     height: 32px;
     width: 32px;
 }
- 
+
 .cssAdds
 {
 background-color: blue;
@@ -1017,7 +1024,7 @@ background-color: rgb(167, 30, 132);
   height: 160px !important;
 }
 .inbox-rightbar .card {
-   
+  
   height: 60px;
 }
 .imagehright {
@@ -1032,7 +1039,7 @@ margin: 10px 0px !important ;
 @media(max-width:1920px)
 {
   .inbox-rightbar .card {
-   
+  
       height: 96px;
   }
   .item {
@@ -1119,7 +1126,7 @@ margin: 10px 0px !important ;
       height: 245px !important;
   }
   .imagemani {
-     
+    
       height: 370px;
   }
   // .menu_items{max-height: 800px;}
@@ -1154,7 +1161,7 @@ margin: 10px 0px !important ;
   }
   .carousel-caption p{
     font-size: 42px !important;
-   
+  
     line-height: 45px;
     padding-bottom: 32px !important;
   }
@@ -1279,7 +1286,7 @@ margin: 10px 0px !important ;
 }
   .imagehright {
       height: 140px;
-   
+  
   }
   .carousel1,.announcementner{
       height: 330px;
@@ -1379,7 +1386,7 @@ color: #fff !important;
 .newpadd{margin-top: 12px !important;}
   .imagehright {
       height: 130px;
-   
+  
   }
   .internalmedia .gal-box .image-popup {
       height: 200px !important;
@@ -1501,7 +1508,7 @@ color: #fff !important;
     display: contents;
   }
   .navcss{
-   
+  
         padding: 0.5rem 0rem;
   }
   .internalmedia .gal-box .image-popup{
@@ -1567,7 +1574,7 @@ color: #fff !important;
   #wrapper{width: 540px;}
     .imagehright {
       height: 230px;
-   
+  
   }
   .tabcontentv, .tabv {
       height: 289px !important;
@@ -1670,7 +1677,7 @@ span.navlink.active {
   .gfg_tooltip {
     position: relative;
     display: inline-block;
-   
+  
     color: black;
   width:30px;
     text-align: center;
@@ -1712,6 +1719,27 @@ a:hover{color: #1fb0e5 !important; cursor: pointer;}
 .navbar_content svg:hover{color: #1fb0e5 !important; cursor: pointer;}
 .filter-menu a:hover{
   background: #1fb0e5; color: #fff !important;
+}
+.nav-pills .nav-link.active, .nav-pills .show>.nav-link{
+  background: #1fb0e5 !important;
+border-radius: .5rem;
+color: #fff !important;
+}
+.btn-status {
+  background: #fff;
+  border: 1px solid #efefef !important;
+  border-radius: 30px !important;
+  color: #3c3c3c;
+  font-size: 13px !important;
+  width: 100px;
+}
+
+.inputcss {
+  color: #6c757d;
+  font-size: .875rem !important;
+  font-weight: 400 !important;
+  height: 40px;
+  padding: .55rem .9rem !important;
 }
 .tabcss:hover{ background: #fff !important; color: #000 !important;}
 .cursor-none{cursor: none !important;}

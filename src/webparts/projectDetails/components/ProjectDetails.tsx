@@ -1689,7 +1689,7 @@ const handleRemoveUser = async (userId: number) => {
                               
                             </span>  </div>
                             <div style={{cursor:'pointer'}} className="tabcss mb-2 sameh mt-2 me-1 ">
-                            <span className="text-nowrap mb-0 d-inline-block"  onClick={() => sendanEmail(item)} >
+                            <span className="text-nowrap mb-0 d-inline-block" onClick={() => isProjectCompleted ? "":sendanEmail(item)} >
                               <Share size={14} /> Share by email 
                             </span>
                             </div>
@@ -1902,7 +1902,7 @@ const handleRemoveUser = async (userId: number) => {
                     loadingLike={loadingLike}
                     Action="Project"
                     onAddReply={(text:any) => handleAddReply(index, text)}
-                    onLike={() => handleLikeToggle(index)} // Pass like handler
+                    onLike={() => isProjectCompleted ? "" :handleLikeToggle(index)} // Pass like handler
                     loadingReply={loadingReply}
                       onSaveComment={(text:any)=>handleSaveComment(comment.Id,text)} 
                       ondeleteComment={()=>handleDeleteComment(comment.Id)}
@@ -1934,7 +1934,7 @@ const handleRemoveUser = async (userId: number) => {
 <div className="card mobile-5 mt-2"  style={{ borderRadius: "22px", position:'sticky', top:'310px' }}>
   <div className="card-body pb-3 gheight">
     <h4 className="header-title font-16 text-dark fw-bold mb-3"  style={{ fontSize: "20px" }}>Project Members</h4>
-    {item.Author.EMail === currentUserEmailRef.current && (
+    {item.Author.EMail === currentUserEmailRef.current && !isProjectCompleted && (
     <div>
      <button className="plusiconalign" onClick={(e)=>togglevalue(e)}> <img
 
@@ -1982,7 +1982,7 @@ className="newplusicon" alt="add user" /> </button>
       
         {/* <p className="mb-0">{id?.Title} </p> */}
        
-       
+        {!isProjectCompleted && 
               <img
 
 src={require("../assets/calling.png")}
@@ -2003,7 +2003,7 @@ onClick={() =>
 
 alt="Call"
 
-/>
+/> }
         </div>
         
       );

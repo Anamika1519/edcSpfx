@@ -480,13 +480,16 @@ const MyApprovalContext = ({ props }: any) => {
         (filters.Status === "" ||
 
           item.Status.toLowerCase().includes(filters.Status.toLowerCase())) &&
+        (filters.RequestedDate === "" ||
 
+          new Date(item.Created).toLocaleDateString()
+            .startsWith(filters.RequestedDate + "")) &&
         (filters.RequestedBy === "" ||
-          (activeTab == "Automation" ? item?.Author?.Title?.toLowerCase().includes(
+          (activeTab == "Automation" ? (item?.Author?.Title?.toLowerCase().includes(
             filters.RequestedBy.toLowerCase()
-          ) : item?.RequestedBy?.Title?.toLowerCase().includes(
-            filters.RequestedBy.toLowerCase())
-          ))
+          )) : (item?.Requester?.Title?.toLowerCase().includes(
+            filters.RequestedBy.toLowerCase()
+          ))))
 
       );
 
@@ -509,7 +512,29 @@ const MyApprovalContext = ({ props }: any) => {
 
           : bIndex - aIndex;
 
-      } else if (sortConfig.key) {
+      }
+      else if (sortConfig.key == "RequestedDate") {
+
+        // Sort by other keys
+
+        const aValue = a['Created'] ? new Date(a['Created']) : "";
+
+        const bValue = b['Created'] ? new Date(b['Created']) : "";
+
+        if (aValue < bValue) {
+
+          return sortConfig.direction === "ascending" ? -1 : 1;
+
+        }
+
+        if (aValue > bValue) {
+
+          return sortConfig.direction === "ascending" ? 1 : -1;
+
+        }
+
+      }
+      else if (sortConfig.key) {
 
         // Sort by other keys
 
@@ -863,92 +888,7 @@ const MyApprovalContext = ({ props }: any) => {
               </div> */}
 
             </div>
-            <div className="d-flex flex-wrap align-items-center justify-content-center">
 
-              <ul
-
-                className="nav nav-pills navtab-bg float-end"
-
-                role="tablist"
-
-              >
-
-                <li className="nav-item" role="presentation">
-
-                  <a
-
-
-                    onClick={() => handleTabClick("Intranet")}
-
-                    className={`nav-link ${activeTab === "Intranet" ? "active" : ""
-
-                      }`}
-
-                    aria-selected={activeTab === "Intranet"}
-
-                    role="tab"
-
-                  >
-
-                    Intranet
-
-                  </a>
-
-                </li>
-
-                <li className="nav-item" role="presentation">
-
-                  <a
-
-
-                    onClick={() => handleTabClick("DMS")}
-
-                    className={`nav-link ${activeTab === "DMS" ? "active" : ""
-
-                      }`}
-
-                    aria-selected={activeTab === "DMS"}
-
-                    role="tab"
-
-                    tabIndex={-1}
-
-                  >
-
-                    DMS
-
-                  </a>
-
-                </li>
-
-                <li className="nav-item" role="presentation">
-
-                  <a
-
-
-                    onClick={() => handleTabClick("Automation")}
-
-                    className={`nav-link ${activeTab === "Automation" ? "active" : ""
-
-                      }`}
-
-                    aria-selected={activeTab === "Automation"}
-
-                    role="tab"
-
-                    tabIndex={-1}
-
-                  >
-
-                    Automation
-
-                  </a>
-
-                </li>
-
-              </ul>
-
-            </div>
             <div className="row mt-4">
 
               <div className="col-12">
@@ -956,7 +896,92 @@ const MyApprovalContext = ({ props }: any) => {
                 <div className="card mb-0 cardcsss">
 
                   <div className="card-body">
+                    <div className="d-flex flex-wrap align-items-center justify-content-center">
 
+                      <ul
+
+                        className="nav nav-pills navtab-bg float-end"
+
+                        role="tablist"
+
+                      >
+
+                        <li className="nav-item" role="presentation">
+
+                          <a
+
+
+                            onClick={() => handleTabClick("Intranet")}
+
+                            className={`nav-link ${activeTab === "Intranet" ? "active" : ""
+
+                              }`}
+
+                            aria-selected={activeTab === "Intranet"}
+
+                            role="tab"
+
+                          >
+
+                            Intranet ({currentData.length})
+
+                          </a>
+
+                        </li>
+
+                        <li className="nav-item" role="presentation">
+
+                          <a
+
+
+                            onClick={() => handleTabClick("DMS")}
+
+                            className={`nav-link ${activeTab === "DMS" ? "active" : ""
+
+                              }`}
+
+                            aria-selected={activeTab === "DMS"}
+
+                            role="tab"
+
+                            tabIndex={-1}
+
+                          >
+
+                            DMS
+
+                          </a>
+
+                        </li>
+
+                        <li className="nav-item" role="presentation">
+
+                          <a
+
+
+                            onClick={() => handleTabClick("Automation")}
+
+                            className={`nav-link ${activeTab === "Automation" ? "active" : ""
+
+                              }`}
+
+                            aria-selected={activeTab === "Automation"}
+
+                            role="tab"
+
+                            tabIndex={-1}
+
+                          >
+
+                            Automation
+
+                          </a>
+
+                        </li>
+
+                      </ul>
+
+                    </div>
                   </div>
 
                 </div>
@@ -2183,9 +2208,9 @@ const MyApprovalContext = ({ props }: any) => {
                 {activeComponent === "" ?
                   (<div>
                     <div className="DMSMasterContainer">
-                      <h4 className="page-title fw-bold mb-1 font-20">My Approvals 1</h4>
+                      <h4 className="page-title fw-bold mb-0 mt-0 font-20"></h4>
                       <div className="" style={{ backgroundColor: 'white', border: '1px solid #54ade0', marginTop: '20px', borderRadius: '20px', padding: '15px' }}>
-                        <table className="mtbalenew">
+                        <table className="mtable mt-0">
                           <thead>
                             <tr>
                               <th
@@ -2239,7 +2264,8 @@ const MyApprovalContext = ({ props }: any) => {
                                     </div>
                                   </td>
                                   <td style={{ minWidth: '80px', maxWidth: '80px', textAlign: 'center' }}>
-                                    <div className="finish mb-0">Pending</div>
+                                    <div className="btn btn-status">
+                                      Pending</div>
                                   </td>
                                   <td style={{ minWidth: '70px', maxWidth: '70px' }}>
                                     <a onClick={(e) => getTaskItemsbyID(e, item.FileUID.RequestNo)}>

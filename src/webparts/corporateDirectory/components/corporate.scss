@@ -74,6 +74,9 @@
     background: #fff;
     border-radius: 1000px;
 }
+    .mtable th{position: relative;} 
+    .mtable th svg{cursor: pointer;}
+    .mtable th .svg-inline--fa{height: 23PX !important; cursor: pointer !important; right: 10px !important; position: absolute !important;}
 .alignrightpin {
     height: 1.5rem;
     right: 1.5rem;
@@ -145,7 +148,7 @@
     font-size: 12px;
     text-align: center;
 }
-.loadernewadd{color: #1fb0e5;display: flex;font-size: 18px;gap: 0px;font-weight: 700;justify-content: center;
+.loadernewadd{color: #1fb0e5;display: block !important; text-align: center; font-size: 18px;gap: 0px;font-weight: 700;justify-content: center;
     align-items: center;vertical-align: middle;}
   .alignrightl{width: 50px; margin-top: 5px;}
 .posnew {

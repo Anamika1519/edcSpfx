@@ -115,9 +115,10 @@ background-color: #008751 !important;
     background-color: var(--ct-btn-hover-bg);
     border-color: var(--ct-btn-hover-border-color);
 }
+.rbc-current button {background: #1fb0e5 !important; color:#fff !important;}
 .external-event {
     cursor: move;
-    margin: 10px 0;
+    margin: 10px 0; 
     padding: 8px 10px;
     color: #fff;
     border-radius: 4px;

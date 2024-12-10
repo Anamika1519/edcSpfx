@@ -154,7 +154,7 @@ const HelloWorldContext = ({ props }: any) => {
   const [dataofevent, setDataofEvent] = useState<any[]>([]);
   const [usersitem, setUsersArr] = useState<any[]>([]);
   const [pinUsersitem, setPinUsersArr] = useState<any[]>([]);
-
+  const [loading, setLoading] = useState(true);
   const scrollContainerRef = useRef(null);
   const handleScroll = () => {
     if (headerRef.current) {
@@ -191,6 +191,8 @@ const HelloWorldContext = ({ props }: any) => {
     await addActivityLeaderboard(sp, "Banner Button Clicks");
   }
   const ApiCall = async () => {
+    setLoading(true); 
+    try{
     const galleryItemsone = await fetchMediaGallerydata(sp);
     setGalleryData(galleryItemsone);
     setActiveTab(galleryItemsone[0]?.ID);
@@ -206,29 +208,36 @@ const HelloWorldContext = ({ props }: any) => {
     // console.log("check--data--of-getNewsone", newsdata);
 
     setDataofNews(newsdata);
-    setLeaderboard(await getLeaderTop(sp))
+    
+    
     const eventdata = await fetchEventdataone(sp);
     console.log("event-of-data--cheking", eventdata);
     setDataofEvent(eventdata);
 
     setUsersArr(await fetchUserInformationList(sp))
     setPinUsersArr(await fetchPinnedUser(sp))
-    console.log("pin", pinUsersitem)
-    // setProjects(await fetchprojectdataTop(sp))
-
-    async function updateProjects(sp: SPFI) {
-      // Fetch and set projects first
-      const projects = await fetchprojectdataTop(sp);
-      setProjects(projects);
-
-      // Then fetch and set project comments
-      const projectsComments = await fertchprojectcomments(sp);
-      setProjectscomments(projectsComments);
-    }
-
-    // Call the function
+    setLoading(false);
+    //console.log("pin", pinUsersitem)
+    setLeaderboard(await getLeaderTop(sp))
     updateProjects(sp);
+
+  } catch (error) {
+    console.error('Error toggling like:', error);
+  }
+  finally {
+    setLoading(false); // Enable the button after the function completes
+  }
+
   };
+  async function updateProjects(sp: SPFI) {
+    // Fetch and set projects first
+    const projects = await fetchprojectdataTop(sp);
+    setProjects(projects);
+
+    // Then fetch and set project comments
+    const projectsComments = await fertchprojectcomments(sp);
+    setProjectscomments(projectsComments);
+  }
 
   const [projects, setProjects] = useState([]);
   const [projectscomments, setProjectscomments] = useState([]);
@@ -378,6 +387,23 @@ const HelloWorldContext = ({ props }: any) => {
       <div className="content-page">
         <HorizontalNavbar _context={sp} siteUrl={siteUrl} />
         <div className="content mt-4" style={{ marginLeft: `${!useHide ? '240px' : '80px'}` }}>
+        {loading ?<div className="loadernewadd">
+                    <div>
+                        <img
+                            src={require("../../../CustomAsset/birdloader.gif")}
+                            className="alignrightl"
+                            alt="Loading..."
+                          /> 
+                        </div>
+                      <span>Loading </span>{" "}
+                      <span>
+                        <img
+                          src={require("../../../CustomAsset/argloader.gif")}
+                          className="alignrightl"
+                          alt="Loading..."
+                        />
+                      </span>
+                    </div>:
           <div className="container-fluid pb-0  paddbnew">
             <div className="row">
               <div
@@ -1243,7 +1269,9 @@ openEmailDialog(user.Pinned.EMail)
               </div>
             </div>
           </div>
+          }
         </div>
+
       </div>
     </div>
 

@@ -372,7 +372,10 @@ const MyRequestContext = ({ props }: any) => {
         (filters.Status === "" ||
 
           item.Status.toLowerCase().includes(filters.Status.toLowerCase())) &&
+          (filters.RequestedDate === "" ||
 
+            new Date(item.Created).toLocaleDateString()
+              .startsWith(filters.RequestedDate + "")) &&
           (filters.RequestedBy === "" ||
            (activeTab == "Automation" ? (item?.Author?.Title?.toLowerCase().includes(
               filters.RequestedBy.toLowerCase()
@@ -402,7 +405,28 @@ const MyRequestContext = ({ props }: any) => {
 
           : bIndex - aIndex;
 
-      } else if (sortConfig.key) {
+      }  else if (sortConfig.key == "RequestedDate") {
+
+        // Sort by other keys
+
+        const aValue = a['Created'] ? new Date(a['Created']) : "";
+
+        const bValue = b['Created'] ? new Date(b['Created']) : "";
+
+        if (aValue < bValue) {
+
+          return sortConfig.direction === "ascending" ? -1 : 1;
+
+        }
+
+        if (aValue > bValue) {
+
+          return sortConfig.direction === "ascending" ? 1 : -1;
+
+        }
+
+      }
+       else if (sortConfig.key) {
 
         // Sort by other keys
 
@@ -723,7 +747,7 @@ const MyRequestContext = ({ props }: any) => {
 
             marginLeft: `${!useHide ? "240px" : "80px"}`,
 
-            marginTop: "0.5rem",
+            marginTop: "0rem",
 
           }}>
 
@@ -738,7 +762,13 @@ const MyRequestContext = ({ props }: any) => {
               </div>
 
             </div>
+            <div className="row mt-4">
 
+<div className="col-12">
+
+  <div className="card mb-0 cardcsss">
+
+    <div className="card-body">
             <div className="d-flex flex-wrap align-items-center justify-content-center">
 
               <ul
@@ -825,7 +855,7 @@ const MyRequestContext = ({ props }: any) => {
               </ul>
 
             </div>
-
+</div></div></div> </div>
             <div className="card cardCss mt-4">
 
               <div className="card-body">
@@ -836,7 +866,7 @@ const MyRequestContext = ({ props }: any) => {
 
                     <table
 
-                      className="mtable table-centered table-nowrap table-borderless mb-0"
+                      className="mt-0 mtable table-centered table-nowrap table-borderless mb-0"
 
                       style={{ position: "relative" }}
 
@@ -850,13 +880,13 @@ const MyRequestContext = ({ props }: any) => {
 
                             style={{
 
-                              borderBottomLeftRadius: "10px",
+                             
 
                               minWidth: "40px",
 
                               maxWidth: "40px",
 
-                              borderTopLeftRadius: "10px",
+                              
 
                             }}
 
@@ -1116,7 +1146,7 @@ const MyRequestContext = ({ props }: any) => {
 
                           </th>
 
-                          <th style={{ minWidth: "100px", maxWidth: "100px" }}>
+                          <th style={{ minWidth: "100px", maxWidth: "100px", verticalAlign:"Top" }}>
 
                             <div className="d-flex flex-column bd-highlight ">
 
@@ -1130,7 +1160,7 @@ const MyRequestContext = ({ props }: any) => {
 
                                 <span>Requested Date</span>{" "}
 
-                                {/* <span
+                                <span
 
                                   onClick={() =>
 
@@ -1142,13 +1172,13 @@ const MyRequestContext = ({ props }: any) => {
 
                                   <FontAwesomeIcon icon={faSort} />{" "}
 
-                                </span> */}
+                                </span>
 
                               </div>
 
                               <div className=" bd-highlight">
 
-                                {/* <input
+                               <input
 
                                   type="text"
 
@@ -1164,7 +1194,7 @@ const MyRequestContext = ({ props }: any) => {
 
                                   style={{ width: "100%" }}
 
-                                /> */}
+                                />
 
                               </div>
 
@@ -1180,13 +1210,8 @@ const MyRequestContext = ({ props }: any) => {
 
                               minWidth: "50px",
 
-                              maxWidth: "50px",
-
-                              borderBottomRightRadius: "10px",
-
-                              borderTopRightRadius: "10px",
-
-                              textAlign: "center",
+                              maxWidth: "50px",                           
+                             textAlign: "center",
 
                               verticalAlign: "top",
 
@@ -1344,8 +1369,8 @@ const MyRequestContext = ({ props }: any) => {
                                 style={{ minWidth: "80px", maxWidth: "80px" }}
 
                               >
-
-                                {item?.Status}
+<div className="btn btn-status">
+                                {item?.Status}</div>
 
                               </td>
 
@@ -1439,7 +1464,7 @@ const MyRequestContext = ({ props }: any) => {
 
                       <ul className="pagination">
 
-                        <li
+                        <li style={{margin:'0px'}}
 
                           className={`page-item ${currentPage === 1 ? "disabled" : ""
 
@@ -1465,7 +1490,7 @@ const MyRequestContext = ({ props }: any) => {
 
                         {Array.from({ length: totalPages }, (_, num) => (
 
-                          <li
+<li style={{margin:'0px'}}
 
                             key={num}
 
@@ -1493,7 +1518,7 @@ const MyRequestContext = ({ props }: any) => {
 
  
 
-                        <li
+<li style={{margin:'0px'}}
 
                           className={`page-item ${currentPage === totalPages ? "disabled" : ""
 

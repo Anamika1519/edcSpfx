@@ -1389,20 +1389,22 @@ const CorporateDirectoryContext = ({ props }: any) => {
                     {loading && (
                       <div className="loadernewadd">
                         <div>
-                        <img
+                        <img style={{width:'60px'}}
                             src={require("../../../CustomAsset/birdloader.gif")}
                             className="alignrightl"
                             alt="Loading..."
                           />
                         </div>
+                       <div className="loadnewarg">
                         <span>Loading </span>{" "}
                         <span>
-                          <img
+                          <img style={{width:'35px'}}
                             src={require("../assets/argloader.gif")}
                             className="alignrightl"
                             alt="Loading..."
                           />
                         </span>
+                        </div>
                       </div>
                     )}
                     {!loading && (
@@ -1470,7 +1472,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                       alt="profile-image"
 
-                                      style={{ cursor: "pointer" }}
+                                      style={{ cursor: "auto" }}
 
                                     />
 
@@ -1862,7 +1864,7 @@ style={{ fontSize: "14px" }}
 
                                 <tr>
 
-                                  <th>
+                                  <th style={{minWidth:'50px', maxWidth:'50px'}}>
 
                                     Connect
 
@@ -1870,7 +1872,7 @@ style={{ fontSize: "14px" }}
 
                                   </th>
 
-                                  <th>
+                                  <th style={{minWidth:'120px', maxWidth:'120px'}}>
 
                                     <div className="d-flex flex-column bd-highlight ">
 
@@ -2308,12 +2310,12 @@ style={{ fontSize: "14px" }}
 
                                         </td>
 
-                                        <td>{item.Title}</td>
+                                        <td style={{minWidth:'120px', maxWidth:'120px'}}>{item.Title}</td>
 
                                         {/* <td>{item.ID}</td> */}
 
-                                        <td>{item.EMail}</td>
-                                        <td>
+                                        <td style={{minWidth:'120px', maxWidth:'120px'}}>{item.EMail}</td>
+                                        <td style={{minWidth:'100px', maxWidth:'100px'}}>
                                           {item?.companyName != null
 
                                             ? item?.companyName
@@ -2323,7 +2325,7 @@ style={{ fontSize: "14px" }}
 
                                         </td>
 
-                                        <td>
+                                        <td style={{minWidth:'100px', maxWidth:'100px'}}>
 
                                           {item?.Department != null
 
@@ -2333,7 +2335,7 @@ style={{ fontSize: "14px" }}
 
                                         </td>
 
-                                        <td>
+                                        <td style={{minWidth:'100px', maxWidth:'100px'}}>
 
                                           {item?.WorkPhone != null
 

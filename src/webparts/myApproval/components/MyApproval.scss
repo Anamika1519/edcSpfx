@@ -166,3 +166,8 @@ border-radius: .5rem;
 color: #fff !important;
 padding: 0.7rem;
 }
+.nav-pills .nav-link.active, .nav-pills .show>.nav-link{
+  background: #1fb0e5 !important;
+border-radius: .5rem;
+color: #fff !important;
+}

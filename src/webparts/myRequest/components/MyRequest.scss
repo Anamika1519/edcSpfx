@@ -19,7 +19,7 @@
   
     font-size: .8rem !important;
   
-    height: 34px;
+    height: 40px;
   
   }
   
@@ -116,3 +116,9 @@
     height: 2rem !important;
     width: 2rem !important;
   }
+  .nav-pills .nav-link.active, .nav-pills .show>.nav-link{
+    background: #1fb0e5 !important;
+  border-radius: .5rem;
+  color: #fff !important;
+  }
+  .page-item{margin: 0px !important;}

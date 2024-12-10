@@ -1338,7 +1338,7 @@ const HelloWorldContext = ({ props }: any) => {
                   {/* Map through the projects array and display a card for each */}
                   {loading ? (<div className="loadernewadd">
                     <div>
-                        <img
+                    <img style={{width:'60px'}}
                             src={require("../../../CustomAsset/birdloader.gif")}
                             className="alignrightl"
                             alt="Loading..."
@@ -1346,7 +1346,7 @@ const HelloWorldContext = ({ props }: any) => {
                         </div>
                       <span>Loading </span>{" "}
                       <span>
-                        <img
+                      <img style={{width:'35px'}}
                           src={require("../assets/argloader.gif")}
                           className="alignrightl"
                           alt="Loading..."
@@ -1998,7 +1998,7 @@ const HelloWorldContext = ({ props }: any) => {
                   {/* Map through the projects array and display a card for each */}
                   {loading ? (<div className="loadernewadd">
                     <div>
-                        <img
+                    <img style={{width:'60px'}}
                             src={require("../../../CustomAsset/birdloader.gif")}
                             className="alignrightl"
                             alt="Loading..."
@@ -2006,7 +2006,7 @@ const HelloWorldContext = ({ props }: any) => {
                         </div>
                       <span>Loading </span>{" "}
                       <span>
-                        <img
+                      <img style={{width:'35px'}}
                           src={require("../assets/argloader.gif")}
                           className="alignrightl"
                           alt="Loading..."
@@ -2279,7 +2279,7 @@ const HelloWorldContext = ({ props }: any) => {
                   {/* Map through the projects array and display a card for each */}
                   {loading ? (<div className="loadernewadd">
                     <div>
-                        <img
+                    <img style={{width:'60px'}} 
                             src={require("../../../CustomAsset/birdloader.gif")}
                             className="alignrightl"
                             alt="Loading..."
@@ -2287,7 +2287,7 @@ const HelloWorldContext = ({ props }: any) => {
                         </div>
                       <span>Loading </span>{" "}
                       <span>
-                        <img
+                      <img style={{width:'35px'}}
                           src={require("../assets/argloader.gif")}
                           className="alignrightl"
                           alt="Loading..."
@@ -2559,7 +2559,7 @@ const HelloWorldContext = ({ props }: any) => {
                   {/* Map through the projects array and display a card for each */}
                   {loading ? (<div className="loadernewadd">
                     <div>
-                        <img
+                    <img style={{width:'60px'}}
                             src={require("../../../CustomAsset/birdloader.gif")}
                             className="alignrightl"
                             alt="Loading..."
@@ -2567,7 +2567,7 @@ const HelloWorldContext = ({ props }: any) => {
                         </div>
                       <span>Loading </span>{" "}
                       <span>
-                        <img
+                      <img style={{width:'35px'}}
                           src={require("../assets/argloader.gif")}
                           className="alignrightl"
                           alt="Loading..."

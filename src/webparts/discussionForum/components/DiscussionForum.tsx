@@ -1902,7 +1902,7 @@ const DiscussionForumContext = ({ props }: any) => {
                             </div>
                           </th>
                           <th style={{
-                            minWidth: "60px", maxWidth: "60px", textAlign: "center"
+                            minWidth: "75px", maxWidth: "75px", textAlign: "center"
                           }}>
                             <div className=" ">
                               <div>
@@ -2069,7 +2069,7 @@ const DiscussionForumContext = ({ props }: any) => {
                               </td>
 
                               {/* Comments Count */}
-                              <td style={{ minWidth: "60px", maxWidth: "60px", textAlign: "center" }}>
+                              <td style={{ minWidth: "75px", maxWidth: "75px", textAlign: "center" }}>
                                 <img style={{ width: '16px', verticalAlign: 'text-bottom', marginRight: '5px' }} src={require("../assets/ccomment.png")} alt="Check" />  {Number(item.commentsLength) > 0 ? item.commentsLength : 0}
                               </td>
 
