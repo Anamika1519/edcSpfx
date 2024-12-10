@@ -650,7 +650,8 @@ const MyRequestContext = ({ props }: any) => {
     console.log(Item, "----Item");
     let redirecturl = "";
     if (activeTab == "Automation"){
-      location.href = `${Item.RedirectionLink}`;
+      window.open(Item.RedirectionLink, "_blank");
+      //location.href = `${Item.RedirectionLink}`;
     } else if (activeTab == "Intranet"){
       // if (Item.ProcessName == "Event") {
       //   location.href = `${siteUrl}/SitePages/EventDetailsCalendar.aspx?${Item.ContentId}`;

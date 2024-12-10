@@ -1388,6 +1388,13 @@ const CorporateDirectoryContext = ({ props }: any) => {
                   <div>
                     {loading && (
                       <div className="loadernewadd">
+                        <div>
+                        <img
+                            src={require("../../../CustomAsset/birdloader.gif")}
+                            className="alignrightl"
+                            alt="Loading..."
+                          />
+                        </div>
                         <span>Loading </span>{" "}
                         <span>
                           <img

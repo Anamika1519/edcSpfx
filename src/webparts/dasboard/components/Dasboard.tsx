@@ -87,7 +87,18 @@ const HelloWorldContext = ({ props }: any) => {
     setHide(!bol);
     document.querySelector(".sidebar")?.classList.toggle("close");
   };
+  const openEmailDialog = (email:string) => {
+    const subject = "Let's Connect!";
+    const body = "Hi, I’d like to discuss something important.";
+   // const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
+    //window.location.href = mailtoLink;
+    const outlook365Url = `https://outlook.office.com/mail/deeplink/compose?to=${encodeURIComponent(email)}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    
+    // Open the email in a new tab
+    window.open(outlook365Url, "_blank");
+
+};
   const users = [
     {
       name: "Atul Sharma",
@@ -488,7 +499,7 @@ const HelloWorldContext = ({ props }: any) => {
                                 {announcement.Overview}
                               </p>
                               <p className="mb-1 font-12">
-                              {moment(announcement.Modified).format("DD-MMM-YYYY")}
+                                {moment(announcement.Modified).format("DD-MMM-YYYY")}
                               </p>
                               <div className="mt-1 d-flex justify-between mb-0">
                                 <a
@@ -565,14 +576,20 @@ const HelloWorldContext = ({ props }: any) => {
                                   </a>
                                 </div>
                                 <div style={{ cursor: "pointer" }} className="col-sm-8">
-                                  
-                                    <p className="fw-bold mt-1 font-14 mb-0 text-dark">
-                                      {user.Pinned.Title} 
-                                    </p>
-                                    <a href="#" style={{marginLeft:'15px'}} className="onelinenewd font-12 mb-0 text-muted">
-{user.Pinned.EMail != null ? user.Pinned.EMail : 'NA'}
-                                    </a>
-                                  
+
+                                  <p className="fw-bold mt-1 font-14 mb-0 text-dark">
+                                    {user.Pinned.Title}
+                                  </p>
+                                  <a href="#" style={{ marginLeft: '15px' }} className="onelinenewd font-12 mb-0 text-muted">
+                                  <span onClick={() =>
+
+openEmailDialog(user.Pinned.EMail)
+
+}>
+                                    {user.Pinned.EMail != null ? user.Pinned.EMail : 'NA'}
+                                    </span>
+                                  </a>
+
                                   <p
                                     style={{
                                       color: "#6b6b6b",
@@ -972,7 +989,7 @@ const HelloWorldContext = ({ props }: any) => {
                                   </div>
                                   <div style={{ paddingLeft: "0px" }} className="col-lg-4">
                                     <a
-                                      style={{ marginTop: "3px", display:'flex', gap:'2px' }}
+                                      style={{ marginTop: "3px", display: 'flex', gap: '2px' }}
                                       href="javascript:void(0);"
                                       className="btn btn-sm btn-link text-muted ps-0 pe-0"
                                     >

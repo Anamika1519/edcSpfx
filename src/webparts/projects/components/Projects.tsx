@@ -1337,6 +1337,13 @@ const HelloWorldContext = ({ props }: any) => {
                 <div className="">
                   {/* Map through the projects array and display a card for each */}
                   {loading ? (<div className="loadernewadd">
+                    <div>
+                        <img
+                            src={require("../../../CustomAsset/birdloader.gif")}
+                            className="alignrightl"
+                            alt="Loading..."
+                          />
+                        </div>
                       <span>Loading </span>{" "}
                       <span>
                         <img
@@ -1990,6 +1997,13 @@ const HelloWorldContext = ({ props }: any) => {
                 <div className="container">
                   {/* Map through the projects array and display a card for each */}
                   {loading ? (<div className="loadernewadd">
+                    <div>
+                        <img
+                            src={require("../../../CustomAsset/birdloader.gif")}
+                            className="alignrightl"
+                            alt="Loading..."
+                          />
+                        </div>
                       <span>Loading </span>{" "}
                       <span>
                         <img
@@ -2264,6 +2278,13 @@ const HelloWorldContext = ({ props }: any) => {
                 <div className="">
                   {/* Map through the projects array and display a card for each */}
                   {loading ? (<div className="loadernewadd">
+                    <div>
+                        <img
+                            src={require("../../../CustomAsset/birdloader.gif")}
+                            className="alignrightl"
+                            alt="Loading..."
+                          />
+                        </div>
                       <span>Loading </span>{" "}
                       <span>
                         <img
@@ -2537,6 +2558,13 @@ const HelloWorldContext = ({ props }: any) => {
                 <div className="">
                   {/* Map through the projects array and display a card for each */}
                   {loading ? (<div className="loadernewadd">
+                    <div>
+                        <img
+                            src={require("../../../CustomAsset/birdloader.gif")}
+                            className="alignrightl"
+                            alt="Loading..."
+                          />
+                        </div>
                       <span>Loading </span>{" "}
                       <span>
                         <img
