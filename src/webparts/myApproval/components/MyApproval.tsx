@@ -178,7 +178,7 @@ const MyApprovalContext = ({ props }: any) => {
         , "FileUID/DocumentLibraryName"
         , "FileUID/FileName"
         , "FileUID/RequestNo"
-          ,"FileUID/FilePreviewUrl" 
+        , "FileUID/FilePreviewUrl"
         , "FileUID/Status"
         , "FileUID/FolderPath"
         , "FileUID/RequestedBy"
@@ -320,7 +320,7 @@ const MyApprovalContext = ({ props }: any) => {
 
     setActiveTab(tab);
 
-    console.log("tab", tab, myApprovalsDataAutomation, myApprovalsDataAll,myApprovalsData)
+    console.log("tab", tab, myApprovalsDataAutomation, myApprovalsDataAll, myApprovalsData)
 
     if (tab == "Intranet") {
 
@@ -782,7 +782,7 @@ const MyApprovalContext = ({ props }: any) => {
 
       }
     }
- 
+
     // const encryptedId = encryptId(String(Item?.ContentId));
 
     // sessionStorage.setItem("announcementId", encryptedId);
@@ -964,7 +964,7 @@ const MyApprovalContext = ({ props }: any) => {
               </div>
 
             </div>
-            {(activeTab === "Intranet" || activeTab === "Automation" ) && (
+            {(activeTab === "Intranet" || activeTab === "Automation") && (
               <div>
                 {
 
@@ -1389,7 +1389,7 @@ const MyApprovalContext = ({ props }: any) => {
                                 </tr>
 
                               </thead>
-                              {console.log("currentData", currentData,isActivedata)}
+                              {console.log("currentData", currentData, isActivedata)}
                               <tbody>
 
                                 {currentData.length === 0 ? (
@@ -1462,7 +1462,7 @@ const MyApprovalContext = ({ props }: any) => {
 
                                       >
 
-                                        {item?.Requester?.Title}
+                                        {activeTab == "Automation" ? item?.Author.Title : item?.Requester?.Title}
 
                                       </td>
 
