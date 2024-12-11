@@ -430,7 +430,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
         .select("displayName,mail,jobTitle,mobilePhone,companyName,userPrincipalName")
         .get();
       console.log("m265userList", m265userList);
-      // setM365User(m265userList);
+      setM365User(m265userList.value);
       //Adding dummy companies to users for testing
       //m265userList.value=m265userList.value.map((m:any)=>{let x=m; x['companyName']='dunnycommpany'; return x;});
 
@@ -687,16 +687,17 @@ const CorporateDirectoryContext = ({ props }: any) => {
         ();
       let userList: any[] = [];
 
-      // userList = ListuserListSP.map(usr => {
-      //   let musrs = M365User.filter((usr1: any) => { return toLower(usr1.mail) == toLower(usr.EMail) });
-      //   if (musrs.length > 0) {
-      //     usr['companyName'] = musrs[0]['companyName'];
-      //   }
-      //   else usr['companyName'] = 'NA';
-      //   return usr;
-      // })
+      userList = ListuserListSP.map(usr => {
+        let musrs = M365User.filter((usr1: any) => { return toLower(usr1.mail) == toLower(usr.EMail) });
+        if (musrs.length > 0) {
+          usr['companyName'] = musrs[0]['companyName'];
+        }
+        else usr['companyName'] = 'NA';
+        return usr;
+      });
+      console.log("userlistttt", userList);
       setActiveTab(tab);
-      setListUsersArr(ListuserListSP);
+      setListUsersArr(userList);
       //setUsersArr(ListuserListSP);
     }
     else {
@@ -750,7 +751,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
     ///sessionStorage.setItem("selectedUserID", userID);
     //sessionStorage.setItem("currentStatus", currentStatus);
-   // window.location.href = `${siteUrl}/SitePages/Userprofile.aspx?${userID}`;
+    // window.location.href = `${siteUrl}/SitePages/Userprofile.aspx?${userID}`;
   };
   const handleFilterChange = (
 
@@ -759,7 +760,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
     field: string
 
   ) => {
-
+    console.log("eeeeeee", field)
     if (field == "Name") {
       setCurrentPage(1);
     }
@@ -775,7 +776,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
 
   const handleSortChange = (key: string) => {
-
+    console.log("keyyy", key);
     let direction = "ascending";
 
     if (sortConfig.key === key && sortConfig.direction === "ascending") {
@@ -791,7 +792,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
   const applyFiltersAndSorting = (data: any[]) => {
 
-
+    console.log("datat on filter", data, filters.Department);
     // Filter data
 
     const filteredData = data.filter((item) => {
@@ -805,15 +806,19 @@ const CorporateDirectoryContext = ({ props }: any) => {
         (filters.Email === "" ||
 
           item?.EMail.toLowerCase().includes(filters.Email.toLowerCase())) &&
-        (filters.MobilePhone === '' || item?.MobilePhone && item?.MobilePhone.toLowerCase().includes(filters.MobilePhone.toLowerCase())) &&
+        (filters.MobilePhone === '' ||
+          item?.WorkPhone && item?.WorkPhone.toString().includes(filters.MobilePhone + "")) &&
 
-        (filters.companyName === '' || ((item?.companyName) ? item?.companyName.toLowerCase().includes(filters.companyName.toLowerCase()) : false))
+        (filters.companyName === '' ||
+          (item?.companyName && item?.companyName.toLowerCase().includes(filters.companyName.toLowerCase()))) &&
+        (filters.Department === '' ||
+          (item?.Department && item?.Department.toLowerCase().includes(filters.Department.toLowerCase())))
 
       );
 
     });
 
-
+    console.log("filteredDatafilteredData", filteredData, sortConfig.key);
     const sortedData = filteredData.sort((a, b) => {
 
       if (sortConfig.key === "SNo") {
@@ -831,7 +836,52 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
           : bIndex - aIndex;
 
-      } else if (sortConfig.key) {
+      }
+      else if (sortConfig.key == "Email") {
+
+        // Sort by other keys
+
+        const aValue = a['EMail'] ? (a['EMail'].split('@')[0]).toLowerCase() : "";
+
+        const bValue = b['EMail'] ? (b['EMail'].split('@')[0]).toLowerCase() : "";
+
+
+        if (aValue < bValue) {
+
+          return sortConfig.direction === "ascending" ? -1 : 1;
+
+        }
+
+        if (aValue > bValue) {
+
+          return sortConfig.direction === "ascending" ? 1 : -1;
+
+        }
+
+      }
+      else if (sortConfig.key == "Name") {
+
+        // Sort by other keys
+
+        const aValue = a['Title'] ? a['Title'].toLowerCase() : "";
+
+        const bValue = b['Title'] ? b['Title'].toLowerCase() : "";
+
+
+        if (aValue < bValue) {
+
+          return sortConfig.direction === "ascending" ? -1 : 1;
+
+        }
+
+        if (aValue > bValue) {
+
+          return sortConfig.direction === "ascending" ? 1 : -1;
+
+        }
+
+      }
+      else if (sortConfig.key) {
 
         // Sort by other keys
 
@@ -940,18 +990,18 @@ const CorporateDirectoryContext = ({ props }: any) => {
     const teamsChatLink = `https://teams.microsoft.com/l/chat/0/0?users=${encodeURIComponent(email)}}`;
     window.open(teamsChatLink, "_blank");
   };
-  const openEmailDialog = (email:string) => {
+  const openEmailDialog = (email: string) => {
     const subject = "Let's Connect!";
     const body = "Hi, I’d like to discuss something important.";
-   // const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    // const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
     //window.location.href = mailtoLink;
     const outlook365Url = `https://outlook.office.com/mail/deeplink/compose?to=${encodeURIComponent(email)}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    
+
     // Open the email in a new tab
     window.open(outlook365Url, "_blank");
 
-};
+  };
   const exportToExcel = (data: any[], fileName: string) => {
 
     const workbook = XLSX.utils.book_new();
@@ -976,13 +1026,15 @@ const CorporateDirectoryContext = ({ props }: any) => {
       setActiveTab("cardView");
     let txtSearch = (document.getElementById('searchInput') as HTMLInputElement).value;
     if (txtSearch.length > 1) {
-      let filteredusers = await sp.web.lists
-        .getByTitle("User Information List")
-        .items
-        .select("ID", "Title", "EMail", "Department", "JobTitle", "Picture", "MobilePhone", "WorkPhone", "Name")
-        .filter(`ContentType eq 'Person' and EMail ne null and substringof('${txtSearch}', Title)`)
-        .top(500)
-        ();
+      let filteredusers =
+      //await sp.web.lists
+        // .getByTitle("User Information List")
+        // .items
+        // .select("ID", "Title", "EMail", "Department", "JobTitle", "Picture", "MobilePhone", "WorkPhone", "Name")
+        // .filter(`ContentType eq 'Person' and EMail ne null and substringof('${txtSearch}', Title)`)
+        // .top(500)
+        // ();
+      usersitem.filter((x) => x.Title.includes(txtSearch))
       setUsersArr(filteredusers);
     }
 
@@ -1389,21 +1441,21 @@ const CorporateDirectoryContext = ({ props }: any) => {
                     {loading && (
                       <div className="loadernewadd">
                         <div>
-                        <img style={{width:'60px'}}
+                          <img style={{ width: '60px' }}
                             src={require("../../../CustomAsset/birdloader.gif")}
                             className="alignrightl"
                             alt="Loading..."
                           />
                         </div>
-                       <div className="loadnewarg">
-                        <span>Loading </span>{" "}
-                        <span>
-                          <img style={{width:'35px'}}
-                            src={require("../assets/argloader.gif")}
-                            className="alignrightl"
-                            alt="Loading..."
-                          />
-                        </span>
+                        <div className="loadnewarg">
+                          <span>Loading </span>{" "}
+                          <span>
+                            <img style={{ width: '35px' }}
+                              src={require("../assets/argloader.gif")}
+                              className="alignrightl"
+                              alt="Loading..."
+                            />
+                          </span>
                         </div>
                       </div>
                     )}
@@ -1466,7 +1518,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                       }
 
-                                      className="rounded-circlecss img-thumbnail 
+                                      className="rounded-circlecss img-thumbnail
 
                                   avatar-xl"
 
@@ -1571,37 +1623,37 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                   </p>
                                   <p className="text-muted"
-style={{ fontSize: "14px" }}
+                                    style={{ fontSize: "14px" }}
 
->
-<span
+                                  >
+                                    <span
 
-  className="pl-2"
+                                      className="pl-2"
 
-  style={{ color: "#1fb0e5" }}
+                                      style={{ color: "#1fb0e5" }}
 
->
-
- 
-
-  {truncateText(
-
-    item.Department != null
-
-      ? item.Department
-
-      : " NA ",
-
-   28
-
-  )}
+                                    >
 
 
-  {/* </a> */}
 
-</span>
+                                      {truncateText(
 
-</p>
+                                        item.Department != null
+
+                                          ? item.Department
+
+                                          : " NA ",
+
+                                        28
+
+                                      )}
+
+
+                                      {/* </a> */}
+
+                                    </span>
+
+                                  </p>
 
                                   <p
 
@@ -1864,7 +1916,7 @@ style={{ fontSize: "14px" }}
 
                                 <tr>
 
-                                  <th style={{minWidth:'50px', maxWidth:'50px'}}>
+                                  <th style={{ minWidth: '50px', maxWidth: '50px' }}>
 
                                     Connect
 
@@ -1872,7 +1924,7 @@ style={{ fontSize: "14px" }}
 
                                   </th>
 
-                                  <th style={{minWidth:'120px', maxWidth:'120px'}}>
+                                  <th style={{ minWidth: '120px', maxWidth: '120px' }}>
 
                                     <div className="d-flex flex-column bd-highlight ">
 
@@ -2205,14 +2257,14 @@ style={{ fontSize: "14px" }}
                                         {" "}
 
                                         <input
-
-                                          type="text"
-
+                                          max={9999999999}
+                                          type="number"
+                                          maxLength={10}
                                           placeholder="Filter by Mobile Phone"
 
-                                          onChange={(e) =>
+                                          onChange={(res) =>
 
-                                            handleFilterChange(e, "MobilePhone")
+                                            handleFilterChange(res, "MobilePhone")
 
                                           }
 
@@ -2310,12 +2362,12 @@ style={{ fontSize: "14px" }}
 
                                         </td>
 
-                                        <td style={{minWidth:'120px', maxWidth:'120px'}}>{item.Title}</td>
+                                        <td style={{ minWidth: '120px', maxWidth: '120px' }}>{item.Title}</td>
 
                                         {/* <td>{item.ID}</td> */}
 
-                                        <td style={{minWidth:'120px', maxWidth:'120px'}}>{item.EMail}</td>
-                                        <td style={{minWidth:'100px', maxWidth:'100px'}}>
+                                        <td style={{ minWidth: '120px', maxWidth: '120px' }}>{item.EMail}</td>
+                                        <td style={{ minWidth: '100px', maxWidth: '100px' }}>
                                           {item?.companyName != null
 
                                             ? item?.companyName
@@ -2325,7 +2377,7 @@ style={{ fontSize: "14px" }}
 
                                         </td>
 
-                                        <td style={{minWidth:'100px', maxWidth:'100px'}}>
+                                        <td style={{ minWidth: '100px', maxWidth: '100px' }}>
 
                                           {item?.Department != null
 
@@ -2335,7 +2387,7 @@ style={{ fontSize: "14px" }}
 
                                         </td>
 
-                                        <td style={{minWidth:'100px', maxWidth:'100px'}}>
+                                        <td style={{ minWidth: '100px', maxWidth: '100px' }}>
 
                                           {item?.WorkPhone != null
 

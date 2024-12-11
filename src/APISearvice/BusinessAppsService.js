@@ -306,12 +306,12 @@ export const fetchAutomationDepartment = async (_sp) => {
     let arr = []
     
     await _sp.web.lists.getByTitle("AllApprovalLists").items.orderBy("Created", false).getAll()
-      .then((res) => {
+      .then(async (res) => {
         console.log("AllApprovallists",res);
         let AllApprovalArr = [];
         
         for (let i = 0; i < res.length; i++) {
-          getMyApprovalsdata(_sp,res[i].Title,status).then((resData)=>{
+         await getMyApprovalsdata(_sp,res[i].Title,status).then((resData)=>{
             for (let j = 0; j < resData.length; j++) { 
               AllApprovalArr.push(resData[j])
             }

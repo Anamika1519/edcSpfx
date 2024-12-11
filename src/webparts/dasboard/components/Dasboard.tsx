@@ -387,7 +387,7 @@ const HelloWorldContext = ({ props }: any) => {
       <div className="content-page">
         <HorizontalNavbar _context={sp} siteUrl={siteUrl} />
         <div className="content mt-4" style={{ marginLeft: `${!useHide ? '240px' : '80px'}` }}>
-        {loading ?<div className="loadernewadd">
+        {loading ?<div style={{minHeight:'100vh'}} className="loadernewadd mt-10">
                     <div>
                         <img
                             src={require("../../../CustomAsset/birdloader.gif")}
@@ -603,7 +603,7 @@ const HelloWorldContext = ({ props }: any) => {
                                 </div>
                                 <div style={{ cursor: "pointer" }} className="col-sm-8">
 
-                                  <p className="fw-bold mt-1 font-14 mb-0 text-dark">
+                                  <p className="fw-bold mt-1 font-14 mb-1 text-dark">
                                     {user.Pinned.Title}
                                   </p>
                                   <a href="#" style={{ marginLeft: '15px' }} className="onelinenewd font-12 mb-0 text-muted">

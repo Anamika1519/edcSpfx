@@ -669,14 +669,14 @@ const HelloWorldContext = ({ props }: any) => {
         <div className="content" style={{ marginLeft: `${!useHide ? '240px' : '80px'}`, marginTop: '0rem' }}>
           <div className="container-fluid paddb">
             <div className="row">
-              <div className="col-lg-4">
+              <div className="col-lg-7">
 
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
 
               </div>
-              <div className="col-lg-7">
-                <div className="d-flex flex-wrap align-items-center justify-content-end mt-3">
-                  <form className="d-flex flex-wrap align-items-center justify-content-start">
+              <div className="col-lg-5">
+                <div className="align-items-center justify-content-end mt-3">
+                  <form className="align-items-center justify-content-start">
                     <label htmlFor="searchInput" className="visually-hidden">
                       Search
                     </label>

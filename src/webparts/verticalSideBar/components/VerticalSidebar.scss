@@ -176,9 +176,12 @@ a:hover, a:active {
 .font-12 {
   font-size: 12px !important;
 }
+.mtable th {
+  position: relative;
+}
 .mtable th .svg-inline--fa {
   cursor: pointer !important;
-  height: 23PX !important;
+  height: 20PX !important;
   position: absolute !important;
   right: 10px !important;
 }
@@ -1036,6 +1039,8 @@ background-color: rgb(167, 30, 132);
 .submenu_item .item{
 margin: 10px 0px !important ;
 }
+.navlink_icon svg{    height: 22px;
+  width: 22px;}
 @media(max-width:1920px)
 {
   .inbox-rightbar .card {
@@ -1229,8 +1234,10 @@ margin: 10px 0px !important ;
   }
   .sidebar-enable .tabcontentv,.sidebar-enable .tabv{height: 350px !important;}
   // .menu_items{max-height: 730px;}
+  
   .item {
-    margin: .3rem .4rem 0;
+    margin: .3rem 7px 0 17px;
+   // margin: .3rem .4rem 0;
 }
 }
 
@@ -1239,6 +1246,8 @@ margin: 10px 0px !important ;
   .internalmedia .gal-box .image-popup {
       height: 225px !important;
   }
+  .navlink_icon svg{    height: 18;
+    width: 18px;}
   .paddbnew {
     padding: 30px 17px 30px 4px;
 }
@@ -1250,8 +1259,8 @@ margin: 10px 0px !important ;
     width: 50px;
   }
   .item{
-    margin: .3rem .4rem 0px 18px;
-  } 
+    margin: .2rem .4rem 0px 18px;
+ } 
   .event p{
     font-size: 10px !important;
   }
@@ -1741,7 +1750,8 @@ color: #fff !important;
   height: 40px;
   padding: .55rem .9rem !important;
 }
+.mtable th{position: relative;}
 .tabcss:hover{ background: #fff !important; color: #000 !important;}
 .cursor-none{cursor: none !important;}
-.swal2-confirm{background: #1fb0e5 !important; border-color: #1fb0e5 !important;}
+.swal2-confirm{background: #1fb0e5 !important; border-color: #1fb0e5 !important;box-shadow: none !important;}
 .swal2-confirm:hover{background: #008751 !important; border-color: #008751 !important;}

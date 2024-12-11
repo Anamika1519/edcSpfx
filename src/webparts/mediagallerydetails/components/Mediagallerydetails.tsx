@@ -118,7 +118,7 @@ const HelloWorldContext = ({props}:any) => {
     },
     {
       "ChildComponent": "Media Gallery",
-      "ChildComponentURl": `${siteUrl}/SitePages/Mediadetails.aspx`
+      "ChildComponentURl": `${siteUrl}/SitePages/MediaGallery.aspx`
     }
   ]
   return (

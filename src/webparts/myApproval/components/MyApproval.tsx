@@ -155,6 +155,7 @@ const MyApprovalContext = ({ props }: any) => {
     RequestedDate: "",
 
     Status: "",
+    Title: "",
 
   });
 
@@ -162,7 +163,7 @@ const MyApprovalContext = ({ props }: any) => {
     { id: "Pending", name: "Pending" },
     { id: "Approved", name: "Approved" },
     { id: "Rejected", name: "Rejected" },
-]);
+  ]);
   const [isOpen, setIsOpen] = React.useState(false);
 
   const [IsinvideHide, setIsinvideHide] = React.useState(false);
@@ -352,21 +353,21 @@ const MyApprovalContext = ({ props }: any) => {
   }, [useHide]);
 
 
-  const ApiCall = async (status:string) => {
+  const ApiCall = async (status: string) => {
 
-   // if(activeTab == "Intranet"){
-    let MyApprovaldata = await getMyApproval(sp,status);
-    let Automationdata = await getApprovalListsData(sp,status);
+    // if(activeTab == "Intranet"){
+    let MyApprovaldata = await getMyApproval(sp, status);
+    let Automationdata = await getApprovalListsData(sp, status);
     let typedata = await getType(sp)
     setMyApprovalsData(MyApprovaldata);
     setMyApprovalsDataAll(MyApprovaldata);
     //}
     //else if(activeTab == "Automation"){
-   
+
     setMyApprovalsDataAutomation(Automationdata);
-    
-    console.log("Automationdata", Automationdata);   
-   // }
+
+    console.log("Automationdata", Automationdata);
+    // }
 
   };
 
@@ -375,15 +376,25 @@ const MyApprovalContext = ({ props }: any) => {
     setAnnouncementData(await getDiscussionFilterAll(sp, optionFilter));
 
   };
-  const handleStatusChange = (name: string, value: string) => {
+  const handleStatusChange = async (name: string, value: string) => {
     if (value === "") {
-        // Show all records if no type is selected
-        console.log("No status selected")
+      // Show all records if no type is selected
+      console.log("No status selected")
     } else {
-        // Filter records based on the selected type
-        ApiCall(value);
+      // Filter records based on the selected type
+      let MyApprovaldata = await getMyApproval(sp, value);
+      let Automationdata = await getApprovalListsData(sp, value);
+      setMyApprovalsDataAll(MyApprovaldata);
+      setMyApprovalsDataAutomation(Automationdata);
+      if (activeTab == "Intranet") {
+        setMyApprovalsData(MyApprovaldata);
+      }
+      else if (activeTab == "Automation") {
+        setMyApprovalsData(Automationdata);
+        console.log("Automationdata", Automationdata);
+      }
     }
-};
+  };
   const handleFilterChange = (
 
     e: React.ChangeEvent<HTMLInputElement>,
@@ -429,7 +440,15 @@ const MyApprovalContext = ({ props }: any) => {
       return (
 
         (filters.SNo === "" || String(index + 1).includes(filters.SNo)) &&
+        (filters.Title === "" ||
 
+          (item.Title != undefined &&
+
+            item.Title.toLowerCase().includes(
+
+              filters.Title.toLowerCase()
+
+            ))) &&
         (filters.ProcessName === "" ||
 
           (item.ProcessName != undefined &&
@@ -863,7 +882,24 @@ const MyApprovalContext = ({ props }: any) => {
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
 
               </div> */}
-
+              <div className="mb-3">
+                <label htmlFor="Status" className="form-label">
+                  Filter By
+                </label>
+                <select
+                  id="Type"
+                  name="Type"
+                  onChange={(e) => handleStatusChange(e.target.name, e.target.value)}
+                  className="form-control"
+                >
+                  {/* <option value="">Pending</option> */}
+                  {StatusTypeData.map((item, index) => (
+                    <option key={index} value={item.name}>
+                      {item.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
 
             <div className="row mt-4">
@@ -900,7 +936,7 @@ const MyApprovalContext = ({ props }: any) => {
 
                           >
 
-                            Intranet ({myApprovalsDataAll.length})
+                            <span className="lenbg1">Intranet</span> <span className="lenbg"> ({myApprovalsDataAll.length})</span>
 
                           </a>
 
@@ -950,7 +986,7 @@ const MyApprovalContext = ({ props }: any) => {
 
                           >
 
-                            Automation ({myApprovalsDataAutomation.length})
+                            <span className="lenbg1">Automation </span><span className="lenbg">({myApprovalsDataAutomation.length})</span>
 
                           </a>
 
@@ -963,27 +999,10 @@ const MyApprovalContext = ({ props }: any) => {
 
                 </div>
                 <div>
-            <div className="mb-3">
-                <label htmlFor="Status" className="form-label">
-                    Filter By 
-                </label>
-                <select
-                    id="Type"
-                    name="Type"
-                    onChange={(e) => handleStatusChange(e.target.name,e.target.value)}
-                    className="form-control"
-                >
-                    <option value="">Pending</option>
-                    {StatusTypeData.map((item, index) => (
-                        <option key={index} value={item.name}>
-                            {item.name}
-                        </option>
-                    ))}
-                </select>
-            </div>
 
-           
-        </div>
+
+
+                </div>
               </div>
 
             </div>
@@ -1118,7 +1137,62 @@ const MyApprovalContext = ({ props }: any) => {
                                     </div>
 
                                   </th>
+                                  {activeTab == "Intranet" && <th style={{ minWidth: "120px", maxWidth: "120px" }}>
 
+                                    <div className="d-flex flex-column bd-highlight ">
+
+                                      <div
+
+                                        className="d-flex  pb-2"
+
+                                        style={{ justifyContent: "space-between" }}
+
+                                      >
+
+                                        <span>Title</span>{" "}
+
+                                        <span
+
+                                          onClick={() =>
+
+                                            handleSortChange("Title")
+
+                                          }
+
+                                        >
+
+                                          <FontAwesomeIcon icon={faSort} />{" "}
+
+                                        </span>
+
+                                      </div>
+
+                                      <div className=" bd-highlight">
+
+                                        <input
+
+                                          type="text"
+
+                                          placeholder="Filter by Title"
+
+                                          onChange={(e) =>
+
+                                            handleFilterChange(e, "Title")
+
+                                          }
+
+                                          className="inputcss"
+
+                                          style={{ width: "100%" }}
+
+                                        />
+
+                                      </div>
+
+                                    </div>
+
+                                  </th>
+                                  }
                                   <th style={{ minWidth: "120px", maxWidth: "120px" }}>
 
                                     <div className="d-flex flex-column bd-highlight ">
@@ -1468,7 +1542,16 @@ const MyApprovalContext = ({ props }: any) => {
                                         {item.RequestID}
 
                                       </td>
+                                      {activeTab == "Intranet" && <td
 
+                                        style={{ minWidth: "120px", maxWidth: "120px" }}
+
+                                      >
+
+                                        {item.Title}
+
+                                      </td>
+                                      }
                                       <td
 
                                         style={{ minWidth: "120px", maxWidth: "120px" }}
@@ -1485,7 +1568,9 @@ const MyApprovalContext = ({ props }: any) => {
 
                                       >
 
-                                        {activeTab == "Automation" ? item?.Author.Title : item?.Requester?.Title}
+                                        {activeTab == "Automation" ?
+                                          item?.Author?.Title :
+                                          item?.Requester?.Title}
 
                                       </td>
 
