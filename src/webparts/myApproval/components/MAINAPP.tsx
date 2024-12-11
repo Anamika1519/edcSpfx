@@ -49,7 +49,6 @@ import * as XLSX from "xlsx";
 let currentItemID= ''
 import moment from "moment";
 
-// import { getApprovalListsData } from "../../../APISearvice/AnnouncementsService";
 
 // import {
 
@@ -368,48 +367,6 @@ const MyApprovalContext = ({ props }: any) => {
     setMyApprovalsData(await getMyApproval(sp))
 
 
-    // const announcementArr = await getDiscussionForum(sp);
-
-
-    // // const MyApprovalsArr = await getApprovalListsData(sp);
-
-    // // console.log("MyApprovalsArr", MyApprovalsArr);
-
-    // // setMyApprovalsData(MyApprovalsArr);
-
-    // let lengArr: any;
-
-    // for (var i = 0; i < announcementArr.length; i++) {
-
-    //   lengArr = await getDiscussionComments(sp, announcementArr[i].ID);
-
-    //   console.log(lengArr, "rrr");
-
-    //   (announcementArr[i].commentsLength = lengArr.arrLength),
-
-    //     (announcementArr[i].Users = lengArr.arrUser);
-
-    // }
-
-    // fetchOptions();
-
-    // // const categorylist = await GetCategory(sp);
-
-    // setCategoryData(await GetCategory(sp));
-
-    // setEnityData(await getEntity(sp)); //Entity
-
-    // setAnnouncementData(announcementArr);
-
-    // const NewsArr = await getNews(sp);
-
-    // setNewsData(NewsArr);
-
-    // setGroupTypeData(
-
-    //   await getChoiceFieldOption(sp, "ARGDiscussionForum", "GroupType")
-
-    // );
 
   };
 

@@ -306,7 +306,7 @@ export const getMyRequest = async (sp)=>
 
 }
 
-export const getMyApproval = async (sp)=>
+export const getMyApproval = async (sp,status)=>
 
   {
 
@@ -316,7 +316,7 @@ export const getMyApproval = async (sp)=>
 
     await sp.web.lists.getByTitle("ARGMyRequest").items.select("*,Requester/Id,Requester/Title,Approver/Id,Approver/Title").expand("Approver,Requester")
 
-    .filter(`ApproverId eq ${currentUser.Id} and Status eq 'Pending'`)
+    .filter(`ApproverId eq ${currentUser.Id} and Status eq '${status}'`)
 
     .orderBy("Created",false)
 

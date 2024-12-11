@@ -25,7 +25,7 @@ import Provider from "../../../GlobalContext/provider";
 import UserContext from "../../../GlobalContext/context";
 
 import CustomBreadcrumb from "../../../CustomJSComponents/CustomBreadcrumb/CustomBreadcrumb";
-
+import { getType } from "../../../APISearvice/CustomService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import {
@@ -48,7 +48,6 @@ import * as XLSX from "xlsx";
 let currentItemID = ''
 import moment from "moment";
 
-// import { getApprovalListsData } from "../../../APISearvice/AnnouncementsService";
 
 import {
 
@@ -159,7 +158,11 @@ const MyApprovalContext = ({ props }: any) => {
 
   });
 
-
+  const [StatusTypeData, setStatusTypeData] = useState([
+    { id: "Pending", name: "Pending" },
+    { id: "Approved", name: "Approved" },
+    { id: "Rejected", name: "Rejected" },
+]);
   const [isOpen, setIsOpen] = React.useState(false);
 
   const [IsinvideHide, setIsinvideHide] = React.useState(false);
@@ -331,8 +334,9 @@ const MyApprovalContext = ({ props }: any) => {
       //setMyApprovalsData(await getdms(sp));
 
     } else if (tab == "Automation") {
-
+      //ApiCall("Pending");
       setMyApprovalsData(myApprovalsDataAutomation);
+      //setMyApprovalsDataAutomation(myApprovalsDataAutomation);
 
     }
 
@@ -343,61 +347,26 @@ const MyApprovalContext = ({ props }: any) => {
 
     sessionStorage.removeItem("announcementId");
 
-    ApiCall();
+    ApiCall("Pending");
 
   }, [useHide]);
 
 
-  const ApiCall = async () => {
+  const ApiCall = async (status:string) => {
 
-    let MyApprovaldata = await getMyApproval(sp);
+   // if(activeTab == "Intranet"){
+    let MyApprovaldata = await getMyApproval(sp,status);
+    let Automationdata = await getApprovalListsData(sp,status);
+    let typedata = await getType(sp)
     setMyApprovalsData(MyApprovaldata);
     setMyApprovalsDataAll(MyApprovaldata);
-    let Automationdata = await getApprovalListsData(sp);
+    //}
+    //else if(activeTab == "Automation"){
+   
     setMyApprovalsDataAutomation(Automationdata);
-    console.log("Automationdata", Automationdata, "MyApprovaldata", MyApprovaldata);
-    // const announcementArr = await getDiscussionForum(sp);
-
-
-    // // const MyApprovalsArr = await getApprovalListsData(sp);
-
-    // // console.log("MyApprovalsArr", MyApprovalsArr);
-
-    // // setMyApprovalsData(MyApprovalsArr);
-
-    // let lengArr: any;
-
-    // for (var i = 0; i < announcementArr.length; i++) {
-
-    //   lengArr = await getDiscussionComments(sp, announcementArr[i].ID);
-
-    //   console.log(lengArr, "rrr");
-
-    //   (announcementArr[i].commentsLength = lengArr.arrLength),
-
-    //     (announcementArr[i].Users = lengArr.arrUser);
-
-    // }
-
-    // fetchOptions();
-
-    // // const categorylist = await GetCategory(sp);
-
-    // setCategoryData(await GetCategory(sp));
-
-    // setEnityData(await getEntity(sp)); //Entity
-
-    // setAnnouncementData(announcementArr);
-
-    // const NewsArr = await getNews(sp);
-
-    // setNewsData(NewsArr);
-
-    // setGroupTypeData(
-
-    //   await getChoiceFieldOption(sp, "ARGDiscussionForum", "GroupType")
-
-    // );
+    
+    console.log("Automationdata", Automationdata);   
+   // }
 
   };
 
@@ -406,7 +375,15 @@ const MyApprovalContext = ({ props }: any) => {
     setAnnouncementData(await getDiscussionFilterAll(sp, optionFilter));
 
   };
-
+  const handleStatusChange = (name: string, value: string) => {
+    if (value === "") {
+        // Show all records if no type is selected
+        console.log("No status selected")
+    } else {
+        // Filter records based on the selected type
+        ApiCall(value);
+    }
+};
   const handleFilterChange = (
 
     e: React.ChangeEvent<HTMLInputElement>,
@@ -923,7 +900,7 @@ const MyApprovalContext = ({ props }: any) => {
 
                           >
 
-                            Intranet ({currentData.length})
+                            Intranet ({myApprovalsDataAll.length})
 
                           </a>
 
@@ -973,7 +950,7 @@ const MyApprovalContext = ({ props }: any) => {
 
                           >
 
-                            Automation
+                            Automation ({myApprovalsDataAutomation.length})
 
                           </a>
 
@@ -985,7 +962,28 @@ const MyApprovalContext = ({ props }: any) => {
                   </div>
 
                 </div>
+                <div>
+            <div className="mb-3">
+                <label htmlFor="Status" className="form-label">
+                    Filter By 
+                </label>
+                <select
+                    id="Type"
+                    name="Type"
+                    onChange={(e) => handleStatusChange(e.target.name,e.target.value)}
+                    className="form-control"
+                >
+                    <option value="">Pending</option>
+                    {StatusTypeData.map((item, index) => (
+                        <option key={index} value={item.name}>
+                            {item.name}
+                        </option>
+                    ))}
+                </select>
+            </div>
 
+           
+        </div>
               </div>
 
             </div>

@@ -78,7 +78,7 @@ export const fetchAutomationDepartment = async (_sp) => {
     return arr;
   }
 
-  export const getMyApprovalsdata = async (_sp,listName) => {
+  export const getMyApprovalsdata = async (_sp,listName,status) => {
     let arr = []
     let currentUser;
     await _sp.web.currentUser()
@@ -95,7 +95,7 @@ export const fetchAutomationDepartment = async (_sp) => {
   
     await _sp.web.lists.getByTitle(listName).items
       .select("*,Author/ID,Author/Title,Author/EMail,AssignedTo/ID,AssignedTo/Title,AssignedTo/EMail").expand("Author,AssignedTo")
-      .filter(`AssignedTo/EMail eq '${currentUser}'`)
+      .filter(`AssignedTo/EMail eq '${currentUser}' and Status eq '${status}'`)      
       .orderBy("Created", false).getAll()
       .then((res) => {
         console.log(`--MyApproval${listName}`, res);
@@ -302,7 +302,7 @@ export const fetchAutomationDepartment = async (_sp) => {
       return resultArr;
     }
     //End
-  export const getApprovalListsData = async (_sp) => {
+  export const getApprovalListsData = async (_sp,status) => {
     let arr = []
     
     await _sp.web.lists.getByTitle("AllApprovalLists").items.orderBy("Created", false).getAll()
@@ -311,7 +311,7 @@ export const fetchAutomationDepartment = async (_sp) => {
         let AllApprovalArr = [];
         
         for (let i = 0; i < res.length; i++) {
-          getMyApprovalsdata(_sp,res[i].Title).then((resData)=>{
+          getMyApprovalsdata(_sp,res[i].Title,status).then((resData)=>{
             for (let j = 0; j < resData.length; j++) { 
               AllApprovalArr.push(resData[j])
             }

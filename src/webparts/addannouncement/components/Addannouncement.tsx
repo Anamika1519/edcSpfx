@@ -433,7 +433,7 @@ const AddannouncementContext = ({ props }: any) => {
   // Handle form submission
   //#region  Submit Form
   const handleFormSubmit = async () => {
-    if (validateForm(FormSubmissionMode.SUBMIT)) {
+    if (await validateForm(FormSubmissionMode.SUBMIT)) {
       if (editForm) {
         Swal.fire({
           title: 'Do you want to submit this request?',
@@ -877,7 +877,7 @@ const AddannouncementContext = ({ props }: any) => {
   // start save as draft
 
   const handleSaveAsDraft = async () => {
-    if (validateForm(FormSubmissionMode.DRAFT)) {
+    if (await validateForm(FormSubmissionMode.DRAFT)) {
       if (editForm) {
         Swal.fire({
           title: 'Do you want to save this request?',
