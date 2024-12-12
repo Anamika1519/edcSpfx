@@ -354,8 +354,8 @@ const EntityMastercontext = ({ props }: any) => {
                       <thead>
                         <tr>
                           <th style={{
-                            borderBottomLeftRadius: '10px', minWidth: '50px',
-                            maxWidth: '50px', borderTopLeftRadius: '10px'
+                            borderBottomLeftRadius: '0px', minWidth: '50px',
+                            maxWidth: '50px', borderTopLeftRadius: '0px'
                           }}>
                             <div className="d-flex pb-2"
                               style={{ justifyContent: 'space-between' }}>
@@ -475,7 +475,7 @@ const EntityMastercontext = ({ props }: any) => {
                               </div>
                             </div>
                           </th>
-                          <th style={{ borderBottomRightRadius: '10px', minWidth: '50px', maxWidth: '50px', borderTopRightRadius: '10px' }}>
+                          <th style={{ borderBottomRightRadius: '0px', minWidth: '50px', maxWidth: '50px', verticalAlign:'Top', borderTopRightRadius: '0px' }}>
                             <div className="d-flex flex-column bd-highlight pb-2">
                               <div className="d-flex  pb-0" style={{ justifyContent: 'space-between' }}>  <span >Action</span> <div className="dropdown">
                                 <FontAwesomeIcon icon={faEllipsisV} onClick={toggleDropdownNews} />
@@ -535,7 +535,7 @@ const EntityMastercontext = ({ props }: any) => {
 
       
 
-      <td>{item.Status}</td>
+      <td> <div className='btn  btn-status'>{item.Status} </div> </td>
       <td>{item.Overview}</td>
       <td
 
@@ -561,7 +561,7 @@ const EntityMastercontext = ({ props }: any) => {
 
           className="d-flex pb-2"
 
-          style={{ justifyContent: "space-around" }}
+          style={{ justifyContent: "start", gap:"5px" }}
 
         >
 
@@ -601,14 +601,14 @@ const EntityMastercontext = ({ props }: any) => {
               }}
 
             >
-
-              <FontAwesomeIcon
+  <img src={require('../../../CustomAsset/edit.png')}/>
+              {/* <FontAwesomeIcon
 
                 icon={faEdit}
 
                 fontSize={18}
 
-              />
+              /> */}
 
             </a>
 
@@ -623,8 +623,8 @@ const EntityMastercontext = ({ props }: any) => {
               onClick={() => DeleteBanner(item.ID)}
 
             >
-
-              <FontAwesomeIcon icon={faTrashAlt} />
+  <img src={require('../../../CustomAsset/del.png')}/>
+              {/* <FontAwesomeIcon icon={faTrashAlt} /> */}
 
             </a>):(<div></div>)}
 

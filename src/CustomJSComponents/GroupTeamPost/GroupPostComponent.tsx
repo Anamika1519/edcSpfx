@@ -15,10 +15,10 @@ import moment from "moment";
 
 import Swal from "sweetalert2";
 
-import SocialFeed from "../../webparts/groupandTeamDetails/components/SocialFeed2";
+import SocialFeed, { IGroupAndTeamPosts } from "../../webparts/groupandTeamDetails/components/SocialFeed2";
 import { Carousel, Modal } from "react-bootstrap";
 
-export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, currentEmail, post, fetchPost }: any) => {
+export const GroupPostComponent = ({ key, sp, siteUrl, isedit, currentUsername, CurrentUser, currentEmail, fetchPost, post  }: any) => {
     const [loadingReply, setLoadingReply] = useState<boolean>(false);
     const [loadingLike, setLoadingLike] = useState<boolean>(false);
     const [liked, setLiked] = useState(post.userHasLiked);
@@ -39,7 +39,7 @@ export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentU
     const [showModal, setShowModal] = useState(false);
 
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
+    let editedContentnew :string = "";
 
     useEffect(() => {
         GetId()
@@ -106,7 +106,44 @@ export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentU
         setIsEditing(true);
     };
 
+    const fetchPosts1 = async () => {
+        debugger
+        const ids = window.location.search;
+        const originalString = ids;
+        const idNum = originalString.substring(1);
 
+
+        try {
+            sp.web.lists.getByTitle("ARGGroupandTeamComments")
+                .items.select("*,GroupTeamComments/Id,GroupTeamComments/Comments,GroupTeamsImages/Id,GroupTeamLikes/Id,Author/Id,Author/Title,Author/EMail")
+                .expand("GroupTeamComments,GroupTeamsImages,GroupTeamLikes,Author")
+                .orderBy("Created", false)
+                .filter(`GroupandTeamId eq ${idNum}`)().then((results: IGroupAndTeamPosts[]) => {
+                    console.log(results);
+                    if (results) {
+                        debugger;
+                        const PostItems = results.map((ele: IGroupAndTeamPosts) => {
+                            return {
+                                Contentpost: ele.Comments,
+                                GroupTeamImagesJson: ele.GroupTeamImagesJson,
+                                Created: ele.Created,
+                                userName: ele.Author?.Title,
+                                userAvatar: ele.UserProfile,
+                                likecount: ele.LikesCount,
+                                commentcount: ele.CommentsCount,
+                                Id: ele.Id,
+                                SocialFeedUserLikesJson: ele.UserLikesJSON ? JSON.parse(ele.UserLikesJSON) : [],
+                                gcomments: ele.UserCommentsJSON ? JSON.parse(ele.UserCommentsJSON) : [],
+                            }
+                        });
+                        setPosts(PostItems);
+
+                    }
+                });
+        } catch (error) {
+            console.log("Error fetching posts:", error);
+        }
+    };
 
     const handleCancelEdit = (e: { preventDefault: () => void; }) => {
 
@@ -133,12 +170,15 @@ export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentU
             });
 
             setIsEditing(false);
-
+            post.Contentpost = editedContent;
             // window.location.reload()
-
+            editedContentnew = editedContent;
             setEditedContent(editedContent);
+            debugger
+            await fetchPosts()
+            fetchPost && fetchPost();
 
-            fetchPost();
+
 
         } catch (error) {
 
@@ -262,7 +302,7 @@ export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentU
                             NotifiedUserId: ele.data.AuthorId,
                             ContentType0: "Likes on Post",
                             ContentName: ele.data.Title,
-                            ActionUserId: CurrentUser.Id,
+                            ActionUserId: CurrentUser,
                             DeatilPage: "Groups/Team",
                             ReadStatus: false
                         }
@@ -377,12 +417,14 @@ export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentU
             if (result.isConfirmed) {
                 try {
                     // Assuming you are using SharePoint API to delete the post
+                   
                     await sp.web.lists.getByTitle('ARGGroupandTeamComments').items.getById(postId).delete();
                     // Remove post from UI
 
                     setPosts(prevPosts => prevPosts.filter(post => post.postId !== postId));
-
-                    fetchPost();
+                    post = {};
+                   //await fetchPosts();
+                   fetchPost && fetchPost();
 
                     // window.location.reload()
 
@@ -446,7 +488,7 @@ export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentU
         ? SocialFeedImagesJson
         : SocialFeedImagesJson.slice(0, 3);
 
-    console.log(post.userHasLiked, '{liked}');
+    console.log(post, '{liked}');
 
     return (
         <div className="post">
@@ -487,6 +529,7 @@ export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentU
             </div>
 
             {/* Post Content */}
+            {console.log("editedContenteditedContent", editedContent, editedContentnew )}
             <div className="post-content" onClick={() => sendanEmailStop()} style={{ whiteSpace: "pre-wrap" }}>
                 {isEditing ? (
                     <textarea
@@ -495,7 +538,13 @@ export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentU
                         rows={4}
                         className="edit-post-textarea"
                         style={{ whiteSpace: "pre-wrap" }}
-                        onKeyDown={handleSaveOnEnter}
+                        onKeyPress={(e) => {
+                            if (e.key === 'Enter' && !e.shiftKey) {
+                                e.preventDefault(); // Prevents the new line in textarea
+                                handleSaveOnEnter(e); // Calls the function to add comment
+                            }
+                        }}
+                        //onKeyDown={handleSaveOnEnter}
                     />
                 ) : (
                     <p style={{ whiteSpace: "pre-wrap" }}>{post.Contentpost}   {/* Edit Button */}
@@ -676,28 +725,28 @@ export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentU
                 </Modal.Body>
             </Modal>
             {/* Post Interactions */}
-
-            <div className="post-interactions hovertext mt-3 mb-3">
-                <div className="likes hovertext" onClick={!loadingLike ? (e) => handleLike(e, liked) : undefined}  >
-                    {liked ? <FontAwesomeIcon icon={faThumbsUp} fontSize={25} color="#1fb0e5" /> : <ThumbsUp size={20} color="gray" />}
-                    <span>{likesCount} Likes</span>{liked}
-                </div>
-                <span className="likes"><MessageSquare size={20} /> {CommentsCount} Comments</span>
-                <div className="post-actions hovertext likes">
-                    <div className="menu-toggle" onClick={toggleMenushare}>
-                        <Share2 size={20} /> <span className="sahrenew"> Share</span>
+            {isedit &&
+                <div className="post-interactions hovertext mt-3 mb-3" aria-disabled={!isedit}>
+                    <div className="likes hovertext" onClick={!loadingLike ? (e) => handleLike(e, liked) : undefined}  >
+                        {liked ? <FontAwesomeIcon icon={faThumbsUp} fontSize={25} color="#1fb0e5" /> : <ThumbsUp size={20} color="gray" />}
+                        <span>{likesCount} Likes</span>{liked}
                     </div>
-                    {isMenuOpenshare && (
-                        <div className="dropdown-menucsspost" ref={menuRef}>
-                            <button onClick={(e) => sendanEmail()} type="button">Share by email</button>
-                            <button onClick={(e) => copyToClipboard(post.postId)} type="button">Copy link</button>
-                            {copySuccess && <span className="text-success">{copySuccess}</span>}
+                    <span className="likes"><MessageSquare size={20} /> {CommentsCount} Comments</span>
+                    <div className="post-actions hovertext likes">
+                        <div className="menu-toggle" onClick={toggleMenushare}>
+                            <Share2 size={20} /> <span className="sahrenew"> Share</span>
                         </div>
-                    )}
+                        {isMenuOpenshare && (
+                            <div className="dropdown-menucsspost" ref={menuRef}>
+                                <button onClick={(e) => sendanEmail()} type="button">Share by email</button>
+                                <button onClick={(e) => copyToClipboard(post.postId)} type="button">Copy link</button>
+                                {copySuccess && <span className="text-success">{copySuccess}</span>}
+                            </div>
+                        )}
+                    </div>
                 </div>
-            </div>
 
-
+            }
             {comments.length > 0 ? comments.map((comment: any, index: React.Key) => (
                 <div className="d-flex align-items-start commentss">
                     <div className="flex-shrink-0">
@@ -736,7 +785,7 @@ export const GroupPostComponent = ({ key, sp, siteUrl, currentUsername, CurrentU
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}
                     placeholder="Write a comment..."
-                    disabled={loadingReply}
+                    disabled={loadingReply || !isedit}
                     onKeyPress={(e) => {
                         if (e.key === 'Enter' && !e.shiftKey) {
                             e.preventDefault(); // Prevents the new line in textarea

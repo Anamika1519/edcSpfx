@@ -56,7 +56,7 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
     const [loading, setLoading] = useState(false); // To show loading spinner
 
 
-    const [displayedCount, setDisplayedCount] = useState(3);
+    const [displayedCount, setDisplayedCount] = useState();
     useEffect(() => {
         //initializeData();
         
@@ -269,12 +269,12 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
 
     };
     const handleShowMore = () => {
-        setDisplayedCount((prevCount) => prevCount + 3); // Show 3 more comments
+       // setDisplayedCount((prevCount) => prevCount + 3); // Show 3 more comments
     };
 
     // Handle "Show Less" button click
     const handleShowLess = () => {
-        setDisplayedCount(3); // Reset to initial 3 comments
+       // setDisplayedCount(3); // Reset to initial 3 comments
     };
     const fetchPosts = async () => {
 
@@ -487,8 +487,8 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
             title: 'Do you want to delete?',
             showConfirmButton: true,
             showCancelButton: true,
-            confirmButtonText: "Save",
-            cancelButtonText: "Cancel",
+            confirmButtonText: "Yes",
+            cancelButtonText: "No",
             icon: 'warning'
         }).then(async (result) => {
             if (result.isConfirmed) {
@@ -766,28 +766,28 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
                 ))
                 : ""}
 
-            <div className="mt-3">
-                {/* Show More button */}
+            {/* <div className="mt-3">
+              
                 {comments.length > displayedCount && (
                     <div
-                        //   type="button"
+                        
                         onClick={handleShowMore}
-                    // className="btn btn-primary me-2"
+                    
                     >
                         Show More
                     </div>
                 )}
 
-                {/* Show Less button */}
+                
                 {displayedCount > 3 && (
                     <div
                         onClick={handleShowLess}
-                    // className="btn btn-secondary"
+                    
                     >
                         Show Less
                     </div>
                 )}
-            </div>
+            </div> */}
             {/* <div className="post-comments">
                 {comments.length > 0 ? comments.map((comment: any, index: React.Key) => (
                     <div className="comment" key={index}>

@@ -1459,10 +1459,10 @@ const GroupandTeamcontext = ({ props }: any) => {
 
 
             sessionStorage.removeItem("announcementId");
-
+            ApiCall();
             setTimeout(() => {
 
-              window.location.href = `${siteUrl}/SitePages/GroupandTeam.aspx`;
+              //window.location.href = `${siteUrl}/SitePages/GroupandTeam.aspx`;
 
             }, 2000);
 
@@ -1729,12 +1729,12 @@ const GroupandTeamcontext = ({ props }: any) => {
 
             settempGroupsData(await getGroupTeam(sp));
             // sessionStorage.removeItem("bannerId");
-
+            ApiCall();
             setTimeout(async () => {
 
               // setAnnouncementData(await getGroupTeam(sp));
 
-              window.location.reload() //forNow
+              //window.location.reload() //forNow
 
               dismissModal()
 
@@ -1839,8 +1839,9 @@ const GroupandTeamcontext = ({ props }: any) => {
   };
 
   const renderContent = (groupItem: any) => {
-    if (groupItem.GroupFollowersId === null) {
+    if (groupItem.GroupFollowersId === null || groupItem.GroupFollowersId.indexOf(currentUser.Id) == -1) {
       return <div id={"follow" + groupItem.ID}
+        style={{ cursor: 'pointer' }}
         onClick={(e) => handleFollow(groupItem, e, "follow")}
         className="btn-light font-14 rounded-pill text-primary waves-effect fw-bold waves-light btn-lightcss btn-blue">
         Follow
@@ -1848,6 +1849,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
     } else {
       return <div id={"unfollow" + groupItem.ID}
+        style={{ cursor: 'pointer' }}
         onClick={(e) => handleFollow(groupItem, e, "unfollow")}
         className="btn-light font-14 rounded-pill text-primary waves-effect fw-bold waves-light btn-lightcss btn-red">
         UnFollow
@@ -2119,7 +2121,7 @@ const GroupandTeamcontext = ({ props }: any) => {
                                 id="GroupName"
 
                                 name="GroupName"
-
+                                maxLength={100}
                                 placeholder="Enter Group Name"
 
                                 className="form-control inputcss"
@@ -2500,7 +2502,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
                             style={{ lineHeight: "26px", float: "left", color: "#fff", textTransform: 'capitalize' }}
 
-                            className="card-title fw-bold font-20 mb-1 mt-0"
+                            className="card-title dechover fw-bold font-20 mb-1 mt-0"
 
                           >
                             {groupItem.GroupName.length > 50
@@ -2606,42 +2608,29 @@ const GroupandTeamcontext = ({ props }: any) => {
                   >
 
                     <div
-
                       style={{ background: "#12a8de", color: "#fff" }}
-
                       className="card heightcard"
-
                     >
-
-
-
-
                       {groupItem.GroupType == "All" && groupItem.Author.ID !== currentUser.Id &&
                         < div > {renderContent(groupItem)}</div>
                       }
-
-
-
                       <div className="card-body">
 
                         <a key={index}>
 
                           <div className="bg">
                             <img src={require("../assets/backteam.png")} />
-
-
-
                           </div>
-
                           <h4
 
                             style={{ lineHeight: "26px", float: "left", color: "#fff", textTransform: 'capitalize' }}
 
-                            className="card-title textd fw-bold font-20 mb-1 mt-0"
+                            className="card-title fw-bold font-20 mb-1 mt-0"
 
                           >
+                            
 
-                            <p style={{ lineHeight: '20px' }} className="font-12 text-muted twolinewrap">
+                            <p style={{ lineHeight: '20px' }} className="twolinewrap">
                               {groupItem.GroupName}</p> ({groupItem.GroupType})
 
                           </h4>

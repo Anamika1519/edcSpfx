@@ -3,7 +3,7 @@
 
 import { escape } from "@microsoft/sp-lodash-subset";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import VerticalSideBar from "../../verticalSideBar/components/VerticalSideBar";
 
@@ -97,7 +97,7 @@ import Multiselect from "multiselect-react-dropdown";
 
 import { Eye } from "react-feather";
 
-import { getDataByID, getMyRequest, getRequestListsData } from "../../../APISearvice/ApprovalService";
+import { getDataByID, getMyRequest, getRequestListsData, gteDMSApproval } from "../../../APISearvice/ApprovalService";
 
 import { getSP } from '../loc/pnpjsConfig';
 
@@ -213,6 +213,8 @@ const MyRequestContext = ({ props }: any) => {
 
   const [myRequestDataAll, setmyRequestDataAll] = useState([]);
 
+const [myRequestDataAllDMS, setMyRequestDataAllDMS] = useState<any[]>([]);
+
   const [AutomationData, setAutomationData] = useState([]);
 
   const [isActivedata, setisActivedata] = useState(false)
@@ -253,7 +255,7 @@ const MyRequestContext = ({ props }: any) => {
 
     } else if (tab == "DMS") {
 
-      setMyApprovalsData(await getRequestListsData(sp));
+      setMyApprovalsData(myRequestDataAllDMS);
 
     } else if (tab == "Automation") {
 
@@ -273,15 +275,29 @@ const MyRequestContext = ({ props }: any) => {
 
   }, [useHide]);
 
- 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const myrequestdatadms:any = await gteDMSApproval(sp);
+        setMyRequestDataAllDMS(myrequestdatadms);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
 
   const ApiCall = async () => {
 
     let myrequestdata = await getMyRequest(sp);
+    let myrequestdatadms = await gteDMSApproval(sp);
 
     setMyApprovalsData(await getMyRequest(sp));
 
     setmyRequestDataAll(myrequestdata);
+    // setmyRequestDataAllDMS(myrequestdatadms);
 
     let Automationdata = await getRequestListsData(sp);
 
@@ -337,7 +353,7 @@ const MyRequestContext = ({ props }: any) => {
 
     );
 
-    const filteredData = data.filter((item, index) => {
+    const filteredData = data?.filter((item, index) => {
 
  
 
@@ -389,7 +405,7 @@ const MyRequestContext = ({ props }: any) => {
 
  
 
-    const sortedData = filteredData.sort((a, b) => {
+    const sortedData = filteredData?.sort((a, b) => {
 
       if (sortConfig.key === "SNo") {
 
@@ -466,7 +482,7 @@ const MyRequestContext = ({ props }: any) => {
 
   const itemsPerPage = 10;
 
-  const totalPages = Math.ceil(filteredMyApprovalData.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredMyApprovalData?.length / itemsPerPage);
 
  
 
@@ -494,9 +510,9 @@ const MyRequestContext = ({ props }: any) => {
 
   const endIndex = startIndex + itemsPerPage;
 
-  const currentData = filteredMyApprovalData.slice(startIndex, endIndex);
+  const currentData = filteredMyApprovalData?.slice(startIndex, endIndex);
 
-  const newsCurrentData = filteredNewsData.slice(startIndex, endIndex);
+  const newsCurrentData = filteredNewsData?.slice(startIndex, endIndex);
 
   const [editID, setEditID] = React.useState(null);
 
@@ -1275,7 +1291,7 @@ const MyRequestContext = ({ props }: any) => {
 
                       <tbody>
 
-                        {currentData.length === 0 ? (
+                        {currentData?.length === 0 ? (
 
                           <div
 
@@ -1319,7 +1335,7 @@ const MyRequestContext = ({ props }: any) => {
 
                               >
 
-                                {startIndex + index + 1}
+                              <span className="indexdesign">  {startIndex + index + 1} </span>
 
                               </td>
 
@@ -1458,7 +1474,7 @@ const MyRequestContext = ({ props }: any) => {
 
  
 
-                  {currentData.length > 0 ? (
+                  {currentData?.length > 0 ? (
 
                     <nav className="pagination-container">
 

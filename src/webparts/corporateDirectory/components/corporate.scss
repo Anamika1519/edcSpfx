@@ -275,3 +275,9 @@ a.nav-linkss {
     padding: 0.70rem;
 }
 .mtable td, .mtable th{font-size: 14px;}
+.mtable td, .mtable th{font-size: 14px;}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}

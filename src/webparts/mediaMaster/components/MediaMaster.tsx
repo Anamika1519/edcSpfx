@@ -427,7 +427,7 @@ const MediaMastercontext = ({ props }: any) => {
                                 <td   style={{
                                     minWidth: "80px",
                                     maxWidth: "80px",
-                                  }}>{item.Status}</td>
+                                  }}><div className='btn btn-status'> {item.Status}</div></td>
                                 <td
                                   style={{
                                     minWidth: "80px",
@@ -446,7 +446,7 @@ const MediaMastercontext = ({ props }: any) => {
                                 >
                                   <div
                                     className="d-flex pb-2"
-                                    style={{ justifyContent: "start", gap:'10px' }}
+                                    style={{ justifyContent: "start", gap:'5px' }}
                                   >
                                     {/* Conditionally render the edit button based on status */}
                                     <span>
@@ -472,15 +472,16 @@ const MediaMastercontext = ({ props }: any) => {
                            
                                         }}
                                       >
-                                        <FontAwesomeIcon icon={faEdit} />
+                                          <img src={require('../../../CustomAsset/edit.png')}/>
+                                        {/* <FontAwesomeIcon icon={faEdit} /> */}
                                       </a>
                                     </span>
                                     <span>
                                     {(item.Status === "Save as draft")?(  <a
                                         className="action-icon text-danger"
                                         onClick={() => Deletemedia(item.ID)}
-                                      >
-                                        <FontAwesomeIcon icon={faTrashAlt} />
+                                      > <img src={require('../../../CustomAsset/del.png')}/>
+                                        {/* <FontAwesomeIcon icon={faTrashAlt} /> */}
                                       </a>):(<div></div>)}
                                     </span>
                                   </div>

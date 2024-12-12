@@ -387,7 +387,7 @@ const HelloWorldContext = ({ props }: any) => {
       <div className="content-page">
         <HorizontalNavbar _context={sp} siteUrl={siteUrl} />
         <div className="content mt-4" style={{ marginLeft: `${!useHide ? '240px' : '80px'}` }}>
-        {loading ?<div style={{minHeight:'100vh'}} className="loadernewadd mt-10">
+        {loading ?<div style={{minHeight:'100vh',marginTop:'100px'}} className="loadernewadd mt-10">
                     <div>
                         <img
                             src={require("../../../CustomAsset/birdloader.gif")}
@@ -476,8 +476,8 @@ const HelloWorldContext = ({ props }: any) => {
                     >
                       <div className="card-body height">
                         <h4
-                          className="header-title font-8 text-dark fw-bold mb-0"
-                          style={{ fontSize: "16px", fontWeight: "bold" }}
+                          className="header-title font-8 text-dark newtextdark fw-bold mb-0"
+                          style={{ fontSize: "16px", fontWeight: "bold",marginTop:'2px' }}
                         >
                           Latest Announcement
                           <a

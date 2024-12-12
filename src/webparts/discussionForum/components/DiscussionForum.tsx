@@ -304,7 +304,17 @@ const DiscussionForumContext = ({ props }: any) => {
         return sortConfig.direction === "ascending"
           ? aIndex - bIndex
           : bIndex - aIndex;
-      } else if (sortConfig.key) {
+      } else if(sortConfig.key == "Category"){
+        const aValue = a["DiscussionForumCategory"].CategoryName ? a["DiscussionForumCategory"].CategoryName.toLowerCase() : "";
+        const bValue = b["DiscussionForumCategory"].CategoryName ? b["DiscussionForumCategory"].CategoryName.toLowerCase() : "";
+        if (aValue < bValue) {
+          return sortConfig.direction === "ascending" ? -1 : 1;
+        }
+        if (aValue > bValue) {
+          return sortConfig.direction === "ascending" ? 1 : -1;
+        }
+      }      
+      else if (sortConfig.key) {
         // Sort by other keys
         const aValue = a[sortConfig.key] ? a[sortConfig.key].toLowerCase() : "";
         const bValue = b[sortConfig.key] ? b[sortConfig.key].toLowerCase() : "";
@@ -1840,7 +1850,7 @@ const DiscussionForumContext = ({ props }: any) => {
                               >
                                 <span>Status</span>{" "}
                                 <span
-                                  onClick={() => handleSortChange("Category")}
+                                  onClick={() => handleSortChange("ARGDiscussionStatus")}
                                 >
                                   <FontAwesomeIcon icon={faSort} />{" "}
                                 </span>
@@ -1856,7 +1866,7 @@ const DiscussionForumContext = ({ props }: any) => {
                               >
                                 <span>Type</span>{" "}
                                 <span
-                                  onClick={() => handleSortChange("Category")}
+                                  onClick={() => handleSortChange("GroupType")}
                                 >
                                   <FontAwesomeIcon icon={faSort} />{" "}
                                 </span>
@@ -1912,20 +1922,7 @@ const DiscussionForumContext = ({ props }: any) => {
 
                             </div>
                           </th>
-                          {/* <th style={{
-                            minWidth: "80px", maxWidth: "80px", borderBottomRightRadius: "10px",
-                            borderTopRightRadius: "10px", textAlign: "center"
-                          }}>
-                            <div className="d-flex flex-column bd-highlight ">
-                              <div
-                                className="d-flex"
-                                style={{ justifyContent: "space-between" }}
-                              >
-                                <span>Activities</span>
-                              </div>
-                             
-                            </div>
-                          </th> */}
+                          
                         </tr>
                       </thead>
                       <tbody>
@@ -1946,16 +1943,16 @@ const DiscussionForumContext = ({ props }: any) => {
                             <tr
 
                               key={index}
-                              style={{ cursor: "pointer" }}>
+                             >
                               <td
                                 style={{
                                   minWidth: "50px",
-                                  maxWidth: "50px",
+                                  maxWidth: "50px"                                 
                                 }}>
 
                                 <span className="indexdesign">  {startIndex + index + 1}</span>
                               </td>
-                              <td style={{ minWidth: "130px", maxWidth: "130px", textTransform: 'capitalize' }} onClick={() => handleClick(item.Id)}><span className="text-info">{item.Topic}</span></td>
+                              <td style={{ minWidth: "130px", maxWidth: "130px", textTransform: 'capitalize', cursor: "pointer" }} onClick={() => handleClick(item.Id)}><span className="text-info bordertesth">{item.Topic}</span></td>
                               <td style={{ minWidth: "130px", maxWidth: "130px" }}>{item.Overview}</td>
                               <td style={{ minWidth: "100px", maxWidth: "100px" }}>
                                 {item?.DiscussionForumCategory?.CategoryName}

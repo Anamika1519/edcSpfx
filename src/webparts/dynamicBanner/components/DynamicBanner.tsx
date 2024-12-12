@@ -326,8 +326,8 @@ const DynamicBannercontext = ({ props }: any) => {
                       <table className="mtable mt-0 table-centered table-nowrap table-borderless mb-0">
                         <thead>
                           <tr>
-                            <th style={{ borderBottomLeftRadius: '10px', minWidth: '50px',
-                               maxWidth: '50px', borderTopLeftRadius: '10px' }}>
+                            <th style={{ borderBottomLeftRadius: '0px', minWidth: '50px',
+                               maxWidth: '50px', borderTopLeftRadius: '0px' }}>
                                   <div className="d-flex pb-2" 
                                   style={{ justifyContent: 'space-between' }}>
                                <span>S.No.</span>
@@ -375,7 +375,7 @@ const DynamicBannercontext = ({ props }: any) => {
                                     </div>
                                   </div>
                             </th> */}
-                            <th style={{ minWidth: '100px', maxWidth: '100px' }}>
+                            <th style={{ minWidth: '60px', maxWidth: '60px' }}>
                             <div className="d-flex flex-column bd-highlight ">
                                     <div className="d-flex pb-2" style={{ justifyContent: 'space-between' }}>  
                                       <span >Status</span>  <span onClick={() => handleSortChange('Status')}><FontAwesomeIcon icon={faSort} /> </span></div>
@@ -395,7 +395,7 @@ const DynamicBannercontext = ({ props }: any) => {
                                     </div>
                                   </div>
                             </th>
-                            <th style={{ borderBottomRightRadius: '10px', minWidth: '50px', maxWidth: '50px', borderTopRightRadius: '10px' }}>
+                            <th style={{ borderBottomRightRadius: '0px', minWidth: '50px', maxWidth: '50px', borderTopRightRadius: '0px' }}>
                             <div className="d-flex flex-column bd-highlight pb-2">
                                   <div className="d-flex  pb-2" style={{ justifyContent: 'space-between' }}>  <span >Action</span> <div className="dropdown">
                                     <FontAwesomeIcon icon={faEllipsisV} onClick={toggleDropdownNews} size='xl'/>
@@ -422,18 +422,18 @@ const DynamicBannercontext = ({ props }: any) => {
                             const ImageUrl = item.BannerImage == undefined || item.BannerImage == null ? "" : JSON.parse(item.BannerImage);
                             return(
                               <tr key={index}>
-                                <td style={{ minWidth: '50px', maxWidth: '50px' }}><div className='indexdesign'> {index + 1}</div>  </td>
+                                <td style={{ minWidth: '50px', maxWidth: '50px' }}><div style={{marginLeft:'20px'}} className='indexdesign'> {index + 1}</div>  </td>
                                 <td>{item.Title}</td>
                                
-                                <td>{item.Status}</td>
+                                <td style={{ minWidth: '60px', maxWidth: '60px' }}>  <div className='btn btn-status'> {item.Status} </div> </td>
                                 <td style={{ minWidth: '80px', maxWidth: '80px' }}> {moment(item.Created).format("DD-MMM-YYYY")}</td>
                                 <td style={{ minWidth: '50px', maxWidth: '50px' }} className="ng-binding">
-                                <div className="d-flex  pb-2" style={{ justifyContent: 'space-around' }}>
+                                <div className="d-flex  pb-2" style={{ justifyContent: 'center',gap:'5px' }}>
                                 <span > <a className="action-icon text-primary" onClick={() => EditBanner(item.ID)}>
-                                    <FontAwesomeIcon icon={faEdit} fontSize={18}/>
+                                <img src={require('../../../CustomAsset/edit.png')} />
                                   </a> </span >
                                   <span>   <a className="action-icon text-danger" onClick={() => DeleteBanner(item.ID)}>
-                                    <img src={require('../../../CustomAsset/trash.svg')} style={{ width: '20px', height: '15px' }} />
+                                    <img src={require('../../../CustomAsset/del.png')}/>
                                   </a> </span>
                                   </div>
                                 </td>

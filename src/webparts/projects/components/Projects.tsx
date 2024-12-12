@@ -270,6 +270,26 @@ const HelloWorldContext = ({ props }: any) => {
     }
   };
 
+  const onChange1 = (name: string, value: string) => {
+    console.log(selectedValue, 'selectedValue');
+   
+    if (value.startsWith(" ")) {
+      Swal.fire("Error", "Project name should not start with a space.", "error");
+      setFormData((prevState) => ({
+        ...prevState,
+        [name]: "",
+      }));
+    }
+    else {
+      console.log("name-->>", name);
+      console.log("value-->>", value);
+      setFormData((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
+    }
+  };
+
   const handleCancel = () => {
     debugger;
     window.location.href =
@@ -316,6 +336,10 @@ const HelloWorldContext = ({ props }: any) => {
 
   const handleFormSubmit = async () => {
     debugger;
+    // if(selectedValue.length === 0){
+    //   Swal.fire("Error", "Project Team is required.", "error");
+    //   return;
+    // }
     if (validateForm()) {
       // const arrId = await saveProjectData(formData);
       let postPayload = {};
@@ -466,7 +490,7 @@ const HelloWorldContext = ({ props }: any) => {
     let valid = true;
     console.log(selectedValue, 'selectedValue');
     if (!ProjectName.trim()) {
-      Swal.fire("Error", "Project Name is required!", "error");
+      // Swal.fire("Error", "Project Name is required!", "error");
       valid = false;
     }
     // else if (!ProjectPriority) {
@@ -482,7 +506,7 @@ const HelloWorldContext = ({ props }: any) => {
     //   valid = false;
     // }
     else if (!startDate) {
-      Swal.fire("Error", "Start Date is required!", "error");
+      // Swal.fire("Error", "Start Date is required!", "error");
       valid = false;
     }
     // else if (!dueDate) {
@@ -497,6 +521,16 @@ const HelloWorldContext = ({ props }: any) => {
     //   Swal.fire("Error", "Project Overview is required!", "error");
     //   valid = false;
     // }
+    if(selectedValue.length === 0){
+      valid=false;
+    }
+   
+    if(!valid){
+      Swal.fire("Error", "Please fill the mandatory fields!", "error");
+    }else if(ProjectName.length > 50){
+      Swal.fire("Error", "Project name should not be greater than 50 characters", "error");
+      valid=false;
+    }
     return valid;
 
   };
@@ -525,7 +559,7 @@ const HelloWorldContext = ({ props }: any) => {
     }
   };
   const ApiCall = async () => {
-    setLoading(true); 
+    setLoading(true);
     try {
       let test = await sp.web.currentUser();
       console.log("testtest", test)
@@ -807,7 +841,9 @@ const HelloWorldContext = ({ props }: any) => {
       const siteUsers = await sp.web.siteUsers();
 
       // Filter users by checking the PrincipalType and ensure it's not a group
-      const usersOnly = siteUsers.filter(user => user.PrincipalType === 1);
+      // const usersOnly = siteUsers.filter(user => user.PrincipalType === 1);
+     
+      const usersOnly = siteUsers.filter(user => user.PrincipalType === 1 && user.Email !== "")
       const formattedOptions = usersOnly.map((item) => ({
         name: item.Title, // Adjust according to your list schema
         id: item.Id,
@@ -925,8 +961,11 @@ const HelloWorldContext = ({ props }: any) => {
                                 placeholder="Enter Project Name"
                                 className="form-control inputcss"
                                 value={formData.ProjectName}
+                                // onChange={(e) =>
+                                //   onChange(e.target.name, e.target.value)
+                                // }
                                 onChange={(e) =>
-                                  onChange(e.target.name, e.target.value)
+                                  onChange1(e.target.name, e.target.value)
                                 }
                               />
                             </div>
@@ -939,7 +978,7 @@ const HelloWorldContext = ({ props }: any) => {
                                 className="form-label"
                               >
                                 Project Priority{" "}
-                    
+                   
                               </label>
                               <select
                                 className="form-select inputcss"
@@ -951,7 +990,7 @@ const HelloWorldContext = ({ props }: any) => {
                                 }
                               >
                                 <option>Select</option>
-                              
+                             
                                 {ChoiceValueOne?.map(
                                   (item: any, index: any) => (
                                     <option key={index} value={item}>
@@ -1142,7 +1181,7 @@ const HelloWorldContext = ({ props }: any) => {
                                 className="form-label"
                               >
                                 Select Project Team{" "}
-                                {/* <span className="text-danger">*</span> */}
+                                <span className="text-danger">*</span>
                               </label>
 
                               <Multiselect
@@ -1162,7 +1201,7 @@ const HelloWorldContext = ({ props }: any) => {
                                 className="form-label"
                               >
                                 Project File Master{" "}
-                            
+                           
                               </label>
                               <input
                                 type="text"
@@ -1175,7 +1214,7 @@ const HelloWorldContext = ({ props }: any) => {
                                   onChange(e.target.name, e.target.value)
                                 }
                               />
-                            
+                           
                             </div>
                           </div> */}
                           {/* )} */}
@@ -1436,9 +1475,9 @@ const HelloWorldContext = ({ props }: any) => {
                                     style={{ color: "#98a6ad" }}
                                     className="date-color two-line font-14 mb-3 sp-line-2"
                                   >
-                                    {project.ProjectOverview} 
-                                    
-                                  
+                                    {project.ProjectOverview}
+                                   
+                                 
                                   </p> */}
 
                                   {/* Task info */}
@@ -1561,7 +1600,7 @@ const HelloWorldContext = ({ props }: any) => {
                                                 <span className="gfg_text">
                                                 A Computer science portal
                                             </span>
-    
+   
                                             </div>
                                               );
                                             }
@@ -1958,7 +1997,7 @@ const HelloWorldContext = ({ props }: any) => {
                                               <span className="gfg_text">
                                               A Computer science portal
                                           </span>
-  
+ 
                                           </div>
                                             );
                                           }
@@ -1985,7 +2024,7 @@ const HelloWorldContext = ({ props }: any) => {
                   ) : (
                     // <p>Loading projects...</p>
                     <div className="loadernewadd">
-                      <span>No Project found </span>{" "}                   
+                      <span>No Project found </span>{" "}                  
                     </div>
                   ))
             }
@@ -2187,7 +2226,7 @@ const HelloWorldContext = ({ props }: any) => {
                                                      justifyContent:'center',
                                                       position:'relative',
                                                      width:'40px'
-                                                  
+                                                 
                                             }}
                                             className="circlecssnew mlnew0 text-center img-thumbnail avatar-xl"
                                           >
@@ -2239,7 +2278,7 @@ const HelloWorldContext = ({ props }: any) => {
                                                 <span className="gfg_text">
                                                 A Computer science portal
                                             </span>
-    
+   
                                             </div>
                                               );
 
@@ -2266,7 +2305,7 @@ const HelloWorldContext = ({ props }: any) => {
                     </div>
                   ) : (
                    <div className="loadernewadd">
-                    <span>No Project found </span>{" "}                   
+                    <span>No Project found </span>{" "}                  
                   </div>
                   ))
                 }
@@ -2279,7 +2318,7 @@ const HelloWorldContext = ({ props }: any) => {
                   {/* Map through the projects array and display a card for each */}
                   {loading ? (<div className="loadernewadd">
                     <div>
-                    <img style={{width:'60px'}} 
+                    <img style={{width:'60px'}}
                             src={require("../../../CustomAsset/birdloader.gif")}
                             className="alignrightl"
                             alt="Loading..."
@@ -2546,7 +2585,7 @@ const HelloWorldContext = ({ props }: any) => {
                     </div>
                   ) : (
                     <div className="loadernewadd">
-                      <span>No Project found </span>{" "}                   
+                      <span>No Project found </span>{" "}                  
                     </div>
                   ))
                 }
@@ -2578,7 +2617,7 @@ const HelloWorldContext = ({ props }: any) => {
 
                     <div className="row">
                       {Dataproject.map((project, index) => {
-
+                        if(project?.TeamMembersId?.includes(userId) || project?.AuthorId == userId){
                         if (project?.ProjectStatus === "Ongoing") {
                           return (
                             <div key={index} className="col-lg-4 col-md-6 mb-0">
@@ -2777,7 +2816,7 @@ const HelloWorldContext = ({ props }: any) => {
                                           top:'11px',
                                           zIndex:'99',
                                               display:'flex',
-                                              
+                                             
                                        
                                         }}
                                       >
@@ -2815,7 +2854,243 @@ const HelloWorldContext = ({ props }: any) => {
                             </div>
                           );
                         }
+                      }
+                      // if (project?.ProjectStatus === "Ongoing") {
+                      //   return (
+                      //     <div key={index} className="col-lg-4 col-md-6 mb-0">
+                      //       <div className="card project-box">
+                      //         <div className="card-body">
+                      //           <div className="dropdown float-end">
+                      //             <a
 
+                      //               className="dropdown-toggle card-drop arrow-none"
+                      //               data-bs-toggle="dropdown"
+                      //               aria-expanded="false"
+                      //             >
+                      //               <img className="morealign" src={require('../assets/more.png')} />
+                      //             </a>
+                      //             <div style={{ padding: "0px", top: "15px", minWidth: "auto", textAlign: "center" }} className="dropdown-menu newheight dropdown-menu-end">
+                      //               <a
+                      //                 className="dropdown-item"
+
+                      //                 onClick={() => handleDelete(project.Id)}
+                      //               >
+                      //                 Delete
+                      //               </a>
+                      //               <a
+                      //                 className="dropdown-item"
+
+                      //                 onClick={() => GotoNextPage(project)}
+                      //               >
+                      //                 View Detail
+                      //               </a>
+                      //               {project?.AuthorId === userId && project?.ProjectStatus === 'Ongoing' &&
+                      //                 (
+                      //                   <a
+                      //                     className="dropdown-item"
+                      //                     onClick={() => UpdatProject(project.Id)}
+                      //                   >
+                      //                     Mark Completed
+                      //                   </a>
+                      //                 )}
+                      //             </div>
+                      //           </div>
+
+                      //           {/* Title */}
+                      //           <h4 className="mt-0 mb-1 one-line">
+                      //             <a
+                      //               onClick={() => GotoNextPage(project)}
+                      //               className="text-dark fw-bold font-16"
+                      //             >
+                      //               {project.ProjectName ||
+                      //                 "Untitled Project"}
+                      //             </a>
+                      //           </h4>
+
+                      //           <a>
+
+                      //             {
+                      //               project?.ProjectStatus === null
+                      //                 ? null // Don't display anything if ProjectStatus is null
+                      //                 : (
+                      //                   <a className="ongoing mb-3"
+                      //                     style={{
+                      //                       background: project?.ProjectStatus === 'Completed' ? '#cce7dc' : '#6c757d',
+                      //                       color: project?.ProjectStatus === 'Completed' ? '#008751' : '#fff',
+                      //                       padding: '5px',
+                      //                       borderRadius: '4px',
+                      //                       textDecoration: 'none'
+                      //                     }}
+                      //                   >
+                      //                     {project?.ProjectStatus === 'Ongoing' ? 'Ongoing' : 'Completed'}
+                      //                   </a>
+                      //                 )
+                      //             }
+                      //           </a>
+
+                      //           <p
+
+                      //             className="date-color text-muted two-line font-14 mb-3 sp-line-2"
+                      //           >
+
+                      //             {truncateText(project.ProjectOverview, 100) ||
+                      //               "No description available..."}{" "}
+
+                      //           </p>
+
+                      //           <p className="mb-1 text-muted font-12">
+                      //             <span
+
+                      //               className="pe-2 text-nowrap mb-1 d-inline-block"
+                      //             >
+                      //               <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} />
+                      //               <b>{project?.ProjectsDocsId?.length}</b> Documents
+                      //             </span>
+                      //             <span
+
+                      //               className="text-nowrap mb-1 d-inline-block"
+                      //             >
+                      //               <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />
+                      //               <b>{project.CommentsCount || 0}</b> Comments
+                      //             </span>
+                      //           </p>
+
+                      //           {/* Task info */}
+                      //           {/* <p className="mb-1 font-12">
+                      //       <span
+                      //         style={{ color: "#6e767e" }}
+                      //         className="pe-2 text-nowrap mb-1 d-inline-block"
+                      //       >
+                      //         <i className="fe-file-text text-muted"></i>
+                      //         <b>{project.documentsCount || 0}</b> Documents
+                      //       </span>
+                      //       <span
+                      //         style={{ color: "#6e767e" }}
+                      //         className="text-nowrap mb-1 d-inline-block"
+                      //       >
+                      //         <i className="fe-message-square text-muted"></i>
+                      //         <b>{project. CommentsCount || 0}</b> Comments
+                      //       </span>
+                      //     </p> */}
+                      //           <div
+                      //             style={{
+
+                      //               position: "relative",
+                      //               display: 'flex'
+                      //             }}
+                      //           >
+                      //             <div style={{ display: 'flex' }} className="ml20">
+                      //               {project?.TeamMembers?.map(
+                      //                 (id: any, idx: any) => {
+                      //                   if (idx < 3) {
+                      //                     return (
+                      //                       <div style={{ width: '40px', marginLeft: '-7px' }} className="gfg_tooltip">
+                      //                         <img
+                      //                           style={{
+                      //                             margin:
+                      //                               index == 0
+                      //                                 ? "0 0 0 0"
+                      //                                 : "0 0 0px -12px",
+                      //                             float: "left"
+                      //                           }}
+                      //                           src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+                      //                           className="rounded-circlecss img-thumbnail avatar-xl"
+                      //                           alt="profile-image"
+                      //                         />
+                      //                         <span className="gfg_text">
+                      //                           {id?.Title}
+                      //                         </span>
+
+                      //                       </div>
+                      //                     );
+                      //                   }
+                      //                 }
+                      //               )}
+                      //               {/* {
+                      //                 project?.TeamMembers?.length > 3 &&
+
+                      //                 <div
+                      //                   className=""
+                      //                   onClick={() =>
+                      //                     toggleDropdown(project.Id)
+                      //                   }
+                      //                   key={project.Id}
+                      //                 >
+                      //                   <div
+                      //                     style={{
+                      //                       margin:
+                      //                         index == 0
+                      //                           ? "0 0 0 0"
+                      //                           : "0 0 0px -12px",
+                      //                              float:"left",
+                      //                              display:'flex',
+                      //                              alignItems:'center',
+                      //                              justifyContent:'center', width:'40px'
+                      //                     }}
+                      //                     className="rounded-circlecss mlnew0 img-thumbnail avatar-xl"
+                      //                   >
+                      //                     +
+                      //                   </div>
+                      //                 </div>
+                      //               } */}
+                      //               {
+                      //                 project?.TeamMembers?.length > 3 &&
+
+                      //                 <div className="moreuser text-muted"
+                      //                 ><div
+                      //                 >
+                      //                     +{project?.TeamMembers?.length - 3} more
+                      //                   </div>
+                      //                 </div>
+                      //               }
+                      //             </div>
+                      //             {/* {showDropdownId === project.Id && (
+                      //               <div
+                      //                 className=""
+                      //                 style={{
+                      //                   position: "relative",
+                      //                   left:"-28px",
+                      //                   top:'11px',
+                      //                   zIndex:'99',
+                      //                       display:'flex',
+                                           
+                                     
+                      //                 }}
+                      //               >
+                      //                 {showDropdownId === project.Id && (
+                      //                   project?.TeamMembers?.map(
+                      //                     (id: any, idx: any) => {
+                      //                       return (
+                      //                         <div style={{width:'40px', marginLeft:'-7px'}} className="gfg_tooltip">
+                      //                         <img
+                      //                           style={{
+                      //                             margin:
+                      //                               idx == 0
+                      //                                 ? "0 0 0 0"
+                      //                                 : "0 0 0px -12px",
+                      //                                    float:"left"
+                      //                           }}
+                      //                           src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+                      //                           className="rounded-circlecss img-thumbnail avatar-xl"
+                      //                           alt="profile-image"
+                      //                         />
+                      //                          <span className="gfg_text">
+                      //                     A Computer science portal
+                      //                 </span>
+
+                      //                 </div>
+                      //                       );
+                      //                     }
+                      //                   )
+                      //                 )}
+                      //               </div>
+                      //             )} */}
+                      //           </div>
+                      //         </div>
+                      //       </div>
+                      //     </div>
+                      //   );
+                      // }
                         return null;
                       })}
                       {itemsToShow < Dataproject?.length && (
@@ -2828,7 +3103,7 @@ const HelloWorldContext = ({ props }: any) => {
                     </div>
                   ) : (
                     <div className="loadernewadd">
-                    <span>No Project found </span>{" "}                   
+                    <span>No Project found </span>{" "}                  
                   </div>
                   ))
                 }
@@ -3082,7 +3357,7 @@ const HelloWorldContext = ({ props }: any) => {
                     </div>
                   ) : (
                     <div className="loadernewadd">
-                      <span>No Project found </span>{" "}                   
+                      <span>No Project found </span>{" "}                  
                     </div>
                   )}
                 </div>

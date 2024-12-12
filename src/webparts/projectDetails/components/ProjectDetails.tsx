@@ -71,7 +71,7 @@ interface Comment {
   UserProfile: string;
 }
 
-let projectname :any = "" 
+let projectname :any = ""
 let filemanager : any = ""
 const payload: any = {};
 const ProjectDetailsContext = ({ props }: any) => {
@@ -122,7 +122,7 @@ const [options, setOpions] = useState([]);
       try {
         // Fetch all site users and filter out groups
         const userList = await sp.web.siteUsers();
-        
+       
         // Filter users by checking the PrincipalType (1 represents Users)
         const userOptions = userList
             .filter(user => user.PrincipalType === 1)
@@ -130,21 +130,21 @@ const [options, setOpions] = useState([]);
                 label: user.Title,   // Display name of the user
                 value: user.Id       // Unique user ID
             }));
-    
+   
         setUsers(userOptions);  // Set the options for Select and Multiselect
     } catch (error) {
         console.error('Error fetching users:', error);
     }
     //   try {
     //     const items = await sp.web.siteUsers()
-  
+ 
     //     console.log(items, 'itemsitemsitems');
-  
+ 
     //     const formattedOptions = items.map((item) => ({
     //       label: item.Title, // Adjust according to your list schema
     //       value: item.Id,
     //     }));
-  
+ 
     //     setOpions(formattedOptions);
     // } catch (error) {
     //     console.error('Error fetching options:', error);
@@ -211,14 +211,14 @@ const [options, setOpions] = useState([]);
   //     try {
        
   //       const siteUsers = await sp.web.siteUsers();
-  
+ 
 
   //       const usersOnly = siteUsers.filter(user => user.PrincipalType === 1);
   //       const formattedOptions = usersOnly.map((item) => ({
-  //         name: item.Title, 
+  //         name: item.Title,
   //         id: item.Id,
   //     }));
-  
+ 
   //     setUsers(formattedOptions);
   //       console.log(usersOnly, 'usersOnly');
   //       return usersOnly;
@@ -234,7 +234,7 @@ const [options, setOpions] = useState([]);
   //   const userdata = await sp.web.currentUser();
 
   //   currentUserEmailRef.current = userdata.Email;
-  
+ 
  
   // }
   // useEffect(() => {
@@ -523,7 +523,7 @@ if (projectDetails ) {
         }
         const nofiArr = await addNotification(notifiedArr, sp)
         console.log(nofiArr, 'nofiArr');
-        
+       
         setNewComment("");
         setLoading(false);
       });
@@ -626,7 +626,7 @@ if (projectDetails ) {
       (like: Like) => like.UserName === CurrentUser.Title
     );
 try{
-  
+ 
     if (userLikeIndex === -1) {
       // Add a new like
       await sp.web.lists
@@ -773,7 +773,7 @@ try{
       });
     }
     catch (error) {
-      setLoadingReply(false); 
+      setLoadingReply(false);
       console.error('Error toggling Reply:', error);
     }
     finally {
@@ -795,10 +795,10 @@ try{
   console.log(ArrDetails, "console.log(ArrDetails)");
   const sendanEmail = (item:any) => {
     // window.open("https://outlook.office.com/mail/inbox");
-  
+ 
      const subject ="Project Title-"+ item.ProjectName;
      const body = 'Here is the link to the Project:'+ `${siteUrl}/SitePages/ProjectDetails.aspx?${item.Id}`;
-  
+ 
     //const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
@@ -815,10 +815,10 @@ try{
   //   try {
   //     // Define allowed MIME types
   //     const allowedTypes = [
-  //       'image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml', 
-  //       'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 
-  //       'application/pdf', 'application/vnd.ms-excel', 
-  //       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 
+  //       'image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml',
+  //       'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  //       'application/pdf', 'application/vnd.ms-excel',
+  //       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
   //       'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
   //       'text/csv', 'text/tsx'
   //     ];
@@ -845,18 +845,18 @@ try{
   // const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
   //   setLoading(true);
   //   const files = Array.from(e.target.files || []);  // Ensure files is an array of type File[]
-  
+ 
   //   try {
-      
+     
   //     const allowedTypes = [
-  //       'image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml', 
-  //       'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 
-  //       'application/pdf', 'application/vnd.ms-excel', 
-  //       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 
+  //       'image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml',
+  //       'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  //       'application/pdf', 'application/vnd.ms-excel',
+  //       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
   //       'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
   //       'text/csv', 'text/tsx'
   //     ];
-  
+ 
   //     // Filter valid files based on MIME types
   //     const filteredFiles = files.filter(file => allowedTypes.includes(file.type));
   //     console.error('here is my filteredFiles:', filteredFiles);
@@ -865,7 +865,7 @@ try{
   //       setLoading(false);
   //       return;
   //     }
-  
+ 
   //     setError('');
   //     setSelectedFiles(filteredFiles);
   //   } catch (error) {
@@ -878,27 +878,27 @@ try{
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setLoading(true);
     const files = Array.from(e.target.files || []);  // Ensure files is an array of type File[]
-  
+ 
     try {
-      
+     
       const allowedTypes = [
-        'image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml', 
-        'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 
-        'application/pdf', 'application/vnd.ms-excel', 
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 
+        'image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml',
+        'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'application/pdf', 'application/vnd.ms-excel',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
         'text/csv', 'text/tsx'
       ];
-  
+ 
       // Filter valid files based on MIME types
       const filteredFiles = files.filter(file => allowedTypes.includes(file.type));
-  
+ 
       if (filteredFiles.length === 0) {
         setError("Only PNG, JPG, SVG, DOC, DOCX, PDF, EXCEL, PPT, CSV, and TSX files are allowed.");
         setLoading(false);
         return;
       }
-  
+ 
       setError('');
       setSelectedFiles(filteredFiles);
     } catch (error) {
@@ -916,7 +916,7 @@ try{
 //     try {
 //       console.log(`Uploading file: ${file.name}`);
 //       console.log(`filemanager: ${filemanager}`);
-      
+     
 //       // Reference the folder by server-relative path
 //       const uploadFolder = sp.web.getFolderByServerRelativePath(`${filemanager}`);
 //       console.log(uploadFolder , "uplaodfold")
@@ -931,13 +931,13 @@ try{
 //       getAllFilesForProject()
 //       setSelectedFiles([])
 //       }
-  
+ 
 //       console.log(`Upload successful for file: ${file.name}`);
 //     } catch (error) {
 //       console.error(`Error uploading file: ${file.name}`, error);
 //     }
 //   }
-      
+     
 
 // }
 const sanitizeFileName = (name:any) => {
@@ -1036,8 +1036,8 @@ const uploadfileinfolder = async () => {
 
   const [files, setFiles] = useState([]);
   async function getAllFilesForProject() {
-    
-    
+   
+   
     console.log(filemanager, "file manager")
     const response = await sp.web.getFolderByServerRelativePath(`${filemanager}`).files();
     console.log(response, "resonse")
@@ -1047,19 +1047,19 @@ const uploadfileinfolder = async () => {
       const parts = filemanager.split('/sites/')[1].split('/');
       return parts.length > 2 && !parts.includes('Forms');
   }
-  
+ 
   function isSubsite(filemanager:any) {
       // Check if the URL contains exactly two parts after "/sites/"
       const parts = filemanager.split('/sites/')[1].split('/');
       return parts.length === 2;
   }
-  
+ 
   // Example usage
 
-  
+ 
   //console.log(isDocumentLibrary(docLibraryUrl)); // true
   //console.log(isSubsite(docLibraryUrl)); // false
-  
+ 
  
   }
 
@@ -1071,15 +1071,15 @@ const uploadfileinfolder = async () => {
     const idNum = originalString.substring(1);
     try {
      
-        
-      
+       
+     
       const getargmember :IList[] = await sp.web.lists.getByTitle('ARGProject').items.filter(`ProjectName eq '${projectname}'`).select("*,TeamMembers/ID,TeamMembers/EMail,TeamMembers/Title").expand("TeamMembers")();
       console.log(getargmember, "getargmember")
       const userList = await sp.web.lists.getByTitle("User Information List").items.select("ID", "Title", "EMail", "Department", "JobTitle", "Picture").filter("EMail ne null")();
       console.log(userList, "userlist")
       setArgcurrentgroupuser(getargmember)
     } catch (error) {
-      
+     
     }
     if(projectname){
       const getargmember = await sp.web.lists.getByTitle('ARGProject')
@@ -1138,7 +1138,7 @@ const [toggleuserpopup, Settoggleuserpopup] = useState(false);
 
 
 
-// this is pop up when folder create click 
+// this is pop up when folder create click
 const togglePopup  =async () => {
   const ids = window.location.search;
 const originalString = ids;
@@ -1149,10 +1149,10 @@ const idNum = originalString.substring(1);
   console.log(getdata , "get data ")
 
     if (getdata.FolderInProgress === null || getdata.FolderInProgress === "") {
-    
+   
       setPopupVisible(!isPopupVisible);
     } else if (getdata.FolderInProgress === "In Progress") {
-    
+   
       Swal.fire({
         title: 'Folder is in progress!',
         text: 'Please wait until the process is complete.',
@@ -1186,7 +1186,7 @@ const togglevalue = (e:any) => {
 
   // Create folder pop up
   const UpdateItemAndCreateFolder = async (e:any) => {
-    e.preventDefault(); 
+    e.preventDefault();
 
 
     if (!name || !Overview) {
@@ -1198,7 +1198,7 @@ const togglevalue = (e:any) => {
         confirmButtonText: 'OK',
       });
     } else {
-    
+   
       try {
 
         console.log('Form submitted:', { name, Overview });
@@ -1207,15 +1207,15 @@ const togglevalue = (e:any) => {
         const idNum = originalString.substring(1);
         console.log(name, "name" , Overview , "overview")
         const updatedValues = {
-  
+ 
           ProjectFolderName : name,
           FolderOverview: Overview,
           FolderInProgress: "In Progress"
         };
-    
+   
      
          await sp.web.lists.getByTitle('ARGProject').items.getById(parseInt(idNum)).update(updatedValues);
-    
+   
         Swal.fire({
           title: 'Success!',
           text: 'The form was submitted successfully.',
@@ -1235,10 +1235,13 @@ const togglevalue = (e:any) => {
     }
   };
 
-  
+ 
   const UpdateTeamMember = async (e: any) => {
     e.preventDefault();
-
+    if(selectedValue.length === 0){
+      // Swal.fire("Error", "Please select at least one user.", "error");
+      return
+    }
     try {
         console.log('Form submitted:', { name, Overview });
         const ids = window.location.search;
@@ -1250,7 +1253,7 @@ const togglevalue = (e:any) => {
         const item = await sp.web.lists.getByTitle("ARGProject").items.getById(parseInt(idNum))
             .select("*, TeamMembers/Id, TeamMembers/EMail, TeamMembers/Title")
             .expand("TeamMembers")();
-        
+       
         console.log(item, "here is my item");
 
         // Current People Picker column value (TeamMembers) from the fetched item
@@ -1277,14 +1280,14 @@ const togglevalue = (e:any) => {
         const updatedValues = {
             TeamMembersId: updatedUsers.map(user => user.LookupId), // Ensure it's an array
         };
-        
+       
         // Update the SharePoint item
         const updatedItem =  await sp.web.lists.getByTitle('ARGProject').items.getById(parseInt(idNum)).update(updatedValues);
         if(updatedItem){
 
           togglevalue(e)
-  
-  
+ 
+ 
                // Show success message
         Swal.fire({
           title: 'Success!',
@@ -1315,7 +1318,7 @@ const togglevalue = (e:any) => {
 
   const DeleteFileFromFileMaster =async (fileId:any) =>{
     try {
-    
+   
       const result = await Swal.fire({
           title: 'Are you sure?',
           text: 'Do you really want to delete this file? This action cannot be undone.',
@@ -1331,8 +1334,8 @@ const togglevalue = (e:any) => {
       if (result.isConfirmed) {
           // Delete the file
           await sp.web.getFileById(fileId).delete();
-          
-          
+         
+         
           await Swal.fire(
               'Deleted!',
               'The file has been deleted successfully.',
@@ -1349,7 +1352,7 @@ const togglevalue = (e:any) => {
       }
   } catch (error) {
       console.error('Error deleting file:', error);
-  
+ 
       await Swal.fire(
           'Error!',
           'There was an error deleting the file.',
@@ -1387,7 +1390,7 @@ const togglevalue = (e:any) => {
       if (result.isConfirmed) {
           await sp.web.lists.getByTitle("ARGProjectComments").items.getById(commentId).delete();
 
-    
+   
           Swal.fire({
               title: "Deleted!",
               text: "The item has been successfully deleted.",
@@ -1412,14 +1415,14 @@ const togglevalue = (e:any) => {
    
 //     try {
 //         const itemId = argcurrentgroupuser[0]?.Id;
-//       
+//      
 //         if (!itemId) {
-//       
+//      
 //             return;
 //         }
 
 //         if (!userId) {
-//         
+//        
 //             return;
 //         }
 
@@ -1590,16 +1593,16 @@ const handleRemoveUser = async (userId: number) => {
               <div className="col-lg-8 mt-2">
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
               </div>
-          
+         
             </div>
             {ArrDetails.length > 0
               ? ArrDetails.map((item: any, index) => {
 
                 console.log(item?.Author?.Email , "email" )
                 console.log(item?.Author?.Title , "email" )
-            
+           
                 if(item.Author.EMail === currentUserEmailRef.current){
-        
+       
                 }
               //   if (item.ProjectStatus === "Completed") {
               //     var div = document.querySelector('.col-md-6.mobile-w2') as HTMLElement;
@@ -1610,7 +1613,7 @@ const handleRemoveUser = async (userId: number) => {
               //         console.error("Element not found: .col-md-6.mobile-w2");
               //     }
               // }
-              
+             
               if (item.ProjectStatus === "Completed") {
                 isProjectCompleted = "Completed"
                 const div = document.querySelector('.col-md-6.mobile-w2') as HTMLElement;
@@ -1624,11 +1627,11 @@ const handleRemoveUser = async (userId: number) => {
                             (element as HTMLButtonElement).disabled = true;
                         }
                     });
-            
+           
                     // Optionally, set pointer-events to none to visually indicate disabled state
                     div.style.pointerEvents = 'none';
                     div.style.opacity = '0.5';
-            
+           
                     // Optional: Add a message indicating the section is read-only
                     const message = document.createElement('div');
                     // message.innerText = "This section is read-only.";
@@ -1639,7 +1642,7 @@ const handleRemoveUser = async (userId: number) => {
                     console.error("Element not found: .col-md-6.mobile-w2");
                 }
             }
-              
+             
                 const ProjectsDocsJSON =
                   item.ProjectsDocsJSON == undefined ||
                     item.ProjectsDocsJSON == null
@@ -1652,7 +1655,7 @@ const handleRemoveUser = async (userId: number) => {
                   <>
                     <div className="row mt-3">
                       <div className="col-md-3 mobile-w1">
-                        
+                       
                       <p className="d-block mt-2 font-28">
                      
                         {item.ProjectName}
@@ -1679,18 +1682,18 @@ const handleRemoveUser = async (userId: number) => {
                 </button>
                         </div>
                         <div className="tabcss mb-2 mt-2 me-1 newalign"> <span className="pe-2 text-nowrap mb-0 d-inline-block">
-                              <Calendar size={14} />{" "}  Start Date:&nbsp; 
+                              <Calendar size={14} />{" "}  Start Date:&nbsp;
                              {moment(item.StartDate).format("DD-MMM-YYYY")}{" "}
-                              
+                             
                             </span>  </div>
                         <div className="tabcss mb-2 mt-2 me-1 newalign"> <span className="pe-2 text-nowrap mb-0 d-inline-block">
-                              <Calendar size={14} />{" "} End Date:&nbsp; 
-                             {moment(item.DueDate).format("DD-MMM-YYYY")}{" "} 
-                              
+                              <Calendar size={14} />{" "} End Date:&nbsp;
+                             {moment(item.DueDate).format("DD-MMM-YYYY")}{" "}
+                             
                             </span>  </div>
                             <div style={{cursor:'pointer'}} className="tabcss mb-2 sameh mt-2 me-1 ">
                             <span className="text-nowrap mb-0 d-inline-block" onClick={() => isProjectCompleted ? "":sendanEmail(item)} >
-                              <Share size={14} /> Share by email 
+                              <Share size={14} /> Share by email
                             </span>
                             </div>
                             {/* <div className="tabcss sameh mb-3 mt-2 me-1 "> */}
@@ -1698,7 +1701,7 @@ const handleRemoveUser = async (userId: number) => {
                               className="text-nowrap mb-0 d-inline-block"
                               onClick={() => openprojectlibrary()}
                             >
-                              <Link size={14} /> Copy link 
+                              <Link size={14} /> Copy link
                               {copySuccess && (
                                 <span className="text-success">
                                   {copySuccess}
@@ -1715,15 +1718,15 @@ const handleRemoveUser = async (userId: number) => {
                             </span> */}
                             </div>
                           {/* <p  style={{
-                              
+                             
                               margin: "11px",
                             }}   className="mb-2 mt-1 newt6 font-14">
                            
-                            
-                            
+                           
+                           
                             <div
                               style={{
-                              
+                             
                                 position: "relative",
                               }}
                             >
@@ -1803,7 +1806,7 @@ const handleRemoveUser = async (userId: number) => {
                           </p> */}
                         </div>
                       </div>
-                      
+                     
 
 
                    
@@ -1837,7 +1840,7 @@ const handleRemoveUser = async (userId: number) => {
                        {/* <ul>
           {selectedFiles.map((file, index) => (
             <li key={index}>
-              {file.name} 
+              {file.name}
               <button onClick={() => removeFile(file.name)} style={{ marginLeft: '10px', color: 'red' }}>❌</button>
             </li>
           ))}
@@ -1882,7 +1885,7 @@ const handleRemoveUser = async (userId: number) => {
               {/* New comment input */}
 
               {comments.map((comment, index) => (
-              
+             
                 <div className="col-xl-12" style={{ marginTop: "1rem" }}>
 
                    {console.log("comment json", comment)}
@@ -1904,7 +1907,7 @@ const handleRemoveUser = async (userId: number) => {
                     onAddReply={(text:any) => handleAddReply(index, text)}
                     onLike={() => isProjectCompleted ? "" :handleLikeToggle(index)} // Pass like handler
                     loadingReply={loadingReply}
-                      onSaveComment={(text:any)=>handleSaveComment(comment.Id,text)} 
+                      onSaveComment={(text:any)=>handleSaveComment(comment.Id,text)}
                       ondeleteComment={()=>handleDeleteComment(comment.Id)}
                   />
                 </div>
@@ -1920,7 +1923,7 @@ const handleRemoveUser = async (userId: number) => {
                           {}
                           <h4 className="header-title font-16 text-dark fw-bold mb-0"  style={{ fontSize: "20px" }}>Project Owner</h4>
                          <div className="displcenter">
-                          <img 
+                          <img
           src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item?.Author?.EMail}`}
           className="rounded-circlecss68 img-thumbnail avatar-xl"
           alt="profile-image"
@@ -1942,7 +1945,7 @@ src={require("../assets/plus.png")}
 
 className="newplusicon" alt="add user" /> </button>
   <i className="fe-plus-circle"></i>
-  
+ 
     </div>
  
 )}
@@ -1951,7 +1954,8 @@ className="newplusicon" alt="add user" /> </button>
   (id: any, idx: any) => {
     console.log(id, 'id');
     console.log(id.Id, 'id');
-    if (idx ) {
+    // {console.log("argcurrentgroupuser[0]?.TeamMembers",argcurrentgroupuser[0]?.TeamMembers)}
+    if (idx >=0 ) {
       return (
         <div className="projectmemeber">
 <img
@@ -1977,12 +1981,12 @@ className="newplusicon" alt="add user" /> </button>
         </div>
 
         )
-        
+       
         }
-      
+     
         {/* <p className="mb-0">{id?.Title} </p> */}
        
-        {!isProjectCompleted && 
+        {!isProjectCompleted &&
               <img
 
 src={require("../assets/calling.png")}
@@ -2005,18 +2009,18 @@ alt="Call"
 
 /> }
         </div>
-        
+       
       );
     }
   }
 )}
      {/* } */}
-    
+   
     </div>
-    
+   
     </div>
 
-  
+ 
 </div>
 
 
@@ -2027,8 +2031,8 @@ alt="Call"
   <label>
     <div>
       <div className="chosefile">
-        <img 
-          onClick={isProjectCompleted ? null : (e:any) => handleImageChange(e)} 
+        <img
+          onClick={isProjectCompleted ? null : (e:any) => handleImageChange(e)}
           src={require("../assets/cloud-computing.png")}
           style={{ width: '40px', opacity: isProjectCompleted ? '0.5' : '1', pointerEvents: isProjectCompleted ? 'none' : 'auto' }}
           alt="Check"
@@ -2056,12 +2060,12 @@ alt="Call"
                         <ul className="listnew">
           {selectedFiles.map((file, index) => (
             <li key={index}>
-              {file.name} 
+              {file.name}
               <button onClick={() => removeFile(file.name)} style={{ marginLeft: '10px', color: 'red' }}>❌</button>
             </li>
           ))}
         </ul>
-                          
+                         
           {files.map((file) => (
             <div className="col-lg-3">
             <Card key={file.UniqueId} style={{  marginBottom: '10px', height:'82px' }} >
@@ -2080,8 +2084,8 @@ alt="Call"
                   <Card.Title className="two-line text-dark font-14 mb-0">{file.Name}</Card.Title>
                   <Card.Text className="text-muted font-12">{file.Length} bytes</Card.Text>
                   </div>
-            
-              
+           
+             
                 {/* Three dots dropdown menu */}
                 <div className="col-lg-1">
                 <Dropdown align="end">
@@ -2092,9 +2096,9 @@ alt="Call"
                     <Dropdown.Item onClick={() => handlePreviewFile(file.ServerRelativeUrl)} style={{fontSize:'12px', textAlign:'center'  }}>
                       Preview
                     </Dropdown.Item>
-                    <Dropdown.Item 
+                    <Dropdown.Item
                     onClick={() => Handledeletefile(file.UniqueId)} disabled={isProjectCompleted}
-                    // onClick={() => Handledeletefile(file.UniqueId)} 
+                    // onClick={() => Handledeletefile(file.UniqueId)}
                     style={{fontSize:'12px', textAlign:'center'  }}>
                       Delete File
                     </Dropdown.Item>
@@ -2103,7 +2107,7 @@ alt="Call"
                 </Dropdown>
                 </div>
                 </div>
-                
+               
               </Card.Body>
             </Card>
             </div>
@@ -2136,7 +2140,7 @@ alt="Call"
 
                           } */}
                         {/* </Modal.Body>*/}
-                      </Modal> 
+                      </Modal>
                     </div>
                     <div className="row mt-2">
                       <p
@@ -2151,14 +2155,14 @@ alt="Call"
                       </p>
                     </div>
                       </div>
-  
+ 
 
 
 
                      
-                    
-                
-                  
+                   
+               
+                 
                   </>
                 );
               })

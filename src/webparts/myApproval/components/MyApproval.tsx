@@ -182,7 +182,7 @@ const MyApprovalContext = ({ props }: any) => {
         , "FileUID/DocumentLibraryName"
         , "FileUID/FileName"
         , "FileUID/RequestNo"
-        , "FileUID/FilePreviewUrl"
+        // , "FileUID/FilePreviewUrl"
         , "FileUID/Status"
         , "FileUID/FolderPath"
         , "FileUID/RequestedBy"
@@ -207,7 +207,7 @@ const MyApprovalContext = ({ props }: any) => {
   const getCurrrentuser = async () => {
     const userdata = await sp.web.currentUser();
     currentUserEmailRef.current = userdata.Email;
-    //getApprovalmasterTasklist();
+    getApprovalmasterTasklist();
   }
   React.useEffect(() => {
     getCurrrentuser()
@@ -332,7 +332,7 @@ const MyApprovalContext = ({ props }: any) => {
 
     } else if (tab == "DMS") {
 
-      //setMyApprovalsData(await getdms(sp));
+      setMyApprovalsData(Mylistdata);
 
     } else if (tab == "Automation") {
       //ApiCall("Pending");
@@ -882,15 +882,21 @@ const MyApprovalContext = ({ props }: any) => {
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
 
               </div> */}
+              <div className="col-md-8"></div>
+              <div className="col-md-4">
+                <div className="row">
+                <div style={{textAlign:'right'}} className="col-md-4">
               <div className="mb-3">
-                <label htmlFor="Status" className="form-label">
+                <label htmlFor="Status" className="form-label mt-2">
                   Filter By
                 </label>
+                </div></div>
+                <div className="col-md-8">
                 <select
                   id="Type"
                   name="Type"
                   onChange={(e) => handleStatusChange(e.target.name, e.target.value)}
-                  className="form-control"
+                  className="form-select"
                 >
                   {/* <option value="">Pending</option> */}
                   {StatusTypeData.map((item, index) => (
@@ -899,7 +905,11 @@ const MyApprovalContext = ({ props }: any) => {
                     </option>
                   ))}
                 </select>
+                </div>
               </div>
+              </div>
+           
+             
             </div>
 
             <div className="row mt-4">
@@ -936,7 +946,7 @@ const MyApprovalContext = ({ props }: any) => {
 
                           >
 
-                            <span className="lenbg1">Intranet</span> <span className="lenbg"> ({myApprovalsDataAll.length})</span>
+                            <span className="lenbg1">Intranet</span> <span className="lenbg"> {myApprovalsDataAll.length}</span>
 
                           </a>
 
@@ -986,7 +996,7 @@ const MyApprovalContext = ({ props }: any) => {
 
                           >
 
-                            <span className="lenbg1">Automation </span><span className="lenbg">({myApprovalsDataAutomation.length})</span>
+                            <span className="lenbg1">Automation </span><span className="lenbg">{myApprovalsDataAutomation.length}</span>
 
                           </a>
 
@@ -1006,7 +1016,7 @@ const MyApprovalContext = ({ props }: any) => {
               </div>
 
             </div>
-            {(activeTab === "Intranet" || activeTab === "Automation") && (
+            {(activeTab === "Intranet" || activeTab === "Automation" || activeTab === "DMS" ) && (
               <div>
                 {
 
@@ -1521,7 +1531,7 @@ const MyApprovalContext = ({ props }: any) => {
                                       style={{ cursor: "pointer" }}
 
                                     >
-                                      <td style={{ minWidth: '40px', maxWidth: '40px' }}><div className='indexdesign'>   {startIndex + index + 1}</div>  </td>
+                                      <td style={{ minWidth: '40px', maxWidth: '40px' }}><div style={{marginLeft:'0px'}} className='indexdesign'>   {startIndex + index + 1}</div>  </td>
 
 
 
@@ -1634,6 +1644,11 @@ const MyApprovalContext = ({ props }: any) => {
 
         /> */}
 
+                                        
+                                        {activeTab === "DMS" ? 
+                                         <a onClick={(e) => getTaskItemsbyID(e, item.FileUID.RequestNo)}>
+                                         <FontAwesomeIcon icon={faEye} />
+                                       </a> : 
                                         <Edit onClick={(e) =>
 
                                           handleRedirect(e, item)
@@ -1651,7 +1666,7 @@ const MyApprovalContext = ({ props }: any) => {
                                             cursor: "pointer",
 
                                           }} />
-
+                                      }
                                       </td>
 
                                     </tr>
@@ -2286,7 +2301,7 @@ const MyApprovalContext = ({ props }: any) => {
             )
 
             }
-            {activeTab === "DMS" && (
+            {/* {activeTab === "DMS" && (
               <div>
                 {activeComponent === "" ?
                   (<div>
@@ -2391,7 +2406,7 @@ const MyApprovalContext = ({ props }: any) => {
 
             )
 
-            }
+            } */}
 
           </div>
 

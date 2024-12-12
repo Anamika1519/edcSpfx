@@ -78,6 +78,7 @@ let userDepartment: any
 let userWorkPhone: any
 let userOfficeLocation: any
 let GroupName: any
+let userjobtitle = "";
 let GroupDescription: any
 interface Post {
   text: string;
@@ -102,6 +103,7 @@ const SocialFeedContext = ({ props }: any) => {
   const [currentId, setCurrentID] = useState<any>(0)
   const [filterCriteria, setFilterCriteria] = useState<string | null>(null);
   const [currentUsername, setCurrentUserName] = useState("")
+  const [currentUserId, setCurrentUserId] = useState(0)
   const [UploadedFile, setUploadFile] = useState([])
   const [ImageIds, setImageIds] = useState([])
   const [blogdata, setblogdata] = useState([])
@@ -156,7 +158,20 @@ const SocialFeedContext = ({ props }: any) => {
   useEffect(() => {
     getuserprofile()
   }, []);
-
+  const getownerjobtitle = async(mail: String) => {
+    debugger
+   
+    let userdetails = await sp.web.lists.getByTitle("User Information List").items
+    .select("ID", "Title", "EMail", "Department", "JobTitle", "Picture", "MobilePhone", "WorkPhone")
+      .filter(`EMail eq '${mail}'`)
+      .getAll().then((x)=>{
+        if(x.length > 0){
+          userjobtitle = x[0].JobTitle !== null ? x[0].JobTitle : "NA"
+        }
+        console.log("testytfghv",x,userJobTitle)
+      })
+    return userjobtitle
+  }
   const getuserprofile = async () => {
     //alert("hi")
     try {
@@ -265,9 +280,11 @@ const SocialFeedContext = ({ props }: any) => {
     const originalString = ids;
     const idNum = originalString.substring(1);
     const currentUser = await getCurrentUserNameId(sp);
+    setCurrentUserId(currentUser);
     let currentGroup = await getGroupTeamDetailsById(sp, Number(idNum));
+    userjobtitle = await getownerjobtitle(currentGroup[0].Author.EMail);
     setArrDetails(currentGroup);
-    console.log(currentGroup, "currentGroup");
+    console.log(currentGroup, "currentGroup", userjobtitle);
     if (currentGroup[0].GroupType === "Selected Members" &&
       currentGroup[0]?.InviteMemebers?.some((invitee: any) => invitee.Id === currentUser) || currentGroup[0].Author.ID === currentUser) {
       setIsEdit(true);
@@ -444,6 +461,7 @@ const SocialFeedContext = ({ props }: any) => {
   // Fetch posts from SharePoint list
 
   const fetchPosts = async () => {
+    debugger
     const ids = window.location.search;
     const originalString = ids;
     const idNum = originalString.substring(1);
@@ -795,22 +813,22 @@ const SocialFeedContext = ({ props }: any) => {
                                 ArrDetails[0]?.GroupFollowers?.length > 0 && ArrDetails[0].GroupFollowers.map((follower: any, idx: any) => (
 
                                   <div className="projectmemeber" key={idx}>
-                                     <div className="itemalign">
-                                    <img
-                                      src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${follower?.EMail}`}
-                                      className="rounded-circlenu img-thumbnail avatar-xl"
-                                      alt="profile-image"
-                                    />
-                                    <p>
-                                      {follower?.Title}
+                                    <div className="itemalign">
                                       <img
-                                        src={require("../assets/calling.png")}
-                                        className="alignright"
-                                        onClick={() => window.open(`https://teams.microsoft.com/l/call/0/0?users=${follower.EMail}`, "_blank")}
-                                        alt="Call"
+                                        src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${follower?.EMail}`}
+                                        className="rounded-circlenu img-thumbnail avatar-xl"
+                                        alt="profile-image"
                                       />
-                                    </p>
-                                  </div></div>
+                                      <p>
+                                        {follower?.Title}
+                                        <img
+                                          src={require("../assets/calling.png")}
+                                          className="alignright"
+                                          onClick={() => window.open(`https://teams.microsoft.com/l/call/0/0?users=${follower.EMail}`, "_blank")}
+                                          alt="Call"
+                                        />
+                                      </p>
+                                    </div></div>
                                 ))
                               }
 
@@ -1061,7 +1079,7 @@ const SocialFeedContext = ({ props }: any) => {
                                       <FontAwesomeIcon icon={faPaperPlane} /> Post
 
                                     </button>
-                                   
+
                                   </div>
 
                                 </form>
@@ -1079,13 +1097,15 @@ const SocialFeedContext = ({ props }: any) => {
                     </div>
                     {posts.length > 0 && hideCreatePost && !HideShowPost && (
                       <div className="feed">
-                        {filteredPosts.length > 0 ? (
-                          filteredPosts.map((post, index) => (
+                        {posts.length > 0 ? (
+                          posts.map((post, index) => (
                             <GroupPostComponent
                               key={index}
                               sp={sp}
                               siteUrl={siteUrl}
+                              isedit={IsEdit}
                               currentUserName={currentUsername}
+                              currentUser={currentUserId}
                               currentEmail={currentEmail}
                               editload={fetchPosts}
                               post={{
@@ -1117,7 +1137,9 @@ const SocialFeedContext = ({ props }: any) => {
                               key={index}
                               sp={sp}
                               siteUrl={siteUrl}
+                              isedit={IsEdit}
                               currentUserName={currentUsername}
+                              currentUser={currentUserId}
                               currentEmail={currentEmail}
                               editload={fetchPosts}
                               post={{
@@ -1847,9 +1869,9 @@ const SocialFeedContext = ({ props }: any) => {
                       /></div>
 
                     <h1 className='text-muted font-14 mt-3'>
-                      <p className='text-dark font-16 text-center mb-2'> {currentUsername}</p>
-                      <p className='text-muted font-14 text-center mb-1'>{userJobTitle}</p>
-                      <p className='text-muted font-12 text-center'>{userEmail}  </p>
+                      <p className='text-dark font-16 text-center mb-2'> {ArrDetails[0]?.Author.Title}</p>
+                      <p className='text-muted font-14 text-center mb-1'>{userjobtitle}</p>
+                      <p className='text-muted font-12 text-center'>{ArrDetails[0]?.Author.EMail}  </p>
 
                     </h1>
                   </div>
@@ -1864,7 +1886,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                     <h4 className="header-title font-16 text-dark fw-bold mb-0" style={{ fontSize: '20px' }}>
 
-                      Group you might <br/> be interested in
+                      Group you might <br /> be interested in
                       <a className="font-11 view-all  btn btn-primary  waves-effect waves-light" style={{ float: 'right', lineHeight: '21px', right: '10px' }}>View All</a>
                       {/* <a
 

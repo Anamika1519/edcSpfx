@@ -406,7 +406,8 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
       console.error('Error toggling like:', error);
     }
     finally {
-      setLoadingLike(false); // Enable the button after the function completes
+      setLoadingLike(false);
+      getImpressionCountDetails(); // Enable the button after the function completes
     }
   };
 
@@ -475,7 +476,8 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
       console.error('Error toggling Reply:', error);
     }
     finally {
-      setLoadingReply(false); // Enable the button after the function completes
+      setLoadingReply(false);
+      getImpressionCountDetails(); // Enable the button after the function completes
     }
   };
 
@@ -796,6 +798,7 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
             }).then(async () => {
               // setDataproject(await fetchprojectdata(sp));
               Swal.fire("Updated!", "Discussion status has been set to 'Close'.", "success");
+              isClosed = true;
               getDiscussionForumDetailsById(Id)
             }).catch((error) => {
               console.error("Error updating project status:", error);
@@ -1237,7 +1240,8 @@ alt="Check"
                         </button>
                         </div> */}
                             <div className="tabcss mb-2 mt-2 me-1 newalign">
-                              <span   onClick={isClosed ? null : (e: any) => openModal(e)}
+                              <span   onClick={(e: any) => openModal(e)}
+
                                style={{cursor:"pointer"}} className="pe-2 widtsvg text-nowrap mb-0 d-inline-block"
                                //</div> onClick={(e: any) => openModal(e)}
                                >
@@ -1468,11 +1472,11 @@ alt="Check"
 
                               <div>
                                 <div className="chosefile">
-                                  <img onClick={() => handleImageChange}
+                                  <img onClick={isClosed ? null :() => handleImageChange}
                                     src={require("../assets/cloud-computing.png")}
                                     style={{ width: '40px', opacity: '0.5' }}
                                     alt="Check"
-                                  />  <span>Click To Upload </span>
+                                  />  <span style={{ opacity: isClosed ? '0.5' : '1' }}>Click To Upload </span>
                                 </div>
                                 {/* <Link style={{ width: "20px", height: "16px" }} onClick={() => handleImageChange} /> */}
 
@@ -1484,7 +1488,7 @@ alt="Check"
 
                                   accept="image/*"
 
-                                  onChange={handleImageChange}
+                                  onChange={isClosed ? null :handleImageChange}
 
                                   className="fs-6 w-50" aria-rowspan={5} style={{ display: 'none' }}
 
@@ -1492,7 +1496,7 @@ alt="Check"
 
                               </div>
 
-                            </label>      <Button variant="success" onClick={() => uploadfileinfolder()}>
+                            </label> <Button disabled={isClosed} variant="success" onClick={() => uploadfileinfolder()}>
                               Upload File
                             </Button>
 
@@ -1558,7 +1562,7 @@ alt="Check"
                                               <Dropdown.Item onClick={() => handlePreviewFile(file.ServerRelativeUrl)} style={{ fontSize: '12px', textAlign: 'center' }}>
                                                 Preview
                                               </Dropdown.Item>
-                                              <Dropdown.Item onClick={() => DeleteFileFromFileMaster(file.UniqueId)} style={{ fontSize: '12px', textAlign: 'center' }}>
+                                              <Dropdown.Item onClick={() => DeleteFileFromFileMaster(file.UniqueId)} disabled={isClosed} style={{ fontSize: '12px', textAlign: 'center' }}>
                                                 Delete File
                                               </Dropdown.Item>
                                               {/* Add more options if needed */}
@@ -1676,7 +1680,7 @@ alt="Check"
                                 loadingLike={loadingLike}
                                 Action="Discussion"
                                 onAddReply={(text) => handleAddReply(index, text)}
-                                onLike={() => handleLikeToggle(index)} // Pass like handler
+                                onLike={() => isClosed ? null:handleLikeToggle(index)} // Pass like handler
                                 loadingReply={loadingReply}
                               />
                             </div>

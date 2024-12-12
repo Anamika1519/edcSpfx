@@ -414,7 +414,7 @@ const HorizontalNavbar = ({ _context, siteUrl }: any) => {
             <a className="nav-link dropdown-toggle waves-effect waves-light arrow-none" data-bs-toggle="dropdown"
               role="button" aria-haspopup="false" aria-expanded="false">
               <Bell className='bx bx-bell desktoView dropcssBell' size='22' onClick={toggleDropdownBell} style={{ position: 'relative' }} />
-              <span className="badge bg-danger noti-icon-badge">{NotificationArray.length}</span>
+              {NotificationArray.length > 0 && <span className="badge bg-danger noti-icon-badge">{NotificationArray.length}</span>}
             </a>
 
             {isMenuOpen &&

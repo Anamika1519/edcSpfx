@@ -119,6 +119,10 @@ button#dropdown-basic {
     height: 2.6rem !important; margin-left: 5px;
     border-radius: 3px; font-size: 14px;
 }
+button#dropdown-basic:hover{
+    background: #1fb0e5 !important;
+    color:  #fff !important;
+}
 a.filter-menu-item.dropdown-item {
     width: 10rem !important;
     margin: 0.2rem !important;
@@ -168,7 +172,7 @@ a.filter-menu-item.dropdown-item {
 .gal-box .image-popup {
         height: 245px !important;
     }
-    .footer{bottom: 0px;}
+    .footer{bottom: -150px;}
     .internalmedia .gal-box .image-popup {
         height: 250px !important;
     }

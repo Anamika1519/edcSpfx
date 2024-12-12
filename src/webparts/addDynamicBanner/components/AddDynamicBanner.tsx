@@ -499,7 +499,7 @@ console.log(siteUrl)
                           
                         </div>
                       </div>
-                      <div className="col-lg-6">
+                      <div className="col-lg-12">
                         <div className="mb-3">
                           <label htmlFor="description" className="form-label">
                             Description <span className="text-danger">*</span>

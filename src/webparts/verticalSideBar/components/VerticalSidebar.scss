@@ -183,8 +183,14 @@ a:hover, a:active {
   cursor: pointer !important;
   height: 20PX !important;
   position: absolute !important;
-  right: 10px !important;
+  right: 5px !important;
 }
+.mtable th #myDropdown svg{
+  position: relative !important;right: auto !important;vertical-align: bottom !important;height: 16PX !important;
+}
+.mtable th #myDropdown{text-align: center;width: 70px;
+  min-width: 73px; padding: 5px !important; right: 1px !important;   transform: translateY(0px) !important;}
+
 .posnew {
   padding: 2px 8px !important;
   border-radius: 4px;
@@ -1053,7 +1059,7 @@ margin: 10px 0px !important ;
     .close .sub-menu{left: 3.8rem;margin-left: 0px;}
     .close.navlink_icon{margin-left: 2px;}
     
-  .footer{bottom: 0px;position: fixed;}
+ 
   .font-11 {
     font-size: 14px !important;
   }
@@ -1749,6 +1755,21 @@ color: #fff !important;
   font-weight: 400 !important;
   height: 40px;
   padding: .55rem .9rem !important;
+}
+.indexdesign {
+  background: #d2effa !important;
+  border: none;
+  border-radius: 1000px;
+  color: #1fb0e5 !important;
+  float: left;
+  font-size: 16px !important;
+  font-weight: 600;
+  height: 28px !important;
+  line-height: 30px !important;
+  margin-left: 1px;
+  padding: 0 1px !important;
+  text-align: center;
+  width: 28px !important;
 }
 .mtable th{position: relative;}
 .tabcss:hover{ background: #fff !important; color: #000 !important;}

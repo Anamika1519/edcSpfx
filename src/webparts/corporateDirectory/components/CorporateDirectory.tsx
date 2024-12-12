@@ -859,6 +859,28 @@ const CorporateDirectoryContext = ({ props }: any) => {
         }
 
       }
+      else if (sortConfig.key == "MobilePhone") {
+ 
+        // Sort by other keys
+ 
+        const aValue = a['WorkPhone'] ? a['WorkPhone'].toLowerCase() : "";
+ 
+        const bValue = b['WorkPhone'] ? b['WorkPhone'].toLowerCase() : "";
+ 
+ 
+        if (aValue < bValue) {
+ 
+          return sortConfig.direction === "ascending" ? -1 : 1;
+ 
+        }
+ 
+        if (aValue > bValue) {
+ 
+          return sortConfig.direction === "ascending" ? 1 : -1;
+ 
+        }
+ 
+      }
       else if (sortConfig.key == "Name") {
 
         // Sort by other keys
@@ -1025,6 +1047,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
     if (activeTab == "listView")
       setActiveTab("cardView");
     let txtSearch = (document.getElementById('searchInput') as HTMLInputElement).value;
+    console.log("usersitem", usersitem)
     if (txtSearch.length > 1) {
       let filteredusers =
       //await sp.web.lists
@@ -1034,7 +1057,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
         // .filter(`ContentType eq 'Person' and EMail ne null and substringof('${txtSearch}', Title)`)
         // .top(500)
         // ();
-      usersitem.filter((x) => x.Title.includes(txtSearch))
+        usersitem.filter((x) => x.Title.toLowerCase().includes(txtSearch.toLowerCase()))
       setUsersArr(filteredusers);
     }
 
@@ -1139,7 +1162,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
   };
 
 
-  const togglePin = async (e: any, item: any) => {
+  const togglePin = async (e: React.MouseEvent<HTMLImageElement, MouseEvent>, item: any) => {
 
     debugger
 
@@ -1173,7 +1196,8 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
         setPinStatus((prev) => ({ ...prev, [item.ID]: false })); // Update [pin] status
 
-      } else {
+      }
+       else {
         if (MyPinnedCount.length >= 4) {
           Swal.fire("You’ve hit the limit for pinning users to the Home Screen!")
         } else {
@@ -1184,12 +1208,10 @@ const CorporateDirectoryContext = ({ props }: any) => {
             PinnedId: item.ID
 
           });
+          setPinStatus((prev) => ({ ...prev, [item.ID]: true }));
         }
         // pin logic
-
-
-
-        setPinStatus((prev) => ({ ...prev, [item.ID]: true })); // Update pin status
+         // Update pin status
 
       }
 
@@ -1539,7 +1561,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
                                       className="alignrightpin"
 
                                       onClick={(e) => togglePin(e, item)}
-
+                                      //onClick={(!loadingUsers[item.ID]) ? (e) => togglePin(e, item) : undefined}
 
                                       alt="pin"
 
@@ -1551,7 +1573,8 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                   <h4 className="mt-2 mb-1">
 
-                                    <a onClick={() => handleUserClick(item.ID, followStatus[item.ID])}
+                                    <a
+                                    //onClick={() => handleUserClick(item.ID, followStatus[item.ID])}
 
                                       className="text-dark font-16 fw-bold"
 
@@ -1560,7 +1583,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
                                         textDecoration: "unset",
 
                                         fontSize: "20px",
-
+ whiteSpace:'nowrap'
                                       }}
 
                                     >
@@ -1733,8 +1756,8 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                           type="button" className="finish"
 
-                                          onClick={(!loadingUsers[item.ID]) ? (e) => toggleFollow(e, item) : undefined} disabled={loadingUsers[item.ID]}
-
+                                          //onClick={(!loadingUsers[item.ID]) ? (e) => toggleFollow(e, item) : undefined} disabled={loadingUsers[item.ID]}
+                                        onClick={(e) => toggleFollow(e, item)}
 
                                         >
                                           Unfollow
@@ -1744,7 +1767,8 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                           type="button" style={{ background: '#efefef' }} className="btn btn-primary1 text-dark btn-sm waves-effect waves-light"
 
-                                          onClick={(!loadingUsers[item.ID]) ? (e) => toggleFollow(e, item) : undefined} disabled={loadingUsers[item.ID]}
+                                          //onClick={(!loadingUsers[item.ID]) ? (e) => toggleFollow(e, item) : undefined} disabled={loadingUsers[item.ID]}
+                                          onClick={(e) => toggleFollow(e, item)}
 
 
                                         >

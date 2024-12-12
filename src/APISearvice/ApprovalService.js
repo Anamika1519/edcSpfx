@@ -331,7 +331,41 @@ export const getMyApproval = async (sp,status)=>
     return arr
 
   }
-
+  export const gteDMSApproval = async(sp)=>{
+    alert("DMS")
+    const currentUser = await sp.web.currentUser();
+    console.log(currentUser , "currentUser")
+    let arr = []
+    const FilesItems = await sp.web.lists
+    .getByTitle("MasterSiteURL")
+    .items.select("Title", "SiteID", "FileMasterList", "Active")
+    .filter(`Active eq 'Yes'`)();
+    
+    console.log(FilesItems , "FilesItems")
+    FilesItems.forEach(async (fileItem, index) => {
+      if (fileItem.FileMasterList !== null) {
+        // if (siteIdToUpdate && fileItem.SiteID !== siteIdToUpdate) {
+        //   return;
+        // }
+  
+        console.log("fileItem.FileMasterList",fileItem.FileMasterList);
+     
+        const filesData = await sp.web.lists
+              .getByTitle(`${fileItem.FileMasterList}`)
+              .items.select("ID" , "FileName", "FileUID", "FileSize", "FileVersion" ,"Status" , "SiteID","CurrentFolderPath","DocumentLibraryName","SiteName","FilePreviewURL","IsDeleted","MyRequest").filter(
+                `CurrentUser eq '${currentUser.Email}' and MyRequest eq 1 and Status eq 'Pending'`
+              ).orderBy("Modified", false)();
+        console.log("My reaquest Called");
+    
+        // console.log("enter in the myRequest------")
+        console.log(fileItem.FileMasterList,"- FilesData",filesData)
+      // route to different-2 sideBar
+       console.log(arr , "DMS My request Data")
+       return arr
+   
+      }
+    });
+  }
 export const getDataByID = async (_sp,id,ContentName) => {
 
   debugger

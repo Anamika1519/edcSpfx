@@ -1566,9 +1566,9 @@ else if (groupTitles.includes("intranetcontentcontributor")){
 
                               <th style={{ textAlign: 'center', borderBottomRightRadius: '0px', borderTopRightRadius: '0px' }}> <div className="d-flex flex-column bd-highlight pb-2">
 
-                                <div className="d-flex  pb-2" style={{ justifyContent: 'space-between' }}>  <span >Action</span> <div className="dropdown">
+                                <div className="d-flex  pb-2" style={{ justifyContent: 'space-between' }}>  <span >Action</span>  &nbsp;<div className="dropdown">
 
-                                  <FontAwesomeIcon icon={faEllipsisV} onClick={toggleDropdown} size='xl' />
+                                 <FontAwesomeIcon icon={faEllipsisV} onClick={toggleDropdown} size='xl' />
 
                                 </div>
 
@@ -1627,19 +1627,19 @@ else if (groupTitles.includes("intranetcontentcontributor")){
 
                                   <td>{item?.AnnouncementandNewsTypeMaster?.TypeMaster}</td>
 
-                                  <td style={{ minWidth: "80px", maxWidth: "80px" }}>{item.Status}</td>
+                                  <td style={{ minWidth: "80px", maxWidth: "80px" }}>  <div className='btn  btn-light'>{item.Status}  </div></td>
 
                                   <td style={{ minWidth: "80px", maxWidth: "80px" }}>
 
                                    
-                                    <div className='btn  btn-light'>
+                                    <div className='btn  btn-status'>
                                     {moment(item.Created).format("L")}
       </div>
                                   </td>
 
                                   <td style={{ minWidth: "50px", maxWidth: "50px" }} className="ng-binding">
 
-                                    <div className="d-flex pb-2" style={{ justifyContent: "space-around" }}>
+                                    <div className="d-flex pb-2" style={{ justifyContent: "start", gap:"5px" }}>
 
                                       {/* Conditionally render the edit button based on status */}
 
@@ -1660,8 +1660,8 @@ else if (groupTitles.includes("intranetcontentcontributor")){
                                           }}
 
                                         >
-
-                                          <FontAwesomeIcon icon={faEdit} fontSize={18} />
+ <img src={require('../../../CustomAsset/edit.png')} />
+                                          {/* <FontAwesomeIcon icon={faEdit} fontSize={18} /> */}
 
                                         </a>
 
@@ -1676,8 +1676,8 @@ else if (groupTitles.includes("intranetcontentcontributor")){
                                           onClick={() => DeleteAnnouncement(item.ID)}
 
                                         >
-
-                                          <FontAwesomeIcon icon={faTrashAlt} fontSize={18} />
+  <img src={require('../../../CustomAsset/del.png')}/>
+                                          {/* <FontAwesomeIcon icon={faTrashAlt} fontSize={18} /> */}
 
                                         </a>
 
@@ -1918,7 +1918,7 @@ else if (groupTitles.includes("intranetcontentcontributor")){
 
                                 <div className="d-flex flex-column bd-highlight pb-2">
 
-                                  <div className="d-flex  pb-2" style={{ justifyContent: 'space-between' }}>  <span >Action</span> <div className="dropdown">
+                                  <div className="d-flex  pb-2" style={{ justifyContent: 'space-between' }}>  <span >Action</span>  &nbsp;<div className="dropdown">
 
                                     <FontAwesomeIcon icon={faEllipsisV} onClick={toggleDropdownNews} fontSize={18} />
 
@@ -2012,8 +2012,8 @@ else if (groupTitles.includes("intranetcontentcontributor")){
                                       }}
 
                                     >
-
-                                      {item.Status}
+<div className='btn btn-status'>
+                                      {item.Status}</div>
 
                                     </td>
 
@@ -2053,7 +2053,7 @@ else if (groupTitles.includes("intranetcontentcontributor")){
 
                                         style={{
 
-                                          justifyContent: "space-around",
+                                          justifyContent: "start", gap:"5px"
 
                                         }}
 
@@ -2098,14 +2098,14 @@ else if (groupTitles.includes("intranetcontentcontributor")){
                                             }}
 
                                           >
-
-                                            <FontAwesomeIcon
+ <img src={require('../../../CustomAsset/edit.png')} />
+                                            {/* <FontAwesomeIcon
 
                                               icon={faEdit}
 
                                               fontSize={18}
 
-                                            />
+                                            /> */}
 
                                           </a>
 
@@ -2146,14 +2146,14 @@ else if (groupTitles.includes("intranetcontentcontributor")){
                                             }
 
                                           >
-
-                                            <FontAwesomeIcon
+ <img src={require('../../../CustomAsset/del.png')} />
+                                            {/* <FontAwesomeIcon
 
                                               icon={faTrashAlt}
 
                                               fontSize={18}
 
-                                            />
+                                            /> */}
 
                                           </a>):(<div></div>)}
 
