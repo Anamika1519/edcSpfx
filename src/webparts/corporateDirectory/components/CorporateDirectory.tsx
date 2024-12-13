@@ -1997,7 +1997,12 @@ const CorporateDirectoryContext = ({ props }: any) => {
                                             handleFilterChange(e, "Name")
 
                                           }
-
+                                          onKeyDown={(e) => {
+                                            if (e.key === "Enter") {
+                                              e.preventDefault(); // Prevent the default Enter key behavior
+                                              //alert("Enter key is not allowed!"); // Optional feedback for the user
+                                            }
+                                          }}
                                           className="inputcss"
 
                                           style={{ width: "100%" }}
@@ -2071,7 +2076,12 @@ const CorporateDirectoryContext = ({ props }: any) => {
                                             handleFilterChange(e, "Email")
 
                                           }
-
+                                          onKeyDown={(e) => {
+                                            if (e.key === "Enter") {
+                                              e.preventDefault(); // Prevent the default Enter key behavior
+                                              //alert("Enter key is not allowed!"); // Optional feedback for the user
+                                            }
+                                          }}
                                           className="inputcss"
 
                                           style={{ width: "100%" }}
@@ -2144,7 +2154,12 @@ const CorporateDirectoryContext = ({ props }: any) => {
                                             handleFilterChange(e, "companyName")
 
                                           }
-
+                                          onKeyDown={(e) => {
+                                            if (e.key === "Enter") {
+                                              e.preventDefault(); // Prevent the default Enter key behavior
+                                              //alert("Enter key is not allowed!"); // Optional feedback for the user
+                                            }
+                                          }}
                                           className="inputcss"
 
                                           style={{ width: "100%" }}
@@ -2217,7 +2232,12 @@ const CorporateDirectoryContext = ({ props }: any) => {
                                             handleFilterChange(e, "Department")
 
                                           }
-
+                                          onKeyDown={(e) => {
+                                            if (e.key === "Enter") {
+                                              e.preventDefault(); // Prevent the default Enter key behavior
+                                              //alert("Enter key is not allowed!"); // Optional feedback for the user
+                                            }
+                                          }}
                                           className="inputcss"
 
                                           style={{ width: "100%" }}
@@ -2291,7 +2311,12 @@ const CorporateDirectoryContext = ({ props }: any) => {
                                             handleFilterChange(res, "MobilePhone")
 
                                           }
-
+                                          onKeyDown={(e) => {
+                                            if (e.key === "Enter") {
+                                              e.preventDefault(); // Prevent the default Enter key behavior
+                                              //alert("Enter key is not allowed!"); // Optional feedback for the user
+                                            }
+                                          }}
                                           className="inputcss"
 
                                           style={{ width: "100%" }}

@@ -91,47 +91,28 @@ export const fetchgrouppandteammaybeInterested = async (_sp) => {
       console.error("Error fetching current user: ", error);
       return [];
     });
-
-  await _sp.web.lists.getByTitle("ARGGroupandTeamFollow")
-    .items.select("*,GroupID/ID,GroupID/Title,FollowedBy/ID,FollowedBy/Title,FollowedBy/EMail").expand("GroupID,FollowedBy")
-    .filter(`FollowedBy/EMail eq '${currentUser.Email}'`)
-    .orderBy("Created", false).getAll().then(async (resnew) => {
-      console.log("resnew", resnew);
-      if (resnew.length > 0) {
-
-        let filterquery = [];
-        for (let i = 0; i < resnew.length; i++) {
-          filterquery.push(`ID ne ${resnew[i].GroupIDId}`)
+  await _sp.web.lists
+    .getByTitle("ARGGroupandTeam").items
+    .select("*,InviteMemebers/Id,InviteMemebers/Title,InviteMemebers/EMail,GroupFollowers/Id,GroupFollowers/Title,GroupFollowers/EMail,Author/Title,Author/ID,Author/EMail,GroupType")
+    .expand("Author,InviteMemebers,GroupFollowers")
+    .orderBy("Created", false)
+    .filter(`GroupType eq 'All'`)
+    .getAll()
+    .then((res) => {
+      console.log("ghgh",res)
+      let respon = [];
+      for(let i=0;i<res.length ; i++){
+        if (res[i].GroupFollowersId == null || res[i].GroupFollowersId.indexOf(currentUser.Id) == -1){
+          respon.push(res[i])
         }
-        let finalquery = filterquery.map((x) => x).join(' and ');
-        console.log("finalqueryfinalquery", finalquery);
-        await _sp.web.lists
-          .getByTitle("ARGGroupandTeam")
-          .items.select("*,Author/Title,Author/EMail,Author/ID,GroupName,GroupType,InviteMemebers/Id")
-          .expand("Author,InviteMemebers")
-          .filter(`${finalquery} and GroupType eq 'All'`)
-          .orderBy("Created", false)
-          .getAll()
-          .then((res) => {
-            console.log("group you may be interested in", res);
-            arr = res
-            // Filter items based on GroupType and InviteMembers
-             //arr = res.filter(item =>
-            // // Include public groups or private groups where the current user is in the InviteMembers array
-            // //item.ID != 5 && item.ID != 18
-            // // &&
-            //  (item.GroupType === "All" ||
-            //    (item.GroupType === "Selected Members" && item.InviteMemebers && item.InviteMemebers.some(member => member.Id === currentUser.Id)))
-
-            //  );
-
-            //bookmarkarr = arr
-          })
-          .catch((error) => {
-            console.log("Error fetching data: ", error);
-          });
-
       }
+      let response = res.filter((x) => {
+        x.GroupFollowersId == null ||
+          (x.GroupFollowersId && x.GroupFollowersId.indexOf(currentUser.Id) == -1)
+      }
+      )
+      console.log("group you may be interested in", res, respon, response);
+      arr = respon
     })
   console.log("intestred in may be", arr);
   //arr = bookmarkarr;

@@ -831,7 +831,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
   });
 
-
+  let CurrentTab = "Announcement";
   const [sortConfig, setSortConfig] = React.useState({ key: '', direction: 'ascending' });
 
 
@@ -839,20 +839,20 @@ const Announcementmastercontext = ({ props }: any) => {
 
 
   const ApiCall = async () => {
-    let announcementArr:any[] = [];
-    let NewsArr:any[] = [];
+    let announcementArr: any[] = [];
+    let NewsArr: any[] = [];
     const userGroups = await sp.web.currentUser.groups();
-let groupTitles: string[] = userGroups.map((group) => group.Title.toLowerCase());
+    let groupTitles: string[] = userGroups.map((group) => group.Title.toLowerCase());
 
-if (groupTitles.includes("intranetadmin")) {
-  announcementArr = await getAnncouncementMaster(sp,"yes");
-   NewsArr = await getNewsMaster(sp,"yes");
-}
-else if (groupTitles.includes("intranetcontentcontributor")){
-   announcementArr = await getAnncouncementMaster(sp,"No");
-    NewsArr = await getNewsMaster(sp,"No");
-}
-  //if(announcementArr.length >0)
+    if (groupTitles.includes("intranetadmin")) {
+      announcementArr = await getAnncouncementMaster(sp, "yes");
+      NewsArr = await getNewsMaster(sp, "yes");
+    }
+    else if (groupTitles.includes("intranetcontentcontributor")) {
+      announcementArr = await getAnncouncementMaster(sp, "No");
+      NewsArr = await getNewsMaster(sp, "No");
+    }
+    //if(announcementArr.length >0)
     setAnnouncementData(announcementArr);
     setNewsData(NewsArr);
 
@@ -999,26 +999,27 @@ else if (groupTitles.includes("intranetcontentcontributor")){
         return sortConfig.direction === 'ascending' ? aIndex - bIndex : bIndex - aIndex;
 
       } else if (sortConfig.key === 'Category') {
- 
+
         // Sort by other keys
         console.log("a[sortConfig.key]", a[sortConfig.key], b[sortConfig.key])
         const aValue = a[sortConfig.key] ? a[sortConfig.key].Category.toLowerCase() : '';
- 
+
         const bValue = b[sortConfig.key] ? b[sortConfig.key].Category.toLowerCase() : '';
- 
- 
+
+
         if (aValue < bValue) {
- 
+
           return sortConfig.direction === 'ascending' ? -1 : 1;
- 
+
         }
- 
+
         if (aValue > bValue) {
- 
+
           return sortConfig.direction === 'ascending' ? 1 : -1;
- 
-        }}
-      
+
+        }
+      }
+
       else if (sortConfig.key) {
 
         // Sort by other keys
@@ -1060,7 +1061,7 @@ else if (groupTitles.includes("intranetcontentcontributor")){
 
   const itemsPerPage = 10;
 
-  const totalPages = Math.ceil(filteredAnnouncementData.length / itemsPerPage);
+  const totalPages = (CurrentTab = "Announcement") ? Math.ceil(filteredAnnouncementData.length / itemsPerPage) : Math.ceil(filteredNewsData.length / itemsPerPage);
 
 
   const handlePageChange = (pageNumber: any) => {
@@ -1433,7 +1434,7 @@ else if (groupTitles.includes("intranetcontentcontributor")){
 
             >
 
-              <Tab eventKey="Announcement" title="Announcement">
+              <Tab eventKey="Announcement" title="Announcement" onClick={()=> CurrentTab = "Announcement"}>
 
                 <div className="card cardCss mt-4">
 
@@ -1475,7 +1476,11 @@ else if (groupTitles.includes("intranetcontentcontributor")){
                                     placeholder="index"
 
                                     onChange={(e) => handleFilterChange(e, 'SNo')}
-
+                                    onKeyDown={(e) => {
+                                      if (e.key === 'Enter' && !e.shiftKey) {
+                                        e.preventDefault(); // Prevents the new line in textarea
+                                      }
+                                    }}
                                     className="inputcss"
 
                                     style={{ width: '100%' }}
@@ -1495,7 +1500,11 @@ else if (groupTitles.includes("intranetcontentcontributor")){
                                   <div className=" bd-highlight">
 
                                     <input type="text" placeholder="Filter by Title" onChange={(e) => handleFilterChange(e, 'Title')}
-
+ onKeyDown={(e) => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault(); // Prevents the new line in textarea
+  }
+}}
                                       className='inputcss' style={{ width: '100%' }} />
 
                                   </div>
@@ -1522,7 +1531,12 @@ else if (groupTitles.includes("intranetcontentcontributor")){
 
                                   <div className="d-flex  pb-2" style={{ justifyContent: 'space-between' }}>  <span >Category</span>  <span onClick={() => handleSortChange('Category')}><FontAwesomeIcon icon={faSort} /> </span></div>
 
-                                  <div className=" bd-highlight">  <input type="text" placeholder="Filter by Category" onChange={(e) => handleFilterChange(e, 'Category')} className='inputcss' style={{ width: '100%' }} /></div>
+                                  <div className=" bd-highlight">  <input type="text" placeholder="Filter by Category" onChange={(e) => handleFilterChange(e, 'Category')} 
+                                   onKeyDown={(e) => {
+                                    if (e.key === 'Enter' && !e.shiftKey) {
+                                      e.preventDefault(); // Prevents the new line in textarea
+                                    }
+                                  }}className='inputcss' style={{ width: '100%' }} /></div>
 
                                 </div>
 
@@ -1534,7 +1548,13 @@ else if (groupTitles.includes("intranetcontentcontributor")){
 
                                   <div className="d-flex  pb-2" style={{ justifyContent: 'space-between' }}>  <span >Type</span>  <span onClick={() => handleSortChange('Type')}><FontAwesomeIcon icon={faSort} /> </span></div>
 
-                                  <div className=" bd-highlight">     <input type="text" placeholder="Filter by Type" onChange={(e) => handleFilterChange(e, 'Type')} className='inputcss' style={{ width: '100%' }} /></div>
+                                  <div className=" bd-highlight">     <input type="text" placeholder="Filter by Type" onChange={(e) => handleFilterChange(e, 'Type')} 
+                                   onKeyDown={(e) => {
+                                    if (e.key === 'Enter' && !e.shiftKey) {
+                                      e.preventDefault(); // Prevents the new line in textarea
+                                    }
+                                  }}
+                                  className='inputcss' style={{ width: '100%' }} /></div>
 
                                 </div>
 
@@ -1546,7 +1566,13 @@ else if (groupTitles.includes("intranetcontentcontributor")){
 
                                   <div className="d-flex  pb-2" style={{ justifyContent: 'space-between' }}>  <span >Status</span>  <span onClick={() => handleSortChange('Status')}><FontAwesomeIcon icon={faSort} /> </span></div>
 
-                                  <div className=" bd-highlight">     <input type="text" placeholder="Filter by Status" onChange={(e) => handleFilterChange(e, 'Status')} className='inputcss' style={{ width: '100%' }} /></div>
+                                  <div className=" bd-highlight">     <input type="text" placeholder="Filter by Status" onChange={(e) => handleFilterChange(e, 'Status')} 
+                                   onKeyDown={(e) => {
+                                    if (e.key === 'Enter' && !e.shiftKey) {
+                                      e.preventDefault(); // Prevents the new line in textarea
+                                    }
+                                  }}
+                                  className='inputcss' style={{ width: '100%' }} /></div>
 
                                 </div>
 
@@ -1558,7 +1584,13 @@ else if (groupTitles.includes("intranetcontentcontributor")){
 
                                   <div className="d-flex  pb-2" style={{ justifyContent: 'space-between' }}>  <span >Submitted Date</span>  <span onClick={() => handleSortChange('SubmittedDate')}><FontAwesomeIcon icon={faSort} /> </span></div>
 
-                                  <div className=" bd-highlight">     <input type="text" placeholder="Filter by Submitted Date" onChange={(e) => handleFilterChange(e, 'SubmittedDate')} className='inputcss' style={{ width: '100%' }} /></div>
+                                  <div className=" bd-highlight">     <input type="text" placeholder="Filter by Submitted Date" onChange={(e) => handleFilterChange(e, 'SubmittedDate')} 
+                                   onKeyDown={(e) => {
+                                    if (e.key === 'Enter' && !e.shiftKey) {
+                                      e.preventDefault(); // Prevents the new line in textarea
+                                    }
+                                  }}
+                                  className='inputcss' style={{ width: '100%' }} /></div>
 
                                 </div>
 
@@ -1566,9 +1598,9 @@ else if (groupTitles.includes("intranetcontentcontributor")){
 
                               <th style={{ textAlign: 'center', borderBottomRightRadius: '0px', borderTopRightRadius: '0px' }}> <div className="d-flex flex-column bd-highlight pb-2">
 
-                                <div className="d-flex  pb-2" style={{ justifyContent: 'space-between' }}>  <span >Action</span>  &nbsp;<div className="dropdown">
+                                <div className="d-flex  pb-2" style={{ justifyContent: 'space-between' }}>  <span >Action</span> <div className="dropdown">
 
-                                 <FontAwesomeIcon icon={faEllipsisV} onClick={toggleDropdown} size='xl' />
+                                  <FontAwesomeIcon icon={faEllipsisV} onClick={toggleDropdown} size='xl' />
 
                                 </div>
 
@@ -1616,8 +1648,8 @@ else if (groupTitles.includes("intranetcontentcontributor")){
                                 <tr key={index}>
 
                                   <td style={{ minWidth: "50px", maxWidth: "50px" }}>
-                                  <div className='indexdesign'>  {startIndex + index + 1}</div>  
-                                  
+                                    <div className='indexdesign'>  {startIndex + index + 1}</div>
+
 
                                   </td>
 
@@ -1627,19 +1659,19 @@ else if (groupTitles.includes("intranetcontentcontributor")){
 
                                   <td>{item?.AnnouncementandNewsTypeMaster?.TypeMaster}</td>
 
-                                  <td style={{ minWidth: "80px", maxWidth: "80px" }}>  <div className='btn  btn-light'>{item.Status}  </div></td>
+                                  <td style={{ minWidth: "80px", maxWidth: "80px" }}>{item.Status}</td>
 
                                   <td style={{ minWidth: "80px", maxWidth: "80px" }}>
 
-                                   
-                                    <div className='btn  btn-status'>
-                                    {moment(item.Created).format("L")}
-      </div>
+
+                                    <div className='btn  btn-light'>
+                                      {moment(item.Created).format("L")}
+                                    </div>
                                   </td>
 
                                   <td style={{ minWidth: "50px", maxWidth: "50px" }} className="ng-binding">
 
-                                    <div className="d-flex pb-2" style={{ justifyContent: "start", gap:"5px" }}>
+                                    <div className="d-flex pb-2" style={{ justifyContent: "space-around" }}>
 
                                       {/* Conditionally render the edit button based on status */}
 
@@ -1651,7 +1683,7 @@ else if (groupTitles.includes("intranetcontentcontributor")){
 
                                             }`}
 
-                                          onClick={item.Status === "Save as draft" ? () => EditAnnouncement(item.ID) :  () => ViewFormReadOnly(item.ID)}
+                                          onClick={item.Status === "Save as draft" ? () => EditAnnouncement(item.ID) : () => ViewFormReadOnly(item.ID)}
 
                                           style={{
 
@@ -1660,14 +1692,14 @@ else if (groupTitles.includes("intranetcontentcontributor")){
                                           }}
 
                                         >
- <img src={require('../../../CustomAsset/edit.png')} />
-                                          {/* <FontAwesomeIcon icon={faEdit} fontSize={18} /> */}
+
+                                          <FontAwesomeIcon icon={faEdit} fontSize={18} />
 
                                         </a>
 
                                       </span>
 
-                                      {item.Status === "Save as draft" ?(<span>
+                                      {item.Status === "Save as draft" ? (<span>
 
                                         <a
 
@@ -1676,12 +1708,12 @@ else if (groupTitles.includes("intranetcontentcontributor")){
                                           onClick={() => DeleteAnnouncement(item.ID)}
 
                                         >
-  <img src={require('../../../CustomAsset/del.png')}/>
-                                          {/* <FontAwesomeIcon icon={faTrashAlt} fontSize={18} /> */}
+
+                                          <FontAwesomeIcon icon={faTrashAlt} fontSize={18} />
 
                                         </a>
 
-                                      </span>):(<div></div>)}
+                                      </span>) : (<div></div>)}
 
                                     </div>
 
@@ -1786,9 +1818,9 @@ else if (groupTitles.includes("intranetcontentcontributor")){
 
               </Tab>
 
-              <Tab eventKey="News" title="News">
+              <Tab eventKey="News" title="News" onClick={()=> CurrentTab = "Announcement"}>
 
-                <div className="card cardCss mt-4" style={{ height: '655px' }}>
+                <div className="card cardCss mt-4">
 
                   <div className="card-body">
 
@@ -1825,7 +1857,11 @@ else if (groupTitles.includes("intranetcontentcontributor")){
                                     placeholder="index"
 
                                     onChange={(e) => handleFilterChange(e, 'SNo')}
-
+                                    onKeyDown={(e) => {
+                                      if (e.key === 'Enter' && !e.shiftKey) {
+                                        e.preventDefault(); // Prevents the new line in textarea
+                                      }
+                                    }}
                                     className="inputcss"
 
                                     style={{ width: '100%' }}
@@ -1845,7 +1881,11 @@ else if (groupTitles.includes("intranetcontentcontributor")){
                                   <div className=" bd-highlight">
 
                                     <input type="text" placeholder="Filter by Title" onChange={(e) => handleFilterChange(e, 'Title')}
-
+                                      onKeyDown={(e) => {
+                                        if (e.key === 'Enter' && !e.shiftKey) {
+                                          e.preventDefault(); // Prevents the new line in textarea
+                                        }
+                                      }}
                                       className='inputcss' style={{ width: '100%' }} />
 
                                   </div>
@@ -1872,7 +1912,13 @@ else if (groupTitles.includes("intranetcontentcontributor")){
 
                                   <div className="d-flex  pb-2" style={{ justifyContent: 'space-between' }}>  <span >Category</span>  <span onClick={() => handleSortChange('Category')}><FontAwesomeIcon icon={faSort} /> </span></div>
 
-                                  <div className=" bd-highlight">  <input type="text" placeholder="Filter by Category" onChange={(e) => handleFilterChange(e, 'Category')} className='inputcss' style={{ width: '100%' }} /></div>
+                                  <div className=" bd-highlight">  <input type="text" placeholder="Filter by Category" 
+                                  onChange={(e) => handleFilterChange(e, 'Category')} 
+                                  onKeyDown={(e) => {
+                                    if (e.key === 'Enter' && !e.shiftKey) {
+                                      e.preventDefault(); // Prevents the new line in textarea
+                                    }
+                                  }}className='inputcss' style={{ width: '100%' }} /></div>
 
                                 </div>
 
@@ -1884,7 +1930,13 @@ else if (groupTitles.includes("intranetcontentcontributor")){
 
                                   <div className="d-flex  pb-2" style={{ justifyContent: 'space-between' }}>  <span >Type</span>  <span onClick={() => handleSortChange('Type')}><FontAwesomeIcon icon={faSort} /> </span></div>
 
-                                  <div className=" bd-highlight">     <input type="text" placeholder="Filter by Type" onChange={(e) => handleFilterChange(e, 'Type')} className='inputcss' style={{ width: '100%' }} /></div>
+                                  <div className=" bd-highlight">     <input type="text" placeholder="Filter by Type" onChange={(e) => handleFilterChange(e, 'Type')} 
+                                   onKeyDown={(e) => {
+                                    if (e.key === 'Enter' && !e.shiftKey) {
+                                      e.preventDefault(); // Prevents the new line in textarea
+                                    }
+                                  }}
+                                  className='inputcss' style={{ width: '100%' }} /></div>
 
                                 </div>
 
@@ -1896,7 +1948,13 @@ else if (groupTitles.includes("intranetcontentcontributor")){
 
                                   <div className="d-flex  pb-2" style={{ justifyContent: 'space-between' }}>  <span >Status</span>  <span onClick={() => handleSortChange('Status')}><FontAwesomeIcon icon={faSort} /> </span></div>
 
-                                  <div className=" bd-highlight">     <input type="text" placeholder="Filter by Status" onChange={(e) => handleFilterChange(e, 'Status')} className='inputcss' style={{ width: '100%' }} /></div>
+                                  <div className=" bd-highlight">     <input type="text" placeholder="Filter by Status" onChange={(e) => handleFilterChange(e, 'Status')} 
+                                   onKeyDown={(e) => {
+                                    if (e.key === 'Enter' && !e.shiftKey) {
+                                      e.preventDefault(); // Prevents the new line in textarea
+                                    }
+                                  }}
+                                  className='inputcss' style={{ width: '100%' }} /></div>
 
                                 </div>
 
@@ -1908,7 +1966,12 @@ else if (groupTitles.includes("intranetcontentcontributor")){
 
                                   <div className="d-flex  pb-2" style={{ justifyContent: 'space-between' }}>  <span >Submitted Date</span>  <span onClick={() => handleSortChange('SubmittedDate')}><FontAwesomeIcon icon={faSort} /> </span></div>
 
-                                  <div className=" bd-highlight">     <input type="text" placeholder="Filter by Date" onChange={(e) => handleFilterChange(e, 'SubmittedDate')} className='inputcss' style={{ width: '100%' }} /></div>
+                                  <div className=" bd-highlight">     <input type="text" placeholder="Filter by Date" onChange={(e) => handleFilterChange(e, 'SubmittedDate')} 
+                                   onKeyDown={(e) => {
+                                    if (e.key === 'Enter' && !e.shiftKey) {
+                                      e.preventDefault(); // Prevents the new line in textarea
+                                    }
+                                  }}className='inputcss' style={{ width: '100%' }} /></div>
 
                                 </div>
 
@@ -1918,7 +1981,7 @@ else if (groupTitles.includes("intranetcontentcontributor")){
 
                                 <div className="d-flex flex-column bd-highlight pb-2">
 
-                                  <div className="d-flex  pb-2" style={{ justifyContent: 'space-between' }}>  <span >Action</span>  &nbsp;<div className="dropdown">
+                                  <div className="d-flex  pb-2" style={{ justifyContent: 'space-between' }}>  <span >Action</span> <div className="dropdown">
 
                                     <FontAwesomeIcon icon={faEllipsisV} onClick={toggleDropdownNews} fontSize={18} />
 
@@ -2012,8 +2075,8 @@ else if (groupTitles.includes("intranetcontentcontributor")){
                                       }}
 
                                     >
-<div className='btn btn-status'>
-                                      {item.Status}</div>
+
+                                      {item.Status}
 
                                     </td>
 
@@ -2053,7 +2116,7 @@ else if (groupTitles.includes("intranetcontentcontributor")){
 
                                         style={{
 
-                                          justifyContent: "start", gap:"5px"
+                                          justifyContent: "space-around",
 
                                         }}
 
@@ -2098,14 +2161,14 @@ else if (groupTitles.includes("intranetcontentcontributor")){
                                             }}
 
                                           >
- <img src={require('../../../CustomAsset/edit.png')} />
-                                            {/* <FontAwesomeIcon
+
+                                            <FontAwesomeIcon
 
                                               icon={faEdit}
 
                                               fontSize={18}
 
-                                            /> */}
+                                            />
 
                                           </a>
 
@@ -2135,7 +2198,7 @@ else if (groupTitles.includes("intranetcontentcontributor")){
 
                                           </a> */}
 
-                                          {(item.Status === "Save as draft")?(<a
+                                          {(item.Status === "Save as draft") ? (<a
 
                                             className="action-icon text-danger"
 
@@ -2146,16 +2209,16 @@ else if (groupTitles.includes("intranetcontentcontributor")){
                                             }
 
                                           >
- <img src={require('../../../CustomAsset/del.png')} />
-                                            {/* <FontAwesomeIcon
+
+                                            <FontAwesomeIcon
 
                                               icon={faTrashAlt}
 
                                               fontSize={18}
 
-                                            /> */}
+                                            />
 
-                                          </a>):(<div></div>)}
+                                          </a>) : (<div></div>)}
 
                                         </span>
 

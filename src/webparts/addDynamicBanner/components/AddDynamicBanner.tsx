@@ -5,7 +5,7 @@ import { IAddDynamicBannerProps } from './IAddDynamicBannerProps';
 import { getSP } from '../loc/pnpjsConfig';
 import { SPFI } from '@pnp/sp/presets/all';
 import UserContext from '../../../GlobalContext/context';
-import { getCurrentUser } from '../../../APISearvice/CustomService';
+import { allowstringonly, getCurrentUser } from '../../../APISearvice/CustomService';
 import { decryptId } from '../../../APISearvice/CryptoService';
 import { addItem, getBannerByID, getUrl, updateItem, uploadFile } from '../../../APISearvice/BannerService';
 import Swal from 'sweetalert2';
@@ -58,11 +58,25 @@ const AddDynamicBannerContext = ({ props }: any) => {
     URL: ""
   })
 
-  const validateForm = () => {
+  const validateForm = async () => {
      const { title, URL,description } = formData;
     
     let valid = true;
+    let validatetitlelength = false;
+    let validateTitle = false;
+    let errormsg = "";
     setValidSubmit(true);
+    if (title !== "") {
+      validatetitlelength = title.length <= 255;
+      validateTitle = title !== "" && await allowstringonly(title);
+    }
+    if (title !== "" && !validateTitle && validatetitlelength) {
+      errormsg = "No special character allowed in Title";
+      valid = false;
+    } else if (title !== "" && validateTitle && !validatetitlelength) {
+      errormsg = "Title must be less than 255 characters";
+      valid = false;
+    }
     if (!title) {
       
       valid = false;
@@ -77,7 +91,7 @@ const AddDynamicBannerContext = ({ props }: any) => {
       }
       setValidSubmit(valid);
       if(!valid) 
-        Swal.fire('Please fill all the mandatory fields.');
+        Swal.fire(errormsg !== "" ? errormsg : 'Please fill all the mandatory fields.');
      
     return valid;
   };
@@ -190,10 +204,10 @@ console.log(siteUrl)
 
       if (libraryName === "Gallery" || libraryName === "bannerimg") {
         const imageVideoFiles = files.filter(file =>
-          file.type.startsWith('image/') ||
-          file.type.startsWith('video/')
+          file.type.startsWith('image/') 
+          //|| file.type.startsWith('video/')
         );
-
+        setBannerImagepostArr([]);
         if (imageVideoFiles.length > 0) {
           const arr = {
             files: imageVideoFiles,
@@ -259,7 +273,7 @@ console.log(siteUrl)
   //#region  Submit Form
   const handleFormSubmit = async () => {
    
-    if (validateForm()) {
+    if (await validateForm()) {
     Swal.fire({
       title: 'Do you want to save',
       showConfirmButton: true,

@@ -41,7 +41,7 @@ export const MastersettingContext = ({ props }: any) => {
   const Breadcrumb = [
     {
       "MainComponent": "Home",
-      "MainComponentURl": ""
+      "MainComponentURl": `${SiteUrl}/SitePages/Dashboard.aspx`
     },
     {
       "ChildComponent": "Settings",

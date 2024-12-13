@@ -158,17 +158,17 @@ const SocialFeedContext = ({ props }: any) => {
   useEffect(() => {
     getuserprofile()
   }, []);
-  const getownerjobtitle = async(mail: String) => {
+  const getownerjobtitle = async (mail: String) => {
     debugger
-   
+
     let userdetails = await sp.web.lists.getByTitle("User Information List").items
-    .select("ID", "Title", "EMail", "Department", "JobTitle", "Picture", "MobilePhone", "WorkPhone")
+      .select("ID", "Title", "EMail", "Department", "JobTitle", "Picture", "MobilePhone", "WorkPhone")
       .filter(`EMail eq '${mail}'`)
-      .getAll().then((x)=>{
-        if(x.length > 0){
+      .getAll().then((x) => {
+        if (x.length > 0) {
           userjobtitle = x[0].JobTitle !== null ? x[0].JobTitle : "NA"
         }
-        console.log("testytfghv",x,userJobTitle)
+        console.log("testytfghv", x, userJobTitle)
       })
     return userjobtitle
   }
@@ -257,22 +257,9 @@ const SocialFeedContext = ({ props }: any) => {
       .catch((error) => {
         console.log("Error fetching data: ", error);
       });
-    debugger;
-    const getAllgroup = await fetchgrouppandteammaybeInterested(sp)
-      // await sp.web.lists
-      //   .getByTitle("ARGGroupandTeam")
-      //   .items.select("*,InviteMemebers/Id,InviteMemebers/Title,GroupType").expand("InviteMemebers")()
-      .then((getAllgroup) => {
-        // arr=res;,InviteMemebers/EMail
-        console.log(getAllgroup, ":response")
-        // debugger
-        console.log("getAllgroup------", getAllgroup)
-        setgetAllgroup(getAllgroup)
-      })
-      .catch((error) => {
-        console.log("Error fetching data: ", error);
-      });
+   
   }
+
   console.log(ArrDetails, "ArrDetails data success")
   console.log(ArrDetails, "ArrDetails data success")
   const getAllAPI = async () => {
@@ -280,6 +267,9 @@ const SocialFeedContext = ({ props }: any) => {
     const originalString = ids;
     const idNum = originalString.substring(1);
     const currentUser = await getCurrentUserNameId(sp);
+    let getAllgroups = await fetchgrouppandteammaybeInterested(sp);
+    console.log("getAllgroup------", getAllgroups)
+    setgetAllgroup(getAllgroups)
     setCurrentUserId(currentUser);
     let currentGroup = await getGroupTeamDetailsById(sp, Number(idNum));
     userjobtitle = await getownerjobtitle(currentGroup[0].Author.EMail);
@@ -447,7 +437,7 @@ const SocialFeedContext = ({ props }: any) => {
     setHideCreatePost(true)
 
     setHideShowPost(false)
-
+    fetchPosts()
   }
 
   const [post, setPost] = useState("");
@@ -473,7 +463,7 @@ const SocialFeedContext = ({ props }: any) => {
         .expand("GroupTeamComments,GroupTeamsImages,GroupTeamLikes,Author")
         .orderBy("Created", false)
         .filter(`GroupandTeamId eq ${idNum}`)().then((results: IGroupAndTeamPosts[]) => {
-          console.log(results);
+          console.log("currentpost",results);
           if (results) {
             debugger;
             const PostItems = results.map((ele: IGroupAndTeamPosts) => {
@@ -482,6 +472,7 @@ const SocialFeedContext = ({ props }: any) => {
                 GroupTeamImagesJson: ele.GroupTeamImagesJson,
                 Created: ele.Created,
                 userName: ele.Author?.Title,
+                Author: ele.Author,
                 userAvatar: ele.UserProfile,
                 likecount: ele.LikesCount,
                 commentcount: ele.CommentsCount,
@@ -490,6 +481,7 @@ const SocialFeedContext = ({ props }: any) => {
                 gcomments: ele.UserCommentsJSON ? JSON.parse(ele.UserCommentsJSON) : [],
               }
             });
+            console.log("setpostss",PostItems)
             setPosts(PostItems);
 
           }
@@ -511,6 +503,7 @@ const SocialFeedContext = ({ props }: any) => {
         .expand("GroupTeamComments,GroupTeamsImages,GroupTeamLikes,Author")
         .orderBy("Created", false)
         .filter(`GroupandTeamId eq ${idNum} and AuthorId eq ${cuurentID}`)().then((results: any) => {
+          console.log("me result",results);
           if (results) {
             const PostItems = results.map((ele: IGroupAndTeamPosts) => {
               return {
@@ -518,6 +511,7 @@ const SocialFeedContext = ({ props }: any) => {
                 GroupTeamImagesJson: ele.GroupTeamImagesJson,
                 Created: ele.Created,
                 userName: ele.Author?.Title,
+                Author:ele.Author,
                 userAvatar: ele.UserProfile,
                 likecount: ele.LikesCount,
                 commentcount: ele.CommentsCount,
@@ -526,6 +520,7 @@ const SocialFeedContext = ({ props }: any) => {
                 gcomments: ele.UserCommentsJSON ? JSON.parse(ele.UserCommentsJSON) : []
               }
             });
+            console.log("setpostss me", PostItems)
             setPostsME(PostItems);
           }
         })
@@ -1095,6 +1090,7 @@ const SocialFeedContext = ({ props }: any) => {
                       </div>
 
                     </div>
+                    {console.log("posts.length", posts.length, hideCreatePost, HideShowPost)}
                     {posts.length > 0 && hideCreatePost && !HideShowPost && (
                       <div className="feed">
                         {posts.length > 0 ? (
@@ -1112,6 +1108,7 @@ const SocialFeedContext = ({ props }: any) => {
                                 userName: post.userName,
                                 Created: post.Created,
                                 Contentpost: post.Contentpost,
+                                Author: post.Author.EMail,
                                 SocialFeedImagesJson: post.GroupTeamImagesJson,
                                 userAvatar: post.userAvatar,
                                 likecount: post.likecount,
@@ -1144,6 +1141,7 @@ const SocialFeedContext = ({ props }: any) => {
                               editload={fetchPosts}
                               post={{
                                 userName: post.userName,
+                                Author:post.Author.EMail,
                                 Created: post.Created,
                                 Contentpost: post.Contentpost,
                                 SocialFeedImagesJson: post.GroupTeamImagesJson,

@@ -82,7 +82,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
   const [Url, setBaseUrl] = React.useState([]);
 
   const [showModal, setShowModal] = React.useState(false);
-
+  const [showModal1, setShowModal1] = React.useState(false);
   const [editForm, setEditForm] = React.useState(false);
 
   const [editID, setEditID] = React.useState(null);
@@ -125,7 +125,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
 
   const [showBannerModal, setShowBannerTable] = React.useState(false);
-
+  const [showBannerModal2, SetShowMediaImgModal] = React.useState(false);
   const [formData, setFormData] = React.useState({
 
     title: '',
@@ -380,9 +380,10 @@ const AddMediaGalaryContext = ({ props }: any) => {
         }
 
 
-        if (setMediaById[0].Image.length) {
-
-          banneimagearr = setMediaById[0].Image
+        if (setMediaById[0].Image != '{}' && setMediaById[0].Image != null && setMediaById[0].Image.length) {
+          let arr1 = {};
+          arr1 = JSON.parse(setMediaById[0].Image);
+          banneimagearr.push(arr1);
 
           console.log(banneimagearr, 'banneimagearr');
 
@@ -392,7 +393,6 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
 
         }
-
         else {
 
           setFormData(arr)
@@ -486,13 +486,151 @@ const AddMediaGalaryContext = ({ props }: any) => {
   };
 
   //#endregion
+  interface CustomFile extends File {
+    fileUrl?: string; // Add the fileUrl property to the CustomFile interface
+  }
 
 
   //#region File select function
 
+  // const onFileChange = async (event: React.ChangeEvent<HTMLInputElement>, libraryName: string, docLib: string) => {
+
+  //   debugger;
+
+  //   event.preventDefault();
+
+  //   let uloadBannerImageFiles: any[] = [];
+
+  //   let uloadImageFiles: any[] = [];
+
+  //   let uloadImageFiles1: any[] = [];
+
+
+  //   if (event.target.files && event.target.files.length > 0) {
+
+  //     const files = Array.from(event.target.files);
+
+
+  //     if (libraryName === "Gallery" || libraryName === "bannerimg") {
+
+  //       const imageVideoFiles = files.filter(file =>
+
+  //         file.type.startsWith('image/') ||
+
+  //         file.type.startsWith('video/')
+
+  //       );
+
+
+  //       if (imageVideoFiles.length > 0) {
+
+  //         const arr = {
+
+  //           files: imageVideoFiles,
+
+  //           libraryName: libraryName,
+
+  //           docLib: docLib
+
+  //         };
+
+  //         if (libraryName === "Gallery") {
+
+  //           uloadImageFiles.push(arr);
+
+  //           setImagepostArr(uloadImageFiles);
+
+  //           if (ImagepostArr1.length > 0) {
+
+  //             imageVideoFiles.forEach(ele => {
+
+  //               let arr1 = {
+
+  //                 "ID": 0,
+
+  //                 "Createdby": "",
+
+  //                 "Modified": "",
+
+  //                 "fileUrl": "",
+
+  //                 "fileSize": ele.size,
+
+  //                 "fileType": ele.type,
+
+  //                 "fileName": ele.name
+
+  //               }
+
+  //               ImagepostArr1.push(arr1);
+
+
+  //             }
+
+  //             )
+
+  //             setImagepostArr1(ImagepostArr1);
+
+  //           }
+
+  //           else {
+
+
+  //             imageVideoFiles.forEach(ele => {
+
+  //               let arr1 = {
+
+  //                 "ID": 0,
+
+  //                 "Createdby": "",
+
+  //                 "Modified": "",
+
+  //                 "fileUrl": "",
+
+  //                 "fileSize": ele.size,
+
+  //                 "fileType": ele.type,
+
+  //                 "fileName": ele.name
+
+  //               }
+
+  //               uloadImageFiles1.push(arr1);
+
+
+  //             }
+
+  //             )
+
+  //             setImagepostArr1(uloadImageFiles1);
+
+
+  //           }
+
+  //         } else {
+
+  //           uloadBannerImageFiles.push(arr);
+
+  //           setBannerImagepostArr(uloadBannerImageFiles);
+
+  //         }
+
+  //       } else {
+
+  //         Swal.fire("only image & video can be upload")
+
+  //       }
+
+  //     }
+
+  //   }
+
+  // };
   const onFileChange = async (event: React.ChangeEvent<HTMLInputElement>, libraryName: string, docLib: string) => {
 
     debugger;
+   
 
     event.preventDefault();
 
@@ -502,36 +640,54 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
     let uloadImageFiles1: any[] = [];
 
+    const formatFileSize = (size: number): string => {
+      if (size < 1024) return `${size} B`;
+      const i = Math.floor(Math.log(size) / Math.log(1024));
+      const units = ['B', 'KB', 'MB', 'GB', 'TB'];
+      return `${(size / Math.pow(1024, i)).toFixed(2)} ${units[i]}`;
+    };
+
 
     if (event.target.files && event.target.files.length > 0) {
 
       const files = Array.from(event.target.files);
+      (event.target as HTMLInputElement).value = '';
 
 
       if (libraryName === "Gallery" || libraryName === "bannerimg") {
 
-        const imageVideoFiles = files.filter(file =>
+       
+  //       const imageVideoFiles: CustomFile[] = files
+  // .filter(file => file.type.startsWith('image/') || file.type.startsWith('video/')) // Filter files based on type
+  // .map(file => ({
+  //   ...file, // Spread existing properties of the file
+  //   fileUrl: URL.createObjectURL(file), // Add the new fileUrl property with the object URL
+  // }));
 
+        const imageVideoFiles = files.filter(file =>
+         
           file.type.startsWith('image/') ||
 
           file.type.startsWith('video/')
 
         );
-
+       
 
         if (imageVideoFiles.length > 0) {
 
-          const arr = {
-
-            files: imageVideoFiles,
-
-            libraryName: libraryName,
-
-            docLib: docLib
-
-          };
+          var arr = {};
+         
 
           if (libraryName === "Gallery") {
+            arr={    
+              files: imageVideoFiles,
+ 
+              libraryName: libraryName,
+ 
+              docLib: docLib,
+             
+ 
+            };
 
             uloadImageFiles.push(arr);
 
@@ -549,7 +705,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
                   "Modified": "",
 
-                  "fileUrl": "",
+                  "fileUrl": URL.createObjectURL(ele),
 
                   "fileSize": ele.size,
 
@@ -607,6 +763,22 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
           } else {
 
+            arr={    
+              files: imageVideoFiles,
+ 
+              libraryName: libraryName,
+ 
+              docLib: docLib,
+              name :imageVideoFiles[0].name,
+
+              fileSize :imageVideoFiles[0].size,
+
+              fileUrl : URL.createObjectURL(imageVideoFiles[0])
+ 
+            };
+
+            // fileSize :formatFileSize(imageVideoFiles[0].size),
+
             uloadBannerImageFiles.push(arr);
 
             setBannerImagepostArr(uloadBannerImageFiles);
@@ -618,6 +790,8 @@ const AddMediaGalaryContext = ({ props }: any) => {
           Swal.fire("only image & video can be upload")
 
         }
+
+
 
       }
 
@@ -632,12 +806,20 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
   const setShowModalFunc = (bol: boolean, name: string) => {
 
-    debugger
 
+    if (name == "Gallery") {
+      setShowModal(bol)
 
-    setShowModal(bol)
+      setShowImgTable(true)
+    }
+    else {
 
-    setShowImgTable(true)
+      setShowModal1(bol)
+
+      SetShowMediaImgModal(true)
+
+    }
+
 
 
   }
@@ -646,19 +828,55 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
   //#region deleteLocalFile
 
+  // const deleteLocalFile = (index: number, filArray: any[], name: string) => {
+
+  //   // Remove the file at the specified index
+
+  //   filArray.splice(index, 1);
+
+  //   // Update the state based on the title
+
+  //   setImagepostArr1([...filArray]);
+
+  //   filArray[0].files.length > 0 ? "" : setShowModal(false);
+
+  //   clearFileInput(name);
+
+
+  //   // Clear the file input
+
+  // };
+
   const deleteLocalFile = (index: number, filArray: any[], name: string) => {
 
     // Remove the file at the specified index
 
-    filArray.splice(index, 1);
+    if (name == "Gallery") {
 
-    // Update the state based on the title
+      filArray.splice(index, 1);
 
-    setImagepostArr1([...filArray]);
+      // Update the state based on the title
 
-    filArray[0].files.length > 0 ? "" : setShowModal(false);
+      setImagepostArr1([...filArray]);
 
-    clearFileInput(name);
+      filArray[0].files.length > 0 ? "" : setShowModal(false);
+
+      clearFileInput(name);
+
+    }
+    else {
+      filArray.splice(index, 1);
+
+      // Update the state based on the title
+
+      setBannerImagepostArr([...filArray]);
+
+      filArray[0].files.length > 0 ? "" : setShowModal1(false);
+
+      clearFileInput(name);
+    }
+
+
 
 
     // Clear the file input
@@ -1559,25 +1777,51 @@ const AddMediaGalaryContext = ({ props }: any) => {
             else {
 
               // Create Post
+              var postPayload1 = {};
+              if (BnnerImagepostArr.length > 0) {
+                postPayload1 = {
 
-              const postPayload = {
+                  Title: formData.title,
 
-                Title: formData.title,
+                  EntityMasterId: Number(formData.entity),
 
-                EntityMasterId: Number(formData.entity),
+                  Status: "Save as draft",
 
-                Status: "Save as draft",
-
-                AuthorId: currentUser.Id,
-
-                MediaGalleryCategoryId: formData.Category
-
-              };
-
-              console.log(postPayload);
+                  AuthorId: currentUser.Id,
 
 
-              const postResult = await updateItem(postPayload, sp, editID);
+
+                  MediaGalleryCategoryId: formData.Category
+
+                };
+
+
+              }
+              else {
+
+                postPayload1 = {
+
+                  Title: formData.title,
+
+                  EntityMasterId: Number(formData.entity),
+
+                  Status: "Save as draft",
+
+                  AuthorId: currentUser.Id,
+
+                  Image: "",
+
+                  MediaGalleryCategoryId: formData.Category
+
+                };
+
+              }
+
+
+              console.log(postPayload1);
+
+
+              const postResult = await updateItem(postPayload1, sp, editID);
 
               const postId = postResult?.data?.ID;
 
@@ -1844,7 +2088,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
             setTimeout(() => {
 
-              //window.location.href = `${siteUrl}/SitePages/MediaGalleryMaster.aspx`;
+              window.location.href = `${siteUrl}/SitePages/MediaGalleryMaster.aspx`;
 
             }, 2000);
 
@@ -1896,7 +2140,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
   const clearFileInput = (name: any) => {
 
-    debugger
+    // debugger
 
     const input = document.querySelector(`input[name=${name}]`) as HTMLInputElement;
 
@@ -2224,9 +2468,21 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
                               BnnerImagepostArr.length > 0 &&
 
-                              (<a style={{ fontSize: '0.875rem' }}>
+                              (<a onClick={() => setShowModalFunc(true, "Image")} style={{ fontSize: '0.875rem' }}>
 
                                 <FontAwesomeIcon icon={faPaperclip} /> 1 file Attached
+
+                              </a>)
+
+                            }
+
+                            {BnnerImagepostArr != undefined &&
+
+                              BnnerImagepostArr.length == 0 &&
+
+                              (<a onClick={() => setShowModalFunc(true, "Image")} style={{ fontSize: '0.875rem' }}>
+
+                                <FontAwesomeIcon icon={faPaperclip} /> 0 file Attached
 
                               </a>)
 
@@ -2293,6 +2549,15 @@ const AddMediaGalaryContext = ({ props }: any) => {
                                 <FontAwesomeIcon icon={faPaperclip} /> {ImagepostArr1.length} files Attached
 
                               </a>)
+                               || (ImagepostArr1 == null || ImagepostArr1.length == 0 &&
+
+                                (<a onClick={() => setShowModalFunc(true, "Gallery")} style={{ fontSize: '0.875rem' }}>
+  
+                                  <FontAwesomeIcon icon={faPaperclip} /> 0 file Attached
+  
+                                </a>))
+  
+                              
 
                             }
 
@@ -2653,77 +2918,170 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
             <Modal show={showModal} onHide={() => setShowModal(false)} size="lg">
 
-              <Modal.Header closeButton>
+<Modal.Header closeButton>
 
-                {ImagepostArr1.length > 0 && showBannerModal && <Modal.Title>Media Images</Modal.Title>}
+  <Modal.Title>Media Gallery</Modal.Title>
 
-              </Modal.Header>
+  {/* {ImagepostArr1.length > 0 && showBannerModal && <Modal.Title>Media Images</Modal.Title>} */}
 
-              <Modal.Body className="scrollbar" id="style-5">
+</Modal.Header>
 
-                {ImagepostArr1.length > 0 && showImgModal &&
+<Modal.Body className="scrollbar" id="style-5">
 
-                  (
+  {/* {ImagepostArr1.length > 0 && showImgModal &&
 
-                    <>
+    (*/}
 
-                      <table className="mtable table-bordered" style={{ fontSize: '0.75rem' }}>
+  <>
 
-                        <thead style={{ background: '#eef6f7' }}>
+    <table className="mtable table-bordered" style={{ fontSize: '0.75rem' }}>
 
-                          <tr>
+      <thead style={{ background: '#eef6f7' }}>
 
-                            <th>Serial No.</th>
+        <tr>
 
-                            <th > Image </th>
+          <th>Serial No.</th>
 
-                            <th>File Name</th>
+          <th > Image </th>
 
-                            <th>File Size</th>
-                            {modeValue =='null' && 
-                              <th className='text-center'>Action</th>
-                            }
-                          </tr>
+          <th>File Name</th>
 
-                        </thead>
+          <th>File Size</th>
+          {modeValue == null &&
+            <th className='text-center'>Action</th>
+          }
+        </tr>
 
-                        <tbody>
+      </thead>
 
-                          {ImagepostArr1.map((file: any, index: number) => (
+      <tbody>
 
-                            <tr key={index}>
+        {ImagepostArr1.map((file: any, index: number) => (
 
-                              <td className='text-center'>{index + 1}</td>
+          <tr key={index}>
 
-                              <td>  <img className='imagefe' src={`${siteUrl}/MediaGallery/${file.fileName}`}
+            <td className='text-center'>{index + 1}</td>
 
-                              /></td>
+            <td>
+              <img
+                className='imagefe'
+                src={file.fileUrl ?  file.fileUrl:`${siteUrl}/MediaGallery/${file.fileName}`}
+                alt={'default image'}
+              />
+            </td>
+
+            <td>{file.fileName}</td>
+
+            <td className='text-right'>{file.fileSize}</td>
+            {modeValue == null &&
+              <td className='text-center'> <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }}
+
+                onClick={() => deleteLocalFile(index, ImagepostArr1, "Gallery")} /> </td>
+
+            }
+          </tr>
+
+        ))}
+
+      </tbody>
+
+    </table>
+  </>
+
+  {/*  )} */}
 
 
-                              <td>{file.fileName}</td>
 
-                              <td className='text-right'>{file.fileSize}</td>
-                              {modeValue =='null' && 
-                                <td className='text-center'> <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }}
+</Modal.Body>
 
-                                  onClick={() => deleteLocalFile(index, ImagepostArr1, "Gallery")} /> </td>
-
-                              }
-                            </tr>
-
-                          ))}
-
-                        </tbody>
-
-                      </table></>
-
-                  )}
+</Modal>
 
 
 
-              </Modal.Body>
+<Modal show={showModal1} onHide={() => setShowModal1(false)} size="lg">
 
-            </Modal>
+<Modal.Header closeButton>
+
+  <Modal.Title>Media Image</Modal.Title>
+
+  {/* {BnnerImagepostArr.length > 0 && showBannerModal2 && <Modal.Title>Media Image</Modal.Title>} */}
+
+
+</Modal.Header>
+
+<Modal.Body className="scrollbar" id="style-5">
+
+  {/* {BnnerImagepostArr.length > 0 && showBannerModal2 &&
+
+    ( */}
+
+  <>
+
+    <table className="mtable table-bordered" style={{ fontSize: '0.75rem' }}>
+
+      <thead style={{ background: '#eef6f7' }}>
+
+        <tr>
+
+          <th>Serial No.</th>
+
+          <th > Image </th>
+
+          <th>File Name</th>
+
+          <th>File Size</th>
+          {modeValue == null &&
+            <th className='text-center'>Action</th>
+          }
+        </tr>
+
+      </thead>
+
+      <tbody>
+
+        {BnnerImagepostArr.map((file: any, index: number) => (
+
+          <tr key={index}>
+
+            <td className='text-center'>{index + 1}</td>
+
+            <td>
+              <img
+                className="imagefe"
+                src={
+                  file.serverUrl && file.serverRelativeUrl
+                    ? `${file.serverUrl}${file.serverRelativeUrl}`
+                    : file.fileUrl // Fallback to file.fileUrl if other values are missing
+                }
+                alt="Preview"
+              />
+            </td>
+
+            <td>{file.fileName ? file.fileName : file.name}</td>
+
+            <td className='text-right'>{file.fileSize}</td>
+            {modeValue == null &&
+              <td className='text-center'> <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }}
+
+                onClick={() => deleteLocalFile(index, BnnerImagepostArr, "Image")} /> </td>
+
+            }
+          </tr>
+
+        ))}
+
+      </tbody>
+
+    </table>
+  </>
+
+  {/* )} */}
+
+
+
+</Modal.Body>
+
+</Modal>
 
           </div>
 

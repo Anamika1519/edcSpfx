@@ -115,6 +115,13 @@ text-overflow: ellipsis;
 display: -webkit-box;
 -webkit-box-orient: vertical;-webkit-line-clamp: 2;
 }
+.twolinewrapone{
+  overflow: hidden;
+text-overflow: ellipsis;
+//-webkit-line-clamp: 2;
+display: -webkit-box;
+-webkit-box-orient: vertical;-webkit-line-clamp: 1;
+}
 .notification-lists .dropdown-toggle:after{display: none !important;}
 .twolinewrap1{
   overflow: hidden;
@@ -132,7 +139,7 @@ height:63px;
   text-overflow: ellipsis;
   
   display: -webkit-box;
-  height:43px;
+  height:37px; margin-bottom: 7px !important;
   
   -webkit-box-orient: vertical;
   
@@ -188,6 +195,10 @@ a:hover, a:active {
 .mtable th #myDropdown svg{
   position: relative !important;right: auto !important;vertical-align: bottom !important;height: 16PX !important;
 }
+.sidebar .menu_items .active svg{color:#FFF !important;}
+.sidebar.close .navlink{color:#FFF !important;}
+.page-item.active .page-link{color: #fff !important;}
+.mtable th input:focus{outline: 2px solid #1fb0e5 !important;}
 .mtable th #myDropdown{text-align: center;width: 70px;
   min-width: 73px; padding: 5px !important; right: 1px !important;   transform: translateY(0px) !important;}
 
@@ -249,7 +260,7 @@ a:hover, a:active {
   background: #1fb0e5;
 }
 .view-all:hover{
-  background: #008751;
+  background: #008751; color: #fff !important;
 }
 
 .annuncementcard h4{color: #343a40 !important;}
@@ -1053,6 +1064,8 @@ margin: 10px 0px !important ;
   
       height: 96px;
   }
+  .two-line{height: 51px;}
+  .file-cards .card{height: 100px !important;}
   .item {
     margin: .8rem 7px 0 17px;
   }
@@ -1099,7 +1112,7 @@ margin: 10px 0px !important ;
     padding-bottom: 12px;
   }
   .view-all{position: absolute;right: 16px; height: 30px !important;
-    top: 22px;}
+    top: 18px;}
   .announcementner .border-bottom{
     padding: 5px 0px 20px 0; 
   }
@@ -1161,7 +1174,9 @@ margin: 10px 0px !important ;
   .internalmedia .gal-box .image-popup {
       height: 250px !important;
   }
-
+  .line18 {
+    line-height: 1.4 !important;
+}
   .paddbnew {
     padding: 30px 15px 30px 8px;
 }
@@ -1239,7 +1254,7 @@ margin: 10px 0px !important ;
     top: 13px;
   }
   .sidebar-enable .tabcontentv,.sidebar-enable .tabv{height: 350px !important;}
-  // .menu_items{max-height: 730px;}
+  .menu_items{max-height: 720px;}
   
   .item {
     margin: .3rem 7px 0 17px;
@@ -1252,6 +1267,8 @@ margin: 10px 0px !important ;
   .internalmedia .gal-box .image-popup {
       height: 225px !important;
   }
+  .two-line{height: 43px;}
+  .file-cards .card{height: 88px !important;}
   .navlink_icon svg{    height: 18;
     width: 18px;}
   .paddbnew {

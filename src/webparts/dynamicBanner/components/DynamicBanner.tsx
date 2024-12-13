@@ -10,7 +10,7 @@ import Swal from 'sweetalert2';
 import VerticalSideBar from '../../verticalSideBar/components/VerticalSideBar';
 import CustomBreadcrumb from '../../../CustomJSComponents/CustomBreadcrumb/CustomBreadcrumb';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faEdit, faPlusCircle, faSort,faEllipsisV,faFileExport } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faEdit, faPlusCircle, faSort, faEllipsisV, faFileExport } from '@fortawesome/free-solid-svg-icons';
 import "../../../Assets/Figtree/Figtree-VariableFont_wght.ttf";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../../../CustomCss/mainCustom.scss";
@@ -30,17 +30,17 @@ const DynamicBannercontext = ({ props }: any) => {
   const [bannersData, setBannersData] = React.useState([]);
   const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
   const ApiCall = async () => {
-    let bannersArr:any[] = [];
+    let bannersArr: any[] = [];
     const userGroups = await sp.web.currentUser.groups();
     let groupTitles: string[] = userGroups.map((group) => group.Title.toLowerCase());
-    
+
     if (groupTitles.includes("intranetadmin")) {
-      bannersArr = await getDynamicBanner(sp,"yes");
+      bannersArr = await getDynamicBanner(sp, "yes");
     }
-    else if (groupTitles.includes("intranetcontentcontributor")){
-      bannersArr = await getDynamicBanner(sp,"No");
+    else if (groupTitles.includes("intranetcontentcontributor")) {
+      bannersArr = await getDynamicBanner(sp, "No");
     }
- 
+
     setBannersData(bannersArr);
 
   };
@@ -195,12 +195,12 @@ const DynamicBannercontext = ({ props }: any) => {
       'S.No.': startIndex + index + 1,
       'Title': item.Title,
       'Url': item.Url,
-      
+
       'Status': item.Status,
       'Submitted Date': item.Created,
     }));
 
-    exportToExcel(exportData, 'Announcements');
+    exportToExcel(exportData, 'Banner');
   };
   const exportToExcel = (data: any[], fileName: string) => {
     const workbook = XLSX.utils.book_new();
@@ -254,108 +254,119 @@ const DynamicBannercontext = ({ props }: any) => {
           text: "Item has been deleted.",
           icon: "success"
         });
-        
+
       }
     })
   }
- const goToAddForm =()=>
- {
-  sessionStorage.removeItem("bannerId")
+  const goToAddForm = () => {
+    sessionStorage.removeItem("bannerId")
     window.location.href = `${siteUrl}/SitePages/BannerForm.aspx`;
- }
+  }
 
- const [isOpenNews, setIsOpenNews] = React.useState(false);
- const toggleDropdownNews = () => {
-   setIsOpenNews(!isOpenNews);
- };
+  const [isOpenNews, setIsOpenNews] = React.useState(false);
+  const toggleDropdownNews = () => {
+    setIsOpenNews(!isOpenNews);
+  };
 
- const handleNewsExportClick = () => {
-  const exportData = currentData.map((item, index) => ({
-    'S.No.': startIndex + index + 1,
-    'Title': item.Title,
-    'Overview': item.Overview,
-    'Category': item?.Category?.Category,
-    'Type': item?.AnnouncementandNewsTypeMaster?.TypeMaster,
-    'Status': item.Status,
-    'Submitted Date': item.Created,
-  }));
+  const handleNewsExportClick = () => {
+    const exportData = currentData.map((item, index) => ({
+      'S.No.': startIndex + index + 1,
+      'Title': item.Title,
+      'Overview': item.Overview,
+      'Category': item?.Category?.Category,
+      'Type': item?.AnnouncementandNewsTypeMaster?.TypeMaster,
+      'Status': item.Status,
+      'Submitted Date': item.Created,
+    }));
 
-  exportToExcel(exportData, 'Banner');
-};
- 
+    exportToExcel(exportData, 'Banner');
+  };
+
   return (
 
     <div id="wrapper" ref={elementRef}>
-    <div 
-      className="app-menu"
-      id="myHeader">
-      <VerticalSideBar _context={sp} />
-    </div>
-    <div className="content-page">
-        <HorizontalNavbar  _context={sp} siteUrl={siteUrl}/>
-      <div className="content " style={{marginLeft: `${!useHide ? '240px' : '80px'}`}}>
+      <div
+        className="app-menu"
+        id="myHeader">
+        <VerticalSideBar _context={sp} />
+      </div>
+      <div className="content-page">
+        <HorizontalNavbar _context={sp} siteUrl={siteUrl} />
+        <div className="content " style={{ marginLeft: `${!useHide ? '240px' : '80px'}` }}>
           <div className="container-fluid  paddb">
             <div className="row">
               <div className="col-lg-3">
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
               </div>
-           
-                <div className="col-lg-9">
-                  <div className="d-flex flex-wrap align-items-center justify-content-end mt-3">
-                    <div className="d-flex flex-wrap align-items-center justify-content-start">
-                      <a href={`${siteUrl}/SitePages/settings.aspx`}>
-                        <button type="button" className="btn btn-secondary me-1 waves-effect waves-light">
-                          <FontAwesomeIcon icon={faArrowLeft} className="me-1" />
-                          Back
-                        </button>
-                      </a>
-                      <a href={`${siteUrl}/SitePages/BannerForm.aspx`} onClick={()=>goToAddForm()}>
-                        <button type="button" className="btn btn-primary waves-effect waves-light" style={{ background: '#1fb0e5' }}>
-                          <FontAwesomeIcon icon={faPlusCircle} className="me-1" />
-                          Add
-                        </button>
-                      </a>
-                    </div>
+
+              <div className="col-lg-9">
+                <div className="d-flex flex-wrap align-items-center justify-content-end mt-3">
+                  <div className="d-flex flex-wrap align-items-center justify-content-start">
+                    <a href={`${siteUrl}/SitePages/settings.aspx`}>
+                      <button type="button" className="btn btn-secondary me-1 waves-effect waves-light">
+                        <FontAwesomeIcon icon={faArrowLeft} className="me-1" />
+                        Back
+                      </button>
+                    </a>
+                    <a href={`${siteUrl}/SitePages/BannerForm.aspx`} onClick={() => goToAddForm()}>
+                      <button type="button" className="btn btn-primary waves-effect waves-light" style={{ background: '#1fb0e5' }}>
+                        <FontAwesomeIcon icon={faPlusCircle} className="me-1" />
+                        Add
+                      </button>
+                    </a>
                   </div>
                 </div>
               </div>
-              <div className="card cardCss mt-3">
-                <div className="card-body">
-                  <div id="cardCollpase4" className="collapse show">
-                    <div className="table-responsive pt-0">
-                      <table className="mtable mt-0 table-centered table-nowrap table-borderless mb-0">
-                        <thead>
-                          <tr>
-                            <th style={{ borderBottomLeftRadius: '0px', minWidth: '50px',
-                               maxWidth: '50px', borderTopLeftRadius: '0px' }}>
-                                  <div className="d-flex pb-2" 
-                                  style={{ justifyContent: 'space-between' }}>
-                               <span>S.No.</span>
-                               <span onClick={() => handleSortChange('SNo')}>
-                                 <FontAwesomeIcon icon={faSort} />
-                               </span>
-                             </div>
-                             <div className="bd-highlight">
-                               <input
-                                 type="text"
-                                 placeholder="index"
-                                 onChange={(e) => handleFilterChange(e, 'SNo')}
-                                 className="inputcss"
-                                 style={{ width: '100%' }}
-                               />
-                             </div>
-                               </th>
-                            <th>
-                               <div className="d-flex flex-column bd-highlight ">
-                                    <div className="d-flex pb-2" style={{ justifyContent: 'space-between' }}>  
-                                      <span >Title</span>  <span onClick={() => handleSortChange('Title')}><FontAwesomeIcon icon={faSort} /> </span></div>
-                                    <div className=" bd-highlight">
-                                      <input type="text" placeholder="Filter by Title" onChange={(e) => handleFilterChange(e, 'Title')}
-                                        className='inputcss' style={{ width: '100%' }} />
-                                    </div>
-                                  </div>
-                            </th>
-                            {/* <th style={{ minWidth: '100px', maxWidth: '100px' }}>Banner Image
+            </div>
+            <div className="card cardCss mt-3">
+              <div className="card-body">
+                <div id="cardCollpase4" className="collapse show">
+                  <div className="table-responsive pt-0">
+                    <table className="mtable mt-0 table-centered table-nowrap table-borderless mb-0">
+                      <thead>
+                        <tr>
+                          <th style={{
+                            borderBottomLeftRadius: '0px', minWidth: '50px',
+                            maxWidth: '50px', borderTopLeftRadius: '0px'
+                          }}>
+                            <div className="d-flex pb-2"
+                              style={{ justifyContent: 'space-between' }}>
+                              <span>S.No.</span>
+                              <span onClick={() => handleSortChange('SNo')}>
+                                <FontAwesomeIcon icon={faSort} />
+                              </span>
+                            </div>
+                            <div className="bd-highlight">
+                              <input
+                                type="text"
+                                placeholder="index"
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter' && !e.shiftKey) {
+                                    e.preventDefault(); // Prevents the new line in textarea
+                                  }
+                                }}
+                                onChange={(e) => handleFilterChange(e, 'SNo')}
+                                className="inputcss"
+                                style={{ width: '100%' }}
+                              />
+                            </div>
+                          </th>
+                          <th>
+                            <div className="d-flex flex-column bd-highlight ">
+                              <div className="d-flex pb-2" style={{ justifyContent: 'space-between' }}>
+                                <span >Title</span>  <span onClick={() => handleSortChange('Title')}><FontAwesomeIcon icon={faSort} /> </span></div>
+                              <div className=" bd-highlight">
+                                <input type="text" placeholder="Filter by Title" onChange={(e) => handleFilterChange(e, 'Title')}
+                                  onKeyDown={(e) => {
+                                    if (e.key === 'Enter' && !e.shiftKey) {
+                                      e.preventDefault(); // Prevents the new line in textarea
+                                    }
+                                  }}
+                                  className='inputcss' style={{ width: '100%' }} />
+                              </div>
+                            </div>
+                          </th>
+                          {/* <th style={{ minWidth: '100px', maxWidth: '100px' }}>Banner Image
                             <div className="d-flex flex-column bd-highlight ">
                                     <div className="d-flex pb-2" style={{ justifyContent: 'space-between' }}>  
                                       <span >Title</span>  <span onClick={() => handleSortChange('Title')}><FontAwesomeIcon icon={faSort} /> </span></div>
@@ -365,7 +376,7 @@ const DynamicBannercontext = ({ props }: any) => {
                                     </div>
                                   </div>
                             </th> */}
-                            {/* <th style={{ minWidth: '100px', maxWidth: '100px' }}>
+                          {/* <th style={{ minWidth: '100px', maxWidth: '100px' }}>
                             <div className="d-flex flex-column bd-highlight ">
                                     <div className="d-flex pb-2" style={{ justifyContent: 'space-between' }}>  
                                       <span >Url</span>  <span onClick={() => handleSortChange('URL')}><FontAwesomeIcon icon={faSort} /> </span></div>
@@ -375,122 +386,132 @@ const DynamicBannercontext = ({ props }: any) => {
                                     </div>
                                   </div>
                             </th> */}
-                            <th style={{ minWidth: '60px', maxWidth: '60px' }}>
+                          <th style={{ minWidth: '60px', maxWidth: '60px' }}>
                             <div className="d-flex flex-column bd-highlight ">
-                                    <div className="d-flex pb-2" style={{ justifyContent: 'space-between' }}>  
-                                      <span >Status</span>  <span onClick={() => handleSortChange('Status')}><FontAwesomeIcon icon={faSort} /> </span></div>
-                                    <div className=" bd-highlight">
-                                      <input type="text" placeholder="Filter by Status" onChange={(e) => handleFilterChange(e, 'Status')}
-                                        className='inputcss' style={{ width: '100%' }} />
-                                    </div>
-                                  </div>
-                            </th>
-                            <th style={{ minWidth: '80px', maxWidth: '80px' }}>
+                              <div className="d-flex pb-2" style={{ justifyContent: 'space-between' }}>
+                                <span >Status</span>  <span onClick={() => handleSortChange('Status')}><FontAwesomeIcon icon={faSort} /> </span></div>
+                              <div className=" bd-highlight">
+                                <input type="text" placeholder="Filter by Status" onChange={(e) => handleFilterChange(e, 'Status')}
+                                  onKeyDown={(e) => {
+                                    if (e.key === 'Enter' && !e.shiftKey) {
+                                      e.preventDefault(); // Prevents the new line in textarea
+                                    }
+                                  }}
+                                  className='inputcss' style={{ width: '100%' }} />
+                              </div>
+                            </div>
+                          </th>
+                          <th style={{ minWidth: '80px', maxWidth: '80px' }}>
                             <div className="d-flex flex-column bd-highlight ">
-                                    <div className="d-flex pb-2" style={{ justifyContent: 'space-between' }}>  
-                                      <span >SubmittedDate</span>  <span onClick={() => handleSortChange('SubmittedDate')}><FontAwesomeIcon icon={faSort} /> </span></div>
-                                    <div className=" bd-highlight">
-                                      <input type="text" placeholder="Filter by SubmittedDate" onChange={(e) => handleFilterChange(e, 'SubmittedDate')}
-                                        className='inputcss' style={{ width: '100%' }} />
-                                    </div>
-                                  </div>
-                            </th>
-                            <th style={{ borderBottomRightRadius: '0px', minWidth: '50px', maxWidth: '50px', borderTopRightRadius: '0px' }}>
+                              <div className="d-flex pb-2" style={{ justifyContent: 'space-between' }}>
+                                <span >SubmittedDate</span>  <span onClick={() => handleSortChange('SubmittedDate')}><FontAwesomeIcon icon={faSort} /> </span></div>
+                              <div className=" bd-highlight">
+                                <input type="text" placeholder="Filter by SubmittedDate" onChange={(e) => handleFilterChange(e, 'SubmittedDate')}
+                                  onKeyDown={(e) => {
+                                    if (e.key === 'Enter' && !e.shiftKey) {
+                                      e.preventDefault(); // Prevents the new line in textarea
+                                    }
+                                  }}
+                                  className='inputcss' style={{ width: '100%' }} />
+                              </div>
+                            </div>
+                          </th>
+                          <th style={{ borderBottomRightRadius: '0px', minWidth: '50px', maxWidth: '50px', borderTopRightRadius: '0px' }}>
                             <div className="d-flex flex-column bd-highlight pb-2">
-                                  <div className="d-flex  pb-2" style={{ justifyContent: 'space-between' }}>  <span >Action</span> <div className="dropdown">
-                                    <FontAwesomeIcon icon={faEllipsisV} onClick={toggleDropdownNews} size='xl'/>
-                                  </div>
-                                  </div>
-                                  <div className=" bd-highlight">   <div id="myDropdown" className={`dropdown-content ${isOpenNews ? 'showNews' : ''}`}>
-                                    <div onClick={handleExportClick} className="" >
-                                      <FontAwesomeIcon icon={faFileExport} />  Export
-                                    </div>
-                                  </div></div>
-
+                              <div className="d-flex  pb-2" style={{ justifyContent: 'space-between' }}>  <span >Action</span> <div className="dropdown">
+                                <FontAwesomeIcon icon={faEllipsisV} onClick={toggleDropdownNews} size='xl' />
+                              </div>
+                              </div>
+                              <div className=" bd-highlight">   <div id="myDropdown" className={`dropdown-content ${isOpenNews ? 'showNews' : ''}`}>
+                                <div onClick={handleExportClick} className="" >
+                                  <FontAwesomeIcon icon={faFileExport} />  Export
                                 </div>
-                                <div style={{height:'32px'}}></div>
-                              </th>
-                          </tr>
-                        </thead>
-                        <tbody style={{ maxHeight: '5000px' }}>
+                              </div></div>
+
+                            </div>
+                            <div style={{ height: '32px' }}></div>
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody style={{ maxHeight: '5000px' }}>
                         {currentData.length === 0 ?
-                                (
-                                  <div className="no-results" style={{display:'flex',justifyContent:'center'}}>No results found</div>
-                                ) 
-                                :
+                          (
+                            <div className="no-results" style={{ display: 'flex', justifyContent: 'center' }}>No results found</div>
+                          )
+                          :
                           currentData.map((item, index) => {
                             const ImageUrl = item.BannerImage == undefined || item.BannerImage == null ? "" : JSON.parse(item.BannerImage);
-                            return(
+                            return (
                               <tr key={index}>
-                                <td style={{ minWidth: '50px', maxWidth: '50px' }}><div style={{marginLeft:'20px'}} className='indexdesign'> {index + 1}</div>  </td>
+                                <td style={{ minWidth: '50px', maxWidth: '50px' }}><div style={{ marginLeft: '20px' }} className='indexdesign'> {index + 1}</div>  </td>
                                 <td>{item.Title}</td>
-                               
+
                                 <td style={{ minWidth: '60px', maxWidth: '60px' }}>  <div className='btn btn-status'> {item.Status} </div> </td>
                                 <td style={{ minWidth: '80px', maxWidth: '80px' }}> {moment(item.Created).format("DD-MMM-YYYY")}</td>
                                 <td style={{ minWidth: '50px', maxWidth: '50px' }} className="ng-binding">
-                                <div className="d-flex  pb-2" style={{ justifyContent: 'center',gap:'5px' }}>
-                                <span > <a className="action-icon text-primary" onClick={() => EditBanner(item.ID)}>
-                                <img src={require('../../../CustomAsset/edit.png')} />
-                                  </a> </span >
-                                  <span>   <a className="action-icon text-danger" onClick={() => DeleteBanner(item.ID)}>
-                                    <img src={require('../../../CustomAsset/del.png')}/>
-                                  </a> </span>
+                                  <div className="d-flex  pb-2" style={{ justifyContent: 'center', gap: '5px' }}>
+                                    <span > <a className="action-icon text-primary" onClick={() => EditBanner(item.ID)}>
+                                      <img src={require('../../../CustomAsset/edit.png')} />
+                                    </a> </span >
+                                    <span>   <a className="action-icon text-danger" onClick={() => DeleteBanner(item.ID)}>
+                                      <img src={require('../../../CustomAsset/del.png')} />
+                                    </a> </span>
                                   </div>
                                 </td>
                               </tr>
                             )
                           })
                         }
-                        </tbody>
-                      </table>
+                      </tbody>
+                    </table>
 
-                      
-                      <nav className="pagination-container">
-                        <ul className="pagination">
-                          <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+
+                    <nav className="pagination-container">
+                      <ul className="pagination">
+                        <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                          <a
+                            className="page-link"
+                            onClick={() => handlePageChange(currentPage - 1)}
+                            aria-label="Previous"
+                          >
+                            «
+                          </a>
+                        </li>
+                        {Array.from({ length: totalPages }, (_, num) => (
+                          <li
+                            key={num}
+                            className={`page-item ${currentPage === num + 1 ? 'active' : ''}`}
+                          >
                             <a
                               className="page-link"
-                              onClick={() => handlePageChange(currentPage - 1)}
-                              aria-label="Previous"
+                              onClick={() => handlePageChange(num + 1)}
                             >
-                              «
+                              {num + 1}
                             </a>
                           </li>
-                          {Array.from({ length: totalPages }, (_, num) => (
-                            <li
-                              key={num}
-                              className={`page-item ${currentPage === num + 1 ? 'active' : ''}`}
-                            >
-                              <a
-                                className="page-link"
-                                onClick={() => handlePageChange(num + 1)}
-                              >
-                                {num + 1}
-                              </a>
-                            </li>
-                          ))}
-                          <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-                            <a
-                              className="page-link"
-                              onClick={() => handlePageChange(currentPage + 1)}
-                              aria-label="Next"
-                            >
-                              »
-                            </a>
-                          </li>
-                        </ul>
-                      </nav>
-                    </div>
+                        ))}
+                        <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                          <a
+                            className="page-link"
+                            onClick={() => handlePageChange(currentPage + 1)}
+                            aria-label="Next"
+                          >
+                            »
+                          </a>
+                        </li>
+                      </ul>
+                    </nav>
                   </div>
                 </div>
               </div>
             </div>
-            </div>
-            {/* End table content */}
-            {/* End container */}
           </div>
         </div>
-     
+        {/* End table content */}
+        {/* End container */}
+      </div>
+    </div>
+
   )
 }
 

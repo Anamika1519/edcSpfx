@@ -38,15 +38,15 @@ const EntityMastercontext = ({ props }: any) => {
   const [bannersData, setBannersData] = React.useState([]);
   const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
   const ApiCall = async () => {
-    let bannersArr:any[] = [];
+    let bannersArr: any[] = [];
     const userGroups = await sp.web.currentUser.groups();
     let groupTitles: string[] = userGroups.map((group) => group.Title.toLowerCase());
-    
+
     if (groupTitles.includes("intranetadmin")) {
-        bannersArr = await getAllEventMaster(sp,"yes");
+      bannersArr = await getAllEventMaster(sp, "yes");
     }
-    else if (groupTitles.includes("intranetcontentcontributor")){
-      bannersArr = await getAllEventMaster(sp,"No");
+    else if (groupTitles.includes("intranetcontentcontributor")) {
+      bannersArr = await getAllEventMaster(sp, "No");
     }
     setBannersData(bannersArr);
 
@@ -369,6 +369,11 @@ const EntityMastercontext = ({ props }: any) => {
                                 type="text"
                                 placeholder="index"
                                 onChange={(e) => handleFilterChange(e, 'SNo')}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter' && !e.shiftKey) {
+                                    e.preventDefault(); // Prevents the new line in textarea
+                                  }
+                                }}
                                 className="inputcss"
                                 style={{ width: '100%' }}
                               />
@@ -380,6 +385,11 @@ const EntityMastercontext = ({ props }: any) => {
                                 <span >Event Name</span>  <span onClick={() => handleSortChange('EventName')}><FontAwesomeIcon icon={faSort} /> </span></div>
                               <div className=" bd-highlight">
                                 <input type="text" placeholder="Filter by Event Name" onChange={(e) => handleFilterChange(e, 'EventName')}
+                                  onKeyDown={(e) => {
+                                    if (e.key === 'Enter' && !e.shiftKey) {
+                                      e.preventDefault(); // Prevents the new line in textarea
+                                    }
+                                  }}
                                   className='inputcss' style={{ width: '100%' }} />
                               </div>
                             </div>
@@ -399,68 +409,80 @@ const EntityMastercontext = ({ props }: any) => {
                               <div className="d-flex pb-2" style={{ justifyContent: 'space-between' }}>
                                 <span >Event Date</span>  <span onClick={() => handleSortChange('EventDate')}><FontAwesomeIcon icon={faSort} /> </span></div>
                               <div className=" bd-highlight">
-                                <input type="text" placeholder="Filter by EventDate" onChange={(e) => handleFilterChange(e, 'EventDate')}
+                                <input type="text" placeholder="Filter by EventDate" onChange={(e) => handleFilterChange(e, 'EventDate')} onKeyDown={(e) => {
+                                  if (e.key === 'Enter' && !e.shiftKey) {
+                                    e.preventDefault(); // Prevents the new line in textarea
+                                  }
+                                }}
                                   className='inputcss' style={{ width: '100%' }} />
                               </div>
                             </div>
                           </th>
                           <th style={{ minWidth: "100px", maxWidth: "100px" }}>
 
-<div className="d-flex flex-column bd-highlight ">
+                            <div className="d-flex flex-column bd-highlight ">
 
-  <div
+                              <div
 
-    className="d-flex pb-2"
+                                className="d-flex pb-2"
 
-    style={{ justifyContent: "space-between" }}
+                                style={{ justifyContent: "space-between" }}
 
-  >
+                              >
 
-    <span>Status</span>{" "}
+                                <span>Status</span>{" "}
 
-    <span
+                                <span
 
-      onClick={() => handleSortChange("Status")}
+                                  onClick={() => handleSortChange("Status")}
 
-    >
+                                >
 
-      <FontAwesomeIcon icon={faSort} />{" "}
+                                  <FontAwesomeIcon icon={faSort} />{" "}
 
-    </span>
+                                </span>
 
-  </div>
+                              </div>
 
-  <div className=" bd-highlight">
+                              <div className=" bd-highlight">
 
-    <input
+                                <input
 
-      type="text"
+                                  type="text"
 
-      placeholder="Filter by Status"
+                                  placeholder="Filter by Status"
 
-      onChange={(e) =>
+                                  onChange={(e) =>
 
-        handleFilterChange(e, "Status")
+                                    handleFilterChange(e, "Status")
 
-      }
+                                  }
+                                  onKeyDown={(e) => {
+                                    if (e.key === 'Enter' && !e.shiftKey) {
+                                      e.preventDefault(); // Prevents the new line in textarea
+                                    }
+                                  }}
+                                  className="inputcss"
 
-      className="inputcss"
+                                  style={{ width: "100%" }}
 
-      style={{ width: "100%" }}
+                                />
 
-    />
+                              </div>
 
-  </div>
+                            </div>
 
-</div>
-
-</th>
+                          </th>
                           <th style={{ minWidth: '100px', maxWidth: '100px' }}>
                             <div className="d-flex flex-column bd-highlight ">
                               <div className="d-flex pb-2" style={{ justifyContent: 'space-between' }}>
                                 <span >Overview</span>  <span onClick={() => handleSortChange('Overview')}><FontAwesomeIcon icon={faSort} /> </span></div>
                               <div className=" bd-highlight">
-                                <input type="text" placeholder="Filter by Overview" onChange={(e) => handleFilterChange(e, 'Overview')}
+                                <input type="text" placeholder="Filter by Overview" onChange={(e) => handleFilterChange(e, 'Overview')} onKeyDown={(e) => {
+                                  if (e.key === 'Enter' && !e.shiftKey) {
+                                    e.preventDefault(); // Prevents the new line in textarea
+                                  }
+                                }}
                                   className='inputcss' style={{ width: '100%' }} />
                               </div>
                             </div>
@@ -470,15 +492,19 @@ const EntityMastercontext = ({ props }: any) => {
                               <div className="d-flex pb-2" style={{ justifyContent: 'space-between' }}>
                                 <span >Event Agenda</span>  <span onClick={() => handleSortChange('EventAgenda')}><FontAwesomeIcon icon={faSort} /> </span></div>
                               <div className=" bd-highlight">
-                                <input type="text" placeholder="Filter by EventAgenda" onChange={(e) => handleFilterChange(e, 'EventAgenda')}
+                                <input type="text" placeholder="Filter by EventAgenda" onChange={(e) => handleFilterChange(e, 'EventAgenda')} onKeyDown={(e) => {
+                                  if (e.key === 'Enter' && !e.shiftKey) {
+                                    e.preventDefault(); // Prevents the new line in textarea
+                                  }
+                                }}
                                   className='inputcss' style={{ width: '100%' }} />
                               </div>
                             </div>
                           </th>
-                          <th style={{ borderBottomRightRadius: '0px', minWidth: '50px', maxWidth: '50px', verticalAlign:'Top', borderTopRightRadius: '0px' }}>
+                          <th style={{ borderBottomRightRadius: '0px', minWidth: '50px', maxWidth: '50px', verticalAlign: 'Top', borderTopRightRadius: '0px' }}>
                             <div className="d-flex flex-column bd-highlight pb-2">
                               <div className="d-flex  pb-0" style={{ justifyContent: 'space-between' }}>  <span >Action</span> <div className="dropdown">
-                                <FontAwesomeIcon icon={faEllipsisV} onClick={toggleDropdownNews} />
+                                {/* <FontAwesomeIcon icon={faEllipsisV} onClick={toggleDropdownNews} /> */}
                               </div>
                               </div>
                               <div className=" bd-highlight">   <div id="myDropdown" className={`dropdown-content ${isOpenNews ? 'showNews' : ''}`}>
@@ -493,116 +519,116 @@ const EntityMastercontext = ({ props }: any) => {
                       </thead>
                       <tbody>
 
-{currentData.length === 0 ? (
+                        {currentData.length === 0 ? (
 
-  <tr>
+                          <tr>
 
-    <td colSpan={7} style={{ textAlign: "center" }}>
+                            <td colSpan={7} style={{ textAlign: "center" }}>
 
-      No results found
+                              No results found
 
-    </td>
+                            </td>
 
-  </tr>
+                          </tr>
 
-) : (
+                        ) : (
 
-  currentData.map((item, index) => (
+                          currentData.map((item, index) => (
 
-    <tr key={index}>
+                            <tr key={index}>
 
-      <td
+                              <td
 
-        style={{ minWidth: "50px", maxWidth: "50px" }}
+                                style={{ minWidth: "50px", maxWidth: "50px" }}
 
-      >
+                              >
 
-<div className='indexdesign'> {startIndex + index + 1}</div>  
+                                <div className='indexdesign'> {startIndex + index + 1}</div>
 
-      </td>
+                              </td>
 
-      <td>{item.EventName}</td>
-
-
-
-      <td>
-      <div className='btn  btn-light'>
-      {moment(item.EventDate).format("DD/MM/yyyy")}
-      </div>
-        
-
-      </td>
-
-      
-
-      <td> <div className='btn  btn-status'>{item.Status} </div> </td>
-      <td>{item.Overview}</td>
-      <td
-
-        style={{ minWidth: "80px", maxWidth: "80px" }}
-
-      >
-
-        {item.EventAgenda}
-
-      </td>
+                              <td>{item.EventName}</td>
 
 
 
-      <td
+                              <td>
+                                <div className='btn  btn-light'>
+                                  {moment(item.EventDate).format("DD/MM/yyyy")}
+                                </div>
 
-        style={{ minWidth: "50px", maxWidth: "50px" }}
 
-        className="ng-binding"
+                              </td>
 
-      >
 
-        <div
 
-          className="d-flex pb-2"
+                              <td> <div className='btn  btn-status'>{item.Status} </div> </td>
+                              <td>{item.Overview}</td>
+                              <td
 
-          style={{ justifyContent: "start", gap:"5px" }}
+                                style={{ minWidth: "80px", maxWidth: "80px" }}
 
-        >
+                              >
 
-          <span>
+                                {item.EventAgenda}
 
-            <a
+                              </td>
 
-              className={`action-icon ${item.Status === "Save as draft"
 
-                ? "text-primary"
 
-                : "text-muted"
+                              <td
 
-                }`}
+                                style={{ minWidth: "50px", maxWidth: "50px" }}
 
-              onClick={
+                                className="ng-binding"
 
-                item.Status === "Save as draft"
+                              >
 
-                  ? () => EditBanner(item.ID)
+                                <div
 
-                  : () => ViewFormReadOnly(item.ID)
-                  // : null
+                                  className="d-flex pb-2"
 
-              }
+                                  style={{ justifyContent: "start", gap: "5px" }}
 
-              style={{
- 
-                cursor:'pointer'
- 
-                  // item.Status === "Save as draft"
- 
-                  //   ? "pointer"
- 
-                  //   : "not-allowed",
- 
-              }}
+                                >
 
-            >
-  <img src={require('../../../CustomAsset/edit.png')}/>
-              {/* <FontAwesomeIcon
+                                  <span>
+
+                                    <a
+
+                                      className={`action-icon ${item.Status === "Save as draft"
+
+                                        ? "text-primary"
+
+                                        : "text-muted"
+
+                                        }`}
+
+                                      onClick={
+
+                                        item.Status === "Save as draft"
+
+                                          ? () => EditBanner(item.ID)
+
+                                          : () => ViewFormReadOnly(item.ID)
+                                        // : null
+
+                                      }
+
+                                      style={{
+
+                                        cursor: 'pointer'
+
+                                        // item.Status === "Save as draft"
+
+                                        //   ? "pointer"
+
+                                        //   : "not-allowed",
+
+                                      }}
+
+                                    >
+                                      <img src={require('../../../CustomAsset/edit.png')} />
+                                      {/* <FontAwesomeIcon
 
                 icon={faEdit}
 
@@ -610,36 +636,36 @@ const EntityMastercontext = ({ props }: any) => {
 
               /> */}
 
-            </a>
+                                    </a>
 
-          </span>
+                                  </span>
 
-          <span>
+                                  <span>
 
-            {(item.Status === "Save as draft")?(<a
+                                    {(item.Status === "Save as draft") ? (<a
 
-              className="action-icon text-danger"
+                                      className="action-icon text-danger"
 
-              onClick={() => DeleteBanner(item.ID)}
+                                      onClick={() => DeleteBanner(item.ID)}
 
-            >
-  <img src={require('../../../CustomAsset/del.png')}/>
-              {/* <FontAwesomeIcon icon={faTrashAlt} /> */}
+                                    >
+                                      <img src={require('../../../CustomAsset/del.png')} />
+                                      {/* <FontAwesomeIcon icon={faTrashAlt} /> */}
 
-            </a>):(<div></div>)}
+                                    </a>) : (<div></div>)}
 
-          </span>
+                                  </span>
 
-        </div>
+                                </div>
 
-      </td>
+                              </td>
 
-    </tr>
+                            </tr>
 
-  ))
+                          ))
 
-)}
-  </tbody>
+                        )}
+                      </tbody>
                     </table>
 
 

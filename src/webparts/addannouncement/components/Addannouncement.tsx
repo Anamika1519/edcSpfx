@@ -1,4 +1,4 @@
-import * as React from 'react' 
+import * as React from 'react'
 import VerticalSideBar from '../../verticalSideBar/components/VerticalSideBar';
 import CustomBreadcrumb from '../../../CustomJSComponents/CustomBreadcrumb/CustomBreadcrumb';
 import { useMediaQuery } from 'react-responsive';
@@ -33,6 +33,7 @@ import { getUrlParameterValue } from '../../../Shared/Helper';
 import { FormSubmissionMode } from '../../../Shared/Interfaces';
 import { WorkflowAuditHistory } from '../../../CustomJSComponents/WorkflowAuditHistory/WorkflowAuditHistory';
 import { CONTENTTYPE_Announcement, CONTENTTYPE_News, LIST_TITLE_ContentMaster, LIST_TITLE_AnnouncementAndNews, LIST_TITLE_MyRequest } from '../../../Shared/Constants';
+import { useRef } from 'react';
 
 interface FormField {
   type: string;
@@ -1264,7 +1265,26 @@ const AddannouncementContext = ({ props }: any) => {
     return arr.reduce((acc, val) => acc.concat(val), []);
   };
   //#endregion
+  const inputFile = useRef(null);
 
+  // Function to reset the input element
+  const handleReset = () => {
+    if (inputFile.current) {
+      inputFile.current.value = "";
+      inputFile.current.type = "text";
+      inputFile.current.type = "file";
+    }
+  };
+  const inputFilegal = useRef(null);
+
+  // Function to reset the input element
+  const handleResetgal = () => {
+    if (inputFilegal.current) {
+      inputFilegal.current.value = "";
+      inputFilegal.current.type = "text";
+      inputFilegal.current.type = "file";
+    }
+  };
   //#region onFileChange
   const onFileChange = async (event: React.ChangeEvent<HTMLInputElement>, libraryName: string, docLib: string) => {
     debugger;
@@ -1344,9 +1364,6 @@ const AddannouncementContext = ({ props }: any) => {
       let errormsg = "";
 
       if (libraryName === "Gallery" || libraryName === "bannerimg") {
-        if (libraryName === "Gallery") {
-
-        }
         const imageVideoFiles = libraryName === "Gallery" ? files.filter(file =>
           file.type.startsWith('image/') ||
           file.type.startsWith('video/')
@@ -1404,8 +1421,8 @@ const AddannouncementContext = ({ props }: any) => {
             setBannerImagepostArr(uloadBannerImageFiles);
           }
         } else {
-          setImagepostArr1([]);
-          setImagepostArr1([]);
+          handleResetgal();
+          handleReset();
           Swal.fire(libraryName === "Gallery" ? "only image & video can be uploaded" : "only image can be uploaded")
         }
       }
@@ -1783,8 +1800,10 @@ const AddannouncementContext = ({ props }: any) => {
                         </div>
                         <input
                           type="file"
+                          ref={inputFile}
                           id="bannerImage"
                           name="bannerImage"
+                          accept=".jpeg,.jpg,.png,.gif"
                           className={`form-control inputcss ${(!ValidSubmit) ? "border-on-error" : ""}`}
                           // className="form-control inputcss"
                           onChange={(e) => onFileChange(e, "bannerimg", "Document")}
@@ -1821,8 +1840,11 @@ const AddannouncementContext = ({ props }: any) => {
                         </div>
                         <input
                           type="file"
+                          ref={inputFilegal}
                           id="announcementGallery"
                           name="announcementGallery"
+                          accept=".jpeg,.jpg,.png,.gif,.mp4,.mp3,.mkv,.webm,.flv,.vob,.ogg,.wmv,.yuv.,MTS,.TS,.m4p..mpeg,.mpe,.mpv,.m4v,.svi,.3gp,.3g2,.roq,.nsv,.flv,.f4v,.f4p,.f4a,.f4b"
+
                           //className="form-control inputcss"
                           className={`form-control inputcss ${(!ValidSubmit) ? "border-on-error" : ""}`}
                           multiple
@@ -2235,4 +2257,3 @@ const Addannouncement: React.FC<IAddannouncementProps> = (props) => {
   )
 }
 export default Addannouncement
-

@@ -241,7 +241,7 @@ const MyApprovalContext = ({ props }: any) => {
   const getCurrrentuser = async () => {
     const userdata = await sp.web.currentUser();
     currentUserEmailRef.current = userdata.Email;
-    getApprovalmasterTasklist();
+    //getApprovalmasterTasklist();
   };
   React.useEffect(() => {
     getCurrrentuser();
@@ -400,7 +400,7 @@ const MyApprovalContext = ({ props }: any) => {
       // Filter records based on the selected type
       let MyApprovaldata = await getMyApproval(sp, value);
       let Automationdata = await getApprovalListsData(sp, value);
-      let MyDMSAPPROVALDATA:any = await MyDMSAPPROVALDATASTATUS(sp, value)
+      //let MyDMSAPPROVALDATA:any = await MyDMSAPPROVALDATASTATUS(sp, value)
       setMyApprovalsDataAll(MyApprovaldata);
       setMyApprovalsDataAutomation(Automationdata);
       if (activeTab == "Intranet") {
@@ -408,9 +408,10 @@ const MyApprovalContext = ({ props }: any) => {
       } else if (activeTab == "Automation") {
         setMyApprovalsData(Automationdata);
         console.log("Automationdata", Automationdata);
-      } else if(activeTab == "Automation"){
+      } 
+      else if(activeTab == "Automation"){
          setMyApprovalsData(null);
-         setMyApprovalsData(MyDMSAPPROVALDATA);
+         //setMyApprovalsData(MyDMSAPPROVALDATA);
          setMyApprovalsData(Mylistdata);
         console.log("Automationdata", Automationdata);
       }
@@ -681,7 +682,7 @@ const MyApprovalContext = ({ props }: any) => {
 
   const handleRedirect = async (
     e: React.MouseEvent<SVGElement, MouseEvent>,
-    Item: any
+    Item: any,mode: any
   ) => {
     e.preventDefault();
 
@@ -696,7 +697,8 @@ const MyApprovalContext = ({ props }: any) => {
     let sessionkey = "";
     let redirecturl = "";
     if (activeTab == "Automation") {
-      window.location.href = `${Item.RedirectionLink}`;
+      window.open(Item.RedirectionLink, "_blank");
+      //window.location.href = `${Item.RedirectionLink}`;
     } else if (activeTab == "Intranet") {
       if (Item?.ProcessName) {
         switch (Item?.ProcessName) {
@@ -706,7 +708,7 @@ const MyApprovalContext = ({ props }: any) => {
               `${siteUrl}/SitePages/AddAnnouncement.aspx` +
               "?requestid=" +
               Item?.Id +
-              "&mode=approval";
+              "&mode="+mode;
             break;
           case "News":
             sessionkey = "announcementId";
@@ -714,7 +716,7 @@ const MyApprovalContext = ({ props }: any) => {
               `${siteUrl}/SitePages/AddAnnouncement.aspx` +
               "?requestid=" +
               Item?.Id +
-              "&mode=approval";
+              "&mode="+mode;
             break;
           case "Event":
             sessionkey = "EventId";
@@ -722,7 +724,7 @@ const MyApprovalContext = ({ props }: any) => {
               `${siteUrl}/SitePages/EventMasterForm.aspx` +
               "?requestid=" +
               Item?.Id +
-              "&mode=approval";
+              "&mode="+mode;
             break;
           case "Media":
             sessionkey = "mediaId";
@@ -730,7 +732,7 @@ const MyApprovalContext = ({ props }: any) => {
               `${siteUrl}/SitePages/MediaGalleryForm.aspx` +
               "?requestid=" +
               Item?.Id +
-              "&mode=approval";
+              "&mode="+mode;
             break;
           default:
         }
@@ -793,12 +795,12 @@ const MyApprovalContext = ({ props }: any) => {
         >
           <div className="container-fluid paddb">
             <div className="row" style={{ paddingLeft: "0.5rem" }}>
-              <div className="col-lg-6">
+              <div className="col-lg-8">
 
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
 
               </div>
-              <div className="col-md-8"></div>
+              
               <div className="col-md-4">
                 <div className="row">
                   <div style={{ textAlign: "right" }} className="col-md-4">
@@ -1313,20 +1315,40 @@ const MyApprovalContext = ({ props }: any) => {
                                           }}
                                           className="fe-eye font-18"
                                         >
-                                          <Edit
-                                            onClick={(e) =>
-                                              handleRedirect(e, item)
-                                            }
+                                          {item?.Status.toLowerCase() == "approved" || item?.Status.toLowerCase()  == "rejected" ?
+                                           <Eye onClick={(e) =>
+                                            handleRedirect(e,item,"view")    
+                                          }
+    
                                             style={{
+    
                                               minWidth: "20px",
-
+    
                                               maxWidth: "20px",
-
+    
                                               marginLeft: "15px",
-
+    
                                               cursor: "pointer",
-                                            }}
-                                          />
+    
+                                            }} />
+                                          
+                                         :
+                                         <Edit
+                                         onClick={(e) =>
+                                           handleRedirect(e, item,"approval")
+                                         }
+
+                                         style={{
+                                           minWidth: "20px",
+
+                                           maxWidth: "20px",
+
+                                           marginLeft: "15px",
+
+                                           cursor: "pointer",
+                                         }}
+                                       />
+                                          }
                                         </td>
                                       </tr>
                                     )

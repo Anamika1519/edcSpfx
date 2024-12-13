@@ -475,8 +475,8 @@ const HelloWorldContext = ({ props }: any) => {
                       style={{ borderRadius: "1rem" }}
                     >
                       <div className="card-body height">
-                        <h4
-                          className="header-title font-8 text-dark newtextdark fw-bold mb-0"
+                        <h5
+                          className="header-title line18 font-8 text-dark newtextdark fw-bold mb-0"
                           style={{ fontSize: "16px", fontWeight: "bold",marginTop:'2px' }}
                         >
                           Latest Announcement
@@ -487,7 +487,7 @@ const HelloWorldContext = ({ props }: any) => {
                           >
                             View All
                           </a>
-                        </h4>
+                        </h5>
 
                         {dataofann.map((announcement, index) => {
                           const eventDate = new Date(announcement.Modified);
@@ -502,7 +502,7 @@ const HelloWorldContext = ({ props }: any) => {
                           return (
                             <div key={index} className="border-bottom mt-2">
                               <h4
-                                className="mb-0 twolinewrap text-dark fw-bold font-14 mt-0"
+                                className="mb-0 twolinewrapone text-dark fw-bold font-14 mt-0"
                                 style={{ fontSize: "14px", fontWeight: "bold", cursor: "pointer" }}
                                 onClick={(e) => NavigatetoAnnouncement(e, announcement.ID)}
                               >
@@ -520,7 +520,7 @@ const HelloWorldContext = ({ props }: any) => {
                                   WebkitBoxOrient: "vertical",
                                   WebkitLineClamp: 2, // Limit to 2 lines
                                 }}
-                                className="mb-0 font-13"
+                                className="mb-1 font-13"
                               >
                                 {announcement.Overview}
                               </p>
@@ -869,8 +869,8 @@ openEmailDialog(user.Pinned.EMail)
                 {/* Profile Info */}
                 <div className="card" style={{ borderRadius: "1rem " }}>
                   <div className="card-body news-feed">
-                    <h4
-                      className="header-title font-8 text-dark fw-bold mb-0"
+                    <h5
+                      className="header-title line18 font-8 text-dark fw-bold mb-0"
                       style={{
                         fontSize: "16px",
                         fontWeight: "bold",
@@ -884,7 +884,7 @@ openEmailDialog(user.Pinned.EMail)
                       >
                         View All
                       </a>
-                    </h4>
+                    </h5>
                     <div
                       style={{
                         paddingTop: "0px",

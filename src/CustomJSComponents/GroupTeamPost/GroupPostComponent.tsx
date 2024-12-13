@@ -18,7 +18,7 @@ import Swal from "sweetalert2";
 import SocialFeed, { IGroupAndTeamPosts } from "../../webparts/groupandTeamDetails/components/SocialFeed2";
 import { Carousel, Modal } from "react-bootstrap";
 
-export const GroupPostComponent = ({ key, sp, siteUrl, isedit, currentUsername, CurrentUser, currentEmail, fetchPost, post  }: any) => {
+export const GroupPostComponent = ({ key, sp, siteUrl, isedit, currentUsername, CurrentUser, currentEmail, fetchPosts, post }: any) => {
     const [loadingReply, setLoadingReply] = useState<boolean>(false);
     const [loadingLike, setLoadingLike] = useState<boolean>(false);
     const [liked, setLiked] = useState(post.userHasLiked);
@@ -39,7 +39,7 @@ export const GroupPostComponent = ({ key, sp, siteUrl, isedit, currentUsername, 
     const [showModal, setShowModal] = useState(false);
 
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
-    let editedContentnew :string = "";
+    let editedContentnew: string = "";
 
     useEffect(() => {
         GetId()
@@ -175,8 +175,8 @@ export const GroupPostComponent = ({ key, sp, siteUrl, isedit, currentUsername, 
             editedContentnew = editedContent;
             setEditedContent(editedContent);
             debugger
-            await fetchPosts()
-            fetchPost && fetchPost();
+            //await fetchPosts()
+            fetchPosts && fetchPosts();
 
 
 
@@ -248,14 +248,14 @@ export const GroupPostComponent = ({ key, sp, siteUrl, isedit, currentUsername, 
 
     };
 
-    const fetchPosts = async () => {
-        try {
-            const fetchedPosts = await sp.web.lists.getByTitle('ARGGroupandTeamComments').items.getAll();
-            setPosts(fetchedPosts);
-        } catch (error) {
-            console.error("Error fetching posts:", error);
-        }
-    };
+    // const fetchPosts = async () => {
+    //     try {
+    //         const fetchedPosts = await sp.web.lists.getByTitle('ARGGroupandTeamComments').items.getAll();
+    //         setPosts(fetchedPosts);
+    //     } catch (error) {
+    //         console.error("Error fetching posts:", error);
+    //     }
+    // };
 
     const handleLike = async (e: any, liked: boolean) => {
         debugger
@@ -417,14 +417,14 @@ export const GroupPostComponent = ({ key, sp, siteUrl, isedit, currentUsername, 
             if (result.isConfirmed) {
                 try {
                     // Assuming you are using SharePoint API to delete the post
-                   
+
                     await sp.web.lists.getByTitle('ARGGroupandTeamComments').items.getById(postId).delete();
                     // Remove post from UI
 
                     setPosts(prevPosts => prevPosts.filter(post => post.postId !== postId));
                     post = {};
-                   //await fetchPosts();
-                   fetchPost && fetchPost();
+                    //await fetchPosts();
+                    fetchPosts && fetchPosts();
 
                     // window.location.reload()
 
@@ -511,25 +511,29 @@ export const GroupPostComponent = ({ key, sp, siteUrl, isedit, currentUsername, 
                     {/* Post Content */}
                     <div className="post-content">
                         {(
-                            <><>
-                            </><div className="post-actions">
-                                    <div className="menu-toggle" onClick={toggleMenu}>
-                                        <MoreVertical size={20} />
-                                    </div>
-                                    {isMenuOpen && (
-                                        <div className="dropdown-menucsspost" ref={menuRef}>
-                                            <button onClick={(e) => handleEditClick(e)}>Edit</button>
-                                            <button onClick={(e) => handleDeletePost(e, post.postId)}>Delete</button>
+
+                            <>
+                                {post.Author == currentEmail &&
+                                    <div className="post-actions">
+                                        <div className="menu-toggle" onClick={toggleMenu}>
+                                            <MoreVertical size={20} />
                                         </div>
-                                    )}
-                                </div></>
+                                        {isMenuOpen && (
+                                            <div className="dropdown-menucsspost" ref={menuRef}>
+                                                <button onClick={(e) => handleEditClick(e)}>Edit</button>
+                                                <button onClick={(e) => handleDeletePost(e, post.postId)}>Delete</button>
+                                            </div>
+                                        )}
+                                    </div>
+                                }
+                            </>
                         )}
                     </div>
                 </div>
             </div>
 
             {/* Post Content */}
-            {console.log("editedContenteditedContent", editedContent, editedContentnew )}
+            {console.log("editedContenteditedContent", editedContent, editedContentnew)}
             <div className="post-content" onClick={() => sendanEmailStop()} style={{ whiteSpace: "pre-wrap" }}>
                 {isEditing ? (
                     <textarea
@@ -544,7 +548,7 @@ export const GroupPostComponent = ({ key, sp, siteUrl, isedit, currentUsername, 
                                 handleSaveOnEnter(e); // Calls the function to add comment
                             }
                         }}
-                        //onKeyDown={handleSaveOnEnter}
+                    //onKeyDown={handleSaveOnEnter}
                     />
                 ) : (
                     <p style={{ whiteSpace: "pre-wrap" }}>{post.Contentpost}   {/* Edit Button */}

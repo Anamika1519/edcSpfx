@@ -196,10 +196,10 @@ const NotificationMastercontext = ({ props }: any) => {
                                         <table className="mtable table-centered table-nowrap table-borderless mb-0">
                                             <thead>
                                                 <tr>
-                                                <th style={{ borderBottomLeftRadius: '10px', minWidth: '50px', maxWidth: '50px',  }}>  S.No.</th>
+                                                <th style={{ borderBottomLeftRadius: '0px', minWidth: '50px', maxWidth: '50px',  }}>  S.No.</th>
                                                     <th >Module</th>
                                                   
-                                                    <th style={{borderBottomLeftRadius: '10px', minWidth: '50px', maxWidth: '50px'}}>Status</th>
+                                                    <th style={{borderBottomLeftRadius: '0px', minWidth: '150px', maxWidth: '150px'}}>Status</th>
                                                 
                                                 </tr>
                                             </thead>
@@ -220,11 +220,11 @@ const NotificationMastercontext = ({ props }: any) => {
                             ) : (
                               NotificationConfigData.map((item, index1) => (
                                 <tr>
-                                  <td style={{ minWidth: '50px; max-width:50px;' }}>{index1 +1}</td>
+                                  <td style={{ minWidth: '50px', maxWidth:'50px' }}> <span className='indexdesign'>{index1 +1} </span> </td>
                                   <td>{item.ModuleName}
                                   </td>
 
-                                  <td style={{ minWidth: '50px; max-width:50px;' }}>
+                                  <td style={{minWidth: '150px', maxWidth:'150px' }}>
                                     
 
                         <select

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { IEventFormProps } from './IEventFormProps';
 import { SPFI } from '@pnp/sp/presets/all';
 import "../../../Assets/Figtree/Figtree-VariableFont_wght.ttf";
@@ -11,7 +11,7 @@ import Provider from '../../../GlobalContext/provider';
 import { useMediaQuery } from 'react-responsive';
 import context from '../../../GlobalContext/context';
 import CustomBreadcrumb from '../../../CustomJSComponents/CustomBreadcrumb/CustomBreadcrumb';
-import { getCurrentUser, getEntity } from '../../../APISearvice/CustomService';
+import { allowstringonly, getCurrentUser, getEntity } from '../../../APISearvice/CustomService';
 import { getUrl } from '../../../APISearvice/MediaService';
 import { decryptId } from '../../../APISearvice/CryptoService';
 import { addItem, getEventByID, updateItem, uploadFileBanner } from "../../../APISearvice/Eventmaster";
@@ -112,7 +112,7 @@ const HelloWorldContext = ({ props }: any) => {
   React.useEffect(() => {
     ApiCallFunc()
 
-     mode = getUrlParameterValue('mode');
+    mode = getUrlParameterValue('mode');
     if (mode && mode == 'approval') {
       setApprovalMode(true);
       let requestid = getUrlParameterValue('requestid');
@@ -232,12 +232,26 @@ const HelloWorldContext = ({ props }: any) => {
       [{ "color": ["#000000", "#e60000", "#ff9900", "#ffff00", "#008a00", "#0066cc", "#9933ff", "#ffffff", "#facccc", "#ffebcc", "#ffffcc", "#cce8cc", "#cce0f5", "#ebd6ff", "#bbbbbb", "#f06666", "#ffc266", "#ffff66", "#66b966", "#66a3e0", "#c285ff", "#888888", "#a10000", "#b26b00", "#b2b200", "#006100", "#0047b2", "#6b24b2", "#444444", "#5c0000", "#663d00", "#666600", "#003700", "#002966", "#3d1466", 'custom-color'] }],
     ]
   };
-  const validateForm = (formsubmode: FormSubmissionMode) => {
+  const validateForm = async (formsubmode: FormSubmissionMode) => {
     const { EventName, EventDate, EventAgenda, RegistrationDueDate, EntityId, Overview } = formData;
     const { description } = richTextValues;
     let valid = true;
     setValidDraft(true);
     setValidSubmit(true);
+    let validatetitlelength = false;
+    let validateTitle = false;
+    let errormsg = "";
+    if (EventName !== "") {
+      validatetitlelength = EventName.length <= 100;
+      validateTitle = EventName !== "" && await allowstringonly(EventName);
+    }
+    if (EventName !== "" && !validateTitle && validatetitlelength) {
+      errormsg = "No special character allowed in Title";
+      valid = false;
+    } else if (EventName !== "" && validateTitle && !validatetitlelength) {
+      errormsg = "Title must be less than 255 characters";
+      valid = false;
+    }
     if (formsubmode == FormSubmissionMode.DRAFT) {
       if (!EventName) {
         valid = false;
@@ -265,31 +279,41 @@ const HelloWorldContext = ({ props }: any) => {
       else if (!EntityId) {
         valid = false;
       }
+      else if (BnnerImagepostArr.length == 0) {
+        valid = false;
+      }
+      else if (EventGalleryArr1.length == 0) {
+        valid = false;
+      }
       setValidSubmit(valid)
     }
-    console.log("new Date(RegistrationDueDate) > new Date(EventDate)", new Date(RegistrationDueDate) ,
-      moment(EventDate).format("DD-MMM-YYYY"), new Date(EventDate),new Date())
-    if (!valid && (EventDate && RegistrationDueDate && moment(new Date(RegistrationDueDate)).format("DD-MM-YYYY") > moment(new Date(EventDate)).format("DD-MM-YYYY"))) {
-      Swal.fire('Registration date cannot be more than Event date');
-    }else
-      if (!valid && (EventDate && moment(new Date(EventDate)).format("DD-MM-YYYY") >= moment(new Date()).format("DD-MM-YYYY"))) {
-      Swal.fire('Please fill the mandatory fields.');
-    }else
-    if (!valid && (EventDate && moment(new Date(EventDate)).format("DD-MM-YYYY") >= moment(new Date()).format("DD-MM-YYYY")) &&
-      (EventDate && RegistrationDueDate && moment(new Date(RegistrationDueDate)).format("DD-MM-YYYY") <= moment(new Date(EventDate)).format("DD-MM-YYYY"))) {
-      Swal.fire('Please fill the mandatory fields.');
-    }else
-      if (!valid && (EventDate && moment(new Date(EventDate)).format("DD-MM-YYYY") < moment(new Date()).format("DD-MM-YYYY"))) {
-      Swal.fire('Event date cannot be less than today');
+    console.log("new Date(RegistrationDueDate) > new Date(EventDate)", EventGalleryArr1.length, BnnerImagepostArr.length, valid);
+    if (valid) {
+      if (EventDate && RegistrationDueDate && moment(new Date(RegistrationDueDate)).format("DD-MM-YYYY") > moment(new Date(EventDate)).format("DD-MM-YYYY")) {
+        Swal.fire('Registration date cannot be more than Event date');
+      } else if (!valid && (EventDate && moment(new Date(EventDate)).format("DD-MM-YYYY") < moment(new Date()).format("DD-MM-YYYY"))) {
+        Swal.fire('Event date cannot be less than today');
+      }
+    } else {
+      Swal.fire(errormsg !== "" ? errormsg : 'Please fill the mandatory fields.');
     }
- 
+
+
     return valid;
   };
 
   //#endregion
   //#region  Submit Form
+//    else
+// if (EventDate && moment(new Date(EventDate)).format("DD-MM-YYYY") >= moment(new Date()).format("DD-MM-YYYY")) {
+//   Swal.fire(errormsg !== "" ? errormsg : 'Please fill the mandatory fields.');
+// } else
+//   if (!valid && (EventDate && moment(new Date(EventDate)).format("DD-MM-YYYY") >= moment(new Date()).format("DD-MM-YYYY")) &&
+//     (EventDate && RegistrationDueDate && moment(new Date(RegistrationDueDate)).format("DD-MM-YYYY") <= moment(new Date(EventDate)).format("DD-MM-YYYY"))) {
+//     Swal.fire(errormsg !== "" ? errormsg : 'Please fill the mandatory fields.');
+//   }
   const handleFormSubmit = async () => {
-    if (validateForm(FormSubmissionMode.SUBMIT)) {
+    if (await validateForm(FormSubmissionMode.SUBMIT)) {
       if (editForm) {
         Swal.fire({
           title: 'Do you want to submit this request?',
@@ -608,7 +632,7 @@ const HelloWorldContext = ({ props }: any) => {
   //#region  save as draft
 
   const handleSaveAsDraft = async () => {
-    if (validateForm(FormSubmissionMode.DRAFT)) {
+    if (await validateForm(FormSubmissionMode.DRAFT)) {
       if (editForm) {
         Swal.fire({
           // title: 'Do you want to update?',
@@ -1002,7 +1026,26 @@ const HelloWorldContext = ({ props }: any) => {
     //#endregion
   }
   //#endregion
+  const inputFile = useRef(null);
 
+  // Function to reset the input element
+  const handleReset = () => {
+    if (inputFile.current) {
+      inputFile.current.value = "";
+      inputFile.current.type = "text";
+      inputFile.current.type = "file";
+    }
+  };
+  const inputFilegal = useRef(null);
+
+  // Function to reset the input element
+  const handleResetgal = () => {
+    if (inputFilegal.current) {
+      inputFilegal.current.value = "";
+      inputFilegal.current.type = "text";
+      inputFilegal.current.type = "file";
+    }
+  };
   //#region onFileChange
   const onFileChange = async (event: React.ChangeEvent<HTMLInputElement>, libraryName: string, docLib: string) => {
     //debugger;
@@ -1017,7 +1060,7 @@ const HelloWorldContext = ({ props }: any) => {
 
     if (event.target.files && event.target.files.length > 0) {
       const files = Array.from(event.target.files);
-
+     
       if (libraryName === "Docs") {
         const docFiles = files.filter(file =>
           file.type === 'application/pdf' ||
@@ -1081,10 +1124,11 @@ const HelloWorldContext = ({ props }: any) => {
       }
       if (libraryName === "Gallery" || libraryName === "bannerimg") {
         const imageVideoFiles = files.filter(file =>
-          file.type.startsWith('image/') ||
-          file.type.startsWith('video/')
+          libraryName === "Gallery" ?
+            (file.type.startsWith('image/') || file.type.startsWith('video/'))
+            : file.type.startsWith('image/')
         );
-
+       
         if (imageVideoFiles.length > 0) {
           const arr = {
             files: imageVideoFiles,
@@ -1136,7 +1180,9 @@ const HelloWorldContext = ({ props }: any) => {
           }
 
         } else {
-          Swal.fire("only image & video can be upload")
+          handleResetgal();
+          handleReset();
+          Swal.fire(libraryName === "Gallery" ? "only image & video can be upload" : "only image can be upload")
         }
       }
     }
@@ -1410,9 +1456,12 @@ const HelloWorldContext = ({ props }: any) => {
                         </div>
                         <input
                           type="file"
+                          ref={inputFile}
                           id="bannerImage"
                           name="bannerImage"
-                          className="form-control inputcss"
+                          accept=".jpeg,.jpg,.png,.gif"
+                          //value={}
+                          className={`form-control inputcs ${(!ValidSubmit) ? "border-on-error" : ""}`}
                           onChange={(e) => onFileChange(e, "bannerimg", "Document")}
                           disabled={InputDisabled}
                         />
@@ -1446,9 +1495,11 @@ const HelloWorldContext = ({ props }: any) => {
                         </div>
                         <input
                           type="file"
+                          ref={inputFilegal}
                           id="EventGallery"
                           name="EventGallery"
-                          className="form-control inputcss"
+                          accept=".jpeg,.jpg,.png,.gif,.mp4,.mp3,.mkv,.webm,.flv,.vob,.ogg,.wmv,.yuv.,MTS,.TS,.m4p..mpeg,.mpe,.mpv,.m4v,.svi,.3gp,.3g2,.roq,.nsv,.flv,.f4v,.f4p,.f4a,.f4b"
+                          className={`form-control inputcs ${(!ValidSubmit) ? "border-on-error" : ""}`}
                           multiple
                           onChange={(e) => onFileChange(e, "Gallery", "EventGallery")}
                           disabled={InputDisabled}
@@ -1494,7 +1545,7 @@ const HelloWorldContext = ({ props }: any) => {
                     <div className="col-lg-8">
                       <div className="mb-3">
                         <label htmlFor="overview" className="form-label">
-                          Event Overview  <span className="text-danger">*</span>
+                          Event Overview
                         </label>
                         <textarea
                           className="form-control inputcss"
@@ -1514,7 +1565,7 @@ const HelloWorldContext = ({ props }: any) => {
                     <div className="col-lg-12">
                       <div className="mb-3">
                         <label htmlFor="EventAgenda" className="form-label">
-                          Event Agenda  <span className="text-danger">*</span>
+                          Event Agenda
                         </label>
                         <div style={{ display: "contents", justifyContent: "start" }}>
                           <textarea
@@ -1550,11 +1601,11 @@ const HelloWorldContext = ({ props }: any) => {
                           Cancel
                         </button>
                       </div>) : (<div className="text-center butncss">
-                          <button type="button" className="btn btn-light waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleCancel}>
-                            <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }}
-                              className='me-1' alt="x" />
-                            Cancel
-                          </button>
+                        <button type="button" className="btn btn-light waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleCancel}>
+                          <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }}
+                            className='me-1' alt="x" />
+                          Cancel
+                        </button>
                       </div>)}
                   </form>
                 </div>
@@ -1728,9 +1779,9 @@ const HelloWorldContext = ({ props }: any) => {
                                 <th>Serial No.</th>
                                 <th>File Name</th>
                                 <th>File Size</th>
-                              {mode != 'view' &&
-                                <th className='text-center'>Action</th>
-                              }
+                                {mode != 'view' &&
+                                  <th className='text-center'>Action</th>
+                                }
                               </tr>
                             </thead>
                             <tbody>
@@ -1764,9 +1815,9 @@ const HelloWorldContext = ({ props }: any) => {
                                 <th> Image </th>
                                 <th>File Name</th>
                                 <th>File Size</th>
-                              {mode != 'view' &&
-                                <th className='text-center'>Action</th>
-                              }
+                                {mode != 'view' &&
+                                  <th className='text-center'>Action</th>
+                                }
                               </tr>
                             </thead>
                             <tbody>
@@ -1779,7 +1830,7 @@ const HelloWorldContext = ({ props }: any) => {
                                   <td>{file.fileName}</td>
                                   <td className='text-right'>{file.fileSize}</td>
                                   {mode != 'view' &&
-                                  <td className='text-center'> <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, EventGalleryArr1, "Gallery")} /> </td>
+                                    <td className='text-center'> <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, EventGalleryArr1, "Gallery")} /> </td>
                                   }
                                 </tr>
                               ))}
