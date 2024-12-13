@@ -891,6 +891,8 @@ const HelloWorldContext = ({ props }: any) => {
     setItemsToShow(itemsToShow + 5); // Increase the number by 8
   };
 
+  
+
   return (
     <div id="wrapper" ref={elementRef}>
       <div className="app-menu" id="myHeader">
@@ -1487,7 +1489,10 @@ const HelloWorldContext = ({ props }: any) => {
                                       className="pe-2 text-nowrap mb-1 d-inline-block"
                                     >
 
-                                      <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} />     <b>{project?.ProjectsDocsId?.length}</b> Documents
+                                      <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} />     <b>
+                                        {/* {project?.ProjectsDocsId?.length} */}
+                                        {project?.FileCount}
+                                        </b> Documents
                                     </span>
                                     <span
 
@@ -1689,7 +1694,10 @@ const HelloWorldContext = ({ props }: any) => {
                                       className="pe-2 text-nowrap mb-1 d-inline-block"
                                     >
 
-                                      <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} />     <b>{project?.ProjectsDocsId?.length}</b> Documents
+                                      <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} />     <b>
+                                        {/* {project?.ProjectsDocsId?.length} */}
+                                        {project?.FileCount}
+                                        </b> Documents
                                     </span>
                                     <span
 
@@ -1922,7 +1930,10 @@ const HelloWorldContext = ({ props }: any) => {
                                       className="pe-2 text-nowrap mb-1 d-inline-block"
                                     >
 
-                                      <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} /> <b>{project?.ProjectsDocsId?.length}</b> Documents
+                                      <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} /> <b>
+                                        {/* {project?.ProjectsDocsId?.length} */}
+                                        {project?.FileCount}
+                                        </b> Documents
                                     </span>
                                     <span
 
@@ -2143,7 +2154,10 @@ const HelloWorldContext = ({ props }: any) => {
                                       className="pe-2 text-muted text-nowrap mb-1 d-inline-block"
                                     >
 
-                                      <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} />  <b>{project?.ProjectsDocsId?.length}</b> Documents
+                                      <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} />  <b>
+                                        {/* {project?.ProjectsDocsId?.length} */}
+                                        {project?.FileCount}
+                                        </b> Documents
                                     </span>
                                     <span
 
@@ -2426,7 +2440,10 @@ const HelloWorldContext = ({ props }: any) => {
                                       className="pe-2 text-muted text-nowrap mb-1 d-inline-block"
                                     >
                                       <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} />
-                                      <b>{project?.ProjectsDocsId?.length}</b> Documents
+                                      <b>
+                                        {/* {project?.ProjectsDocsId?.length} */}
+                                        {project?.FileCount}
+                                        </b> Documents
                                     </span>
                                     <span
 
@@ -2707,7 +2724,10 @@ const HelloWorldContext = ({ props }: any) => {
                                       className="pe-2 text-nowrap mb-1 d-inline-block"
                                     >
                                       <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} />
-                                      <b>{project?.ProjectsDocsId?.length}</b> Documents
+                                      <b>
+                                        {/* {project?.ProjectsDocsId?.length} */}
+                                        {project?.FileCount}
+                                        </b> Documents
                                     </span>
                                     <span
 
@@ -3197,7 +3217,10 @@ const HelloWorldContext = ({ props }: any) => {
                                       className="pe-2 text-nowrap mb-1 d-inline-block"
                                     >
                                       <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} />
-                                      <b>{project?.ProjectsDocsId?.length}</b> Documents
+                                      <b>
+                                        {/* {project?.ProjectsDocsId?.length} */}
+                                        {project?.FileCount}
+                                        </b> Documents
                                     </span>
                                     <span
 

@@ -1039,7 +1039,7 @@ const SocialFeedContext = ({ props }: any) => {
         ...prevStatus,
         [itemId]: true,
       }));
-
+      fetchFollowingList()
       // Increase follower count and decrease unfollower count
 
     } catch (error) {

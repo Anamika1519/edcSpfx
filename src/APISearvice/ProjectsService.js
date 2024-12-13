@@ -13,6 +13,18 @@ export const fetchprojectdata = async (_sp) => {
      
       res[i].CommentsCount = ARGProjectComment.length
     }
+    for (var i = 0; i < res.length; i++) {
+
+      try {
+        const ARGProjectFolders = await _sp.web.getFolderByServerRelativePath(res[i].ProjectFileManager).files();
+        console.log(ARGProjectFolders,'ARGProjectFolders');
+        
+        res[i].FileCount = ARGProjectFolders.length
+      } catch (error) {
+        
+      }
+       
+     }
     //res.filter(x=>x.Category?.Category==str)
     arr = res;
   })

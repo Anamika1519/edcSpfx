@@ -1517,6 +1517,17 @@ const handleRemoveUser = async (userId: number) => {
   }
 };
 
+useEffect(()=>{
+  // getAllFilesForProject()
+  const getFileCount=async()=>{
+    const response = await sp.web.getFolderByServerRelativePath(`${filemanager}`).files();
+    console.log(response, "resonse in effect ")
+    setFiles(response)
+  }
+  getFileCount();
+ 
+},[])
+
   return (
     <div id="wrapper" ref={elementRef}>
       <div className="app-menu" id="myHeader">
@@ -1677,7 +1688,8 @@ const handleRemoveUser = async (userId: number) => {
                   onClick={(e) => openModal(e)}
                  
                 >
-                  <FilePlus />  Documents
+                  {/* <FilePlus />  Documents */}
+                  <FilePlus />  Documents <span>[{files.length}]</span>
              
                 </button>
                         </div>

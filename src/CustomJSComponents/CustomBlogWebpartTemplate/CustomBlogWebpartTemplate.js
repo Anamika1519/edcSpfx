@@ -178,7 +178,8 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
         { console.log("filteredMediaItemsafter", filteredBlogItems) }
         const handleClickOutside = (event) => {
             if (menuRef.current && !menuRef.current.contains(event.target)) {
-                setIsMenuOpenshare(false);
+                // setIsMenuOpenshare(false);
+                setShowDropdownId(null)
             }
         };
 
@@ -891,6 +892,12 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                 });
 
                 setBookmarkstatus((prev) => ({ ...prev, [item.ID]: true })); // Update pin status
+                Swal.fire({
+                    title: 'Successful',
+                    text: 'Bookmarks added successfully!',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
 
             }
 
@@ -1478,7 +1485,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                                             <Share2 size={22} color="#6c757d" strokeWidth={2} style={{ fontWeight: '400' }} />
                                                         </div>
                                                         {showDropdownId === item.Id && (
-                                                            <div className="dropdown-menu dropcss" isMenuOpenshareref={menuRef}>
+                                                            <div className="dropdown-menu dropcss" ref={menuRef}>
                                                                 <a className="dropdown-item dropcssItem" onClick={() => sendanEmail(item)}>Share by email</a>
                                                                 <a className="dropdown-item dropcssItem" onClick={() => copyToClipboard(item.Id)}>
                                                                     Copy Link

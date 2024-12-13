@@ -662,26 +662,56 @@ const DiscussionForumContext = ({ props }: any) => {
   };
 
 
-
   const validateForm = () => {
-    const { topic, Type, category, entity, overview, FeaturedAnnouncement } =
+    console.log("formData",formData);
+    const { topic, Type, category, entity, overview, FeaturedAnnouncement ,GroupType } =
       formData;
     const { description } = richTextValues;
     let valid = true;
     if (!topic) {
-      Swal.fire("Error", "Topic is required!", "error");
+      // Swal.fire("Error", "Topic is required!", "error");
       valid = false;
     } else if (!entity) {
-      Swal.fire("Error", "Entity is required!", "error");
+      // Swal.fire("Error", "Entity is required!", "error");
       valid = false;
     }
     else if (!category) {
-      Swal.fire("Error", "Category is required!", "error");
+      // Swal.fire("Error", "Category is required!", "error");
       valid = false;
+    }else if(!GroupType){
+      valid=false;
+    }else if(!overview){
+      valid=false;
+    }else if(GroupType === "Private"){
+      // console.log("selectedValue",selectedValue);
+      if(selectedValue.length === 0){
+        valid=false;
+      }
     }
-
+    if(!valid){
+      Swal.fire("Error", "Please fill in the mandatory fields!", "error");
+    }
     return valid;
   };
+  // const validateForm = () => {
+  //   const { topic, Type, category, entity, overview, FeaturedAnnouncement } =
+  //     formData;
+  //   const { description } = richTextValues;
+  //   let valid = true;
+  //   if (!topic) {
+  //     Swal.fire("Error", "Topic is required!", "error");
+  //     valid = false;
+  //   } else if (!entity) {
+  //     Swal.fire("Error", "Entity is required!", "error");
+  //     valid = false;
+  //   }
+  //   else if (!category) {
+  //     Swal.fire("Error", "Category is required!", "error");
+  //     valid = false;
+  //   }
+
+  //   return valid;
+  // };
 
   const setShowModalFunc = (bol: boolean, name: string) => {
     if (name == "bannerimg") {
