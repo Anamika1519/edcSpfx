@@ -1320,7 +1320,7 @@ const DiscussionForumContext = ({ props }: any) => {
           }}
         >
           <div className="container-fluid paddb">
-            <div className="row">
+          <div className="row" style={{paddingLeft:'0.5rem'}}>
               <div className="col-lg-6">
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
               </div>
@@ -1699,7 +1699,7 @@ const DiscussionForumContext = ({ props }: any) => {
                 </div>
               </div>
             </div>
-            <div className="row mt-4">
+            <div className="row mt-4" style={{paddingLeft:'0.5rem'}}>
               <div className="col-12">
                 <div className="card mb-0">
                   <div className="card-body">
@@ -1758,7 +1758,7 @@ const DiscussionForumContext = ({ props }: any) => {
               </div>{" "}
               {/* end col */}
             </div>
-            <div className="card cardCss mt-4">
+            <div className="card cardCss mt-2 mb-0">
               <div className="card-body">
                 <div id="cardCollpase4" className="collapse show">
                   <div className="table-responsive pt-0">

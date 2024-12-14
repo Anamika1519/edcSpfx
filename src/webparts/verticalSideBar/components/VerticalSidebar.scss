@@ -38,14 +38,14 @@
   margin-top: 2px;
   margin-right: 5px;}
 .paddb {
-padding: 50px 34px 30px 18px;min-height: 100vh;
+padding: 50px 34px 0px 18px;min-height: 100vh;
 }
 .card .card-body .quill{max-height: 300px !important; height: 300px !important; overflow-y: auto !important;}
 .carousel-control-next, .carousel-control-prev{
   opacity: 1 !important;
 }
 .paddbnew{
-  padding: 30px 17px 30px 15px;min-height: 100vh;
+  padding: 30px 17px 0px 15px;min-height: 100vh;
 }
 .sub-menu .test{padding: 0px 10px !important;    height: 30px;
   line-height: 10px;}
@@ -134,6 +134,7 @@ height:63px;
 
 -webkit-line-clamp: 3;
 }
+.mtable td{    padding: 3px 10px !important;}
 .two-line{
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1178,7 +1179,7 @@ margin: 10px 0px !important ;
     line-height: 1.4 !important;
 }
   .paddbnew {
-    padding: 30px 15px 30px 8px;
+    padding: 30px 15px 0px 8px;
 }
   .view-all{height: 25px !important;}
   .twolinewrap1{height: 68px;}
@@ -1272,7 +1273,7 @@ margin: 10px 0px !important ;
   .navlink_icon svg{    height: 18;
     width: 18px;}
   .paddbnew {
-    padding: 30px 17px 30px 4px;
+    padding: 30px 17px 0px 4px;
 }
   .view-all{height: 24px !important;}
   .twolinewrap1 {
@@ -1764,8 +1765,9 @@ color: #fff !important;
   color: #3c3c3c;
   font-size: 13px !important;
   width: 100px;
+  padding: 3px 6px !important;
 }
-
+.btn-light {padding: 3px 6px !important;}
 .inputcss {
   color: #6c757d;
   font-size: .875rem !important;

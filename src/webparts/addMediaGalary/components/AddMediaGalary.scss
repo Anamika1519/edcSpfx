@@ -179,3 +179,9 @@ div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm)
   }
   .mtable tr{border: 0px !important; width: 100% !important; display: table !important;}
   .table-responsive{display: grid;}
+  @media(max-width:1280px){
+    .mtable td,.mtable th{min-width:95px;max-width: 95px;}
+  }
+  @media(max-width:1200px){
+    .mtable td,.mtable th{min-width:80px;max-width: 80px;}
+  }

@@ -520,7 +520,7 @@ const HelloWorldContext = ({ props }: any) => {
                                   WebkitBoxOrient: "vertical",
                                   WebkitLineClamp: 2, // Limit to 2 lines
                                 }}
-                                className="mb-1 font-13"
+                                className="mb-2 font-13"
                               >
                                 {announcement.Overview}
                               </p>
@@ -809,8 +809,8 @@ openEmailDialog(user.Pinned.EMail)
                                     </span>
 
                                     <span className="tabvtext">
-                                      <span className="twolinewrap mb-1 text-dark">  {item.Title} <br /> </span>
-                                      <span style={{ paddingTop: "2px" }}>
+                                      <span className="twolinewrap mb-1 fw-bold font-14 text-dark">  {item.Title} <br /> </span>
+                                      <span style={{ paddingTop: "2px" }} className="font-12">
                                         <i className="fa fa-clock-o"></i>&nbsp;
                                         {moment(item.Created).format("DD-MMM-YYYY")}
                                       </span>
@@ -1115,7 +1115,7 @@ openEmailDialog(user.Pinned.EMail)
                     <div className="row mt-2">
                       {projects.map((project, index) => (
                         <div className="col-lg-4" key={project.Id}>
-                          <div className="card project-box">
+                          <div className="card project-box mb-0">
                             <div className="card-body">
                               <div className="dropdown mt-3 float-end">
                                 <a
@@ -1161,16 +1161,20 @@ openEmailDialog(user.Pinned.EMail)
 
                                   className="pe-2 text-nowrap"
                                 >
-                                  <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} /> <b>{project?.ProjectsDocsId?.length}</b> Documents
+                                  <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} /> <b>
+                                    {/* {project?.ProjectsDocsId?.length} */}
+                                    {project?.FileCount || 0}
+                                    </b> Documents
                                 </span>
                                 <span>
                                   <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />
                                   {/* Display fetched comment count */}
-                                  {commentsData[project.ID] !== undefined ? (
+                                  {/* {commentsData[project.ID] !== undefined ? (
                                     `${commentsData[project.ID]} Comments`
                                   ) : (
                                     'Loading comments...'
-                                  )}
+                                  )} */}
+                                  <b>{project.CommentsCount || 0}</b> Comments
                                 </span>
 
                               </p>

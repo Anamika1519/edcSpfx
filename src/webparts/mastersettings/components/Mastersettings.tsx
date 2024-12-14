@@ -186,7 +186,7 @@ export const MastersettingContext = ({ props }: any) => {
       <div className="content-page">
           <HorizontalNavbar  _context={sp} siteUrl={SiteUrl}/>
         <div className="content" style={{marginLeft: `${!useHide ? '240px' : '80px'}`}}>
-          <div style={{paddingTop:'15px'}} className="container-fluid  paddb">
+          <div style={{paddingTop:'12px'}} className="container-fluid  paddb">
             <div className="row pt-0" style={{ paddingLeft: '0.5rem' }}>
               <div className="col-lg-3">
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />

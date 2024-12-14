@@ -1,4 +1,3 @@
-
 import * as React from 'react'
 
 import { useMediaQuery } from 'react-responsive';
@@ -264,7 +263,7 @@ import HorizontalNavbar from '../../horizontalNavBar/components/HorizontalNavBar
 //   //#endregion
 
 
-//   //#region 
+//   //#region
 
 //   const EditAnnouncement = (id: any) => {
 
@@ -284,7 +283,7 @@ import HorizontalNavbar from '../../horizontalNavBar/components/HorizontalNavBar
 //   //#endregion
 
 
-//   //#region 
+//   //#region
 
 //   const DeleteAnnouncement = (id: any) => {
 
@@ -831,7 +830,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
   });
 
-  let CurrentTab = "Announcement";
+  let CurrentTab: boolean = true;
   const [sortConfig, setSortConfig] = React.useState({ key: '', direction: 'ascending' });
 
 
@@ -1060,13 +1059,21 @@ const Announcementmastercontext = ({ props }: any) => {
   const [currentPage, setCurrentPage] = React.useState(1);
 
   const itemsPerPage = 10;
+  console.log("CurrentTabCurrentTab", CurrentTab);
+  const totalPages =  Math.ceil(filteredAnnouncementData.length / itemsPerPage) ;
+  const totalPagesnews = Math.ceil(filteredNewsData.length / itemsPerPage);
 
-  const totalPages = (CurrentTab = "Announcement") ? Math.ceil(filteredAnnouncementData.length / itemsPerPage) : Math.ceil(filteredNewsData.length / itemsPerPage);
-
-
+  console.log("totalPages", totalPages, CurrentTab);
   const handlePageChange = (pageNumber: any) => {
-
-    if (pageNumber > 0 && pageNumber <= totalPages) {
+   
+    let totalpage: any;
+    if (CurrentTab) {
+      totalpage = totalPages
+    }else {
+      totalpage = totalPagesnews
+    }
+    console.log("totalPages on change", totalPages, CurrentTab, "totalpage", totalpage);
+    if (pageNumber > 0 && pageNumber <= totalpage) {
 
       setCurrentPage(pageNumber);
 
@@ -1093,7 +1100,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
       "MainComponent": "Settings",
 
-      "MainComponentURl": ""
+      "MainComponentURl": `${siteUrl}/SitePages/Settings.aspx`
 
     },
 
@@ -1434,7 +1441,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
             >
 
-              <Tab eventKey="Announcement" title="Announcement" onClick={()=> CurrentTab = "Announcement"}>
+              <Tab eventKey="Announcement" title="Announcement" onClick={() => CurrentTab = true}>
 
                 <div className="card cardCss mt-4">
 
@@ -1500,11 +1507,11 @@ const Announcementmastercontext = ({ props }: any) => {
                                   <div className=" bd-highlight">
 
                                     <input type="text" placeholder="Filter by Title" onChange={(e) => handleFilterChange(e, 'Title')}
- onKeyDown={(e) => {
-  if (e.key === 'Enter' && !e.shiftKey) {
-    e.preventDefault(); // Prevents the new line in textarea
-  }
-}}
+                                      onKeyDown={(e) => {
+                                        if (e.key === 'Enter' && !e.shiftKey) {
+                                          e.preventDefault(); // Prevents the new line in textarea
+                                        }
+                                      }}
                                       className='inputcss' style={{ width: '100%' }} />
 
                                   </div>
@@ -1531,12 +1538,12 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                   <div className="d-flex  pb-2" style={{ justifyContent: 'space-between' }}>  <span >Category</span>  <span onClick={() => handleSortChange('Category')}><FontAwesomeIcon icon={faSort} /> </span></div>
 
-                                  <div className=" bd-highlight">  <input type="text" placeholder="Filter by Category" onChange={(e) => handleFilterChange(e, 'Category')} 
-                                   onKeyDown={(e) => {
-                                    if (e.key === 'Enter' && !e.shiftKey) {
-                                      e.preventDefault(); // Prevents the new line in textarea
-                                    }
-                                  }}className='inputcss' style={{ width: '100%' }} /></div>
+                                  <div className=" bd-highlight">  <input type="text" placeholder="Filter by Category" onChange={(e) => handleFilterChange(e, 'Category')}
+                                    onKeyDown={(e) => {
+                                      if (e.key === 'Enter' && !e.shiftKey) {
+                                        e.preventDefault(); // Prevents the new line in textarea
+                                      }
+                                    }} className='inputcss' style={{ width: '100%' }} /></div>
 
                                 </div>
 
@@ -1548,13 +1555,13 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                   <div className="d-flex  pb-2" style={{ justifyContent: 'space-between' }}>  <span >Type</span>  <span onClick={() => handleSortChange('Type')}><FontAwesomeIcon icon={faSort} /> </span></div>
 
-                                  <div className=" bd-highlight">     <input type="text" placeholder="Filter by Type" onChange={(e) => handleFilterChange(e, 'Type')} 
-                                   onKeyDown={(e) => {
-                                    if (e.key === 'Enter' && !e.shiftKey) {
-                                      e.preventDefault(); // Prevents the new line in textarea
-                                    }
-                                  }}
-                                  className='inputcss' style={{ width: '100%' }} /></div>
+                                  <div className=" bd-highlight">     <input type="text" placeholder="Filter by Type" onChange={(e) => handleFilterChange(e, 'Type')}
+                                    onKeyDown={(e) => {
+                                      if (e.key === 'Enter' && !e.shiftKey) {
+                                        e.preventDefault(); // Prevents the new line in textarea
+                                      }
+                                    }}
+                                    className='inputcss' style={{ width: '100%' }} /></div>
 
                                 </div>
 
@@ -1566,13 +1573,13 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                   <div className="d-flex  pb-2" style={{ justifyContent: 'space-between' }}>  <span >Status</span>  <span onClick={() => handleSortChange('Status')}><FontAwesomeIcon icon={faSort} /> </span></div>
 
-                                  <div className=" bd-highlight">     <input type="text" placeholder="Filter by Status" onChange={(e) => handleFilterChange(e, 'Status')} 
-                                   onKeyDown={(e) => {
-                                    if (e.key === 'Enter' && !e.shiftKey) {
-                                      e.preventDefault(); // Prevents the new line in textarea
-                                    }
-                                  }}
-                                  className='inputcss' style={{ width: '100%' }} /></div>
+                                  <div className=" bd-highlight">     <input type="text" placeholder="Filter by Status" onChange={(e) => handleFilterChange(e, 'Status')}
+                                    onKeyDown={(e) => {
+                                      if (e.key === 'Enter' && !e.shiftKey) {
+                                        e.preventDefault(); // Prevents the new line in textarea
+                                      }
+                                    }}
+                                    className='inputcss' style={{ width: '100%' }} /></div>
 
                                 </div>
 
@@ -1584,13 +1591,13 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                   <div className="d-flex  pb-2" style={{ justifyContent: 'space-between' }}>  <span >Submitted Date</span>  <span onClick={() => handleSortChange('SubmittedDate')}><FontAwesomeIcon icon={faSort} /> </span></div>
 
-                                  <div className=" bd-highlight">     <input type="text" placeholder="Filter by Submitted Date" onChange={(e) => handleFilterChange(e, 'SubmittedDate')} 
-                                   onKeyDown={(e) => {
-                                    if (e.key === 'Enter' && !e.shiftKey) {
-                                      e.preventDefault(); // Prevents the new line in textarea
-                                    }
-                                  }}
-                                  className='inputcss' style={{ width: '100%' }} /></div>
+                                  <div className=" bd-highlight">     <input type="text" placeholder="Filter by Submitted Date" onChange={(e) => handleFilterChange(e, 'SubmittedDate')}
+                                    onKeyDown={(e) => {
+                                      if (e.key === 'Enter' && !e.shiftKey) {
+                                        e.preventDefault(); // Prevents the new line in textarea
+                                      }
+                                    }}
+                                    className='inputcss' style={{ width: '100%' }} /></div>
 
                                 </div>
 
@@ -1818,7 +1825,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
               </Tab>
 
-              <Tab eventKey="News" title="News" onClick={()=> CurrentTab = "Announcement"}>
+              <Tab eventKey="News" title="News" onClick={() => CurrentTab = false}>
 
                 <div className="card cardCss mt-4">
 
@@ -1912,13 +1919,13 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                   <div className="d-flex  pb-2" style={{ justifyContent: 'space-between' }}>  <span >Category</span>  <span onClick={() => handleSortChange('Category')}><FontAwesomeIcon icon={faSort} /> </span></div>
 
-                                  <div className=" bd-highlight">  <input type="text" placeholder="Filter by Category" 
-                                  onChange={(e) => handleFilterChange(e, 'Category')} 
-                                  onKeyDown={(e) => {
-                                    if (e.key === 'Enter' && !e.shiftKey) {
-                                      e.preventDefault(); // Prevents the new line in textarea
-                                    }
-                                  }}className='inputcss' style={{ width: '100%' }} /></div>
+                                  <div className=" bd-highlight">  <input type="text" placeholder="Filter by Category"
+                                    onChange={(e) => handleFilterChange(e, 'Category')}
+                                    onKeyDown={(e) => {
+                                      if (e.key === 'Enter' && !e.shiftKey) {
+                                        e.preventDefault(); // Prevents the new line in textarea
+                                      }
+                                    }} className='inputcss' style={{ width: '100%' }} /></div>
 
                                 </div>
 
@@ -1930,13 +1937,13 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                   <div className="d-flex  pb-2" style={{ justifyContent: 'space-between' }}>  <span >Type</span>  <span onClick={() => handleSortChange('Type')}><FontAwesomeIcon icon={faSort} /> </span></div>
 
-                                  <div className=" bd-highlight">     <input type="text" placeholder="Filter by Type" onChange={(e) => handleFilterChange(e, 'Type')} 
-                                   onKeyDown={(e) => {
-                                    if (e.key === 'Enter' && !e.shiftKey) {
-                                      e.preventDefault(); // Prevents the new line in textarea
-                                    }
-                                  }}
-                                  className='inputcss' style={{ width: '100%' }} /></div>
+                                  <div className=" bd-highlight">     <input type="text" placeholder="Filter by Type" onChange={(e) => handleFilterChange(e, 'Type')}
+                                    onKeyDown={(e) => {
+                                      if (e.key === 'Enter' && !e.shiftKey) {
+                                        e.preventDefault(); // Prevents the new line in textarea
+                                      }
+                                    }}
+                                    className='inputcss' style={{ width: '100%' }} /></div>
 
                                 </div>
 
@@ -1948,13 +1955,13 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                   <div className="d-flex  pb-2" style={{ justifyContent: 'space-between' }}>  <span >Status</span>  <span onClick={() => handleSortChange('Status')}><FontAwesomeIcon icon={faSort} /> </span></div>
 
-                                  <div className=" bd-highlight">     <input type="text" placeholder="Filter by Status" onChange={(e) => handleFilterChange(e, 'Status')} 
-                                   onKeyDown={(e) => {
-                                    if (e.key === 'Enter' && !e.shiftKey) {
-                                      e.preventDefault(); // Prevents the new line in textarea
-                                    }
-                                  }}
-                                  className='inputcss' style={{ width: '100%' }} /></div>
+                                  <div className=" bd-highlight">     <input type="text" placeholder="Filter by Status" onChange={(e) => handleFilterChange(e, 'Status')}
+                                    onKeyDown={(e) => {
+                                      if (e.key === 'Enter' && !e.shiftKey) {
+                                        e.preventDefault(); // Prevents the new line in textarea
+                                      }
+                                    }}
+                                    className='inputcss' style={{ width: '100%' }} /></div>
 
                                 </div>
 
@@ -1966,12 +1973,12 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                   <div className="d-flex  pb-2" style={{ justifyContent: 'space-between' }}>  <span >Submitted Date</span>  <span onClick={() => handleSortChange('SubmittedDate')}><FontAwesomeIcon icon={faSort} /> </span></div>
 
-                                  <div className=" bd-highlight">     <input type="text" placeholder="Filter by Date" onChange={(e) => handleFilterChange(e, 'SubmittedDate')} 
-                                   onKeyDown={(e) => {
-                                    if (e.key === 'Enter' && !e.shiftKey) {
-                                      e.preventDefault(); // Prevents the new line in textarea
-                                    }
-                                  }}className='inputcss' style={{ width: '100%' }} /></div>
+                                  <div className=" bd-highlight">     <input type="text" placeholder="Filter by Date" onChange={(e) => handleFilterChange(e, 'SubmittedDate')}
+                                    onKeyDown={(e) => {
+                                      if (e.key === 'Enter' && !e.shiftKey) {
+                                        e.preventDefault(); // Prevents the new line in textarea
+                                      }
+                                    }} className='inputcss' style={{ width: '100%' }} /></div>
 
                                 </div>
 
@@ -2270,7 +2277,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                             </li>
 
-                            {Array.from({ length: totalPages }, (_, num) => (
+                            {Array.from({ length: totalPagesnews }, (_, num) => (
 
                               <li
 
@@ -2296,7 +2303,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                             ))}
 
-                            <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                            <li className={`page-item ${currentPage === totalPagesnews ? 'disabled' : ''}`}>
 
                               <a
 
@@ -2355,5 +2362,3 @@ const Announcementmaster: React.FC<IAnnouncementmasterProps> = (props) => (
 
 
 export default Announcementmaster;
-
-

@@ -75,6 +75,9 @@
     border-radius: 1000px;
 }
     .mtable th{position: relative;} 
+    .mtable td{
+        padding: 6px 10px !important;
+    }
     .mtable th svg{cursor: pointer;}
     .mtable th .svg-inline--fa{height: 23PX !important; cursor: pointer !important; right: 10px !important; position: absolute !important;}
 .alignrightpin {

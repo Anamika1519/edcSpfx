@@ -109,7 +109,7 @@ export const WorkflowAuditHistory = (props: IWorkflowAuditHistoryProps) => {
   return (
 
 
-    <div className="card cardCss mt-4">
+    <div className="card cardCss mb-0  mt-4">
 
  
       <div className="card-body"> 

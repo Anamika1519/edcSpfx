@@ -96,7 +96,7 @@ const HelloWorldContext = ({props}:any) => {
         <HorizontalNavbar  _context={sp} siteUrl={SiteUrl}/>
       <div className="content" style={{marginLeft: `${!useHide ? '240px' : '80px'}`,marginTop:'0rem'}}>
           <div className="container-fluid  paddb">
-            <div className="row" style={{ paddingLeft: '0.5rem' }}>
+            <div className="row">
               <div className="col-lg-3">
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
               </div>

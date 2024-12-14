@@ -37,10 +37,28 @@ let arggroups =[]
 export const fetchprojectdataTop = async (_sp) => {
   let arr = []
    console.log("first sexcute this and ")
-  await _sp.web.lists.getByTitle("ARGProject").items.select("*,TeamMembers/ID,TeamMembers/EMail,TeamMembers/Title").expand("TeamMembers").orderBy("Modified", false).top(3)().then((res) => {
+  await _sp.web.lists.getByTitle("ARGProject").items.select("*,TeamMembers/ID,TeamMembers/EMail,TeamMembers/Title").expand("TeamMembers").orderBy("Modified", false).top(3)().then(async(res) => {
     console.log("checking the data of project---->>>", res);
 
     //res.filter(x=>x.Category?.Category==str)
+    for (var i = 0; i < res.length; i++) {
+      const ARGProjectComment= await _sp.web.lists.getByTitle("ARGProjectComments").items.filter(`ARGProjectId eq ${res[i].Id}`)();
+      console.log(ARGProjectComment,'ARGProjectComment');
+      
+       res[i].CommentsCount = ARGProjectComment.length
+     }
+     for (var i = 0; i < res.length; i++) {
+
+      try {
+        const ARGProjectFolders = await _sp.web.getFolderByServerRelativePath(res[i].ProjectFileManager).files();
+        console.log(ARGProjectFolders,'ARGProjectFolders');
+        
+        res[i].FileCount = ARGProjectFolders.length
+      } catch (error) {
+        
+      }
+       
+     }
     arr = res;
      arggroups = res
      

@@ -574,7 +574,7 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
             'success'
           );
           setSelectedFiles([])
-          // getAllFilesForProject()
+          getAllFilesForProject()
         }
         // alert(uploadResult)
         console.log(`Upload successful for file: ${file.name}`);

@@ -1,4 +1,3 @@
-// HorizontalNavbar.tsx
 import * as React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faExpand, faBell, faSun, faMoon, faGear } from '@fortawesome/free-solid-svg-icons';
@@ -63,7 +62,7 @@ const HorizontalNavbar = ({ _context, siteUrl }: any) => {
   const [currentUser, setCurrentUser] = React.useState("")
   const [currentUserEmail, setCurrentUserEmail] = React.useState("")
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
-
+  const [loading, setLoading] = useState(false);
   // Helper function to generate unique IDs
   const generateId = () => Math.floor(Math.random() * 100000);
   const [issearchOpen, setIsSearchOpen] = React.useState(false);
@@ -75,7 +74,9 @@ const HorizontalNavbar = ({ _context, siteUrl }: any) => {
   const [results, setResults] = useState([]);
   const [NotificationArray, setNotificationArray] = useState([]);
   const menuRef = useRef(null);
+  const notref = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  let showdropdown:boolean = false;
   function groupByFn(array: any, keyGetter: any) {
     return array.reduce((result: any, currentItem: any) => {
       const key = keyGetter(currentItem);
@@ -107,6 +108,9 @@ const HorizontalNavbar = ({ _context, siteUrl }: any) => {
     const handleClickOutside = (event: { target: any; }) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
         setIsMenuOpen(false);
+      }
+      if (notref.current && !notref.current.contains(event.target)) {
+        setIsSearchOpen(false);
       }
     };
 
@@ -250,10 +254,15 @@ const HorizontalNavbar = ({ _context, siteUrl }: any) => {
 
   const searchKeyPress = async (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
+   let arr:any[] =[];
     const queryText = e.target.value;
     setQuery(queryText);
-
+    if (queryText.length < 2){
+      setSearchResults(arr);
+    }
     if (queryText && queryText.length > 2) {
+      showdropdown = true;
+      setLoading(true);
       const searchResults = await searchAllLists(queryText);
       let grped = groupByFn(searchResults, (res: any) => res.ListTitle)
       console.log("grped results", grped);
@@ -261,6 +270,7 @@ const HorizontalNavbar = ({ _context, siteUrl }: any) => {
       setGroupedSearchResults(grped);
       console.log("grouped resuls after fncall", groupedSearchResults);
     }
+    setLoading(false);
   };
   const handleSearchClick = async (result: any) => {
 
@@ -362,48 +372,73 @@ const HorizontalNavbar = ({ _context, siteUrl }: any) => {
 
             <div id="myDropdown" className={`dropdown-content ${issearchOpen ? 'show' : ''}`}>
 
-              <input
+              {/* <input
                 type="text"
                 value={query}
                 className='searchcss searchcssmobile'
                 onChange={(e) => searchKeyPress(e)}
                 placeholder="Search..."
-              />
-              <div className={searchResults.length > 0 ? 'search-results' : ''}>
-
-                <div className={searchResults.length > 0 ? 'scrollbar' : ''} id={searchResults.length > 0 ? 'style-6' : ''}>
-                  {searchResults.length > 0 && <span className='alifnsearch' style={{ padding: '0.85rem' }}>Found {searchResults.length} results</span>}
-                  {console.log("grped searchResults dropfown", groupedSearchResults)}
-                  {searchResults.length > 0 ? (
-
-
-                    Object.keys(groupedSearchResults).map((grpreskey: any, grpind: number) => (
-
-                      <div>
-                        <div className='alifnsearch1' key={grpind}>{ListTitleTiSearchCategoryMapping[grpreskey]}({groupedSearchResults[grpreskey].length})</div>
-                        {
-                          groupedSearchResults[grpreskey].map((result: any, index: any) => (
-                            <div key={index} className="search-result-item">
-                              <a onClick={() => handleSearchClick(result)} style={{ padding: '0.85rem' }}>
-                                <h4 className='eclipcsss text-dark' style={{ fontSize: '16px' }}>{result.Title || result.ProjectName || result.EventName || result.Contentpost}</h4>
-                                {/* {result.Description && <p dangerouslySetInnerHTML={{ __html: result.Description }}></p>} */}
-                                {result.Overview && <p className='eclipcsss text-muted' style={{ fontSize: '14px' }}>{result.Overview}</p>}
-                                {result.EventAgenda && <p className='eclipcsss text-muted' style={{ fontSize: '14px' }}>{result.EventAgenda}</p>}
-                              </a>
-                            </div>
-
-                          ))
-                        }
-                      </div>
-
-
-                    ))
-
-                  ) : (
-                    null
-                  )}
-                  <div className="force-overflow"></div>
+              /> */}
+              <div className={searchResults.length > 0 ? 'search-results' : ''} ref={notref}>
+                {/* searchResults.length > 0 ? 'search-results' : '' */}
+                <div className={loading ? 'scrollbar' : ''} id={loading ? 'style-6' : ''}>
+                {loading && (
+                  <div className="loadernewadd">
+                    <div>
+                      <img style={{ width: '60px' }}
+                        src={require("../../../CustomAsset/birdloader.gif")}
+                        className="alignrightl"
+                        alt="Loading..."
+                      />
+                    </div>
+                    <div className="loadnewarg">
+                      <span>Loading </span>{" "}
+                      <span>
+                        <img style={{ width: '35px' }}
+                          src={require("../../../CustomAsset/argloader.gif")}
+                          className="alignrightl"
+                          alt="Loading..."
+                        />
+                      </span>
+                    </div>
+                  </div>
+                )}
                 </div>
+                {!loading && (
+                  <div className={'scrollbar' } id={searchResults.length > 0 ? 'style-6' : ''}>
+                    {searchResults.length > 0 && <span className='alifnsearch' style={{ padding: '0.85rem' }}>Found {searchResults.length} results</span>}
+                    {console.log("grped searchResults dropfown", groupedSearchResults)}
+                    {searchResults.length > 0 ? (
+
+
+                      Object.keys(groupedSearchResults).map((grpreskey: any, grpind: number) => (
+
+                        <div>
+                          <div className='alifnsearch1' key={grpind}>{ListTitleTiSearchCategoryMapping[grpreskey]}({groupedSearchResults[grpreskey].length})</div>
+                          {
+                            groupedSearchResults[grpreskey].map((result: any, index: any) => (
+                              <div key={index} className="search-result-item">
+                                <a onClick={() => handleSearchClick(result)} style={{ padding: '0.85rem' }}>
+                                  <h4 className='eclipcsss text-dark' style={{ fontSize: '16px' }}>{result.Title || result.ProjectName || result.EventName || result.Contentpost}</h4>
+                                  {/* {result.Description && <p dangerouslySetInnerHTML={{ __html: result.Description }}></p>} */}
+                                  {result.Overview && <p className='eclipcsss text-muted' style={{ fontSize: '14px' }}>{result.Overview}</p>}
+                                  {result.EventAgenda && <p className='eclipcsss text-muted' style={{ fontSize: '14px' }}>{result.EventAgenda}</p>}
+                                </a>
+                              </div>
+
+                            ))
+                          }
+                        </div>
+
+
+                      ))
+
+                    ) : (
+                      "No records found"
+                    )}
+                    <div className="force-overflow"></div>
+                  </div>
+                )}
               </div>
 
             </div>
@@ -418,12 +453,12 @@ const HorizontalNavbar = ({ _context, siteUrl }: any) => {
             </a>
 
             {isMenuOpen &&
-            <div id="myDropdownBell" className={`dropdown-content  ${isOpenBell ? 'show desktoView' : ''}`} style={{ width: '320px' }} ref={menuRef}>
+              <div id="myDropdownBell" className={`dropdown-content  ${isOpenBell ? 'show desktoView' : ''}`} style={{ width: '320px' }} ref={menuRef}>
 
 
-              <NotificationList NotificationArray={NotificationArray} handleNotificationClick={handleNotificationClick} OnClearall={OnClearall} />
+                <NotificationList NotificationArray={NotificationArray} handleNotificationClick={handleNotificationClick} OnClearall={OnClearall} />
 
-            </div>
+              </div>
             }
           </div>
           {/* <Moon size='22' className={isDarkMode ? 'bx bx-moon desktoView' : 'bx bx-sun desktoView'} onClick={handleThemeToggle} /> */}

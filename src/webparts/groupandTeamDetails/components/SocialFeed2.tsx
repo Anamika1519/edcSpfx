@@ -735,7 +735,7 @@ const SocialFeedContext = ({ props }: any) => {
 
           <div className="container-fluid  paddb">
 
-            <div className="row">
+            <div className="row" style={{paddingLeft:'0.5rem'}}>
 
               <div className="col-lg-3">
 

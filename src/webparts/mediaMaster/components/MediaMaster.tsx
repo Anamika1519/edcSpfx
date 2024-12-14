@@ -323,7 +323,7 @@ const MediaMastercontext = ({ props }: any) => {
                 </div>
               </div>
             </div>
-            <div className="card cardCss mt-4">
+            <div className="card cardCss mt-4 mb-0">
               <div className="card-body">
                 <div id="cardCollpase4" className="collapse show">
                   <div className="table-responsive pt-0">

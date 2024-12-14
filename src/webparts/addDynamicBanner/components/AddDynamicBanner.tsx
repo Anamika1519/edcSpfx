@@ -21,6 +21,7 @@ import "../components/addbanner.scss";
 import "../../../CustomJSComponents/CustomForm/CustomForm.scss"
 import HorizontalNavbar from '../../horizontalNavBar/components/HorizontalNavBar';
 import context from '../../../GlobalContext/context';
+import { useRef } from 'react';
 
 const AddDynamicBannerContext = ({ props }: any) => {
   const sp: SPFI = getSP();
@@ -37,6 +38,7 @@ const AddDynamicBannerContext = ({ props }: any) => {
   const { setHide }: any = context;
   const siteUrl = props.siteUrl;
   const [BnnerImagepostArr, setBannerImagepostArr]:any = React.useState();
+  const inputFile = useRef(null);
   const [ValidSubmit, setValidSubmit] = React.useState(true);
   const [bannerByIDArr, setBannerByIdArr] = React.useState({
     title: '',
@@ -95,13 +97,19 @@ const AddDynamicBannerContext = ({ props }: any) => {
      
     return valid;
   };
-
+  const handleReset = () => {
+    if (inputFile.current) {
+      inputFile.current.value = "";
+      inputFile.current.type = "text";
+      inputFile.current.type = "file";
+    }
+  };
 
   //#region Breadcrumb
   const Breadcrumb = [
     {
       "MainComponent": "Settings",
-      "MainComponentURl": ""
+      "MainComponentURl": `${siteUrl}/SitePages/Settings.aspx`
     },
     {
       "ChildComponent": "Banner Master",
@@ -240,6 +248,7 @@ console.log(siteUrl)
           setBannerImagepostArr(uloadBannerImageFiles);
 
         } else {
+          handleReset();
           Swal.fire("Only image can be uploaded")
         }
       }
@@ -504,8 +513,9 @@ console.log(siteUrl)
                            (<img src={`${BnnerImagepostArr[0].serverUrl +BnnerImagepostArr[0].serverRelativeUrl}`} />)}  */}
                             </div>
                           </div>
-                          <input
+                          <input 
                             type="file"
+                            ref={inputFile}
                             id="bannerImage"
                             name="bannerImage"
                             className="form-control inputcss"
