@@ -1920,7 +1920,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                   <div className="list-view">
 
-                    <div className="card" style={{ height: "655px" }}>
+                    <div className="card mb-0" >
 
                       <div className="card-body">
 
