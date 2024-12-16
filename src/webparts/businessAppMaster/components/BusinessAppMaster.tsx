@@ -334,6 +334,11 @@ const BusinessAppscontext = ({ props }: any) => {
                               <span >Title</span>  <span onClick={() => handleSortChange('Title')}><FontAwesomeIcon icon={faSort} /> </span></div>
                             <div className=" bd-highlight">
                               <input type="text" placeholder="Filter by Title" onChange={(e) => handleFilterChange(e, 'Title')}
+                                  onKeyDown={(e) => {
+                                    if (e.key === 'Enter' && !e.shiftKey) {
+                                      e.preventDefault(); // Prevents the new line in textarea
+                                    }
+                                  }}
                                 className='inputcss' style={{ width: '100%' }} />
                             </div>
                           </div></th>

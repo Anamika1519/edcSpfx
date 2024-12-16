@@ -743,8 +743,8 @@ const DiscussionForumContext = ({ props }: any) => {
           title: "Do you want to update?",
           showConfirmButton: true,
           showCancelButton: true,
-          confirmButtonText: "Save",
-          cancelButtonText: "Cancel",
+          confirmButtonText: "Yes",
+          cancelButtonText: "No",
           icon: "warning",
         }).then(async (result) => {
           console.log(result);
@@ -1058,8 +1058,8 @@ const DiscussionForumContext = ({ props }: any) => {
           title: "Do you want to save?",
           showConfirmButton: true,
           showCancelButton: true,
-          confirmButtonText: "Save",
-          cancelButtonText: "Cancel",
+          confirmButtonText: "Yes",
+          cancelButtonText: "No",
           icon: "warning",
         }).then(async (result) => {
 

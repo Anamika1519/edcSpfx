@@ -789,7 +789,7 @@ const MyRequestContext = ({ props }: any) => {
 
       <div className="content-page">
 
-        <HorizontalNavbar />
+        <HorizontalNavbar _context={sp} siteUrl={siteUrl}/>
 
         <div
 
@@ -809,7 +809,7 @@ const MyRequestContext = ({ props }: any) => {
 
               <div className="col-lg-6">
 
-                {/* <CustomBreadcrumb Breadcrumb={Breadcrumb} /> */}
+               <CustomBreadcrumb Breadcrumb={Breadcrumb} /> 
 
               </div>
 
@@ -1024,7 +1024,11 @@ const MyRequestContext = ({ props }: any) => {
                                           handleFilterChange(e, "RequestID")
 
                                         }
-
+                                        onKeyDown={(e) => {
+                                          if (e.key === 'Enter' && !e.shiftKey) {
+                                            e.preventDefault(); // Prevents the new line in textarea
+                                          }
+                                        }}
                                         className="inputcss"
 
                                         style={{ width: "100%" }}
@@ -1080,7 +1084,11 @@ const MyRequestContext = ({ props }: any) => {
                                           handleFilterChange(e, "ProcessName")
 
                                         }
-
+                                        onKeyDown={(e) => {
+                                          if (e.key === 'Enter' && !e.shiftKey) {
+                                            e.preventDefault(); // Prevents the new line in textarea
+                                          }
+                                        }}
                                         className="inputcss"
 
                                         style={{ width: "100%" }}
@@ -1136,7 +1144,11 @@ const MyRequestContext = ({ props }: any) => {
                                           handleFilterChange(e, "RequestedBy")
 
                                         }
-
+                                        onKeyDown={(e) => {
+                                          if (e.key === 'Enter' && !e.shiftKey) {
+                                            e.preventDefault(); // Prevents the new line in textarea
+                                          }
+                                        }}
                                         className="inputcss"
 
                                         style={{ width: "100%" }}
@@ -1188,7 +1200,11 @@ const MyRequestContext = ({ props }: any) => {
                                           handleFilterChange(e, "Status")
 
                                         }
-
+                                        onKeyDown={(e) => {
+                                          if (e.key === 'Enter' && !e.shiftKey) {
+                                            e.preventDefault(); // Prevents the new line in textarea
+                                          }
+                                        }}
                                         className="inputcss"
 
                                         style={{ width: "100%" }}
@@ -1244,7 +1260,11 @@ const MyRequestContext = ({ props }: any) => {
                                           handleFilterChange(e, "RequestedDate")
 
                                         }
-
+                                        onKeyDown={(e) => {
+                                          if (e.key === 'Enter' && !e.shiftKey) {
+                                            e.preventDefault(); // Prevents the new line in textarea
+                                          }
+                                        }}
                                         className="inputcss"
 
                                         style={{ width: "100%" }}
@@ -1626,7 +1646,11 @@ const MyRequestContext = ({ props }: any) => {
                                             handleFilterChange(e, "RequestID")
 
                                           }
-
+                                          onKeyDown={(e) => {
+                                            if (e.key === 'Enter' && !e.shiftKey) {
+                                              e.preventDefault(); // Prevents the new line in textarea
+                                            }
+                                          }}
                                           className="inputcss"
 
                                           style={{ width: "100%" }}
@@ -1682,7 +1706,11 @@ const MyRequestContext = ({ props }: any) => {
                                             handleFilterChange(e, "ProcessName")
 
                                           }
-
+                                          onKeyDown={(e) => {
+                                            if (e.key === 'Enter' && !e.shiftKey) {
+                                              e.preventDefault(); // Prevents the new line in textarea
+                                            }
+                                          }}
                                           className="inputcss"
 
                                           style={{ width: "100%" }}
@@ -1738,7 +1766,11 @@ const MyRequestContext = ({ props }: any) => {
                                             handleFilterChange(e, "RequestedBy")
 
                                           }
-
+                                          onKeyDown={(e) => {
+                                            if (e.key === 'Enter' && !e.shiftKey) {
+                                              e.preventDefault(); // Prevents the new line in textarea
+                                            }
+                                          }}
                                           className="inputcss"
 
                                           style={{ width: "100%" }}
@@ -1790,7 +1822,11 @@ const MyRequestContext = ({ props }: any) => {
                                             handleFilterChange(e, "Status")
 
                                           }
-
+                                          onKeyDown={(e) => {
+                                            if (e.key === 'Enter' && !e.shiftKey) {
+                                              e.preventDefault(); // Prevents the new line in textarea
+                                            }
+                                          }}
                                           className="inputcss"
 
                                           style={{ width: "100%" }}
@@ -1846,7 +1882,11 @@ const MyRequestContext = ({ props }: any) => {
                                             handleFilterChange(e, "RequestedDate")
 
                                           }
-
+                                          onKeyDown={(e) => {
+                                            if (e.key === 'Enter' && !e.shiftKey) {
+                                              e.preventDefault(); // Prevents the new line in textarea
+                                            }
+                                          }}
                                           className="inputcss"
 
                                           style={{ width: "100%" }}

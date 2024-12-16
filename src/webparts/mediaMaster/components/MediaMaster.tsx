@@ -354,6 +354,11 @@ const MediaMastercontext = ({ props }: any) => {
                               <span >Title</span>  <span onClick={() => handleSortChange('Title')}><FontAwesomeIcon icon={faSort} /> </span></div>
                             <div className=" bd-highlight">
                               <input type="text" placeholder="Filter by Title" onChange={(e) => handleFilterChange(e, 'Title')}
+                                  onKeyDown={(e) => {
+                                    if (e.key === 'Enter' && !e.shiftKey) {
+                                      e.preventDefault(); // Prevents the new line in textarea
+                                    }
+                                  }}
                                 className='inputcss' style={{ width: '100%' }} />
                             </div>
                           </div></th>
@@ -363,6 +368,11 @@ const MediaMastercontext = ({ props }: any) => {
                                 <span >Entity</span>  <span onClick={() => handleSortChange('Entity')}><FontAwesomeIcon icon={faSort} /> </span></div>
                               <div className=" bd-highlight">
                                 <input type="text" placeholder="Filter by Entity" onChange={(e) => handleFilterChange(e, 'Entity')}
+                                    onKeyDown={(e) => {
+                                      if (e.key === 'Enter' && !e.shiftKey) {
+                                        e.preventDefault(); // Prevents the new line in textarea
+                                      }
+                                    }}
                                   className='inputcss' style={{ width: '100%' }} />
                               </div>
                             </div>
@@ -376,6 +386,11 @@ const MediaMastercontext = ({ props }: any) => {
                                 <span >Status</span>  <span onClick={() => handleSortChange('Status')}><FontAwesomeIcon icon={faSort} /> </span></div>
                               <div className=" bd-highlight">
                                 <input type="text" placeholder="Filter by Status" onChange={(e) => handleFilterChange(e, 'Status')}
+                                    onKeyDown={(e) => {
+                                      if (e.key === 'Enter' && !e.shiftKey) {
+                                        e.preventDefault(); // Prevents the new line in textarea
+                                      }
+                                    }}
                                   className='inputcss' style={{ width: '100%' }} />
                               </div>
                             </div>
@@ -385,7 +400,12 @@ const MediaMastercontext = ({ props }: any) => {
                               <span >SubmittedDate</span>  <span onClick={() => handleSortChange('SubmittedDate')}><FontAwesomeIcon icon={faSort} /> </span></div>
                             <div className=" bd-highlight">
                               <input type="text" placeholder="Filter by Date" onChange={(e) => handleFilterChange(e, 'SubmittedDate')}
-                                className='inputcss' style={{ width: '100%' }} />
+                                 onKeyDown={(e) => {
+                                  if (e.key === 'Enter' && !e.shiftKey) {
+                                    e.preventDefault(); // Prevents the new line in textarea
+                                  }
+                                }}
+                               className='inputcss' style={{ width: '100%' }} />
                             </div>
                           </div></th>
                           <th style={{ textAlign: 'center', minWidth:'80px', maxWidth:'80px' }}>

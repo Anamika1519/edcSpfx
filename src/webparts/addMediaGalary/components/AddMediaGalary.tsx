@@ -2320,11 +2320,28 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
                 <div className="row mt-2" >
 
-                  {Loading &&
-                    <div className="loadercss" role="status">Loading...
-                      <img src={require('../../../Assets/ExtraImage/loader.gif')} style={{ height: '80px', width: '70px' }} alt="Check" />
+                  {Loading ?
+                    <div style={{minHeight:'100vh',marginTop:'100px'}} className="loadernewadd mt-10">
+                    <div>
+                        <img
+                            src={require("../../../CustomAsset/birdloader.gif")}
+                            className="alignrightl"
+                            alt="Loading..."
+                          /> 
+                        </div>
+                      <span>Loading </span>{" "}
+                      <span>
+                        <img
+                          src={require("../../../CustomAsset/argloader.gif")}
+                          className="alignrightl"
+                          alt="Loading..."
+                        />
+                      </span>
                     </div>
-                  }
+                    // <div className="loadercss" role="status">Loading...
+                    //   <img src={require('../../../Assets/ExtraImage/loader.gif')} style={{ height: '80px', width: '70px' }} alt="Check" />
+                    // </div>
+                  :
                   <form className='row' >
 
                     <div className="col-lg-4">
@@ -2638,7 +2655,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
                     </div>)}
 
                   </form>
-
+}
                 </div>
               </div>
 

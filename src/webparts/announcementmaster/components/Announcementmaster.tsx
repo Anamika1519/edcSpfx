@@ -30,7 +30,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { faArrowDown, faArrowLeft, faEllipsisV, faFileExport, faPencilAlt, faPlusCircle, faSort } from '@fortawesome/free-solid-svg-icons';
 
-import { faEdit, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
+import { faEdit, faTrashAlt ,faEye} from '@fortawesome/free-regular-svg-icons';
 
 import Swal from 'sweetalert2';
 
@@ -1700,8 +1700,9 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                         >
 
-                                          <FontAwesomeIcon icon={faEdit} fontSize={18} />
-
+                  {item?.Status == "Save as draft" ? <FontAwesomeIcon icon={faEdit} fontSize={18} /> :
+                                          <FontAwesomeIcon icon={faEye} fontSize={18} />
+                                        }
                                         </a>
 
                                       </span>

@@ -95,7 +95,7 @@ const UserProfileContext = ({ props }: any) => {
  
   const Breadcrumb = [
     {
-      MainComponent: "Dashboard",
+      MainComponent: "Home",
       MainComponentURl: `${siteUrl}/SitePages/Dashboard.aspx`,
     },
     {

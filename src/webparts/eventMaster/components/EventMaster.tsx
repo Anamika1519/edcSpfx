@@ -627,6 +627,9 @@ const EntityMastercontext = ({ props }: any) => {
                                       }}
 
                                     >
+                                       {/* {item?.Status == "Save as draft" ? <FontAwesomeIcon icon={faEdit} fontSize={18} /> :
+                                          <FontAwesomeIcon icon={faEye} fontSize={18} />
+                                        } */}
                                       <img src={require('../../../CustomAsset/edit.png')} />
                                       {/* <FontAwesomeIcon
 

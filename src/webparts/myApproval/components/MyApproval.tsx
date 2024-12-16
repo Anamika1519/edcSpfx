@@ -690,9 +690,9 @@ const MyApprovalContext = ({ props }: any) => {
 
     setCurrentItem(Item);
 
-    setContentData(await getDataByID(sp, Item?.ContentId, Item?.ContentName));
+    
 
-    setisActivedata(true);
+    //setisActivedata(true);
 
     let sessionkey = "";
     let redirecturl = "";
@@ -700,6 +700,8 @@ const MyApprovalContext = ({ props }: any) => {
       window.open(Item.RedirectionLink, "_blank");
       //window.location.href = `${Item.RedirectionLink}`;
     } else if (activeTab == "Intranet") {
+      setContentData(await getDataByID(sp, Item?.ContentId, Item?.ContentName));
+      setisActivedata(true);  
       if (Item?.ProcessName) {
         switch (Item?.ProcessName) {
           case "Announcement":
@@ -981,6 +983,11 @@ const MyApprovalContext = ({ props }: any) => {
                                           onChange={(e) =>
                                             handleFilterChange(e, "RequestID")
                                           }
+                                          onKeyDown={(e) => {
+                                            if (e.key === 'Enter' && !e.shiftKey) {
+                                              e.preventDefault(); // Prevents the new line in textarea
+                                            }
+                                          }}
                                           className="inputcss"
                                           style={{ width: "100%" }}
                                         />
@@ -1018,6 +1025,11 @@ const MyApprovalContext = ({ props }: any) => {
                                             onChange={(e) =>
                                               handleFilterChange(e, "Title")
                                             }
+                                            onKeyDown={(e) => {
+                                              if (e.key === 'Enter' && !e.shiftKey) {
+                                                e.preventDefault(); // Prevents the new line in textarea
+                                              }
+                                            }}
                                             className="inputcss"
                                             style={{ width: "100%" }}
                                           />
@@ -1055,6 +1067,11 @@ const MyApprovalContext = ({ props }: any) => {
                                           onChange={(e) =>
                                             handleFilterChange(e, "ProcessName")
                                           }
+                                          onKeyDown={(e) => {
+                                            if (e.key === 'Enter' && !e.shiftKey) {
+                                              e.preventDefault(); // Prevents the new line in textarea
+                                            }
+                                          }}
                                           className="inputcss"
                                           style={{ width: "100%" }}
                                         />
@@ -1092,6 +1109,11 @@ const MyApprovalContext = ({ props }: any) => {
                                           onChange={(e) =>
                                             handleFilterChange(e, "RequestedBy")
                                           }
+                                          onKeyDown={(e) => {
+                                            if (e.key === 'Enter' && !e.shiftKey) {
+                                              e.preventDefault(); // Prevents the new line in textarea
+                                            }
+                                          }}
                                           className="inputcss"
                                           style={{ width: "100%" }}
                                         />
@@ -1132,6 +1154,11 @@ const MyApprovalContext = ({ props }: any) => {
                                               "RequestedDate"
                                             )
                                           }
+                                          onKeyDown={(e) => {
+                                            if (e.key === 'Enter' && !e.shiftKey) {
+                                              e.preventDefault(); // Prevents the new line in textarea
+                                            }
+                                          }}
                                           className="inputcss"
                                           style={{ width: "100%" }}
                                         />
@@ -1169,6 +1196,11 @@ const MyApprovalContext = ({ props }: any) => {
                                           onChange={(e) =>
                                             handleFilterChange(e, "Status")
                                           }
+                                          onKeyDown={(e) => {
+                                            if (e.key === 'Enter' && !e.shiftKey) {
+                                              e.preventDefault(); // Prevents the new line in textarea
+                                            }
+                                          }}
                                           className="inputcss"
                                           style={{ width: "100%" }}
                                         />
@@ -1445,6 +1477,11 @@ const MyApprovalContext = ({ props }: any) => {
                                                     "RequestID"
                                                   )
                                                 }
+                                                onKeyDown={(e) => {
+                                                  if (e.key === 'Enter' && !e.shiftKey) {
+                                                    e.preventDefault(); // Prevents the new line in textarea
+                                                  }
+                                                }}
                                                 className="inputcss"
                                                 style={{ width: "100%" }}
                                               />
@@ -1489,6 +1526,11 @@ const MyApprovalContext = ({ props }: any) => {
                                                     "ProcessName"
                                                   )
                                                 }
+                                                onKeyDown={(e) => {
+                                                  if (e.key === 'Enter' && !e.shiftKey) {
+                                                    e.preventDefault(); // Prevents the new line in textarea
+                                                  }
+                                                }}
                                                 className="inputcss"
                                                 style={{ width: "100%" }}
                                               />
@@ -1533,6 +1575,11 @@ const MyApprovalContext = ({ props }: any) => {
                                                     "RequestedBy"
                                                   )
                                                 }
+                                                onKeyDown={(e) => {
+                                                  if (e.key === 'Enter' && !e.shiftKey) {
+                                                    e.preventDefault(); // Prevents the new line in textarea
+                                                  }
+                                                }}
                                                 className="inputcss"
                                                 style={{ width: "100%" }}
                                               />
@@ -1577,6 +1624,11 @@ const MyApprovalContext = ({ props }: any) => {
                                                     "RequestedDate"
                                                   )
                                                 }
+                                                onKeyDown={(e) => {
+                                                  if (e.key === 'Enter' && !e.shiftKey) {
+                                                    e.preventDefault(); // Prevents the new line in textarea
+                                                  }
+                                                }}
                                                 className="inputcss"
                                                 style={{ width: "100%" }}
                                               />
@@ -1619,6 +1671,11 @@ const MyApprovalContext = ({ props }: any) => {
                                                     "Status"
                                                   )
                                                 }
+                                                onKeyDown={(e) => {
+                                                  if (e.key === 'Enter' && !e.shiftKey) {
+                                                    e.preventDefault(); // Prevents the new line in textarea
+                                                  }
+                                                }}
                                                 className="inputcss"
                                                 style={{ width: "100%" }}
                                               />

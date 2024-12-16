@@ -799,7 +799,7 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
               // setDataproject(await fetchprojectdata(sp));
               Swal.fire("Updated!", "Discussion status has been set to 'Close'.", "success");
               isClosed = true;
-              getDiscussionForumDetailsById(Id)
+              setArrDetails(await getDiscussionForumDetailsById(sp, Number(Id)));
             }).catch((error) => {
               console.error("Error updating project status:", error);
               Swal.fire("Error", "There was an issue updating the Discussion status.", "error");

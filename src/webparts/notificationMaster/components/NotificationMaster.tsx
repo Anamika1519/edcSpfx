@@ -33,7 +33,7 @@ const NotificationMastercontext = ({ props }: any) => {
    //#region Breadcrumb
    const Breadcrumb = [
     {
-      "MainComponent": "Dashboard",
+      "MainComponent": "Home",
       "MainComponentURl": `${siteUrl}/SitePages/Dashboard.aspx`
     },
     {

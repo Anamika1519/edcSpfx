@@ -284,7 +284,7 @@ console.log(siteUrl)
    
     if (await validateForm()) {
     Swal.fire({
-      title: 'Do you want to save',
+      title: 'Do you want to submit',
       showConfirmButton: true,
       showCancelButton: true,
       confirmButtonText: "Yes",

@@ -1092,7 +1092,7 @@ export const getTodayARGNotificationHistory = async (sp) => {
           .expand("NotifiedUser,ActionUser")
 
           .filter(`NotifiedUserId eq ${currentUser.Id} and Created ge '${startTimestamp}' and Created le '${endTimestamp}'`)
-
+          .orderBy("Created", false)
           .getAll();
 
 
@@ -1154,7 +1154,7 @@ export const getlastSevenDaysARGNotificationHistory = async (sp) => {
           .expand("NotifiedUser,ActionUser")
 
           .filter(`NotifiedUserId eq ${currentUser.Id} and Created ge '${startTimestamp}' and Created le '${endTimestamp}'`)
-
+          .orderBy("Created", false)
           .getAll();
 
 
@@ -1211,7 +1211,7 @@ export const getOlderARGNotificationHistory = async (sp) => {
           .expand("NotifiedUser,ActionUser")
 
           .filter(`NotifiedUserId eq ${currentUser.Id} and Created lt '${startTimestamp}'`)
-
+          .orderBy("Created", false)
           .getAll();
 
 

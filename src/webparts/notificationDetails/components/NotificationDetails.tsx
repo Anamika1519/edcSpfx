@@ -23,7 +23,7 @@ const NotificationDetailsContext = ({ props }: any) => {
   const siteUrl = props.siteUrl;
   const Breadcrumb = [
     {
-      MainComponent: "Dashboard",
+      MainComponent: "Home",
       MainComponentURl: `${siteUrl}/SitePages/Dashboard.aspx`,
     },
     {
@@ -184,7 +184,7 @@ const NotificationDetailsContext = ({ props }: any) => {
                                         } />
                                       </div>
                                       <div className="inbox-item-details">
-                                        <p className="inbox-item-author">{notification.ActionUser.Title}</p>
+                                        <p className="inbox-item-author">{notification?.ActionUser?.Title}</p>
                                         <p className="inbox-item-text text-muted mb-1">
                                           {notification.ContentName}
                                         </p>
@@ -227,7 +227,7 @@ const NotificationDetailsContext = ({ props }: any) => {
                                         } />
                                       </div>
                                       <div className="inbox-item-details">
-                                        <p className="inbox-item-author">{notification.ActionUser.Title}</p>
+                                        <p className="inbox-item-author">{notification?.ActionUser?.Title}</p>
                                         <p className="inbox-item-text text-muted mb-1">
                                           {notification.ContentName}
                                         </p>
@@ -271,7 +271,7 @@ const NotificationDetailsContext = ({ props }: any) => {
                                         } />
                                     </div>
                                     <div className="inbox-item-details">
-                                      <p className="inbox-item-author">{notification.ActionUser.Title}</p>
+                                      <p className="inbox-item-author">{notification?.ActionUser?.Title}</p>
                                       <p className="inbox-item-text text-muted mb-1">
                                         {notification.ContentName}
                                       </p>

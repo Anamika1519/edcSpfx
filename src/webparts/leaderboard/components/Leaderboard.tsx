@@ -602,6 +602,11 @@ const LeaderboardContext = ({ props }: any) => {
                                           type="text"
                                           placeholder="Filter by Name"
                                           onChange={(e) => handleFilterChange(e, "AuthorTitle")}
+                                          onKeyDown={(e) => {
+                                            if (e.key === 'Enter' && !e.shiftKey) {
+                                              e.preventDefault(); // Prevents the new line in textarea
+                                            }
+                                          }}
                                           className="inputcss"
                                           style={{ width: "100%" }}
                                         />
@@ -642,6 +647,11 @@ const LeaderboardContext = ({ props }: any) => {
                                           type="text"
                                           placeholder="Filter by Email"
                                           onChange={(e) => handleFilterChange(e, "AuthorEMail")}
+                                          onKeyDown={(e) => {
+                                            if (e.key === 'Enter' && !e.shiftKey) {
+                                              e.preventDefault(); // Prevents the new line in textarea
+                                            }
+                                          }}
                                           className="inputcss"
                                           style={{ width: "100%" }}
                                         />
@@ -661,6 +671,11 @@ const LeaderboardContext = ({ props }: any) => {
                                           type="text"
                                           placeholder="Filter by Department"
                                           onChange={(e) => handleFilterChange(e, "AuthorDepartment")}
+                                          onKeyDown={(e) => {
+                                            if (e.key === 'Enter' && !e.shiftKey) {
+                                              e.preventDefault(); // Prevents the new line in textarea
+                                            }
+                                          }}
                                           className="inputcss"
                                           style={{ width: "100%" }}
                                         />
@@ -680,6 +695,11 @@ const LeaderboardContext = ({ props }: any) => {
                                           type="text"
                                           placeholder="Filter by Entity"
                                           onChange={(e) => handleFilterChange(e, "AuthorDepartment")}
+                                          onKeyDown={(e) => {
+                                            if (e.key === 'Enter' && !e.shiftKey) {
+                                              e.preventDefault(); // Prevents the new line in textarea
+                                            }
+                                          }}
                                           className="inputcss"
                                           style={{ width: "100%" }}
                                         />

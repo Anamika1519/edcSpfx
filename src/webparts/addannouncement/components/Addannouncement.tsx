@@ -155,6 +155,11 @@ const AddannouncementContext = ({ props }: any) => {
       sp.web.lists.getByTitle('ARGMyRequest').items.getById(Number(requestid))().then(itm => {
         setApprovalRequestItem(itm);
         setInputDisabled(true && (!itm.IsRework || itm.IsRework == "No"))
+        // if(itm.IsRework == "Yes")
+        //   setInputDisabled(false);
+        // else
+        //   setInputDisabled(true);
+        //setInputDisabled(true && (!itm.IsRework || itm.IsRework == "No"))
       //  setInputDisabled(false && (itm.IsRework || itm.IsRework == "Yes"))
         //setInputDisabled(ApprovalMode)
       })
@@ -1669,11 +1674,28 @@ const AddannouncementContext = ({ props }: any) => {
             <div className="card mt-3" >
               <div className="card-body">
                 <div className="row mt-2">
-                  {Loading &&
-                    <div className="loadercss" role="status">Loading...
-                      <img src={require('../../../Assets/ExtraImage/loader.gif')} style={{ height: '80px', width: '70px' }} alt="Check" />
+                  {Loading ?
+                    // <div className="loadercss" role="status">Loading...
+                    //   <img src={require('../../../Assets/ExtraImage/loader.gif')} style={{ height: '80px', width: '70px' }} alt="Check" />
+                    // </div>
+                    <div style={{minHeight:'100vh',marginTop:'100px'}} className="loadernewadd mt-10">
+                    <div>
+                        <img
+                            src={require("../../../CustomAsset/birdloader.gif")}
+                            className="alignrightl"
+                            alt="Loading..."
+                          /> 
+                        </div>
+                      <span>Loading </span>{" "}
+                      <span>
+                        <img
+                          src={require("../../../CustomAsset/argloader.gif")}
+                          className="alignrightl"
+                          alt="Loading..."
+                        />
+                      </span>
                     </div>
-                  }
+                  :
                   <form className='row' >
                     <div className="col-lg-4">
                       <div className="mb-3">
@@ -1988,6 +2010,7 @@ const AddannouncementContext = ({ props }: any) => {
                         </button></div>)
                     }
                   </form>
+                  }
                 </div>
               </div>
             </div>
@@ -2201,7 +2224,7 @@ const AddannouncementContext = ({ props }: any) => {
 
                               <td>{file.fileName}</td>
                               <td className='text-right'>{file.fileSize}</td>
-                              {modeValue == 'null' && <td className='text-center'>
+                              {modeValue != 'view' && <td className='text-center'>
                                 <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, ImagepostArr1, "Gallery")} />
 
                               </td>
