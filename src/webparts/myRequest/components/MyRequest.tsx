@@ -974,7 +974,11 @@ const MyRequestContext = ({ props }: any) => {
                                       placeholder="index"
 
                                       onChange={(e) => handleFilterChange(e, "SNo")}
-
+                                      onKeyDown={(e) => {
+                                        if (e.key === 'Enter' && !e.shiftKey) {
+                                          e.preventDefault(); // Prevents the new line in textarea
+                                        }
+                                      }}
                                       className="inputcss"
 
                                       style={{ width: "100%" }}
@@ -1596,7 +1600,11 @@ const MyRequestContext = ({ props }: any) => {
                                         placeholder="index"
 
                                         onChange={(e) => handleFilterChange(e, "SNo")}
-
+                                        onKeyDown={(e) => {
+                                          if (e.key === 'Enter' && !e.shiftKey) {
+                                            e.preventDefault(); // Prevents the new line in textarea
+                                          }
+                                        }}
                                         className="inputcss"
 
                                         style={{ width: "100%" }}

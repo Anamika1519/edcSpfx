@@ -204,6 +204,7 @@ console.log(siteUrl)
   //#region File select function
   const onFileChange = async (event: React.ChangeEvent<HTMLInputElement>, libraryName: string, docLib: string) => {
     debugger;
+    let arrr:any[]=[];
     event.preventDefault();
     let uloadBannerImageFiles: any[] = [];
 
@@ -215,7 +216,9 @@ console.log(siteUrl)
           file.type.startsWith('image/') 
           //|| file.type.startsWith('video/')
         );
-        setBannerImagepostArr([]);
+       
+        setBannerImagepostArr(arrr);
+        console.log("imageVideoFiles", files, imageVideoFiles, BnnerImagepostArr)
         if (imageVideoFiles.length > 0) {
           const arr = {
             files: imageVideoFiles,
@@ -249,6 +252,7 @@ console.log(siteUrl)
 
         } else {
           handleReset();
+          setBannerImagepostArr(arrr);
           Swal.fire("Only image can be uploaded")
         }
       }
@@ -485,7 +489,7 @@ console.log(siteUrl)
                             id="title"
                             name="title"
                             placeholder='Enter Title'
-                            className="form-control inputcss"
+                          className={`form-control inputcs ${(!ValidSubmit) ? "border-on-error" : ""}`}
                             value={formData.title}
                             onChange={(e) => onChange(e.target.name, e.target.value)} />
                         </div>
@@ -499,7 +503,7 @@ console.log(siteUrl)
                               </label>
                             </div>
                             <div>
-                              {BnnerImagepostArr!=undefined ?
+                            {BnnerImagepostArr != undefined && BnnerImagepostArr.length > 0?
                                 (<><a style={{ fontSize: '0.875rem' }}>
                                   <FontAwesomeIcon icon={faPaperclip} /> 1 file Attached {BnnerImagepostArr[0]?.fieldName}
                                 </a>
@@ -518,7 +522,7 @@ console.log(siteUrl)
                             ref={inputFile}
                             id="bannerImage"
                             name="bannerImage"
-                            className="form-control inputcss"
+                          className={`form-control inputcs ${(!ValidSubmit) ? "border-on-error" : ""}`}
                             onChange={(e) => onFileChange(e, "bannerimg", "Document")} />
                           
                         </div>
@@ -532,7 +536,7 @@ console.log(siteUrl)
                             id="description"
                             name="description"
                             placeholder='Enter description'
-                            className="form-control inputcss"
+                          className={`form-control inputcs ${(!ValidSubmit) ? "border-on-error" : ""}`}
                             style={{ height: '50px' }}
                             value={formData.description}
                             onChange={(e) => onChange(e.target.name, e.target.value)}>

@@ -239,8 +239,8 @@ const VerticalContext = ({ _context }: any) => {
 
     if (pageName === 'workbench') {
         // alert("set workbench");
-        localStorage.setItem("NavId", String(1));
-        setuseActive(1)
+        localStorage.setItem("NavId", String(24));
+        setuseActive(24)
     } else if (pageName === "Dashboard" ) {
         // alert("set MediaGallery/Mediadetails");
         localStorage.setItem("NavId", String(1));
@@ -272,34 +272,50 @@ const VerticalContext = ({ _context }: any) => {
         localStorage.setItem("NavId", String(6));
         setuseActive(6)
     } 
-    else if (pageName === "SocialFeed") {
+    else if (pageName === "SocialFeed" || 
+      pageName === "DiscussionForum" || pageName === "DiscussionForumDetail" ||
+      pageName === "Blogs" || pageName === "BlogDetails" ||
+      pageName === "GroupandTeam" || pageName === "GroupandTeamDetails"){
         // alert("set MediaGallery/Mediadetails");
-        localStorage.setItem("NavId", String(8));
-
-    } 
-    else if (pageName === "DiscussionForum" || pageName === "DiscussionForumDetail") {
-        // alert("set MediaGallery/Mediadetails");
-        localStorage.setItem("NavId", String(9));
-        setuseActive(9)
-    } 
-    else if (pageName === "Blogs" || pageName === "BlogDetails") {
-        // alert("set MediaGallery/Mediadetails");
-        localStorage.setItem("NavId", String(10));
-        setuseActive(10)
-    } 
-    else if (pageName === "GroupandTeam" || pageName === "GroupandTeamDetails") {
-        // alert("set MediaGallery/Mediadetails");
-        localStorage.setItem("NavId", String(11));
-        setuseActive(11)
-    } 
+        localStorage.setItem("NavId", String(7));
+        setuseActive(7)
+    }  
+    // else if (pageName === "DiscussionForum" || pageName === "DiscussionForumDetail") {
+    //     // alert("set MediaGallery/Mediadetails");
+    //     localStorage.setItem("NavId", String(7));
+    //     setuseActive(9)
+    // } 
+    // else if (pageName === "Blogs" || pageName === "BlogDetails") {
+    //     // alert("set MediaGallery/Mediadetails");
+    //     localStorage.setItem("NavId", String(10));
+    //     setuseActive(10)
+    // } 
+    // else if (pageName === "GroupandTeam" || pageName === "GroupandTeamDetails") {
+    //     // alert("set MediaGallery/Mediadetails");
+    //     localStorage.setItem("NavId", String(11));
+    //     setuseActive(11)
+    // } 
     else if (pageName === "Project" || pageName === "ProjectDetails") {
       //alert(`useactive : ${useActive} `)
         // alert("set MediaGallery/Mediadetails");
         localStorage.setItem("NavId", String(12));
         setuseActive(12)
     } 
+    else if (pageName === "MyRequests") {
+      //alert(`useactive : ${useActive} `)
+        // alert("set MediaGallery/Mediadetails");
+        localStorage.setItem("NavId", String(29));
+        setuseActive(29)
+    }
+    else if (pageName === "MyApprovals") {
+      //alert(`useactive : ${useActive} `)
+        // alert("set MediaGallery/Mediadetails");
+        localStorage.setItem("NavId", String(13));
+        setuseActive(13)
+    }
     else if (
-   
+      pageName === "MasterSettings" ||
+      pageName === "Settings" ||
       pageName === "MediaGalleryMaster" || 
       pageName === "MediaGalleryForm" || 
       pageName === "EventMaster" || 
@@ -309,8 +325,8 @@ const VerticalContext = ({ _context }: any) => {
       pageName === "BannerMaster" || 
       pageName === "BannerForm"
   ) {
-      localStorage.setItem("NavId",  String(0));
-      setuseActive(0);
+      localStorage.setItem("NavId",  String(24));
+      setuseActive(24);
   } else {
       localStorage.setItem("NavId", ""); // Clear the NavId if no match is found
   }
@@ -395,7 +411,7 @@ const VerticalContext = ({ _context }: any) => {
                       <li className='test' style={{ paddingBottom: '0.5rem', paddingTop: '0.5rem' }} key={item.ID} >
 
                         {/* <li className='test' style={{ paddingBottom: '0.5rem', paddingTop: '0.5rem' }} key={item.ID} onClick={() => gotoPage(item.Url,item.ID)}> */}
-                        <a className={classNames('link_name1 ', {
+                        <a className={classNames('submenuactive link_name1 ', {
                           active: item.ID == useActive
                         })} style={{ textDecoration: 'none', paddingLeft: '1rem' }} onClick={() => gotoPage(item.Url, item.ID)} >
                           <span style={dynamicStylecss}>{item.Title}</span>

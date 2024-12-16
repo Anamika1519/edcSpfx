@@ -269,6 +269,7 @@ const AddannouncementContext = ({ props }: any) => {
           description: initialContent,
         }));
         setImagepostIdsArr(setBannerById[0]?.AnnouncementAndNewsGallaryId)
+        setImagepostArr(setBannerById[0].AnnouncementAndNewsGallaryJSON);
         setDocumentpostIdsArr(setBannerById[0]?.AnnouncementsAndNewsDocsId)
         setImagepostArr1(setBannerById[0].AnnouncementAndNewsGallaryJSON)
         setDocumentpostArr1(setBannerById[0].AnnouncementAndNewsDocsJSON)
@@ -376,7 +377,7 @@ const AddannouncementContext = ({ props }: any) => {
     // else if (overview !== "" && !validateOverview) {
     //   errormsg = "No special character allowed in Overview";
     //   valid = false;
-    } else if (ImagepostArr.length > 0 && ImagepostArr.length > 5){
+  } else if ((ImagepostArr.length > 0 && ImagepostArr.length > 5) || ( ImagepostArr1.length > 0 && ImagepostArr1.length > 5)){
       errormsg = "More than 5 attachments not allowed";
       valid = false;
     }
@@ -399,7 +400,7 @@ const AddannouncementContext = ({ props }: any) => {
       }
       else if (BnnerImagepostArr.length == 0) {
         valid = false;
-      } else if (ImagepostArr.length == 0 || ImagepostArr.length > 5) {
+      } else if ((ImagepostArr.length == 0 || ImagepostArr.length > 5) && (ImagepostArr1.length > 0 && ImagepostArr1.length > 5)) {
         valid = false;
       }
       setValidSubmit(valid);

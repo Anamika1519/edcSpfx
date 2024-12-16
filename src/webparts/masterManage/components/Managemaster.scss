@@ -8,6 +8,10 @@
     margin: 0px auto 0px auto;
     border: 2px solid #54ade0;
 }
+.paddb{
+    min-height: calc(100vh - 139px);
+  }
+  #s4-workspace{overflow: hidden !important;}
 .manage-master .box1 {
     background: #fff !important;
 }
@@ -40,4 +44,7 @@ a:hover
 .content-page
 {
   top: 2rem!important;
+}
+@media(max-width:1920px){
+    .paddb{min-height: calc(100vh - 163px);}
 }

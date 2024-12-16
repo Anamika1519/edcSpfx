@@ -148,10 +148,10 @@ const MediaMastercontext = ({ props }: any) => {
     const filteredData = data.filter((item, index) => {
       return (
         (filters.SNo === '' || String(index + 1).includes(filters.SNo)) &&
-        (filters.Title === '' || item.Title.toLowerCase().includes(filters.Title.toLowerCase())) &&
-        (filters.Entity === '' || item.EntityMaster.Entity.toLowerCase().includes(filters.Entity.toLowerCase())) &&
+        (filters.Title === '' || item.Title && item.Title.toLowerCase().includes(filters.Title.toLowerCase())) &&
+        (filters.Entity === '' || item.EntityMaster && item.EntityMaster.Entity.toLowerCase().includes(filters?.Entity?.toLowerCase())) &&
         (filters?.Status === '' || item?.Status?.toLowerCase().includes(filters?.Status?.toLowerCase())) &&
-        (filters.SubmittedDate === '' || item.Created.toLowerCase().includes(filters.SubmittedDate.toLowerCase()))
+        (filters.SubmittedDate === '' || item.Created.toLowerCase().includes(filters?.SubmittedDate?.toLowerCase()))
       );
     });
     const sortedData = filteredData.sort((a, b) => {
@@ -199,7 +199,7 @@ const MediaMastercontext = ({ props }: any) => {
   const handleExportClick = () => {
     console.log(currentData, 'currentData');
  
-    const exportData = currentData.map((item, index) => ({
+    const exportData = mediaData.map((item, index) => ({
       'S.No.': startIndex + index + 1,
       'Title': item.Title,
       'Entity': item?.EntityMaster?.Entity,
@@ -332,7 +332,7 @@ const MediaMastercontext = ({ props }: any) => {
                         <tr>
                           <th style={{ borderBottomLeftRadius: '0px', minWidth: '0px', maxWidth: '50px', borderTopLeftRadius: '0px' }}>
  
-                            <div className="d-flex pb-2"
+                            <div className="d-flex pb-0"
                               style={{ justifyContent: 'space-between' }}>
                               <span>S.No.</span>
                               <span onClick={() => handleSortChange('SNo')}>
@@ -344,6 +344,11 @@ const MediaMastercontext = ({ props }: any) => {
                                 type="text"
                                 placeholder="index"
                                 onChange={(e) => handleFilterChange(e, 'SNo')}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter' && !e.shiftKey) {
+                                    e.preventDefault(); // Prevents the new line in textarea
+                                  }
+                                }}
                                 className="inputcss"
                                 style={{ width: '100%' }}
                               />

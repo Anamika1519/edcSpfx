@@ -40,6 +40,10 @@
 .paddb {
 padding: 50px 34px 0px 18px;min-height: 100vh;
 }
+table .no-results{position: absolute;
+  text-align: center;
+  top: 74%;
+  width: 100%;}
 .card .card-body .quill{max-height: 300px !important; height: 300px !important; overflow-y: auto !important;}
 .carousel-control-next, .carousel-control-prev{
   opacity: 1 !important;
@@ -1068,7 +1072,7 @@ margin: 10px 0px !important ;
   .two-line{height: 51px;}
   .file-cards .card{height: 100px !important;}
   .item {
-    margin: .8rem 7px 0 17px;
+    margin: .4rem 7px 0 17px;
   }
     .close .sub-menu{left: 3.8rem;margin-left: 0px;}
     .close.navlink_icon{margin-left: 2px;}
@@ -1162,6 +1166,7 @@ margin: 10px 0px !important ;
   .internalmedia .gal-box .image-popup {
       height: 280px !important;
   }
+  .menu_items{max-height: 800px;}
   .sidebar-enable .tabcontentv,.sidebar-enable .tabv{height: 435px !important;}
   
   .gal-box .image-popup {

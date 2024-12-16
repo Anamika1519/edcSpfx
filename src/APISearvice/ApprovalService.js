@@ -313,7 +313,7 @@ export const getDataByID = async (_sp,id,ContentName) => {
   let arrs = []
   let bannerimg = []
   if(ContentName!=null&&ContentName!=undefined)
-    //alert(ContentName )
+    //  alert(ContentName )
   {
     await _sp.web.lists.getByTitle(ContentName).items.getById(id)
     ()

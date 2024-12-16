@@ -1758,7 +1758,7 @@ const DiscussionForumContext = ({ props }: any) => {
               </div>{" "}
               {/* end col */}
             </div>
-            <div className="card cardCss mt-2 mb-0">
+            <div style={{margin:'0px 10px'}} className="card cardCss mt-2 mb-0">
               <div className="card-body">
                 <div id="cardCollpase4" className="collapse show">
                   <div className="table-responsive pt-0">
@@ -1962,6 +1962,8 @@ const DiscussionForumContext = ({ props }: any) => {
                             className="no-results"
                             style={{
                               display: "flex",
+                              marginTop:'10px',
+                              position:'relative',
                               justifyContent: "center",
                             }}>
                             No results found

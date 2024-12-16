@@ -191,7 +191,7 @@ const DynamicBannercontext = ({ props }: any) => {
 
   //#region Download exl file 
   const handleExportClick = () => {
-    const exportData = currentData.map((item, index) => ({
+    const exportData = bannersData.map((item, index) => ({
       'S.No.': startIndex + index + 1,
       'Title': item.Title,
       'Url': item.Url,
@@ -319,7 +319,7 @@ const DynamicBannercontext = ({ props }: any) => {
               </div>
             </div>
             <div className="card cardCss mt-3">
-              <div className="card-body">
+              <div className="">
                 <div id="cardCollpase4" className="collapse show">
                   <div className="table-responsive pt-0">
                     <table className="mtable mt-0 table-centered table-nowrap table-borderless mb-0">
@@ -351,7 +351,7 @@ const DynamicBannercontext = ({ props }: any) => {
                               />
                             </div>
                           </th>
-                          <th>
+                          <th style={{ minWidth: '150px', maxWidth: '150px' }}>
                             <div className="d-flex flex-column bd-highlight ">
                               <div className="d-flex pb-2" style={{ justifyContent: 'space-between' }}>
                                 <span >Title</span>  <span onClick={() => handleSortChange('Title')}><FontAwesomeIcon icon={faSort} /> </span></div>
@@ -444,7 +444,7 @@ const DynamicBannercontext = ({ props }: any) => {
                             return (
                               <tr key={index}>
                                 <td style={{ minWidth: '50px', maxWidth: '50px' }}><div style={{ marginLeft: '20px' }} className='indexdesign'> {index + 1}</div>  </td>
-                                <td>{item.Title}</td>
+                                <td style={{ minWidth: '150px', maxWidth: '150px' }}>{item.Title}</td>
 
                                 <td style={{ minWidth: '60px', maxWidth: '60px' }}>  <div className='btn btn-status'> {item.Status} </div> </td>
                                 <td style={{ minWidth: '80px', maxWidth: '80px' }}> {moment(item.Created).format("DD-MMM-YYYY")}</td>

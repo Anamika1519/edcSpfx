@@ -1,18 +1,21 @@
 /* Style the card to add padding and a shadow */
 .card {
-    padding: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
 }
-
+.paddb{
+min-height: calc(100vh - 156px);
+}
+#s4-workspace{overflow: hidden !important;}
 /* Ensure inputs and selects have consistent padding and border radius */
 .form-control, 
 .form-select {
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ced4da;
-    box-shadow: none;
-    transition: border-color 0.2s ease-in-out;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ced4da;
+  box-shadow: none;
+  transition: border-color 0.2s ease-in-out;
 }
 .mtable td{font-size: 14px;    vertical-align: middle;}
 .mtable td:first-child{border-top-left-radius: 8px; border-bottom-left-radius: 8px;}
@@ -20,151 +23,154 @@
 /* Focused input styling */
 .form-control:focus, 
 .form-select:focus {
-    border-color: #80bdff;
-    outline: 0;
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  border-color: #80bdff;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
 }
 
 /* Custom button styling for consistency */
 .btn-success {
-    background-color: #1abc9c;
-    border-color: #1abc9c;
+  background-color: #1abc9c;
+  border-color: #1abc9c;
 }
 
 .btn-light {
-    background-color: #f8f9fa;
-    border-color: #f8f9fa;
+  background-color: #f8f9fa;
+  border-color: #f8f9fa;
 }
 
 /* Add hover effect to buttons */
 .btn-success:hover,
 .btn-light:hover {
-    opacity: 0.9;
+  opacity: 0.9;
 }
 
 /* Style the form labels to stand out */
 .form-label {
-    font-weight: 600;
-    margin-bottom: 5px;
+  font-weight: 600;
+  margin-bottom: 5px;
 }
 
 /* Style the description textarea */
 textarea.form-control {
-    resize: none;
-    border-radius: 5px;
-    border: 1px solid #ced4da;
-    padding: 10px;
+  resize: none;
+  border-radius: 5px;
+  border: 1px solid #ced4da;
+  padding: 10px;
 }
 
 /* Center the form buttons */
 .row.mt-3 .col-12.text-center {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* Add some margin to the buttons */
 .row.mt-3 .col-12.text-center .btn {
-    margin: 0 10px;
+  margin: 0 10px;
 }
 
 /* Optional: Add custom styling for required fields */
 .text-danger {
-    color: #dc3545 !important;
+  color: #dc3545 !important;
 }
 div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm)
 {
-    background-color: #1abc9c !important;
+  background-color: #1abc9c !important;
 }
 
 .inputcss
 {
-  height: 40px;
-  color: #6c757d;
-  padding: .55rem .9rem !important;
-  font-size: .875rem !important;
-  font-weight: 400 !important;
+height: 40px;
+color: #6c757d;
+padding: .55rem .9rem !important;
+font-size: .875rem !important;
+font-weight: 400 !important;
 }
 input.form-control.inputcss {
-  display: block;
-  width: 100%;
-  padding: .55rem .9rem !important;
-  font-size: .875rem !important;
-  font-weight: 400 !important;
-  height: 40px !important;
-  line-height: 1.5;
-  box-shadow: none;
-  color: #6c757d !important;
-  background-color: #fff;
-  background-clip: padding-box;
-  border: 1px solid #ededed;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  border-radius: 0.25rem;
+display: block;
+width: 100%;
+padding: .55rem .9rem !important;
+font-size: .875rem !important;
+font-weight: 400 !important;
+height: 40px !important;
+line-height: 1.5;
+box-shadow: none;
+color: #6c757d !important;
+background-color: #fff;
+background-clip: padding-box;
+border: 1px solid #ededed;
+-webkit-appearance: none;
+-moz-appearance: none;
+appearance: none;
+border-radius: 0.25rem;
 }
 
 .dropdown {
-    position: relative;
-    display: inline-block;
-  }
-  
-  .dropbtn {
-   
-    cursor: pointer;
-  }
-  
-  .dropdown-content {
-    background-color: #fff;
-    box-shadow: 0 2px 4px -2px rgba(0, 0, 0, .16), 0 2px 6px 0 rgba(0, 0, 0, .12);
-    display: none;
-    min-width: 110px;
-    position: absolute;
-    right: 1rem;
-    transform: translateY(0px);
-    padding: 0.5rem;
-  }
-  
-  .dropdown-content a {
-    color: black;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-  }
-  
-  .dropdown-content a:hover {
-    background-color: #f1f1f1;
-  }
-  .show {
-    display: block;
-  }
-  .showNews
-  {
-    display: block;
-  }
-  .btn-light{
-    border-radius: 30px;
-    font-size: 13px;
-    color: #3c3c3c;
-    background: #fff;
-    border: 1px solid #efefef;
-  }
-  .indexdesign {
-    background: #d2effa !important;
-    border: none;
-    border-radius: 1000px;
-    color: #1fb0e5 !important;
-    display: flex;
-    font-size: 16px !important;
-    font-weight: 600;
-    height: 28px !important;
-    justify-content: center;
-    line-height: 30px !important;
-    margin-left: 0;
-    margin-top: 0 !important;
-    padding: 0 1px !important;
-    width: 28px !important;
-  }
-  .btn-primary svg, .btn-secondary svg{height: 13px;
-    vertical-align: text-top;
-    margin-top: 2px;}
+  position: relative;
+  display: inline-block;
+}
+
+.dropbtn {
+ 
+  cursor: pointer;
+}
+
+.dropdown-content {
+  background-color: #fff;
+  box-shadow: 0 2px 4px -2px rgba(0, 0, 0, .16), 0 2px 6px 0 rgba(0, 0, 0, .12);
+  display: none;
+  min-width: 110px;
+  position: absolute;
+  right: 1rem;
+  transform: translateY(0px);
+  padding: 0.5rem;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {
+  background-color: #f1f1f1;
+}
+.show {
+  display: block;
+}
+.showNews
+{
+  display: block;
+}
+.btn-light{
+  border-radius: 30px;
+  font-size: 13px;
+  color: #3c3c3c;
+  background: #fff;
+  border: 1px solid #efefef;
+}
+.indexdesign {
+  background: #d2effa !important;
+  border: none;
+  border-radius: 1000px;
+  color: #1fb0e5 !important;
+  display: flex;
+  font-size: 16px !important;
+  font-weight: 600;
+  height: 28px !important;
+  justify-content: center;
+  line-height: 30px !important;
+  margin-left: 0;
+  margin-top: 0 !important;
+  padding: 0 1px !important;
+  width: 28px !important;
+}
+.btn-primary svg, .btn-secondary svg{height: 13px;
+  vertical-align: text-top;
+  margin-top: 2px;}
+  @media(max-width:1920px){
+    .paddb{min-height: calc(100vh - 163px);}
+}

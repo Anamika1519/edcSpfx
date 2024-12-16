@@ -7,6 +7,10 @@
   font-size: .875rem !important;
   font-weight: 400 !important;
 }
+.paddb{
+  min-height: calc(100vh - 159px);
+}
+#s4-workspace{overflow: hidden !important;}
 .btn-light{
   border-radius: 30px;
   font-size: 13px;
@@ -105,4 +109,12 @@ input.form-control.inputcss {
   {
     display: block;
   }
+  @media(max-width:1920px){
+    .paddb{min-height: calc(100vh - 168px);}
+}
+
+@media(max-width:1600px){
+  
+  #s4-workspace{overflow-y: auto !important;}
+}
   .mtable td{font-size: 14px; color: #3c3c3c;  border-bottom: 1px solid #efefef !important;  vertical-align: middle;}

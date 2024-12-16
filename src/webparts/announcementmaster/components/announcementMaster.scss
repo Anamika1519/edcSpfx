@@ -104,3 +104,17 @@ input.form-control.inputcss {
   .btn-primary svg, .btn-secondary svg{height: 13px;
     vertical-align: text-top;
     margin-top: 2px;}
+    .paddb{
+      min-height: calc(100vh - 159px);
+    }
+    #s4-workspace{overflow: hidden !important;}
+    @media(max-width:1920px){
+      .paddb{min-height: calc(100vh - 165px);}
+  }
+  
+  @media(max-width:1600px){
+    
+    #s4-workspace{overflow-y: auto !important;}
+  }
+
+

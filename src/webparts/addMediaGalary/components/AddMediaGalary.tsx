@@ -2328,7 +2328,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
                             className="alignrightl"
                             alt="Loading..."
                           /> 
-                        </div>
+                        </div> 
                       <span>Loading </span>{" "}
                       <span>
                         <img

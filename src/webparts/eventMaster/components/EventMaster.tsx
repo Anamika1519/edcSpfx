@@ -203,7 +203,7 @@ const EntityMastercontext = ({ props }: any) => {
 
   //#region Download exl file 
   const handleExportClick = () => {
-    const exportData = currentData.map((item, index) => ({
+    const exportData = bannersData.map((item, index) => ({
       // 'S.No.': startIndex + index + 1,
       // 'Title': item.Title,
       // 'Url': item.Url,

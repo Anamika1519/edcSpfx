@@ -9,7 +9,7 @@
 #cardCollpase4 .mtable {
   margin-top: 0px !important;
 }
-.mtable td{font-size: 14px;     padding: 12px 10px !important;}
+.mtable td{font-size: 14px;     padding: 4px 10px !important;}
 #cardCollpase4 .mtable tr {
   display: table;
   width: 100%;
@@ -146,4 +146,16 @@ input.form-control.inputcss {
   border-radius: 50% !important;
   height: 2rem !important;
   width: 2rem !important;
+}
+.paddb{
+  min-height: calc(100vh - 152px);
+}
+#s4-workspace{overflow: hidden !important;}
+@media(max-width:1920px){
+  .paddb{min-height: calc(100vh - 168px);}
+}
+ 
+@media(max-width:1600px){
+  .paddb{min-height: calc(100vh - 159px);}
+#s4-workspace{overflow-y: auto !important;}
 }

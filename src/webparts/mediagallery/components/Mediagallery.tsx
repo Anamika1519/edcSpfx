@@ -44,7 +44,7 @@ const HelloWorldContext = ({props}:any) => {
   const [InputDisabled, setInputDisabled] = React.useState(false);
   const [ValidDraft, setValidDraft] = React.useState(true);
   const [ValidSubmit, setValidSubmit] = React.useState(true);
- 
+  const [loading, setLoading] = useState(true);
 
   React.useEffect(() => {
     // console.log("This function is called only once", useHide);
@@ -115,6 +115,7 @@ const HelloWorldContext = ({props}:any) => {
   useEffect(() => {
     if (activeTab === "all") {
       setFilteredMediaItems(mediagallerydata);
+      setLoading(false);
     } else {
       // Find the selected category based on activeTab
       const selectedCategory = mediagallerycategory.find(
@@ -127,10 +128,13 @@ const HelloWorldContext = ({props}:any) => {
           (item) => item.MediaGalleryCategoryId === selectedCategory.ID
         );
         setFilteredMediaItems(filteredItems);
+       
       } else {
         // If no category matches, show no items
         setFilteredMediaItems([]);
+        
       }
+      setLoading(false);
     }
   }, [activeTab, mediagallerydata, mediagallerycategory]);
  
@@ -279,7 +283,30 @@ const HelloWorldContext = ({props}:any) => {
                 </div>
               </div>
               <div className="row   filterable-content ">
-                {filteredMediaItems.map((item) => {
+              {loading && (
+                      <div className="loadernewadd">
+                        <div>
+                          <img style={{ width: '60px' }}
+                            src={require("../../../CustomAsset/birdloader.gif")}
+                            className="alignrightl"
+                            alt="Loading..."
+                          />
+                        </div>
+                        <div className="loadnewarg">
+                          <span>Loading </span>{" "}
+                          <span>
+                            <img style={{ width: '35px' }}
+                              src={require("../../../CustomAsset/argloader.gif")}
+                              className="alignrightl"
+                              alt="Loading..."
+                            />
+                          </span>
+                        </div>
+                      </div>
+                    )}
+                
+                {!loading && (
+                filteredMediaItems.map((item) => {
                   const imageData = item.Image ? JSON.parse(item.Image) : null;
                   const imageUrl = imageData
                     ? `${imageData.serverUrl}${imageData.serverRelativeUrl}`
@@ -340,7 +367,8 @@ const HelloWorldContext = ({props}:any) => {
                       </div>
                     </div>
                   );
-                })}
+                })
+              )}
               </div>
             </div>
           </div>
