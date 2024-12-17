@@ -220,6 +220,7 @@ export const CommentCard: React.FC<{
   CurrentUserProfile: string;
   loadingLike: boolean;
   Action: string;
+  userProfile:string
   onAddReply: (text: string) => void;
   loadingReply: boolean;
   onLike: () => void;
@@ -243,7 +244,8 @@ export const CommentCard: React.FC<{
   onLike,
   loadingReply,
   onSaveComment,
-  ondeleteComment
+  ondeleteComment,
+  userProfile
 }) => {
   const [newReply, setNewReply] = useState('');
   const [loading, setLoading] = useState(false);
@@ -276,8 +278,8 @@ export const CommentCard: React.FC<{
 
   const handleSaveComment = async (commentId:any, editedText:any) => {
     setLoading(true);
-    alert(`CurrentUserProfile ${CurrentUserProfile}`)
-    alert(commentId = editedText)
+    // alert(`CurrentUserProfile ${CurrentUserProfile}`)
+    // alert(commentId = editedText)
     await onSaveComment(commentId, editedText); // Call the save function passed as a prop
     setIsEditing(false);
     setLoading(false);
@@ -301,7 +303,8 @@ const CheckCurrentuser = (Author:any)=>{
           <div className="d-flex align-items-start">
             <img
               className="me-2 mt-1 avatar-sm rounded-circle"
-              src={Comments[0].UserProfile}
+              // src={Comments[0].UserProfile}
+              src={userProfile}
               alt="User"
             />
             <div className="w-100 mt-0">
@@ -368,13 +371,13 @@ const CheckCurrentuser = (Author:any)=>{
                   }
                 }}
               />
-              <button
+              {/* <button
                 className="btn btn-primary mb-3 btn-sm mt-2"
                 onClick={()=>handleSaveComment(Comments, editedText )}
                 disabled={loading}
               >
                 <FontAwesomeIcon icon={faSave} /> Save
-              </button>
+              </button> */}
             </div>
           ) : (
             // <p className="mt-2 d-flex justify-content-between">
@@ -414,6 +417,7 @@ const CheckCurrentuser = (Author:any)=>{
                   </li>
                   <li>
                     <button
+                      type="button"
                       className="dropdown-item text-danger"
                        onClick={() => Handledeletecomment()}
                     >

@@ -307,6 +307,12 @@ const VerticalContext = ({ _context }: any) => {
         localStorage.setItem("NavId", String(29));
         setuseActive(29)
     }
+    else if (pageName === "DMSMAIN") {
+      //alert(`useactive : ${useActive} `)
+        // alert("set MediaGallery/Mediadetails");
+        localStorage.setItem("NavId", String(30));
+        setuseActive(30)
+    }
     else if (pageName === "MyApprovals") {
       //alert(`useactive : ${useActive} `)
         // alert("set MediaGallery/Mediadetails");

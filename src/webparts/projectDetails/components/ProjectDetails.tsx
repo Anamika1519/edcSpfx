@@ -1389,7 +1389,7 @@ const togglevalue = (e:any) => {
       // If confirmed, proceed to delete
       if (result.isConfirmed) {
           await sp.web.lists.getByTitle("ARGProjectComments").items.getById(commentId).delete();
-
+          getApiData();
    
           Swal.fire({
               title: "Deleted!",
@@ -1517,10 +1517,26 @@ const handleRemoveUser = async (userId: number) => {
   }
 };
 
+// useEffect(()=>{
+//   // getAllFilesForProject()
+//   const getFileCount=async()=>{
+//     const response = await sp.web.getFolderByServerRelativePath(`${filemanager}`).files();
+//     console.log(response, "resonse in effect ")
+//     setFiles(response)
+//   }
+//   getFileCount();
+ 
+// },[])
+
 useEffect(()=>{
   // getAllFilesForProject()
   const getFileCount=async()=>{
-    const response = await sp.web.getFolderByServerRelativePath(`${filemanager}`).files();
+    const ids = window.location.search;
+    const originalString = ids;
+    const idNum = originalString.substring(1);
+    const data =await getProjectDetailsById(sp, Number(idNum));
+    console.log("resonse in effect  data",data);
+    const response = await sp.web.getFolderByServerRelativePath(`${data[0].ProjectFileManager}`).files();
     console.log(response, "resonse in effect ")
     setFiles(response)
   }
@@ -1916,6 +1932,7 @@ useEffect(()=>{
                     currentuserid = {currentuseridglobal}
                     loadingLike={loadingLike}
                     Action="Project"
+                    userProfile={comment?.UserProfile}
                     onAddReply={(text:any) => handleAddReply(index, text)}
                     onLike={() => isProjectCompleted ? "" :handleLikeToggle(index)} // Pass like handler
                     loadingReply={loadingReply}

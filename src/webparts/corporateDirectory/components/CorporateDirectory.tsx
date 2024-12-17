@@ -22,7 +22,7 @@ import "../../../Assets/Figtree/Figtree-VariableFont_wght.ttf";
 
 import HorizontalNavbar from "../../horizontalNavBar/components/HorizontalNavBar";
 
-import "./corporate.scss";
+
 
 import { SPFI } from "@pnp/sp/presets/all";
 
@@ -47,6 +47,7 @@ import * as XLSX from "xlsx";
 import "../../announcementmaster/components/announcementMaster.scss";
 
 import "../../../CustomJSComponents/CustomTable/CustomTable.scss";
+import "./corporate.scss";
 import { WebPartContext } from "@microsoft/sp-webpart-base";
 import { MSGraphClientV3 } from "@microsoft/sp-http";
 import { toLower } from "lodash";
@@ -403,6 +404,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
       }
       else {
+        setLoading(true);
         if (usersitem.length > 0) {
           const smallest = usersitem.reduce((min, item) => (item.ID < min.ID ? item : min), usersitem[0]);
           setSmallestRecord(smallest);
@@ -444,131 +446,84 @@ const CorporateDirectoryContext = ({ props }: any) => {
         else usr['companyName'] = 'NA';
         return usr;
       })
-
       //sort by title
-
-      userList = sortArray(userList, (a: any, b: any) => a.Title.toLowerCase().localeCompare(b.Title.toLowerCase()))
-
-
+      userList = sortArray(userList, (a: any, b: any) => a.Title.toLowerCase().localeCompare(b.Title.toLowerCase()));
       const initialLoadingStatus: Record<number, boolean> = {};
-
       const initialFollowStatus: Record<number, boolean> = {};
-
       const initialPinStatus: Record<number, boolean> = {};
-
-
-
       // Function to fetch follow status and post count for each user
-
       const fetchUserDetails = async (user: any) => {
-
         const followRecords = await sp.web.lists.getByTitle("ARGFollows").items
-
           .filter(`FollowerId eq ${currentUser.Id} and FollowedId eq ${user.ID}`)
-
           .getAll();
-
         const pinRecords = await sp.web.lists.getByTitle("ARGPinned").items
-
           .filter(`PinnedById eq ${currentUser.Id} and PinnedId eq ${user.ID}`)
-
           .getAll();
-
         const MyPinnedCount = await sp.web.lists.getByTitle("ARGPinned").items
-
           .filter(`PinnedById eq ${currentUser.Id}`)
-
           .getAll();
-
         console.log("MyPinnedCount", MyPinnedCount.length);
         if (MyPinnedCount.length >= 4) {
           setShowPin(true)
         } else {
           setShowPin(false)
         }
-
         initialFollowStatus[user.ID] = followRecords.length > 0;
-
         initialPinStatus[user.ID] = pinRecords.length > 0;
-
+        user.pinstatus = pinRecords.length > 0;
         const followersCount = await sp.web.lists.getByTitle("ARGFollows").items
-
           .filter(`FollowedId eq ${user.ID}`)
-
           .select("Id")
-
           .getAll();
-
-
-
         const followingCount = await sp.web.lists.getByTitle("ARGFollows").items
-
           .filter(`FollowerId eq ${user.ID}`)
-
           .select("Id")
-
           .getAll();
-
-
-
         user.followersCount = followersCount.length;
-
         user.followingCount = followingCount.length;
-
-
-
         const postData = await sp.web.lists.getByTitle("ARGSocialFeed").items
-
           .filter(`AuthorId eq ${user.ID}`)
-
           .getAll();
-
-
-
         user.postCount = postData.length > 0 ? postData.length : 0;
-
       };
-
-
-
+      let users = usersitemcopy.length > 0 ? usersitemcopy.concat(userList) : userList;
       // Fetch details for each user in parallel
 
-      const userDetailsPromises = userList.map(async (user) => {
-
+      const userDetailsPromises = users.map(async (user) => {
         initialLoadingStatus[user.ID] = true;  // Set loading to true initially
-
         await fetchUserDetails(user);  // Fetch the user details (follow status and posts)
-
-        initialLoadingStatus[user.ID] = false;  // Set loading to false after fetch
-
+        initialLoadingStatus[user.ID] = false;  // Set loading to false after fetc
       });
 
-
-
       // Wait for all user details to be fetched
-
       await Promise.all(userDetailsPromises);
-
-
-
       // Update the state with the fetched data
-
       setFollowStatus(initialFollowStatus);
-
       setPinStatus(initialPinStatus);
-
+      let allusersnew: any;
       setLoadingUsers(initialLoadingStatus);
       setLoading(false);
+
+      console.log("allusersbefore", usersitem, usersitemcopy, userList);
+     
       if (loadVar == "onload") {
-        setUsersArr(userList);
+        let sortedData = [...userList].sort((a, b) => {
+          return a.pinstatus === b.pinstatus ? 0 : a.pinstatus ? -1 : 1;
+        });
+        allusersnew = userList;
+        setUsersArr(sortedData);
       }
       else {
-        setUsersArr((prevData) => [...prevData, ...userList]);
+        allusersnew = [...usersitemcopy, ...userList];
+        let sortedData = [...allusersnew].sort((a, b) => {
+          return a.pinstatus === b.pinstatus ? 0 : a.pinstatus ? -1 : 1;
+        });
+        setUsersArr(sortedData);
+        console.log("allusersnew", allusersnew, usersitem, usersitemcopy, userList, sortedData);
+        //setUsersArr((prevData) => [...prevData, ...userList]);
       }
-      //setUsersArr(userList);
-      setUsersitemcopy(userList);
-
-
+      setUsersitemcopy(allusersnew);
+      console.log("allusersallusers", allusersnew, usersitem, usersitemcopy, userList);
     } catch (error) {
 
       console.error("Error fetching users:", error);
@@ -860,26 +815,26 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
       }
       else if (sortConfig.key == "MobilePhone") {
- 
+
         // Sort by other keys
- 
+
         const aValue = a['WorkPhone'] ? a['WorkPhone'].toLowerCase() : "";
- 
+
         const bValue = b['WorkPhone'] ? b['WorkPhone'].toLowerCase() : "";
- 
- 
+
+
         if (aValue < bValue) {
- 
+
           return sortConfig.direction === "ascending" ? -1 : 1;
- 
+
         }
- 
+
         if (aValue > bValue) {
- 
+
           return sortConfig.direction === "ascending" ? 1 : -1;
- 
+
         }
- 
+
       }
       else if (sortConfig.key == "Name") {
 
@@ -1043,38 +998,26 @@ const CorporateDirectoryContext = ({ props }: any) => {
     setIsOpen(!isOpen);
 
   };
-  const handleSearch: React.ChangeEventHandler = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearch = (e: {
+    target: { value: React.SetStateAction<string> };
+  }) => {
+    let filteredusers :any[]=[];
     if (activeTab == "listView")
       setActiveTab("cardView");
-    let txtSearch = (document.getElementById('searchInput') as HTMLInputElement).value;
+    let txtSearch:any = e.target.value;
+    //(document.getElementById('searchInput') as HTMLInputElement).value;
     console.log("usersitem", usersitem)
     if (txtSearch.length > 1) {
-      let filteredusers =
-      //await sp.web.lists
-        // .getByTitle("User Information List")
-        // .items
-        // .select("ID", "Title", "EMail", "Department", "JobTitle", "Picture", "MobilePhone", "WorkPhone", "Name")
-        // .filter(`ContentType eq 'Person' and EMail ne null and substringof('${txtSearch}', Title)`)
-        // .top(500)
-        // ();
-        usersitem.filter((x) => x.Title.toLowerCase().includes(txtSearch.toLowerCase()))
-      setUsersArr(filteredusers);
+      filteredusers = usersitem.filter((x) => x.Title.toLowerCase().includes(txtSearch.toLowerCase()));
+      if (filteredusers.length > 0){
+        setUsersArr(filteredusers);
+      } else {
+        setUsersArr([]);
+      }
     }
-
     else {
       fetchUserInformationList("onload");
     }
-    // let filteredusers = usersitemcopy.filter(usr => {
-    //   return usr.Title.toLowerCase().includes(txtSearch) ||
-    //     usr.EMail.toLowerCase().includes(txtSearch) ||
-    //     usr.Name.toLowerCase().includes(txtSearch) ||
-    //     ((usr.Department) ? usr.Department.toLowerCase().includes(txtSearch) : false) ||
-    //     ((usr.companyName) ? usr.companyName.toLowerCase().includes(txtSearch) : false)
-    // });
-
-
-
-
   }
 
   const toggleFollow = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, item: any) => {
@@ -1197,7 +1140,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
         setPinStatus((prev) => ({ ...prev, [item.ID]: false })); // Update [pin] status
 
       }
-       else {
+      else {
         if (MyPinnedCount.length >= 4) {
           Swal.fire("You’ve hit the limit for pinning users to the Home Screen!")
         } else {
@@ -1211,7 +1154,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
           setPinStatus((prev) => ({ ...prev, [item.ID]: true }));
         }
         // pin logic
-         // Update pin status
+        // Update pin status
 
       }
 
@@ -1308,7 +1251,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
                         id="searchInput"
 
                         placeholder="Search by name in card view..."
-                        onChange={handleSearch}
+                        onChange={(e)=>handleSearch(e)}
 
                       />
 
@@ -1483,10 +1426,9 @@ const CorporateDirectoryContext = ({ props }: any) => {
                     )}
                     {!loading && (
                       <div className="row card-view">
-
                         {console.log("usersssitem", usersitem, followStatus, pinStatus)}
-
-                        {usersitem.map((item) => (
+                        {usersitem.length == 0 && <div> No users found...</div> }
+                        {usersitem.length > 0 && usersitem.map((item) => (
 
                           <div className="col-lg-3 col-md-4" key={item.Title}>
 
@@ -1574,7 +1516,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
                                   <h4 className="mt-2 mb-1">
 
                                     <a
-                                    //onClick={() => handleUserClick(item.ID, followStatus[item.ID])}
+                                      //onClick={() => handleUserClick(item.ID, followStatus[item.ID])}
 
                                       className="text-dark font-16 fw-bold"
 
@@ -1583,7 +1525,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
                                         textDecoration: "unset",
 
                                         fontSize: "20px",
- whiteSpace:'nowrap'
+                                        whiteSpace: 'nowrap'
                                       }}
 
                                     >
@@ -1757,7 +1699,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
                                           type="button" className="finish"
 
                                           //onClick={(!loadingUsers[item.ID]) ? (e) => toggleFollow(e, item) : undefined} disabled={loadingUsers[item.ID]}
-                                        onClick={(e) => toggleFollow(e, item)}
+                                          onClick={(e) => toggleFollow(e, item)}
 
                                         >
                                           Unfollow

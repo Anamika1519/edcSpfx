@@ -75,6 +75,7 @@ const DiscussionForumContext = ({ props }: any) => {
   const [EnityData, setEnityData] = React.useState([]);
   const [showDropdownId, setShowDropdownId] = React.useState(null);
   const [AllDiscussionItems, setAllDiscussionItems] = React.useState([]);
+  const [loading, setLoading] = useState(true);
   type UserEntityData = {
     companyName: string;
   };
@@ -198,46 +199,94 @@ const DiscussionForumContext = ({ props }: any) => {
   }, [useHide]);
 
   const ApiCall = async () => {
-    let useremail = await sp.web.getUserById(94);
-    console.log("useremail", useremail);
-    const announcementArr = await getDiscussionForum(sp);
-    setActiveTab('home1');
-    let lengArr: any;
-    if(announcementArr.length>0){
-    for (var i = 0; i < announcementArr.length; i++) {
-      lengArr = await getDiscussionComments(sp, announcementArr[i].ID)
-      console.log(lengArr, 'rrr');
-      announcementArr[i].commentsLength = lengArr.arrLength,
-        announcementArr[i].likesCount = lengArr.totalLikes;         // Number of likes
-      announcementArr[i].repliesCount = lengArr.totalRepliesCount;
-      announcementArr[i].Users = lengArr.arrUser
+    setLoading(true);
+    try {
+        let useremail = await sp.web.getUserById(94);
+      console.log("useremail", useremail);
+      const announcementArr = await getDiscussionForum(sp);
+      setActiveTab('home1');
+      let lengArr: any;
+      if(announcementArr.length>0){
+      for (var i = 0; i < announcementArr.length; i++) {
+        lengArr = await getDiscussionComments(sp, announcementArr[i].ID)
+        console.log(lengArr, 'rrr');
+        announcementArr[i].commentsLength = lengArr.arrLength,
+          announcementArr[i].likesCount = lengArr.totalLikes;         // Number of likes
+        announcementArr[i].repliesCount = lengArr.totalRepliesCount;
+        announcementArr[i].Users = lengArr.arrUser
 
+      }
     }
-  }
-    fetchOptions()
-    // const categorylist = await GetCategory(sp);
-    setCategoryData(await GetCategory(sp));
-    setEnityData(await getEntity(sp)); //Entity
-    setAnnouncementData(announcementArr);
-    setAllDiscussionItems(announcementArr);
-    const NewsArr = await getNews(sp);
-    setNewsData(NewsArr);
-    setGroupTypeData(
-      await getChoiceFieldOption(sp, "ARGDiscussionForum", "GroupType")
-    );
+      fetchOptions()
+      // const categorylist = await GetCategory(sp);
+      setCategoryData(await GetCategory(sp));
+      setEnityData(await getEntity(sp)); //Entity
+      setAnnouncementData(announcementArr);
+      setAllDiscussionItems(announcementArr);
+      const NewsArr = await getNews(sp);
+      setNewsData(NewsArr);
+      setGroupTypeData(
+        await getChoiceFieldOption(sp, "ARGDiscussionForum", "GroupType")
+      );
 
-    // Fetch current user data
-    const currentUserData = await GetEntity(sp);
+      // Fetch current user data
+      const currentUserData = await GetEntity(sp);
 
 
-    setCurrentUserEnityData(currentUserData); // Set the user data
+      setCurrentUserEnityData(currentUserData); // Set the user data
 
-    setFormData((prevState) => ({
-      ...prevState,
-      entity: currentUserData.companyName || "", // Use companyName or fallback to empty string
-    }));
+      setFormData((prevState) => ({
+        ...prevState,
+        entity: currentUserData.companyName || "", // Use companyName or fallback to empty string
+      }));
 
-    // Assuming you have a setCurrentUser function
+      // Assuming you have a setCurrentUser function
+    } catch (error) {
+      console.error('Error in Api call', error);
+    }
+    finally{
+      setLoading(false);
+    }
+  //   let useremail = await sp.web.getUserById(94);
+  //   console.log("useremail", useremail);
+  //   const announcementArr = await getDiscussionForum(sp);
+  //   setActiveTab('home1');
+  //   let lengArr: any;
+  //   if(announcementArr.length>0){
+  //   for (var i = 0; i < announcementArr.length; i++) {
+  //     lengArr = await getDiscussionComments(sp, announcementArr[i].ID)
+  //     console.log(lengArr, 'rrr');
+  //     announcementArr[i].commentsLength = lengArr.arrLength,
+  //       announcementArr[i].likesCount = lengArr.totalLikes;         // Number of likes
+  //     announcementArr[i].repliesCount = lengArr.totalRepliesCount;
+  //     announcementArr[i].Users = lengArr.arrUser
+
+  //   }
+  // }
+  //   fetchOptions()
+  //   // const categorylist = await GetCategory(sp);
+  //   setCategoryData(await GetCategory(sp));
+  //   setEnityData(await getEntity(sp)); //Entity
+  //   setAnnouncementData(announcementArr);
+  //   setAllDiscussionItems(announcementArr);
+  //   const NewsArr = await getNews(sp);
+  //   setNewsData(NewsArr);
+  //   setGroupTypeData(
+  //     await getChoiceFieldOption(sp, "ARGDiscussionForum", "GroupType")
+  //   );
+
+  //   // Fetch current user data
+  //   const currentUserData = await GetEntity(sp);
+
+
+  //   setCurrentUserEnityData(currentUserData); // Set the user data
+
+  //   setFormData((prevState) => ({
+  //     ...prevState,
+  //     entity: currentUserData.companyName || "", // Use companyName or fallback to empty string
+  //   }));
+
+  //   // Assuming you have a setCurrentUser function
 
   };
 
@@ -371,13 +420,20 @@ const DiscussionForumContext = ({ props }: any) => {
   };
   const fetchOptions = async () => {
     try {
-      const items = await fetchUserInformationList(sp);
-      console.log(items, 'itemsitemsitems');
+      // const items = await fetchUserInformationList(sp);
+      // console.log(items, 'itemsitemsitems');
 
-      const formattedOptions = items.map((item: { Title: any; Id: any; }) => ({
-        name: item.Title, // Adjust according to your list schema
-        id: item.Id,
-      }));
+      // const formattedOptions = items.map((item: { Title: any; Id: any; }) => ({
+      //   name: item.Title, // Adjust according to your list schema
+      //   id: item.Id,
+      // }));
+      const siteUsers = await sp.web.siteUsers();
+      
+       const usersOnly = siteUsers.filter(user => user.PrincipalType === 1 && user.Email !== "")
+       const formattedOptions = usersOnly.map((item) => ({
+         name: item.Title, // Adjust according to your list schema
+         id: item.Id,
+       }));
       setOpions(formattedOptions);
     } catch (error) {
       console.error('Error fetching options:', error);
@@ -690,6 +746,10 @@ const DiscussionForumContext = ({ props }: any) => {
     }
     if(!valid){
       Swal.fire("Error", "Please fill in the mandatory fields!", "error");
+    }
+    if(topic.length > 50){
+      Swal.fire("Error", "Topic name should not be greater than 50 character", "error");
+      return false;
     }
     return valid;
   };
@@ -1957,7 +2017,23 @@ const DiscussionForumContext = ({ props }: any) => {
                       </thead>
                       <tbody>
                       {console.log("currentDatacurrentData",currentData)}
-                        {currentData.length === 0 ? (
+                      {loading ? (<div className="loadernewadd">
+                    <div>
+                    <img style={{width:'60px'}}
+                            src={require("../../../CustomAsset/birdloader.gif")}
+                            className="alignrightl"
+                            alt="Loading..."
+                          />
+                        </div>
+                      <span>Loading </span>{" "}
+                      <span>
+                      <img style={{width:'35px'}}
+                          src={require("../../../CustomAsset/argloader.gif")}
+                          className="alignrightl"
+                          alt="Loading..."
+                        />
+                      </span>
+                    </div>):(currentData.length === 0 ? (
                           <div
                             className="no-results"
                             style={{
@@ -2108,7 +2184,77 @@ const DiscussionForumContext = ({ props }: any) => {
                               </td> */}
                             </tr>
                           ))
-                        )}
+                        ))}
+                        {/* {currentData.length === 0 ? (
+                          <div
+                            className="no-results"
+                            style={{
+                              display: "flex",
+                              marginTop:'10px',
+                              position:'relative',
+                              justifyContent: "center",
+                            }}>
+                            No results found
+                          </div>
+                        ) : (
+                          
+                          currentData.map((item: any, index: number) => (
+
+                            <tr
+
+                              key={index}
+                             >
+                              <td
+                                style={{
+                                  minWidth: "50px",
+                                  maxWidth: "50px"                                 
+                                }}>
+
+                                <span className="indexdesign">  {startIndex + index + 1}</span>
+                              </td>
+                              <td style={{ minWidth: "130px", maxWidth: "130px", textTransform: 'capitalize', cursor: "pointer" }} onClick={() => handleClick(item.Id)}><span className="text-info bordertesth">{item.Topic}</span></td>
+                              <td style={{ minWidth: "130px", maxWidth: "130px" }}>{item.Overview}</td>
+                              <td style={{ minWidth: "100px", maxWidth: "100px" }}>
+                                {item?.DiscussionForumCategory?.CategoryName}
+                              </td>
+                              <td style={{ minWidth: "100px", maxWidth: "100px" }}>
+                                {item?.ARGDiscussionStatus}
+                              </td>
+                              <td style={{ minWidth: "100px", maxWidth: "100px" }}>
+                                {item?.GroupType}
+                              </td>
+                              <td style={{ minWidth: "110px", maxWidth: "110px" }}>
+                                <img
+                                  src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item?.Author?.EMail}`}
+                                  className="rounded-circlenu img-thumbnail avatar-xl"
+                                  alt="profile-image"
+                                />
+                                {item?.Author?.Title}
+                                
+                              </td>
+                             
+                              <td style={{ minWidth: "60px", maxWidth: "60px" }}>
+                                <img style={{ width: '16px', verticalAlign: 'text-bottom', marginRight: '5px' }}
+                                  src={require("../assets/noun-reply.png")}
+
+                                  alt="Check"
+                                /> {item.repliesCount ? item.repliesCount : 0}
+                              </td>
+
+                              
+                              <td style={{ minWidth: "50px", maxWidth: "50px" }}>
+                                <img style={{ width: '16px', verticalAlign: 'text-bottom', marginRight: '5px' }} src={require("../assets/glike.png")} alt="Check" /> {Number(item.likesCount) > 0 ? item.likesCount : 0}
+                              </td>
+
+                             
+                              <td style={{ minWidth: "75px", maxWidth: "75px", textAlign: "center" }}>
+                                <img style={{ width: '16px', verticalAlign: 'text-bottom', marginRight: '5px' }} src={require("../assets/ccomment.png")} alt="Check" />  {Number(item.commentsLength) > 0 ? item.commentsLength : 0}
+                              </td>
+
+                              
+                            </tr>
+                          ))
+                        )} */}
                       </tbody>
                     </table>
                   </div>

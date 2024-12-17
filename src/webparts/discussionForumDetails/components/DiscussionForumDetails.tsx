@@ -12,7 +12,8 @@ import "../components/DiscussionForumDetaildetails.scss";
 import Provider from "../../../GlobalContext/provider";
 import HorizontalNavbar from "../../horizontalNavBar/components/HorizontalNavBar";
 // import 'react-comments-section/dist/index.css';
-import { CommentCard } from "../../../CustomJSComponents/CustomCommentCard/CommentCard";
+// import { CommentCard } from "../../../CustomJSComponents/CustomCommentCard/CommentCard";
+import { CommentCard } from "../../../CustomJSComponents/CustomCommentCardDiscussion/CommentCardDiscussion";
 import {
   addNotification,
   getCurrentUser,
@@ -827,6 +828,22 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
       Swal.fire("Access Denied", "You don't have access to close this discussion.", "warning");
     }
   }
+
+  useEffect(()=>{
+    // getAllFilesForProject()
+    const getFileCount=async()=>{
+      const ids = window.location.search;
+      const originalString = ids;
+      const idNum = originalString.substring(1);
+      const data =await getDiscussionForumDetailsById(sp, Number(idNum));
+      console.log("resonse in effect  data",data);
+      const response = await sp.web.getFolderByServerRelativePath(`${data[0].DiscussionFileManager}`).files();
+      console.log(response, "resonse in effect ")
+      setFiles(response)
+    }
+    getFileCount();
+   
+  },[])
   return (
     <div id="wrapper" ref={elementRef}>
       <div className="app-menu" id="myHeader">
@@ -1245,7 +1262,8 @@ alt="Check"
                                style={{cursor:"pointer"}} className="pe-2 widtsvg text-nowrap mb-0 d-inline-block"
                                //</div> onClick={(e: any) => openModal(e)}
                                >
-                                <FilePlus size={14} /> <span className="docu"> Documents</span>
+                                {/* <FilePlus size={14} /> <span className="docu"> Documents</span> */}
+                                <FilePlus />  Documents <span>[{files.length}]</span>
                               </span>
                             </div>
                             <div className="tabcss mb-2 mt-2 me-1 newalign">
@@ -1678,6 +1696,7 @@ alt="Check"
                                 userHasLiked={comment.userHasLiked}
                                 CurrentUserProfile={CurrentUserProfile}
                                 loadingLike={loadingLike}
+                                userProfile={comment?.UserProfile}
                                 Action="Discussion"
                                 onAddReply={(text) => handleAddReply(index, text)}
                                 onLike={() => isClosed ? null:handleLikeToggle(index)} // Pass like handler
