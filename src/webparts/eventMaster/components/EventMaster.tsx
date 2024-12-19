@@ -350,7 +350,7 @@ const EntityMastercontext = ({ props }: any) => {
               <div className="card-body">
                 <div id="cardCollpase4" className="collapse show">
                   <div className="table-responsive pt-0">
-                    <table className="mtable table-centered table-nowrap table-borderless mb-0">
+                    <table className="mtbalenew table-centered table-nowrap table-borderless mb-0">
                       <thead>
                         <tr>
                           <th style={{
@@ -543,7 +543,7 @@ const EntityMastercontext = ({ props }: any) => {
 
                               >
 
-                                <div className='indexdesign'> {startIndex + index + 1}</div>
+                                <div style={{marginLeft:'10px'}} className='indexdesign'> {startIndex + index + 1}</div>
 
                               </td>
 
@@ -551,7 +551,7 @@ const EntityMastercontext = ({ props }: any) => {
 
 
 
-                              <td>
+                              <td style={{ minWidth: '100px', maxWidth: '100px', textAlign:'center' }}>
                                 <div className='btn  btn-light'>
                                   {moment(item.EventDate).format("DD/MM/yyyy")}
                                 </div>
@@ -561,8 +561,8 @@ const EntityMastercontext = ({ props }: any) => {
 
 
 
-                              <td> <div className='btn  btn-status'>{item.Status} </div> </td>
-                              <td>{item.Overview}</td>
+                              <td style={{ minWidth: '100px', maxWidth: '100px',textAlign:'center' }}> <div className='btn  btn-status'>{item.Status} </div> </td>
+                              <td style={{ minWidth: '100px', maxWidth: '100px' }}>{item.Overview}</td>
                               <td
 
                                 style={{ minWidth: "80px", maxWidth: "80px" }}
@@ -585,7 +585,7 @@ const EntityMastercontext = ({ props }: any) => {
 
                                 <div
 
-                                  className="d-flex pb-2"
+                                  className="d-flex pb-0"
 
                                   style={{ justifyContent: "start", gap: "5px" }}
 

@@ -131,3 +131,15 @@
   @media(max-width:1400px){
     .newim{    width: 25% !important;}
   }
+  .paddb{
+    min-height: calc(100vh - 159px);
+  }
+
+  @media(max-width:1920px){
+    .paddb{min-height: calc(100vh - 168px);}
+}
+@media(max-width:640px){
+  .newim {
+    width: 16% !important;
+}
+}

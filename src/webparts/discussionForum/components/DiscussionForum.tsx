@@ -1823,7 +1823,7 @@ const DiscussionForumContext = ({ props }: any) => {
                 <div id="cardCollpase4" className="collapse show">
                   <div className="table-responsive pt-0">
                     <table
-                      className="mtable table-centered table-nowrap table-borderless mb-0"
+                      className="mtbalenew table-centered table-nowrap table-borderless mb-0"
                       style={{ position: "relative" }}
                     >
                       <thead>
@@ -2066,7 +2066,7 @@ const DiscussionForumContext = ({ props }: any) => {
                                 {item?.DiscussionForumCategory?.CategoryName}
                               </td>
                               <td style={{ minWidth: "100px", maxWidth: "100px" }}>
-                                {item?.ARGDiscussionStatus}
+                              {item?.ARGDiscussionStatus == "Close" ? "Closed" : item?.ARGDiscussionStatus}
                               </td>
                               <td style={{ minWidth: "100px", maxWidth: "100px" }}>
                                 {item?.GroupType}

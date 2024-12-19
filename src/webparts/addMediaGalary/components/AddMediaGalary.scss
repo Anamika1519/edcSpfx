@@ -35,7 +35,9 @@
     background-color: #f8f9fa;
     border-color: #f8f9fa;
 }
-
+.btn-light {
+  padding: 5px 6px !important;
+}
 /* Add hover effect to buttons */
 .btn-success:hover,
 .btn-light:hover {

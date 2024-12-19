@@ -17,63 +17,7 @@
 .cardbottom{
     height: 200px !important;
 }
-.mtbalenew{
-    width: 100%;
-      position: relative;
-      overflow: hidden;
-      display: inline-block;
-      border-radius: 0px;
-  }
-  .mtbalenew thead {
-    width: 100%;
-    display: inline-block;
-    position: relative;
-    overflow: visible;
-  }
-  .mtbalenew tr {
-    display: table;
-    width: 100%;
-  }
-  .mtbalenew th {
-    background:#f3f7f9 !important;
-    font-weight: 600 !important;
-    color: #3c3c3c;
-    font-size: 16px;
-  text-align: center;
-    min-width: 130px;
-    max-width: 130px;
-    padding: 10px !important;
-    border-bottom: 0px solid #1b6363 !important;
-  }
-  
-  .mtbalenew tbody {
-    width: 100%;
-    position: relative;
-    display: block;
-    max-height: 30007px !important;
-    overflow-y: hidden !important;
-  }
-  .mtbalenew td {
-    min-width: 130px;
-    max-width: 130px;
-    padding: 8px 10px; font-size: 15px;
-    text-align: left;
-    background-color: #fff;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap; color: #6b6b6b;
-    border-bottom: 1px solid #e1e1e1;
-    border-right: 1px solid #e1e1e1;
-  }
-  .mtbalenew td:last-child{
-    border-right: 0px solid #e1e1e1; text-align: center;
-  }
-  .mtbalenew tr:nth-child(even) td {
-    background: #f9f9f9;
-  }
-  .mtbalenew tr:nth-child(even):hover td {
-    background: #ececec;
-  }
+
   .indexdesign{
     background: #d2effa !important;
       color: #1fb0e5 !important;
@@ -87,6 +31,12 @@
       padding: 0px 1px !important;
       border-radius: 1000px; text-align: center; font-weight: 600;
   }
+  .pagination-container{margin-top: 5px !important;}
+  #audittable{min-width: 80%;}
+  #audittable .modal-body .cardCss {border: 0px solid #ccc !important;margin: 0px !important;}
+  #audittable .modal-body .cardCss .card-body{padding: 0px !important;}
+  #audittable .modal-body .cardCss .card-body h3{display: none;}
+  #audittable .modal-body .cardCss .card-body table{margin: 0px !important;}
   .stausbg{
   
       border-radius: 4px;
@@ -97,3 +47,85 @@
       
       
   }
+  .lenbg{background: #ffc313; height:20px ; color: #fff; 
+    font-weight: 700; margin-top: -3px; margin-left: 5px; 
+    float:right; font-weight: 700;
+    height: 22px;
+    margin-left: 5px;
+    margin-top: -2.3px;
+    width: 30px;
+    padding: 1px; line-height: 21px;
+    border-radius: 1000px;
+    text-align: center;}
+    .paddb{
+      min-height: calc(100vh - 159px);
+    }
+    #s4-workspace{overflow: hidden !important;}
+    @media(max-width:1920px){
+      .paddb{min-height: calc(100vh - 168px);}
+  }
+  
+  @media(max-width:1600px){
+    
+    #s4-workspace{overflow-y: auto !important;}
+  }
+  @media(max-width: 768px)
+ {
+
+	/* Force table to not be like tables anymore */
+	.mtbalenew, .mtbalenew thead, .mtbalenew tbody, .mtbalenew th, .mtbalenew td, .mtbalenew tr { 
+		display: block; 
+	}
+	
+	/* Hide table headers (but not display: none;, for accessibility) */
+	.mtbalenew thead tr { 
+		position: absolute;
+		top: -9999px;
+		left: -9999px;
+	}
+	
+	.mtbalenew tr {         border: 1px solid #1fb0e5;
+    border-radius: 10px;
+    margin-bottom: 10px; }
+    .mtbalenew td:nth-child(1),.mtbalenew th:nth-child(1){display: none !important;}
+	.mtbalenew td { 
+		/* Behave  like a "row" */
+		border: none;
+		border-bottom: 0px solid #eee; 
+		position: relative;
+   
+		padding-left: 37%; 
+	}
+  .mtbalenew td, .mtbalenew th {
+    max-width: none !important;
+    min-width: none !important; text-align: left !important;
+}
+	.mtbalenew td:before { 
+		/* Now like a table header */
+		position: absolute;
+		/* Top/left values mimic padding */
+		top: 6px;
+		left: 6px;
+		width: 50%; 
+		padding-right: 10px; 
+		white-space: initial;
+	}
+	.mtbalenew tbody tr:nth-child(2n) td {
+    background: #fff !important;
+}
+.mtbalenew tbody tr:nth-child(2n) {
+  background-color: #fff;
+  border-radius: 10px;
+}
+	/*
+	Label the data
+	*/
+	.mtbalenew td:nth-of-type(1):before { content: "S.No"; font-weight: 600; }
+  .mtbalenew td:nth-of-type(2):before { content: "Request ID"; font-weight: 600;}
+	.mtbalenew td:nth-of-type(3):before { content: "Title"; font-weight: 600;}
+	.mtbalenew td:nth-of-type(4):before { content: "Process Name"; font-weight: 600;}
+	.mtbalenew td:nth-of-type(5):before { content: "Requested Date"; font-weight: 600;}
+	.mtbalenew td:nth-of-type(6):before { content: "Status"; font-weight: 600;}
+	.mtbalenew td:nth-of-type(7):before { content: "View Details"; font-weight: 600;}
+	
+}

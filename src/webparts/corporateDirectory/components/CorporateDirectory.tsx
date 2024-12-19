@@ -505,7 +505,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
       setLoading(false);
 
       console.log("allusersbefore", usersitem, usersitemcopy, userList);
-     
+
       if (loadVar == "onload") {
         let sortedData = [...userList].sort((a, b) => {
           return a.pinstatus === b.pinstatus ? 0 : a.pinstatus ? -1 : 1;
@@ -1001,15 +1001,15 @@ const CorporateDirectoryContext = ({ props }: any) => {
   const handleSearch = (e: {
     target: { value: React.SetStateAction<string> };
   }) => {
-    let filteredusers :any[]=[];
+    let filteredusers: any[] = [];
     if (activeTab == "listView")
       setActiveTab("cardView");
-    let txtSearch:any = e.target.value;
+    let txtSearch: any = e.target.value;
     //(document.getElementById('searchInput') as HTMLInputElement).value;
     console.log("usersitem", usersitem)
     if (txtSearch.length > 1) {
       filteredusers = usersitem.filter((x) => x.Title.toLowerCase().includes(txtSearch.toLowerCase()));
-      if (filteredusers.length > 0){
+      if (filteredusers.length > 0) {
         setUsersArr(filteredusers);
       } else {
         setUsersArr([]);
@@ -1250,8 +1250,8 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                         id="searchInput"
 
-                        placeholder="Search by name in card view..."
-                        onChange={(e)=>handleSearch(e)}
+                        placeholder="Search by name in Card View..."
+                        onChange={(e) => handleSearch(e)}
 
                       />
 
@@ -1394,7 +1394,18 @@ const CorporateDirectoryContext = ({ props }: any) => {
               </div>
 
             </div>
+            {!loading && usersitem.length == 0 &&
+              <div className='row mt-2'>
+                <div style={{ height: '450px' }} className="card card-body align-items-center  annusvg text-center"
+                >
 
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+
+                  <p className="font-14 text-muted text-center">No Users Available </p>
+
+                </div>
+              </div>
+            }
             <div className="row corporate-directory">
 
               <div className="mt-3">
@@ -1427,7 +1438,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
                     {!loading && (
                       <div className="row card-view">
                         {console.log("usersssitem", usersitem, followStatus, pinStatus)}
-                        {usersitem.length == 0 && <div> No users found...</div> }
+                        {/* {usersitem.length == 0 && <div> No users found...</div>} */}
                         {usersitem.length > 0 && usersitem.map((item) => (
 
                           <div className="col-lg-3 col-md-4" key={item.Title}>
@@ -1515,7 +1526,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                   <h4 className="mt-2 mb-1">
 
-                                    <a
+                                    <span
                                       //onClick={() => handleUserClick(item.ID, followStatus[item.ID])}
 
                                       className="text-dark font-16 fw-bold"
@@ -1536,7 +1547,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
 
 
-                                    </a>
+                                    </span>
 
                                   </h4>
 
@@ -1872,7 +1883,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                             <table
 
-                              className="mtable table-centered table-nowrap table-borderless mb-0"
+                              className="mtbalenew table-centered table-nowrap table-borderless mb-0"
 
                               style={{ position: "relative" }}
 
@@ -2311,7 +2322,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                             minWidth: "50px",
 
-                                            maxWidth: "50px",
+                                            maxWidth: "50px", textAlign:'center'
 
                                           }}
 
@@ -2319,7 +2330,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                           {" "}
 
-                                          <img
+                                          <img style={{width:'18px'}}
 
                                             src={require("../assets/calling.png")}
 

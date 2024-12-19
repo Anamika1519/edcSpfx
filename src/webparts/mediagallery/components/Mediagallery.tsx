@@ -28,7 +28,7 @@ import { FormSubmissionMode } from '../../../Shared/Interfaces';
 import { WorkflowAuditHistory } from '../../../CustomJSComponents/WorkflowAuditHistory/WorkflowAuditHistory';
 import { CONTENTTYPE_Media, LIST_TITLE_MediaGallery, LIST_TITLE_EventMaster } from '../../../Shared/Constants';
 
-const HelloWorldContext = ({props}:any) => {
+const HelloWorldContext = ({ props }: any) => {
   const sp: SPFI = getSP();
   // console.log(sp, "sp");
   // const { useHide }: any = React.useContext(UserContext);
@@ -48,7 +48,7 @@ const HelloWorldContext = ({props}:any) => {
 
   React.useEffect(() => {
     // console.log("This function is called only once", useHide);
- 
+
     const showNavbar = (
       toggleId: string,
       navId: string,
@@ -59,7 +59,7 @@ const HelloWorldContext = ({props}:any) => {
       const nav = document.getElementById(navId);
       const bodypd = document.getElementById(bodyId);
       const headerpd = document.getElementById(headerId);
- 
+
       if (toggle && nav && bodypd && headerpd) {
         toggle.addEventListener("click", () => {
           nav.classList.toggle("show");
@@ -69,18 +69,18 @@ const HelloWorldContext = ({props}:any) => {
         });
       }
     };
- 
+
     showNavbar("header-toggle", "nav-bar", "body-pd", "header");
- 
+
     const linkColor = document.querySelectorAll(".nav_link");
- 
+
     function colorLink(this: HTMLElement) {
       if (linkColor) {
         linkColor.forEach((l) => l.classList.remove("active"));
         this.classList.add("active");
       }
     }
- 
+
     linkColor.forEach((l) => l.addEventListener("click", colorLink));
   }, [useHide]);
   // Media query to check if the screen width is less than 768px
@@ -90,28 +90,28 @@ const HelloWorldContext = ({props}:any) => {
     setHide(!bol);
     document.querySelector(".sidebar")?.classList.toggle("close");
   };
- 
+
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState("all");
   const [mediagallerycategory, setMediaGalleryCategory] = useState<any[]>([]);
   const [mediagallerydata, setMediaGalleryData] = useState<any[]>([]);
   const [filteredMediaItems, setFilteredMediaItems] = useState<any[]>([]);
- 
+
   const handleSearchChange = (e: {
     target: { value: React.SetStateAction<string> };
   }) => {
     setSearchTerm(e.target.value);
   };
- 
-  const handleTabClick = (tab: string,Id:number) => {
+
+  const handleTabClick = (tab: string, Id: number) => {
     setActiveTab(tab.toLowerCase());
   };
- 
- 
-  useEffect(()=>{
+
+
+  useEffect(() => {
     ApiCall();
-  },[])
- 
+  }, [])
+
   useEffect(() => {
     if (activeTab === "all") {
       setFilteredMediaItems(mediagallerydata);
@@ -121,35 +121,35 @@ const HelloWorldContext = ({props}:any) => {
       const selectedCategory = mediagallerycategory.find(
         (category) => category.CategoryName.toLowerCase() === activeTab
       );
- 
+
       if (selectedCategory) {
         // Filter items based on the selected category's ID
         const filteredItems = mediagallerydata.filter(
           (item) => item.MediaGalleryCategoryId === selectedCategory.ID
         );
         setFilteredMediaItems(filteredItems);
-       
+
       } else {
         // If no category matches, show no items
         setFilteredMediaItems([]);
-        
+
       }
       setLoading(false);
     }
   }, [activeTab, mediagallerydata, mediagallerycategory]);
- 
+
   const ApiCall = async () => {
     const CategoryArr = await fetchMediaGallerycategory(sp);
     setMediaGalleryCategory(CategoryArr);
     const GalleryData = await fetchMediaGallerydata(sp);
     setMediaGalleryData(GalleryData)
   };
- 
+
   const visibleCategories = mediagallerycategory.slice(0, 5);
   const overflowCategories = mediagallerycategory.slice(5);
- 
+
   const siteUrl = props.siteUrl;
- 
+
   const GotoNextPage = (item: any) => {
     // console.log("item-->>>>",item)
     const encryptedId = encryptId(String(item.ID));
@@ -169,22 +169,22 @@ const HelloWorldContext = ({props}:any) => {
   ]
   return (
     <div id="wrapper" ref={elementRef}>
-    <div
-      className="app-menu"
-      id="myHeader">
-      <VerticalSideBar _context={sp} />
-    </div>
-    <div className="content-page">
-        <HorizontalNavbar  _context={sp} siteUrl={siteUrl}/>
-      <div className="content" style={{marginLeft: `${!useHide ? '240px' : '80px'}`,marginTop:'0rem'}}>
-            <div className="container-fluid paddb">
-              <div className="row">
-                <div className="col-lg-4">
-               
-                  <CustomBreadcrumb Breadcrumb={Breadcrumb} />
-             
-                </div>
-                {/* <div className="col-lg-8">
+      <div
+        className="app-menu"
+        id="myHeader">
+        <VerticalSideBar _context={sp} />
+      </div>
+      <div className="content-page">
+        <HorizontalNavbar _context={sp} siteUrl={siteUrl} />
+        <div className="content" style={{ marginLeft: `${!useHide ? '240px' : '80px'}`, marginTop: '0rem' }}>
+          <div className="container-fluid paddb">
+            <div className="row">
+              <div className="col-lg-4">
+
+                <CustomBreadcrumb Breadcrumb={Breadcrumb} />
+
+              </div>
+              {/* <div className="col-lg-8">
                   <div className="d-flex flex-wrap align-items-center justify-content-end mt-3">
                     <form className="d-flex align-items-center justify-content-start">
                       <input
@@ -198,129 +198,139 @@ const HelloWorldContext = ({props}:any) => {
                     </form>
                   </div>
                 </div> */}
-              </div>
-              <div className="row mt-3">
-                <div className="col-12">
-                  <div className="card">
-                    <div className="card-body">
-                      <div className="row">
-                        <div className="col-md-12">
-                          <div className="text-center filter-menu d-flex justify-content-center">
-                            {/* Main tabs */}
-                            <a
-                             style={{textDecoration:'unset'}}
-                              className={`filter-menu-item ${
-                                activeTab === "all" ? "active" : ""
+            </div>
+
+            <div className="row mt-3">
+              <div className="col-12">
+                <div className="card">
+                  <div className="card-body">
+                    <div className="row">
+                      <div className="col-md-12">
+                        <div className="text-center filter-menu d-flex justify-content-center">
+                          {/* Main tabs */}
+                          <a
+                            style={{ textDecoration: 'unset' }}
+                            className={`filter-menu-item ${activeTab === "all" ? "active" : ""
                               }`}
-                              onClick={() => handleTabClick("all",0)}
-                            >
-                              All
-                            </a>
- 
-                            {visibleCategories.map((category) => (
-                              <a
-                                key={category.ID}
-                               style={{textDecoration:'unset'}}
-                                className={`filter-menu-item ${
-                                  activeTab ===
+                            onClick={() => handleTabClick("all", 0)}
+                          >
+                            All
+                          </a>
+
+                          {visibleCategories.map((category) => (
+                            <a
+                              key={category.ID}
+                              style={{ textDecoration: 'unset' }}
+                              className={`filter-menu-item ${activeTab ===
                                   (category.CategoryName
                                     ? category.CategoryName.toLowerCase()
                                     : "")
-                                    ? "active"
-                                    : ""
+                                  ? "active"
+                                  : ""
                                 }`}
-                                onClick={() =>
-                                  handleTabClick(category.CategoryName.toLowerCase(),category.ID)
-                                 
-                                }
+                              onClick={() =>
+                                handleTabClick(category.CategoryName.toLowerCase(), category.ID)
+
+                              }
+                            >
+                              {category.CategoryName || "Unknown Category"}
+                            </a>
+                          ))}
+
+                          {/* Dropdown for extra tabs */}
+                          {overflowCategories.length > 0 && (
+                            <Dropdown className="filter-menu-item">
+                              <Dropdown.Toggle
+                                id="dropdown-basic"
+                                className="filter-menu-item btsxx" style={{ background: '#fff' }}
                               >
-                                {category.CategoryName || "Unknown Category"}
-                              </a>
-                            ))}
- 
-                            {/* Dropdown for extra tabs */}
-                            {overflowCategories.length > 0 && (
-                              <Dropdown  className="filter-menu-item">
-                                <Dropdown.Toggle
-                                  id="dropdown-basic"
-                                  className="filter-menu-item btsxx" style={{background:'#fff'}}
-                                >
-                                  <span className="me-2">More</span> <div className="icont"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></div>
-                                </Dropdown.Toggle>
- 
-                                <Dropdown.Menu className="filter-menu-item">
-                                  {overflowCategories.map((category) => (
-                                    <Dropdown.Item
-                                      key={category.ID}
-                                   
-                                      className={`filter-menu-item ${
-                                        activeTab ===
+                                <span className="me-2">More</span> <div className="icont"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></div>
+                              </Dropdown.Toggle>
+
+                              <Dropdown.Menu className="filter-menu-item">
+                                {overflowCategories.map((category) => (
+                                  <Dropdown.Item
+                                    key={category.ID}
+
+                                    className={`filter-menu-item ${activeTab ===
                                         (category.CategoryName
                                           ? category.CategoryName.toLowerCase()
                                           : "")
-                                          ? "active"
-                                          : ""
+                                        ? "active"
+                                        : ""
                                       }`}
-                                      onClick={() =>
-                                        handleTabClick(
-                                           category.CategoryName.toLowerCase(),category.ID
-                                           
-                                        )
-                                      }
-                                    >
-                                      {category.CategoryName ||
-                                        "Unknown Category"}
-                                    </Dropdown.Item>
-                                  ))}
-                                </Dropdown.Menu>
-                              </Dropdown>
-                            )}
-                          </div>
+                                    onClick={() =>
+                                      handleTabClick(
+                                        category.CategoryName.toLowerCase(), category.ID
+
+                                      )
+                                    }
+                                  >
+                                    {category.CategoryName ||
+                                      "Unknown Category"}
+                                  </Dropdown.Item>
+                                ))}
+                              </Dropdown.Menu>
+                            </Dropdown>
+                          )}
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-              <div className="row   filterable-content ">
+            </div>
+            {!loading && filteredMediaItems.length == 0 &&
+            <div className='row mt-0'>
+              <div style={{ height: '450px' }} className="card card-body align-items-center  annusvg text-center"
+              >
+
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+
+                <p className="font-14 text-muted text-center">No Media Available </p>
+
+              </div>
+            </div>
+            }
+            <div className="row   filterable-content ">
               {loading && (
-                      <div className="loadernewadd">
-                        <div>
-                          <img style={{ width: '60px' }}
-                            src={require("../../../CustomAsset/birdloader.gif")}
-                            className="alignrightl"
-                            alt="Loading..."
-                          />
-                        </div>
-                        <div className="loadnewarg">
-                          <span>Loading </span>{" "}
-                          <span>
-                            <img style={{ width: '35px' }}
-                              src={require("../../../CustomAsset/argloader.gif")}
-                              className="alignrightl"
-                              alt="Loading..."
-                            />
-                          </span>
-                        </div>
-                      </div>
-                    )}
-                
-                {!loading && (
+                <div className="loadernewadd">
+                  <div>
+                    <img style={{ width: '60px' }}
+                      src={require("../../../CustomAsset/birdloader.gif")}
+                      className="alignrightl"
+                      alt="Loading..."
+                    />
+                  </div>
+                  <div className="loadnewarg">
+                    <span>Loading </span>{" "}
+                    <span>
+                      <img style={{ width: '35px' }}
+                        src={require("../../../CustomAsset/argloader.gif")}
+                        className="alignrightl"
+                        alt="Loading..."
+                      />
+                    </span>
+                  </div>
+                </div>
+              )}
+
+              {!loading && filteredMediaItems.length > 0 && (
                 filteredMediaItems.map((item) => {
                   const imageData = item.Image ? JSON.parse(item.Image) : null;
                   const imageUrl = imageData
                     ? `${imageData.serverUrl}${imageData.serverRelativeUrl}`
                     : require("../../../Assets/ExtraImage/userimg.png"); // Fallback if no image
-                    const arrjson =item.MediaGalleryJSON? JSON.parse(item.MediaGalleryJSON):null
+                  const arrjson = item.MediaGalleryJSON ? JSON.parse(item.MediaGalleryJSON) : null
                   return (
                     <div
                       key={item.ID}
                       className="col-sm-6 col-xl-3 filter-item all web illustrator "
                     >
-                      <div className="gal-box" onClick={()=>GotoNextPage(item)} style={{background:'#fff'}}>
+                      <div className="gal-box" onClick={() => GotoNextPage(item)} style={{ background: '#fff' }}>
                         <a
-                         
-                          className="image-popup"  style={{}}
+
+                          className="image-popup" style={{}}
                           title={`Screenshot of ${item.Title || "Untitled"}`}
                         >
                           <img
@@ -339,7 +349,7 @@ const HelloWorldContext = ({props}:any) => {
                             {item.Title || "Untitled"}
                           </h4>
                           <div className="mb-1 mt-1 row">
-                            <span className="font-14" style={{ borderRadius: "4px",color: '#1fb0e5',fontWeight: '600' }}>
+                            <span className="font-14" style={{ borderRadius: "4px", color: '#1fb0e5', fontWeight: '600' }}>
                               {item.MediaGalleryCategory?.CategoryName}
                             </span>
                           </div>
@@ -357,7 +367,7 @@ const HelloWorldContext = ({props}:any) => {
                                   height: "35px",
                                   lineHeight: "20px",
                                 }}
-                                className="btn btn-primary w-100 rounded-pill font-14 mt-2"  onClick={()=>GotoNextPage(item)}
+                                className="btn btn-primary w-100 rounded-pill font-14 mt-2" onClick={() => GotoNextPage(item)}
                               >
                                 View Album
                               </div>
@@ -369,21 +379,21 @@ const HelloWorldContext = ({props}:any) => {
                   );
                 })
               )}
-              </div>
             </div>
           </div>
         </div>
       </div>
-   
+    </div>
+
   );
 };
- 
-const Mediagallery : React.FC<IMediagalleryProps> = (props) => (
- 
-    <Provider>
-      <HelloWorldContext props={props}/>
-    </Provider>
- 
+
+const Mediagallery: React.FC<IMediagalleryProps> = (props) => (
+
+  <Provider>
+    <HelloWorldContext props={props} />
+  </Provider>
+
 )
- 
+
 export default Mediagallery;

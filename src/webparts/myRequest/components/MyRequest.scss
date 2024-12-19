@@ -9,12 +9,13 @@
   #cardCollpase4 .mtable {
     margin-top: 0px !important;
   }
-  .mtable td{font-size: 14px;}
+  .mtable td{font-size: 14px; border-bottom: 1px solid #efefef;}
   #cardCollpase4 .mtable tr {
     display: table;
     width: 100%;
   }
   
+.mtable th{padding: 3px 10px !important;}
   #cardCollpase4 .inputcss {
   
     font-size: .8rem !important;
@@ -122,3 +123,6 @@
   color: #fff !important;
   }
   .page-item{margin: 0px !important;}
+  @media(max-width:640px){
+    .mtbalenew tbody tr td:nth-child(1),.mtbalenew thead tr th:nth-child(1) { min-width: 60px !important;max-width: 60px !important;}
+  }

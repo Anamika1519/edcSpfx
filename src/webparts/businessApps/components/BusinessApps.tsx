@@ -820,7 +820,7 @@ const HelloWorldContext = ({ props }: any) => {
                   <div className="col-md-6 col-xl-3" >
                     <div className="widget-rounded-circle card hri90" >
                       <div className="card-body" >
-                        <div className="row" onClick={() => handleRedirect(item.RedirectionLink)}>
+                        <div style={{cursor:'pointer'}} className="row" onClick={() => handleRedirect(item.RedirectionLink)}>
                           <div className="col-3 newim">
                             <div style={{ background: '#fff', width: '45px', height: '45px' }}
                               className="avatar-lg d-flex justify-content-center align-items-center rounded-circle bg-soft-primary border-primary border">
@@ -830,7 +830,7 @@ const HelloWorldContext = ({ props }: any) => {
                           <div className="col-9 newim2 d-flex justify-content-left align-items-center">
                             <div>
 
-                              <p style={{ marginBottom: '5px' }} className="text-dark twolinewrap mb-156 linr56 font-16  mt90">{item.Title}</p>
+                              <p style={{ marginBottom: '5px' }} className="text-dark twolinewrap mb-156 linr56 font-16 hovertext  mt90">{item.Title}</p>
                               <p className="text-muted mb-0 font-12 twolinewrap  mt90">{item.SubTitle}</p>
                             </div>
                           </div>

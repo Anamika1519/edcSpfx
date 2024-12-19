@@ -1263,12 +1263,12 @@ alt="Check"
                                //</div> onClick={(e: any) => openModal(e)}
                                >
                                 {/* <FilePlus size={14} /> <span className="docu"> Documents</span> */}
-                                <FilePlus />  Documents <span>[{files.length}]</span>
+                                <FilePlus style={{marginTop:'-3px'}} />  Documents <span>[{files.length}]</span>
                               </span>
                             </div>
-                            <div className="tabcss mb-2 mt-2 me-1 newalign">
+                            <div style={{cursor:"auto"}} className="tabcss mb-2 mt-2 me-1 newalign">
                               <span className="pe-2 text-nowrap mb-0 d-inline-block">
-                                <Calendar size={14} />{" "}
+                                <Calendar  size={14} />{" "}
                                 <span className="docu">Start Date:&nbsp; {moment(item.Created).format("DD-MMM-YYYY")}{" "}</span>
 
                               </span>
@@ -1555,7 +1555,7 @@ alt="Check"
                                   <Card key={file.UniqueId} style={{ marginBottom: '10px', height: '82px' }} >
                                     <Card.Body>
                                       <div className="row">
-                                        <div className="col-lg-2">
+                                        <div className="col-lg-2 wi8">
                                           <img
                                             src={require("../assets/file.png")}
                                             style={{ width: '40px' }}
@@ -1564,14 +1564,14 @@ alt="Check"
 
                                         </div>
 
-                                        <div style={{ paddingLeft: '13px' }} className="col-lg-9">
+                                        <div style={{ paddingLeft: '13px' }} className="col-lg-9 wi82">
                                           <Card.Title className="two-line text-dark font-14 mb-0">{file.Name}</Card.Title>
                                           <Card.Text className="text-muted font-12">{file.Length} bytes</Card.Text>
                                         </div>
 
 
                                         {/* Three dots dropdown menu */}
-                                        <div className="col-lg-1">
+                                        <div className="col-lg-1 wi82">
                                           <Dropdown align="end">
                                             <Dropdown.Toggle variant="link" id={`dropdown-${file.UniqueId}`} size="sm" className="newaligntext">
                                               &#x22EE; {/* Ellipsis icon */}

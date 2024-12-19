@@ -1345,7 +1345,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
               Status: "Pending",
 
               EntityId: Number(formData.entity),
-
+              Title: formData.title,
               SourceName: "Media",
               ReworkRequestedBy: "Initiator"
 
@@ -1534,7 +1534,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
               Status: "Pending",
 
               EntityId: Number(formData.entity),
-
+              Title: formData.title,
               SourceName: "Media",
               ReworkRequestedBy: "Initiator"
 

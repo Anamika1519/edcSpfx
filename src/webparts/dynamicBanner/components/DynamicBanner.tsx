@@ -322,7 +322,7 @@ const DynamicBannercontext = ({ props }: any) => {
               <div className="">
                 <div id="cardCollpase4" className="collapse show">
                   <div className="table-responsive pt-0">
-                    <table className="mtable mt-0 table-centered table-nowrap table-borderless mb-0">
+                    <table className="mtbalenew mt-0 table-centered table-nowrap table-borderless mb-0">
                       <thead>
                         <tr>
                           <th style={{
@@ -449,7 +449,7 @@ const DynamicBannercontext = ({ props }: any) => {
                                 <td style={{ minWidth: '60px', maxWidth: '60px' }}>  <div className='btn btn-status'> {item.Status} </div> </td>
                                 <td style={{ minWidth: '80px', maxWidth: '80px' }}> {moment(item.Created).format("DD-MMM-YYYY")}</td>
                                 <td style={{ minWidth: '50px', maxWidth: '50px' }} className="ng-binding">
-                                  <div className="d-flex  pb-2" style={{ justifyContent: 'center', gap: '5px' }}>
+                                  <div className="d-flex  pb-0" style={{ justifyContent: 'center', gap: '5px' }}>
                                     <span > <a className="action-icon text-primary" onClick={() => EditBanner(item.ID)}>
                                       <img src={require('../../../CustomAsset/edit.png')} />
                                     </a> </span >

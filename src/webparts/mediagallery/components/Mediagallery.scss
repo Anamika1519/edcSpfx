@@ -225,6 +225,11 @@ a.filter-menu-item.dropdown-item {
       
         height: 26px;
     }
+    .filter-menu a {
+        padding: 0.4rem 0.5rem !important;
+        height: 34px;
+    }
+    .filter-menu{display: inline-block !important;}
 }
 @media(max-width:1080px){
     .filter-menu a{    margin-right: 2px;
@@ -299,3 +304,8 @@ img, svg {
 .fw-bold {font-weight: 700 !important;}
 .btn-primary { background: rgba(0, 135, 81, 0.20) !important; font-weight: 500 !important;
     height: auto !important; color: #008751 !important; border: 0px !important;}
+    @media(max-width:640px){
+        .gal-box {
+            height: auto !important;
+        }
+    }

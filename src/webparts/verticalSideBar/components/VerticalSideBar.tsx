@@ -360,7 +360,7 @@ const VerticalContext = ({ _context }: any) => {
             >
               {/* <div style={{ display: 'flex', alignItems: 'center' }} onClick={() => gotoPage(item.Url,item.ID)}> */}
 
-              <div style={{ display: 'flex', alignItems: 'center' ,lineHeight: '25px'}} onClick={() => gotoPage(item.Url, item.ID)} >
+              <div style={{ display: 'flex', alignItems: 'center' ,lineHeight: '20px'}} onClick={() => gotoPage(item.Url, item.ID)} >
                 <span className="navlink_icon">
                   {/* Render the Feather Icon component if it exists */}
                   {IconComponent && <IconComponent size={18} />}

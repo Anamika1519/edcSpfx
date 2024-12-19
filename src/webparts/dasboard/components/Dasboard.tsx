@@ -488,68 +488,83 @@ const HelloWorldContext = ({ props }: any) => {
                             View All
                           </a>
                         </h5>
-
-                        {dataofann.map((announcement, index) => {
-                          const eventDate = new Date(announcement.Modified);
-                          const formattedDate = eventDate.toLocaleDateString(
-                            "default",
-                            {
-                              day: "2-digit", // To display the day with two digits
-                              month: "short", // To display the abbreviated month (e.g., Jul, Sep)
-                              year: "numeric", // To display the full year (e.g., 2024)
+                        {dataofann.length === 0 ?
+                             <div className="align-items-center newiconsvg text-center mt25"
+                             >
+ 
+ <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+ 
+                               <p className="font-14 text-muted text-center">No Announcement Available </p>
+ 
+                             </div>
+                            : 
+                            dataofann.map((announcement, index) => {
+                              const eventDate = new Date(announcement.Modified);
+                              const formattedDate = eventDate.toLocaleDateString(
+                                "default",
+                                {
+                                  day: "2-digit", // To display the day with two digits
+                                  month: "short", // To display the abbreviated month (e.g., Jul, Sep)
+                                  year: "numeric", // To display the full year (e.g., 2024)
+                                }
+                              );
+                              return (
+                                <div key={index} className="border-bottom mt-2">
+                                  <h4
+                                    className="mb-0 twolinewrapone text-dark fw-bold font-14 mt-0"
+                                    style={{ fontSize: "14px", fontWeight: "bold", cursor: "pointer" }}
+                                    onClick={(e) => NavigatetoAnnouncement(e, announcement.ID)}
+                                  >
+                                    {announcement.Title}
+                                  </h4>
+                                  <p
+                                    // style={{ marginTop: "5px", lineHeight: "18px" }}
+                                    style={{
+                                      marginTop: "5px",
+                                      lineHeight: "18px",
+                                      //   height: "54px",  18px line height * 2 lines
+                                      overflow: "hidden",
+                                      textOverflow: "ellipsis",
+                                      display: "-webkit-box",
+                                      WebkitBoxOrient: "vertical",
+                                      WebkitLineClamp: 2, // Limit to 2 lines
+                                    }}
+                                    className="mb-2 font-13"
+                                  >
+                                    {announcement.Overview}
+                                  </p>
+                                  <p className="mb-1 font-12">
+                                    {moment(announcement.Modified).format("DD-MMM-YYYY")}
+                                  </p>
+                                  <div className="mt-1 d-flex justify-between mb-0">
+                                    <span
+    
+                                      className="btn btn-sm btn-link text-muted mb-0 font-18 ps-0"
+                                    >
+                                      <ThumbsUp size={15} color="#4fc6e1" />
+                                      <span className="font-12  mx-1 margin01 float-right floatl">{announcement.LikeCount} Likes</span>
+                                    </span>
+                                    <span
+    
+                                      className="btn btn-sm btn-link text-muted mb-0 font-18"
+                                    >
+                                      <MessageSquare size={15} color="#f7b84b" />
+                                      <span className="font-12 margin01 mx-1  float-right floatl">
+                                        {announcement.CommentCount} Comments
+                                      </span>
+                                    </span>
+                                  </div>
+    
+                                </div>
+                              )
                             }
-                          );
-                          return (
-                            <div key={index} className="border-bottom mt-2">
-                              <h4
-                                className="mb-0 twolinewrapone text-dark fw-bold font-14 mt-0"
-                                style={{ fontSize: "14px", fontWeight: "bold", cursor: "pointer" }}
-                                onClick={(e) => NavigatetoAnnouncement(e, announcement.ID)}
-                              >
-                                {announcement.Title}
-                              </h4>
-                              <p
-                                // style={{ marginTop: "5px", lineHeight: "18px" }}
-                                style={{
-                                  marginTop: "5px",
-                                  lineHeight: "18px",
-                                  //   height: "54px",  18px line height * 2 lines
-                                  overflow: "hidden",
-                                  textOverflow: "ellipsis",
-                                  display: "-webkit-box",
-                                  WebkitBoxOrient: "vertical",
-                                  WebkitLineClamp: 2, // Limit to 2 lines
-                                }}
-                                className="mb-2 font-13"
-                              >
-                                {announcement.Overview}
-                              </p>
-                              <p className="mb-1 font-12">
-                                {moment(announcement.Modified).format("DD-MMM-YYYY")}
-                              </p>
-                              <div className="mt-1 d-flex justify-between mb-0">
-                                <a
+                            )}
+                       
 
-                                  className="btn btn-sm btn-link text-muted mb-0 font-18 ps-0"
-                                >
-                                  <ThumbsUp size={15} color="#4fc6e1" />
-                                  <span className="font-12  mx-1 margin01 float-right floatl">{announcement.LikeCount} Likes</span>
-                                </a>
-                                <a
 
-                                  className="btn btn-sm btn-link text-muted mb-0 font-18"
-                                >
-                                  <MessageSquare size={15} color="#f7b84b" />
-                                  <span className="font-12 margin01 mx-1  float-right floatl">
-                                    {announcement.CommentCount} Comments
-                                  </span>
-                                </a>
-                              </div>
 
-                            </div>
-                          )
-                        }
-                        )}
+
+                       
                       </div>
                     </div>
                   </div>
@@ -572,15 +587,17 @@ const HelloWorldContext = ({ props }: any) => {
                             View All
                           </a>
                         </h4>
+                        
                         <div className="inbox-widget" style={{ marginTop: '1rem' }}>
                           {pinUsersitem.length === 0 ?
-                            <div className="align-items-center text-center mt-5"
+                            <div className="align-items-center newiconsvg  text-center mt-22"
                             >
 
-                              <img style={{ cursor: "pointer", marginTop: '50px', width: '32px' }} src={require("../assets/noun-pin-7368310.png")} className="mb-3"
+                              {/* <img style={{ cursor: "pointer", marginTop: '50px', width: '32px' }} src={require("../assets/noun-pin-7368310.png")} className="mb-3"
                                 alt="pin"
 
-                              />
+                              /> */}
+                              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
 
                               <p className="font-14 text-muted text-center">Pin users from Corporate Directory </p>
 
@@ -601,7 +618,7 @@ const HelloWorldContext = ({ props }: any) => {
                                     />
                                   </a>
                                 </div>
-                                <div style={{ cursor: "pointer" }} className="col-sm-8">
+                                <div  className="col-sm-8">
 
                                   <p className="fw-bold mt-1 font-14 mb-1 text-dark">
                                     {user.Pinned.Title}
@@ -676,7 +693,18 @@ openEmailDialog(user.Pinned.EMail)
                             View All
                           </a>
                         </h4>
-                        <div className="mt-0">
+
+                        {dataofevent.length === 0 ?
+                            <div className="align-items-center newiconsvg text-center mt-14"
+                            >
+
+<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+
+                              <p className="font-14 text-muted text-center">No Events Available </p>
+
+                            </div>
+                            : 
+                           <div className="mt-0">
                           {dataofevent.map((event, index) => {
                             // Parse the EventDate to get the day, month, and year
                             const eventDate = new Date(event.EventDate);
@@ -752,7 +780,7 @@ openEmailDialog(user.Pinned.EMail)
                               </div>
                             );
                           })}
-                        </div>
+                        </div>}
                       </div>
                     </div>
                   </div>
@@ -763,7 +791,7 @@ openEmailDialog(user.Pinned.EMail)
                       style={{ float: "left", width: "100%" }}
                       className="card newt desknewview"
                     >
-                      <div className="card-body pb-2">
+                      <div className="card-body heifgtgal pb-2">
                         <h4 className="header-title text-dark font-16 fw-bold mb-0">
                           Gallery
                           <a
@@ -774,91 +802,104 @@ openEmailDialog(user.Pinned.EMail)
                             View All
                           </a>
                         </h4>
+                        {gallerydata.length === 0 ?
+                          <div className="align-items-center newiconsvg text-center mt-10"
+                          >
 
-                        <div className="tab-content pt-1 margint50 pb-1" style={{ marginTop: '0.6rem' }}>
-                          <div className="tab-pane show active" id="profile1">
-                            <div className="tabv">
-                              {/* Dynamically generate the tab buttons */}
+<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+
+                            <p className="font-14 text-muted text-center">No Media Available </p>
+
+                          </div>
+                            : 
+                            <div className="tab-content pt-1 margint50 pb-1" style={{ marginTop: '0.6rem' }}>
+                        
+                            <div className="tab-pane show active" id="profile1">
+                              <div className="tabv">
+                                {/* Dynamically generate the tab buttons */}
+                                {gallerydata.map((item) => {
+                                  const ImageUrl2 =
+                                    item.Image == undefined || item.Image == null
+                                      ? ""
+                                      : JSON.parse(item.Image);
+                                  return (
+                                    <button
+                                      key={item.ID}
+                                      className="tablinks"
+                                      onClick={(e) => handleTabClick(e, item.ID)}
+                                    >
+                                      <span className="tav-image">
+                                        <img
+                                          style={{ height: "70px" }}
+                                          src={
+                                            ImageUrl2?.serverUrl +
+                                            ImageUrl2?.serverRelativeUrl
+                                          }
+                                          alt="Gallery"
+                                        />
+                                        {/* <div className="lspe1">
+                                    <img
+                                      style={{ width: "21px" }}
+                                      src={item.videoIcon}
+                                      alt="video icon"
+                                    />
+                                  </div> */}
+                                      </span>
+  
+                                      <span className="tabvtext">
+                                        <span className="twolinewrap mb-1 fw-bold font-14 text-dark">  {item.Title} <br /> </span>
+                                        <span style={{ paddingTop: "2px" }} className="font-12">
+                                          <i className="fa fa-clock-o"></i>&nbsp;
+                                          {moment(item.Created).format("DD-MMM-YYYY")}
+                                        </span>
+                                      </span>
+                                    </button>
+                                  );
+                                })}
+                              </div>
+  
+                              {/* Dynamically generate the tab content */}
                               {gallerydata.map((item) => {
                                 const ImageUrl2 =
                                   item.Image == undefined || item.Image == null
                                     ? ""
                                     : JSON.parse(item.Image);
                                 return (
-                                  <button
+                                  <div
                                     key={item.ID}
-                                    className="tablinks"
-                                    onClick={(e) => handleTabClick(e, item.ID)}
+                                    id={item.ID}
+                                    className="tabcontentv"
+                                    style={{
+                                      display:
+                                        activeTab === item.ID ? "block" : "none",
+                                    }}
                                   >
-                                    <span className="tav-image">
-                                      <img
-                                        style={{ height: "70px" }}
-                                        src={
-                                          ImageUrl2?.serverUrl +
-                                          ImageUrl2?.serverRelativeUrl
-                                        }
-                                        alt="Gallery"
-                                      />
-                                      {/* <div className="lspe1">
-                                  <img
-                                    style={{ width: "21px" }}
-                                    src={item.videoIcon}
-                                    alt="video icon"
-                                  />
-                                </div> */}
-                                    </span>
-
-                                    <span className="tabvtext">
-                                      <span className="twolinewrap mb-1 fw-bold font-14 text-dark">  {item.Title} <br /> </span>
-                                      <span style={{ paddingTop: "2px" }} className="font-12">
+                                    <img
+                                      src={
+                                        ImageUrl2?.serverUrl +
+                                        ImageUrl2?.serverRelativeUrl
+                                      }
+                                      width="100%"
+                                      alt="Gallery"
+                                    />
+                                    {/* <div className="lspe">
+                                <img src={item.videoIcon} alt="video icon" />
+                              </div> */}
+                                    <div className="cptext">
+                                      <p>
                                         <i className="fa fa-clock-o"></i>&nbsp;
                                         {moment(item.Created).format("DD-MMM-YYYY")}
-                                      </span>
-                                    </span>
-                                  </button>
+                                      </p>
+                                      <p style={{ cursor: "pointer" }} onClick={() => GotoNextPageMediaDetails(item)}>{item.Title}</p>
+                                    </div>
+                                  </div>
                                 );
                               })}
                             </div>
+                          </div>}
 
-                            {/* Dynamically generate the tab content */}
-                            {gallerydata.map((item) => {
-                              const ImageUrl2 =
-                                item.Image == undefined || item.Image == null
-                                  ? ""
-                                  : JSON.parse(item.Image);
-                              return (
-                                <div
-                                  key={item.ID}
-                                  id={item.ID}
-                                  className="tabcontentv"
-                                  style={{
-                                    display:
-                                      activeTab === item.ID ? "block" : "none",
-                                  }}
-                                >
-                                  <img
-                                    src={
-                                      ImageUrl2?.serverUrl +
-                                      ImageUrl2?.serverRelativeUrl
-                                    }
-                                    width="100%"
-                                    alt="Gallery"
-                                  />
-                                  {/* <div className="lspe">
-                              <img src={item.videoIcon} alt="video icon" />
-                            </div> */}
-                                  <div className="cptext">
-                                    <p>
-                                      <i className="fa fa-clock-o"></i>&nbsp;
-                                      {moment(item.Created).format("DD-MMM-YYYY")}
-                                    </p>
-                                    <p style={{ cursor: "pointer" }} onClick={() => GotoNextPageMediaDetails(item)}>{item.Title}</p>
-                                  </div>
-                                </div>
-                              );
-                            })}
-                          </div>
-                        </div>
+                       
+                       
                       </div>
                     </div>
                   </div>
@@ -885,83 +926,99 @@ openEmailDialog(user.Pinned.EMail)
                         View All
                       </a>
                     </h5>
-                    <div
-                      style={{
-                        paddingTop: "0px",
-                        boxSizing: "border-box",
-                        display: "block",
-                        unicodeBidi: "isolate",
-                      }}
-                    >
-                      {dataofnews.map((news, index) => {
-                        const ImageUrl5 =
-                          news.AnnouncementandNewsBannerImage == undefined ||
-                            news.AnnouncementandNewsBannerImage == null
-                            ? ""
-                            : JSON.parse(news.AnnouncementandNewsBannerImage);
+                    {dataofnews.length === 0 ?
+                           <div className="align-items-center newiconsvg text-center mt100"
+                           >
 
-                        // const submittedDate = new Date(news.Modified);
-                        // const formattedSubmittedDate =
-                        //   submittedDate.toLocaleDateString("default", {
-                        //     day: "2-digit", // 2-digit day format (e.g., 01, 15)
-                        //     month: "short", // Abbreviated month name (e.g., Jan, Feb)
-                        //     year: "numeric", // Full year (e.g., 2024)
-                        //   });
-                        const eventDate = new Date(news.Modified);
-                        const formattedDate = eventDate.toLocaleDateString(
-                          "default",
-                          {
-                            day: "2-digit", // To display the day with two digits
-                            month: "short", // To display the abbreviated month (e.g., Jul, Sep)
-                            year: "numeric", // To display the full year (e.g., 2024)
-                          }
-                        );
+<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
 
-                        return (
-                          <div
-                            key={index}
-                            className="mt-3  border-bottom newpadd pt-0 ng-scope"
-                            style={{ marginBottom: "7px" }}
-                          >
-                            <div className="imgh">
-                              <img
-                                src={
-                                  ImageUrl5?.serverUrl +
-                                  ImageUrl5?.serverRelativeUrl
-                                }
-                                width="100%"
-                                alt={news.title}
-                              />
-                              {/* <img
-                            src={require("../../../Assets/ExtraImage/NodataFound.png")}
-                            width="100%"
-                            alt={news.title}
-                          /> */}
-                            </div>
-                            <h4
+                             <p className="font-14 text-muted text-center">No News Available </p>
+
+                           </div>
+                            : 
+                            // dataofnews.map((user, index) => (
+                              
+                              <div
                               style={{
-                                lineHeight: "22px",
-                                fontSize: "16px",
-                                cursor: "pointer"
+                                paddingTop: "0px",
+                                boxSizing: "border-box",
+                                display: "block",
+                                unicodeBidi: "isolate",
                               }}
-                              className="fw-bold font-16 mt-2 mb-2 twolinewrap text-dark"
-                              onClick={(e) => Navigatetonews(e, news.ID)}
                             >
-                              {news.Title}
-                            </h4>
-                            <p
-                              style={{ lineHeight: "22px" }}
-                              className="mb-2 twolinewrap1 font-14"
-                            >
-                              {news.Overview}
-                            </p>
-                            <p className="mb-3 font-12">
-                              {moment(news.Modified).format("DD-MMM-YYYY")}
-                            </p>
-                          </div>
-                        );
-                      })}
-                    </div>
+                              {dataofnews.map((news, index) => {
+                                const ImageUrl5 =
+                                  news.AnnouncementandNewsBannerImage == undefined ||
+                                    news.AnnouncementandNewsBannerImage == null
+                                    ? ""
+                                    : JSON.parse(news.AnnouncementandNewsBannerImage);
+        
+                                // const submittedDate = new Date(news.Modified);
+                                // const formattedSubmittedDate =
+                                //   submittedDate.toLocaleDateString("default", {
+                                //     day: "2-digit", // 2-digit day format (e.g., 01, 15)
+                                //     month: "short", // Abbreviated month name (e.g., Jan, Feb)
+                                //     year: "numeric", // Full year (e.g., 2024)
+                                //   });
+                                const eventDate = new Date(news.Modified);
+                                const formattedDate = eventDate.toLocaleDateString(
+                                  "default",
+                                  {
+                                    day: "2-digit", // To display the day with two digits
+                                    month: "short", // To display the abbreviated month (e.g., Jul, Sep)
+                                    year: "numeric", // To display the full year (e.g., 2024)
+                                  }
+                                );
+        
+                                return (
+                                  <div
+                                    key={index}
+                                    className="mt-3  border-bottom newpadd pt-0 ng-scope"
+                                    style={{ marginBottom: "7px" }}
+                                  >
+                                    <div className="imgh">
+                                      <img
+                                        src={
+                                          ImageUrl5?.serverUrl +
+                                          ImageUrl5?.serverRelativeUrl
+                                        }
+                                        width="100%"
+                                        alt={news.title}
+                                      />
+                                      {/* <img
+                                    src={require("../../../Assets/ExtraImage/NodataFound.png")}
+                                    width="100%"
+                                    alt={news.title}
+                                  /> */}
+                                    </div>
+                                    <h4
+                                      style={{
+                                        lineHeight: "22px",
+                                        fontSize: "16px",
+                                        cursor: "pointer"
+                                      }}
+                                      className="fw-bold font-16 mt-2 mb-2 twolinewrap text-dark"
+                                      onClick={(e) => Navigatetonews(e, news.ID)}
+                                    >
+                                      {news.Title}
+                                    </h4>
+                                    <p
+                                      style={{ lineHeight: "22px" }}
+                                      className="mb-2 twolinewrap1 font-14"
+                                    >
+                                      {news.Overview}
+                                    </p>
+                                    <p className="mb-3 font-12">
+                                      {moment(news.Modified).format("DD-MMM-YYYY")}
+                                    </p>
+                                  </div>
+                                );
+                              })}
+                            </div> 
+                            
+                            }
+   
+                   
                   </div>
                 </div>
 
@@ -979,103 +1036,118 @@ openEmailDialog(user.Pinned.EMail)
                           View All
                         </a>
                       </h4>
-                      <div className="d-flex align-items-start pt-1 justify-content-between border-radius mb-2">
-                        <div className="row mt-0 ipadt">
-                          {leaderboard.length > 0 && leaderboard.slice(0, 3).map((user, index) => (
-                            <div className="row border-bottom heit9"
-                              key={index}
 
-                            >
-                              <div style={{ paddingLeft: "0px" }} className="col-sm-2">
-                                <img
-                                  className="rounded-circle"
-                                  src={
-                                    `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${user.AuthorEMail}`
-                                  }
-                                  width="50"
-                                  alt={user.AuthorTitle}
-                                />
-                              </div>
+                      {leaderboard.length === 0 ?
+                           <div className="align-items-center newiconsvg text-center mt33"
+                           >
 
-                              <div className="col-sm-10 ps-2">
-                                <div className="row">
-                                  <div className="col-lg-8">
-                                    <div className="w-100 ps-1 pt-0">
-                                      <h5 style={{ cursor: "pointer" }} className="inbox-item-text fw-bold font-14 mb-0 text-dark">
-                                        {user.AuthorTitle}
-                                      </h5>
-                                      <span
-                                        style={{ color: "#6b6b6b", lineHeight: "15px", float: "left" }}
-                                        className="font-12"
-                                      >
-                                        {user.AuthorDepartment ? user.AuthorDepartment : 'NA'}
-                                      </span>
+<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+
+                             <p className="font-14 text-muted text-center">No Leaderboard Available </p>
+
+                           </div>
+                            :   <div  className="d-flex align-items-start pt-1 justify-content-between border-radius mb-2">
+                            <div className="row mt-0 ipadt">
+                              {leaderboard.length > 0 && leaderboard.slice(0, 3).map((user, index) => (
+                               <div className="row border-bottom heit9"
+                                  key={index}
+    
+                                >
+                                  <div style={{ paddingLeft: "0px" }} className="col-sm-2">
+                                    <img
+                                      className="rounded-circle"
+                                      src={
+                                        `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${user.AuthorEMail}`
+                                      }
+                                      width="50"
+                                      alt={user.AuthorTitle}
+                                    />
+                                  </div>
+    
+                                  <div className="col-sm-10 ps-2">
+                                    <div className="row">
+                                      <div className="col-lg-8">
+                                        <div className="w-100 ps-1 pt-0">
+                                          <h5  className="inbox-item-text fw-bold font-14 mb-0 text-dark">
+                                            {user.AuthorTitle}
+                                          </h5>
+                                          <span
+                                            style={{ color: "#6b6b6b", lineHeight: "15px", float: "left" }}
+                                            className="font-12"
+                                          >
+                                            {user.AuthorDepartment ? user.AuthorDepartment : 'NA'}
+                                          </span>
+                                        </div>
+    
+                                      </div>
+                                      <div style={{ paddingLeft: "0px" }} className="col-lg-4">
+                                        <a
+                                          style={{ marginTop: "3px", display: 'flex', gap: '2px', cursor:'auto' }}
+                                          href="javascript:void(0);"
+                                          className="btn btn-sm btn-link text-muted ps-0 pe-0"
+                                        >
+                                          {Array(user.Ratting)
+                                            .fill(null)
+                                            .map((_, index) => (
+                                              <img
+                                                key={index}
+                                                src={require("../assets/nounachievement.png")}
+                                                title="Badges"
+                                                alt="badge"
+                                                 className="me-0 ipaddw"
+                                              />
+                                            ))}
+                                        </a>
+                                      </div>
+    
                                     </div>
-
-                                  </div>
-                                  <div style={{ paddingLeft: "0px" }} className="col-lg-4">
-                                    <a
-                                      style={{ marginTop: "3px", display: 'flex', gap: '2px' }}
-                                      href="javascript:void(0);"
-                                      className="btn btn-sm btn-link text-muted ps-0 pe-0"
-                                    >
-                                      {Array(user.Ratting)
-                                        .fill(null)
-                                        .map((_, index) => (
-                                          <img
-                                            key={index}
-                                            src={require("../assets/nounachievement.png")}
-                                            title="Badges"
-                                            alt="badge"
-                                            className="me-0 ipaddw"
-                                          />
-                                        ))}
-                                    </a>
-                                  </div>
-
-                                </div>
-                                <div className="row">
-
-                                  <div className="col-sm-3">
-                                    <div
-                                      className="product-price-tag positiont text-primary rounded-circle newc"
-                                      title="Position"
-                                    >
-                                      {user.position < 10
-                                        ? `0${user.position}`
-                                        : user.position}
-                                      {index + 1}
+                                    <div className="row">
+    
+                                      <div className="col-sm-3">
+                                        <div
+                                          className="product-price-tag positiont text-primary rounded-circle newc"
+                                          title="Position"
+                                        >
+                                          {user.position < 10
+                                            ? `0${user.position}`
+                                            : user.position}
+                                          {index + 1}
+                                        </div>
+                                      </div>
+    
+                                      <div className="col-sm-9">
+                                        <span
+                                          style={{
+                                            padding: "5px",
+                                            borderRadius: "4px",
+                                            background: "#cce7dc",
+                                            fontWeight: "600",
+                                            color: "#008751",
+                                            position: "relative",
+                                            top: "-3px",
+                                            width: "100%",
+                                            textAlign: "center",
+                                          }}
+                                          className="posnew font-12  float-end mt-2 mb-2"
+                                        >
+                                          Points Earned {user.TotalPoints < 1000 ? user.TotalPoints : (user.TotalPoints / 1000).toFixed(1).replace(/\.0$/, '') + 'K'}
+                                        </span>
+                                      </div>
+    
                                     </div>
+    
                                   </div>
-
-                                  <div className="col-sm-9">
-                                    <span
-                                      style={{
-                                        padding: "5px",
-                                        borderRadius: "4px",
-                                        background: "#cce7dc",
-                                        fontWeight: "600",
-                                        color: "#008751",
-                                        position: "relative",
-                                        top: "-3px",
-                                        width: "100%",
-                                        textAlign: "center",
-                                      }}
-                                      className="posnew font-12  float-end mt-2 mb-2"
-                                    >
-                                      Points Earned {user.TotalPoints < 1000 ? user.TotalPoints : (user.TotalPoints / 1000).toFixed(1).replace(/\.0$/, '') + 'K'}
-                                    </span>
-                                  </div>
-
+    
+    
                                 </div>
-
-                              </div>
-
-
+                              ))}
                             </div>
-                          ))}
-                        </div>
-                      </div>
+                          </div>
+                            }
+
+                      
+
+                    
                     </div>
                   </div>
                 </div>
@@ -1112,9 +1184,19 @@ openEmailDialog(user.Pinned.EMail)
                         View All
                       </a>
                     </h4>
-                    <div className="row mt-2">
+                    {projects.length === 0 ?
+                            <div className="align-items-center card card-body newiconsvg text-center mt-4"
+                            >
+
+<svg className="mt-3" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+
+                              <p className="font-14 text-muted text-center">No Projects Available </p>
+
+                            </div>
+                            : 
+                             <div className="row mt-2">
                       {projects.map((project, index) => (
-                        <div className="col-lg-4" key={project.Id}>
+                        <div className="col-lg-4 col-sm-6 mb-2" key={project.Id}>
                           <div className="card project-box mb-0">
                             <div className="card-body">
                               <div className="dropdown mt-3 float-end">
@@ -1268,6 +1350,8 @@ openEmailDialog(user.Pinned.EMail)
                         </div>
                       ))}
                     </div>
+}
+                   
                   </div>
                 </div>
               </div>

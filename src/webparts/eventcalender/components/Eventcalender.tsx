@@ -26,7 +26,7 @@ import AvtarComponents from "../../../CustomJSComponents/AvtarComponents/AvtarCo
 const EventcalenderContext = ({ props }: any) => {
   const sp: SPFI = getSP();
   console.log(sp, "sp");
-  
+
   const [itemsToShow, setItemsToShow] = useState(5);
   const [copySuccess, setCopySuccess] = useState("");
   const [show, setShow] = useState(false);
@@ -40,7 +40,7 @@ const EventcalenderContext = ({ props }: any) => {
   const [isDarkMode, setIsDarkMode] = React.useState(false);
 
   const siteUrl = props.siteUrl;
-  const copyToClipboard = (Id:number) => {
+  const copyToClipboard = (Id: number) => {
     const link = `${siteUrl}/SitePages/EventDetailsCalendar.aspx?${Id}`;
     navigator.clipboard.writeText(link)
       .then(() => {
@@ -59,9 +59,9 @@ const EventcalenderContext = ({ props }: any) => {
     end: new Date(),
     allDay: false,
     image: '',
-    Overview:'',
-    Attendees:[],
-    eventLink:''
+    Overview: '',
+    Attendees: [],
+    eventLink: ''
   }); // Initialize with a blank object
   console.log(eventDetails);
 
@@ -150,10 +150,10 @@ const EventcalenderContext = ({ props }: any) => {
       start: new Date(event.EventDate),
       end: new Date(new Date(event.EventDate).getTime() + 60 * 60 * 1000), // Assuming 1 hour duration
       allDay: false,
-      image:event.image== undefined || event.image == null ? "" : JSON.parse(event.image),
-      Overview:event.Overview,
-      Attendees:event.Attendees,
-      eventLink:`${SiteUrl}/SitePages/EventDetailsCalendar.aspx?${event.Id}`
+      image: event.image == undefined || event.image == null ? "" : JSON.parse(event.image),
+      Overview: event.Overview,
+      Attendees: event.Attendees,
+      eventLink: `${SiteUrl}/SitePages/EventDetailsCalendar.aspx?${event.Id}`
     }));
 
     setMyEventsList(events);
@@ -171,12 +171,12 @@ const EventcalenderContext = ({ props }: any) => {
     }, 1000);
   };
 
-  const handleEventHover = (event:any) => {
+  const handleEventHover = (event: any) => {
     if (event) {
-      var img1=event.image == undefined || event.image == null ? "" : event.image;
-      if(img1 == null){
-        img1 =''
- 
+      var img1 = event.image == undefined || event.image == null ? "" : event.image;
+      if (img1 == null) {
+        img1 = ''
+
       }
       setEventDetails({
         Id: event.Id || '',
@@ -185,40 +185,39 @@ const EventcalenderContext = ({ props }: any) => {
         end: event.end || new Date(),
         allDay: event.allDay || false,
         image: img1.serverRelativeUrl,
-        Overview:event.Overview,
-        Attendees:event.Attendees,
-        eventLink:`${SiteUrl}/SitePages/EventDetailsCalendar.aspx?${event.Id}`
+        Overview: event.Overview,
+        Attendees: event.Attendees,
+        eventLink: `${SiteUrl}/SitePages/EventDetailsCalendar.aspx?${event.Id}`
       });
-     // console.log(event.image);
+      // console.log(event.image);
     }
-    
+
   };
- 
+
   const truncateText = (text: string, maxLength: number) => {
-    if(text!=null)
-    {
-        return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
+    if (text != null) {
+      return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
 
     }
-};
+  };
   const [showDropdownId, setShowDropdownId] = useState(null);
   const [currentEmail, setEmail] = useState("");
 
-  const sendanEmail = (item:any) => {
+  const sendanEmail = (item: any) => {
     // window.open("https://outlook.office.com/mail/inbox");
-  
-     const subject ="Event Title-"+ item.EventName;
-     const body = 'Here is the link to the event:'+ `${siteUrl}/SitePages/EventDetailsCalendar.aspx?${item.Id}`;
-  
-   // const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-  
+
+    const subject = "Event Title-" + item.EventName;
+    const body = 'Here is the link to the event:' + `${siteUrl}/SitePages/EventDetailsCalendar.aspx?${item.Id}`;
+
+    // const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
     // Open the link to launch the default mail client (like Outlook)
-   // window.location.href = mailtoLink;
+    // window.location.href = mailtoLink;
 
     const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
     window.open(office365MailLink, '_blank');
-   };
+  };
 
   const toggleDropdown = (itemId: any) => {
     if (showDropdownId === itemId) {
@@ -232,40 +231,40 @@ const EventcalenderContext = ({ props }: any) => {
     event.stopImmediatePropagation()
     setItemsToShow(itemsToShow + 5); // Increase the number by 8
   };
-   
-  const[currentmonth , SetCurrentmonth] = useState<any>("");
-  const[currentmonthevents , SetCurrentmonthevents] = useState<any>([]);
-  useEffect(()=>{
+
+  const [currentmonth, SetCurrentmonth] = useState<any>("");
+  const [currentmonthevents, SetCurrentmonthevents] = useState<any>([]);
+  useEffect(() => {
 
     const currentDate = new Date();
-    
+
     const monthNumber = currentDate.getMonth() + 1;
-    
+
     const monthNames = [
-        "January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
     ];
     const monthName = monthNames[currentDate.getMonth()];
     SetCurrentmonth(monthName)
-    console.log("Current Month Number:", monthNumber); 
-    console.log("Current Month Name:", monthName); 
-    
-    async function eventthismonth () { 
-       const eventofthismonth = await sp.web.lists.getByTitle("ARGEventMaster").items.select("*")()
-       console.log(eventofthismonth , "eventofthismonth")
-       const filteredData = eventofthismonth.filter((item:any) => {
+    console.log("Current Month Number:", monthNumber);
+    console.log("Current Month Name:", monthName);
+
+    async function eventthismonth() {
+      const eventofthismonth = await sp.web.lists.getByTitle("ARGEventMaster").items.select("*")()
+      console.log(eventofthismonth, "eventofthismonth")
+      const filteredData = eventofthismonth.filter((item: any) => {
         if (item.EventDate) {
-            const eventDate = new Date(item.EventDate);
-            return eventDate.getMonth() + 1 === currentmonth; // getMonth() returns 0-based month, so add 1
-    
+          const eventDate = new Date(item.EventDate);
+          return eventDate.getMonth() + 1 === currentmonth; // getMonth() returns 0-based month, so add 1
+
         }
         return false;
-    });
-    SetCurrentmonthevents(filteredData)
-    console.log(filteredData, "filteredData")
-       }
-       eventthismonth()
-    })
+      });
+      SetCurrentmonthevents(filteredData)
+      console.log(filteredData, "filteredData")
+    }
+    eventthismonth()
+  })
   return (
     <div id="wrapper" ref={elementRef}>
       <div
@@ -274,7 +273,7 @@ const EventcalenderContext = ({ props }: any) => {
         <VerticalSideBar _context={sp} />
       </div>
       <div className="content-page">
-          <HorizontalNavbar  _context={sp} siteUrl={siteUrl}/>
+        <HorizontalNavbar _context={sp} siteUrl={siteUrl} />
         <div className="content" style={{ marginLeft: `${!useHide ? '240px' : '80px'}`, marginTop: '0rem' }}>
           <div className="container-fluid  paddb">
             <div className="row">
@@ -374,6 +373,18 @@ const EventcalenderContext = ({ props }: any) => {
               </div>{" "}
               {/* end col */}
             </div>
+            {dataofevent.length == 0 &&
+              <div className='row mt-2'>
+                <div style={{ height: '450px' }} className="card card-body align-items-center  annusvg text-center"
+                >
+
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+
+                  <p className="font-14 text-muted text-center">No Event Available </p>
+
+                </div>
+              </div>
+            }
             <div className="row mt-3">
               {/* Tab content */}
               <div className="tab-content mt-0">
@@ -383,7 +394,7 @@ const EventcalenderContext = ({ props }: any) => {
                   id="listView"
                   role="tabpanel"
                 >
-                   {dataofevent.slice(0, itemsToShow).map((item) => {
+                  {dataofevent.length > 0 && dataofevent.slice(0, itemsToShow).map((item) => {
                     const ImageUrl1 =
                       item.image == undefined || item.image == null
                         ? ""
@@ -427,7 +438,7 @@ const EventcalenderContext = ({ props }: any) => {
                               <div className="row">
                                 <div className="col-sm-12">
                                   <span className="font-13 float-start mt-0 mb-1">
-                                  {moment(item.EventDate).format("DD-MMM-YYYY")}
+                                    {moment(item.EventDate).format("DD-MMM-YYYY")}
                                   </span>
                                 </div>
                               </div>
@@ -444,7 +455,7 @@ const EventcalenderContext = ({ props }: any) => {
                                     {truncateText(item.EventName, 90)}
                                   </h4>
                                   <p
-                                    style={{ color: "#6b6b6b" , fontSize:'15px'}}
+                                    style={{ color: "#6b6b6b", fontSize: '15px' }}
                                     className="mb-2 hovertext text-muted"
                                   >
                                     {truncateText(item.Overview, 200)}
@@ -496,22 +507,22 @@ const EventcalenderContext = ({ props }: any) => {
                                         />
                                       </a> */}
 
-                                      <span style={{ display: 'flex', gap: '0.2rem', alignItems:'center' }}>
+                                      <span style={{ display: 'flex', gap: '0.2rem', alignItems: 'center' }}>
                                         {
-                                          item?.Attendees != undefined && item?.Attendees.length > 0 ? item?.Attendees.map((item1: any,index:any) => {
+                                          item?.Attendees != undefined && item?.Attendees.length > 0 ? item?.Attendees.map((item1: any, index: any) => {
 
                                             return (
                                               <>
-                                                {item1.EMail ? <span style={{ margin: index==0 ? '0 0 0 0' : '0 0 0px -12px' }}><img src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item1.EMail}`} className="attendeesImg" /> </span> :
+                                                {item1.EMail ? <span style={{ margin: index == 0 ? '0 0 0 0' : '0 0 0px -12px' }}><img src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item1.EMail}`} className="attendeesImg" /> </span> :
                                                   <span> <AvtarComponents Name={item1.Title} /> </span>
                                                 }
                                               </>
                                             )
-                                          }):<img
-                                          src={require("../../../Assets/ExtraImage/userimg.png")}
-                                          className="rounded-circle avatar-xs"
+                                          }) : <img
+                                            src={require("../../../Assets/ExtraImage/userimg.png")}
+                                            className="rounded-circle avatar-xs"
                                           // alt={attendee.name}
-                                        />
+                                          />
                                         }
                                         Registered
                                       </span>
@@ -521,13 +532,13 @@ const EventcalenderContext = ({ props }: any) => {
                               </div>
                             </div>
 
-                            <div className="col-sm-1">
+                            <div className="col-sm-1 posx">
                               <div
                                 className="d-flex"
                                 style={{
                                   justifyContent: "end",
                                   cursor: "pointer",
-                                  marginRight:"10px"
+                                  marginRight: "10px"
                                 }}
                               >
                                 <div
@@ -561,7 +572,7 @@ const EventcalenderContext = ({ props }: any) => {
                                         Copy Link
                                       </a>
                                       <a>
-                                      {copySuccess && <span className="text-success">{copySuccess}</span>}
+                                        {copySuccess && <span className="text-success">{copySuccess}</span>}
                                       </a>
                                     </div>
                                   )}
@@ -579,13 +590,13 @@ const EventcalenderContext = ({ props }: any) => {
                       </div>
                     );
                   })}
-                       	 {itemsToShow < dataofevent.length && (
-                   <div className="col-12 text-center mt-3">
-                        <button  onClick={loadMore} className="btn btn-primary">
-                          Load More 
-                        </button>
-                      </div>
-                     )}
+                  {itemsToShow < dataofevent.length && (
+                    <div className="col-12 text-center mt-3">
+                      <button onClick={loadMore} className="btn btn-primary">
+                        Load More
+                      </button>
+                    </div>
+                  )}
                 </div>
                 <div
                   className={`tab-pane fade ${activeTab === "calendarView" ? "show active" : ""
@@ -641,60 +652,60 @@ const EventcalenderContext = ({ props }: any) => {
                           </div> */}
                         {eventDetails?.title !== '' ? (
                           <div className="">
-                          <div className="">
-                          <div  id="carouselExampleCaptions" className="carousel slide" data-bs-ride="carousel">
-                         
-                          <div className="carousel-inner">
-  <div className="carousel-item active"> 
-  <div style={{padding:'10px', height:'425px'}} className="gal-box">
-  
-    <>
-      <a className="image-popup newhimg span57" title={eventDetails.title} href={eventDetails.eventLink}>
-        <img src={eventDetails.image} className="d-block w-100" alt={eventDetails.title} />
-      </a>
-      <a href={eventDetails.eventLink}>
-        <div style={{clear:'both'}} className="gall-info">
-          <h4 className="font-16 two-line mb-2 mt-2 text-dark fw-bold mt-0">{truncateText(eventDetails.title, 90)}</h4>
-          <p className="font-14 sevenline text-muted">{truncateText(eventDetails.Overview, 125)}</p>
-          <span style={{ display: 'flex', gap: '0.2rem', alignItems: 'center' }}>
-            {eventDetails?.Attendees !== undefined && eventDetails?.Attendees.length > 0
-              ? eventDetails.Attendees.map((item1: any, index: any) => (
-                  <React.Fragment key={index}>
-                    {item1.EMail ? (
-                      <span style={{ margin: index === 0 ? '0' : '0 0 0px -12px' }} className="">
-                        <img
-                          src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item1.EMail}`}
-                          className="attendeesImg"
-                          alt={item1.EMail}
-                        />
-                      </span>
-                    ) : (
-                      <span>
-                        <AvtarComponents Name={item1.Title} />
-                      </span>
-                    )}
-                    <span className="font-12 text-muted">&nbsp;Attending</span>
-                  </React.Fragment>
-                ))
-              : null}
-          </span>
-        </div>
-      </a>
-    </>
- 
-</div>
- 
-     
-     
-    </div> </div>
- 
-  
-  {/* <div className="carousel-indicators">
+                            <div className="">
+                              <div id="carouselExampleCaptions" className="carousel slide" data-bs-ride="carousel">
+
+                                <div className="carousel-inner">
+                                  <div className="carousel-item active">
+                                    <div style={{ padding: '10px', height: '425px' }} className="gal-box">
+
+                                      <>
+                                        <a className="image-popup newhimg span57" title={eventDetails.title} href={eventDetails.eventLink}>
+                                          <img src={eventDetails.image} className="d-block w-100" alt={eventDetails.title} />
+                                        </a>
+                                        <a href={eventDetails.eventLink}>
+                                          <div style={{ clear: 'both' }} className="gall-info">
+                                            <h4 className="font-16 two-line mb-2 mt-2 text-dark fw-bold mt-0">{truncateText(eventDetails.title, 90)}</h4>
+                                            <p className="font-14 sevenline text-muted">{truncateText(eventDetails.Overview, 125)}</p>
+                                            <span style={{ display: 'flex', gap: '0.2rem', alignItems: 'center' }}>
+                                              {eventDetails?.Attendees !== undefined && eventDetails?.Attendees.length > 0
+                                                ? eventDetails.Attendees.map((item1: any, index: any) => (
+                                                  <React.Fragment key={index}>
+                                                    {item1.EMail ? (
+                                                      <span style={{ margin: index === 0 ? '0' : '0 0 0px -12px' }} className="">
+                                                        <img
+                                                          src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item1.EMail}`}
+                                                          className="attendeesImg"
+                                                          alt={item1.EMail}
+                                                        />
+                                                      </span>
+                                                    ) : (
+                                                      <span>
+                                                        <AvtarComponents Name={item1.Title} />
+                                                      </span>
+                                                    )}
+                                                    <span className="font-12 text-muted">&nbsp;Attending</span>
+                                                  </React.Fragment>
+                                                ))
+                                                : null}
+                                            </span>
+                                          </div>
+                                        </a>
+                                      </>
+
+                                    </div>
+
+
+
+                                  </div> </div>
+
+
+                                {/* <div className="carousel-indicators">
     <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" className="active" aria-current="true" aria-label="Slide 1"></button>
     <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
     <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
   </div> */}
-  {/* <div className="carousel-inner">
+                                {/* <div className="carousel-inner">
   {currentmonthevents.map((event:any, index:any) => {
     // Parse the image JSON string
     let imageUrl = '';
@@ -737,7 +748,7 @@ const EventcalenderContext = ({ props }: any) => {
     // );
   })}
 </div> */}
-  {/* <button className="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+                                {/* <button className="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
     <span className="carousel-control-prev-icon" aria-hidden="true"></span>
     <span className="visually-hidden">Previous</span>
   </button>
@@ -745,39 +756,39 @@ const EventcalenderContext = ({ props }: any) => {
     <span className="carousel-control-next-icon" aria-hidden="true"></span>
     <span className="visually-hidden">Next</span>
   </button> */}
-</div>
+                              </div>
+
+                            </div>
 
                           </div>
 
-                        </div>
+                        ) : <div>
 
-                      ) : <div>
-                        
-                        
-                        
-                         <div >
-                          <div>
-                          <div style={{padding:'10px', height:'425px', display:'flex', justifyContent:'center', alignItems:'center'}} className="gal-box">
-                        
-      <a href={eventDetails.eventLink}>
-        <div className="gall-info">
-          <h4 className="font-20 mb-2 mt-2 text-dark fw-bold mt-0">Previews</h4>
-         
-        
-        </div>
-      </a>
-                            </div>
+
+
+                          <div >
+                            <div>
+                              <div style={{ padding: '10px', height: '425px', display: 'flex', justifyContent: 'center', alignItems: 'center' }} className="gal-box">
+
+                                <a href={eventDetails.eventLink}>
+                                  <div className="gall-info">
+                                    <h4 className="font-20 mb-2 mt-2 text-dark fw-bold mt-0">Previews</h4>
+
+
+                                  </div>
+                                </a>
+                              </div>
                             </div>
                           </div>
-                        
-                        
+
+
                         </div>}
                       </div>
                       <div
                         className="col-md-9 position-relative p-3"
                       // style={{ border: "1px solid red" }}
                       >
-                        <Calendar  style={{paddingTop:'0px'}}
+                        <Calendar style={{ paddingTop: '0px' }}
                           localizer={localizer}
                           events={myEventsList}
                           startAccessor="start"

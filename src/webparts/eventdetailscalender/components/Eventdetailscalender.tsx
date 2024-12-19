@@ -657,7 +657,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
                           <div className="row mt-2">
 
                             <div className="col-md-12 col-xl-12">
-                              <p className="mb-2 mt-1 text-dark d-flex eventtextnew" style={{ cursor: 'pointer' }}>
+                              <p className="mb-2 mt-1 text-dark d-flex eventtextnew">
                                 <span className="pe-2 text-nowrap mb-0 d-inline-block" >
                                   <span style={{ paddingTop: '0px' }}>
                                     <Calendar size={18} /> </span> <span>Event: {moment(item.EventDate).format("DD-MMM-YYYY")} </span>  &nbsp;  &nbsp;  &nbsp;|

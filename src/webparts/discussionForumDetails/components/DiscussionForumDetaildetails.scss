@@ -421,3 +421,14 @@ button[type="submit"]:hover {
   background-color: #0056b3;
 }
 .ml90 img{margin-right: -12px !important;}
+@media(max-width:640px){
+  .modal-dialog .modal-header{position: relative !important;}
+  .chosefile{    padding: 5px 10px;}
+  .wi8{    width: 10%;
+    float: left;}
+    .wi81{    width: 80%;
+      float: left;}
+      .wi82{    width: 5%;
+        float: left;}
+        .two-line{height: auto;}
+}

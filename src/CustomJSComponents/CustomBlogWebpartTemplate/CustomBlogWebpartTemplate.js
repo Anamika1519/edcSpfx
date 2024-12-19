@@ -1079,13 +1079,13 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                                 <a> <div className="w-100">
                                                     <h4 className="mt-0 mb-1 font-16 fw-bold ng-binding" style={{ color: '#343a40', fontSize: '16px' }}> {truncateText(item.Title, 90)}
                                                     </h4>
-                                                    <p style={{ color: '#6b6b6b', fontSize: '15px', lineHeight:'20px', height: '4rem' }} className="mb-2 ng-binding">
+                                                    <p style={{ color: '#6b6b6b', fontSize: '15px', lineHeight:'20px', height: '4rem' }} className="mb-2 ng-binding parah">
                                                         {truncateText(item.Overview, 200)}</p>
                                                     <div className="readmore" onClick={() => gotoBlogsDetails(item)} style={{ cursor: 'pointer' }}>Read more..</div>
                                                 </div>
                                                 </a>
                                             </div>
-                                            <div className="col-sm-1">
+                                            <div className="col-sm-1 posx">
                                                 <div className="d-flex" style={{ justifyContent: 'end', gap: '10px', marginRight: '3px', cursor: 'pointer' }}>
                                                     <div className="col-lg-12">
                                                         {item.Status == "Save as Draft" &&

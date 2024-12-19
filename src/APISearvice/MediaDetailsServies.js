@@ -70,11 +70,11 @@ export const fetchMediaGallerydata = async (_sp) => {
   export const fetchDynamicdata = async (_sp) => {
     let arr = []
    
-       await _sp.web.lists.getByTitle("DynamicBanners").items.getAll().then((res) => {
-        console.log(res);
-     
-        //res.filter(x=>x.Category?.Category==str)
-        arr = res;
+    await _sp.web.lists.getByTitle("DynamicBanners").items.select("*").orderBy('Created', false).top(5).getAll().then((res) => {
+      console.log(res);
+   
+      //res.filter(x=>x.Category?.Category==str)
+      arr = res.slice(0,5);
       })
       .catch((error) => {
         console.log("Error fetching data: ", error);

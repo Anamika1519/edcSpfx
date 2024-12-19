@@ -1206,13 +1206,13 @@ const SocialFeedContext = ({ props }: any) => {
 
                           return (
 
-                            <div className="row mt-1 bbokmark" style={{ gap: '0.5rem', cursor: 'pointer' }}><div className="col-md-1" onClick={() => gotoBlogsDetails(item)}>
+                            <div className="row mt-1 bbokmark" style={{ gap: '0.5rem', cursor: 'pointer' }}><div className="col-md-1 yu801" onClick={() => gotoBlogsDetails(item)}>
 
                               <span className="newbg"> <AvtarComponents Name={item.Title} /> </span>
 
                             </div>
 
-                              <div className="col-md-10">
+                              <div className="col-md-10 yu80">
 
                                 <span style={{ cursor: 'pointer' }} onClick={() => gotoBlogsDetails(item)} className="title-ellipsis hovertext font-14">{item.Title}</span>
 
@@ -1559,7 +1559,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                                   alt="profile-image"
 
-                                  style={{ cursor: "pointer", borderRadius: '1000px', width: "6rem", height: '6rem' }}
+                                  style={{ cursor: "auto", borderRadius: '1000px', width: "6rem", height: '6rem' }}
 
                                 />
 
@@ -1567,7 +1567,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                               <h4 className="mt-2 mb-1">
 
-                                <a
+                                <span
 
                                   className="text-dark font-16 fw-bold"
 
@@ -1576,18 +1576,19 @@ const SocialFeedContext = ({ props }: any) => {
                                     textDecoration: "unset",
 
                                     fontSize: "20px",
+                                    cursor:'auto'
 
                                   }}
 
                                 >
 
-                                  <strong>
+                                  
 
                                     {truncateText(item.Title, 15)}
 
-                                  </strong>
+                                  
 
-                                </a>
+                                </span>
 
                               </h4>
 
@@ -1767,7 +1768,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                                   alt="profile-image"
 
-                                  style={{ cursor: "pointer" }}
+                                  
 
                                 />
 
@@ -1775,7 +1776,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                               <h4 className="mt-2 mb-1">
 
-                                <a
+                                <span
 
                                   className="text-dark font-16 fw-bold"
 
@@ -1784,6 +1785,7 @@ const SocialFeedContext = ({ props }: any) => {
                                     textDecoration: "unset",
 
                                     fontSize: "20px",
+                                    cursor:'auto'
 
                                   }}
 
@@ -1795,7 +1797,7 @@ const SocialFeedContext = ({ props }: any) => {
 
 
 
-                                </a>
+                                </span>
 
                               </h4>
 

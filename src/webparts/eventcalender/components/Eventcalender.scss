@@ -240,5 +240,9 @@ a:hover
 .rbc-toolbar .rbc-toolbar-label {
     font-size: 1rem !important;
 }
+@media(max-width:640px){
+    .rbc-month-row{overflow: initial;}
+    .rbc-calendar{position: relative;}
+}
 .rbc-toolbar button{ padding: .375rem 0.3rem;}
 }

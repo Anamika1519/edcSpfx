@@ -666,8 +666,8 @@ declare global {
                           <div>
                             <div className="DMSMasterContainer">
                                 {/* <h4 className="page-title fw-bold mb-1 font-20">Settings</h4> */}
-                                <div className="" style={{ backgroundColor: 'white', border:'1px solid #54ade0', marginTop:'20px', borderRadius:'20px', padding: '15px'}}>
-                                    <table className="mtbalenew">
+                                <div className="" style={{ backgroundColor: 'white'}}>
+                                    <table className="mtable mt-0 mb-0">
                                       <thead >
                                         <tr>
                                           <th

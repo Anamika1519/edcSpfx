@@ -127,7 +127,7 @@ export const WorkflowAuditHistory = (props: IWorkflowAuditHistoryProps) => {
             <table
 
 
-              className="mtable table-centered table-bordered thead-light mb-0"
+              className="mtbalenew table-centered  thead-light mb-0"
 
 
               style={{ position: "relative" }}
@@ -245,7 +245,7 @@ export const WorkflowAuditHistory = (props: IWorkflowAuditHistoryProps) => {
 
                         <td> {row.Remark}</td>
 
-                        <td>{row.Status}</td>
+                        <td> <div className="btn  btn-status">{row.Status}</div> </td>
 
 
                       </tr>

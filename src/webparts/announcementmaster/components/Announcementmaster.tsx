@@ -634,7 +634,7 @@ const Announcementmastercontext = ({ props }: any) => {
                       <div className="table-responsive pt-0">
 
 
-                        <table className="mtable mt-0 table-centered table-nowrap table-borderless mb-0" style={{ position: 'relative' }}>
+                        <table className="mtbalenew mt-0 table-centered table-nowrap table-borderless mb-0" style={{ position: 'relative' }}>
 
 
                           <thead>
@@ -713,7 +713,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                 </th> */}
 
-                              <th style={{ minWidth: '100px', maxWidth: '100px' }}>
+                              <th >
 
                                 <div className="d-flex flex-column bd-highlight ">
 
@@ -730,7 +730,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                               </th>
 
-                              <th style={{ minWidth: '100px', maxWidth: '100px' }}>
+                              <th >
 
                                 <div className="d-flex flex-column bd-highlight ">
 
@@ -748,11 +748,11 @@ const Announcementmastercontext = ({ props }: any) => {
 
                               </th>
 
-                              <th>
+                              <th style={{ minWidth: '100px', maxWidth: '100px' }}>
 
                                 <div className="d-flex flex-column bd-highlight ">
 
-                                  <div className="d-flex  pb-2" style={{ justifyContent: 'space-between' }}>  <span >Status</span>  <span onClick={() => handleSortChange('Status')}><FontAwesomeIcon icon={faSort} /> </span></div>
+                                  <div className="d-flex  pb-0" style={{ justifyContent: 'space-between' }}>  <span >Status</span>  <span onClick={() => handleSortChange('Status')}><FontAwesomeIcon icon={faSort} /> </span></div>
 
                                   <div className=" bd-highlight">     <input type="text" placeholder="Filter by Status" onChange={(e) => handleFilterChange(e, 'Status')}
                                     onKeyDown={(e) => {
@@ -766,11 +766,11 @@ const Announcementmastercontext = ({ props }: any) => {
 
                               </th>
 
-                              <th>
+                              <th style={{ minWidth: '100px', maxWidth: '100px' }}>
 
                                 <div className="d-flex flex-column bd-highlight ">
 
-                                  <div className="d-flex  pb-2" style={{ justifyContent: 'space-between' }}>  <span >Submitted Date</span>  <span onClick={() => handleSortChange('SubmittedDate')}><FontAwesomeIcon icon={faSort} /> </span></div>
+                                  <div className="d-flex  pb-0" style={{ justifyContent: 'space-between' }}>  <span >Submitted Date</span>  <span onClick={() => handleSortChange('SubmittedDate')}><FontAwesomeIcon icon={faSort} /> </span></div>
 
                                   <div className=" bd-highlight">     <input type="text" placeholder="Filter by Submitted Date" onChange={(e) => handleFilterChange(e, 'SubmittedDate')}
                                     onKeyDown={(e) => {
@@ -784,7 +784,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                               </th>
 
-                              <th style={{ textAlign: 'center', borderBottomRightRadius: '0px', borderTopRightRadius: '0px' }}> <div className="d-flex flex-column bd-highlight pb-2">
+                              <th style={{ textAlign: 'center', minWidth:'80px',maxWidth:'80px', borderBottomRightRadius: '0px', borderTopRightRadius: '0px' }}> <div className="d-flex flex-column bd-highlight pb-2">
 
                                 <div className="d-flex  pb-2" style={{ justifyContent: 'space-between' }}>  <span >Action</span> <div className="dropdown">
 
@@ -847,9 +847,9 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                   <td>{item?.AnnouncementandNewsTypeMaster?.TypeMaster}</td>
 
-                                  <td style={{ minWidth: "80px", maxWidth: "80px" }}>{item.Status}</td>
+                                  <td style={{ minWidth: "100px", maxWidth: "100px", textAlign:'center' }}>{item.Status}</td>
 
-                                  <td style={{ minWidth: "80px", maxWidth: "80px" }}>
+                                  <td style={{ minWidth: "100px", maxWidth: "100px",textAlign:'center' }}>
 
 
                                     <div className='btn  btn-light'>
@@ -857,9 +857,9 @@ const Announcementmastercontext = ({ props }: any) => {
                                     </div>
                                   </td>
 
-                                  <td style={{ minWidth: "50px", maxWidth: "50px" }} className="ng-binding">
+                                  <td style={{ minWidth: "80px", maxWidth: "80px",textAlign:'center' }} className="ng-binding">
 
-                                    <div className="d-flex pb-2" style={{ justifyContent: "space-around" }}>
+                                    <div className="d-flex pb-0" style={{ justifyContent: "space-around" }}>
 
                                       {/* Conditionally render the edit button based on status */}
 
@@ -882,7 +882,8 @@ const Announcementmastercontext = ({ props }: any) => {
                                         >
 
                                           {item?.Status == "Save as draft" ? <FontAwesomeIcon icon={faEdit} fontSize={18} /> :
-                                            <FontAwesomeIcon icon={faEye} fontSize={18} />
+                                            // <FontAwesomeIcon icon={faEye} fontSize={18} />
+                                            <img src={require('../../../CustomAsset/Eye.png')} />
                                           }
                                         </a>
 
@@ -897,8 +898,8 @@ const Announcementmastercontext = ({ props }: any) => {
                                           onClick={() => DeleteAnnouncement(item.ID)}
 
                                         >
-
-                                          <FontAwesomeIcon icon={faTrashAlt} fontSize={18} />
+<img src={require('../../../CustomAsset/del.png')} />
+                                          {/* <FontAwesomeIcon icon={faTrashAlt} fontSize={18} /> */}
 
                                         </a>
 
@@ -1017,7 +1018,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                       <div className="table-responsive pt-0">
 
-                        <table className="mtable mt-0 table-centered table-nowrap table-borderless mb-0" style={{ position: 'relative' }}>
+                        <table className="mtbalenew mt-0 table-centered table-nowrap table-borderless mb-0" style={{ position: 'relative' }}>
 
                           <thead>
 
@@ -1131,7 +1132,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                               </th>
 
-                              <th>
+                              <th style={{ minWidth: '100px', maxWidth: '100px' }}>
 
                                 <div className="d-flex flex-column bd-highlight ">
 
@@ -1149,7 +1150,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                               </th>
 
-                              <th>
+                              <th style={{ minWidth: '100px', maxWidth: '100px' }}>
 
                                 <div className="d-flex flex-column bd-highlight ">
 
@@ -1166,7 +1167,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                               </th>
 
-                              <th style={{ textAlign: 'center' }}>
+                              <th style={{ minWidth: '80px', maxWidth: '80px', textAlign:'center' }}>
 
                                 <div className="d-flex flex-column bd-highlight pb-2">
 
@@ -1237,11 +1238,11 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                     </td>
 
-                                    <td>{item.Title}</td>
+                                    <td >{item.Title}</td>
 
-                                    <td>{item?.Category?.Category}</td>
+                                    <td style={{ minWidth: '100px', maxWidth: '100px' }}>{item?.Category?.Category}</td>
 
-                                    <td>
+                                    <td style={{ minWidth: '100px', maxWidth: '100px' }}>
 
                                       {
 
@@ -1257,9 +1258,9 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                       style={{
 
-                                        minWidth: "80px",
+                                        minWidth: "100px",
 
-                                        maxWidth: "80px",
+                                        maxWidth: "100px",
 
                                       }}
 
@@ -1273,9 +1274,9 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                       style={{
 
-                                        minWidth: "80px",
+                                        minWidth: "100px",
 
-                                        maxWidth: "80px",
+                                        maxWidth: "100px",
 
                                       }}
 
@@ -1289,9 +1290,9 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                       style={{
 
-                                        minWidth: "50px",
+                                        minWidth: "80px",
 
-                                        maxWidth: "50px",
+                                        maxWidth: "80px",
 
                                       }}
 
@@ -1301,7 +1302,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                       <div
 
-                                        className="d-flex pb-2"
+                                        className="d-flex pb-0"
 
                                         style={{
 
@@ -1350,14 +1351,14 @@ const Announcementmastercontext = ({ props }: any) => {
                                             }}
 
                                           >
-
-                                            <FontAwesomeIcon
+    <img src={require('../../../CustomAsset/edit.png')} />
+                                            {/* <FontAwesomeIcon
 
                                               icon={faEdit}
 
                                               fontSize={18}
 
-                                            />
+                                            /> */}
 
                                           </a>
 

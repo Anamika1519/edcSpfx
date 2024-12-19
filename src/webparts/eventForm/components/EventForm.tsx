@@ -259,6 +259,9 @@ const HelloWorldContext = ({ props }: any) => {
       else if (EventDate && moment(new Date(EventDate)).format("DD-MM-YYYY") < moment(new Date()).format("DD-MM-YYYY")) {
         valid = false;
       }
+      else if (RegistrationDueDate && moment(new Date(RegistrationDueDate)).format("DD-MM-YYYY") < moment(new Date()).format("DD-MM-YYYY")) {
+        valid = false;
+      }
       else if (EventDate && RegistrationDueDate && moment(new Date(RegistrationDueDate)).format("DD-MM-YYYY") > moment(new Date(EventDate)).format("DD-MM-YYYY")) {
         valid = false;
       }
@@ -270,7 +273,7 @@ const HelloWorldContext = ({ props }: any) => {
       } else if (!EventDate || (EventDate && moment(new Date(EventDate)).format("DD-MM-YYYY") < moment(new Date()).format("DD-MM-YYYY"))) {
         valid = false;
       }
-      else if (!RegistrationDueDate) {
+      else if (!RegistrationDueDate || RegistrationDueDate && moment(new Date(RegistrationDueDate)).format("DD-MM-YYYY") < moment(new Date()).format("DD-MM-YYYY")) {
         valid = false;
       }
       else if (EventDate && RegistrationDueDate && moment(new Date(RegistrationDueDate)).format("DD-MM-YYYY") > moment(new Date(EventDate)).format("DD-MM-YYYY")) {
@@ -288,19 +291,23 @@ const HelloWorldContext = ({ props }: any) => {
       setValidSubmit(valid)
     }
     console.log("new Date(RegistrationDueDate) > new Date(EventDate)", EventGalleryArr1.length, BnnerImagepostArr.length, valid);
-    if (valid) {
-      if (EventDate && RegistrationDueDate && moment(new Date(RegistrationDueDate)).format("DD-MM-YYYY") > moment(new Date(EventDate)).format("DD-MM-YYYY")) {
-        Swal.fire('Registration date cannot be more than Event date');
+    
+      if (!valid && (EventDate && RegistrationDueDate && moment(new Date(RegistrationDueDate)).format("DD-MM-YYYY") > moment(new Date(EventDate)).format("DD-MM-YYYY"))) {
+        Swal.fire('Registration date cannot be later than the event date.');
       } else if (!valid && (EventDate && moment(new Date(EventDate)).format("DD-MM-YYYY") < moment(new Date()).format("DD-MM-YYYY"))) {
-        Swal.fire('Event date cannot be less than today');
+        Swal.fire('Event date cannot be earlier than today.');
       }
-    } else {
+      else if (!valid && (RegistrationDueDate && moment(new Date(RegistrationDueDate)).format("DD-MM-YYYY") < moment(new Date()).format("DD-MM-YYYY"))) {
+        Swal.fire('Registration date cannot be earlier than today.');
+      }
+     else {
       Swal.fire(errormsg !== "" ? errormsg : 'Please fill the mandatory fields.');
     }
 
 
     return valid;
   };
+
 
   //#endregion
   //#region  Submit Form
@@ -477,6 +484,7 @@ const HelloWorldContext = ({ props }: any) => {
               Status: "Pending",
               EntityId: Number(formData.EntityId),
               SourceName: "Event",
+              Title: formData.EventName,
               ReworkRequestedBy: "Initiator"
             }
 
@@ -608,6 +616,7 @@ const HelloWorldContext = ({ props }: any) => {
               Status: "Pending",
               EntityId: Number(formData.EntityId),
               SourceName: "Event",
+              Title: formData.EventName,
               ReworkRequestedBy: "Initiator"
             }
             await AddContentMaster(sp, arr)
@@ -1559,7 +1568,7 @@ const HelloWorldContext = ({ props }: any) => {
                     </div> */}
 
 
-                    <div className="col-lg-8">
+                    <div className="col-lg-12">
                       <div className="mb-3">
                         <label htmlFor="overview" className="form-label">
                           Event Overview

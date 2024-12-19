@@ -103,3 +103,8 @@
   white-space: nowrap;
   text-align: left;
 }
+@media (max-width: 640px) {
+  .inbox-widget .heit8, .ipadt .w-100 {
+      justify-content: space-around !important;
+  }
+}

@@ -295,8 +295,7 @@ a.nav-linkcss.px-4.py-3 {
 
 .form-control:focus {
   border-color: transparent;
-  font-weight: 700 !important;
-  font-size: .875rem !important;
+  
   color: #6c757d !important;
 }
 
@@ -520,3 +519,23 @@ outline: none !important;  box-shadow: none !important;border: none !important; 
 //   height: 6rem !important;
 //   width: 6rem !important;
 // }
+@media(max-width:640px){
+  .mobile-w1 {
+    width: 100% !important;
+}
+  .psonew {
+    width: 100%; position: relative !important;
+}
+.yu801{width: 6% !important;
+  float: left;}
+  .yu80{width: 80% !important;
+   }
+   .mobile-w2 {
+    width: 100% !important;
+}
+.mobile-5,.mobile-6 {
+  float: left;
+  margin-right: 0%;
+  width: 100%;
+}
+}

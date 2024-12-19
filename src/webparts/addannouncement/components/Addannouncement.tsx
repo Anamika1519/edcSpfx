@@ -713,9 +713,10 @@ const AddannouncementContext = ({ props }: any) => {
             let arr = {
               ContentID: editID,
               ContentName: "ARGAnnouncementAndNews",
-              Status: "Panding",
+              Status: "Pending",
               EntityId: Number(formData.entity),
               // SourceName: TypeMasterData.TypeMaster
+              Title: formData.title,
               SourceName: TypeMasterData?.TypeMaster,
               ReworkRequestedBy: "Initiator"
 
@@ -855,6 +856,7 @@ const AddannouncementContext = ({ props }: any) => {
               ContentName: "ARGAnnouncementAndNews",
               // Status: "Panding",
               Status: "Pending",
+              Title: formData.title,
               EntityId: Number(formData.entity),
               SourceName: TypeMasterData?.TypeMaster,
               ReworkRequestedBy: "Initiator"

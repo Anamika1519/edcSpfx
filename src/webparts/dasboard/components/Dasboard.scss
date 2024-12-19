@@ -101,7 +101,12 @@
 .carousel-item {
     height: 100%;
 }
-
+.heifgtgal{height: 411px;}
+.mt33{margin-top: 33%;}
+.mt25{margin-top: 25%;}
+.mt-14{margin-top: 14%;}
+.mt-10{margin-top: 10%;}
+.mt-22{margin-top: 22%;}
 .carousel-item img {
     height: 100%;
     object-fit: cover;
@@ -167,6 +172,7 @@
         height: 434px !important;
         overflow: hidden;
     }
+    .heifgtgal{height: 516px;}
     .gheightnew{height: 408px;}
     .inbox-widget .heit8 {
         padding: .52rem 0;
@@ -255,7 +261,7 @@ img, svg {
     vertical-align: middle;
 }
 .tabv button.active {
-    background: transparent;
+    background: #efefef;
 }
 .margint50 {margin-top: 15px !important; height: 345px;}
 .newt{padding-bottom: 7px !important;}
@@ -274,8 +280,8 @@ img, svg {
     transition: 0.3s;
     font-size: 17px;
 }
-.tabv button:hover {
-    background-color: #efefef;
+.tabv button:hover span {
+    color: #1fb0e5 !important;
 }
 .tav-image {
     width: 85px;
@@ -382,8 +388,17 @@ img, svg {
     width: 16px;
     right: 6px;}
 .arrow-none:after{display: none !important;}
-.newheight{margin-top: 15px !important;box-shadow: 0 2px 4px -2px rgba(0, 0, 0, 0.16), 0 2px 6px 0 rgba(0, 0, 0, 0.12);}
-.newminus{margin-left: -12px !important;    min-width: 2rem;}
+.newheight{margin-top: 15px !important;border-radius: 3px;
+    border: none; min-width: 10rem !important;
+    padding: 0.3rem !important; text-align: left !important;
+    font-size: 14px;
+    box-shadow: 0 2px 8px -2px rgba(0, 0, 0, 0.16), 0 2px 8px 0 rgba(0, 0, 0, 0.12);}
+    .newheight .dropdown-item{    text-align: left;
+      padding: 7px 22px;}
+      
+      .newheight .dropdown-item:hover{color: #1fb0e5 !important;}
+      .newheight .dropdown-item:active{background: #f8f9fa !important;}
+      .newminus{margin-left: -12px !important;    min-width: 2rem;}
 .newimg1{    float: left;
     margin: 1px 5px 0px 2px;}
     .newimg2{ margin: -1px 5px 0px 0px;}
@@ -391,6 +406,7 @@ img, svg {
 @media(max-width:1600px){ 
     .inbox-widget .heit8{    padding: .75rem 0;}
     .gheightnew{height: 405px;}
+    .heifgtgal{height: 414px;}
     .event{margin-bottom: 3px;
         margin-top: 13px;}
         .tabv button{ padding: 11px 10px; }
@@ -431,6 +447,7 @@ img, svg {
         height: 723px;
     }
     .gheightnew{height: 350px;}
+    .heifgtgal{height: 468px;}
     .justify-between {
         gap: 6px;
     }
@@ -493,6 +510,22 @@ img, svg {
     .margint50 {
         height: auto;
        }
+       .heit9 .col-sm-2{    width: 13% !important;
+        float: left;}
+        .heit9 .col-sm-10{    width: 80% !important;
+            float: left;}
+            .heit9 .col-lg-8{    width: 70% !important;
+                float: left;}
+                .heit9  .col-lg-4{    width: 30% !important;
+                    float: right;}
+                    .heit9 .col-sm-3{width: 10% !important;
+                        float: left;}
+                        .heit9 .col-sm-9{           padding-left: 20px !important; width: 60% !important;
+                            float: right;}
+                            .newc{
+                                line-height: 18px !important;
+        margin-left: 5px;
+                            }
     
 }
 .announcementner .newtextdark:hover {cursor: auto !important;color: #000 !important;}

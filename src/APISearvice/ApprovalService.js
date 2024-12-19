@@ -89,7 +89,7 @@ export const UpdateContentMaster = async (sp,contentmasteritemid, itemData) => {
 
 //My request
 
-export const getRequestListsData = async (_sp) => {
+export const getRequestListsData = async (_sp,status) => {
 
   let arr = []
 
@@ -105,7 +105,7 @@ export const getRequestListsData = async (_sp) => {
 
       for (let i = 0; i < res.length; i++) {
 
-        getMyRequestsdata(_sp, res[i].Title).then((resData) => {
+        getMyRequestsdata(_sp, res[i].Title,status).then((resData) => {
 
           for (let j = 0; j < resData.length; j++) {
 
@@ -133,8 +133,7 @@ export const getRequestListsData = async (_sp) => {
   return arr;
 
 }
-
-export const getMyRequestsdata = async (_sp, listName) => {
+export const getMyRequestsdata = async (_sp, listName,status) => {
 
   let arr = []
 
@@ -166,7 +165,7 @@ export const getMyRequestsdata = async (_sp, listName) => {
 
     .select("*,Author/ID,Author/Title,Author/EMail").expand("Author")
 
-    .filter(`Author/EMail eq '${currentUser}'`)
+    .filter(`Author/EMail eq '${currentUser}' and Status eq '${status}'`)
 
     .orderBy("Created", false).getAll()
 
@@ -197,18 +196,80 @@ export const getMyRequestsdata = async (_sp, listName) => {
   return arr;
 
 }
-export const getMyRequest = async (sp)=>
-{
+// Intranet My Request
+export const getRequestListsDataIntranet = async (_sp, status) => {
+  let arr = []
+  await _sp.web.lists.getByTitle("AllRequestLists").items.orderBy("Created", false).getAll()
+    .then((res) => {
+      console.log("AllRequestLists i ntranett", res);
+      let AllRequestArr = [];
+      for (let i = 0; i < res.length; i++) {
+        getMyRequestsdataIntranet(_sp, res[i].Title, status).then((resData) => {
+          for (let j = 0; j < resData.length; j++) {
+            AllRequestArr.push(resData[j])
+          }
+        })
+      }
+      console.log("AllRequestArr intra", AllRequestArr);
+      arr = AllRequestArr;
+    })
+    .catch((error) => {
+      console.log("Error fetching data: ", error);
+    });
+  return arr;
+}
+export const getMyRequestsdataIntranet = async (_sp, listName, status) => {
+  let arr = []
+  let currentUser;
+  await _sp.web.currentUser()
+    .then(user => {
+      console.log("user", user);
+      currentUser = user.Email; // Get the current user's Email
+    })
+    .catch(error => {
+      console.error("Error fetching current user: ", error);
+      return [];
+    });
+  if (!currentUser) return arr; // Return empty array if user fetch failed
+  await _sp.web.lists.getByTitle(listName).items
+    .select("*,Author/ID,Author/Title,Author/EMail").expand("Author")
+    .filter(`Author/EMail eq '${currentUser}' and Status eq '${status}'`)
+    .orderBy("Created", false).getAll()
+    .then((res) => {
+      console.log(`--MyRequestintra${listName}`, res);
+      arr = res
+    })
+    .catch((error) => {
+      console.log("Error fetching data: ", error);
+    });
+  return arr;
+}
+//Intranet My Request end
+// export const getMyRequest = async (sp,status)=>
+// {
+//   const currentUser = await sp.web.currentUser();
+//   let arr = []
+//   await sp.web.lists.getByTitle("ARGMyRequest").items.select("*,Requester/Id,Requester/Title,Approver/Id,Approver/Title")
+//     .expand("Approver,Requester").filter(`RequesterId eq ${currentUser.Id} and Status eq '${status}'`)
+//   .orderBy("Created",false)
+//   .getAll().then((res) => {
+
+//     arr = res
+//     console.log(arr, 'arr');
+//   })
+//   return arr
+// }
+export const getMyRequest = async (sp, status) => {
   const currentUser = await sp.web.currentUser();
   let arr = []
-  await sp.web.lists.getByTitle("ARGMyRequest").items.select("*,Requester/Id,Requester/Title,Approver/Id,Approver/Title")
-  .expand("Approver,Requester").filter(`RequesterId eq ${currentUser.Id}`)
-  .orderBy("Created",false)
-  .getAll().then((res) => {
+  await sp.web.lists.getByTitle("ARGContentMaster").items.select("*,Author/Id,Author/Title")
+    .expand("Author").filter(`AuthorId eq ${currentUser.Id} and Status eq '${status}'`)
+    .orderBy("Created", false)
+    .getAll().then((res) => {
 
-    arr = res
-    console.log(arr, 'arr');
-  })
+      arr = res
+      console.log(arr, 'arr');
+    })
   return arr
 }
 export const getMyApproval = async (sp,status)=>
@@ -274,38 +335,73 @@ export const getMyApproval = async (sp,status)=>
   //   });
   
   // }
-  export const gteDMSApproval = async (sp) => {
-    // alert("DMS");
-    const currentUser = await sp.web.currentUser();
-    console.log(currentUser, "currentUser");
-    let arr = [];
+  // export const gteDMSApproval = async (sp) => {
+  //   // alert("DMS");
+  //   const currentUser = await sp.web.currentUser();
+  //   console.log(currentUser, "currentUser");
+  //   let arr = [];
   
-    const FilesItems = await sp.web.lists
-      .getByTitle("MasterSiteURL")
-      .items.select("Title", "SiteID", "FileMasterList", "Active")
-      .filter(`Active eq 'Yes'`)();
+  //   const FilesItems = await sp.web.lists
+  //     .getByTitle("MasterSiteURL")
+  //     .items.select("Title", "SiteID", "FileMasterList", "Active")
+  //     .filter(`Active eq 'Yes'`)();
   
-    console.log(FilesItems, "FilesItems");
+  //   console.log(FilesItems, "FilesItems");
   
-    // Use for...of loop for proper async/await handling
-    for (const fileItem of FilesItems) {
-      if (fileItem.FileMasterList !== null) {
-        console.log("fileItem.FileMasterList", fileItem.FileMasterList);
-        //  alert(currentUser.Email)
-        const filesData = await sp.web.lists
-          .getByTitle(fileItem.FileMasterList)
-          .items.select("ID", "FileName", "FileUID", "FileSize", "FileVersion", "Status", "SiteID", "CurrentFolderPath", "DocumentLibraryName", "SiteName", "FilePreviewURL", "IsDeleted", "MyRequest" , "*")
-          .filter(`CurrentUser eq '${currentUser.Email}' and MyRequest eq 1 and Status eq 'Pending'`)
-          .orderBy("Modified", false)
-          .getAll();
+  //   // Use for...of loop for proper async/await handling
+  //   for (const fileItem of FilesItems) {
+  //     if (fileItem.FileMasterList !== null) {
+  //       console.log("fileItem.FileMasterList", fileItem.FileMasterList);
+  //       //  alert(currentUser.Email)
+  //       const filesData = await sp.web.lists
+  //         .getByTitle(fileItem.FileMasterList)
+  //         .items.select("ID", "FileName", "FileUID", "FileSize", "FileVersion", "Status", "SiteID", "CurrentFolderPath", "DocumentLibraryName", "SiteName", "FilePreviewURL", "IsDeleted", "MyRequest" , "*")
+  //         .filter(`CurrentUser eq '${currentUser.Email}' and MyRequest eq 1 and Status eq 'Pending'`)
+  //         .orderBy("Modified", false)
+  //         .getAll();
   
-        arr = [...arr, ...filesData]; // Collect data in the array
-        console.log(arr, "DMS My request Data");
+  //       arr = [...arr, ...filesData]; // Collect data in the array
+  //       console.log(arr, "DMS My request Data");
+  //     }
+  //   }
+  
+  //   return arr; // Return the collected data
+  // }
+  export const gteDMSApproval = async (sp , value ) => {
+    try {
+      const currentUser = await sp.web.currentUser();
+      console.log(currentUser, "currentUser");
+      let arr = [];
+  
+      const FilesItems = await sp.web.lists
+        .getByTitle("MasterSiteURL")
+        .items.select("Title", "SiteID", "FileMasterList", "Active")
+        .filter(`Active eq 'Yes'`)();
+  
+      console.log(FilesItems, "FilesItems");
+  
+      for (const fileItem of FilesItems) {
+        if (fileItem.FileMasterList) {
+          console.log("fileItem.FileMasterList", fileItem.FileMasterList);
+          const filesData = await sp.web.lists
+            .getByTitle(fileItem.FileMasterList)
+            .items.select("ID", "FileName", "FileUID", "FileSize", "FileVersion", "Status", "SiteID", "CurrentFolderPath", "DocumentLibraryName", "SiteName", "FilePreviewURL", "IsDeleted", "MyRequest", "*")
+            .filter(`CurrentUser eq '${currentUser.Email}' and MyRequest eq 1 and Status eq '${value}'`)
+            .orderBy("Modified", false)
+            .getAll();
+  
+          arr = [...arr, ...filesData];
+          console.log(arr, "DMS My request Data");
+        }
       }
-    }
   
-    return arr; // Return the collected data
-  }
+      return arr; // Return the collected data
+    } catch (error) {
+      console.error("Error in gteDMSApproval function", error);
+      return []; // Return an empty array on error
+    }
+  };
+  
   
 export const getDataByID = async (_sp,id,ContentName) => {
   debugger

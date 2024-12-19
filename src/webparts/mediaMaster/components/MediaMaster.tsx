@@ -327,7 +327,7 @@ const MediaMastercontext = ({ props }: any) => {
               <div className="card-body">
                 <div id="cardCollpase4" className="collapse show">
                   <div className="table-responsive pt-0">
-                    <table className="mtable mt-0 pt-0 table-centered table-nowrap table-borderless mb-0">
+                    <table className="mtbalenew mt-0 pt-0 table-centered table-nowrap table-borderless mb-0">
                       <thead>
                         <tr>
                           <th style={{ borderBottomLeftRadius: '0px', minWidth: '0px', maxWidth: '50px', borderTopLeftRadius: '0px' }}>
@@ -354,7 +354,10 @@ const MediaMastercontext = ({ props }: any) => {
                               />
                             </div>
                           </th>
-                          <th><div className="d-flex flex-column bd-highlight ">
+                          <th  style={{
+                                    minWidth: "110px",
+                                    maxWidth: "110px",
+                                  }}><div className="d-flex flex-column bd-highlight ">
                             <div className="d-flex pb-2" style={{ justifyContent: 'space-between' }}>
                               <span >Title</span>  <span onClick={() => handleSortChange('Title')}><FontAwesomeIcon icon={faSort} /> </span></div>
                             <div className=" bd-highlight">
@@ -367,7 +370,10 @@ const MediaMastercontext = ({ props }: any) => {
                                 className='inputcss' style={{ width: '100%' }} />
                             </div>
                           </div></th>
-                          <th>
+                          <th style={{
+                                    minWidth: "110px",
+                                    maxWidth: "110px",
+                                  }}>
                             <div className="d-flex flex-column bd-highlight ">
                               <div className="d-flex pb-2" style={{ justifyContent: 'space-between' }}>
                                 <span >Entity</span>  <span onClick={() => handleSortChange('Entity')}><FontAwesomeIcon icon={faSort} /> </span></div>
@@ -413,7 +419,7 @@ const MediaMastercontext = ({ props }: any) => {
                                className='inputcss' style={{ width: '100%' }} />
                             </div>
                           </div></th>
-                          <th style={{ textAlign: 'center', minWidth:'80px', maxWidth:'80px' }}>
+                          <th style={{ textAlign: 'center', minWidth:'50px', maxWidth:'50px' }}>
                             <div className="d-flex flex-column bd-highlight pb-2">
                               <div className="d-flex  pb-0" style={{ justifyContent: 'space-between' }}>  <span >Action</span> <div className="dropdown">
                                 <FontAwesomeIcon icon={faEllipsisV} onClick={toggleDropdown} size='xl' />
@@ -447,8 +453,14 @@ const MediaMastercontext = ({ props }: any) => {
                                 >
                                <div className='indexdesign'> {startIndex + index + 1}</div>     
                                 </td>
-                                <td>{item.Title}</td>
-                                <td>{item?.EntityMaster?.Entity}</td>
+                                <td style={{
+                                    minWidth: "110px",
+                                    maxWidth: "110px",
+                                  }}>{item.Title}</td>
+                                <td style={{
+                                    minWidth: "110px",
+                                    maxWidth: "110px",
+                                  }}>{item?.EntityMaster?.Entity}</td>
                                 <td   style={{
                                     minWidth: "80px",
                                     maxWidth: "80px",
@@ -470,7 +482,7 @@ const MediaMastercontext = ({ props }: any) => {
                                   className="ng-binding"
                                 >
                                   <div
-                                    className="d-flex pb-2"
+                                    className="d-flex pb-0"
                                     style={{ justifyContent: "start", gap:'5px' }}
                                   >
                                     {/* Conditionally render the edit button based on status */}

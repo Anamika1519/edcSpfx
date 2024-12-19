@@ -97,3 +97,8 @@
       
       
   }
+  @media(max-width:640px)
+  {
+    .mtbalenew{overflow: auto !important;}
+  .mtbalenew tbody{overflow: visible !important;}
+  }
