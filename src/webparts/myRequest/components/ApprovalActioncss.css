@@ -129,3 +129,10 @@
 	.mtbalenew td:nth-of-type(7):before { content: "View Details"; font-weight: 600;}
 	
 }
+.btn-light {
+  background: #fff;
+  border: 1px solid #efefef;
+  border-radius: 30px;
+  color: #3c3c3c;
+  font-size: 13px;
+}

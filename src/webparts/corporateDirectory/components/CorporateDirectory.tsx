@@ -1911,7 +1911,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                         style={{
 
-                                          justifyContent: "space-between",
+                                          justifyContent: "space-evenly",
 
                                         }}
 
@@ -1988,7 +1988,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                         style={{
 
-                                          justifyContent: "space-between",
+                                          justifyContent: "space-evenly",
 
                                         }}
 
@@ -2066,7 +2066,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                         style={{
 
-                                          justifyContent: "space-between",
+                                          justifyContent: "space-evenly",
 
                                         }}
 
@@ -2144,7 +2144,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                         style={{
 
-                                          justifyContent: "space-between",
+                                          justifyContent: "space-evenly",
 
                                         }}
 
@@ -2223,7 +2223,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                         style={{
 
-                                          justifyContent: "space-between",
+                                          justifyContent: "space-evenly",
 
                                         }}
 

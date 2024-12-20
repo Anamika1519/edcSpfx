@@ -103,6 +103,23 @@
   white-space: nowrap;
   text-align: left;
 }
+.primary1 {
+  border-color: #1fb0e5 !important;
+  font-size: 16px !important;
+  min-width: 90px;
+  padding: 5px 16px !important;
+  text-transform: capitalize;
+}
+.primary1:hover {
+  background: #008751 !important;
+  border-color: #008751 !important;
+}
+.btn-default{background: transparent !important;}
+.btn-default:hover {
+  background-color: #959b95 !important;
+  border-color: #959b95 !important;
+}
+.bg-light{    background-color: #ececec !important;}
 @media (max-width: 640px) {
   .inbox-widget .heit8, .ipadt .w-100 {
       justify-content: space-around !important;

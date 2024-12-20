@@ -1,10 +1,10 @@
 /* Style the card to add padding and a shadow */
 .card {
-    padding: 0px;
+    padding: 20px !important;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
 }
-
+.btn-light{padding: 7px 10px !important;}
 /* Ensure inputs and selects have consistent padding and border radius */
 .form-control, 
 .form-select {

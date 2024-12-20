@@ -389,8 +389,8 @@ const MediaMastercontext = ({ props }: any) => {
                             </div>
                           </th>
                           <th style={{
-                                    minWidth: "80px",
-                                    maxWidth: "80px",
+                                    minWidth: "60px",
+                                    maxWidth: "60px",
                                   }}>
                             <div className="d-flex flex-column bd-highlight ">
                               <div className="d-flex pb-2" style={{ justifyContent: 'space-between' }}>
@@ -406,7 +406,7 @@ const MediaMastercontext = ({ props }: any) => {
                               </div>
                             </div>
                           </th>
-                          <th style={{ minWidth: '80px', maxWidth: '80px' }}><div className="d-flex flex-column bd-highlight ">
+                          <th style={{ minWidth: '60px', maxWidth: '60px' }}><div className="d-flex flex-column bd-highlight ">
                             <div className="d-flex pb-2" style={{ justifyContent: 'space-between' }}>
                               <span >SubmittedDate</span>  <span onClick={() => handleSortChange('SubmittedDate')}><FontAwesomeIcon icon={faSort} /> </span></div>
                             <div className=" bd-highlight">
@@ -462,13 +462,13 @@ const MediaMastercontext = ({ props }: any) => {
                                     maxWidth: "110px",
                                   }}>{item?.EntityMaster?.Entity}</td>
                                 <td   style={{
-                                    minWidth: "80px",
-                                    maxWidth: "80px",
+                                    minWidth: "60px",
+                                    maxWidth: "60px",textAlign:'center'
                                   }}><div className='btn btn-status'> {item.Status}</div></td>
                                 <td
                                   style={{
-                                    minWidth: "80px",
-                                    maxWidth: "80px",
+                                    minWidth: "60px",
+                                    maxWidth: "60px", textAlign:'center'
                                   }}
                                 >
                                   <div className='btn  btn-light'>
@@ -477,13 +477,13 @@ const MediaMastercontext = ({ props }: any) => {
                                 <td
                                   style={{
                                     minWidth: "50px",
-                                    maxWidth: "50px",
+                                    maxWidth: "50px",textAlign:'center'
                                   }}
                                   className="ng-binding"
                                 >
                                   <div
                                     className="d-flex pb-0"
-                                    style={{ justifyContent: "start", gap:'5px' }}
+                                    style={{ justifyContent: "center", gap:'3px' }}
                                   >
                                     {/* Conditionally render the edit button based on status */}
                                     <span>

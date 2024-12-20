@@ -4,7 +4,26 @@
     height: 2rem !important;
     width: 2rem !important;
   }
+  .tabcss {
+    padding-bottom: 15px !important;
+    padding-top: 15px !important;
+}
   .pimg{margin-left: -10px !important;}
+  .bg-light {
+    background-color: #ececec !important;
+}
+.primary1 {
+  border-color: #1fb0e5 !important;
+  font-size: 16px !important;
+  min-width: 90px;
+  padding: 5px 16px !important;
+  text-transform: capitalize;
+}
+.btn-primary:hover {
+  background: #008751 !important;
+  border-color: #008751 !important;
+  color: #fff !important;
+}
   .modal-title{font-size: 16px;}
   .newt6 svg{vertical-align: text-bottom !important;}
   .two-line{    overflow: hidden; line-height: 18px !important;
@@ -49,7 +68,7 @@
 }
 .newdrop{
   position: absolute !important;
-  top: 17px;
+  top: 30px;
   right: 21px;
 }
 .action-icon svg{
@@ -108,6 +127,8 @@ textarea:focus{outline: none;}
 .open-popup-btn:hover {
   background-color: #0056b3;
 }
+.tabcss:hover button{color: #fff !important;}
+.opend svg{height: 14px;}
 .popup input[type="text"],
   .popup input[type="email"] {
     width: 100%;
@@ -198,7 +219,7 @@ form {
 button[type="submit"] {
   width: 100%;
   padding: 10px;
-  background-color: #007bff;
+  background-color: #1fb0e5;
   color: white;
   border: none;
   border-radius: 4px;
@@ -206,5 +227,16 @@ button[type="submit"] {
 }
 
 button[type="submit"]:hover {
-  background-color: #0056b3;
+  background-color: #1fb0e5;
+}
+@media(max-width:640px){
+  .modal-dialog .modal-header{position: relative !important;}
+  .chosefile{    padding: 5px 10px;}
+  .wi8{    width: 10%;
+    float: left;}
+    .wi81{    width: 80%;
+      float: left;}
+      .wi82{    width: 5%;
+        float: left;}
+        .two-line{height: auto;}
 }

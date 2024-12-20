@@ -98,6 +98,7 @@ const [options, setOpions] = useState([]);
   const [loadingLike, setLoadingLike] = useState<boolean>(false);
   const [loadingReply, setLoadingReply] = useState<boolean>(false);
   const [selectedValue, setSelectedValue] = useState([]);
+  const [CurrentID, setIdNum] = useState("");
   const toggleDropdown = (itemId: any) => {
     if (showDropdownId === itemId) {
       setShowDropdownId(null); // Close the dropdown if already open
@@ -406,7 +407,7 @@ ApICallData();
     const originalString = ids;
     const idNum = originalString.substring(1);
     // const queryString = decryptId(Number(updatedString));
-
+    setIdNum(idNum);
     // setArrDetails(await getProjectDetailsById(sp, Number(idNum)));
     const projectDetails = await getProjectDetailsById(sp, Number(idNum));
 
@@ -788,7 +789,7 @@ try{
     },
     {
       ChildComponent: "Project Details",
-      ChildComponentURl: `${siteUrl}/SitePages/ProjectDetails.aspx`,
+      ChildComponentURl: `${siteUrl}/SitePages/ProjectDetails.aspx?${CurrentID}`,
     },
   ];
   //#endregion
@@ -1461,60 +1462,73 @@ const togglevalue = (e:any) => {
 //     }
 // };
 const handleRemoveUser = async (userId: number) => {
-  try {
-      const ids = window.location.search;
-      const idNum = ids.substring(1);
+  Swal.fire({
+    title: 'Do you want to remove project member?',
+    showConfirmButton: true,
+    showCancelButton: true,
+    confirmButtonText: "Yes",
+    cancelButtonText: "No",
+    icon: 'warning'
+  }
+  ).then(async (result) => {
+    console.log(result)
+    if (result.isConfirmed) {
+      try {
+        const ids = window.location.search;
+        const idNum = ids.substring(1);
 
-      if (!idNum) {
-       
+        if (!idNum) {
+
           return;
-      }
+        }
 
-      // Fetch the current People Picker value (TeamMembers) from the list item
-      const item = await sp.web.lists.getByTitle("ARGProject").items.getById(parseInt(idNum))
+        // Fetch the current People Picker value (TeamMembers) from the list item
+        const item = await sp.web.lists.getByTitle("ARGProject").items.getById(parseInt(idNum))
           .select("*, TeamMembers/Id, TeamMembers/EMail, TeamMembers/Title")
           .expand("TeamMembers")();
 
-      console.log(item, "here is my item");
+        console.log(item, "here is my item");
 
-      // Current People Picker column value (TeamMembers) from the fetched item
-      const existingUsers = (item as any)["TeamMembers"] || [];
-      console.log(existingUsers, "existing users");
+        // Current People Picker column value (TeamMembers) from the fetched item
+        const existingUsers = (item as any)["TeamMembers"] || [];
+        console.log(existingUsers, "existing users");
 
-      // Filter out the user to be removed
-      const updatedUsers = existingUsers.filter((user: { Id: number }) => user.Id !== userId);
+        // Filter out the user to be removed
+        const updatedUsers = existingUsers.filter((user: { Id: number }) => user.Id !== userId);
 
-      console.log(updatedUsers, "updatedUsers after removal");
+        console.log(updatedUsers, "updatedUsers after removal");
 
-      // Prepare updated values for SharePoint item
-      const updatedValues = {
+        // Prepare updated values for SharePoint item
+        const updatedValues = {
           TeamMembersId: updatedUsers.map((user: { Id: number }) => user.Id), // Use 'Id' to update TeamMembers
-      };
+        };
 
-      console.log(updatedValues, "updatedValues");
+        console.log(updatedValues, "updatedValues");
 
-      // Update the SharePoint item
-      const updatedItem = await sp.web.lists.getByTitle("ARGProject").items.getById(parseInt(idNum)).update(updatedValues);
+        // Update the SharePoint item
+        const updatedItem = await sp.web.lists.getByTitle("ARGProject").items.getById(parseInt(idNum)).update(updatedValues);
 
-      // Show success message
-      Swal.fire({
+        // Show success message
+        Swal.fire({
           title: "Success!",
           text: "User removed successfully.",
           icon: "success",
           confirmButtonText: "OK",
-      });
-      ApiLocalStorageData()
-  } catch (error) {
-      console.error("Error removing user:", error);
+        });
+        ApiLocalStorageData()
+      } catch (error) {
+        console.error("Error removing user:", error);
 
-      // Show error message
-      Swal.fire({
+        // Show error message
+        Swal.fire({
           title: "Error!",
           text: "Something went wrong. Please try again.",
           icon: "error",
           confirmButtonText: "OK",
-      });
-  }
+        });
+      }
+    }})
+ 
 };
 
 // useEffect(()=>{
@@ -1698,14 +1712,14 @@ useEffect(()=>{
                     </div>
                       <div style={{ position:'sticky', top:'90px'}}  className="row mt-2">
                         <div className="col-md-12 col-xl-12">
-                        <div style={{cursor:'pointer'}} className="tabcss sameh mb-2 mt-2 me-1 activenew">
+                        <div style={{cursor:'pointer'}} className="tabcss sameh mb-2 mt-2 me-1">
 
                         <button type="button" className="opend"
                   onClick={(e) => openModal(e)}
                  
                 >
                   {/* <FilePlus />  Documents */}
-                  <FilePlus />  Documents <span>[{files.length}]</span>
+                  <FilePlus style={{marginTop:'-2px'}} />  Documents <span>[{files.length}]</span>
              
                 </button>
                         </div>
@@ -1850,7 +1864,7 @@ useEffect(()=>{
                     boxShadow: "0 3px 20px #1d26260d",
                   }}
                 >
-                  <div className="card-body" style={{ padding: "1rem 0.9rem" }}>
+                  <div className="p-4">
                     {/* New comment input */}
                     <h4 className="mt-0 mb-3 text-dark fw-bold font-16">
                       Project Insights
@@ -1858,7 +1872,7 @@ useEffect(()=>{
                     <div className="mt-3">
                       <textarea
                         id="example-textarea"
-                        className="form-control text-dark form-control-light mb-2"
+                        className="form-control text-dark  mb-0"
                         value={newComment}
                         onChange={(e) => setNewComment(e.target.value)}
                         placeholder="Share your Project Insights here..."
@@ -1873,7 +1887,7 @@ useEffect(()=>{
             </li>
           ))}
         </ul> */}
-                          <label>
+                        
 
 {/* <div>
 
@@ -1895,15 +1909,17 @@ useEffect(()=>{
 
 </div> */}
 
-</label>
+  <div className="p-2 bg-light d-flex justify-content-end align-items-center">
+
                       <button type="button"
-                        className="btn btn-primary mt-2"
+                        className="btn btn-primary primary1 mt-1 mb-1"
                         onClick={handleAddComment}
                         disabled={loading} // Disable button when loading
                       >
                         {loading ? "Submitting..." : "Post"}{" "}
                         {/* Change button text */}
                       </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -2100,7 +2116,7 @@ alt="Call"
             <Card key={file.UniqueId} style={{  marginBottom: '10px', height:'82px' }} >
               <Card.Body>
                 <div className="row">
-                  <div className="col-lg-2">
+                  <div className="col-lg-2 wi8">
                   <img
                                   src={require("../assets/file.png")}
                                   style={{width:'40px'  }}
@@ -2109,14 +2125,14 @@ alt="Call"
 
                   </div>
 
-                  <div style={{paddingLeft:'13px'}} className="col-lg-9">
+                  <div style={{paddingLeft:'13px'}} className="col-lg-9 wi81">
                   <Card.Title className="two-line text-dark font-14 mb-0">{file.Name}</Card.Title>
                   <Card.Text className="text-muted font-12">{file.Length} bytes</Card.Text>
                   </div>
            
              
                 {/* Three dots dropdown menu */}
-                <div className="col-lg-1">
+                <div className="col-lg-1 wi82">
                 <Dropdown align="end">
                   <Dropdown.Toggle variant="link" id={`dropdown-${file.UniqueId}`} size="sm" className="newaligntext">
                     &#x22EE; {/* Ellipsis icon */}

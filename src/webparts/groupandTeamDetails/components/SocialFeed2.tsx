@@ -793,9 +793,9 @@ const SocialFeedContext = ({ props }: any) => {
 
                     <br />
                     <div className="row mt-0">
-                      <div style={{ position: 'sticky', top: '90px' }}>
+                      <div >
                         {(ArrDetails[0]?.InviteMemebers?.length > 0 || ArrDetails[0]?.GroupFollowers?.length > 0) &&
-                          <div className="card" style={{ borderRadius: "1rem" }}>
+                          <div  className="card" style={{ borderRadius: "1rem",position: 'sticky', top: '90px' }}>
                             <div className="card-body pb-0 gheight">
 
                               <h4 className="header-title font-16 text-dark fw-bold mb-0">
@@ -952,7 +952,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                           <div className="tab-content pt-0">
 
-                            <div className="tab-pane p-3 active show">
+                            <div className="tab-pane p-4 active show">
 
                               <div className="border rounded">
 
@@ -981,7 +981,10 @@ const SocialFeedContext = ({ props }: any) => {
 
                                       <div>
                                         {IsEdit &&
-                                          <Link style={{ width: "20px", height: "16px" }} onClick={() => handleImageChange} />
+                                        <div className='btn btn-default'>
+                                        <svg  onClick={() => handleImageChange}  xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                                          </div>
+                                          // <Link style={{ width: "20px", height: "16px" }} onClick={() => handleImageChange} />
                                         }
                                         <input
 
@@ -1069,9 +1072,9 @@ const SocialFeedContext = ({ props }: any) => {
                                       )}
                                     </div>
                                     <p style={{ color: 'red', fontSize: '14px', marginTop: '10px' }}>{errorMessage}</p>
-                                    <button type="submit" className="btn btn-sm btn-success font-121" disabled={!IsEdit}>
+                                    <button type="submit" className="btn btn-sm btn-success primary1  font-121" disabled={!IsEdit}>
 
-                                      <FontAwesomeIcon icon={faPaperPlane} /> Post
+                                    <FontAwesomeIcon style={{float:'left',margin:"7px 6px 0px 0px"}} icon={faPaperPlane} /> Post
 
                                     </button>
 

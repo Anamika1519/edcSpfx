@@ -1198,7 +1198,7 @@ const SocialFeedContext = ({ props }: any) => {
                     </div>
 
 
-                    <div className='mt-4'>
+                    <div className='mt-4 mb-4'>
                       <h4 className='font-14 mb-3 uppercase'>Bookmarked Blogs</h4>
                       {
 

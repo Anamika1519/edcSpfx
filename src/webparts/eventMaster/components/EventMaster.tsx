@@ -404,7 +404,7 @@ const EntityMastercontext = ({ props }: any) => {
                                     </div>
                                   </div>
                             </th> */}
-                          <th style={{ minWidth: '100px', maxWidth: '100px' }}>
+                          <th style={{ minWidth: '80px', maxWidth: '80px' }}>
                             <div className="d-flex flex-column bd-highlight ">
                               <div className="d-flex pb-2" style={{ justifyContent: 'space-between' }}>
                                 <span >Event Date</span>  <span onClick={() => handleSortChange('EventDate')}><FontAwesomeIcon icon={faSort} /> </span></div>
@@ -418,7 +418,7 @@ const EntityMastercontext = ({ props }: any) => {
                               </div>
                             </div>
                           </th>
-                          <th style={{ minWidth: "100px", maxWidth: "100px" }}>
+                          <th style={{ minWidth: "80px", maxWidth: "80px" }}>
 
                             <div className="d-flex flex-column bd-highlight ">
 
@@ -551,7 +551,7 @@ const EntityMastercontext = ({ props }: any) => {
 
 
 
-                              <td style={{ minWidth: '100px', maxWidth: '100px', textAlign:'center' }}>
+                              <td style={{ minWidth: '80px', maxWidth: '80px', textAlign:'center' }}>
                                 <div className='btn  btn-light'>
                                   {moment(item.EventDate).format("DD/MM/yyyy")}
                                 </div>
@@ -561,7 +561,7 @@ const EntityMastercontext = ({ props }: any) => {
 
 
 
-                              <td style={{ minWidth: '100px', maxWidth: '100px',textAlign:'center' }}> <div className='btn  btn-status'>{item.Status} </div> </td>
+                              <td style={{ minWidth: '80px', maxWidth: '80px',textAlign:'center' }}> <div className='btn  btn-status'>{item.Status} </div> </td>
                               <td style={{ minWidth: '100px', maxWidth: '100px' }}>{item.Overview}</td>
                               <td
 
@@ -587,7 +587,7 @@ const EntityMastercontext = ({ props }: any) => {
 
                                   className="d-flex pb-0"
 
-                                  style={{ justifyContent: "start", gap: "5px" }}
+                                  style={{ justifyContent: "center", gap: "3px" }}
 
                                 >
 

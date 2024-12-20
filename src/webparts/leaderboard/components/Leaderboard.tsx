@@ -56,7 +56,8 @@ const LeaderboardContext = ({ props }: any) => {
     AuthorTitle: "",
     AuthorEMail: "",
     AuthorId: "",
-    AuthorDepartment: ""
+    AuthorDepartment: "",
+     companyName:""
   });
 
   const [isFollowing, setIsFollowing] = useState(false);
@@ -231,7 +232,8 @@ const LeaderboardContext = ({ props }: any) => {
           item?.AuthorTitle.toLowerCase().includes(filters.AuthorTitle.toLowerCase())) &&
         (filters.AuthorEMail === "" ||
           item?.AuthorEMail.toLowerCase().includes(filters.AuthorEMail.toLowerCase())) &&
-          (filters.AuthorDepartment === '' || item?.AuthorDepartment && item?.AuthorDepartment.toLowerCase().includes(filters.AuthorDepartment.toLowerCase()))
+          (filters.AuthorDepartment === '' || 
+            item?.AuthorDepartment && item?.AuthorDepartment.toLowerCase().includes(filters.AuthorDepartment.toLowerCase())) &&
           // (filters.Department === '' || item?.Department.toLowerCase().includes(filters.Department.toLowerCase()))
 
          /*  (filters.Name === "" ||
@@ -239,6 +241,9 @@ const LeaderboardContext = ({ props }: any) => {
             item?.Title.toLowerCase().includes(filters.Name.toLowerCase())) &&
 
         (filters.companyName === '' || ((item?.companyName) ? item?.companyName.toLowerCase().includes(filters.companyName.toLowerCase()) : false)) */
+        (filters.companyName === '' || 
+          ((item?.companyName) && item?.companyName.toLowerCase().includes(filters.companyName.toLowerCase()))) 
+  
       );
     });
 
@@ -686,7 +691,7 @@ const LeaderboardContext = ({ props }: any) => {
                                     <div className="d-flex flex-column bd-highlight ">
                                       <div className="d-flex pb-2" style={{ justifyContent: "space-between" }}>
                                         <span>Entity</span>
-                                        <span onClick={() => handleSortChange("AuthorDepartment")}>
+                                        <span onClick={() => handleSortChange("companyName")}>
                                           <FontAwesomeIcon icon={faSort} />
                                         </span>
                                       </div>
@@ -694,7 +699,7 @@ const LeaderboardContext = ({ props }: any) => {
                                         <input
                                           type="text"
                                           placeholder="Filter by Entity"
-                                          onChange={(e) => handleFilterChange(e, "AuthorDepartment")}
+                                          onChange={(e) => handleFilterChange(e, "companyName")}
                                           onKeyDown={(e) => {
                                             if (e.key === 'Enter' && !e.shiftKey) {
                                               e.preventDefault(); // Prevents the new line in textarea

@@ -1330,7 +1330,7 @@ const MyRequestContext = ({ props }: any) => {
                                   </div>
 
                                 </th> */}
-                                <th style={{ minWidth: "100px", maxWidth: "100px", verticalAlign: "Top" }}>
+                                <th style={{ minWidth: "70px", maxWidth: "70px", verticalAlign: "Top" }}>
 
                                   <div className="d-flex flex-column bd-highlight ">
 
@@ -1389,7 +1389,7 @@ const MyRequestContext = ({ props }: any) => {
                                   </div>
 
                                 </th>
-                                <th style={{ minWidth: "80px", maxWidth: "80px" }}>
+                                <th style={{ minWidth: "70px", maxWidth: "70px" }}>
 
                                   <div className="d-flex flex-column bd-highlight ">
 
@@ -1504,12 +1504,12 @@ const MyRequestContext = ({ props }: any) => {
                                     justifyContent: "center",
                                     position: 'relative',
                                     marginTop: '10px',
-                                    height: '450px'
+                                    height: '300px'
 
                                   }}
 
                                 >
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+                                  <svg style={{top:'50%'}} xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
 
                                   <p className="font-14 text-muted text-center">No Request found </p>
 
@@ -1604,16 +1604,16 @@ const MyRequestContext = ({ props }: any) => {
 
                                     <td
 
-                                      style={{ minWidth: "100px", maxWidth: "100px" }}
+                                      style={{ minWidth: "70px", maxWidth: "70px",textAlign:'center' }}
 
                                     >
 
-                                      {new Date(item?.Created).toLocaleDateString()}
+<div className="btn btn-light font-14"> {new Date(item?.Created).toLocaleDateString()} </div>
 
                                     </td>
                                     <td
 
-                                      style={{ minWidth: "80px", maxWidth: "80px", textAlign: 'center' }}
+                                      style={{ minWidth: "70px", maxWidth: "70px", textAlign: 'center' }}
 
                                     >
                                       <div className="btn btn-status">
@@ -1893,7 +1893,7 @@ const MyRequestContext = ({ props }: any) => {
 
 
 
-                                    <th style={{ minWidth: "100px", maxWidth: "100px" }}>
+                                    <th style={{ minWidth: "70px", maxWidth: "70px" }}>
 
                                       <div className="d-flex flex-column bd-highlight ">
 
@@ -1948,7 +1948,7 @@ const MyRequestContext = ({ props }: any) => {
                                       </div>
 
                                     </th>
-                                    <th style={{ minWidth: "80px", maxWidth: "80px" }}>
+                                    <th style={{ minWidth: "70px", maxWidth: "70px" }}>
 
                                       <div className="d-flex flex-column bd-highlight ">
 
@@ -2147,16 +2147,16 @@ const MyRequestContext = ({ props }: any) => {
 
                                         <td
 
-                                          style={{ minWidth: "100px", maxWidth: "100px" }}
+                                          style={{ minWidth: "70px", maxWidth: "70px", textAlign:'center' }}
 
                                         >
 
-                                          {new Date(item?.Created).toLocaleDateString()}
+<div className="btn btn-light">  {new Date(item?.Created).toLocaleDateString()} </div>
 
                                         </td>
                                         <td
 
-                                          style={{ minWidth: "80px", maxWidth: "80px" }}
+                                          style={{ minWidth: "70px", maxWidth: "70px" }}
 
                                         >
                                           <div className="btn btn-status">

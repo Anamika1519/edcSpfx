@@ -1,6 +1,6 @@
 /* Style the card to add padding and a shadow */
 .card {
-    padding: 0px;
+    padding: 20px !important;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
 }
@@ -32,6 +32,7 @@
 .btn-light {
     background-color: #f8f9fa;
     border-color: #f8f9fa;
+    padding: 6px 10px !important;
 }
 
 /* Add hover effect to buttons */

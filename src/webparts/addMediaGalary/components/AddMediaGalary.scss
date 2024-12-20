@@ -10,7 +10,7 @@
 /* Ensure inputs and selects have consistent padding and border radius */
 .form-control, 
 .form-select {
-    padding: 10px;
+    padding: 7px 10px;
     border-radius: 5px;
     border: 1px solid #ced4da;
     box-shadow: none;
@@ -36,7 +36,7 @@
     border-color: #f8f9fa;
 }
 .btn-light {
-  padding: 5px 6px !important;
+  padding: 7px 10px !important;
 }
 /* Add hover effect to buttons */
 .btn-success:hover,

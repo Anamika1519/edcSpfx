@@ -491,7 +491,7 @@ export const GroupPostComponent = ({ key, sp, siteUrl, isedit, currentUsername, 
     console.log(post, '{liked}');
 
     return (
-        <div className="post">
+        <div className="post p-4">
             <div className="post-header">
                 <div className="d-flex align-items-center" style={{ width: '100%' }}>
                     <div className="flex-shrink-0">

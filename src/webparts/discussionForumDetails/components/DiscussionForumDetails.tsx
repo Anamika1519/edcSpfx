@@ -1263,7 +1263,7 @@ alt="Check"
                                //</div> onClick={(e: any) => openModal(e)}
                                >
                                 {/* <FilePlus size={14} /> <span className="docu"> Documents</span> */}
-                                <FilePlus style={{marginTop:'-3px'}} />  Documents <span>[{files.length}]</span>
+                                <FilePlus style={{marginTop:'0px'}} />  Documents <span>[{files.length}]</span>
                               </span>
                             </div>
                             <div style={{cursor:"auto"}} className="tabcss mb-2 mt-2 me-1 newalign">
@@ -1564,7 +1564,7 @@ alt="Check"
 
                                         </div>
 
-                                        <div style={{ paddingLeft: '13px' }} className="col-lg-9 wi82">
+                                        <div style={{ paddingLeft: '13px' }} className="col-lg-9 wi81">
                                           <Card.Title className="two-line text-dark font-14 mb-0">{file.Name}</Card.Title>
                                           <Card.Text className="text-muted font-12">{file.Length} bytes</Card.Text>
                                         </div>
@@ -1658,21 +1658,23 @@ alt="Check"
                                 <div className="mt-3">
                                   <textarea
                                     id="example-textarea"
-                                    className="form-control text-dark  mb-2"
+                                    className="form-control text-dark  mb-0"
                                     value={newComment}
                                     onChange={(e) => setNewComment(e.target.value)}
                                     placeholder="Type your response here..."
                                     rows={3}
                                     style={{ borderRadius: "unset" }}
                                   />
+                                   <div className="p-2 bg-light d-flex justify-content-end align-items-center">
                                   <button
-                                    className="btn btn-primary mt-2"
+                                    className="btn btn-primary primary1 mt-1 mb-1"
                                     onClick={handleAddComment}
                                     disabled={loading} // Disable button when loading
                                   >
-                                    {loading ? "Submitting..." : "Post"}{" "}
+                                  
+                                    {loading ? "Submitting..." : " Post"}{" "}
                                     {/* Change button text */}
-                                  </button>
+                                  </button> </div>
                                 </div>
                               </div>
 
@@ -1745,8 +1747,8 @@ alt="Check"
 
                                   <div className="card1 bodernone mt-3 pb-0">
                                     <div className="d-flex juss">
-                                      <img src={require("../assets/ccomment.png")} className="alignright12" />
-                                      <p className="text-dark font-14 text-center mb-0">Response & Reply</p>
+                                      <img style={{width:'24px'}}  src={require("../assets/ccomment.png")} className="" />
+                                      <p className="text-dark font-14 text-center mb-0">Responses & Replies</p>
 
                                     </div>
                                     <span className="likecount">{commentCount}</span>

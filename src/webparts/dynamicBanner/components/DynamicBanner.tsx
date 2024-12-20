@@ -326,8 +326,8 @@ const DynamicBannercontext = ({ props }: any) => {
                       <thead>
                         <tr>
                           <th style={{
-                            borderBottomLeftRadius: '0px', minWidth: '50px',
-                            maxWidth: '50px', borderTopLeftRadius: '0px'
+                            borderBottomLeftRadius: '0px', minWidth: '30px',
+                            maxWidth: '30px', borderTopLeftRadius: '0px'
                           }}>
                             <div className="d-flex pb-2"
                               style={{ justifyContent: 'space-between' }}>
@@ -386,7 +386,7 @@ const DynamicBannercontext = ({ props }: any) => {
                                     </div>
                                   </div>
                             </th> */}
-                          <th style={{ minWidth: '60px', maxWidth: '60px' }}>
+                          <th style={{ minWidth: '40px', maxWidth: '40px' }}>
                             <div className="d-flex flex-column bd-highlight ">
                               <div className="d-flex pb-2" style={{ justifyContent: 'space-between' }}>
                                 <span >Status</span>  <span onClick={() => handleSortChange('Status')}><FontAwesomeIcon icon={faSort} /> </span></div>
@@ -401,7 +401,7 @@ const DynamicBannercontext = ({ props }: any) => {
                               </div>
                             </div>
                           </th>
-                          <th style={{ minWidth: '80px', maxWidth: '80px' }}>
+                          <th style={{ minWidth: '40px', maxWidth: '40px' }}>
                             <div className="d-flex flex-column bd-highlight ">
                               <div className="d-flex pb-2" style={{ justifyContent: 'space-between' }}>
                                 <span >SubmittedDate</span>  <span onClick={() => handleSortChange('SubmittedDate')}><FontAwesomeIcon icon={faSort} /> </span></div>
@@ -443,11 +443,11 @@ const DynamicBannercontext = ({ props }: any) => {
                             const ImageUrl = item.BannerImage == undefined || item.BannerImage == null ? "" : JSON.parse(item.BannerImage);
                             return (
                               <tr key={index}>
-                                <td style={{ minWidth: '50px', maxWidth: '50px' }}><div style={{ marginLeft: '20px' }} className='indexdesign'> {index + 1}</div>  </td>
+                                <td style={{ minWidth: '30px', maxWidth: '30px' }}><div style={{ marginLeft: '20px' }} className='indexdesign'> {index + 1}</div>  </td>
                                 <td style={{ minWidth: '150px', maxWidth: '150px' }}>{item.Title}</td>
 
-                                <td style={{ minWidth: '60px', maxWidth: '60px' }}>  <div className='btn btn-status'> {item.Status} </div> </td>
-                                <td style={{ minWidth: '80px', maxWidth: '80px' }}> {moment(item.Created).format("DD-MMM-YYYY")}</td>
+                                <td style={{ minWidth: '40px', maxWidth: '40px' }}>  <div className='btn btn-status'> {item.Status} </div> </td>
+                                <td style={{ minWidth: '40px', maxWidth: '40px' }}> {moment(item.Created).format("DD-MMM-YYYY")}</td>
                                 <td style={{ minWidth: '50px', maxWidth: '50px' }} className="ng-binding">
                                   <div className="d-flex  pb-0" style={{ justifyContent: 'center', gap: '5px' }}>
                                     <span > <a className="action-icon text-primary" onClick={() => EditBanner(item.ID)}>

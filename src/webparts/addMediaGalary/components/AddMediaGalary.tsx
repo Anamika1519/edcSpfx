@@ -2632,7 +2632,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
                         <div className='d-flex' style={{ justifyContent: 'space-around', width: '70px' }}>
 
-                          <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }} className='me-1' alt="x" />
+                          <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }} className='me-0' alt="x" />
 
                           Cancel
 

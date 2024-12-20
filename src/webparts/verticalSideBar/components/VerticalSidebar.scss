@@ -1649,6 +1649,13 @@ text-align: center;
   .tabview1,.tabcontentv, .tabv{
       width: 100% !important; 
   }
+  .manage-master .col-md-3{
+    width: 100% !important;
+  }
+  .sidebar.close .navlink_icon {
+    box-shadow: none !important;
+    min-width: 10px !important;
+}
   .nav-pills .nav-link{
     padding: 5px;
   }
@@ -1660,8 +1667,8 @@ text-align: center;
   .mtbalenew{overflow: auto !important;}
   .mtbalenew tbody{overflow: visible !important;}
   .mtbalenew th,.mtbalenew td{min-width: 130px !important; max-width: 130px !important; }
-  .sidebar{display: none;}
-  #myHeader .open{display: none;}
+  .sidebar{display: block;}
+  #myHeader {display: block;}
   #contentBox {
     margin-right: 0px;
     margin-left: 0px !important;
@@ -1738,7 +1745,20 @@ text-align: center;
   .upcom1{width: 16%; float: left;}
   .upcom2{width: 82%; float: left;}
   .posnew{top:13px; right: 0;}
+
+//   .sidebar.close {
+//     padding: 0;
+//     width: auto !important;
+// }
+.app-menu{top: 76px;}
+ .logo_item{display: none;}
+.item {
+  margin: 0rem .4rem 0 8px;
+}
+// .sidebar.close .navlink_icon{margin-left: 10px;}
+.app-menu{width: 210px;}
   .gheight .ps-2,.gheight .ps-3{padding: 0px !important;}
+
   .w17{width: 17% !important;}
 }
   @media(max-width:480px){

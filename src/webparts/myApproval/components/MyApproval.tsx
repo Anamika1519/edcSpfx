@@ -1128,15 +1128,15 @@ const MyApprovalContext = ({ props }: any) => {
 
                                     <th
                                       style={{
-                                        minWidth: "100px",
-                                        maxWidth: "100px",
+                                        minWidth: "80px",
+                                        maxWidth: "80px",
                                       }}
                                     >
                                       <div className="d-flex flex-column bd-highlight ">
                                         <div
                                           className="d-flex  pb-2"
                                           style={{
-                                            justifyContent: "space-between",
+                                            justifyContent: "start",
                                           }}
                                         >
                                           <span>Requested Date</span>{" "}
@@ -1339,8 +1339,9 @@ const MyApprovalContext = ({ props }: any) => {
 
                                           <td
                                             style={{
-                                              minWidth: "100px",
-                                              maxWidth: "100px",
+                                              minWidth: "80px",
+                                              maxWidth: "80px",
+                                              textAlign:'center'
                                             }}
                                           >
                                             <div className="btn btn-light">
@@ -1354,6 +1355,7 @@ const MyApprovalContext = ({ props }: any) => {
                                             style={{
                                               minWidth: "80px",
                                               maxWidth: "80px",
+                                               textAlign:'center'
                                             }}
                                           >
                                             <div className="btn btn-status">
@@ -1757,12 +1759,12 @@ const MyApprovalContext = ({ props }: any) => {
                                               justifyContent: "center",
                                               position: 'relative',
                                               marginTop: '10px',
-                                              height: '450px'
+                                              height: '300px'
 
                                             }}
 
                                           >
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                                            <svg style={{top:'50%'}} xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
 
                                             <p className="font-14 text-muted text-center">No Approval found </p>
 
@@ -1834,6 +1836,7 @@ const MyApprovalContext = ({ props }: any) => {
                                                   style={{
                                                     minWidth: "100px",
                                                     maxWidth: "100px",
+                                                    textAlign:'center'
                                                   }}
                                                 >
                                                   <div className="btn btn-light">
@@ -1862,6 +1865,7 @@ const MyApprovalContext = ({ props }: any) => {
                                                   }}
                                                   className="fe-eye font-18"
                                                 >
+
                                                   <Edit
                                                     onClick={(e) => { getTaskItemsbyID(e, item.FileUID.FileUID); handleShowNestedDMSTable() }}
                                                     style={{

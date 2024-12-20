@@ -312,7 +312,7 @@ opacity: 1;
   .minw80 .moday-body{max-height: 470px;  overflow-y: auto;}
   .newaligntext{padding: 0px; min-width: auto !important;}
   .newaligntext button{padding: 0px; min-width: auto !important;}
-  .widtsvg svg{width: 18px !important; margin-top: 2px;}
+  .widtsvg svg{width: 14px !important; height: 14px !important; margin-top: 2px;}
 .close-btn:hover {
   color: red;
 }
@@ -421,6 +421,13 @@ button[type="submit"]:hover {
   background-color: #0056b3;
 }
 .ml90 img{margin-right: -12px !important;}
+.primary1 {
+  border-color: #1fb0e5 !important;
+  font-size: 16px !important;
+  min-width: 90px;
+  padding: 5px 16px !important;
+  text-transform: capitalize;
+}
 @media(max-width:640px){
   .modal-dialog .modal-header{position: relative !important;}
   .chosefile{    padding: 5px 10px;}
@@ -432,3 +439,4 @@ button[type="submit"]:hover {
         float: left;}
         .two-line{height: auto;}
 }
+.bg-light{    background-color: #ececec !important;}

@@ -48,3 +48,9 @@ a:hover
 @media(max-width:1920px){
     .paddb{min-height: calc(100vh - 152px);}
 }
+@media(max-width:640px){
+    #s4-workspace{overflow-y: auto !important;}
+    .manage-master .col-md-3 {
+        width: 100% !important;
+    }
+}

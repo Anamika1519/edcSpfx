@@ -847,7 +847,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                   <td>{item?.AnnouncementandNewsTypeMaster?.TypeMaster}</td>
 
-                                  <td style={{ minWidth: "100px", maxWidth: "100px", textAlign:'center' }}>{item.Status}</td>
+                                  <td style={{ minWidth: "100px", maxWidth: "100px", textAlign:'center' }}><div className='btn btn-status'>{item.Status} </div></td>
 
                                   <td style={{ minWidth: "100px", maxWidth: "100px",textAlign:'center' }}>
 
@@ -1266,7 +1266,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                     >
 
-                                      {item.Status}
+                                  <div className='btn btn-status'>{item.Status} </div>
 
                                     </td>
 
@@ -1306,7 +1306,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                         style={{
 
-                                          justifyContent: "space-around",
+                                          justifyContent: "center",
 
                                         }}
 

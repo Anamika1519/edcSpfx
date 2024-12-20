@@ -842,19 +842,19 @@ const HelloWorldContext = ({ props }: any) => {
                   <div className="col-md-6 col-xl-3" >
                     <div className="widget-rounded-circle card hri90" >
                       <div className="card-body" >
-                        <div style={{ cursor: 'pointer' }} className="row" onClick={() => handleRedirect(item.RedirectionLink)}>
+                      <div style={{ cursor: 'pointer' }} className="row">
                           <div className="col-3 newim">
-                            <div style={{ background: '#fff', width: '45px', height: '45px' }}
+                          <a href="javascript:void(0);" target="_blank" onClick={() => handleRedirect(item.RedirectionLink)}>  <div style={{ background: '#fff', width: '45px', height: '45px' }}
                               className="avatar-lg d-flex justify-content-center align-items-center rounded-circle bg-soft-primary border-primary border">
                               <img style={{ width: '25px', marginTop: '1px' }} src={imageUrl} />
-                            </div>
+                            </div> </a>
                           </div>
                           <div className="col-9 newim2 d-flex justify-content-left align-items-center">
                             <div>
 
-                              <p style={{ marginBottom: '5px' }} className="text-dark twolinewrap mb-156 linr56 font-16 hovertext  mt90">{item.Title}</p>
+                            <a href="javascript:void(0);" target="_blank" onClick={() => handleRedirect(item.RedirectionLink)}> <p style={{ marginBottom: '5px' }} className="text-dark twolinewrap mb-156 linr56 font-16 hovertext  mt90">{item.Title}</p></a>
                               <p className="text-muted mb-0 font-12 twolinewrap  mt90">{item.SubTitle}</p>
-                            </div>
+                            </div> 
                           </div>
                         </div>
                       </div>

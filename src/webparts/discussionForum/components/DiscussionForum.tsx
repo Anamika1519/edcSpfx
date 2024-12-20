@@ -1841,9 +1841,9 @@ const DiscussionForumContext = ({ props }: any) => {
                               style={{ justifyContent: "space-between" }}
                             >
                               <span>S.No.</span>
-                              <span onClick={() => handleSortChange("SNo")}>
+                              {/* <span onClick={() => handleSortChange("SNo")}>
                                 <FontAwesomeIcon icon={faSort} />
-                              </span>
+                              </span> */}
                             </div>
                             {/* <div className="bd-highlight">
                               <input

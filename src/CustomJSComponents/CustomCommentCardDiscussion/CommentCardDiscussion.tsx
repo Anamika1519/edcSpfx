@@ -84,12 +84,12 @@ export const CommentCard: React.FC<{
   // };
 
   return (
-    <div className="card team-fedd" style={{ border: '1px solid #54ade0', borderRadius: '20px', boxShadow: '0 3px 20px #1d26260d' }}>
-      <div className="card-body" style={{ padding: '15px' }}>
+    <div className="card team-fedd p-4" style={{ border: '1px solid #54ade0', borderRadius: '20px', boxShadow: '0 3px 20px #1d26260d' }}>
+      <div className="" >
         <div className="row">
           <div className="d-flex align-items-start">
             <img
-              className="me-2 mt-1 avatar-sm rounded-circle"
+              className="me-2 mt-0 avatar-sm rounded-circle"
             //   src={Comments[0].UserProfile}
                 src={userProfile}
               alt="User"
