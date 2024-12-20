@@ -9,12 +9,13 @@
     display: flex !important;
     align-items: flex-end !important;
     text-align: left !important;
-    //-webkit-line-clamp: 3;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     display: -webkit-box;
     overflow: hidden;
     text-overflow: ellipsis;
 }
+.carousel-inner{background: #fff;}
 .line18{line-height: 1.8 !important;}
 .news-feed{height: 721px;}
 .upcom2 h4:hover, .news-feed h4:hover, .announcementner h4:hover{color: #1fb0e5 !important; cursor: pointer !important;}

@@ -1107,7 +1107,7 @@ const SocialFeedContext = ({ props }: any) => {
             <div className="row mt-3">
 
               <div className="col-md-3 mobile-w1">
-                <div className='psonew'>
+                <div style={{position:'sticky', top:'90px'}} className='psonew1'>
                   <div className="row">
 
                     <div style={{ display: 'flex', gap: '0.1rem' }}>
@@ -1263,7 +1263,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                           <div className="tab-content pt-0">
 
-                            <div className="tab-pane p-3 active show">
+                            <div className="tab-pane p-4 active show">
 
                               <div className="border rounded">
 
@@ -1308,8 +1308,10 @@ const SocialFeedContext = ({ props }: any) => {
                                     <label>
 
                                       <div>
-
-                                        <Link className='hovertext' style={{ width: "20px", height: "16px" }} onClick={() => handleImageChange} />
+                                        <div className='btn btn-default'>
+                                      <svg  onClick={() => handleImageChange}  xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                                        </div>
+                                        {/* <Link className='hovertext' style={{ width: "20px", height: "16px" }} onClick={() => handleImageChange} /> */}
 
                                         <input
 
@@ -1354,9 +1356,9 @@ const SocialFeedContext = ({ props }: any) => {
                                       )}
                                     </div>
 
-                                    <button type="submit" className="btn btn-sm btn-primary font-121" disabled={Loading}>
+                                    <button type="submit" className="btn btn-sm btn-primary primary1 font-121" disabled={Loading}>
 
-                                      <FontAwesomeIcon icon={faPaperPlane} /> Post
+                                      <FontAwesomeIcon style={{float:'left',margin:"7px 6px 0px 0px"}} icon={faPaperPlane} /> Post
 
                                     </button>
 

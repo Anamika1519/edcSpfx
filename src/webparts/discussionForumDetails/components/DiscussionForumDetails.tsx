@@ -1295,7 +1295,7 @@ alt="Check"
                                 {item.GroupType}
                               </span>
                             </div> */}
-                            <div className="tabcss btn btn-secondary mb-2 sameh mt-2 me-1 ">
+                            <div className="tabcss mb-2 sameh mt-2 me-1 ">
                               <span
                                 className="text-nowrap mb-0 d-inline-block"
                                 onClick={() => UpdateDiscussion(item.Id, item.Author.ID, item.ARGDiscussionStatus)}
@@ -1650,7 +1650,7 @@ alt="Check"
                                 boxShadow: "0 3px 20px #1d26260d",
                               }}
                             >
-                              <div className="card-body" style={{ padding: "1rem 0.9rem" }}>
+                              <div className="p-4">
                                 {/* New comment input */}
                                 <h4 className="mt-0 mb-3 text-dark fw-bold font-16">
                                   Your Response
@@ -1658,7 +1658,7 @@ alt="Check"
                                 <div className="mt-3">
                                   <textarea
                                     id="example-textarea"
-                                    className="form-control text-dark form-control-light mb-2"
+                                    className="form-control text-dark  mb-2"
                                     value={newComment}
                                     onChange={(e) => setNewComment(e.target.value)}
                                     placeholder="Type your response here..."

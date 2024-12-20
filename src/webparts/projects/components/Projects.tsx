@@ -272,7 +272,7 @@ const HelloWorldContext = ({ props }: any) => {
 
   const onChange1 = (name: string, value: string) => {
     console.log(selectedValue, 'selectedValue');
-   
+
     if (value.startsWith(" ")) {
       Swal.fire("Error", "Project name should not start with a space.", "error");
       setFormData((prevState) => ({
@@ -293,7 +293,7 @@ const HelloWorldContext = ({ props }: any) => {
   const handleCancel = () => {
     debugger;
     window.location.href =
-      "https://officeindia.sharepoint.com/sites/AlRostmaniSpfx2/SitePages/Project.aspx";
+      "https://officeindia.sharepoint.com/sites/spfxdemo/SitePages/Project.aspx";
   };
 
   const saveProjectData = async (formData: {
@@ -356,7 +356,7 @@ const HelloWorldContext = ({ props }: any) => {
         // // Budget: formData.Budget,
         ProjectOverview: formData.ProjectOverview,
         TeamMembersId: selectedIds,
-        ProjectFileManager: `/sites/AlRostmaniSpfx2/ARGProjectsFiles/${formData.ProjectName}`,
+        ProjectFileManager: `/sites/spfxdemo/ARGProjectsFiles/${formData.ProjectName}`,
         ProjectStatus: "Ongoing",
         ProjectFolderName: formData.ProjectName,
         FolderInProgress: 'In Progress'
@@ -521,15 +521,15 @@ const HelloWorldContext = ({ props }: any) => {
     //   Swal.fire("Error", "Project Overview is required!", "error");
     //   valid = false;
     // }
-    if(selectedValue.length === 0){
-      valid=false;
+    if (selectedValue.length === 0) {
+      valid = false;
     }
-   
-    if(!valid){
+
+    if (!valid) {
       Swal.fire("Error", "Please fill the mandatory fields!", "error");
-    }else if(ProjectName.length > 50){
+    } else if (ProjectName.length > 50) {
       Swal.fire("Error", "Project name should not be greater than 50 characters", "error");
-      valid=false;
+      valid = false;
     }
     return valid;
 
@@ -842,7 +842,7 @@ const HelloWorldContext = ({ props }: any) => {
 
       // Filter users by checking the PrincipalType and ensure it's not a group
       // const usersOnly = siteUsers.filter(user => user.PrincipalType === 1);
-     
+
       const usersOnly = siteUsers.filter(user => user.PrincipalType === 1 && user.Email !== "")
       const formattedOptions = usersOnly.map((item) => ({
         name: item.Title, // Adjust according to your list schema
@@ -891,7 +891,7 @@ const HelloWorldContext = ({ props }: any) => {
     setItemsToShow(itemsToShow + 5); // Increase the number by 8
   };
 
-  
+
 
   return (
     <div id="wrapper" ref={elementRef}>
@@ -1375,105 +1375,115 @@ const HelloWorldContext = ({ props }: any) => {
 
             {activeTab === "home1" && (
               <div className="row mt-3">
+                {!loading && Dataproject.length == 0 &&
+                  <div className="align-items-center card card-body newiconsvg text-center mt-4"
+                  >
+
+                    <svg className="mt-3" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+
+                    <p className="font-14 text-muted text-center">No Projects Available </p>
+
+                  </div>
+                }
                 <div className="">
                   {/* Map through the projects array and display a card for each */}
                   {loading ? (<div className="loadernewadd">
                     <div>
-                    <img style={{width:'60px'}}
-                            src={require("../../../CustomAsset/birdloader.gif")}
-                            className="alignrightl"
-                            alt="Loading..."
-                          />
-                        </div>
-                      <span>Loading </span>{" "}
-                      <span>
-                      <img style={{width:'35px'}}
-                          src={require("../assets/argloader.gif")}
-                          className="alignrightl"
-                          alt="Loading..."
-                        />
-                      </span>
-                    </div>):
-                  (Dataproject.length > 0 ? (
-                    <div className="row">
-                      {Dataproject.map((project, index) => {
-                        console.log("project>>>>>>>>>>>>>", activeTab, project);
-                        if (project.ProjectPrivacy == "Public") {
-                          return (
-                            <div key={index} className="col-lg-4 col-md-6 mb-0">
-                              <div className="card project-box">
-                                <div className="card-body">
-                                  <div className="dropdown float-end">
-                                    <a
-
-                                      className="dropdown-toggle card-drop arrow-none"
-                                      data-bs-toggle="dropdown"
-                                      aria-expanded="false"
-                                    >
-                                      <img className="morealign" src={require('../assets/more.png')} />
-                                    </a>
-                                    <div style={{ padding: "0px", top: "15px", minWidth: "auto", textAlign: "center" }} className="dropdown-menu newheight dropdown-menu-end">
+                      <img style={{ width: '60px' }}
+                        src={require("../../../CustomAsset/birdloader.gif")}
+                        className="alignrightl"
+                        alt="Loading..."
+                      />
+                    </div>
+                    <span>Loading </span>{" "}
+                    <span>
+                      <img style={{ width: '35px' }}
+                        src={require("../assets/argloader.gif")}
+                        className="alignrightbird"
+                        alt="Loading..."
+                      />
+                    </span>
+                  </div>) :
+                    (Dataproject.length > 0 ? (
+                      <div className="row">
+                        {Dataproject.map((project, index) => {
+                          console.log("project>>>>>>>>>>>>>", activeTab, project);
+                          if (project.ProjectPrivacy == "Public") {
+                            return (
+                              <div key={index} className="col-lg-4 col-md-6 mb-0">
+                                <div className="card project-box">
+                                  <div className="card-body">
+                                    <div className="dropdown float-end">
                                       <a
-                                        className="dropdown-item"
 
-                                        onClick={() => handleDelete(project.Id)}
+                                        className="dropdown-toggle card-drop arrow-none"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false"
                                       >
-                                        Delete
+                                        <img className="morealign" src={require('../assets/more.png')} />
                                       </a>
-                                      <a
-                                        className="dropdown-item"
+                                      <div style={{ padding: "0px", top: "15px", minWidth: "auto", textAlign: "center" }} className="dropdown-menu newheight dropdown-menu-end">
+                                        <a
+                                          className="dropdown-item"
 
-                                        onClick={() => GotoNextPage(project)}
-                                      >
-                                        View Detail
-                                      </a>
+                                          onClick={() => handleDelete(project.Id)}
+                                        >
+                                          Delete
+                                        </a>
+                                        <a
+                                          className="dropdown-item"
+
+                                          onClick={() => GotoNextPage(project)}
+                                        >
+                                          View Detail
+                                        </a>
+                                      </div>
                                     </div>
-                                  </div>
 
-                                  {/* Title */}
-                                  <h4 className="mt-0 mb-1 one-line">
-                                    <a onClick={() => GotoNextPage(project)}
-                                      className="text-dark fw-bold font-16">
-                                      {truncateText(project.ProjectName, 40)}
-                                      {/* {project.ProjectName} */}
+                                    {/* Title */}
+                                    <h4 className="mt-0 mb-1 one-line">
+                                      <a onClick={() => GotoNextPage(project)}
+                                        className="text-dark fw-bold font-16">
+                                        {truncateText(project.ProjectName, 40)}
+                                        {/* {project.ProjectName} */}
+                                      </a>
+                                      ongoing mb-3
+                                    </h4>
+
+
+                                    <a>
+
+                                      {
+                                        project?.ProjectStatus === null
+                                          ? null // Don't display anything if ProjectStatus is null
+                                          : (
+                                            <a className="ongoing mb-3"
+                                              style={{
+                                                background: project?.ProjectStatus === 'Completed' ? '#cce7dc' : '#6c757d',
+                                                color: project?.ProjectStatus === 'Completed' ? '#008751' : '#fff',
+                                                padding: '5px',
+                                                borderRadius: '4px',
+                                                textDecoration: 'none'
+                                              }}
+                                            >
+                                              {project?.ProjectStatus === 'Ongoing' ? 'Ongoing' : 'Completed'}
+                                            </a>
+                                          )
+                                      }
                                     </a>
-                                    ongoing mb-3
-                                  </h4>
 
+                                    <p
 
-                                  <a>
+                                      className="date-color text-muted two-line font-14 mb-3 sp-line-2"
+                                    >
 
-                                    {
-                                      project?.ProjectStatus === null
-                                        ? null // Don't display anything if ProjectStatus is null
-                                        : (
-                                          <a className="ongoing mb-3"
-                                            style={{
-                                              background: project?.ProjectStatus === 'Completed' ? '#cce7dc' : '#6c757d',
-                                              color: project?.ProjectStatus === 'Completed' ? '#008751' : '#fff',
-                                              padding: '5px',
-                                              borderRadius: '4px',
-                                              textDecoration: 'none'
-                                            }}
-                                          >
-                                            {project?.ProjectStatus === 'Ongoing' ? 'Ongoing' : 'Completed'}
-                                          </a>
-                                        )
-                                    }
-                                  </a>
+                                      {truncateText(project.ProjectOverview, 100) ||
+                                        "No description available..."}{" "}
 
-                                  <p
+                                    </p>
 
-                                    className="date-color text-muted two-line font-14 mb-3 sp-line-2"
-                                  >
-
-                                    {truncateText(project.ProjectOverview, 100) ||
-                                      "No description available..."}{" "}
-
-                                  </p>
-
-                                  {/* Description */}
-                                  {/* <p
+                                    {/* Description */}
+                                    {/* <p
                                     style={{ color: "#98a6ad" }}
                                     className="date-color two-line font-14 mb-3 sp-line-2"
                                   >
@@ -1482,59 +1492,59 @@ const HelloWorldContext = ({ props }: any) => {
                                  
                                   </p> */}
 
-                                  {/* Task info */}
-                                  <p style={{ display: 'flex', gap: '10px' }} className="mb-1  text-muted font-12">
-                                    <span
+                                    {/* Task info */}
+                                    <p style={{ display: 'flex', gap: '10px' }} className="mb-1  text-muted font-12">
+                                      <span
 
-                                      className="pe-2 text-nowrap mb-1 d-inline-block"
-                                    >
+                                        className="pe-2 text-nowrap mb-1 d-inline-block"
+                                      >
 
-                                      <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} />     <b>
-                                        {/* {project?.ProjectsDocsId?.length} */}
-                                        {project?.FileCount}
+                                        <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} />     <b>
+                                          {/* {project?.ProjectsDocsId?.length} */}
+                                          {project?.FileCount}
                                         </b> Documents
-                                    </span>
-                                    <span
+                                      </span>
+                                      <span
 
-                                      className="text-nowrap mb-1 d-inline-block"
+                                        className="text-nowrap mb-1 d-inline-block"
+                                      >
+
+                                        <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />  <b>{project.CommentsCount || 0}</b> Comments
+                                      </span>
+                                    </p>
+                                    <div
+                                      style={{
+                                        display: 'flex'
+                                      }}
                                     >
+                                      <div style={{ display: 'flex' }} className="ml20">
+                                        {project?.TeamMembers?.map(
+                                          (id: any, idx: any) => {
+                                            if (idx < 3) {
+                                              return (
+                                                <div style={{ width: '40px', marginLeft: '-7px' }} className="gfg_tooltip">
+                                                  <img
+                                                    style={{
+                                                      margin:
+                                                        index == 0
+                                                          ? "0 0 0 0"
+                                                          : "0 0 0px -12px",
+                                                      float: "left"
+                                                    }}
+                                                    src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+                                                    className="circlecssnew img-thumbnail avatar-xl"
+                                                    alt="profile-image"
+                                                  />
+                                                  <span className="gfg_text">
+                                                    {id?.Title}
+                                                  </span>
 
-                                      <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />  <b>{project.CommentsCount || 0}</b> Comments
-                                    </span>
-                                  </p>
-                                  <div
-                                    style={{
-                                      display: 'flex'
-                                    }}
-                                  >
-                                    <div style={{ display: 'flex' }} className="ml20">
-                                      {project?.TeamMembers?.map(
-                                        (id: any, idx: any) => {
-                                          if (idx < 3) {
-                                            return (
-                                              <div style={{ width: '40px', marginLeft: '-7px' }} className="gfg_tooltip">
-                                                <img
-                                                  style={{
-                                                    margin:
-                                                      index == 0
-                                                        ? "0 0 0 0"
-                                                        : "0 0 0px -12px",
-                                                    float: "left"
-                                                  }}
-                                                  src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                                                  className="circlecssnew img-thumbnail avatar-xl"
-                                                  alt="profile-image"
-                                                />
-                                                <span className="gfg_text">
-                                                  {id?.Title}
-                                                </span>
-
-                                              </div>
-                                            );
+                                                </div>
+                                              );
+                                            }
                                           }
-                                        }
-                                      )}
-                                      {/* {
+                                        )}
+                                        {/* {
                                         project?.TeamMembers?.length > 3 &&
 
                                         <div
@@ -1564,16 +1574,16 @@ const HelloWorldContext = ({ props }: any) => {
                                           </div>
                                         </div>
                                       } */}
-                                      {
-                                        project?.TeamMembers?.length > 3 &&
-                                        <div>
-                                          <div className="moreuser text-muted" >
-                                            +{project?.TeamMembers?.length - 3} more
+                                        {
+                                          project?.TeamMembers?.length > 3 &&
+                                          <div>
+                                            <div className="moreuser text-muted" >
+                                              +{project?.TeamMembers?.length - 3} more
+                                            </div>
                                           </div>
-                                        </div>
-                                      }
-                                    </div>
-                                    {/* {showDropdownId === project.Id && (
+                                        }
+                                      </div>
+                                      {/* {showDropdownId === project.Id && (
                                       <div
                                         className=""
                                         style={{
@@ -1613,103 +1623,103 @@ const HelloWorldContext = ({ props }: any) => {
                                         )}
                                       </div>
                                     )} */}
+                                    </div>
                                   </div>
                                 </div>
                               </div>
-                            </div>
-                          );
-                        } else if (project?.TeamMembersId?.includes(userId)) {
-                          return (
-                            <div key={index} className="col-lg-4 col-md-6 mb-0">
-                              <div className="card project-box">
-                                <div className="card-body">
-                                  <div className="dropdown float-end">
-                                    <a
-
-                                      className="dropdown-toggle card-drop arrow-none"
-                                      data-bs-toggle="dropdown"
-                                      aria-expanded="false"
-                                    >
-                                      <img className="morealign" src={require('../assets/more.png')} />
-                                    </a>
-                                    <div style={{ padding: "0px", top: "15px", minWidth: "auto", textAlign: "center" }} className="dropdown-menu newheight dropdown-menu-end">
+                            );
+                          } else if (project?.TeamMembersId?.includes(userId)) {
+                            return (
+                              <div key={index} className="col-lg-4 col-md-6 mb-0">
+                                <div className="card project-box">
+                                  <div className="card-body">
+                                    <div className="dropdown float-end">
                                       <a
-                                        className="dropdown-item"
 
-                                        onClick={() => handleDelete(project.Id)}
+                                        className="dropdown-toggle card-drop arrow-none"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false"
                                       >
-                                        Delete
+                                        <img className="morealign" src={require('../assets/more.png')} />
                                       </a>
-                                      <a
-                                        className="dropdown-item"
+                                      <div style={{ padding: "0px", top: "15px", minWidth: "auto", textAlign: "center" }} className="dropdown-menu newheight dropdown-menu-end">
+                                        <a
+                                          className="dropdown-item"
 
-                                        onClick={() => GotoNextPage(project)}
-                                      >
-                                        View Detail
-                                      </a>
+                                          onClick={() => handleDelete(project.Id)}
+                                        >
+                                          Delete
+                                        </a>
+                                        <a
+                                          className="dropdown-item"
+
+                                          onClick={() => GotoNextPage(project)}
+                                        >
+                                          View Detail
+                                        </a>
+                                      </div>
                                     </div>
-                                  </div>
 
-                                  {/* Title */}
-                                  <h4 className="mt-0 mb-1 newalignv">
-                                    <a
-                                      onClick={() => GotoNextPage(project)}
-                                      className="text-dark fw-bold font-16"
-                                    >
-                                      {project.ProjectName}
+                                    {/* Title */}
+                                    <h4 className="mt-0 mb-1 newalignv">
+                                      <a
+                                        onClick={() => GotoNextPage(project)}
+                                        className="text-dark fw-bold font-16"
+                                      >
+                                        {project.ProjectName}
+                                      </a>
+                                    </h4>
+                                    <a>
+
+                                      {
+                                        project?.ProjectStatus === null
+                                          ? null // Don't display anything if ProjectStatus is null
+                                          : (
+                                            <a className="ongoing mb-3"
+                                              style={{
+                                                background: project?.ProjectStatus === 'Completed' ? '#cce7dc' : '#6c757d',
+                                                color: project?.ProjectStatus === 'Completed' ? '#008751' : '#fff',
+                                                padding: '5px',
+                                                borderRadius: '4px',
+                                                textDecoration: 'none'
+                                              }}
+                                            >
+                                              {project?.ProjectStatus === 'Ongoing' ? 'Ongoing' : 'Completed'}
+                                            </a>
+                                          )
+                                      }
                                     </a>
-                                  </h4>
-                                  <a>
+                                    <p
 
-                                    {
-                                      project?.ProjectStatus === null
-                                        ? null // Don't display anything if ProjectStatus is null
-                                        : (
-                                          <a className="ongoing mb-3"
-                                            style={{
-                                              background: project?.ProjectStatus === 'Completed' ? '#cce7dc' : '#6c757d',
-                                              color: project?.ProjectStatus === 'Completed' ? '#008751' : '#fff',
-                                              padding: '5px',
-                                              borderRadius: '4px',
-                                              textDecoration: 'none'
-                                            }}
-                                          >
-                                            {project?.ProjectStatus === 'Ongoing' ? 'Ongoing' : 'Completed'}
-                                          </a>
-                                        )
-                                    }
-                                  </a>
-                                  <p
-
-                                    className="date-color text-muted two-line font-14 mb-3 sp-line-2"
-                                  >
-
-                                    {truncateText(project.ProjectOverview, 100) ||
-                                      "No description available..."}{" "}
-
-                                  </p>
-                                  <p className="mb-1 text-muted font-12">
-                                    <span
-
-                                      className="pe-2 text-nowrap mb-1 d-inline-block"
+                                      className="date-color text-muted two-line font-14 mb-3 sp-line-2"
                                     >
 
-                                      <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} />     <b>
-                                        {/* {project?.ProjectsDocsId?.length} */}
-                                        {project?.FileCount}
+                                      {truncateText(project.ProjectOverview, 100) ||
+                                        "No description available..."}{" "}
+
+                                    </p>
+                                    <p className="mb-1 text-muted font-12">
+                                      <span
+
+                                        className="pe-2 text-nowrap mb-1 d-inline-block"
+                                      >
+
+                                        <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} />     <b>
+                                          {/* {project?.ProjectsDocsId?.length} */}
+                                          {project?.FileCount}
                                         </b> Documents
-                                    </span>
-                                    <span
+                                      </span>
+                                      <span
 
-                                      className="text-nowrap mb-1 d-inline-block"
-                                    >
+                                        className="text-nowrap mb-1 d-inline-block"
+                                      >
 
-                                      <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />   <b>{project.CommentsCount || 0}</b> Comments
-                                    </span>
-                                  </p>
+                                        <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />   <b>{project.CommentsCount || 0}</b> Comments
+                                      </span>
+                                    </p>
 
-                                  {/* Task info */}
-                                  {/* <p className="mb-1 font-12">
+                                    {/* Task info */}
+                                    {/* <p className="mb-1 font-12">
                               <span
                                 style={{ color: "#6e767e" }}
                                 className="pe-2 text-nowrap mb-1 d-inline-block"
@@ -1725,80 +1735,80 @@ const HelloWorldContext = ({ props }: any) => {
                                 <b>{project. CommentsCount || 0}</b> Comments
                               </span>
                             </p> */}
-                                  <div
-                                    style={{
+                                    <div
+                                      style={{
 
-                                      position: "relative",
-                                      display: 'flex'
-                                    }}
-                                  >
-                                    <div style={{ display: 'flex' }} className="ml20">
-                                      {project?.TeamMembers?.map(
-                                        (id: any, idx: any) => {
-                                          if (idx < 3) {
-                                            return (
-                                              <div style={{ width: '40px', marginLeft: '-7px' }} className="gfg_tooltip">
-                                                <img
-                                                  style={{
-                                                    margin:
-                                                      index == 0
-                                                        ? "0 0 0 0"
-                                                        : "0 0 0px -12px",
-                                                    float: "left"
-                                                  }}
-                                                  src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                                                  className="circlecssnew img-thumbnail avatar-xl"
-                                                  alt="profile-image"
-                                                />
-                                                <span className="gfg_text">
-                                                  {id?.Title}
-                                                </span>
+                                        position: "relative",
+                                        display: 'flex'
+                                      }}
+                                    >
+                                      <div style={{ display: 'flex' }} className="ml20">
+                                        {project?.TeamMembers?.map(
+                                          (id: any, idx: any) => {
+                                            if (idx < 3) {
+                                              return (
+                                                <div style={{ width: '40px', marginLeft: '-7px' }} className="gfg_tooltip">
+                                                  <img
+                                                    style={{
+                                                      margin:
+                                                        index == 0
+                                                          ? "0 0 0 0"
+                                                          : "0 0 0px -12px",
+                                                      float: "left"
+                                                    }}
+                                                    src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+                                                    className="circlecssnew img-thumbnail avatar-xl"
+                                                    alt="profile-image"
+                                                  />
+                                                  <span className="gfg_text">
+                                                    {id?.Title}
+                                                  </span>
 
-                                              </div>
-                                            );
+                                                </div>
+                                              );
+                                            }
                                           }
+                                        )}
+                                        {
+                                          project?.TeamMembers?.length > 3 &&
+
+                                          <div
+                                            className=""
+                                            onClick={() =>
+                                              toggleDropdown(project.Id)
+                                            }
+                                            key={project.Id}
+                                          >
+                                            <div
+                                              style={{
+                                                margin:
+                                                  index == 0
+                                                    ? "0 0 0 0"
+                                                    : "0 0 0px -12px",
+                                                float: "left",
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                position: 'relative',
+                                                width: '40px'
+
+                                              }}
+                                              className="circlecssnew mlnew0 text-center img-thumbnail avatar-xl"
+                                            >
+                                              +
+                                            </div>
+                                          </div>
                                         }
-                                      )}
+                                      </div>
                                       {
                                         project?.TeamMembers?.length > 3 &&
-
-                                        <div
-                                          className=""
-                                          onClick={() =>
-                                            toggleDropdown(project.Id)
-                                          }
-                                          key={project.Id}
-                                        >
-                                          <div
-                                            style={{
-                                              margin:
-                                                index == 0
-                                                  ? "0 0 0 0"
-                                                  : "0 0 0px -12px",
-                                              float: "left",
-                                              display: 'flex',
-                                              alignItems: 'center',
-                                              justifyContent: 'center',
-                                              position: 'relative',
-                                              width: '40px'
-
-                                            }}
-                                            className="circlecssnew mlnew0 text-center img-thumbnail avatar-xl"
-                                          >
-                                            +
+                                        <div>
+                                          <div className="moreuser text-muted" >
+                                            +{project?.TeamMembers?.length - 3} more
                                           </div>
                                         </div>
                                       }
-                                    </div>
-                                    {
-                                      project?.TeamMembers?.length > 3 &&
-                                      <div>
-                                        <div className="moreuser text-muted" >
-                                          +{project?.TeamMembers?.length - 3} more
-                                        </div>
-                                      </div>
-                                    }
-                                    {/* {showDropdownId === project.Id && (
+                                      {/* {showDropdownId === project.Id && (
                                       <div
                                         className=""
                                         style={{
@@ -1837,158 +1847,158 @@ const HelloWorldContext = ({ props }: any) => {
                                         )}
                                       </div>
                                     )} */}
+                                    </div>
                                   </div>
                                 </div>
                               </div>
-                            </div>
-                          );
-                        } else if (project?.TeamMembersId?.includes(userId) || project?.AuthorId == userId) {
-                          return (
-                            <div key={index} className="col-lg-4 col-md-6 mb-0">
-                              <div className="card project-box">
-                                <div className="card-body">
-                                  <div className="dropdown float-end">
-                                    <a
-                                      href="#"
-                                      className="dropdown-toggle card-drop arrow-none"
-                                      data-bs-toggle="dropdown"
-                                      aria-expanded="false"
-                                    >
-                                      <img className="morealign" src={require('../assets/more.png')} />
-                                    </a>
-                                    <div style={{ padding: "0px", top: "15px", minWidth: "auto", textAlign: "center" }} className="dropdown-menu newheight dropdown-menu-end">
+                            );
+                          } else if (project?.TeamMembersId?.includes(userId) || project?.AuthorId == userId) {
+                            return (
+                              <div key={index} className="col-lg-4 col-md-6 mb-0">
+                                <div className="card project-box">
+                                  <div className="card-body">
+                                    <div className="dropdown float-end">
                                       <a
-                                        className="dropdown-item"
                                         href="#"
-                                        onClick={() => handleDelete(project.Id)}
+                                        className="dropdown-toggle card-drop arrow-none"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false"
                                       >
-                                        Delete
+                                        <img className="morealign" src={require('../assets/more.png')} />
                                       </a>
-                                      <a
-                                        className="dropdown-item"
-                                        href="#"
-                                        onClick={() => GotoNextPage(project)}
-                                      >
-                                        View Detail
-                                      </a>
+                                      <div style={{ padding: "0px", top: "15px", minWidth: "auto", textAlign: "center" }} className="dropdown-menu newheight dropdown-menu-end">
+                                        <a
+                                          className="dropdown-item"
+                                          href="#"
+                                          onClick={() => handleDelete(project.Id)}
+                                        >
+                                          Delete
+                                        </a>
+                                        <a
+                                          className="dropdown-item"
+                                          href="#"
+                                          onClick={() => GotoNextPage(project)}
+                                        >
+                                          View Detail
+                                        </a>
+                                      </div>
                                     </div>
-                                  </div>
 
-                                  {/* Title */}
-                                  <h4 className="mt-0 mb-1 one-line">
-                                    <a
-                                      className="text-dark fw-bold font-16" onClick={() => GotoNextPage(project)}
-                                    >
-                                      {project.ProjectName ||
-                                        "Untitled Project"}
+                                    {/* Title */}
+                                    <h4 className="mt-0 mb-1 one-line">
+                                      <a
+                                        className="text-dark fw-bold font-16" onClick={() => GotoNextPage(project)}
+                                      >
+                                        {project.ProjectName ||
+                                          "Untitled Project"}
+                                      </a>
+                                    </h4>
+                                    <a>
+
+                                      {
+                                        project?.ProjectStatus === null
+                                          ? null // Don't display anything if ProjectStatus is null
+                                          : (
+                                            <a className="ongoing mb-3"
+                                              style={{
+                                                background: project?.ProjectStatus === 'Completed' ? '#cce7dc' : '#6c757d',
+                                                color: project?.ProjectStatus === 'Completed' ? '#008751' : '#fff',
+                                                padding: '5px',
+                                                borderRadius: '4px',
+                                                textDecoration: 'none'
+                                              }}
+                                            >
+                                              {project?.ProjectStatus === 'Ongoing' ? 'Ongoing' : 'Completed'}
+                                            </a>
+                                          )
+                                      }
                                     </a>
-                                  </h4>
-                                  <a>
-
-                                    {
-                                      project?.ProjectStatus === null
-                                        ? null // Don't display anything if ProjectStatus is null
-                                        : (
-                                          <a className="ongoing mb-3"
-                                            style={{
-                                              background: project?.ProjectStatus === 'Completed' ? '#cce7dc' : '#6c757d',
-                                              color: project?.ProjectStatus === 'Completed' ? '#008751' : '#fff',
-                                              padding: '5px',
-                                              borderRadius: '4px',
-                                              textDecoration: 'none'
-                                            }}
-                                          >
-                                            {project?.ProjectStatus === 'Ongoing' ? 'Ongoing' : 'Completed'}
-                                          </a>
-                                        )
-                                    }
-                                  </a>
-                                  {/* <div className="finish mb-2">
+                                    {/* <div className="finish mb-2">
                                     {project.status || "Finished"}
                                   </div> */}
 
-                                  {/* Description */}
-                                  <p
+                                    {/* Description */}
+                                    <p
 
-                                    className="date-color text-muted two-line font-14 mb-3 sp-line-2"
-                                  >
-                                    {truncateText(project.ProjectOverview, 100) ||
-                                      "No description available..."}{" "}
-                                    {/* <a
+                                      className="date-color text-muted two-line font-14 mb-3 sp-line-2"
+                                    >
+                                      {truncateText(project.ProjectOverview, 100) ||
+                                        "No description available..."}{" "}
+                                      {/* <a
                                       href="javascript:void(0);"
                                       className="fw-bold text-muted"
                                       onClick={() => GotoNextPage(project)}
                                     >
                                       view more
                                     </a> */}
-                                  </p>
+                                    </p>
 
-                                  {/* Task info */}
-                                  <p style={{ display: 'flex', gap: '10px' }} className="mb-1 text-muted font-12">
-                                    <span
+                                    {/* Task info */}
+                                    <p style={{ display: 'flex', gap: '10px' }} className="mb-1 text-muted font-12">
+                                      <span
 
-                                      className="pe-2 text-nowrap mb-1 d-inline-block"
-                                    >
+                                        className="pe-2 text-nowrap mb-1 d-inline-block"
+                                      >
 
-                                      <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} /> <b>
-                                        {/* {project?.ProjectsDocsId?.length} */}
-                                        {project?.FileCount}
+                                        <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} /> <b>
+                                          {/* {project?.ProjectsDocsId?.length} */}
+                                          {project?.FileCount}
                                         </b> Documents
-                                    </span>
-                                    <span
+                                      </span>
+                                      <span
 
-                                      className="text-nowrap mb-1 d-inline-block"
-                                    >
+                                        className="text-nowrap mb-1 d-inline-block"
+                                      >
 
-                                      <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />    <b>{project.CommentsCount || 0}</b> Comments
-                                    </span>
-                                  </p>
-                                  <div
-                                    style={{
-                                      display: 'flex'
-                                    }}
-                                  >
-                                    <div className="ml20">
-                                      {project?.TeamMembers?.map(
-                                        (id: any, idx: any) => {
-                                          if (idx < 3) {
-                                            return (
-                                              <div style={{ width: '40px', marginLeft: '-7px' }} className="gfg_tooltip">
-                                                <img
-                                                  style={{
-                                                    margin:
-                                                      index == 0
-                                                        ? "0 0 0 0"
-                                                        : "0 0 0px -12px",
-                                                    float: "left"
-                                                  }}
-                                                  src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                                                  className="circlecssnew img-thumbnail avatar-xl"
-                                                  alt="profile-image"
-                                                />
-                                                <span className="gfg_text">
-                                                  {id?.Title}
-                                                </span>
-
-                                              </div>
-                                            );
-                                          }
-                                        }
-                                      )}
-                                      {
-                                        project?.TeamMembers?.length > 3 &&
-                                        <div>
-                                          <div className="moreuser text-muted" >
-                                            +{project?.TeamMembers?.length - 3} more
-                                          </div>
-                                        </div>
-                                      }
-                                    </div>
+                                        <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />    <b>{project.CommentsCount || 0}</b> Comments
+                                      </span>
+                                    </p>
                                     <div
-                                      className=""
-                                      style={{ position: "relative" }}
+                                      style={{
+                                        display: 'flex'
+                                      }}
                                     >
-                                      {/* {showDropdownId === project.Id && (
+                                      <div className="ml20">
+                                        {project?.TeamMembers?.map(
+                                          (id: any, idx: any) => {
+                                            if (idx < 3) {
+                                              return (
+                                                <div style={{ width: '40px', marginLeft: '-7px' }} className="gfg_tooltip">
+                                                  <img
+                                                    style={{
+                                                      margin:
+                                                        index == 0
+                                                          ? "0 0 0 0"
+                                                          : "0 0 0px -12px",
+                                                      float: "left"
+                                                    }}
+                                                    src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+                                                    className="circlecssnew img-thumbnail avatar-xl"
+                                                    alt="profile-image"
+                                                  />
+                                                  <span className="gfg_text">
+                                                    {id?.Title}
+                                                  </span>
+
+                                                </div>
+                                              );
+                                            }
+                                          }
+                                        )}
+                                        {
+                                          project?.TeamMembers?.length > 3 &&
+                                          <div>
+                                            <div className="moreuser text-muted" >
+                                              +{project?.TeamMembers?.length - 3} more
+                                            </div>
+                                          </div>
+                                        }
+                                      </div>
+                                      <div
+                                        className=""
+                                        style={{ position: "relative" }}
+                                      >
+                                        {/* {showDropdownId === project.Id && (
                                         project?.TeamMembers?.map(
                                           (id: any, idx: any) => {
                                             return (
@@ -2014,31 +2024,31 @@ const HelloWorldContext = ({ props }: any) => {
                                           }
                                         )
                                       )} */}
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
                               </div>
-                            </div>
-                          );
-                        }
+                            );
+                          }
 
-                        return null;
-                      })}
-                      {/* {itemsToShow < Dataproject.length && (
+                          return null;
+                        })}
+                        {/* {itemsToShow < Dataproject.length && (
                         <div className="col-12 text-center mb-5 mt-3">
                           <button onClick={loadMore} className="btn btn-primary">
                             Load More
                           </button>
                         </div>
                       )} */}
-                    </div>
-                  ) : (
-                    // <p>Loading projects...</p>
-                    <div className="loadernewadd">
-                      <span>No Project found </span>{" "}                  
-                    </div>
-                  ))
-            }
+                      </div>
+                    ) : (
+                      // <p>Loading projects...</p>
+                      <div className="loadernewadd">
+                        <span>No Project found </span>{" "}
+                      </div>
+                    ))
+                  }
                 </div>
               </div>
             )}
@@ -2048,127 +2058,127 @@ const HelloWorldContext = ({ props }: any) => {
                   {/* Map through the projects array and display a card for each */}
                   {loading ? (<div className="loadernewadd">
                     <div>
-                    <img style={{width:'60px'}}
-                            src={require("../../../CustomAsset/birdloader.gif")}
-                            className="alignrightl"
-                            alt="Loading..."
-                          />
-                        </div>
-                      <span>Loading </span>{" "}
-                      <span>
-                      <img style={{width:'35px'}}
-                          src={require("../assets/argloader.gif")}
-                          className="alignrightl"
-                          alt="Loading..."
-                        />
-                      </span>
-                    </div>):
-                  (Dataproject.length > 0 ? (
-                    <div className="row">
-                      {Dataproject.slice(0, itemsToShow).map((project: any, index: any) => {
-                        if (project?.AuthorId == userId) {
-                          return (
-                            <div key={index} className="col-lg-4 col-md-6 mb-0">
-                              <div className="card project-box">
-                                <div className="card-body">
-                                  <div className="dropdown float-end">
-                                    <a
-
-                                      className="dropdown-toggle card-drop arrow-none"
-                                      data-bs-toggle="dropdown"
-                                      aria-expanded="false"
-                                    >
-                                      <img className="morealign" src={require('../assets/more.png')} />
-                                    </a>
-                                    <div style={{ padding: "0px", top: "15px", minWidth: "auto", textAlign: "center" }} className="dropdown-menu newheight dropdown-menu-end">
+                      <img style={{ width: '60px' }}
+                        src={require("../../../CustomAsset/birdloader.gif")}
+                        className="alignrightl"
+                        alt="Loading..."
+                      />
+                    </div>
+                    <span>Loading </span>{" "}
+                    <span>
+                      <img style={{ width: '35px' }}
+                        src={require("../assets/argloader.gif")}
+                        className="alignrightl"
+                        alt="Loading..."
+                      />
+                    </span>
+                  </div>) :
+                    (Dataproject.length > 0 ? (
+                      <div className="row">
+                        {Dataproject.slice(0, itemsToShow).map((project: any, index: any) => {
+                          if (project?.AuthorId == userId) {
+                            return (
+                              <div key={index} className="col-lg-4 col-md-6 mb-0">
+                                <div className="card project-box">
+                                  <div className="card-body">
+                                    <div className="dropdown float-end">
                                       <a
-                                        className="dropdown-item"
 
-                                        onClick={() => handleDelete(project.Id)}
+                                        className="dropdown-toggle card-drop arrow-none"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false"
                                       >
-                                        Delete
+                                        <img className="morealign" src={require('../assets/more.png')} />
                                       </a>
-                                      <a
-                                        className="dropdown-item"
-
-                                        onClick={() => GotoNextPage(project)}
-                                      >
-                                        View Detail
-                                      </a>
-                                      {project?.ProjectStatus === 'Ongoing' &&
+                                      <div style={{ padding: "0px", top: "15px", minWidth: "auto", textAlign: "center" }} className="dropdown-menu newheight dropdown-menu-end">
                                         <a
                                           className="dropdown-item"
 
-                                          onClick={() => UpdatProject(project.Id)}
+                                          onClick={() => handleDelete(project.Id)}
                                         >
-                                          Mark Completed
+                                          Delete
                                         </a>
-                                      }
-                                    </div>
-                                  </div>
+                                        <a
+                                          className="dropdown-item"
 
-                                  {/* Title */}
-                                  <h4 className="mt-0 mb-1 one-line">
-                                    <a onClick={() => GotoNextPage(project)}
+                                          onClick={() => GotoNextPage(project)}
+                                        >
+                                          View Detail
+                                        </a>
+                                        {project?.ProjectStatus === 'Ongoing' &&
+                                          <a
+                                            className="dropdown-item"
 
-                                      className="text-dark fw-bold font-16"
-                                    >
-                                      {project.ProjectName}
-                                    </a>
-                                  </h4>
-
-
-                                  <a>
-
-                                    {
-                                      project?.ProjectStatus === null
-                                        ? null // Don't display anything if ProjectStatus is null
-                                        : (
-                                          <a className="ongoing mb-3"
-                                            style={{
-                                              background: project?.ProjectStatus === 'Completed' ? '#cce7dc' : '#6c757d',
-                                              color: project?.ProjectStatus === 'Completed' ? '#008751' : '#fff',
-                                              padding: '5px',
-                                              borderRadius: '4px',
-                                              textDecoration: 'none'
-                                            }}
+                                            onClick={() => UpdatProject(project.Id)}
                                           >
-                                            {project?.ProjectStatus === 'Ongoing' ? 'Ongoing' : 'Completed'}
+                                            Mark Completed
                                           </a>
-                                        )
-                                    }
-                                  </a>
-                                  <p
+                                        }
+                                      </div>
+                                    </div>
 
-                                    className="date-color two-line text-muted font-14 mb-3 sp-line-2"
-                                  >
+                                    {/* Title */}
+                                    <h4 className="mt-0 mb-1 one-line">
+                                      <a onClick={() => GotoNextPage(project)}
 
-                                    {truncateText(project.ProjectOverview, 100) ||
-                                      "No description available..."}{" "}
+                                        className="text-dark fw-bold font-16"
+                                      >
+                                        {project.ProjectName}
+                                      </a>
+                                    </h4>
 
-                                  </p>
 
-                                  <p className="mb-1 font-12">
-                                    <span
+                                    <a>
 
-                                      className="pe-2 text-muted text-nowrap mb-1 d-inline-block"
+                                      {
+                                        project?.ProjectStatus === null
+                                          ? null // Don't display anything if ProjectStatus is null
+                                          : (
+                                            <a className="ongoing mb-3"
+                                              style={{
+                                                background: project?.ProjectStatus === 'Completed' ? '#cce7dc' : '#6c757d',
+                                                color: project?.ProjectStatus === 'Completed' ? '#008751' : '#fff',
+                                                padding: '5px',
+                                                borderRadius: '4px',
+                                                textDecoration: 'none'
+                                              }}
+                                            >
+                                              {project?.ProjectStatus === 'Ongoing' ? 'Ongoing' : 'Completed'}
+                                            </a>
+                                          )
+                                      }
+                                    </a>
+                                    <p
+
+                                      className="date-color two-line text-muted font-14 mb-3 sp-line-2"
                                     >
 
-                                      <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} />  <b>
-                                        {/* {project?.ProjectsDocsId?.length} */}
-                                        {project?.FileCount}
+                                      {truncateText(project.ProjectOverview, 100) ||
+                                        "No description available..."}{" "}
+
+                                    </p>
+
+                                    <p className="mb-1 font-12">
+                                      <span
+
+                                        className="pe-2 text-muted text-nowrap mb-1 d-inline-block"
+                                      >
+
+                                        <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} />  <b>
+                                          {/* {project?.ProjectsDocsId?.length} */}
+                                          {project?.FileCount}
                                         </b> Documents
-                                    </span>
-                                    <span
+                                      </span>
+                                      <span
 
-                                      className="text-nowrap mb-1 d-inline-block"
-                                    >
-                                      <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />
-                                      <b>{project.CommentsCount || 0}</b> Comments
-                                    </span>
-                                  </p>
-                                  {/* Task info */}
-                                  {/* <p className="mb-1 font-12">
+                                        className="text-nowrap mb-1 d-inline-block"
+                                      >
+                                        <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />
+                                        <b>{project.CommentsCount || 0}</b> Comments
+                                      </span>
+                                    </p>
+                                    {/* Task info */}
+                                    {/* <p className="mb-1 font-12">
                               <span
                                 style={{ color: "#6e767e" }}
                                 className="pe-2 text-nowrap mb-1 d-inline-block"
@@ -2184,41 +2194,41 @@ const HelloWorldContext = ({ props }: any) => {
                                 <b>{project. CommentsCount || 0}</b> Comments
                               </span>
                             </p> */}
-                                  <div
-                                    style={{
+                                    <div
+                                      style={{
 
-                                      position: "relative",
-                                      display: 'flex'
-                                    }}
-                                  >
-                                    <div style={{ display: 'flex' }} className="ml20">
-                                      {project?.TeamMembers?.map(
-                                        (id: any, idx: any) => {
-                                          if (idx < 3) {
-                                            return (
-                                              <div style={{ width: '40px', marginLeft: '-7px' }} className="gfg_tooltip">
-                                                <img
-                                                  style={{
-                                                    margin:
-                                                      index == 0
-                                                        ? "0 0 0 0"
-                                                        : "0 0 0px -12px",
-                                                    float: "left"
-                                                  }}
-                                                  src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                                                  className="circlecssnew img-thumbnail avatar-xl"
-                                                  alt="profile-image"
-                                                />
-                                                <span className="gfg_text">
-                                                  {id?.Title}
-                                                </span>
+                                        position: "relative",
+                                        display: 'flex'
+                                      }}
+                                    >
+                                      <div style={{ display: 'flex' }} className="ml20">
+                                        {project?.TeamMembers?.map(
+                                          (id: any, idx: any) => {
+                                            if (idx < 3) {
+                                              return (
+                                                <div style={{ width: '40px', marginLeft: '-7px' }} className="gfg_tooltip">
+                                                  <img
+                                                    style={{
+                                                      margin:
+                                                        index == 0
+                                                          ? "0 0 0 0"
+                                                          : "0 0 0px -12px",
+                                                      float: "left"
+                                                    }}
+                                                    src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+                                                    className="circlecssnew img-thumbnail avatar-xl"
+                                                    alt="profile-image"
+                                                  />
+                                                  <span className="gfg_text">
+                                                    {id?.Title}
+                                                  </span>
 
-                                              </div>
-                                            );
+                                                </div>
+                                              );
+                                            }
                                           }
-                                        }
-                                      )}
-                                      {/* {
+                                        )}
+                                        {/* {
                                         project?.TeamMembers?.length > 3 &&
 
                                         <div
@@ -2248,19 +2258,19 @@ const HelloWorldContext = ({ props }: any) => {
                                           </div>
                                         </div>
                                       } */}
-                                      {
-                                        project?.TeamMembers?.length > 3 &&
+                                        {
+                                          project?.TeamMembers?.length > 3 &&
 
-                                        <div
-                                          className=""
-                                        >
-                                          <div className="moreuser text-muted">
-                                            +{project?.TeamMembers?.length - 3} more
+                                          <div
+                                            className=""
+                                          >
+                                            <div className="moreuser text-muted">
+                                              +{project?.TeamMembers?.length - 3} more
+                                            </div>
                                           </div>
-                                        </div>
-                                      }
-                                    </div>
-                                    {/* {showDropdownId === project.Id && (
+                                        }
+                                      </div>
+                                      {/* {showDropdownId === project.Id && (
                                       <div
                                         className=""
                                         style={{
@@ -2301,28 +2311,28 @@ const HelloWorldContext = ({ props }: any) => {
                                         )}
                                       </div>
                                     )} */}
+                                    </div>
                                   </div>
                                 </div>
                               </div>
-                            </div>
-                          );
-                        }
-                        return null;
-                      })}
-                      {itemsToShow < Dataproject.length && (
-                        <div className="col-12 text-center mb-5 mt-3">
-                          <button onClick={loadMore} className="btn btn-primary">
-                            Load More
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  ) : (
-                   <div className="loadernewadd">
-                    <span>No Project found </span>{" "}                  
-                  </div>
-                  ))
-                }
+                            );
+                          }
+                          return null;
+                        })}
+                        {itemsToShow < Dataproject.length && (
+                          <div className="col-12 text-center mb-5 mt-3">
+                            <button onClick={loadMore} className="btn btn-primary">
+                              Load More
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="loadernewadd">
+                        <span>No Project found </span>{" "}
+                      </div>
+                    ))
+                  }
                 </div>
               </div>
             )}
@@ -2332,130 +2342,130 @@ const HelloWorldContext = ({ props }: any) => {
                   {/* Map through the projects array and display a card for each */}
                   {loading ? (<div className="loadernewadd">
                     <div>
-                    <img style={{width:'60px'}}
-                            src={require("../../../CustomAsset/birdloader.gif")}
-                            className="alignrightl"
-                            alt="Loading..."
-                          />
-                        </div>
-                      <span>Loading </span>{" "}
-                      <span>
-                      <img style={{width:'35px'}}
-                          src={require("../assets/argloader.gif")}
-                          className="alignrightl"
-                          alt="Loading..."
-                        />
-                      </span>
-                    </div>):
-                  (Dataproject.length > 0 ? (
-                    <div className="row">
-                      {Dataproject.map((project, index) => {
-                        if (project?.TeamMembersId?.includes(userId)) {
-                          return (
-                            <div key={index} className="col-lg-4 col-md-6 mb-0">
-                              <div className="card project-box">
-                                <div className="card-body">
-                                  <div className="dropdown float-end">
-                                    <a
-
-                                      className="dropdown-toggle card-drop arrow-none"
-                                      data-bs-toggle="dropdown"
-                                      aria-expanded="false"
-                                    >
-                                      <img className="morealign" src={require('../assets/more.png')} />
-                                      {/* <i className="fe-more-horizontal- m-0 text-muted h3"></i> */}
-                                    </a>
-                                    <div style={{ padding: "0px", top: "15px", minWidth: "auto", textAlign: "center" }} className="dropdown-menu newheight dropdown-menu-end">
+                      <img style={{ width: '60px' }}
+                        src={require("../../../CustomAsset/birdloader.gif")}
+                        className="alignrightl"
+                        alt="Loading..."
+                      />
+                    </div>
+                    <span>Loading </span>{" "}
+                    <span>
+                      <img style={{ width: '35px' }}
+                        src={require("../assets/argloader.gif")}
+                        className="alignrightl"
+                        alt="Loading..."
+                      />
+                    </span>
+                  </div>) :
+                    (Dataproject.length > 0 ? (
+                      <div className="row">
+                        {Dataproject.map((project, index) => {
+                          if (project?.TeamMembersId?.includes(userId)) {
+                            return (
+                              <div key={index} className="col-lg-4 col-md-6 mb-0">
+                                <div className="card project-box">
+                                  <div className="card-body">
+                                    <div className="dropdown float-end">
                                       <a
-                                        className="dropdown-item"
 
-                                        onClick={() => handleDelete(project.Id)}
+                                        className="dropdown-toggle card-drop arrow-none"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false"
                                       >
-                                        Delete
+                                        <img className="morealign" src={require('../assets/more.png')} />
+                                        {/* <i className="fe-more-horizontal- m-0 text-muted h3"></i> */}
                                       </a>
-                                      <a
-                                        className="dropdown-item"
-
-                                        onClick={() => GotoNextPage(project)}
-                                      >
-                                        View Detail
-                                      </a>
-                                      {project?.ProjectStatus === 'Ongoing' &&
+                                      <div style={{ padding: "0px", top: "15px", minWidth: "auto", textAlign: "center" }} className="dropdown-menu newheight dropdown-menu-end">
                                         <a
                                           className="dropdown-item"
 
-                                          onClick={() => UpdatProject(project.Id)}
+                                          onClick={() => handleDelete(project.Id)}
                                         >
-                                          Mark Completed
+                                          Delete
                                         </a>
-                                      }
-                                    </div>
-                                  </div>
+                                        <a
+                                          className="dropdown-item"
 
-                                  {/* Title */}
-                                  <h4 className="mt-0 mb-1">
-                                    <a
-                                      onClick={() => GotoNextPage(project)}
-                                      className="text-dark fw-bold font-16"
-                                    >
-                                      {project.ProjectName ||
-                                        "Untitled Project"}
-                                    </a>
-                                  </h4>
+                                          onClick={() => GotoNextPage(project)}
+                                        >
+                                          View Detail
+                                        </a>
+                                        {project?.ProjectStatus === 'Ongoing' &&
+                                          <a
+                                            className="dropdown-item"
 
-                                  <a>
-
-                                    {
-                                      project?.ProjectStatus === null
-                                        ? null // Don't display anything if ProjectStatus is null
-                                        : (
-                                          <a className="ongoing mb-3"
-                                            style={{
-                                              background: project?.ProjectStatus === 'Completed' ? '#cce7dc' : '#6c757d',
-                                              color: project?.ProjectStatus === 'Completed' ? '#008751' : '#fff',
-                                              padding: '5px',
-                                              borderRadius: '4px',
-                                              textDecoration: 'none'
-                                            }}
+                                            onClick={() => UpdatProject(project.Id)}
                                           >
-                                            {project?.ProjectStatus === 'Ongoing' ? 'Ongoing' : 'Completed'}
+                                            Mark Completed
                                           </a>
-                                        )
-                                    }
-                                  </a>
+                                        }
+                                      </div>
+                                    </div>
 
-                                  <p
+                                    {/* Title */}
+                                    <h4 className="mt-0 mb-1">
+                                      <a
+                                        onClick={() => GotoNextPage(project)}
+                                        className="text-dark fw-bold font-16"
+                                      >
+                                        {project.ProjectName ||
+                                          "Untitled Project"}
+                                      </a>
+                                    </h4>
 
-                                    className="date-color text-muted two-line font-14 mb-3 sp-line-2"
-                                  >
+                                    <a>
 
-                                    {truncateText(project.ProjectOverview, 100) ||
-                                      "No description available..."}{" "}
+                                      {
+                                        project?.ProjectStatus === null
+                                          ? null // Don't display anything if ProjectStatus is null
+                                          : (
+                                            <a className="ongoing mb-3"
+                                              style={{
+                                                background: project?.ProjectStatus === 'Completed' ? '#cce7dc' : '#6c757d',
+                                                color: project?.ProjectStatus === 'Completed' ? '#008751' : '#fff',
+                                                padding: '5px',
+                                                borderRadius: '4px',
+                                                textDecoration: 'none'
+                                              }}
+                                            >
+                                              {project?.ProjectStatus === 'Ongoing' ? 'Ongoing' : 'Completed'}
+                                            </a>
+                                          )
+                                      }
+                                    </a>
 
-                                  </p>
+                                    <p
 
-                                  <p className="mb-1 font-12">
-                                    <span
-
-                                      className="pe-2 text-muted text-nowrap mb-1 d-inline-block"
+                                      className="date-color text-muted two-line font-14 mb-3 sp-line-2"
                                     >
-                                      <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} />
-                                      <b>
-                                        {/* {project?.ProjectsDocsId?.length} */}
-                                        {project?.FileCount}
+
+                                      {truncateText(project.ProjectOverview, 100) ||
+                                        "No description available..."}{" "}
+
+                                    </p>
+
+                                    <p className="mb-1 font-12">
+                                      <span
+
+                                        className="pe-2 text-muted text-nowrap mb-1 d-inline-block"
+                                      >
+                                        <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} />
+                                        <b>
+                                          {/* {project?.ProjectsDocsId?.length} */}
+                                          {project?.FileCount}
                                         </b> Documents
-                                    </span>
-                                    <span
+                                      </span>
+                                      <span
 
-                                      className="text-nowrap mb-1 d-inline-block"
-                                    >
+                                        className="text-nowrap mb-1 d-inline-block"
+                                      >
 
-                                      <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />   <b>{project.CommentsCount || 0}</b> Comments
-                                    </span>
-                                  </p>
+                                        <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />   <b>{project.CommentsCount || 0}</b> Comments
+                                      </span>
+                                    </p>
 
-                                  {/* Task info */}
-                                  {/* <p className="mb-1 font-12">
+                                    {/* Task info */}
+                                    {/* <p className="mb-1 font-12">
                               <span
                                 style={{ color: "#6e767e" }}
                                 className="pe-2 text-nowrap mb-1 d-inline-block"
@@ -2471,41 +2481,41 @@ const HelloWorldContext = ({ props }: any) => {
                                 <b>{project. CommentsCount || 0}</b> Comments
                               </span>
                             </p> */}
-                                  <div
-                                    style={{
+                                    <div
+                                      style={{
 
-                                      position: "relative",
-                                      display: 'flex'
-                                    }}
-                                  >
-                                    <div style={{ display: 'flex' }} className="ml20">
-                                      {project?.TeamMembers?.map(
-                                        (id: any, idx: any) => {
-                                          if (idx < 3) {
-                                            return (
-                                              <div style={{ width: '40px', marginLeft: '-7px' }} className="gfg_tooltip">
-                                                <img
-                                                  style={{
-                                                    margin:
-                                                      index == 0
-                                                        ? "0 0 0 0"
-                                                        : "0 0 0px -12px",
-                                                    float: "left"
-                                                  }}
-                                                  src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                                                  className="rounded-circlecss img-thumbnail avatar-xl"
-                                                  alt="profile-image"
-                                                />
-                                                <span className="gfg_text">
-                                                  {id?.Title}
-                                                </span>
+                                        position: "relative",
+                                        display: 'flex'
+                                      }}
+                                    >
+                                      <div style={{ display: 'flex' }} className="ml20">
+                                        {project?.TeamMembers?.map(
+                                          (id: any, idx: any) => {
+                                            if (idx < 3) {
+                                              return (
+                                                <div style={{ width: '40px', marginLeft: '-7px' }} className="gfg_tooltip">
+                                                  <img
+                                                    style={{
+                                                      margin:
+                                                        index == 0
+                                                          ? "0 0 0 0"
+                                                          : "0 0 0px -12px",
+                                                      float: "left"
+                                                    }}
+                                                    src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+                                                    className="rounded-circlecss img-thumbnail avatar-xl"
+                                                    alt="profile-image"
+                                                  />
+                                                  <span className="gfg_text">
+                                                    {id?.Title}
+                                                  </span>
 
-                                              </div>
-                                            );
+                                                </div>
+                                              );
+                                            }
                                           }
-                                        }
-                                      )}
-                                      {/* {
+                                        )}
+                                        {/* {
                                         project?.TeamMembers?.length > 3 &&
 
                                         <div
@@ -2531,19 +2541,19 @@ const HelloWorldContext = ({ props }: any) => {
                                           </div>
                                         </div>
                                       } */}
-                                      {
-                                        project?.TeamMembers?.length > 3 &&
+                                        {
+                                          project?.TeamMembers?.length > 3 &&
 
-                                        <div className="moreuser text-muted"
-                                        >
-                                          <div
+                                          <div className="moreuser text-muted"
                                           >
-                                            +{project?.TeamMembers?.length - 3} more
+                                            <div
+                                            >
+                                              +{project?.TeamMembers?.length - 3} more
+                                            </div>
                                           </div>
-                                        </div>
-                                      }
-                                    </div>
-                                    {/* {showDropdownId === project.Id && (
+                                        }
+                                      </div>
+                                      {/* {showDropdownId === project.Id && (
                                       <div
                                         className=""
                                         style={{
@@ -2583,29 +2593,29 @@ const HelloWorldContext = ({ props }: any) => {
                                         )}
                                       </div>
                                     )} */}
+                                    </div>
                                   </div>
                                 </div>
                               </div>
-                            </div>
-                          );
-                        }
+                            );
+                          }
 
-                        return null;
-                      })}
-                      {itemsToShow < Dataproject.length && (
-                        <div className="col-12 text-center mb-5 mt-3">
-                          <button onClick={loadMore} className="btn btn-primary">
-                            Load More
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  ) : (
-                    <div className="loadernewadd">
-                      <span>No Project found </span>{" "}                  
-                    </div>
-                  ))
-                }
+                          return null;
+                        })}
+                        {itemsToShow < Dataproject.length && (
+                          <div className="col-12 text-center mb-5 mt-3">
+                            <button onClick={loadMore} className="btn btn-primary">
+                              Load More
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="loadernewadd">
+                        <span>No Project found </span>{" "}
+                      </div>
+                    ))
+                  }
                 </div>
               </div>
             )}
@@ -2615,131 +2625,131 @@ const HelloWorldContext = ({ props }: any) => {
                   {/* Map through the projects array and display a card for each */}
                   {loading ? (<div className="loadernewadd">
                     <div>
-                    <img style={{width:'60px'}}
-                            src={require("../../../CustomAsset/birdloader.gif")}
-                            className="alignrightl"
-                            alt="Loading..."
-                          />
-                        </div>
-                      <span>Loading </span>{" "}
-                      <span>
-                      <img style={{width:'35px'}}
-                          src={require("../assets/argloader.gif")}
-                          className="alignrightl"
-                          alt="Loading..."
-                        />
-                      </span>
-                    </div>):
-                  (Dataproject.length > 0 ? (
+                      <img style={{ width: '60px' }}
+                        src={require("../../../CustomAsset/birdloader.gif")}
+                        className="alignrightl"
+                        alt="Loading..."
+                      />
+                    </div>
+                    <span>Loading </span>{" "}
+                    <span>
+                      <img style={{ width: '35px' }}
+                        src={require("../assets/argloader.gif")}
+                        className="alignrightl"
+                        alt="Loading..."
+                      />
+                    </span>
+                  </div>) :
+                    (Dataproject.length > 0 ? (
 
-                    <div className="row">
-                      {Dataproject.map((project, index) => {
-                        if(project?.TeamMembersId?.includes(userId) || project?.AuthorId == userId){
-                        if (project?.ProjectStatus === "Ongoing") {
-                          return (
-                            <div key={index} className="col-lg-4 col-md-6 mb-0">
-                              <div className="card project-box">
-                                <div className="card-body">
-                                  <div className="dropdown float-end">
-                                    <a
+                      <div className="row">
+                        {Dataproject.map((project, index) => {
+                          if (project?.TeamMembersId?.includes(userId) || project?.AuthorId == userId) {
+                            if (project?.ProjectStatus === "Ongoing") {
+                              return (
+                                <div key={index} className="col-lg-4 col-md-6 mb-0">
+                                  <div className="card project-box">
+                                    <div className="card-body">
+                                      <div className="dropdown float-end">
+                                        <a
 
-                                      className="dropdown-toggle card-drop arrow-none"
-                                      data-bs-toggle="dropdown"
-                                      aria-expanded="false"
-                                    >
-                                      <img className="morealign" src={require('../assets/more.png')} />
-                                    </a>
-                                    <div style={{ padding: "0px", top: "15px", minWidth: "auto", textAlign: "center" }} className="dropdown-menu newheight dropdown-menu-end">
-                                      <a
-                                        className="dropdown-item"
-
-                                        onClick={() => handleDelete(project.Id)}
-                                      >
-                                        Delete
-                                      </a>
-                                      <a
-                                        className="dropdown-item"
-
-                                        onClick={() => GotoNextPage(project)}
-                                      >
-                                        View Detail
-                                      </a>
-                                      {project?.AuthorId === userId && project?.ProjectStatus === 'Ongoing' &&
-                                        (
+                                          className="dropdown-toggle card-drop arrow-none"
+                                          data-bs-toggle="dropdown"
+                                          aria-expanded="false"
+                                        >
+                                          <img className="morealign" src={require('../assets/more.png')} />
+                                        </a>
+                                        <div style={{ padding: "0px", top: "15px", minWidth: "auto", textAlign: "center" }} className="dropdown-menu newheight dropdown-menu-end">
                                           <a
                                             className="dropdown-item"
-                                            onClick={() => UpdatProject(project.Id)}
+
+                                            onClick={() => handleDelete(project.Id)}
                                           >
-                                            Mark Completed
+                                            Delete
                                           </a>
-                                        )}
-                                    </div>
-                                  </div>
+                                          <a
+                                            className="dropdown-item"
 
-                                  {/* Title */}
-                                  <h4 className="mt-0 mb-1 one-line">
-                                    <a
-                                      onClick={() => GotoNextPage(project)}
-                                      className="text-dark fw-bold font-16"
-                                    >
-                                      {project.ProjectName ||
-                                        "Untitled Project"}
-                                    </a>
-                                  </h4>
-
-                                  <a>
-
-                                    {
-                                      project?.ProjectStatus === null
-                                        ? null // Don't display anything if ProjectStatus is null
-                                        : (
-                                          <a className="ongoing mb-3"
-                                            style={{
-                                              background: project?.ProjectStatus === 'Completed' ? '#cce7dc' : '#6c757d',
-                                              color: project?.ProjectStatus === 'Completed' ? '#008751' : '#fff',
-                                              padding: '5px',
-                                              borderRadius: '4px',
-                                              textDecoration: 'none'
-                                            }}
+                                            onClick={() => GotoNextPage(project)}
                                           >
-                                            {project?.ProjectStatus === 'Ongoing' ? 'Ongoing' : 'Completed'}
+                                            View Detail
                                           </a>
-                                        )
-                                    }
-                                  </a>
+                                          {project?.AuthorId === userId && project?.ProjectStatus === 'Ongoing' &&
+                                            (
+                                              <a
+                                                className="dropdown-item"
+                                                onClick={() => UpdatProject(project.Id)}
+                                              >
+                                                Mark Completed
+                                              </a>
+                                            )}
+                                        </div>
+                                      </div>
 
-                                  <p
+                                      {/* Title */}
+                                      <h4 className="mt-0 mb-1 one-line">
+                                        <a
+                                          onClick={() => GotoNextPage(project)}
+                                          className="text-dark fw-bold font-16"
+                                        >
+                                          {project.ProjectName ||
+                                            "Untitled Project"}
+                                        </a>
+                                      </h4>
 
-                                    className="date-color text-muted two-line font-14 mb-3 sp-line-2"
-                                  >
+                                      <a>
 
-                                    {truncateText(project.ProjectOverview, 100) ||
-                                      "No description available..."}{" "}
+                                        {
+                                          project?.ProjectStatus === null
+                                            ? null // Don't display anything if ProjectStatus is null
+                                            : (
+                                              <a className="ongoing mb-3"
+                                                style={{
+                                                  background: project?.ProjectStatus === 'Completed' ? '#cce7dc' : '#6c757d',
+                                                  color: project?.ProjectStatus === 'Completed' ? '#008751' : '#fff',
+                                                  padding: '5px',
+                                                  borderRadius: '4px',
+                                                  textDecoration: 'none'
+                                                }}
+                                              >
+                                                {project?.ProjectStatus === 'Ongoing' ? 'Ongoing' : 'Completed'}
+                                              </a>
+                                            )
+                                        }
+                                      </a>
 
-                                  </p>
+                                      <p
 
-                                  <p className="mb-1 text-muted font-12">
-                                    <span
+                                        className="date-color text-muted two-line font-14 mb-3 sp-line-2"
+                                      >
 
-                                      className="pe-2 text-nowrap mb-1 d-inline-block"
-                                    >
-                                      <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} />
-                                      <b>
-                                        {/* {project?.ProjectsDocsId?.length} */}
-                                        {project?.FileCount}
-                                        </b> Documents
-                                    </span>
-                                    <span
+                                        {truncateText(project.ProjectOverview, 100) ||
+                                          "No description available..."}{" "}
 
-                                      className="text-nowrap mb-1 d-inline-block"
-                                    >
-                                      <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />
-                                      <b>{project.CommentsCount || 0}</b> Comments
-                                    </span>
-                                  </p>
+                                      </p>
 
-                                  {/* Task info */}
-                                  {/* <p className="mb-1 font-12">
+                                      <p className="mb-1 text-muted font-12">
+                                        <span
+
+                                          className="pe-2 text-nowrap mb-1 d-inline-block"
+                                        >
+                                          <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} />
+                                          <b>
+                                            {/* {project?.ProjectsDocsId?.length} */}
+                                            {project?.FileCount}
+                                          </b> Documents
+                                        </span>
+                                        <span
+
+                                          className="text-nowrap mb-1 d-inline-block"
+                                        >
+                                          <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />
+                                          <b>{project.CommentsCount || 0}</b> Comments
+                                        </span>
+                                      </p>
+
+                                      {/* Task info */}
+                                      {/* <p className="mb-1 font-12">
                               <span
                                 style={{ color: "#6e767e" }}
                                 className="pe-2 text-nowrap mb-1 d-inline-block"
@@ -2755,41 +2765,41 @@ const HelloWorldContext = ({ props }: any) => {
                                 <b>{project. CommentsCount || 0}</b> Comments
                               </span>
                             </p> */}
-                                  <div
-                                    style={{
+                                      <div
+                                        style={{
 
-                                      position: "relative",
-                                      display: 'flex'
-                                    }}
-                                  >
-                                    <div style={{ display: 'flex' }} className="ml20">
-                                      {project?.TeamMembers?.map(
-                                        (id: any, idx: any) => {
-                                          if (idx < 3) {
-                                            return (
-                                              <div style={{ width: '40px', marginLeft: '-7px' }} className="gfg_tooltip">
-                                                <img
-                                                  style={{
-                                                    margin:
-                                                      index == 0
-                                                        ? "0 0 0 0"
-                                                        : "0 0 0px -12px",
-                                                    float: "left"
-                                                  }}
-                                                  src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                                                  className="rounded-circlecss img-thumbnail avatar-xl"
-                                                  alt="profile-image"
-                                                />
-                                                <span className="gfg_text">
-                                                  {id?.Title}
-                                                </span>
+                                          position: "relative",
+                                          display: 'flex'
+                                        }}
+                                      >
+                                        <div style={{ display: 'flex' }} className="ml20">
+                                          {project?.TeamMembers?.map(
+                                            (id: any, idx: any) => {
+                                              if (idx < 3) {
+                                                return (
+                                                  <div style={{ width: '40px', marginLeft: '-7px' }} className="gfg_tooltip">
+                                                    <img
+                                                      style={{
+                                                        margin:
+                                                          index == 0
+                                                            ? "0 0 0 0"
+                                                            : "0 0 0px -12px",
+                                                        float: "left"
+                                                      }}
+                                                      src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+                                                      className="rounded-circlecss img-thumbnail avatar-xl"
+                                                      alt="profile-image"
+                                                    />
+                                                    <span className="gfg_text">
+                                                      {id?.Title}
+                                                    </span>
 
-                                              </div>
-                                            );
-                                          }
-                                        }
-                                      )}
-                                      {/* {
+                                                  </div>
+                                                );
+                                              }
+                                            }
+                                          )}
+                                          {/* {
                                         project?.TeamMembers?.length > 3 &&
 
                                         <div
@@ -2816,18 +2826,18 @@ const HelloWorldContext = ({ props }: any) => {
                                           </div>
                                         </div>
                                       } */}
-                                      {
-                                        project?.TeamMembers?.length > 3 &&
+                                          {
+                                            project?.TeamMembers?.length > 3 &&
 
-                                        <div className="moreuser text-muted"
-                                        ><div
-                                        >
-                                            +{project?.TeamMembers?.length - 3} more
-                                          </div>
+                                            <div className="moreuser text-muted"
+                                            ><div
+                                            >
+                                                +{project?.TeamMembers?.length - 3} more
+                                              </div>
+                                            </div>
+                                          }
                                         </div>
-                                      }
-                                    </div>
-                                    {/* {showDropdownId === project.Id && (
+                                        {/* {showDropdownId === project.Id && (
                                       <div
                                         className=""
                                         style={{
@@ -2868,265 +2878,265 @@ const HelloWorldContext = ({ props }: any) => {
                                         )}
                                       </div>
                                     )} */}
+                                      </div>
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
-                            </div>
-                          );
-                        }
-                      }
-                      // if (project?.ProjectStatus === "Ongoing") {
-                      //   return (
-                      //     <div key={index} className="col-lg-4 col-md-6 mb-0">
-                      //       <div className="card project-box">
-                      //         <div className="card-body">
-                      //           <div className="dropdown float-end">
-                      //             <a
+                              );
+                            }
+                          }
+                          // if (project?.ProjectStatus === "Ongoing") {
+                          //   return (
+                          //     <div key={index} className="col-lg-4 col-md-6 mb-0">
+                          //       <div className="card project-box">
+                          //         <div className="card-body">
+                          //           <div className="dropdown float-end">
+                          //             <a
 
-                      //               className="dropdown-toggle card-drop arrow-none"
-                      //               data-bs-toggle="dropdown"
-                      //               aria-expanded="false"
-                      //             >
-                      //               <img className="morealign" src={require('../assets/more.png')} />
-                      //             </a>
-                      //             <div style={{ padding: "0px", top: "15px", minWidth: "auto", textAlign: "center" }} className="dropdown-menu newheight dropdown-menu-end">
-                      //               <a
-                      //                 className="dropdown-item"
+                          //               className="dropdown-toggle card-drop arrow-none"
+                          //               data-bs-toggle="dropdown"
+                          //               aria-expanded="false"
+                          //             >
+                          //               <img className="morealign" src={require('../assets/more.png')} />
+                          //             </a>
+                          //             <div style={{ padding: "0px", top: "15px", minWidth: "auto", textAlign: "center" }} className="dropdown-menu newheight dropdown-menu-end">
+                          //               <a
+                          //                 className="dropdown-item"
 
-                      //                 onClick={() => handleDelete(project.Id)}
-                      //               >
-                      //                 Delete
-                      //               </a>
-                      //               <a
-                      //                 className="dropdown-item"
+                          //                 onClick={() => handleDelete(project.Id)}
+                          //               >
+                          //                 Delete
+                          //               </a>
+                          //               <a
+                          //                 className="dropdown-item"
 
-                      //                 onClick={() => GotoNextPage(project)}
-                      //               >
-                      //                 View Detail
-                      //               </a>
-                      //               {project?.AuthorId === userId && project?.ProjectStatus === 'Ongoing' &&
-                      //                 (
-                      //                   <a
-                      //                     className="dropdown-item"
-                      //                     onClick={() => UpdatProject(project.Id)}
-                      //                   >
-                      //                     Mark Completed
-                      //                   </a>
-                      //                 )}
-                      //             </div>
-                      //           </div>
+                          //                 onClick={() => GotoNextPage(project)}
+                          //               >
+                          //                 View Detail
+                          //               </a>
+                          //               {project?.AuthorId === userId && project?.ProjectStatus === 'Ongoing' &&
+                          //                 (
+                          //                   <a
+                          //                     className="dropdown-item"
+                          //                     onClick={() => UpdatProject(project.Id)}
+                          //                   >
+                          //                     Mark Completed
+                          //                   </a>
+                          //                 )}
+                          //             </div>
+                          //           </div>
 
-                      //           {/* Title */}
-                      //           <h4 className="mt-0 mb-1 one-line">
-                      //             <a
-                      //               onClick={() => GotoNextPage(project)}
-                      //               className="text-dark fw-bold font-16"
-                      //             >
-                      //               {project.ProjectName ||
-                      //                 "Untitled Project"}
-                      //             </a>
-                      //           </h4>
+                          //           {/* Title */}
+                          //           <h4 className="mt-0 mb-1 one-line">
+                          //             <a
+                          //               onClick={() => GotoNextPage(project)}
+                          //               className="text-dark fw-bold font-16"
+                          //             >
+                          //               {project.ProjectName ||
+                          //                 "Untitled Project"}
+                          //             </a>
+                          //           </h4>
 
-                      //           <a>
+                          //           <a>
 
-                      //             {
-                      //               project?.ProjectStatus === null
-                      //                 ? null // Don't display anything if ProjectStatus is null
-                      //                 : (
-                      //                   <a className="ongoing mb-3"
-                      //                     style={{
-                      //                       background: project?.ProjectStatus === 'Completed' ? '#cce7dc' : '#6c757d',
-                      //                       color: project?.ProjectStatus === 'Completed' ? '#008751' : '#fff',
-                      //                       padding: '5px',
-                      //                       borderRadius: '4px',
-                      //                       textDecoration: 'none'
-                      //                     }}
-                      //                   >
-                      //                     {project?.ProjectStatus === 'Ongoing' ? 'Ongoing' : 'Completed'}
-                      //                   </a>
-                      //                 )
-                      //             }
-                      //           </a>
+                          //             {
+                          //               project?.ProjectStatus === null
+                          //                 ? null // Don't display anything if ProjectStatus is null
+                          //                 : (
+                          //                   <a className="ongoing mb-3"
+                          //                     style={{
+                          //                       background: project?.ProjectStatus === 'Completed' ? '#cce7dc' : '#6c757d',
+                          //                       color: project?.ProjectStatus === 'Completed' ? '#008751' : '#fff',
+                          //                       padding: '5px',
+                          //                       borderRadius: '4px',
+                          //                       textDecoration: 'none'
+                          //                     }}
+                          //                   >
+                          //                     {project?.ProjectStatus === 'Ongoing' ? 'Ongoing' : 'Completed'}
+                          //                   </a>
+                          //                 )
+                          //             }
+                          //           </a>
 
-                      //           <p
+                          //           <p
 
-                      //             className="date-color text-muted two-line font-14 mb-3 sp-line-2"
-                      //           >
+                          //             className="date-color text-muted two-line font-14 mb-3 sp-line-2"
+                          //           >
 
-                      //             {truncateText(project.ProjectOverview, 100) ||
-                      //               "No description available..."}{" "}
+                          //             {truncateText(project.ProjectOverview, 100) ||
+                          //               "No description available..."}{" "}
 
-                      //           </p>
+                          //           </p>
 
-                      //           <p className="mb-1 text-muted font-12">
-                      //             <span
+                          //           <p className="mb-1 text-muted font-12">
+                          //             <span
 
-                      //               className="pe-2 text-nowrap mb-1 d-inline-block"
-                      //             >
-                      //               <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} />
-                      //               <b>{project?.ProjectsDocsId?.length}</b> Documents
-                      //             </span>
-                      //             <span
+                          //               className="pe-2 text-nowrap mb-1 d-inline-block"
+                          //             >
+                          //               <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} />
+                          //               <b>{project?.ProjectsDocsId?.length}</b> Documents
+                          //             </span>
+                          //             <span
 
-                      //               className="text-nowrap mb-1 d-inline-block"
-                      //             >
-                      //               <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />
-                      //               <b>{project.CommentsCount || 0}</b> Comments
-                      //             </span>
-                      //           </p>
+                          //               className="text-nowrap mb-1 d-inline-block"
+                          //             >
+                          //               <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />
+                          //               <b>{project.CommentsCount || 0}</b> Comments
+                          //             </span>
+                          //           </p>
 
-                      //           {/* Task info */}
-                      //           {/* <p className="mb-1 font-12">
-                      //       <span
-                      //         style={{ color: "#6e767e" }}
-                      //         className="pe-2 text-nowrap mb-1 d-inline-block"
-                      //       >
-                      //         <i className="fe-file-text text-muted"></i>
-                      //         <b>{project.documentsCount || 0}</b> Documents
-                      //       </span>
-                      //       <span
-                      //         style={{ color: "#6e767e" }}
-                      //         className="text-nowrap mb-1 d-inline-block"
-                      //       >
-                      //         <i className="fe-message-square text-muted"></i>
-                      //         <b>{project. CommentsCount || 0}</b> Comments
-                      //       </span>
-                      //     </p> */}
-                      //           <div
-                      //             style={{
+                          //           {/* Task info */}
+                          //           {/* <p className="mb-1 font-12">
+                          //       <span
+                          //         style={{ color: "#6e767e" }}
+                          //         className="pe-2 text-nowrap mb-1 d-inline-block"
+                          //       >
+                          //         <i className="fe-file-text text-muted"></i>
+                          //         <b>{project.documentsCount || 0}</b> Documents
+                          //       </span>
+                          //       <span
+                          //         style={{ color: "#6e767e" }}
+                          //         className="text-nowrap mb-1 d-inline-block"
+                          //       >
+                          //         <i className="fe-message-square text-muted"></i>
+                          //         <b>{project. CommentsCount || 0}</b> Comments
+                          //       </span>
+                          //     </p> */}
+                          //           <div
+                          //             style={{
 
-                      //               position: "relative",
-                      //               display: 'flex'
-                      //             }}
-                      //           >
-                      //             <div style={{ display: 'flex' }} className="ml20">
-                      //               {project?.TeamMembers?.map(
-                      //                 (id: any, idx: any) => {
-                      //                   if (idx < 3) {
-                      //                     return (
-                      //                       <div style={{ width: '40px', marginLeft: '-7px' }} className="gfg_tooltip">
-                      //                         <img
-                      //                           style={{
-                      //                             margin:
-                      //                               index == 0
-                      //                                 ? "0 0 0 0"
-                      //                                 : "0 0 0px -12px",
-                      //                             float: "left"
-                      //                           }}
-                      //                           src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                      //                           className="rounded-circlecss img-thumbnail avatar-xl"
-                      //                           alt="profile-image"
-                      //                         />
-                      //                         <span className="gfg_text">
-                      //                           {id?.Title}
-                      //                         </span>
+                          //               position: "relative",
+                          //               display: 'flex'
+                          //             }}
+                          //           >
+                          //             <div style={{ display: 'flex' }} className="ml20">
+                          //               {project?.TeamMembers?.map(
+                          //                 (id: any, idx: any) => {
+                          //                   if (idx < 3) {
+                          //                     return (
+                          //                       <div style={{ width: '40px', marginLeft: '-7px' }} className="gfg_tooltip">
+                          //                         <img
+                          //                           style={{
+                          //                             margin:
+                          //                               index == 0
+                          //                                 ? "0 0 0 0"
+                          //                                 : "0 0 0px -12px",
+                          //                             float: "left"
+                          //                           }}
+                          //                           src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+                          //                           className="rounded-circlecss img-thumbnail avatar-xl"
+                          //                           alt="profile-image"
+                          //                         />
+                          //                         <span className="gfg_text">
+                          //                           {id?.Title}
+                          //                         </span>
 
-                      //                       </div>
-                      //                     );
-                      //                   }
-                      //                 }
-                      //               )}
-                      //               {/* {
-                      //                 project?.TeamMembers?.length > 3 &&
+                          //                       </div>
+                          //                     );
+                          //                   }
+                          //                 }
+                          //               )}
+                          //               {/* {
+                          //                 project?.TeamMembers?.length > 3 &&
 
-                      //                 <div
-                      //                   className=""
-                      //                   onClick={() =>
-                      //                     toggleDropdown(project.Id)
-                      //                   }
-                      //                   key={project.Id}
-                      //                 >
-                      //                   <div
-                      //                     style={{
-                      //                       margin:
-                      //                         index == 0
-                      //                           ? "0 0 0 0"
-                      //                           : "0 0 0px -12px",
-                      //                              float:"left",
-                      //                              display:'flex',
-                      //                              alignItems:'center',
-                      //                              justifyContent:'center', width:'40px'
-                      //                     }}
-                      //                     className="rounded-circlecss mlnew0 img-thumbnail avatar-xl"
-                      //                   >
-                      //                     +
-                      //                   </div>
-                      //                 </div>
-                      //               } */}
-                      //               {
-                      //                 project?.TeamMembers?.length > 3 &&
+                          //                 <div
+                          //                   className=""
+                          //                   onClick={() =>
+                          //                     toggleDropdown(project.Id)
+                          //                   }
+                          //                   key={project.Id}
+                          //                 >
+                          //                   <div
+                          //                     style={{
+                          //                       margin:
+                          //                         index == 0
+                          //                           ? "0 0 0 0"
+                          //                           : "0 0 0px -12px",
+                          //                              float:"left",
+                          //                              display:'flex',
+                          //                              alignItems:'center',
+                          //                              justifyContent:'center', width:'40px'
+                          //                     }}
+                          //                     className="rounded-circlecss mlnew0 img-thumbnail avatar-xl"
+                          //                   >
+                          //                     +
+                          //                   </div>
+                          //                 </div>
+                          //               } */}
+                          //               {
+                          //                 project?.TeamMembers?.length > 3 &&
 
-                      //                 <div className="moreuser text-muted"
-                      //                 ><div
-                      //                 >
-                      //                     +{project?.TeamMembers?.length - 3} more
-                      //                   </div>
-                      //                 </div>
-                      //               }
-                      //             </div>
-                      //             {/* {showDropdownId === project.Id && (
-                      //               <div
-                      //                 className=""
-                      //                 style={{
-                      //                   position: "relative",
-                      //                   left:"-28px",
-                      //                   top:'11px',
-                      //                   zIndex:'99',
-                      //                       display:'flex',
-                                           
-                                     
-                      //                 }}
-                      //               >
-                      //                 {showDropdownId === project.Id && (
-                      //                   project?.TeamMembers?.map(
-                      //                     (id: any, idx: any) => {
-                      //                       return (
-                      //                         <div style={{width:'40px', marginLeft:'-7px'}} className="gfg_tooltip">
-                      //                         <img
-                      //                           style={{
-                      //                             margin:
-                      //                               idx == 0
-                      //                                 ? "0 0 0 0"
-                      //                                 : "0 0 0px -12px",
-                      //                                    float:"left"
-                      //                           }}
-                      //                           src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                      //                           className="rounded-circlecss img-thumbnail avatar-xl"
-                      //                           alt="profile-image"
-                      //                         />
-                      //                          <span className="gfg_text">
-                      //                     A Computer science portal
-                      //                 </span>
+                          //                 <div className="moreuser text-muted"
+                          //                 ><div
+                          //                 >
+                          //                     +{project?.TeamMembers?.length - 3} more
+                          //                   </div>
+                          //                 </div>
+                          //               }
+                          //             </div>
+                          //             {/* {showDropdownId === project.Id && (
+                          //               <div
+                          //                 className=""
+                          //                 style={{
+                          //                   position: "relative",
+                          //                   left:"-28px",
+                          //                   top:'11px',
+                          //                   zIndex:'99',
+                          //                       display:'flex',
 
-                      //                 </div>
-                      //                       );
-                      //                     }
-                      //                   )
-                      //                 )}
-                      //               </div>
-                      //             )} */}
-                      //           </div>
-                      //         </div>
-                      //       </div>
-                      //     </div>
-                      //   );
-                      // }
-                        return null;
-                      })}
-                      {itemsToShow < Dataproject?.length && (
-                        <div className="col-12 text-center mb-5 mt-3">
-                          <button onClick={loadMore} className="btn btn-primary">
-                            Load More
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  ) : (
-                    <div className="loadernewadd">
-                    <span>No Project found </span>{" "}                  
-                  </div>
-                  ))
-                }
+
+                          //                 }}
+                          //               >
+                          //                 {showDropdownId === project.Id && (
+                          //                   project?.TeamMembers?.map(
+                          //                     (id: any, idx: any) => {
+                          //                       return (
+                          //                         <div style={{width:'40px', marginLeft:'-7px'}} className="gfg_tooltip">
+                          //                         <img
+                          //                           style={{
+                          //                             margin:
+                          //                               idx == 0
+                          //                                 ? "0 0 0 0"
+                          //                                 : "0 0 0px -12px",
+                          //                                    float:"left"
+                          //                           }}
+                          //                           src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+                          //                           className="rounded-circlecss img-thumbnail avatar-xl"
+                          //                           alt="profile-image"
+                          //                         />
+                          //                          <span className="gfg_text">
+                          //                     A Computer science portal
+                          //                 </span>
+
+                          //                 </div>
+                          //                       );
+                          //                     }
+                          //                   )
+                          //                 )}
+                          //               </div>
+                          //             )} */}
+                          //           </div>
+                          //         </div>
+                          //       </div>
+                          //     </div>
+                          //   );
+                          // }
+                          return null;
+                        })}
+                        {itemsToShow < Dataproject?.length && (
+                          <div className="col-12 text-center mb-5 mt-3">
+                            <button onClick={loadMore} className="btn btn-primary">
+                              Load More
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="loadernewadd">
+                        <span>No Project found </span>{" "}
+                      </div>
+                    ))
+                  }
                 </div>
               </div>
             )}
@@ -3220,7 +3230,7 @@ const HelloWorldContext = ({ props }: any) => {
                                       <b>
                                         {/* {project?.ProjectsDocsId?.length} */}
                                         {project?.FileCount}
-                                        </b> Documents
+                                      </b> Documents
                                     </span>
                                     <span
 
@@ -3380,7 +3390,7 @@ const HelloWorldContext = ({ props }: any) => {
                     </div>
                   ) : (
                     <div className="loadernewadd">
-                      <span>No Project found </span>{" "}                  
+                      <span>No Project found </span>{" "}
                     </div>
                   )}
                 </div>

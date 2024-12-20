@@ -74,7 +74,7 @@ textarea {
 .post {
   border: 1px solid #d1e4f3;
   border-radius: 4px;
-  padding: 12px;
+ 
   margin-bottom: 12px;
 }
 
@@ -272,7 +272,7 @@ ul.navcss {
 }
 
 a.nav-linkcss.px-4.py-3.active {
-  color: #1fb0e5;
+  color: #000;
   border-bottom: 2px solid #1fb0e5;
 
   font-size: 16px;
@@ -280,7 +280,7 @@ a.nav-linkcss.px-4.py-3.active {
 }
 
 a.nav-linkcss.px-4.py-3 {
-  color: #6c757d;
+  color: #1fb0e5;
  
   font-size: 16px;
 }
@@ -459,9 +459,25 @@ outline: none !important;  box-shadow: none !important;border: none !important; 
   box-shadow: unset !important;
 }
 
-.btn:hover {
-  background: #1fb0e5 !important;
+
+.primary1 {
+  min-width: 90px;
+    padding: 5px 16px !important;
+    text-transform: capitalize;
+    font-size: 16px !important;border-color: #008751 !important;
+}
+.btn-primary{
   border-color: #1fb0e5 !important;
+}
+.btn-default{background: transparent !important;}
+.btn-default:hover{background-color: #959b95  !important; border-color: #959b95  !important;}
+.btn-default svg{width: 22px;
+  height: 24px;}
+.btn-default:hover svg{color: #fff;    width: 22px;
+  height: 24px;}
+.btn-primary:hover{
+  background: #008751 !important;
+  border-color: #008751 !important;
 }
 @media(max-width:1920px)
 {

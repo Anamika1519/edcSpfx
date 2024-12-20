@@ -305,21 +305,21 @@ const HelloWorldContext = ({ props }: any) => {
     // }
   };
   const handleSearch: React.ChangeEventHandler = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if(activeTab != "all")
+    if (activeTab != "all")
       setActiveTab("all");
     let txtSearch = (document.getElementById('searchInput') as HTMLInputElement).value;
-    if(txtSearch.length >1){
-   
-    const filteredApps = mediagallerydata.filter((app: any) =>      
-      app.Title.toLowerCase().includes(txtSearch.toLowerCase())
-    );
-  
-        setFilteredMediaItems(filteredApps);
+    if (txtSearch.length > 1) {
+
+      const filteredApps = mediagallerydata.filter((app: any) =>
+        app.Title.toLowerCase().includes(txtSearch.toLowerCase())
+      );
+
+      setFilteredMediaItems(filteredApps);
     }
 
     else {
       ApiCall();
-    }   
+    }
   }
   const dismissModal = () => {
     setShowModal(false);
@@ -703,7 +703,7 @@ const HelloWorldContext = ({ props }: any) => {
                   </form>
                 </div>
               </div>
-              
+
             </div>
             <div className="row mt-3">
               <div className="col-12">
@@ -791,13 +791,35 @@ const HelloWorldContext = ({ props }: any) => {
             </div>
 
             <div className="row   filterable-content ">
+              {filteredMediaItems.length == 0 &&
+                <div
 
+                  className="no-results card card-body align-items-center  annusvg text-center "
+
+                  style={{
+
+                    display: "flex",
+
+                    justifyContent: "center",
+                    position: 'relative',
+                    marginTop: '10px',
+                    height: '300px'
+
+                  }}
+
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"></path></svg>
+
+                  <p className="font-14 text-muted text-center">No Business App found </p>
+
+                </div>
+              }
               {filteredMediaItems.map((item) => {
                 const imageData = item.Image ? JSON.parse(item.Image) : null;
                 let siteIdAl = '338f2337-8cbb-4cd1-bed1-593e9336cd0e,e2837b3f-b207-41eb-940b-71c74da3d214';
                 let listIDAl = '8dcfeaca-69f6-484b-b1aa-a31085726174';
                 let listIDUAT = 'c291ee97-e81e-40d3-8735-6b169303831e';
-                let siteIDUAT ='9237fda3-7d32-4ee0-abca-1268fc460cfc';
+                let siteIDUAT = '9237fda3-7d32-4ee0-abca-1268fc460cfc';
                 //let siteId = siteUrl.toLowerCase().includes('alrostmani') ? siteIdAl : '02993535-33e8-44d1-9edf-0d484e642ea1,d9374a3d-ae79-4d2a-8d36-d48f86e3201e';
                 //let listID = siteUrl.toLowerCase().includes('alrostmani') ? listIDAl : '729bbd2a-ade1-448b-be41-d9ea695e7407';
                 let siteId = siteID;
@@ -820,7 +842,7 @@ const HelloWorldContext = ({ props }: any) => {
                   <div className="col-md-6 col-xl-3" >
                     <div className="widget-rounded-circle card hri90" >
                       <div className="card-body" >
-                        <div style={{cursor:'pointer'}} className="row" onClick={() => handleRedirect(item.RedirectionLink)}>
+                        <div style={{ cursor: 'pointer' }} className="row" onClick={() => handleRedirect(item.RedirectionLink)}>
                           <div className="col-3 newim">
                             <div style={{ background: '#fff', width: '45px', height: '45px' }}
                               className="avatar-lg d-flex justify-content-center align-items-center rounded-circle bg-soft-primary border-primary border">

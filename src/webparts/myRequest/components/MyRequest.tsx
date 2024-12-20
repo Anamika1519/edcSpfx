@@ -2054,7 +2054,7 @@ const MyRequestContext = ({ props }: any) => {
                                         justifyContent: "center",
                                         position: 'relative',
                                         marginTop: '10px',
-                                        height: '450px'
+                                        height: '300px'
 
                                       }}
 

@@ -9,14 +9,14 @@
   transition: all 0.5s ease;
 }
 .tabcss {
-  background: #f7fbfc !important;
+  background: #fff !important;
   border-radius: 2rem;
   color: #6b6b6b;
   font-size: 14px;
   font-weight: 500;
   padding: 10px 20px;
 }
-.activenew{background: #fff !important;}
+.activenew{background: #fff !important; color: #1fb0e5 !important;}
 .newalign svg{vertical-align: text-top !important;}
 .page-title{
   color: #343a40  !important;
@@ -145,7 +145,7 @@ display: -webkit-box;
 .item:hover .link_name1{color: #1fb0e5 !important;}
 .sidebar.close .item .link_name1{color: #6c757d !important;}
 .sidebar.close .item .link_name1:hover span,.sidebar.close .item .link_name1:focus span{color: #1fb0e5 !important;}
-.annusvg svg{margin-top: 12%;
+.annusvg svg{margin-top: 6%;
   width: 115px; margin-bottom: 5px; color: #bcbcbc !important;
   height: 115px;}
 .mtable td{    padding: 3px 10px !important;}
@@ -243,10 +243,11 @@ a:hover, a:active {
   width: 66px;
   margin-left: -16px;
 }
-.loadernewadd{color: #1fb0e5;display: block; text-align:center ; font-size: 18px;gap: 0px;font-weight: 700;justify-content: center;
+.loadernewadd{color: #1fb0e5;display: block; text-transform: uppercase; text-align:center ; font-size: 16px;gap: 0px;font-weight: 500;justify-content: center;
   align-items: center;vertical-align: middle;}
-.alignrightl{width: 50px; margin-top: 5px;}
-
+.alignrightl{width: 90px; margin-bottom: 20px; margin-top: 5px;}
+.alignrightbird{width: 30px;
+  margin-top: -2px;}
 .postion8{ width:95%; float: right; margin-top: 92px; }
 .mainevent{border-bottom: 1px solid #ccc; padding: 10px 0px;}
 .mainevent:last-child{border-bottom: 0px !important;}
@@ -1171,8 +1172,10 @@ margin: 10px 0px !important ;
     
       height: 370px;
   }
+  .paddb{min-height: 100% !important;}
   // .menu_items{max-height: 800px;}
   .twolinewrap1{height: auto;}
+  .footer{position: fixed !important; bottom: 0px !important; width: 99.5%;}
 }
 @media(max-width:1800px)
 {
@@ -1901,7 +1904,7 @@ color: #fff !important;
   width: 28px !important;
 }
 .mtable th{position: relative;}
-.tabcss:hover{ background: #fff !important; color: #000 !important;}
+.tabcss:hover{ background: #959b95  !important; color: #fff !important;}
 .cursor-none{cursor: none !important;}
 .swal2-confirm{background: #1fb0e5 !important; border-color: #1fb0e5 !important;box-shadow: none !important;}
 .swal2-confirm:hover{background: #008751 !important; border-color: #008751 !important;}

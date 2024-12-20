@@ -333,33 +333,33 @@ const GroupandTeamcontext = ({ props }: any) => {
       fetchOptions()
       setCurrentUser(await getCurrentUser(sp, siteUrl));
       const announcementArr = await getGroupTeam(sp);
-  
+
       // const categorylist = await GetCategory(sp);
-  
+
       // setCategoryData(await GetCategory(sp));
-  
+
       setEnityData(await getEntity(sp)); //Entity
-  
+
       setGroupTypeData(
-  
+
         await getChoiceFieldOption(sp, "ARGGroupandTeam", "GroupType")
-  
+
       );
-  
+
       console.log("announcementArr----------", announcementArr);
       setGroupsDataAll(announcementArr);
       setGroupsData(announcementArr);
-  
+
       // setAnnouncementData(announcementArr);
-  
+
       const NewsArr = await getNews(sp);
-  
+
       setNewsData(NewsArr);
-  
+
     } catch (error) {
-      console.log("Error in getting the data in api call",error);
+      console.log("Error in getting the data in api call", error);
     }
-    finally{
+    finally {
       setLoading(false);
     }
 
@@ -2493,85 +2493,108 @@ const GroupandTeamcontext = ({ props }: any) => {
 
             {activeTab === "allgroups" && (
               <div className="row mt-4">
+                {!loading && groupsData.length == 0 &&
+                  <div
+
+                    className="no-results card card-body align-items-center  annusvg text-center "
+
+                    style={{
+
+                      display: "flex",
+
+                      justifyContent: "center",
+                      position: 'relative',
+                      marginTop: '10px',
+                      height: '300px'
+
+                    }}
+
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg>
+
+                    <p className="font-14 text-muted text-center">No Team found </p>
+
+                  </div>
+                }
                 {loading ? (<div className="loadernewadd">
-                    <div>
-                    <img style={{width:'60px'}}
-                            src={require("../../../CustomAsset/birdloader.gif")}
-                            className="alignrightl"
-                            alt="Loading..."
-                          />
-                        </div>
-                      <span>Loading </span>{" "}
-                      <span>
-                      <img style={{width:'35px'}}
-                          src={require("../../../CustomAsset/argloader.gif")}
-                          className="alignrightl"
-                          alt="Loading..."
-                        />
-                      </span>
-                    </div>):(groupsData.length > 0 ?(groupsData.map((groupItem: any, index: number) => (
+                  <div>
+                    <img style={{ width: '60px' }}
+                      src={require("../../../CustomAsset/birdloader.gif")}
+                      className="alignrightl"
+                      alt="Loading..."
+                    />
+                  </div>
+                  <span>Loading </span>{" "}
+                  <span>
+                    <img style={{ width: '35px' }}
+                      src={require("../../../CustomAsset/argloader.gif")}
+                      className="alignrightbird"
+                      alt="Loading..."
+                    />
+                  </span>
+                </div>) : (groupsData.length > 0 ? (groupsData.map((groupItem: any, index: number) => (
 
-<div
+                  <div
 
-  key={index}
+                    key={index}
 
-  className="col-lg-6 col-xl-3 position-relative ng-scope" onClick={() => handleClick(groupItem.ID)}
+                    className="col-lg-6 col-xl-3 position-relative ng-scope" onClick={() => handleClick(groupItem.ID)}
 
->
+                  >
 
-  <div
+                    <div
 
-    style={{ background: "#12a8de", color: "#fff" }}
+                      style={{ background: "#12a8de", color: "#fff" }}
 
-    className="card heightcard"
+                      className="card heightcard"
 
-  >
-
-
+                    >
 
 
 
 
 
-    {groupItem.GroupType == "All" && groupItem.Author.ID !== currentUser.Id &&
-      < div > {renderContent(groupItem)}</div>
-    }
-    <div className="card-body">
-
-      <a key={index}>
-
-        <div className="bg">
-          <img src={require("../assets/backteam.png")} />
 
 
+                      {groupItem.GroupType == "All" && groupItem.Author.ID !== currentUser.Id &&
+                        < div > {renderContent(groupItem)}</div>
+                      }
+                      <div className="card-body">
 
-        </div>
+                        <a key={index}>
 
-        <h4
+                          <div className="bg">
+                            <img src={require("../assets/backteam.png")} />
 
-          style={{ lineHeight: "26px", float: "left", color: "#fff", textTransform: 'capitalize' }}
 
-          className="card-title dechover fw-bold font-20 mb-1 mt-0"
 
-        >
-          {groupItem.GroupName.length > 50
-            ? `${groupItem.GroupName.substring(0, 47)}...`
-            : groupItem.GroupName}{" "}
-          ({groupItem.GroupType})
+                          </div>
 
-        </h4>
+                          <h4
 
-      </a>
+                            style={{ lineHeight: "26px", float: "left", color: "#fff", textTransform: 'capitalize' }}
 
-    </div>
+                            className="card-title dechover fw-bold font-20 mb-1 mt-0"
 
-  </div>
+                          >
+                            {groupItem.GroupName.length > 50
+                              ? `${groupItem.GroupName.substring(0, 47)}...`
+                              : groupItem.GroupName}{" "}
+                            ({groupItem.GroupType})
 
-</div>
+                          </h4>
 
-))):(<div className="loadernewadd">
-  <span>No Groups found </span>{" "}                  
-</div>))}
+                        </a>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                ))) : (<div className="loadernewadd">
+                  <span>No Groups found </span>{" "}
+                </div>))}
                 {/* {groupsData.map((groupItem: any, index: number) => (
 
                   <div
@@ -2639,86 +2662,86 @@ const GroupandTeamcontext = ({ props }: any) => {
 
             {activeTab === "groupsyoucreated" && (
               <div className="row mt-2">
-                 {loading ? (<div className="loadernewadd">
-                    <div>
-                    <img style={{width:'60px'}}
-                            src={require("../../../CustomAsset/birdloader.gif")}
-                            className="alignrightl"
-                            alt="Loading..."
-                          />
-                        </div>
-                      <span>Loading </span>{" "}
-                      <span>
-                      <img style={{width:'35px'}}
-                          src={require("../../../CustomAsset/argloader.gif")}
-                          className="alignrightl"
-                          alt="Loading..."
-                        />
-                      </span>
-                    </div>):(groupsData.length > 0 ? (groupsData.map((groupItem: any, index: number) => (
+                {loading ? (<div className="loadernewadd">
+                  <div>
+                    <img style={{ width: '60px' }}
+                      src={require("../../../CustomAsset/birdloader.gif")}
+                      className="alignrightl"
+                      alt="Loading..."
+                    />
+                  </div>
+                  <span>Loading </span>{" "}
+                  <span>
+                    <img style={{ width: '35px' }}
+                      src={require("../../../CustomAsset/argloader.gif")}
+                      className="alignrightl"
+                      alt="Loading..."
+                    />
+                  </span>
+                </div>) : (groupsData.length > 0 ? (groupsData.map((groupItem: any, index: number) => (
 
-<div
+                  <div
 
-  key={index}
+                    key={index}
 
-  className="col-lg-6 col-xl-3 position-relative ng-scope" onClick={() => handleClick(groupItem.ID)}
+                    className="col-lg-6 col-xl-3 position-relative ng-scope" onClick={() => handleClick(groupItem.ID)}
 
->
+                  >
 
-  <div
+                    <div
 
-    style={{ background: "#12a8de", color: "#fff" }}
+                      style={{ background: "#12a8de", color: "#fff" }}
 
-    className="card heightcard"
+                      className="card heightcard"
 
-  >
-
-
+                    >
 
 
 
 
-    {groupItem.GroupType == "All" && groupItem.Author.ID !== currentUser.Id &&
-      < div > {renderContent(groupItem)}</div>
-    }
-
-    <div className="card-body">
-
-      <a key={index}>
-
-        <div className="bg">
-          <img src={require("../assets/backteam.png")} />
 
 
+                      {groupItem.GroupType == "All" && groupItem.Author.ID !== currentUser.Id &&
+                        < div > {renderContent(groupItem)}</div>
+                      }
 
-        </div>
+                      <div className="card-body">
 
-        <h4
+                        <a key={index}>
 
-          style={{ lineHeight: "26px", float: "left", color: "#fff", textTransform: 'capitalize' }}
+                          <div className="bg">
+                            <img src={require("../assets/backteam.png")} />
 
-          className="card-title fw-bold font-20 mb-1 mt-0"
 
-        >
 
-          {groupItem.GroupName.length > 50
-            ? `${groupItem.GroupName.substring(0, 47)}...`
-            : groupItem.GroupName}{" "}
-          ({groupItem.GroupType})
+                          </div>
 
-        </h4>
+                          <h4
 
-      </a>
+                            style={{ lineHeight: "26px", float: "left", color: "#fff", textTransform: 'capitalize' }}
 
-    </div>
+                            className="card-title fw-bold font-20 mb-1 mt-0"
 
-  </div>
+                          >
 
-</div>
+                            {groupItem.GroupName.length > 50
+                              ? `${groupItem.GroupName.substring(0, 47)}...`
+                              : groupItem.GroupName}{" "}
+                            ({groupItem.GroupType})
 
-))) :(<div className="loadernewadd">
-  <span>No Groups found </span>{" "}                  
-</div>))}
+                          </h4>
+
+                        </a>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                ))) : (<div className="loadernewadd">
+                  <span>No Groups found </span>{" "}
+                </div>))}
                 {/* {groupsData.map((groupItem: any, index: number) => (
 
                   <div
@@ -2787,71 +2810,71 @@ const GroupandTeamcontext = ({ props }: any) => {
 
             {activeTab === "groupsyoufollow" && (
               <div className="row mt-4">
-                    {loading ? (<div className="loadernewadd">
-                    <div>
-                    <img style={{width:'60px'}}
-                            src={require("../../../CustomAsset/birdloader.gif")}
-                            className="alignrightl"
-                            alt="Loading..."
-                          />
-                        </div>
-                      <span>Loading </span>{" "}
-                      <span>
-                      <img style={{width:'35px'}}
-                          src={require("../../../CustomAsset/argloader.gif")}
-                          className="alignrightl"
-                          alt="Loading..."
-                        />
-                      </span>
-                    </div>):(groupsData.length > 0 ? (groupsData.map((groupItem: any, index: number) => (
+                {loading ? (<div className="loadernewadd">
+                  <div>
+                    <img style={{ width: '60px' }}
+                      src={require("../../../CustomAsset/birdloader.gif")}
+                      className="alignrightl"
+                      alt="Loading..."
+                    />
+                  </div>
+                  <span>Loading </span>{" "}
+                  <span>
+                    <img style={{ width: '35px' }}
+                      src={require("../../../CustomAsset/argloader.gif")}
+                      className="alignrightl"
+                      alt="Loading..."
+                    />
+                  </span>
+                </div>) : (groupsData.length > 0 ? (groupsData.map((groupItem: any, index: number) => (
 
-<div
+                  <div
 
-  key={index}
+                    key={index}
 
-  className="col-lg-6 col-xl-3 position-relative ng-scope" onClick={() => handleClick(groupItem.ID)}
+                    className="col-lg-6 col-xl-3 position-relative ng-scope" onClick={() => handleClick(groupItem.ID)}
 
->
+                  >
 
-  <div
-    style={{ background: "#12a8de", color: "#fff" }}
-    className="card heightcard"
-  >
-    {groupItem.GroupType == "All" && groupItem.Author.ID !== currentUser.Id &&
-      < div > {renderContent(groupItem)}</div>
-    }
-    <div className="card-body">
+                    <div
+                      style={{ background: "#12a8de", color: "#fff" }}
+                      className="card heightcard"
+                    >
+                      {groupItem.GroupType == "All" && groupItem.Author.ID !== currentUser.Id &&
+                        < div > {renderContent(groupItem)}</div>
+                      }
+                      <div className="card-body">
 
-      <a key={index}>
+                        <a key={index}>
 
-        <div className="bg">
-          <img src={require("../assets/backteam.png")} />
-        </div>
-        <h4
+                          <div className="bg">
+                            <img src={require("../assets/backteam.png")} />
+                          </div>
+                          <h4
 
-          style={{ lineHeight: "26px", float: "left", color: "#fff", textTransform: 'capitalize' }}
+                            style={{ lineHeight: "26px", float: "left", color: "#fff", textTransform: 'capitalize' }}
 
-          className="card-title fw-bold font-20 mb-1 mt-0"
+                            className="card-title fw-bold font-20 mb-1 mt-0"
 
-        >
-          
+                          >
 
-          <p style={{ lineHeight: '20px' }} className="twolinewrap">
-            {groupItem.GroupName}</p> ({groupItem.GroupType})
 
-        </h4>
+                            <p style={{ lineHeight: '20px' }} className="twolinewrap">
+                              {groupItem.GroupName}</p> ({groupItem.GroupType})
 
-      </a>
+                          </h4>
 
-    </div>
+                        </a>
 
-  </div>
+                      </div>
 
-</div>
+                    </div>
 
-))): (<div className="loadernewadd">
-  <span>No Groups found </span>{" "}                  
-</div>))}
+                  </div>
+
+                ))) : (<div className="loadernewadd">
+                  <span>No Groups found </span>{" "}
+                </div>))}
                 {/* {groupsData.map((groupItem: any, index: number) => (
 
                   <div

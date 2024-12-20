@@ -1396,7 +1396,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
             </div>
             {!loading && usersitem.length == 0 &&
               <div className='row mt-2'>
-                <div style={{ height: '450px' }} className="card card-body align-items-center  annusvg text-center"
+                <div style={{ height: '300px' }} className="card card-body align-items-center  annusvg text-center"
                 >
 
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
@@ -1428,7 +1428,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
                           <span>
                             <img style={{ width: '35px' }}
                               src={require("../assets/argloader.gif")}
-                              className="alignrightl"
+                              className="alignrightbird"
                               alt="Loading..."
                             />
                           </span>

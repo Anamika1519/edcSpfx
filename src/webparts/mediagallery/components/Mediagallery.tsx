@@ -282,7 +282,7 @@ const HelloWorldContext = ({ props }: any) => {
             </div>
             {!loading && filteredMediaItems.length == 0 &&
             <div className='row mt-0'>
-              <div style={{ height: '450px' }} className="card card-body align-items-center  annusvg text-center"
+              <div style={{ height: '300px' }} className="card card-body align-items-center  annusvg text-center"
               >
 
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
@@ -292,7 +292,7 @@ const HelloWorldContext = ({ props }: any) => {
               </div>
             </div>
             }
-            <div className="row   filterable-content ">
+            <div className="row filterable-content ">
               {loading && (
                 <div className="loadernewadd">
                   <div>
@@ -307,7 +307,7 @@ const HelloWorldContext = ({ props }: any) => {
                     <span>
                       <img style={{ width: '35px' }}
                         src={require("../../../CustomAsset/argloader.gif")}
-                        className="alignrightl"
+                        className="alignrightbird"
                         alt="Loading..."
                       />
                     </span>

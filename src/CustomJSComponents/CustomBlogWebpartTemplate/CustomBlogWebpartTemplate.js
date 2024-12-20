@@ -578,10 +578,10 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                             const postResult = await updateItem(postPayload, _sp, editID);
                             const postId = postResult?.data?.ID;
                             debugger;
-                         
+
                             console.log("ImagepostArrImagepostArrsubmit", ImagepostArr, IsGalImageAdded)
                             // if (IsGalImageAdded) {
-                           
+
                             //     if (ImagepostArr.length > 0) {
                             //         for (const file of ImagepostArr[0]?.files) {
                             //             const uploadedGalleryImage = await uploadFileToLibrary(
@@ -598,7 +598,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                             //     }
                             //     // Upload Documents
                             //     console.log("DocumentpostArr submit", galleryIds, ImagepostIdsArr, galleryArray)
-                              
+
                             // }
                             if (ImagepostArr.length > 0 && IsGalImageAdded) {
                                 for (const file of ImagepostArr[0]?.files) {
@@ -654,7 +654,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                             //     }
                             // }
                         }
-                       
+
                         Swal.fire("Item updated successfully", "", "success");
                         setTimeout(async () => {
                             setBlogData(await fetchBlogdata(_sp));
@@ -822,7 +822,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
         }).then((result) => {
             if (result.isConfirmed) {
                 const DeleteRes = DeleteBusinessAppsAPI(_sp, id)
-              
+
                 ApIcall();
                 Swal.fire({
                     title: "Deleted!",
@@ -969,7 +969,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                         <div className="col-sm-12">
                                             <p className="mb-2 mt-1 text-dark d-block customhead">
                                                 <span style={{ fontWeight: '400' }} className="pe-2 text-nowrap color-new font-12 mb-0 d-inline-block">
-                                                    <Calendar size={12}  strokeWidth={1} className="pl-2" style={{ fontWeight: '400' }} />
+                                                    <Calendar size={12} strokeWidth={1} className="pl-2" style={{ fontWeight: '400' }} />
                                                     {moment(item.Created).format("DD-MMM-YYYY")} &nbsp;  &nbsp;  &nbsp;|
                                                 </span>
                                                 <span style={{ fontWeight: '400' }} className="text-nowrap mb-0 color-new font-12 d-inline-block">
@@ -979,7 +979,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                                 </span></p>
 
                                             <div style={{ clear: 'both' }}>
-                                                <p style={{fontSize:'15px', lineHeight:'22px'}} className="d-block text-dark cursor-none customdescription">{truncateText(item.Overview, 300)}</p>
+                                                <p style={{ fontSize: '15px', lineHeight: '22px' }} className="d-block text-dark cursor-none customdescription">{truncateText(item.Overview, 300)}</p>
                                             </div>
                                         </div>
                                         <a onClick={() => gotoBlogsDetails(item)} style={{ textDecoration: 'none' }}>
@@ -1032,6 +1032,29 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                 </div>
             </div>
             <div className="tab-content mt-2">
+                {filteredBlogItems.length == 0 &&
+                <div
+
+                    className="no-results card card-body align-items-center  annusvg text-center "
+
+                    style={{
+
+                        display: "flex",
+
+                        justifyContent: "center",
+                        position: 'relative',
+                        marginTop: '10px',
+                        height: '300px'
+
+                    }}
+
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg>
+
+                    <p className="font-14 text-muted text-center">No Blog found </p>
+
+                </div>
+                }
                 <div className="tab-pane show active" id="home1" role="tabpanel">
                     {filteredBlogItems.length > 0 ?
                         // filteredBlogItems.slice(0, itemsToShow).map(item => {
@@ -1054,6 +1077,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                             { console.log("imageData", imageData, imageUrl, item, SiteUrl, img) }
 
                             return (
+
                                 <div className="card mb-2 annuncementcard">
                                     <div className="card-body">
                                         <div className="row align-items-start">
@@ -1079,7 +1103,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                                 <a> <div className="w-100">
                                                     <h4 className="mt-0 mb-1 font-16 fw-bold ng-binding" style={{ color: '#343a40', fontSize: '16px' }}> {truncateText(item.Title, 90)}
                                                     </h4>
-                                                    <p style={{ color: '#6b6b6b', fontSize: '15px', lineHeight:'20px', height: '4rem' }} className="mb-2 ng-binding parah">
+                                                    <p style={{ color: '#6b6b6b', fontSize: '15px', lineHeight: '20px', height: '4rem' }} className="mb-2 ng-binding">
                                                         {truncateText(item.Overview, 200)}</p>
                                                     <div className="readmore" onClick={() => gotoBlogsDetails(item)} style={{ cursor: 'pointer' }}>Read more..</div>
                                                 </div>
@@ -1089,7 +1113,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                                 <div className="d-flex" style={{ justifyContent: 'end', gap: '10px', marginRight: '3px', cursor: 'pointer' }}>
                                                     <div className="col-lg-12">
                                                         {item.Status == "Save as Draft" &&
-                                                            <><div style={{gap:'10px'}} className="d-flex flex-wrap align-items-center justify-content-end mt-0">
+                                                            <><div style={{ gap: '10px' }} className="d-flex flex-wrap align-items-center justify-content-end mt-0">
                                                                 {/* Button to trigger modal */}
                                                                 <FontAwesomeIcon
                                                                     icon={faEdit}
@@ -1099,16 +1123,16 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                                                     onClick={() => EditBlogs(item.ID)} />
 
 
-                                                            
 
-                                                                    <a
-                                                                       
-                                                                        onClick={() => DeleteBlog(item.ID)}
-                                                                    >
-                                                                        <FontAwesomeIcon  className="text-dark1 waves-effect waves-light" icon={faTrashAlt} />
-                                                                    </a>
 
-                                                                </div></>
+                                                                <a
+
+                                                                    onClick={() => DeleteBlog(item.ID)}
+                                                                >
+                                                                    <FontAwesomeIcon className="text-dark1 waves-effect waves-light" icon={faTrashAlt} />
+                                                                </a>
+
+                                                            </div></>
                                                         }
                                                         {/* Bootstrap Modal */}
                                                         {console.log("formdata", formData)}

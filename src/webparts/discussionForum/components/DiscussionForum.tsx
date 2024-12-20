@@ -1148,7 +1148,7 @@ const DiscussionForumContext = ({ props }: any) => {
                 InviteMemebersId: selectedIds,
                 ARGDiscussionStatus: "Ongoing",
                 DiscussionInProgress: "In Progress",
-                DiscussionFileManager: `/sites/AlRostmaniSpfx2/ARGDiscussionFiles/${formData.topic}`,
+                DiscussionFileManager: `/sites/spfxdemo/ARGDiscussionFiles/${formData.topic}`,
                 DiscussionFolderName: formData.topic
               };
             }
@@ -1162,7 +1162,7 @@ const DiscussionForumContext = ({ props }: any) => {
                 DiscussionForumCategoryId: Number(formData.category),
                 ARGDiscussionStatus: "Ongoing",
                 DiscussionInProgress: "In Progress",
-                DiscussionFileManager: `/sites/AlRostmaniSpfx2/ARGDiscussionFiles/${formData.topic}`,
+                DiscussionFileManager: `/sites/spfxdemo/ARGDiscussionFiles/${formData.topic}`,
                 DiscussionFolderName: formData.topic
               };
             }
@@ -1271,7 +1271,7 @@ const DiscussionForumContext = ({ props }: any) => {
 
   const handleCancel = () => {
     window.location.href =
-      "https://officeindia.sharepoint.com/sites/AlRostmaniSpfx2/SitePages/Blogs.aspx";
+      "https://officeindia.sharepoint.com/sites/spfxdemo/SitePages/Blogs.aspx";
   };
 
   const formats = [
@@ -2029,21 +2029,32 @@ const DiscussionForumContext = ({ props }: any) => {
                       <span>
                       <img style={{width:'35px'}}
                           src={require("../../../CustomAsset/argloader.gif")}
-                          className="alignrightl"
+                          className="alignrightbird"
                           alt="Loading..."
                         />
                       </span>
                     </div>):(currentData.length === 0 ? (
-                          <div
-                            className="no-results"
+                            <div
+
+                            className="no-results card card-body align-items-center  annusvg text-center "
+                            
                             style={{
+                            
                               display: "flex",
-                              marginTop:'10px',
-                              position:'relative',
+                            
                               justifyContent: "center",
-                            }}>
-                            No results found
-                          </div>
+                              position: 'relative',
+                              marginTop: '10px',
+                              height: '300px'
+                            
+                            }}
+                            
+                            >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg>
+                            
+                            <p className="font-14 text-muted text-center">No Discussion found </p>
+                            
+                            </div>
                         ) : (
                           
                           currentData.map((item: any, index: number) => (
