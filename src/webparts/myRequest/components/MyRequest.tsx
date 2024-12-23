@@ -792,6 +792,10 @@ const MyRequestContext = ({ props }: any) => {
             sessionkey = "mediaId";
             redirecturl = `${siteUrl}/SitePages/MediaGalleryForm.aspx` + "?requestid=" + Item?.Id + "&mode=view";
             break;
+            case "Blog":
+            sessionkey = "blogId";
+            redirecturl = `${siteUrl}/SitePages/Blogs.aspx` + "?requestid=" + Item?.Id + "&mode=view";
+            break;
           default: ;
         }
 
@@ -1063,7 +1067,7 @@ const MyRequestContext = ({ props }: any) => {
 
                                     className="d-flex pb-2"
 
-                                    style={{ justifyContent: "space-between" }}
+                                    style={{ justifyContent: "space-evenly" }}
 
                                   >
 
@@ -1109,7 +1113,7 @@ const MyRequestContext = ({ props }: any) => {
 
                                       className="d-flex pb-2"
 
-                                      style={{ justifyContent: "space-between" }}
+                                      style={{ justifyContent: "space-evenly" }}
 
                                     >
 
@@ -1164,7 +1168,7 @@ const MyRequestContext = ({ props }: any) => {
 
                                       className="d-flex pb-2"
 
-                                      style={{ justifyContent: "space-between" }}
+                                      style={{ justifyContent: "space-evenly" }}
 
                                     >
 
@@ -1219,7 +1223,7 @@ const MyRequestContext = ({ props }: any) => {
 
                                       className="d-flex  pb-2"
 
-                                      style={{ justifyContent: "space-between" }}
+                                      style={{ justifyContent: "space-evenly" }}
 
                                     >
 
@@ -1338,7 +1342,7 @@ const MyRequestContext = ({ props }: any) => {
 
                                       className="d-flex  pb-2"
 
-                                      style={{ justifyContent: "space-between" }}
+                                      style={{ justifyContent: "space-evenly" }}
 
                                     >
 
@@ -1397,7 +1401,7 @@ const MyRequestContext = ({ props }: any) => {
 
                                       className="d-flex  pb-2"
 
-                                      style={{ justifyContent: "space-between" }}
+                                      style={{ justifyContent: "space-evenly" }}
 
                                     >
 
@@ -1470,7 +1474,7 @@ const MyRequestContext = ({ props }: any) => {
 
                                       className="d-flex  pb-2"
 
-                                      style={{ justifyContent: "space-between" }}
+                                      style={{ justifyContent: "space-evenly" }}
 
                                     >
 
@@ -1697,7 +1701,7 @@ const MyRequestContext = ({ props }: any) => {
 
                                         className="d-flex pb-2"
 
-                                        style={{ justifyContent: "space-between" }}
+                                        style={{ justifyContent: "space-evenly" }}
 
                                       >
 
@@ -1739,7 +1743,7 @@ const MyRequestContext = ({ props }: any) => {
 
                                           className="d-flex pb-2"
 
-                                          style={{ justifyContent: "space-between" }}
+                                          style={{ justifyContent: "space-evenly" }}
 
                                         >
 
@@ -1791,7 +1795,7 @@ const MyRequestContext = ({ props }: any) => {
 
                                           className="d-flex pb-2"
 
-                                          style={{ justifyContent: "space-between" }}
+                                          style={{ justifyContent: "space-evenly" }}
 
                                         >
 
@@ -1842,7 +1846,7 @@ const MyRequestContext = ({ props }: any) => {
 
                                           className="d-flex  pb-2"
 
-                                          style={{ justifyContent: "space-between" }}
+                                          style={{ justifyContent: "space-evenly" }}
 
                                         >
 
@@ -1901,7 +1905,7 @@ const MyRequestContext = ({ props }: any) => {
 
                                           className="d-flex  pb-2"
 
-                                          style={{ justifyContent: "space-between" }}
+                                          style={{ justifyContent: "space-evenly" }}
 
                                         >
 
@@ -1956,7 +1960,7 @@ const MyRequestContext = ({ props }: any) => {
 
                                           className="d-flex  pb-2"
 
-                                          style={{ justifyContent: "space-between" }}
+                                          style={{ justifyContent: "space-evenly" }}
 
                                         >
 
@@ -2021,7 +2025,7 @@ const MyRequestContext = ({ props }: any) => {
 
                                           className="d-flex  pb-2"
 
-                                          style={{ justifyContent: "space-between" }}
+                                          style={{ justifyContent: "space-evenly" }}
 
                                         >
 

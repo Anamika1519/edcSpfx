@@ -18,7 +18,13 @@ import { getCurrentUserProfileEmail, getEntity } from "../../APISearvice/CustomS
 import {
     fetchBlogdata, fetchBookmarkBlogdata, getBlogsByID, getBlogByID, GetBlogCategory, GetCategory,
     fetchPinstatus, updateItem, uploadFileBanner, DeleteBusinessAppsAPI
-} from "../../APISearvice/BlogService"
+} from "../../APISearvice/BlogService";
+// import {AddContentMaster,AddContentLevelMaster} from "../../APISearvice/ApprovalService";
+import Multiselect from "multiselect-react-dropdown";
+import { CONTENTTYPE_Media, LIST_TITLE_ContentMaster, LIST_TITLE_Blogs, LIST_TITLE_MyRequest,CONTENTTYPE_Blogs } from '../../Shared/Constants';
+
+import { AddContentLevelMaster, AddContentMaster, getApprovalConfiguration, getLevel, UpdateContentMaster,getMyRequestBlogPending } from '../../APISearvice/ApprovalService';
+
 
 const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
     const [itemsToShow, setItemsToShow] = useState(5);
@@ -51,6 +57,10 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
     const [editForm, setEditForm] = React.useState(false);
     const [IsBannerAdded, setBannerAdded] = React.useState(false);
     const [IsGalImageAdded, setGalImageAdded] = React.useState(false);
+    const [rows, setRows] = React.useState([]);
+    const [levels, setLevel] = React.useState([]);
+     const [ApprovalRequestItem, setApprovalRequestItem] = React.useState(null);
+
     const [formData, setFormData] = React.useState({
         topic: "",
         category: "",
@@ -155,12 +165,13 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                     console.log("currentEmailcurrentEmail", Bookmarkblogs)
                     setFilteredBlogItems(Bookmarkblogs);
                 } else {
-                    if (selectedCategory.Name == "Save as Draft") {
+                    if (selectedCategory.Name == "Save as Draft" ||selectedCategory.Name == "Submitted"||selectedCategory.Name == "Rejected"||selectedCategory.Name == "Rejected" ||selectedCategory.Name == "Approved") {
                         const filteredItems = blogData.filter(
                             (item) => item.Status === selectedCategory.Name && item.Author.EMail == currentEmail
                         );
                         setFilteredBlogItems(filteredItems);
-                    } else {
+                    }
+                     else {
                         const filteredItems = blogData.filter(
                             (item) => item.Status === selectedCategory.Name
                         );
@@ -193,10 +204,13 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
     useEffect(() => {
         ApIcall();
     }, []);
-    const FilterOptions = [{ id: 1, Name: "All", name: "All" }, { id: 2, Name: "Published", name: "Published" },
-    { id: 3, Name: "Save as Draft", name: "Your Drafts" }, { id: 4, Name: "Bookmarked", name: "Bookmarked" }]
+    const FilterOptions = [{ id: 1, Name: "All", name: "All" },{ id: 2, Name: "Submitted", name: "Submitted" },
+    //   { id: 3, Name: "Published", name: "Published" },
+    { id: 3, Name: "Approved", name: "Approved" },
+    { id: 4, Name: "Save as Draft", name: "Your Drafts" },{ id: 5, Name: "Rejected", name: "Rejected" },{ id: 6, Name: "Rework", name: "Rework" }, { id: 7, Name: "Bookmarked", name: "Bookmarked" }]
 
     const ApIcall = async () => {
+        setLevel(await getLevel(_sp));
         setEmail(await getCurrentUserProfileEmail(_sp));
         setBlogData(await fetchBlogdata(_sp));
 
@@ -215,6 +229,71 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
         // setBlogData(dataofblog);
 
     }
+// /**************changes**************** */
+    const handleClick = async (contentId, contentName, EntityId) => {
+     
+        //  console.log("Creating approval hierarchy with data:", rows);
+     
+          let boolval = false
+     
+          for (let i = 0; i < rows.length; i++) {
+     
+            const userIds = rows[i].approvedUserListupdate.map((user) => user.id);
+     
+            let arrPost = {
+              LevelSequence: i + 1,
+              ContentId: contentId,
+     
+              ContentName: "ARGBlogs",
+     
+              EntityMasterId: EntityId,
+     
+              ARGLevelMasterId: rows[i].LevelId,
+     
+              ApproverId: userIds,
+     
+              ApprovalType: rows[i].selectionType == "All" ? 1 : 0,
+     
+              SourceName: contentName
+     
+            }
+     
+            const addedData = await AddContentLevelMaster(sp, arrPost)
+     
+            //console.log("created content level master items", addedData);
+     
+     
+          }
+     
+          boolval = true
+     
+          return boolval;
+     
+          // Process rows data, e.g., submit to server or save to SharePoint list
+     
+          // Add your submit logic here
+     
+        };
+
+        const handleUserSelect = (selectedUsers, rowId) => {
+
+            setRows((prevRows) =>
+       
+              prevRows.map((row) =>
+       
+                row.id === rowId
+       
+                  ? { ...row, approvedUserListupdate: selectedUsers }
+       
+                  : row
+       
+              )
+       
+            );
+       
+          };
+  // /**************changes**************** */
+
     const handleTabClick = (tab, Id) => {
         setActiveTab(tab.toLowerCase());
     };
@@ -252,6 +331,10 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
     const EditBlogs = async (id) => {
 
         let selectedData = await getBlogsByID(_sp, Number(id));
+        let myrequestdata = await getMyRequestBlogPending(_sp, selectedData[0]);
+        if(myrequestdata){
+            setApprovalRequestItem(myrequestdata[0]);
+        }
         setEditFormData(selectedData);
         setEditID(id);
         setEditForm(true)
@@ -317,65 +400,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
             if (libraryName === "bannerimg") {
                 setBannerAdded(true);
             }
-            // if (libraryName === "Docs") {
-            //     const docFiles = files.filter(
-            //         (file) =>
-            //             file.type === "application/pdf" ||
-            //             file.type === "application/msword" ||
-            //             file.type === "application/xsls" ||
-            //             file.type === "text/csv" ||
-            //             file.type === "text/csv" ||
-            //             file.type ===
-            //             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
-            //             file.type ===
-            //             "application/vnd.openxmlformats-officedocument.presentationml.presentation" ||
-            //             file.type === "text/"
-            //     );
-
-            //     if (docFiles.length > 0) {
-            //         const arr = {
-            //             files: docFiles,
-            //             libraryName: libraryName,
-            //             docLib: docLib,
-            //         };
-            //         uloadDocsFiles.push(arr);
-            //         setDocumentpostArr(uloadDocsFiles);
-            //         if (DocumentpostArr1.length > 0) {
-            //             //  uloadDocsFiles1.push(DocumentpostArr1)
-            //             docFiles.forEach((ele) => {
-            //                 let arr1 = {
-            //                     ID: 0,
-            //                     Createdby: "",
-            //                     Modified: "",
-            //                     fileUrl: "",
-            //                     fileSize: ele.size,
-            //                     fileType: ele.type,
-            //                     fileName: ele.name,
-            //                 };
-            //                 DocumentpostArr1.push(arr1);
-            //             });
-
-            //             setDocumentpostArr1(DocumentpostArr1);
-            //         } else {
-            //             docFiles.forEach((ele) => {
-            //                 let arr1 = {
-            //                     ID: 0,
-            //                     Createdby: "",
-            //                     Modified: "",
-            //                     fileUrl: "",
-            //                     fileSize: ele.size,
-            //                     fileType: ele.type,
-            //                     fileName: ele.name,
-            //                 };
-            //                 uloadDocsFiles1.push(arr1);
-            //             });
-
-            //             setDocumentpostArr1(uloadDocsFiles1);
-            //         }
-            //     } else {
-            //         Swal.fire("only document can be upload");
-            //     }
-            // }
+           
             if (libraryName === "Gallery" || libraryName === "bannerimg") {
                 const imageVideoFiles = files.filter(
                     (file) =>
@@ -456,16 +481,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
             Swal.fire('Error', 'Gallery image is required!', 'error');
             valid = false;
         }
-        //else if (!overview) {
-        //   Swal.fire('Error', 'Overview is required!', 'error');
-        //   valid = false;
-        // } else if (!description) {
-        //   Swal.fire('Error', 'Description is required!', 'error');
-        //   valid = false;
-        // } else if (!FeaturedAnnouncement) {
-        //   Swal.fire('Error', 'Featured Announcement is required!', 'error');
-        //   valid = false;
-        // }
+       
 
         return valid;
     };
@@ -507,7 +523,8 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
         if (validateForm()) {
             if (editForm) {
                 Swal.fire({
-                    title: "Are you sure you want to publish this blog?",
+                    // title: "Are you sure you want to publish this blog?",
+                    title: "Are you sure you want to submit this blog?",
                     showConfirmButton: true,
                     showCancelButton: true,
                     confirmButtonText: "Yes",
@@ -539,7 +556,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                     file,
                                     _sp,
                                     "Documents",
-                                    "https://officeindia.sharepoint.com"
+                                    "https://alrostamanigroupae.sharepoint.com"
                                 );
                             }
                         } else {
@@ -559,7 +576,8 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                     Overview: formData.overview,
                                     Description: richTextValues.description,
                                     EntityId: formData.entity && Number(formData.entity),
-                                    Status: "Published",
+                                    // Status: "Published",
+                                    Status: "Submitted",
                                     BlogBannerImage: bannerImageArray && JSON.stringify(bannerImageArray)
                                     // DiscussionForumCategoryId: Number(formData.category),
                                 }
@@ -569,7 +587,8 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                     Overview: formData.overview,
                                     Description: richTextValues.description,
                                     EntityId: formData.entity && Number(formData.entity),
-                                    Status: "Published",
+                                    // Status: "Published",
+                                    Status: "Submitted",
                                     //BlogBannerImage: bannerImageArray && JSON.stringify(bannerImageArray)
                                     // DiscussionForumCategoryId: Number(formData.category),
                                 };
@@ -578,10 +597,10 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                             const postResult = await updateItem(postPayload, _sp, editID);
                             const postId = postResult?.data?.ID;
                             debugger;
-
+                         
                             console.log("ImagepostArrImagepostArrsubmit", ImagepostArr, IsGalImageAdded)
                             // if (IsGalImageAdded) {
-
+                           
                             //     if (ImagepostArr.length > 0) {
                             //         for (const file of ImagepostArr[0]?.files) {
                             //             const uploadedGalleryImage = await uploadFileToLibrary(
@@ -598,7 +617,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                             //     }
                             //     // Upload Documents
                             //     console.log("DocumentpostArr submit", galleryIds, ImagepostIdsArr, galleryArray)
-
+                             
                             // }
                             if (ImagepostArr.length > 0 && IsGalImageAdded) {
                                 for (const file of ImagepostArr[0]?.files) {
@@ -633,37 +652,64 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                     console.log("Update Result:", updateResult);
                                 }
                             }
-                            // if (IsGalImageAdded) {
-                            //     const updatePayload = {
-                            //         ...(galleryIds.length > 0 && {
-                            //             BlogGalleryId: galleryIds,
-
-                            //             BlogGalleryJSON: JSON.stringify(
-                            //                 flatArray(galleryArray)
-                            //             ),
-                            //         })
-                            //     };
-
-                            //     if (Object.keys(updatePayload).length > 0) {
-                            //         const updateResult = await updateItem(
-                            //             updatePayload,
-                            //             _sp,
-                            //             editID
-                            //         );
-                            //         console.log("Update Result:", updateResult);
-                            //     }
-                            // }
+                           
                         }
 
-                        Swal.fire("Item updated successfully", "", "success");
+                       
+                                 // //////######### changes ############  ////////////
+                       
+                                          let arr = {
+                                 
+                                               ContentID: postId,
+                                 
+                                               ContentName: "ARGBlogs",
+                                 
+                                               Status: "Pending",
+                                 
+                                               EntityId: Number(formData.entity),
+                                 
+                                               SourceName: "Blogs",
+                                               ReworkRequestedBy: "Initiator"
+                                 
+                                 
+                                             }
+                                 
+                                            //  await AddContentMaster(_sp, arr)
+                                 
+                                                    //  const boolval = await handleClick(postId, "Blogs", Number(formData.entity))
+                                                    let boolval = false;      
+
+                        if (ApprovalRequestItem && ApprovalRequestItem.IsRework && ApprovalRequestItem.IsRework == 'Yes') {
+                            const ctmasteritm = await _sp.web.lists.getByTitle(LIST_TITLE_ContentMaster).items.filter('ContentID eq ' + ApprovalRequestItem.ContentId + " and SourceName eq '" + CONTENTTYPE_Blogs + "'")();
+                            if (ctmasteritm && ctmasteritm.length > 0) {
+                                let updaterec = { 'Status': 'Pending', 'ReworkRequestedBy': 'Initiator' }
+                                if (ApprovalRequestItem.LevelSequence == 1) updaterec.ReworkRequestedBy = "Level 1";
+                                await UpdateContentMaster(_sp, ctmasteritm[0].Id, updaterec);
+                                await _sp.web.lists.getByTitle(LIST_TITLE_MyRequest).items.getById(ApprovalRequestItem.Id).update({ 'Status': 'Submitted' });
+                                await _sp.web.lists.getByTitle(LIST_TITLE_Blogs).items.getById(editID).update({ 'Status': 'Submitted' });
+                                boolval = true;
+                            }
+                        }
+                        else {
+                            // await AddContentMaster(sp, arr)
+                            // boolval = await handleClick(editID, "Event", Number(formData.EntityId))
+                             Swal.fire("Item updated successfully", "", "success");
+                             boolval = true;
+                        }
+                       
+                                    // //////######### changes ############  ////////////
+                       
+                        // Swal.fire("Item updated successfully", "", "success");
+                        if (boolval == true) {
                         setTimeout(async () => {
                             setBlogData(await fetchBlogdata(_sp));
                             dismissModal();
                             window.location.href = `${SiteUrl}/SitePages/Blogs.aspx`;
-                        }, 2000);
-                        setTimeout(() => {
+                        }, 500);
+                    }
+                        // setTimeout(() => {
 
-                        }, 2000);
+                        // }, 2000);
                     }
                 });
             }
@@ -705,7 +751,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                 file,
                                 _sp,
                                 "Documents",
-                                "https://officeindia.sharepoint.com"
+                                "https://alrostamanigroupae.sharepoint.com"
                             );
                         }
                     }
@@ -781,6 +827,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
         }
 
     };
+
     const dismissModal = () => {
         const modalElement = document.getElementById('discussionModalEdit');
 
@@ -806,6 +853,37 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
         // if (name == "Type") {
         //   setCategoryData(await getCategory(_sp, Number(value))); // Category
         // }
+         if(name == "entity"){
+       
+               //ARGApprovalConfiguration
+             
+                    const rowData = await getApprovalConfiguration(_sp, Number(value)) //baseUrl
+             
+                    const initialRows = rowData.map((item) => ({
+             
+                      id: item.Id,
+             
+                      Level: item.Level.Level,
+             
+                      LevelId: item.LevelId,
+             
+                      approvedUserListupdate: item.Users.map((user) => ({
+             
+                        id: user.ID,
+             
+                        name: user.Title,
+             
+                        email: user.EMail
+             
+                      })),
+             
+                      selectionType: 'All' // default selection type, if any
+             
+                    }));
+             
+                    setRows(initialRows);
+       
+            }
     };
 
 
@@ -822,7 +900,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
         }).then((result) => {
             if (result.isConfirmed) {
                 const DeleteRes = DeleteBusinessAppsAPI(_sp, id)
-
+             
                 ApIcall();
                 Swal.fire({
                     title: "Deleted!",
@@ -940,10 +1018,14 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
         event.stopImmediatePropagation()
         setItemsToShow(itemsToShow + 5); // Increase the number by 8
     };
+   
+   
     return (
         <><div className="row mt-3">
             {blogData.length > 0 ?
-                blogData.filter(x => x.Status == "Published").slice(0, 1).map(item => {
+                // blogData.filter(x => x.Status == "Published").slice(0, 1).map(item => {
+                    blogData.filter(x => x.Status == "Approved").slice(0, 1).map(item => {
+
                     const AnnouncementandNewsBannerImage = item.BlogBannerImage == undefined || item.BlogBannerImage == null ? ""
                         : JSON.parse(item.BlogBannerImage);
                     return (
@@ -969,7 +1051,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                         <div className="col-sm-12">
                                             <p className="mb-2 mt-1 text-dark d-block customhead">
                                                 <span style={{ fontWeight: '400' }} className="pe-2 text-nowrap color-new font-12 mb-0 d-inline-block">
-                                                    <Calendar size={12} strokeWidth={1} className="pl-2" style={{ fontWeight: '400' }} />
+                                                    <Calendar size={12}  strokeWidth={1} className="pl-2" style={{ fontWeight: '400' }} />
                                                     {moment(item.Created).format("DD-MMM-YYYY")} &nbsp;  &nbsp;  &nbsp;|
                                                 </span>
                                                 <span style={{ fontWeight: '400' }} className="text-nowrap mb-0 color-new font-12 d-inline-block">
@@ -979,7 +1061,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                                 </span></p>
 
                                             <div style={{ clear: 'both' }}>
-                                                <p style={{ fontSize: '15px', lineHeight: '22px' }} className="d-block text-dark cursor-none customdescription">{truncateText(item.Overview, 300)}</p>
+                                                <p style={{fontSize:'15px', lineHeight:'22px'}} className="d-block text-dark cursor-none customdescription">{truncateText(item.Overview, 300)}</p>
                                             </div>
                                         </div>
                                         <a onClick={() => gotoBlogsDetails(item)} style={{ textDecoration: 'none' }}>
@@ -1032,29 +1114,6 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                 </div>
             </div>
             <div className="tab-content mt-2">
-                {filteredBlogItems.length == 0 &&
-                <div
-
-                    className="no-results card card-body align-items-center  annusvg text-center "
-
-                    style={{
-
-                        display: "flex",
-
-                        justifyContent: "center",
-                        position: 'relative',
-                        marginTop: '10px',
-                        height: '300px'
-
-                    }}
-
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg>
-
-                    <p className="font-14 text-muted text-center">No Blog found </p>
-
-                </div>
-                }
                 <div className="tab-pane show active" id="home1" role="tabpanel">
                     {filteredBlogItems.length > 0 ?
                         // filteredBlogItems.slice(0, itemsToShow).map(item => {
@@ -1070,14 +1129,13 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                             let listID = SiteUrl.toLowerCase().includes('alrostmani') ? listIDAl : '1e0eead0-ed78-4b4d-92dc-4cd058deac82';
 
                             let img1 = imageData && imageData.fileName ? `${SiteUrl}/_api/v2.1/sites('${siteId}')/lists('${listID}')/items('${item.ID}')/attachments('${imageData.fileName}')/thumbnails/0/c400x400/content?prefer=noredirect%2Cclosestavailablesize` : ""
-                            let img = imageData && imageData.serverRelativeUrl ? `https://officeindia.sharepoint.com${imageData.serverRelativeUrl}` : img1
+                            let img = imageData && imageData.serverRelativeUrl ? `https://alrostamanigroupae.sharepoint.com${imageData.serverRelativeUrl}` : img1
                             const imageUrl = imageData
                                 ? img
                                 : require("../../webparts/businessApps/assets/userimg.png");
                             { console.log("imageData", imageData, imageUrl, item, SiteUrl, img) }
 
                             return (
-
                                 <div className="card mb-2 annuncementcard">
                                     <div className="card-body">
                                         <div className="row align-items-start">
@@ -1103,17 +1161,18 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                                 <a> <div className="w-100">
                                                     <h4 className="mt-0 mb-1 font-16 fw-bold ng-binding" style={{ color: '#343a40', fontSize: '16px' }}> {truncateText(item.Title, 90)}
                                                     </h4>
-                                                    <p style={{ color: '#6b6b6b', fontSize: '15px', lineHeight: '20px', height: '4rem' }} className="mb-2 ng-binding">
+                                                    <p style={{ color: '#6b6b6b', fontSize: '15px', lineHeight:'20px', height: '4rem' }} className="mb-2 ng-binding">
                                                         {truncateText(item.Overview, 200)}</p>
-                                                    <div className="readmore" onClick={() => gotoBlogsDetails(item)} style={{ cursor: 'pointer' }}>Read more..</div>
+                                                    <div className="readmore" onClick={() => gotoBlogsDetails(item)} style={{ cursor: 'pointer' }}>Read more..                                                    {item.Status == "Submitted" &&<span style={{marginLeft:'82%'}}>Waiting for approval</span>}
+                                                    </div>
                                                 </div>
                                                 </a>
                                             </div>
-                                            <div className="col-sm-1 posx">
+                                            <div className="col-sm-1">
                                                 <div className="d-flex" style={{ justifyContent: 'end', gap: '10px', marginRight: '3px', cursor: 'pointer' }}>
                                                     <div className="col-lg-12">
-                                                        {item.Status == "Save as Draft" &&
-                                                            <><div style={{ gap: '10px' }} className="d-flex flex-wrap align-items-center justify-content-end mt-0">
+                                                        {(item.Status == "Save as Draft" || item.WillReworkEdit == true) &&
+                                                            <><div style={{gap:'10px'}} className="d-flex flex-wrap align-items-center justify-content-end mt-0">
                                                                 {/* Button to trigger modal */}
                                                                 <FontAwesomeIcon
                                                                     icon={faEdit}
@@ -1123,16 +1182,16 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                                                     onClick={() => EditBlogs(item.ID)} />
 
 
+                                                           
 
+                                                                  {item.Status == "Save as Draft" && <a
+                                                                       
+                                                                        onClick={() => DeleteBlog(item.ID)}
+                                                                    >
+                                                                        <FontAwesomeIcon  className="text-dark1 waves-effect waves-light" icon={faTrashAlt} />
+                                                                    </a>}
 
-                                                                <a
-
-                                                                    onClick={() => DeleteBlog(item.ID)}
-                                                                >
-                                                                    <FontAwesomeIcon className="text-dark1 waves-effect waves-light" icon={faTrashAlt} />
-                                                                </a>
-
-                                                            </div></>
+                                                                </div></>
                                                         }
                                                         {/* Bootstrap Modal */}
                                                         {console.log("formdata", formData)}
@@ -1378,68 +1437,144 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
+                                                                         {/* /////////changes/////////// */}
+                                                                            {
 
-                                                                            {/* <div className="col-lg-4">
-                                                                                <div className="mb-3">
-                                                                                    <div className="d-flex justify-content-between">
-                                                                                        <div>
-                                                                                            <label
-                                                                                                htmlFor="discussionThumbnail"
-                                                                                                className="form-label"
-                                                                                            >
-                                                                                                Discussion Document
-                                                                                                <span className="text-danger">*</span>
-                                                                                            </label>
+                                                                                rows != null && rows.length > 0 && (
+
+                                                                                    <div className="container mt-2">
+
+                                                                                        <div className="card cardborder p-4">
+
+                                                                                            <div className="font-16">
+
+                                                                                                <strong>Approval Hierarchy</strong>
+
+                                                                                            </div>
+
+
+
+
+                                                                                            <div className="d-flex flex-column">
+
+
+
+
+                                                                                                {rows.map((row) => (
+
+                                                                                                    <div className="row mb-2" key={row.id}>
+
+                                                                                                        <div className="col-12 col-md-5">
+
+                                                                                                            <label htmlFor={`Level-${row.id}`} className="form-label">
+
+                                                                                                                Select Level
+
+                                                                                                            </label>
+
+                                                                                                            <select
+
+                                                                                                                className="form-select"
+
+                                                                                                                id={`Level-${row.id}`}
+
+                                                                                                                name="Level"
+
+                                                                                                                value={row.LevelId}
+                                                                                                                disabled={true}
+
+
+                                                                                                                onChange={(e) => {
+
+                                                                                                                    const selectedLevel = e.target.value;
+
+                                                                                                                    setRows((prevRows) =>
+
+                                                                                                                        prevRows.map((r) =>
+
+                                                                                                                            r.id === row.id
+
+                                                                                                                                ? { ...r, LevelId: selectedLevel }
+
+                                                                                                                                : r
+
+                                                                                                                        )
+
+                                                                                                                    );
+
+                                                                                                                }}
+
+                                                                                                            >
+
+                                                                                                                <option value="">Select</option>
+
+                                                                                                                {levels.map((item) => (
+
+                                                                                                                    <option key={item.Id} value={item.Id}>
+
+                                                                                                                        {item.Level}
+
+                                                                                                                    </option>
+
+                                                                                                                ))}
+
+                                                                                                            </select>
+
+                                                                                                        </div>
+
+
+                                                                                                        <div className="col-12 col-md-5">
+
+                                                                                                            <label htmlFor={`approver-${row.id}`} className="form-label">
+
+                                                                                                                Select Approver
+
+                                                                                                            </label>
+
+                                                                                                            <Multiselect
+
+                                                                                                                options={row.approvedUserList}
+
+                                                                                                                selectedValues={row.approvedUserListupdate}
+
+                                                                                                                onSelect={(selected) => handleUserSelect(selected, row.id)}
+
+                                                                                                                onRemove={(selected) => handleUserSelect(selected, row.id)}
+
+                                                                                                                displayValue="name"
+                                                                                                                disable={true}
+                                                                                                                placeholder=''
+                                                                                                                hidePlaceholder={true}
+
+                                                                                                            />
+
+                                                                                                        </div>
+
+
+
+
+                                                                                                    </div>
+
+                                                                                                ))}
+
+                                                                                            </div>
+
+
+
+
                                                                                         </div>
-                                                                                        <div>
-                                                                                            {(DocumentpostArr1.length > 0 &&
-                                                                                                DocumentpostArr1.length == 1 && (
-                                                                                                    <a
-                                                                                                        onClick={() =>
-                                                                                                            setShowModalFunc(true, "docs")
-                                                                                                        }
-                                                                                                        style={{ fontSize: "0.875rem" }}
-                                                                                                    >
-                                                                                                        <FontAwesomeIcon
-                                                                                                            icon={faPaperclip}
-                                                                                                        />{" "}
-                                                                                                        {DocumentpostArr1.length} file
-                                                                                                        Attached
-                                                                                                    </a>
-                                                                                                )) ||
-                                                                                                (DocumentpostArr1.length > 0 &&
-                                                                                                    DocumentpostArr1.length > 1 && (
-                                                                                                        <a
-                                                                                                            onClick={() =>
-                                                                                                                setShowModalFunc(true, "docs")
-                                                                                                            }
-                                                                                                            style={{ fontSize: "0.875rem" }}
-                                                                                                        >
-                                                                                                            <FontAwesomeIcon
-                                                                                                                icon={faPaperclip}
-                                                                                                            />{" "}
-                                                                                                            {DocumentpostArr1.length} files
-                                                                                                            Attached
-                                                                                                        </a>
-                                                                                                    ))}
-                                                                                        </div>
+
                                                                                     </div>
-                                                                                    <input
-                                                                                        type="file"
-                                                                                        id="discussionforumThumbnail"
-                                                                                        name="discussionforumThumbnail"
-                                                                                        className="form-control inputcss"
-                                                                                        multiple
-                                                                                        onChange={(e) =>
-                                                                                            onFileChange(
-                                                                                                e,
-                                                                                                "Docs",
-                                                                                                "DiscussionForumDocs"
-                                                                                            )
-                                                                                        }
-                                                                                    />
-                                                                                </div>
-                                                                            </div> */}
+
+                                                                                )
+
+
+
+                                                                            }
+
+
+
+                                                                                                                  {/* /////////changes/////////// */}
 
 
                                                                             <div className="text-center butncss">
@@ -1480,7 +1615,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                                                                             style={{ width: "1rem" }}
                                                                                             alt="Check"
                                                                                         />{" "}
-                                                                                        Publish
+                                                                                        Submit
                                                                                     </div>
                                                                                 </div>
                                                                                 <button

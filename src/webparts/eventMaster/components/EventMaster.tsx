@@ -358,7 +358,7 @@ const EntityMastercontext = ({ props }: any) => {
                             maxWidth: '50px', borderTopLeftRadius: '0px'
                           }}>
                             <div className="d-flex pb-2"
-                              style={{ justifyContent: 'space-between' }}>
+                              style={{ justifyContent: 'space-evenly' }}>
                               <span>S.No.</span>
                               <span onClick={() => handleSortChange('SNo')}>
                                 <FontAwesomeIcon icon={faSort} />
@@ -381,7 +381,7 @@ const EntityMastercontext = ({ props }: any) => {
                           </th>
                           <th>
                             <div className="d-flex flex-column bd-highlight ">
-                              <div className="d-flex pb-2" style={{ justifyContent: 'space-between' }}>
+                              <div className="d-flex pb-2" style={{ justifyContent: 'space-evenly' }}>
                                 <span >Event Name</span>  <span onClick={() => handleSortChange('EventName')}><FontAwesomeIcon icon={faSort} /> </span></div>
                               <div className=" bd-highlight">
                                 <input type="text" placeholder="Filter by Event Name" onChange={(e) => handleFilterChange(e, 'EventName')}
@@ -406,7 +406,7 @@ const EntityMastercontext = ({ props }: any) => {
                             </th> */}
                           <th style={{ minWidth: '80px', maxWidth: '80px' }}>
                             <div className="d-flex flex-column bd-highlight ">
-                              <div className="d-flex pb-2" style={{ justifyContent: 'space-between' }}>
+                              <div className="d-flex pb-2" style={{ justifyContent: 'space-evenly' }}>
                                 <span >Event Date</span>  <span onClick={() => handleSortChange('EventDate')}><FontAwesomeIcon icon={faSort} /> </span></div>
                               <div className=" bd-highlight">
                                 <input type="text" placeholder="Filter by EventDate" onChange={(e) => handleFilterChange(e, 'EventDate')} onKeyDown={(e) => {
@@ -426,7 +426,7 @@ const EntityMastercontext = ({ props }: any) => {
 
                                 className="d-flex pb-2"
 
-                                style={{ justifyContent: "space-between" }}
+                                style={{ justifyContent: "space-evenly" }}
 
                               >
 
@@ -475,7 +475,7 @@ const EntityMastercontext = ({ props }: any) => {
                           </th>
                           <th style={{ minWidth: '100px', maxWidth: '100px' }}>
                             <div className="d-flex flex-column bd-highlight ">
-                              <div className="d-flex pb-2" style={{ justifyContent: 'space-between' }}>
+                              <div className="d-flex pb-2" style={{ justifyContent: 'space-evenly' }}>
                                 <span >Overview</span>  <span onClick={() => handleSortChange('Overview')}><FontAwesomeIcon icon={faSort} /> </span></div>
                               <div className=" bd-highlight">
                                 <input type="text" placeholder="Filter by Overview" onChange={(e) => handleFilterChange(e, 'Overview')} onKeyDown={(e) => {
@@ -489,7 +489,7 @@ const EntityMastercontext = ({ props }: any) => {
                           </th>
                           <th style={{ minWidth: '80px', maxWidth: '80px' }}>
                             <div className="d-flex flex-column bd-highlight ">
-                              <div className="d-flex pb-2" style={{ justifyContent: 'space-between' }}>
+                              <div className="d-flex pb-2" style={{ justifyContent: 'space-evenly' }}>
                                 <span >Event Agenda</span>  <span onClick={() => handleSortChange('EventAgenda')}><FontAwesomeIcon icon={faSort} /> </span></div>
                               <div className=" bd-highlight">
                                 <input type="text" placeholder="Filter by EventAgenda" onChange={(e) => handleFilterChange(e, 'EventAgenda')} onKeyDown={(e) => {
@@ -503,7 +503,7 @@ const EntityMastercontext = ({ props }: any) => {
                           </th>
                           <th style={{ borderBottomRightRadius: '0px', minWidth: '50px', maxWidth: '50px', verticalAlign: 'Top', borderTopRightRadius: '0px' }}>
                             <div className="d-flex flex-column bd-highlight pb-2">
-                              <div className="d-flex  pb-0" style={{ justifyContent: 'space-between' }}>  <span >Action</span> <div className="dropdown">
+                              <div className="d-flex  pb-0" style={{ justifyContent: 'space-evenly' }}>  <span >Action</span> <div className="dropdown">
                                 {/* <FontAwesomeIcon icon={faEllipsisV} onClick={toggleDropdownNews} /> */}
                               </div>
                               </div>

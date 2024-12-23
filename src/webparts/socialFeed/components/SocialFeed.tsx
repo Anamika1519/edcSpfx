@@ -1760,7 +1760,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                                       ? `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item.EMail}`
 
-                                      : require("../assets//users.jpg")
+                                      : require("../assets/users.jpg")
 
                                   }
 

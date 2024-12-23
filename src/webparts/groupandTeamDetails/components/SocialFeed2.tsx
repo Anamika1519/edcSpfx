@@ -143,7 +143,7 @@ const SocialFeedContext = ({ props }: any) => {
 
 
       // alert(GroupName)
-      const getargmember = await sp.web.lists.getByTitle('ARGGroupandTeam').items.filter(`GroupName eq '${GroupName}'`).select("*,InviteMemebers/ID,InviteMemebers/EMail,InviteMemebers/Title , Author/ID,Author/Title,Author/EMail").expand("InviteMemebers ,Author")();
+      const getargmember = await sp.web.lists.getByTitle('ARGGroupandTeam').items.filter(`GroupName eq '${GroupName}'`).select("*,InviteMemebers/ID,InviteMemebers/Title , Author/ID,Author/Title").expand("InviteMemebers ,Author")();
       console.log(getargmember, "getargmember")
 
       setArgcurrentgroupuser(getargmember)
@@ -231,7 +231,7 @@ const SocialFeedContext = ({ props }: any) => {
     debugger;
     const getgroup1 = await sp.web.lists
       .getByTitle("ARGGroupandTeam")
-      .items.getById(idNum2).select("*,GroupFollowers/Id,GroupFollowers/Title,GroupFollowers/EMail,InviteMemebers/Id,InviteMemebers/Title,InviteMemebers/EMail,GroupType , Author/ID,Author/Title,Author/EMail").expand("InviteMemebers , GroupFollowers , Author")()
+      .items.getById(idNum2).select("*,GroupFollowers/Id,GroupFollowers/Title,InviteMemebers/Id,InviteMemebers/Title,GroupType , Author/ID,Author/Title").expand("InviteMemebers , GroupFollowers , Author")()
       .then((res) => {
         // arr=res;
         GroupName = res.GroupName
@@ -459,7 +459,7 @@ const SocialFeedContext = ({ props }: any) => {
 
     try {
       sp.web.lists.getByTitle("ARGGroupandTeamComments")
-        .items.select("*,GroupTeamComments/Id,GroupTeamComments/Comments,GroupTeamsImages/Id,GroupTeamLikes/Id,Author/Id,Author/Title,Author/EMail")
+        .items.select("*,GroupTeamComments/Id,GroupTeamComments/Comments,GroupTeamsImages/Id,GroupTeamLikes/Id,Author/Id,Author/Title")
         .expand("GroupTeamComments,GroupTeamsImages,GroupTeamLikes,Author")
         .orderBy("Created", false)
         .filter(`GroupandTeamId eq ${idNum}`)().then((results: IGroupAndTeamPosts[]) => {

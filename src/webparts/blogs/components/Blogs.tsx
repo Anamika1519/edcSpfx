@@ -35,11 +35,19 @@ import "react-quill/dist/quill.snow.css";
 import { getSP } from "../loc/pnpjsConfig";
 import context from "../../../GlobalContext/context";
 import { useMediaQuery } from "react-responsive";
+import { WorkflowAuditHistory } from "../../../CustomJSComponents/WorkflowAuditHistory/WorkflowAuditHistory";
+import { WorkflowAction } from "../../../CustomJSComponents/WorkflowAction/WorkflowAction";
+// import { getApprovalConfiguration, getLevel } from "../../../APISearvice/ApprovalService";
+import Multiselect from "multiselect-react-dropdown";
+// import { CONTENTTYPE_Media, LIST_TITLE_ContentMaster, LIST_TITLE_MediaGallery, LIST_TITLE_MyRequest } from '../../../Shared/Constants';
+import { AddContentLevelMaster, AddContentMaster, getApprovalConfiguration, getLevel, UpdateContentMaster } from '../../../APISearvice/ApprovalService';
+
 
 const BlogsContext = ({ props }: any) => {
   const sp: SPFI = getSP();
   const { useHide }: any = React.useContext(UserContext);
   const elementRef = React.useRef<HTMLDivElement>(null);
+  const [rows, setRows] = React.useState<any>([]);
   const [formData, setFormData] = React.useState({
     topic: "",
     category: "",
@@ -58,12 +66,14 @@ const BlogsContext = ({ props }: any) => {
   const [announcementData, setAnnouncementData] = React.useState([]);
   const [newsData, setNewsData] = React.useState([]);
   const [CategoryData, setCategoryData] = React.useState([]);
+  const [InputDisabled, setInputDisabled] = React.useState(true);
   const SiteUrl = props.siteUrl;
   // const [blogData, setBlogData] = useState<any[]>([]);
   const [blogData, setBlogData] = useState<any | null>(null);
   const [richTextValues, setRichTextValues] = React.useState<{
     [key: string]: string;
   }>({});
+  const [levels, setLevel] = React.useState([]);
   const [BnnerImagepostArr, setBannerImagepostArr] = React.useState([]);
   const [DocumentpostArr, setDocumentpostArr] = React.useState([]);
   const [DocumentpostArr1, setDocumentpostArr1] = React.useState([]);
@@ -87,6 +97,7 @@ const BlogsContext = ({ props }: any) => {
     document.querySelector(".sidebar")?.classList.toggle("close");
   };
   const ApiCall = async () => {
+    setLevel(await getLevel(sp));
     const announcementArr = await getBlog(sp);
     // const categorylist = await GetCategory(sp);
     setCategoryData(await GetCategory(sp));
@@ -397,331 +408,75 @@ const BlogsContext = ({ props }: any) => {
       modalBackdrop.remove();
     }
   };
+
+  const handleUserSelect = (selectedUsers: any, rowId: any) => {
+
+    setRows((prevRows: any) =>
+
+      prevRows.map((row: any) =>
+
+        row.id === rowId
+
+          ? { ...row, approvedUserListupdate: selectedUsers }
+
+          : row
+
+      )
+
+    );
+
+  };
+
+  const handleClick = async (contentId: number, contentName: any, EntityId: number) => {
+  
+    //  console.log("Creating approval hierarchy with data:", rows);
+  
+      let boolval = false
+  
+      for (let i = 0; i < rows.length; i++) {
+  
+        const userIds = rows[i].approvedUserListupdate.map((user: any) => user.id);
+  
+        let arrPost = {
+          LevelSequence: i + 1,
+          ContentId: contentId,
+  
+          ContentName: "ARGBlogs",
+  
+          EntityMasterId: EntityId,
+  
+          ARGLevelMasterId: rows[i].LevelId,
+  
+          ApproverId: userIds,
+  
+          ApprovalType: rows[i].selectionType == "All" ? 1 : 0,
+  
+          SourceName: contentName
+  
+        }
+  
+        const addedData = await AddContentLevelMaster(sp, arrPost)
+  
+        //console.log("created content level master items", addedData);
+  
+  
+      }
+  
+      boolval = true
+  
+      return boolval;
+  
+      // Process rows data, e.g., submit to server or save to SharePoint list
+  
+      // Add your submit logic here
+  
+    };
+
   const handleFormSubmit = async () => {
     if (validateForm()) {
-      // if (editForm) {
-      //   Swal.fire({
-      //     title: "Do you want to update?",
-      //     showConfirmButton: true,
-      //     showCancelButton: true,
-      //     confirmButtonText: "Save",
-      //     cancelButtonText: "Cancel",
-      //     icon: "warning",
-      //   }).then(async (result) => {
-      //     console.log(result);
-      //     if (result.isConfirmed) {
-      //       //console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
-      //       debugger;
-      //       let bannerImageArray: any = {};
-      //       let galleryIds: any[] = [];
-      //       let documentIds: any[] = [];
-      //       let galleryArray: any[] = [];
-      //       let documentArray: any[] = [];
-
-      //       // formData.FeaturedAnnouncement === "on"?  true :false;
-
-      //       // Upload Banner Images
-      //       if (
-      //         BnnerImagepostArr.length > 0 &&
-      //         BnnerImagepostArr[0]?.files?.length > 0
-      //       ) {
-      //         debugger
-      //         for (const file of BnnerImagepostArr[0].files) {
-      //           debugger
-      //           //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
-      //           bannerImageArray = await uploadFileBanner(
-      //             file,
-      //             sp,
-      //             "Documents",
-      //             "https://officeindia.sharepoint.com"
-      //           );
-      //         }
-      //       } else {
-      //         bannerImageArray = null;
-      //       }
-      //       debugger;
-      //       if (bannerImageArray != null) {
-      //         // Create Post
-      //         const postPayload = {
-      //           Topic: formData.topic,
-      //           Overview: formData.overview,
-      //           Description: richTextValues.description,
-      //           EntityId: Number(formData.entity),
-      //           BlogBannerImage: JSON.stringify(bannerImageArray),
-      //           // DiscussionForumCategoryId: Number(formData.category),
-      //         };
-      //         console.log("postPayload-->>>>>", postPayload);
-
-      //         const postResult = await updateItem(postPayload, sp, editID);
-      //         const postId = postResult?.data?.ID;
-      //         debugger;
-      //         // if (!postId) {
-      //         //   console.error("Post creation failed.");
-      //         //   return;
-      //         // }
-
-      //         // Upload Gallery Images
-      //         // Upload Gallery Images
-      //         if (ImagepostArr[0]?.files?.length > 0) {
-      //           for (const file of ImagepostArr[0].files) {
-      //             const uploadedGalleryImage = await uploadFileToLibrary(
-      //               file,
-      //               sp,
-      //               "BlogGallery"
-      //             );
-
-      //             galleryIds = galleryIds.concat(
-      //               uploadedGalleryImage.map((item: { ID: any }) => item.ID)
-      //             );
-      //             if (ImagepostArr1.length > 0) {
-      //               ImagepostArr1.push(uploadedGalleryImage[0]);
-      //               const updatedData = ImagepostArr1.filter(
-      //                 (item) => item.ID !== 0
-      //               );
-      //               debugger;
-      //               console.log(updatedData, "updatedData");
-      //               galleryArray = updatedData;
-      //               //galleryArray.push(ImagepostArr1);
-
-      //               ImagepostIdsArr.push(galleryIds[0]); //galleryIds.push(ImagepostIdsArr)
-      //               galleryIds = ImagepostIdsArr;
-      //             } else {
-      //               galleryArray.push(uploadedGalleryImage);
-      //             }
-      //           }
-      //         } else {
-      //           galleryIds = ImagepostIdsArr;
-      //           galleryArray = ImagepostArr1;
-      //         }
-
-      //         // Upload Documents
-      //         if (DocumentpostArr[0]?.files?.length > 0) {
-      //           for (const file of DocumentpostArr[0].files) {
-      //             const uploadedDocument = await uploadFileToLibrary(
-      //               file,
-      //               sp,
-      //               "BlogsDocs"
-      //             );
-      //             documentIds = documentIds.concat(
-      //               uploadedDocument.map((item: { ID: any }) => item.ID)
-      //             );
-      //             if (DocumentpostArr1.length > 0) {
-      //               DocumentpostArr1.push(uploadedDocument[0]);
-      //               const updatedData = DocumentpostArr1.filter(
-      //                 (item) => item.ID !== 0
-      //               );
-      //               console.log(updatedData, "updatedData");
-      //               documentArray = updatedData;
-      //               // documentArray.push(DocumentpostArr1)
-      //               DocumentpostIdsArr.push(documentIds[0]); //.push(DocumentpostIdsArr)
-      //               documentIds = DocumentpostIdsArr;
-      //             } else {
-      //               documentArray.push(uploadedDocument);
-      //             }
-      //           }
-      //         } else {
-      //           documentIds = DocumentpostIdsArr;
-      //           documentArray = DocumentpostArr1;
-      //         }
-      //         if (galleryArray.length > 0) {
-      //           let ars = galleryArray.filter((x) => x.ID == 0);
-      //           if (ars.length > 0) {
-      //             for (let i = 0; i < ars.length; i++) {
-      //               galleryArray.slice(i, 1);
-      //             }
-      //           }
-      //         }
-      //         if (documentArray.length > 0) {
-      //           let arsdoc = documentArray.filter((x) => x.ID == 0);
-      //           if (arsdoc.length > 0) {
-      //             for (let i = 0; i < arsdoc.length; i++) {
-      //               documentArray.slice(i, 1);
-      //             }
-      //           }
-      //           console.log(documentIds, "documentIds");
-      //           console.log(galleryIds, "galleryIds");
-      //           // Update Post with Gallery and Document Information
-      //         }
-
-      //         const updatePayload = {
-      //           ...(galleryIds.length > 0 && {
-      //             DiscussionForumGalleryId: galleryIds,
-
-      //             DiscussionForumGalleryJSON: JSON.stringify(
-      //               flatArray(galleryArray)
-      //             ),
-      //           }),
-      //           ...(documentIds.length > 0 && {
-      //             DiscussionForumDocsId: documentIds,
-      //             DiscussionForumDocsJSON: JSON.stringify(
-      //               flatArray(documentArray)
-      //             ),
-      //           }),
-      //         };
-
-      //         if (Object.keys(updatePayload).length > 0) {
-      //           const updateResult = await updateItem(
-      //             updatePayload,
-      //             sp,
-      //             editID
-      //           );
-      //           console.log("Update Result:", updateResult);
-      //         }
-      //       } else {
-      //         if (
-      //           BnnerImagepostArr.length > 0 &&
-      //           BnnerImagepostArr[0]?.files?.length > 0
-      //         ) {
-      //           debugger
-      //           for (const file of BnnerImagepostArr[0].files) {
-      //             debugger
-      //             //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
-      //             bannerImageArray = await uploadFileBanner(
-      //               file,
-      //               sp,
-      //               "Documents",
-      //               "https://officeindia.sharepoint.com"
-      //             );
-      //           }
-      //         } else {
-      //           bannerImageArray = null;
-      //         }
-      //         // Create Post
-      //         const postPayload = {
-      //           Title: formData.topic,
-      //           Overview: formData.overview,
-      //           Description: richTextValues.description,
-      //           EntityId: Number(formData.entity),
-      //           BlogBannerImage: JSON.stringify(bannerImageArray)
-      //           // DiscussionForumCategoryId: Number(formData.category),
-      //         };
-      //         console.log("postPayload else-->>>>", postPayload);
-
-      //         const postResult = await updateItem(postPayload, sp, editID);
-      //         const postId = postResult?.data?.ID;
-      //         debugger;
-      //         // if (!postId) {
-      //         //   console.error("Post creation failed.");
-      //         //   return;
-      //         // }
-
-      //         // Upload Gallery Images
-      //         // Upload Gallery Images
-      //         if (ImagepostArr[0]?.files?.length > 0) {
-      //           for (const file of ImagepostArr[0].files) {
-      //             const uploadedGalleryImage = await uploadFileToLibrary(
-      //               file,
-      //               sp,
-      //               "BlogGallery"
-      //             );
-
-      //             galleryIds = galleryIds.concat(
-      //               uploadedGalleryImage.map((item: { ID: any }) => item.ID)
-      //             );
-      //             if (ImagepostArr1.length > 0) {
-      //               ImagepostArr1.push(uploadedGalleryImage[0]);
-      //               const updatedData = ImagepostArr1.filter(
-      //                 (item) => item.ID !== 0
-      //               );
-      //               console.log(updatedData, "updatedData");
-      //               galleryArray = updatedData;
-      //               // galleryArray.push(ImagepostArr1);
-
-      //               ImagepostIdsArr.push(galleryIds[0]); //galleryIds.push(ImagepostIdsArr)
-      //               galleryIds = ImagepostIdsArr;
-      //             } else {
-      //               galleryArray.push(uploadedGalleryImage);
-      //             }
-      //           }
-      //         } else {
-      //           galleryIds = ImagepostIdsArr;
-      //           galleryArray = ImagepostArr1;
-      //         }
-
-      //         // Upload Documents
-      //         if (DocumentpostArr[0]?.files?.length > 0) {
-      //           for (const file of DocumentpostArr[0].files) {
-      //             const uploadedDocument = await uploadFileToLibrary(
-      //               file,
-      //               sp,
-      //               "BlogsDocs"
-      //             );
-      //             documentIds = documentIds.concat(
-      //               uploadedDocument.map((item: { ID: any }) => item.ID)
-      //             );
-      //             if (DocumentpostArr1.length > 0) {
-      //               DocumentpostArr1.push(uploadedDocument[0]);
-      //               const updatedData = DocumentpostArr1.filter(
-      //                 (item) => item.ID !== 0
-      //               );
-      //               console.log(updatedData, "updatedData");
-      //               documentArray = updatedData;
-      //               // documentArray.push(DocumentpostArr1)
-      //               DocumentpostIdsArr.push(documentIds[0]); //.push(DocumentpostIdsArr)
-      //               documentIds = DocumentpostIdsArr;
-      //             } else {
-      //               documentArray.push(uploadedDocument);
-      //             }
-      //           }
-      //         } else {
-      //           documentIds = DocumentpostIdsArr;
-      //           documentArray = DocumentpostArr1;
-      //         }
-      //         if (galleryArray.length > 0) {
-      //           let ars = galleryArray.filter((x) => x.ID == 0);
-      //           if (ars.length > 0) {
-      //             for (let i = 0; i < ars.length; i++) {
-      //               galleryArray.slice(i, 1);
-      //             }
-      //           }
-      //         }
-      //         if (documentArray.length > 0) {
-      //           let arsdoc = documentArray.filter((x) => x.ID == 0);
-      //           if (arsdoc.length > 0) {
-      //             for (let i = 0; i < arsdoc.length; i++) {
-      //               documentArray.slice(i, 1);
-      //             }
-      //           }
-      //         }
-      //         console.log(documentIds, "documentIds");
-      //         console.log(galleryIds, "galleryIds");
-      //         // Update Post with Gallery and Document Information
-      //         const updatePayload = {
-      //           ...(galleryIds.length > 0 && {
-      //             AnnouncementAndNewsGallaryId: galleryIds,
-
-      //             AnnouncementAndNewsGallaryJSON: JSON.stringify(
-      //               flatArray(galleryArray)
-      //             ),
-      //           }),
-      //           ...(documentIds.length > 0 && {
-      //             AnnouncementsAndNewsDocsId: documentIds,
-      //             AnnouncementAndNewsDocsJSON: JSON.stringify(
-      //               flatArray(documentArray)
-      //             ),
-      //           }),
-      //         };
-
-      //         if (Object.keys(updatePayload).length > 0) {
-      //           const updateResult = await updateItem(
-      //             updatePayload,
-      //             sp,
-      //             editID
-      //           );
-      //           console.log("Update Result:", updateResult);
-      //         }
-      //       }
-      //       //Swal.fire("Item update successfully", "", "success");
-      //       sessionStorage.removeItem("announcementId");
-      //       setTimeout(() => {
-      //         window.location.href = `${siteUrl}/SitePages/Announcementmaster.aspx`;
-      //       }, 2000);
-      //     }
-      //   });
-      // } else {
-
+      
         Swal.fire({
-          title: "Are you sure you want to publish this blog?",
+          title: "Are you sure you want to submit this blog?",
           showConfirmButton: true,
           showCancelButton: true,
           confirmButtonText: "Yes",
@@ -750,7 +505,7 @@ const BlogsContext = ({ props }: any) => {
                   file,
                   sp,
                   "Documents",
-                  "https://officeindia.sharepoint.com"
+                  "https://alrostamanigroupae.sharepoint.com"
                 );
               }
             }
@@ -761,7 +516,7 @@ const BlogsContext = ({ props }: any) => {
               Overview: formData.overview,
               Description: richTextValues.description,
               EntityId: Number(formData.entity),
-              Status:"Published",
+              Status:"Submitted",
               BlogBannerImage: JSON.stringify(bannerImageArray)
               // DiscussionForumCategoryId: Number(formData.category),
             };
@@ -837,6 +592,30 @@ const BlogsContext = ({ props }: any) => {
               const updateResult = await updateItem(updatePayload, sp, postId);
               console.log("Update Result:", updateResult);
             }
+
+         // //////######### changes ############  ////////////
+
+                  let arr = {
+         
+                       ContentID: postId,
+         
+                       ContentName: "ARGBlogs",
+         
+                       Status: "Pending",
+         
+                       EntityId: Number(formData.entity),
+         
+                       SourceName: "Blogs",
+                       ReworkRequestedBy: "Initiator"
+         
+         
+                     }
+         
+                     await AddContentMaster(sp, arr)
+         
+                     const boolval = await handleClick(postId, "Blogs", Number(formData.entity))
+
+            // //////######### changes ############  ////////////
              //Swal.fire("Item published successfully", "", "success");
             // sessionStorage.removeItem("bannerId");
             setTimeout(async () => {
@@ -881,7 +660,7 @@ const BlogsContext = ({ props }: any) => {
               file,
               sp,
               "Documents",
-              "https://officeindia.sharepoint.com"
+              "https://alrostamanigroupae.sharepoint.com"
             );
           }
         }
@@ -998,6 +777,37 @@ const BlogsContext = ({ props }: any) => {
 
     if (name == "Type") {
       setCategoryData(await getCategory(sp, Number(value))); // Category
+    }
+    else if(name == "entity"){
+
+       //ARGApprovalConfiguration
+      
+            const rowData: any[] = await getApprovalConfiguration(sp, Number(value)) //baseUrl
+      
+            const initialRows = rowData.map((item: any) => ({
+      
+              id: item.Id,
+      
+              Level: item.Level.Level,
+      
+              LevelId: item.LevelId,
+      
+              approvedUserListupdate: item.Users.map((user: any) => ({
+      
+                id: user.ID,
+      
+                name: user.Title,
+      
+                email: user.EMail
+      
+              })),
+      
+              selectionType: 'All' // default selection type, if any
+      
+            }));
+      
+            setRows(initialRows);
+
     }
   };
   const formats = [
@@ -1369,6 +1179,145 @@ const BlogsContext = ({ props }: any) => {
                                 </div>
                               </div>
 
+
+                               {
+                              
+                                            rows != null && rows.length > 0  && (
+                              
+                                              <div className="container mt-2">
+                              
+                                                <div className="card cardborder p-4">
+                              
+                                                  <div className="font-16">
+                              
+                                                    <strong>Approval Hierarchy</strong>
+                              
+                                                  </div>
+                              
+                                                  
+                              
+                              
+                                                  <div className="d-flex flex-column">
+                              
+                                                   
+                              
+                                      {/* /////////changes/////////// */}
+                                                    {rows.map((row: any) => (
+                              
+                                                      <div className="row mb-2" key={row.id}>
+                              
+                                                        <div className="col-12 col-md-5">
+                              
+                                                          <label htmlFor={`Level-${row.id}`} className="form-label">
+                              
+                                                            Select Level
+                              
+                                                          </label>
+                              
+                                                          <select
+                              
+                                                            className="form-select"
+                              
+                                                            id={`Level-${row.id}`}
+                              
+                                                            name="Level"
+                              
+                                                            value={row.LevelId}
+                                                            disabled={true}
+                              
+                              
+                                                            onChange={(e) => {
+                              
+                                                              const selectedLevel = e.target.value;
+                              
+                                                              setRows((prevRows: any) =>
+                              
+                                                                prevRows.map((r: any) =>
+                              
+                                                                  r.id === row.id
+                              
+                                                                    ? { ...r, LevelId: selectedLevel }
+                              
+                                                                    : r
+                              
+                                                                )
+                              
+                                                              );
+                              
+                                                            }}
+                              
+                                                          >
+                              
+                                                            <option value="">Select</option>
+                              
+                                                            {levels.map((item: any) => (
+                              
+                                                              <option key={item.Id} value={item.Id}>
+                              
+                                                                {item.Level}
+                              
+                                                              </option>
+                              
+                                                            ))}
+                              
+                                                          </select>
+                              
+                                                        </div>
+                              
+                              
+                                                        <div className="col-12 col-md-5">
+                              
+                                                          <label htmlFor={`approver-${row.id}`} className="form-label">
+                              
+                                                            Select Approver
+                              
+                                                          </label>
+                              
+                                                          <Multiselect
+                              
+                                                            options={row.approvedUserList}
+                              
+                                                            selectedValues={row.approvedUserListupdate}
+                              
+                                                            onSelect={(selected) => handleUserSelect(selected, row.id)}
+                              
+                                                            onRemove={(selected) => handleUserSelect(selected, row.id)}
+                              
+                                                            displayValue="name"
+                                                            disable={true}
+                                                            placeholder=''
+                                                            hidePlaceholder={true}
+                              
+                                                          />
+                              
+                                                        </div>
+                              
+                              
+                                                        
+                              
+                                                      </div>
+                              
+                                                    ))}
+                              
+                                                  </div>
+                              
+                              
+                                                  
+                              
+                                                </div>
+                              
+                                              </div>
+                              
+                                            )
+                              
+                                  
+                              
+                                          }
+                              
+        
+
+                                          {/* /////////changes/////////// */}
+
                               {/* <div className="col-lg-6">
                                 <div className="mb-3">
                                   <div className="d-flex justify-content-between">
@@ -1497,7 +1446,7 @@ const BlogsContext = ({ props }: any) => {
                                       style={{ width: "1rem" }}
                                       alt="Check"
                                     />{" "}
-                                    Publish
+                                    Submit
                                   </div>
                                 </div>
                                 <button

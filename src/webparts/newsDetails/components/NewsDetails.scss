@@ -162,6 +162,8 @@ background-color: #0056b3;
 .mainevent {border-bottom: 1px solid #ccc; padding: 10px 0px;}
 .mainevent:last-child{border-bottom: 0px !important;}
 .gal-boximg{cursor:auto;}
+.btn-primary{border-color: #1fb0e5 !important;}
+.form-control:focus{box-shadow: none !important; outline: 1px solid #1fb0e5 !important;}
 .newpara p{line-height: 22px !important; font-size: 15px; }
 @media(max-width:1440px)
 {

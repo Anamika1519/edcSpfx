@@ -736,6 +736,14 @@ const MyApprovalContext = ({ props }: any) => {
               Item?.Id +
               "&mode=" + mode;
             break;
+            case "Blog":
+              sessionkey = "blogId";
+              redirecturl =
+                `${siteUrl}/SitePages/Blogs.aspx` +
+                "?requestid=" +
+                Item?.Id +
+                "&mode=" + mode;
+              break;
           default:
         }
 
@@ -926,9 +934,7 @@ const MyApprovalContext = ({ props }: any) => {
                                     >
                                       <div
                                         className="d-flex pb-2"
-                                        style={{
-                                          justifyContent: "space-between",
-                                        }}
+                                        style={{ justifyContent: "space-evenly" }}
                                       >
                                         <span>S.No.</span>
 
@@ -966,9 +972,7 @@ const MyApprovalContext = ({ props }: any) => {
                                       <div className="d-flex flex-column bd-highlight ">
                                         <div
                                           className="d-flex pb-2"
-                                          style={{
-                                            justifyContent: "space-between",
-                                          }}
+                                          style={{ justifyContent: "space-evenly" }}
                                         >
                                           <span>Request ID</span>
 
@@ -1009,9 +1013,7 @@ const MyApprovalContext = ({ props }: any) => {
                                         <div className="d-flex flex-column bd-highlight ">
                                           <div
                                             className="d-flex  pb-2"
-                                            style={{
-                                              justifyContent: "space-between",
-                                            }}
+                                            style={{ justifyContent: "space-evenly" }}
                                           >
                                             <span>Title</span>{" "}
                                             <span
@@ -1051,9 +1053,7 @@ const MyApprovalContext = ({ props }: any) => {
                                       <div className="d-flex flex-column bd-highlight ">
                                         <div
                                           className="d-flex  pb-2"
-                                          style={{
-                                            justifyContent: "space-between",
-                                          }}
+                                          style={{ justifyContent: "space-evenly" }}
                                         >
                                           <span>Process Name</span>{" "}
                                           <span
@@ -1093,9 +1093,7 @@ const MyApprovalContext = ({ props }: any) => {
                                       <div className="d-flex flex-column bd-highlight ">
                                         <div
                                           className="d-flex  pb-2"
-                                          style={{
-                                            justifyContent: "space-between",
-                                          }}
+                                          style={{ justifyContent: "space-evenly" }}
                                         >
                                           <span>Requested By</span>{" "}
                                           <span
@@ -1135,9 +1133,7 @@ const MyApprovalContext = ({ props }: any) => {
                                       <div className="d-flex flex-column bd-highlight ">
                                         <div
                                           className="d-flex  pb-2"
-                                          style={{
-                                            justifyContent: "start",
-                                          }}
+                                          style={{ justifyContent: "space-evenly" }}
                                         >
                                           <span>Requested Date</span>{" "}
                                           <span
@@ -1180,9 +1176,7 @@ const MyApprovalContext = ({ props }: any) => {
                                       <div className="d-flex flex-column bd-highlight ">
                                         <div
                                           className="d-flex  pb-2"
-                                          style={{
-                                            justifyContent: "space-between",
-                                          }}
+                                          style={{ justifyContent: "space-evenly" }}
                                         >
                                           <span>Status</span>{" "}
                                           <span
@@ -1231,9 +1225,7 @@ const MyApprovalContext = ({ props }: any) => {
                                       <div className="d-flex flex-column bd-highlight ">
                                         <div
                                           className="d-flex  pb-2"
-                                          style={{
-                                            justifyContent: "space-between",
-                                          }}
+                                          style={{ justifyContent: "space-evenly" }}
                                         >
                                           <span>Action</span>{" "}
                                         </div>

@@ -643,7 +643,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                               <th style={{ borderBottomLeftRadius: '0px', minWidth: '50px', maxWidth: '50px', borderTopLeftRadius: '0px' }}>
 
-                                <div className="d-flex pb-2" style={{ justifyContent: 'space-between' }}>
+                                <div className="d-flex pb-2" style={{ justifyContent: 'space-evenly' }}>
 
                                   <span>S.No.</span>
 
@@ -683,7 +683,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                 <div className="d-flex flex-column bd-highlight ">
 
-                                  <div className="d-flex pb-2" style={{ justifyContent: 'space-between' }}>  <span >Title</span>  <span onClick={() => handleSortChange('Title')}><FontAwesomeIcon icon={faSort} /> </span></div>
+                                  <div className="d-flex pb-2" style={{ justifyContent: 'space-evenly' }}>  <span >Title</span>  <span onClick={() => handleSortChange('Title')}><FontAwesomeIcon icon={faSort} /> </span></div>
 
                                   <div className=" bd-highlight">
 
@@ -717,7 +717,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                 <div className="d-flex flex-column bd-highlight ">
 
-                                  <div className="d-flex  pb-2" style={{ justifyContent: 'space-between' }}>  <span >Category</span>  <span onClick={() => handleSortChange('Category')}><FontAwesomeIcon icon={faSort} /> </span></div>
+                                  <div className="d-flex  pb-2" style={{ justifyContent: 'space-evenly' }}>  <span >Category</span>  <span onClick={() => handleSortChange('Category')}><FontAwesomeIcon icon={faSort} /> </span></div>
 
                                   <div className=" bd-highlight">  <input type="text" placeholder="Filter by Category" onChange={(e) => handleFilterChange(e, 'Category')}
                                     onKeyDown={(e) => {
@@ -734,7 +734,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                 <div className="d-flex flex-column bd-highlight ">
 
-                                  <div className="d-flex  pb-2" style={{ justifyContent: 'space-between' }}>  <span >Type</span>  <span onClick={() => handleSortChange('Type')}><FontAwesomeIcon icon={faSort} /> </span></div>
+                                  <div className="d-flex  pb-2" style={{ justifyContent: 'space-evenly' }}>  <span >Type</span>  <span onClick={() => handleSortChange('Type')}><FontAwesomeIcon icon={faSort} /> </span></div>
 
                                   <div className=" bd-highlight">     <input type="text" placeholder="Filter by Type" onChange={(e) => handleFilterChange(e, 'Type')}
                                     onKeyDown={(e) => {
@@ -752,7 +752,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                 <div className="d-flex flex-column bd-highlight ">
 
-                                  <div className="d-flex  pb-0" style={{ justifyContent: 'space-between' }}>  <span >Status</span>  <span onClick={() => handleSortChange('Status')}><FontAwesomeIcon icon={faSort} /> </span></div>
+                                  <div className="d-flex  pb-0" style={{ justifyContent: 'space-evenly' }}>  <span >Status</span>  <span onClick={() => handleSortChange('Status')}><FontAwesomeIcon icon={faSort} /> </span></div>
 
                                   <div className=" bd-highlight">     <input type="text" placeholder="Filter by Status" onChange={(e) => handleFilterChange(e, 'Status')}
                                     onKeyDown={(e) => {
@@ -770,7 +770,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                 <div className="d-flex flex-column bd-highlight ">
 
-                                  <div className="d-flex  pb-0" style={{ justifyContent: 'space-between' }}>  <span >Submitted Date</span>  <span onClick={() => handleSortChange('SubmittedDate')}><FontAwesomeIcon icon={faSort} /> </span></div>
+                                  <div className="d-flex  pb-0" style={{ justifyContent: 'space-evenly' }}>  <span >Submitted Date</span>  <span onClick={() => handleSortChange('SubmittedDate')}><FontAwesomeIcon icon={faSort} /> </span></div>
 
                                   <div className=" bd-highlight">     <input type="text" placeholder="Filter by Submitted Date" onChange={(e) => handleFilterChange(e, 'SubmittedDate')}
                                     onKeyDown={(e) => {
@@ -786,7 +786,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                               <th style={{ textAlign: 'center', minWidth:'80px',maxWidth:'80px', borderBottomRightRadius: '0px', borderTopRightRadius: '0px' }}> <div className="d-flex flex-column bd-highlight pb-2">
 
-                                <div className="d-flex  pb-2" style={{ justifyContent: 'space-between' }}>  <span >Action</span> <div className="dropdown">
+                                <div className="d-flex  pb-2" style={{ justifyContent: 'space-evenly' }}>  <span >Action</span> <div className="dropdown">
 
                                   <FontAwesomeIcon icon={faEllipsisV} onClick={toggleDropdown} size='xl' />
 
@@ -1026,7 +1026,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                               <th style={{ borderBottomLeftRadius: '10px', minWidth: '50px', maxWidth: '50px', borderTopLeftRadius: '10px' }}>
 
-                                <div className="d-flex pb-2" style={{ justifyContent: 'space-between' }}>
+                                <div className="d-flex pb-2" style={{ justifyContent: 'space-evenly' }}>
 
                                   <span>S.No.</span>
 
@@ -1066,7 +1066,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                 <div className="d-flex flex-column bd-highlight ">
 
-                                  <div className="d-flex pb-2" style={{ justifyContent: 'space-between' }}>  <span >Title</span>  <span onClick={() => handleSortChange('Title')}><FontAwesomeIcon icon={faSort} /> </span></div>
+                                  <div className="d-flex pb-2" style={{ justifyContent: 'space-evenly' }}>  <span >Title</span>  <span onClick={() => handleSortChange('Title')}><FontAwesomeIcon icon={faSort} /> </span></div>
 
                                   <div className=" bd-highlight">
 
@@ -1100,7 +1100,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                 <div className="d-flex flex-column bd-highlight ">
 
-                                  <div className="d-flex  pb-2" style={{ justifyContent: 'space-between' }}>  <span >Category</span>  <span onClick={() => handleSortChange('Category')}><FontAwesomeIcon icon={faSort} /> </span></div>
+                                  <div className="d-flex  pb-2" style={{ justifyContent: 'space-evenly' }}>  <span >Category</span>  <span onClick={() => handleSortChange('Category')}><FontAwesomeIcon icon={faSort} /> </span></div>
 
                                   <div className=" bd-highlight">  <input type="text" placeholder="Filter by Category"
                                     onChange={(e) => handleFilterChange(e, 'Category')}
@@ -1118,7 +1118,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                 <div className="d-flex flex-column bd-highlight ">
 
-                                  <div className="d-flex  pb-2" style={{ justifyContent: 'space-between' }}>  <span >Type</span>  <span onClick={() => handleSortChange('Type')}><FontAwesomeIcon icon={faSort} /> </span></div>
+                                  <div className="d-flex  pb-2" style={{ justifyContent: 'space-evenly' }}>  <span >Type</span>  <span onClick={() => handleSortChange('Type')}><FontAwesomeIcon icon={faSort} /> </span></div>
 
                                   <div className=" bd-highlight">     <input type="text" placeholder="Filter by Type" onChange={(e) => handleFilterChange(e, 'Type')}
                                     onKeyDown={(e) => {
@@ -1136,7 +1136,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                 <div className="d-flex flex-column bd-highlight ">
 
-                                  <div className="d-flex  pb-2" style={{ justifyContent: 'space-between' }}>  <span >Status</span>  <span onClick={() => handleSortChange('Status')}><FontAwesomeIcon icon={faSort} /> </span></div>
+                                  <div className="d-flex  pb-2" style={{ justifyContent: 'space-evenly' }}>  <span >Status</span>  <span onClick={() => handleSortChange('Status')}><FontAwesomeIcon icon={faSort} /> </span></div>
 
                                   <div className=" bd-highlight">     <input type="text" placeholder="Filter by Status" onChange={(e) => handleFilterChange(e, 'Status')}
                                     onKeyDown={(e) => {
@@ -1154,7 +1154,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                 <div className="d-flex flex-column bd-highlight ">
 
-                                  <div className="d-flex  pb-2" style={{ justifyContent: 'space-between' }}>  <span >Submitted Date</span>  <span onClick={() => handleSortChange('SubmittedDate')}><FontAwesomeIcon icon={faSort} /> </span></div>
+                                  <div className="d-flex  pb-2" style={{ justifyContent: 'space-evenly' }}>  <span >Submitted Date</span>  <span onClick={() => handleSortChange('SubmittedDate')}><FontAwesomeIcon icon={faSort} /> </span></div>
 
                                   <div className=" bd-highlight">     <input type="text" placeholder="Filter by Date" onChange={(e) => handleFilterChange(e, 'SubmittedDate')}
                                     onKeyDown={(e) => {
@@ -1171,7 +1171,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                 <div className="d-flex flex-column bd-highlight pb-2">
 
-                                  <div className="d-flex  pb-2" style={{ justifyContent: 'space-between' }}>  <span >Action</span> <div className="dropdown">
+                                  <div className="d-flex  pb-2" style={{ justifyContent: 'space-evenly' }}>  <span >Action</span> <div className="dropdown">
 
                                     <FontAwesomeIcon icon={faEllipsisV} onClick={toggleDropdownNews} fontSize={18} />
 

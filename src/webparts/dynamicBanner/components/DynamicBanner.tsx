@@ -353,7 +353,7 @@ const DynamicBannercontext = ({ props }: any) => {
                           </th>
                           <th style={{ minWidth: '150px', maxWidth: '150px' }}>
                             <div className="d-flex flex-column bd-highlight ">
-                              <div className="d-flex pb-2" style={{ justifyContent: 'space-between' }}>
+                              <div className="d-flex pb-2" style={{ justifyContent: 'space-evenly' }}>
                                 <span >Title</span>  <span onClick={() => handleSortChange('Title')}><FontAwesomeIcon icon={faSort} /> </span></div>
                               <div className=" bd-highlight">
                                 <input type="text" placeholder="Filter by Title" onChange={(e) => handleFilterChange(e, 'Title')}
@@ -388,7 +388,7 @@ const DynamicBannercontext = ({ props }: any) => {
                             </th> */}
                           <th style={{ minWidth: '40px', maxWidth: '40px' }}>
                             <div className="d-flex flex-column bd-highlight ">
-                              <div className="d-flex pb-2" style={{ justifyContent: 'space-between' }}>
+                              <div className="d-flex pb-2" style={{ justifyContent: 'space-evenly' }}>
                                 <span >Status</span>  <span onClick={() => handleSortChange('Status')}><FontAwesomeIcon icon={faSort} /> </span></div>
                               <div className=" bd-highlight">
                                 <input type="text" placeholder="Filter by Status" onChange={(e) => handleFilterChange(e, 'Status')}
@@ -403,7 +403,7 @@ const DynamicBannercontext = ({ props }: any) => {
                           </th>
                           <th style={{ minWidth: '40px', maxWidth: '40px' }}>
                             <div className="d-flex flex-column bd-highlight ">
-                              <div className="d-flex pb-2" style={{ justifyContent: 'space-between' }}>
+                              <div className="d-flex pb-2" style={{ justifyContent: 'space-evenly' }}>
                                 <span >SubmittedDate</span>  <span onClick={() => handleSortChange('SubmittedDate')}><FontAwesomeIcon icon={faSort} /> </span></div>
                               <div className=" bd-highlight">
                                 <input type="text" placeholder="Filter by SubmittedDate" onChange={(e) => handleFilterChange(e, 'SubmittedDate')}
@@ -418,7 +418,7 @@ const DynamicBannercontext = ({ props }: any) => {
                           </th>
                           <th style={{ borderBottomRightRadius: '0px', minWidth: '50px', maxWidth: '50px', borderTopRightRadius: '0px' }}>
                             <div className="d-flex flex-column bd-highlight pb-2">
-                              <div className="d-flex  pb-2" style={{ justifyContent: 'space-between' }}>  <span >Action</span> <div className="dropdown">
+                              <div className="d-flex  pb-2" style={{ justifyContent: 'space-evenly' }}>  <span >Action</span> <div className="dropdown">
                                 <FontAwesomeIcon icon={faEllipsisV} onClick={toggleDropdownNews} size='xl' />
                               </div>
                               </div>

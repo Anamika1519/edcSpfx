@@ -709,7 +709,7 @@ const AnnouncementdetailsContext = ({ props }: any) => {
                                   <div className="col-sm-6 col-xl-4 filter-item all web illustrator">
                                     <div className="gal-box">
                                       <a data-bs-toggle="modal" data-bs-target="#centermodal" className="image-popup mb-2" title="Screenshot-1">
-                                        <img src={`https://officeindia.sharepoint.com${res.fileUrl}`} className="img-fluid imgcssscustom"
+                                        <img src={`https://alrostamanigroupae.sharepoint.com${res.fileUrl}`} className="img-fluid imgcssscustom"
                                           alt="work-thumbnail" data-themekey="#" style={{ width: '100%', height: '100%' }} />
                                       </a>
                                     </div>
@@ -743,26 +743,27 @@ const AnnouncementdetailsContext = ({ props }: any) => {
             </div> */}
                 <div className="row mt-2" >
                   <div className="col-md-12">
-                    <div className="card" style={{ border: '1px solid #54ade0', borderRadius: '20px', boxShadow: '0 3px 20px #1d26260d' }}>
-                      <div className="card-body" style={{ padding: '1rem 0.9rem' }}>
+                    <div className="card p-4" style={{ border: '1px solid #54ade0', borderRadius: '20px', boxShadow: '0 3px 20px #1d26260d' }}>
+                      <div>
                         {/* New comment input */}
                         <h4 className="mt-0 mb-3 text-dark fw-bold font-16">Comments</h4>
                         <div className="mt-3">
                           <textarea id="example-textarea"
-                            className="form-control text-dark form-control-light mb-2"
+                            className="form-control text-dark mb-0"
                             value={newComment}
                             onChange={(e) => setNewComment(e.target.value)}
                            placeholder="Type your comment here..."
                             rows={3} style={{ borderRadius: 'unset' }}
                           />
+                          <div className="p-2 bg-light d-flex justify-content-between align-items-center">
                           <button
-                            className="btn btn-primary mt-2"
+                            className="btn btn-primary mt-1 mb-1"
                             onClick={handleAddComment}
                             disabled={loading} // Disable button when loading
                           >
 
                             {loading ? 'Submitting...' : 'Post'} {/* Change button text */}
-                          </button>
+                          </button></div>
                         </div>
                       </div>
                     </div>

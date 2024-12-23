@@ -333,7 +333,7 @@ const MediaMastercontext = ({ props }: any) => {
                           <th style={{ borderBottomLeftRadius: '0px', minWidth: '0px', maxWidth: '50px', borderTopLeftRadius: '0px' }}>
  
                             <div className="d-flex pb-0"
-                              style={{ justifyContent: 'space-between' }}>
+                              style={{ justifyContent: 'space-evenly' }}>
                               <span>S.No.</span>
                               <span onClick={() => handleSortChange('SNo')}>
                                 <FontAwesomeIcon icon={faSort} />
@@ -358,7 +358,7 @@ const MediaMastercontext = ({ props }: any) => {
                                     minWidth: "110px",
                                     maxWidth: "110px",
                                   }}><div className="d-flex flex-column bd-highlight ">
-                            <div className="d-flex pb-2" style={{ justifyContent: 'space-between' }}>
+                            <div className="d-flex pb-2" style={{ justifyContent: 'space-evenly' }}>
                               <span >Title</span>  <span onClick={() => handleSortChange('Title')}><FontAwesomeIcon icon={faSort} /> </span></div>
                             <div className=" bd-highlight">
                               <input type="text" placeholder="Filter by Title" onChange={(e) => handleFilterChange(e, 'Title')}
@@ -375,7 +375,7 @@ const MediaMastercontext = ({ props }: any) => {
                                     maxWidth: "110px",
                                   }}>
                             <div className="d-flex flex-column bd-highlight ">
-                              <div className="d-flex pb-2" style={{ justifyContent: 'space-between' }}>
+                              <div className="d-flex pb-2" style={{ justifyContent: 'space-evenly' }}>
                                 <span >Entity</span>  <span onClick={() => handleSortChange('Entity')}><FontAwesomeIcon icon={faSort} /> </span></div>
                               <div className=" bd-highlight">
                                 <input type="text" placeholder="Filter by Entity" onChange={(e) => handleFilterChange(e, 'Entity')}
@@ -393,7 +393,7 @@ const MediaMastercontext = ({ props }: any) => {
                                     maxWidth: "60px",
                                   }}>
                             <div className="d-flex flex-column bd-highlight ">
-                              <div className="d-flex pb-2" style={{ justifyContent: 'space-between' }}>
+                              <div className="d-flex pb-2" style={{ justifyContent: 'space-evenly' }}>
                                 <span >Status</span>  <span onClick={() => handleSortChange('Status')}><FontAwesomeIcon icon={faSort} /> </span></div>
                               <div className=" bd-highlight">
                                 <input type="text" placeholder="Filter by Status" onChange={(e) => handleFilterChange(e, 'Status')}
@@ -407,7 +407,7 @@ const MediaMastercontext = ({ props }: any) => {
                             </div>
                           </th>
                           <th style={{ minWidth: '60px', maxWidth: '60px' }}><div className="d-flex flex-column bd-highlight ">
-                            <div className="d-flex pb-2" style={{ justifyContent: 'space-between' }}>
+                            <div className="d-flex pb-2" style={{ justifyContent: 'space-evenly' }}>
                               <span >SubmittedDate</span>  <span onClick={() => handleSortChange('SubmittedDate')}><FontAwesomeIcon icon={faSort} /> </span></div>
                             <div className=" bd-highlight">
                               <input type="text" placeholder="Filter by Date" onChange={(e) => handleFilterChange(e, 'SubmittedDate')}
@@ -421,7 +421,7 @@ const MediaMastercontext = ({ props }: any) => {
                           </div></th>
                           <th style={{ textAlign: 'center', minWidth:'50px', maxWidth:'50px' }}>
                             <div className="d-flex flex-column bd-highlight pb-2">
-                              <div className="d-flex  pb-0" style={{ justifyContent: 'space-between' }}>  <span >Action</span> <div className="dropdown">
+                              <div className="d-flex  pb-0" style={{ justifyContent: 'space-evenly' }}>  <span >Action</span> <div className="dropdown">
                                 <FontAwesomeIcon icon={faEllipsisV} onClick={toggleDropdown} size='xl' />
                               </div>
                               </div>

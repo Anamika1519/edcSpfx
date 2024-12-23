@@ -8,6 +8,7 @@
   // box-shadow: 0 0 1px var(--grey-color-light);
   transition: all 0.5s ease;
 }
+.btn-primary:hover{border-color: #1fb0e5 !important;}
 .tabcss {
   background: #fff !important;
   border-radius: 2rem;
@@ -1750,7 +1751,7 @@ text-align: center;
 //     padding: 0;
 //     width: auto !important;
 // }
-.app-menu{top: 76px;}
+.app-menu{top: 76px !important;}
  .logo_item{display: none;}
 .item {
   margin: 0rem .4rem 0 8px;
@@ -1885,7 +1886,8 @@ a:hover{color: #1fb0e5 !important; cursor: pointer;}
 .filter-menu a:hover{
   background: #1fb0e5; color: #fff !important;
 }
-.pagination-container{margin-top: 5px !important;}
+.mtbalenew input[type=text]:focus{border: 1px solid #1fb0e5 !important;}
+.pagination-container{margin-top: 5px !important; z-index: 0;}
 .nav-pills .nav-link.active, .nav-pills .show>.nav-link{
   background: #1fb0e5 !important;
 border-radius: .5rem;

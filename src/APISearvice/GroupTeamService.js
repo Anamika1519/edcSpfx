@@ -93,7 +93,7 @@ export const fetchgrouppandteammaybeInterested = async (_sp) => {
     });
   await _sp.web.lists
     .getByTitle("ARGGroupandTeam").items
-    .select("*,InviteMemebers/Id,InviteMemebers/Title,InviteMemebers/EMail,GroupFollowers/Id,GroupFollowers/Title,GroupFollowers/EMail,Author/Title,Author/ID,Author/EMail,GroupType")
+    .select("*,InviteMemebers/Id,InviteMemebers/Title,GroupFollowers/Id,GroupFollowers/Title,Author/Title,Author/ID,GroupType")
     .expand("Author,InviteMemebers,GroupFollowers")
     .orderBy("Created", false)
     .filter(`GroupType eq 'All'`)

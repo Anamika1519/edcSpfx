@@ -1,28 +1,28 @@
 import Swal from "sweetalert2";
-export const fetchBlogdata = async (_sp) => {
-  let arr = []
-  let currentUser;
-  await _sp.web.currentUser()
-    .then(user => {
-      console.log("user", user);
-      currentUser = user.Id; // Get the current user's Email
-    })
-    .catch(error => {
-      console.error("Error fetching current user: ", error);
-      return [];
-    });
-  await _sp.web.lists.getByTitle("ARGBlogs")
-    .items.select("*,Author/ID,Author/Title,Author/EMail").expand("Author").orderBy("Created", false).getAll().then((res) => {
-      console.log(res);
-      let filtereddata =
-        res.filter(x => x.Status !== "Save as Draft" || (x.Status === "Save as Draft" && x.AuthorId == currentUser))
-      arr = filtereddata;
-    })
-    .catch((error) => {
-      console.log("Error fetching data: ", error);
-    });
-  return arr;
-}
+// export const fetchBlogdata = async (_sp) => {
+//   let arr = []
+//   let currentUser;
+//   await _sp.web.currentUser()
+//     .then(user => {
+//       console.log("user", user);
+//       currentUser = user.Id; // Get the current user's Email
+//     })
+//     .catch(error => {
+//       console.error("Error fetching current user: ", error);
+//       return [];
+//     });
+//   await _sp.web.lists.getByTitle("ARGBlogs")
+//     .items.select("*,Author/ID,Author/Title,Author/EMail").expand("Author").orderBy("Created", false).getAll().then((res) => {
+//       console.log(res);
+//       let filtereddata =
+//         res.filter(x => x.Status !== "Save as Draft" || (x.Status === "Save as Draft" && x.AuthorId == currentUser))
+//       arr = filtereddata;
+//     })
+//     .catch((error) => {
+//       console.log("Error fetching data: ", error);
+//     });
+//   return arr;
+// }
 
 export const fetchBookmarkBlogdata = async (_sp) => {
   let arr = []
@@ -392,24 +392,24 @@ export const getAllBlogsnonselected = async (_sp, Idnum, categoryId) => {
     });
   return arr;
 }
-export const getBlogDetailsById = async (_sp, idNum) => {
-  let arr = []
-  let arr1 = []
+// export const getBlogDetailsById = async (_sp, idNum) => {
+//   let arr = []
+//   let arr1 = []
 
-  await _sp.web.lists
-    .getByTitle("ARGBlogs")
-    .items.select("*,BlogCategory/ID,BlogCategory/CategoryName")
-    .expand("BlogCategory")
-    .filter(`ID eq ${Number(idNum)}`)()
-    .then((res) => {
-      // arr=res;
-      arr1.push(res)
-      arr = res
-    }).catch((error) => {
-      console.log("Error fetching data: ", error);
-    });
-  return arr;
-}
+//   await _sp.web.lists
+//     .getByTitle("ARGBlogs")
+//     .items.select("*,BlogCategory/ID,BlogCategory/CategoryName")
+//     .expand("BlogCategory")
+//     .filter(`ID eq ${Number(idNum)}`)()
+//     .then((res) => {
+//       // arr=res;
+//       arr1.push(res)
+//       arr = res
+//     }).catch((error) => {
+//       console.log("Error fetching data: ", error);
+//     });
+//   return arr;
+// }
 
 // export const uploadFile = async (file, sp, docLib, siteUrl) => {
 //   var arr ={};
@@ -509,6 +509,77 @@ export const getProjectDetailsById = async (_sp, idNum) => {
       // arr=res;
       arr1.push(res)
       arr = arr1
+    }).catch((error) => {
+      console.log("Error fetching data: ", error);
+    });
+  return arr;
+}
+export const fetchBlogdata = async (_sp) => {
+  let arr = []
+  let currentUser;
+  await _sp.web.currentUser()
+  .then(user => {
+      console.log("user", user);
+      currentUser = user.Id; // Get the current user's Email
+    })
+    .catch(error => {
+      console.error("Error fetching current user: ", error);
+      return [];
+    });
+  await _sp.web.lists.getByTitle("ARGBlogs")
+    .items.select("*,Author/ID,Author/Title,Author/EMail").expand("Author").orderBy("Created", false).getAll().then(async (res) => {
+      console.log(res);
+      let filtereddata =
+        res.filter(x => x.Status !== "Save as Draft" || (x.Status === "Save as Draft" && x.AuthorId == currentUser))
+     // Add a key based on existence in another list
+ 
+ 
+     for (const item of filtereddata) {
+ 
+      await _sp.web.lists.getByTitle("ARGMyRequest").items.select("*,Requester/Id,Requester/Title,Approver/Id,Approver/Title").expand("Approver,Requester")
+   
+      .filter(`Status eq 'Pending' and ContentId eq ${item.ID} and EntityId eq ${item.EntityId} and ProcessName eq 'Blog' and ApproverId eq ${currentUser} and ApprovalTask eq 'Assignment'`)
+ 
+      .orderBy("Created",false)
+ 
+      .getAll().then((resp) => {
+ 
+        item.WillReworkEdit = resp.length > 0;
+ 
+      })
+      // try {
+      //   // Check existence in another list
+      //   await _sp.web.lists.getByTitle("ARGMyRequest").items.select("*").filter(`Status eq 'Pending' and ContentId eq ${item.ID} and EntityId eq ${item.EntityId} and ProcessName eq 'Blog' and ApproverId eq ${currentUser} and ApprovalTask eq 'Assignment' and IsRework eq 'Yes'`).top(1).getAll().then(resp => {
+      //     item.WillReworkEdit = resp.length > 0;
+      //   });
+         
+      // } catch (error) {
+      //  // console.error(`Error checking item ${item.Id} in AnotherList: `, error);
+      //   item.WillReworkEdit = false; // Default to false on error
+      // }
+    }    
+     
+     
+        arr = filtereddata;
+    })
+    .catch((error) => {
+      console.log("Error fetching data: ", error);
+    });
+  return arr;
+}
+export const getBlogDetailsById = async (_sp, idNum) => {
+  let arr = []
+  let arr1 = []
+ 
+  await _sp.web.lists
+    .getByTitle("ARGBlogs")
+    .items.select("*,BlogCategory/ID,BlogCategory/CategoryName,Entity/Entity")
+    .expand("BlogCategory,Entity")
+    .filter(`ID eq ${Number(idNum)}`)()
+    .then((res) => {
+      // arr=res;
+      arr1.push(res)
+      arr = res
     }).catch((error) => {
       console.log("Error fetching data: ", error);
     });

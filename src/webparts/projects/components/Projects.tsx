@@ -293,7 +293,7 @@ const HelloWorldContext = ({ props }: any) => {
   const handleCancel = () => {
     debugger;
     window.location.href =
-      "https://officeindia.sharepoint.com/sites/spfxdemo/SitePages/Project.aspx";
+      "https://alrostamanigroupae.sharepoint.com/sites/intranetUAT/SitePages/Project.aspx";
   };
 
   const saveProjectData = async (formData: {
@@ -356,7 +356,7 @@ const HelloWorldContext = ({ props }: any) => {
         // // Budget: formData.Budget,
         ProjectOverview: formData.ProjectOverview,
         TeamMembersId: selectedIds,
-        ProjectFileManager: `/sites/spfxdemo/ARGProjectsFiles/${formData.ProjectName}`,
+        ProjectFileManager: `/sites/intranetUAT/ARGProjectsFiles/${formData.ProjectName}`,
         ProjectStatus: "Ongoing",
         ProjectFolderName: formData.ProjectName,
         FolderInProgress: 'In Progress'

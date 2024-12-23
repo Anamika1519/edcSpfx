@@ -442,3 +442,54 @@ export const updateItemApproval = async (itemData, _sp, id) => {
   return resultArr;
 };
 
+export const getMyRequestBlog = async (sp,item)=>
+ 
+  {
+
+    const currentUser = await sp.web.currentUser();
+
+    let arr = []
+
+    await sp.web.lists.getByTitle("ARGMyRequest").items.select("*,Requester/Id,Requester/Title,Approver/Id,Approver/Title").expand("Approver,Requester")
+
+    .filter(`Status eq 'Pending' and ContentId eq ${item.ID} and EntityId eq ${item.EntityId} and ProcessName eq 'Blog' and ApproverId eq ${currentUser.Id} and ApprovalTask eq 'Approval'`)
+
+    .orderBy("Created",false)
+
+    .getAll().then((res) => {
+
+      arr = res
+
+      console.log(arr, 'arr');
+
+    })
+
+    return arr
+
+  }
+
+  export const getMyRequestBlogPending = async (sp,item)=>
+
+    {
+ 
+      const currentUser = await sp.web.currentUser();
+ 
+      let arr = []
+ 
+      await sp.web.lists.getByTitle("ARGMyRequest").items.select("*,Requester/Id,Requester/Title,Approver/Id,Approver/Title").expand("Approver,Requester")
+ 
+      .filter(`Status eq 'Pending' and ContentId eq ${item.ID} and EntityId eq ${item.Entity} and ProcessName eq 'Blog' and ApproverId eq ${currentUser.Id} and ApprovalTask eq 'Assignment'`)
+ 
+      .orderBy("Created",false)
+ 
+      .getAll().then((res) => {
+ 
+        arr = res
+ 
+        console.log(arr, 'arr');
+ 
+      })
+ 
+      return arr
+ 
+    }

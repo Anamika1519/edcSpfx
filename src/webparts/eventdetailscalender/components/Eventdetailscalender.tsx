@@ -765,7 +765,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
                                       title="Screenshot-1"
                                     >
                                       <img
-                                        src={`https://officeindia.sharepoint.com${res.fileUrl}`}
+                                        src={`https://alrostamanigroupae.sharepoint.com${res.fileUrl}`}
                                         className="img-fluid imgcssscustom"
                                         alt="work-thumbnail"
                                         data-themekey="#"
@@ -789,7 +789,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
                 <div className="row" >
                   <div className="col-md-12">
                     <div className="card" style={{ border: "1px solid #54ade0", borderRadius: '20px', boxShadow: '0 3px 20px #1d26260d' }}>
-                      <div className="card-body" style={{ padding: '1rem 0.9rem' }}>
+                      <div className="p-4">
                         {/* New comment input */}
                         <h4 className="mt-0 mb-3 text-dark fw-bold font-16">
                           Comments
@@ -797,20 +797,22 @@ const EventdetailscalenderContext = ({ props }: any) => {
                         <div className="mt-3">
                           <textarea
                             id="example-textarea"
-                            className="form-control text-dark form-control-light mb-2"
+                            className="form-control text-dark  mb-0"
                             value={newComment}
                             onChange={(e) => setNewComment(e.target.value)}
                             placeholder="Add a new comment..."
                             rows={3} style={{ borderRadius: 'unset' }}
                           />
+                          <div className="p-2 bg-light d-flex justify-content-end align-items-center">
                           <button
-                            className="btn btn-primary mt-2"
+                            className="btn btn-primary mt-1 mb-1"
                             onClick={handleAddComment}
                             disabled={loading} // Disable button when loading
                           >
                             {loading ? "Submitting..." : "Post"}{" "}
                             {/* Change button text */}
                           </button>
+                          </div>
                         </div>
                       </div>
                     </div>

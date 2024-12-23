@@ -103,6 +103,7 @@ const HelloWorldContext = ({props}:any) => {
       
       setCategory(selectedData.MediaGalleryCategory?.CategoryName || '');
       setCreatedDate(new Date(selectedData.Created).toLocaleDateString());
+      setCreatedDate(selectedData.Created);
     }
   };
 
@@ -138,7 +139,7 @@ const HelloWorldContext = ({props}:any) => {
             <div className="row mt-2">
               <div className="col-lg-12">
                 <h4 className="page-title fw-700 mb-1  pe-5 font-28" style={{color:"black"}}>{title}</h4>
-                <p className="font-14"> <span className="pe-2 text-nowrap mb-0 d-inline-block">{moment(createdDate).format("DD-MMM-YYYY")}</span> | <span className="text-nowrap mb-0 d-inline-block" style={{fontWeight: '600',
+                <p className="font-14"> <span className="pe-2 text-nowrap mb-0 d-inline-block">{moment(new Date(createdDate)).format("DD-MMM-YYYY")}</span> | <span className="text-nowrap mb-0 d-inline-block" style={{fontWeight: '600',
     color: '#009157'}}>{category}</span></p>
               </div>
             </div>

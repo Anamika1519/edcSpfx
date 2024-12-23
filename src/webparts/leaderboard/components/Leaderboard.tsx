@@ -583,20 +583,20 @@ const LeaderboardContext = ({ props }: any) => {
                 {activeTab === "listView" && (
                   // List View Content (only displayed when "listView" is active)
                   <div className="list-view">
-                    <div className="card" style={{ height: "655px" }}>
+                    <div className="card" >
                       <div className="card-body">
                         <div id="cardCollpase4" className="collapse show">
                           <div className="table-responsive pt-0">
                             <table
-                              className="mtable table-centered table-nowrap table-borderless mb-0"
+                              className="mtbalenew table-centered table-nowrap table-borderless mb-0"
                               style={{ position: "relative" }}
                             >
                               <thead>
                                 <tr>
-                                  <th style={{ verticalAlign: 'top' }}>Sr. No</th> {/* Header for Sr. No */}
-                                  <th>
+                                  <th style={{ verticalAlign: 'top', minWidth:'50px',maxWidth:'50px' }}>Sr. No</th> {/* Header for Sr. No */}
+                                  <th style={{ minWidth:'110px',maxWidth:'110px'}}>
                                     <div className="d-flex flex-column bd-highlight ">
-                                      <div className="d-flex pb-2" style={{ justifyContent: "space-between" }}>
+                                      <div className="d-flex pb-2" style={{ justifyContent: "space-evenly" }}>
                                         <span>Name</span>
                                         <span onClick={() => handleSortChange("AuthorTitle")}>
                                           <FontAwesomeIcon icon={faSort} />
@@ -618,7 +618,7 @@ const LeaderboardContext = ({ props }: any) => {
                                       </div>
                                     </div>
                                   </th>
-                                  <th style={{ verticalAlign: 'top' }}>Points</th>
+                                  <th style={{ verticalAlign: 'top', minWidth:'50px',maxWidth:'50px' }}>Points</th>
 
                                   {/* <th>
                                     <div className="d-flex flex-column bd-highlight ">
@@ -639,9 +639,9 @@ const LeaderboardContext = ({ props }: any) => {
                                       </div>
                                     </div>
                                   </th> */}
-                                  <th>
+                                  <th style={{ minWidth:'110px',maxWidth:'110px'}}>
                                     <div className="d-flex flex-column bd-highlight ">
-                                      <div className="d-flex pb-2" style={{ justifyContent: "space-between" }}>
+                                      <div className="d-flex pb-2" style={{ justifyContent: "space-evenly" }}>
                                         <span>Email</span>
                                         <span onClick={() => handleSortChange("AuthorEMail")}>
                                           <FontAwesomeIcon icon={faSort} />
@@ -663,9 +663,9 @@ const LeaderboardContext = ({ props }: any) => {
                                       </div>
                                     </div>
                                   </th>
-                                  <th>
+                                  <th style={{ minWidth:'110px',maxWidth:'110px'}}>
                                     <div className="d-flex flex-column bd-highlight ">
-                                      <div className="d-flex pb-2" style={{ justifyContent: "space-between" }}>
+                                      <div className="d-flex pb-2" style={{ justifyContent: "space-evenly" }}>
                                         <span>Department</span>
                                         <span onClick={() => handleSortChange("AuthorDepartment")}>
                                           <FontAwesomeIcon icon={faSort} />
@@ -687,9 +687,9 @@ const LeaderboardContext = ({ props }: any) => {
                                       </div>
                                     </div>
                                   </th>
-                                  <th>
+                                  <th style={{ minWidth:'110px',maxWidth:'110px'}}>
                                     <div className="d-flex flex-column bd-highlight ">
-                                      <div className="d-flex pb-2" style={{ justifyContent: "space-between" }}>
+                                      <div className="d-flex pb-2" style={{ justifyContent: "space-evenly" }}>
                                         <span>Entity</span>
                                         <span onClick={() => handleSortChange("companyName")}>
                                           <FontAwesomeIcon icon={faSort} />
@@ -734,21 +734,23 @@ const LeaderboardContext = ({ props }: any) => {
                                           maxWidth: "50px",
                                         }}
                                       >
-                                        {index + 1} {/* Serial number starts from 1 */}
+                                     <div style={{marginLeft:'15px'}} className="indexdesign">{index + 1} </div>
+                                        
+                                         {/* Serial number starts from 1 */}
                                       </td>
-                                      <td>{item.AuthorTitle}</td>
+                                      <td style={{ minWidth:'110px',maxWidth:'110px'}}>{item.AuthorTitle}</td>
                                       {/* Points column with formatting */}
-                                      <td style={{ verticalAlign: 'top' }}>
+                                      <td style={{ verticalAlign: 'top',minWidth:'50px',maxWidth:'50px', textAlign:'center'}}>
                                         {item.TotalPoints < 1000 ?
                                           item.TotalPoints :
                                           (item.TotalPoints / 1000).toFixed(1).replace(/\.0$/, '') + 'K'}
                                       </td>
                                       {/* <td>{item.Id}</td> */}
-                                      <td>{item.AuthorEMail}</td>
-                                      <td>
+                                      <td style={{ minWidth:'110px',maxWidth:'110px'}}>{item.AuthorEMail}</td>
+                                      <td style={{ minWidth:'110px',maxWidth:'110px'}}>
                                         {item?.AuthorDepartment != null ? item?.AuthorDepartment : "NA"}
                                       </td>
-                                      <td>
+                                      <td style={{ minWidth:'110px',maxWidth:'110px',textAlign:'left'}}>
                                         {item?.companyName != null
 
                                           ? item?.companyName

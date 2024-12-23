@@ -821,12 +821,12 @@ const NewsdetailsContext = ({ props }: any) => {
 
                                         <a data-bs-toggle="modal" data-bs-target="#centermodal" className="image-popup mb-2" title="Screenshot-1">
 
-                                          <img src={`https://officeindia.sharepoint.com${res.fileUrl}`}
+                                          <img src={`https://alrostamanigroupae.sharepoint.com${res.fileUrl}`}
 
                                             className="img-fluid imgcssscustom" alt="work-thumbnail" data-themekey="#" style={{
                                               width: '100%', height: '100%', objectFit: 'cover',
 
-                                              borderRadius: '15px'
+                                              borderRadius: '13px'
                                             }} />
 
                                         </a>
@@ -891,9 +891,9 @@ const NewsdetailsContext = ({ props }: any) => {
 
                     <div className="col-md-12">
 
-                      <div className="card" style={{ border: '1px solid #54ade0', borderRadius: '20px', boxShadow: '0 3px 20px #1d26260d' }}>
+                      <div className="card p-4" style={{ border: '1px solid #54ade0', borderRadius: '20px', boxShadow: '0 3px 20px #1d26260d' }}>
 
-                        <div className="card-body" style={{ padding: '1rem 0.9rem' }}>
+                        <div>
 
                           {/* New comment input */}
 
@@ -903,7 +903,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
                             <textarea id="example-textarea"
 
-                              className="form-control text-dark form-control-light mb-2"
+                              className="form-control text-dark mb-0"
 
                               value={newComment}
 
@@ -914,10 +914,10 @@ const NewsdetailsContext = ({ props }: any) => {
                               rows={3} style={{ borderRadius: 'unset' }}
 
                             />
-
+<div className="p-2 bg-light d-flex justify-content-end align-items-center">
                             <button
 
-                              className="btn btn-primary mt-2"
+                              className="btn btn-primary mt-1 mb-1"
 
                               onClick={handleAddComment}
 
@@ -930,7 +930,7 @@ const NewsdetailsContext = ({ props }: any) => {
                               {loading ? 'Submitting...' : 'Add Comment'} {/* Change button text */}
 
                             </button>
-
+                            </div>
                           </div>
 
                         </div>

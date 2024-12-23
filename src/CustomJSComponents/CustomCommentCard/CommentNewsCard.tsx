@@ -70,8 +70,8 @@ export const CommentNewsCard: React.FC<{
  
  
   return (
-    <div className="card team-fedd" style={{ border: '1px solid #54ade0', borderRadius: '20px', boxShadow: '0 3px 20px #1d26260d' }}>
-      <div className="card-body nose mx-2 mb-2 mt-2" style={{ padding: '1rem 0.9rem' }}>
+    <div className="card team-fedd p-4" style={{ border: '1px solid #54ade0', borderRadius: '20px', boxShadow: '0 3px 20px #1d26260d' }}>
+      <div className="nose">
         <div className="row">
           <div className="d-flex align-items-start">
             <img

@@ -443,17 +443,17 @@ const EventcalenderContext = ({ props }: any) => {
                                 </div>
                               </div>
 
-                              <a href={item.link} style={{ cursor: "pointer" }} className="hovertext">
+                             
                                 <div
                                   className="w-100"
                                   onClick={() => gotoNewsDetails(item)}
                                 >
-                                  <h4
+                                <a href={item.link} style={{ cursor: "pointer" }} className="hovertext">   <h4
                                     className="mt-0 mb-1 font-16 hovertext fw-bold text-dark-new"
                                     style={{ fontSize: "16px" }}
                                   >
                                     {truncateText(item.EventName, 90)}
-                                  </h4>
+                                  </h4> </a>
                                   <p
                                     style={{ color: "#6b6b6b", fontSize: '15px' }}
                                     className="mb-2 hovertext text-muted"
@@ -461,7 +461,7 @@ const EventcalenderContext = ({ props }: any) => {
                                     {truncateText(item.Overview, 200)}
                                   </p>
                                 </div>
-                              </a>
+                              
 
                               <div className="row">
                                 <div className="col-sm-6">

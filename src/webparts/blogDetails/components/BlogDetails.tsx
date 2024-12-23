@@ -1,4 +1,3 @@
-
 import React, { useContext, useEffect, useRef, useState } from "react";
 import CustomBreadcrumb from "../../../CustomJSComponents/CustomBreadcrumb/CustomBreadcrumb";
 import VerticalSideBar from "../../verticalSideBar/components/VerticalSideBar";
@@ -26,6 +25,10 @@ import { IBlogDetailsProps } from "./IBlogDetailsProps";
 import { getAllBlogsnonselected, getBlogDetailsById } from "../../../APISearvice/BlogService";
 import { getSP } from "../loc/pnpjsConfig";
 import { TimeFormat } from "../../../APISearvice/AnnouncementsService";
+import { getMyRequestBlog, updateItemApproval } from "../../../APISearvice/ApprovalService";
+import { WorkflowAction } from "../../../CustomJSComponents/WorkflowAction/WorkflowAction";
+import { WorkflowAuditHistory } from "../../../CustomJSComponents/WorkflowAuditHistory/WorkflowAuditHistory";
+import { CONTENTTYPE_Blogs } from "../../../Shared/Constants";
 // Define types for reply and comment structures
 interface Reply {
   Id: number;
@@ -72,6 +75,14 @@ const BlogDetailsContext = ({ props }: any) => {
   const [loadingLike, setLoadingLike] = useState<boolean>(false);
   const [loadingReply, setLoadingReply] = useState<boolean>(false);
   const [ArrtopBlogs, setArrtopBlogs]: any[] = useState([]);
+
+  const [showComment, setshowComment] = useState<boolean>(true);
+  const [showAppRemark, setshowAppRemark] = useState<boolean>(false);
+ const [ApprovalRequestItem, setApprovalRequestItem] = React.useState(null);
+   const [formData, setFormData] = React.useState({
+      Remarks: "",
+     
+    });
   // Load comments from localStorage on mount
   useEffect(() => {
     // const savedComments = localStorage.getItem('comments');
@@ -128,6 +139,20 @@ const BlogDetailsContext = ({ props }: any) => {
     const idNum = originalString.substring(1);
     // const queryString = decryptId(Number(updatedString));
     const blogDetail =  await getBlogDetailsById(sp, Number(idNum));
+
+    let myrequestdata = await getMyRequestBlog(sp, blogDetail[0]);
+    if(myrequestdata){
+      setApprovalRequestItem(myrequestdata[0]);
+    }
+    // sp.web.lists.getByTitle('ARGMyRequest').items.getById(Number(idNum))().then(itm => {
+    //   setApprovalRequestItem(itm);
+    // })
+    if(myrequestdata.length >0 && myrequestdata[0].Status =="Pending" ){
+      setshowAppRemark(true);
+    }
+    if(blogDetail[0].Status !="Approved"){
+      setshowComment(false);
+    }
     setArrDetails(blogDetail)
      
    console.log("ArrDetails[0]",ArrDetails[0],blogDetail);
@@ -490,6 +515,47 @@ const BlogDetailsContext = ({ props }: any) => {
 
     window.open(office365MailLink, '_blank');
    };
+
+  const handleUpdateStatus = async (statusnew: string) => {
+    const ids = window.location.search;
+    const originalString = ids;
+    const idNum = originalString.substring(1);
+    // const queryString = decryptId(Number(updatedString));
+    const blogDetail = await getBlogDetailsById(sp, Number(idNum));
+
+
+    let myrequestdata = await getMyRequestBlog(sp, blogDetail[0]);
+
+       const postPayload = {
+         Remark: formData.Remarks,
+         Status :statusnew
+   
+       };
+   
+       //console.log(postPayload);
+   
+       const postResult = await updateItemApproval(
+         postPayload,
+         sp,
+         myrequestdata[0].ID
+       );
+       
+       setTimeout(() => {
+        window.location.reload();
+      }, 100);
+
+
+  }
+
+    const onChange = async (name: string, value: string) => {
+       setFormData((prevData) => ({
+         ...prevData,
+         [name]: value,
+       }));  
+      
+     };
+  
+
   return (
     <div id="wrapper" ref={elementRef}>
       <div className="app-menu" id="myHeader">
@@ -575,7 +641,7 @@ const BlogDetailsContext = ({ props }: any) => {
                                       title="Screenshot-1"
                                     >
                                       <img
-                                        src={`https://officeindia.sharepoint.com${res.fileUrl}`}
+                                        src={`https://alrostamanigroupae.sharepoint.com${res.fileUrl}`}
                                         className="img-fluid imgcssscustom"
                                         alt="work-thumbnail"
                                         data-themekey="#"
@@ -629,7 +695,7 @@ const BlogDetailsContext = ({ props }: any) => {
                         boxShadow: "0 3px 20px #1d26260d",
                       }}
                     >
-                      <div className="card-body" style={{ padding: "1rem 0.9rem" }}>
+                     {showComment && <div className="card-body" style={{ padding: "1rem 0.9rem" }}>
                         {/* New comment input */}
                         <h4 className="mt-0 mb-3 text-dark fw-bold font-16">
                           Comments
@@ -654,6 +720,7 @@ const BlogDetailsContext = ({ props }: any) => {
                           </button>
                         </div>
                       </div>
+                  }
                     </div>
                   </div>
                 </div>
@@ -683,7 +750,11 @@ const BlogDetailsContext = ({ props }: any) => {
                   ))}
                 </div>
 
+
               </div>
+
+              
+                
               <div className="col-lg-4">
               <div style={{  position:'sticky', top:'90px' }} className="card  postion8">
                   <div className="card-body">
@@ -708,8 +779,81 @@ const BlogDetailsContext = ({ props }: any) => {
                   </div>
                 </div>
 
-
+               
               </div>
+
+               {/* ******* changes */}
+             {/* {showAppRemark == true &&<div><div>
+              
+              <div className="mb-3">
+                        <label htmlFor="title" className="form-label">
+                          Remarks <span className="text-danger">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          id="Remarks"
+                          name="Remarks"
+                          placeholder='Enter Remarks'
+                           className="form-control inputcss"
+                          //className={`form-control inputcs ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                          value={formData.Remarks}
+                          onChange={(e) => onChange(e.target.name, e.target.value)}
+                          
+
+                        />
+                      </div>
+                       <button type="button"
+                            className="btn btn-primary mt-2"
+                            onClick={() => handleUpdateStatus("Approved")} 
+                             // Disable button when loading
+                          >
+                            Approve
+                          </button>
+
+                          <button type="button"
+                            className="btn btn-primary mt-2"
+                            onClick={() => handleUpdateStatus("Rejected")} 
+                             // Disable button when loading
+                          >
+                            Reject
+                          </button>
+
+                          <button type="button"
+                            className="btn btn-primary mt-2"
+                            onClick={() => handleUpdateStatus("Rework")} 
+                             // Disable button when loading
+                          >
+                            Rework
+                          </button>
+
+                          </div> 
+                          
+
+                          </div>
+             } */}
+
+                 {/* ******* changes */}
+                  {
+                               //let forrework=ApprovalRequestItem && ApprovalRequestItem.IsRework=='Yes'&& ApprovalRequestItem.LevelSequence!=0;
+                               ( ApprovalRequestItem)|| (ApprovalRequestItem && ApprovalRequestItem.IsRework == 'Yes' && ApprovalRequestItem.LevelSequence != 0 ) ? (
+                                 <WorkflowAction currentItem={ApprovalRequestItem} ctx={props.context}
+                                   DisableApproval={ApprovalRequestItem && ApprovalRequestItem.IsRework == 'Yes'&& ApprovalRequestItem.LevelSequence != 0 }
+                                   DisableCancel={ApprovalRequestItem && ApprovalRequestItem.IsRework == 'Yes' && ApprovalRequestItem.LevelSequence != 0}
+                                 //  DisableReject={ApprovalRequestItem && ApprovalRequestItem.IsRework=='Yes'&& ApprovalRequestItem.LevelSequence!=0}
+                                 />
+                               ) : (<div></div>)
+                             }
+                             {/* {
+                               <WorkflowAuditHistory ContentItemId={editID} ContentType={CONTENTTYPE_Blogs} ctx={props.context} />
+                             } */}
+             {/* ******* changes */}
+             {/* <WorkflowAction currentItem={ApprovalRequestItem} ctx={props.context}
+                                   DisableApproval={ApprovalRequestItem && ApprovalRequestItem.IsRework == 'Yes' && ApprovalRequestItem.LevelSequence != 0}
+                                   DisableCancel={ApprovalRequestItem && ApprovalRequestItem.IsRework == 'Yes' && ApprovalRequestItem.LevelSequence != 0}
+                                 //  DisableReject={ApprovalRequestItem && ApprovalRequestItem.IsRework=='Yes'&& ApprovalRequestItem.LevelSequence!=0}
+                                 /> */}
+
+                 
             </div>
 
 

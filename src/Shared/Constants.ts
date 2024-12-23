@@ -11,4 +11,5 @@ export const CONTENTTYPE_Event="Event";
 export const CONTENTTYPE_Announcement="Announcement";
 export const CONTENTTYPE_News="News";
 export const CONTENTTYPE_Media="Media";
-
+export const LIST_TITLE_Blogs="ARGBlogs";
+export const CONTENTTYPE_Blogs="Blogs";
