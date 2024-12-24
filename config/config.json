@@ -409,6 +409,14 @@
           "manifest": "./src/webparts/notificationMaster/NotificationMasterWebPart.manifest.json"
         }
       ]
+    },
+    "arg-delegation-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/argDelegation/ArgDelegationWebPart.js",
+          "manifest": "./src/webparts/argDelegation/ArgDelegationWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {
@@ -473,6 +481,7 @@
     "AddBusinessAppWebPartStrings": "lib/webparts/addBusinessApp/loc/{locale}.js",
     "ManageMasterMWebPartStrings": "lib/webparts/manageMasterM/loc/{locale}.js",
     "MasterManageWebPartStrings": "lib/webparts/masterManage/loc/{locale}.js",
-    "NotificationMasterWebPartStrings": "lib/webparts/notificationMaster/loc/{locale}.js"
+    "NotificationMasterWebPartStrings": "lib/webparts/notificationMaster/loc/{locale}.js",
+    "ArgDelegationWebPartStrings": "lib/webparts/argDelegation/loc/{locale}.js"
   }
 }

@@ -441,12 +441,13 @@ const HelloWorldContext = ({ props }: any) => {
 
                               style={{
 
-                                display: "flex",
+                               
 
                                 justifyContent: "center",
                                 position: 'relative',
                                 marginTop: '10px',
-                                height: '300px'
+                                height: '300px',
+                                top:'70px'
 
                               }}
 

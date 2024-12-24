@@ -51,6 +51,8 @@ import context from "../../../GlobalContext/context";
  
 import { getGroupTeamDetailsById } from "../../../APISearvice/GroupTeamService";
 import AvtarComponents from "../../../CustomJSComponents/AvtarComponents/AvtarComponents";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
  
 // Define types for reply and comment structures
  
@@ -1016,6 +1018,7 @@ try{
                                   disabled={loading} // Disable button when loading
                                   data-bs-dismiss="modal"
                                 >
+                                  <FontAwesomeIcon style={{float:'left',margin:"7px 6px 0px 0px"}} icon={faPaperPlane} /> 
                                   {loading ? "Submitting..." : "Add Comment"}{" "}
                                   {/* Change button text */}
                                 </button>

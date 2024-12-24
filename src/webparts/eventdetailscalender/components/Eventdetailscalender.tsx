@@ -28,6 +28,8 @@ import AvtarComponents from "../../../CustomJSComponents/AvtarComponents/AvtarCo
 import { SPFI } from "@pnp/sp/presets/all";
 import { forEach } from "lodash";
 import { Modal } from "react-bootstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 interface Reply {
   Id: number;
   AuthorId: number;
@@ -61,6 +63,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
   const sp: SPFI = getSP();
   console.log(sp, "sp");
   const siteUrl = props.siteUrl;
+  const videositeurl = props.siteUrl.split("/sites")[0];
   const elementRef = React.useRef<HTMLDivElement>(null);
   const [CurrentUser, setCurrentUser]: any[] = useState([]);
   const [comments, setComments] = useState<Comment[]>([]);
@@ -76,7 +79,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
   const [loadingReply, setLoadingReply] = useState<boolean>(false);
   const [ArrtopEvents, setArrtopEvents]: any[] = useState([]);
   const [showModal, setShowModal] = React.useState(false);
-
+  let videoRef: any;
   const Breadcrumb = [
     {
       "MainComponent": "Home",
@@ -159,7 +162,11 @@ const EventdetailscalenderContext = ({ props }: any) => {
     //   setArrDetails(arr);
     // }
   };
-
+  const getvideo = (ele: any) => {
+    console.log("ele", ele);
+    videoRef = ele;
+    //ele.pause();
+  }
   const getApiData = async () => {
     const ids = window.location.search;
     const originalString = ids;
@@ -518,7 +525,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
   const AddAttendees = async (Item: any) => {
     debugger
     let arr: any[] = []
-   
+
     if (Item?.AttendeesId != null) {
       // const flatArrayAttendees = Item?.AttendeesId[0];
       // //  const attendees = flatArray(flatArrayAttendees)
@@ -686,7 +693,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
                                 {/* {new Date(item.RegistrationDueDate) > new Date() ? (<div className="EventAttendes mt-4 rounded-pill" onClick={() => AddAttendees(item)}><Users size={14} /> Register
                                 </div>) : (<div className="EventAttendesGray  mt-4 rounded-pill" >! Event Expired
                                 </div>)} */}
- 
+
                                 <span style={{ display: 'flex', gap: '0.2rem', marginLeft: '10px', marginTop: '30px' }}>
                                   {
                                     item?.Attendees?.length > 0 && item?.Attendees.map((item1: any, index: 0) => {
@@ -704,7 +711,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
                                   }
                                   {
                                     item?.Attendees?.length > 3 &&
- 
+
                                     <div className="moreuser text-muted">
                                       <div onClick={() => setShowModal(true)}>
                                         +{item?.Attendees?.length - 3} more
@@ -721,11 +728,11 @@ const EventdetailscalenderContext = ({ props }: any) => {
                                         (
                                           <>
                                             {item?.Attendees?.length > 3 && item?.Attendees.map((item1: any, index: 0) => (
-                                             // index > 2 &&
+                                              // index > 2 &&
                                               <ul>
                                                 <p>
-                                                    <img style={{borderRadius:'50%',height:'50px',width:'50px'}} src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item1.EMail}`} />
-                                                    <span>{item1.Title}</span>
+                                                  <img style={{ borderRadius: '50%', height: '50px', width: '50px' }} src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item1.EMail}`} />
+                                                  <span>{item1.Title}</span>
                                                 </p>
                                               </ul>
                                             ))}
@@ -733,7 +740,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
                                         )
                                       }
                                     </Modal.Body>
- 
+
                                   </Modal>
                                   {item?.Attendees?.length > 0 && item?.AttendeesId.indexOf(CurrentUser.Id) == 0 && (<span className="font-14" style={{ paddingTop: '3px', paddingLeft: '3px' }}>Registered</span>)}
                                 </span>
@@ -752,6 +759,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
                         <div className="row internalmedia filterable-content mt-3">
                           {EventGalleryJson.length > 0 ? (
                             EventGalleryJson.map((res: any) => {
+                              {console.log("resresres",res)}
                               return (
                                 <div className="col-sm-6 col-xl-4 filter-item all web illustrator">
                                   <div
@@ -764,13 +772,18 @@ const EventdetailscalenderContext = ({ props }: any) => {
                                       className="image-popup mb-2"
                                       title="Screenshot-1"
                                     >
-                                      <img
-                                        src={`https://alrostamanigroupae.sharepoint.com${res.fileUrl}`}
-                                        className="img-fluid imgcssscustom"
-                                        alt="work-thumbnail"
-                                        data-themekey="#"
-                                        style={{ width: "100%", height: "100%" }}
-                                      />
+                                      {res.fileType.startsWith('video/') ?
+                                        <video muted={true} id='Backendvideo' ref={getvideo} style={{ width: "100%", height: "100%",cursor:'auto' }} className="imgcssscustom" controls={true}>
+                                          <source src={(videositeurl + res.fileUrl) + "#t=5"} type="video/mp4"></source>
+                                        </video> :
+                                        <img
+                                          src={`${videositeurl}${res.fileUrl}`}
+                                          className="img-fluid imgcssscustom"
+                                          alt="work-thumbnail"
+                                          data-themekey="#"
+                                          style={{ width: "100%", height: "100%",cursor:'auto' }}
+                                        />
+                                      }
                                     </a>
                                   </div>
                                 </div>
@@ -804,14 +817,15 @@ const EventdetailscalenderContext = ({ props }: any) => {
                             rows={3} style={{ borderRadius: 'unset' }}
                           />
                           <div className="p-2 bg-light d-flex justify-content-end align-items-center">
-                          <button
-                            className="btn btn-primary mt-1 mb-1"
-                            onClick={handleAddComment}
-                            disabled={loading} // Disable button when loading
-                          >
-                            {loading ? "Submitting..." : "Post"}{" "}
-                            {/* Change button text */}
-                          </button>
+                            <button
+                              className="btn btn-primary mt-1 mb-1"
+                              onClick={handleAddComment}
+                              disabled={loading} // Disable button when loading
+                            >
+                              <FontAwesomeIcon style={{float:'left',margin:"7px 6px 0px 0px"}} icon={faPaperPlane} /> 
+                              {loading ? "Submitting..." : "Post"}{" "}
+                              {/* Change button text */}
+                            </button>
                           </div>
                         </div>
                       </div>

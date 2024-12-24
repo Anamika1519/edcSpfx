@@ -35,6 +35,8 @@ import { right } from "@popperjs/core";
 // Define types for reply and comment structures
 import "@pnp/sp/files"; // Required for getFileById
 import "@pnp/sp/webs";  // Ensures sp.web is available
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 interface Reply {
   Id: number;
   AuthorId: number;
@@ -1671,7 +1673,7 @@ alt="Check"
                                     onClick={handleAddComment}
                                     disabled={loading} // Disable button when loading
                                   >
-                                  
+                                  <FontAwesomeIcon style={{float:'left',margin:"7px 6px 0px 0px"}} icon={faPaperPlane} /> 
                                     {loading ? "Submitting..." : " Post"}{" "}
                                     {/* Change button text */}
                                   </button> </div>

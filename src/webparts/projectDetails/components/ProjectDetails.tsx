@@ -40,6 +40,8 @@ import { Modal, Card ,Dropdown , Button} from "react-bootstrap";
 import FileIcon from "../../../CustomJSComponents/FileIcon";
 import { asAsync } from "@fluentui/react";
 import { parse } from "@fortawesome/fontawesome-svg-core";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
 // Define types for reply and comment structures
 interface Reply {
@@ -1916,6 +1918,7 @@ useEffect(()=>{
                         onClick={handleAddComment}
                         disabled={loading} // Disable button when loading
                       >
+                        <FontAwesomeIcon style={{float:'left',margin:"7px 6px 0px 0px"}} icon={faPaperPlane} /> 
                         {loading ? "Submitting..." : "Post"}{" "}
                         {/* Change button text */}
                       </button>

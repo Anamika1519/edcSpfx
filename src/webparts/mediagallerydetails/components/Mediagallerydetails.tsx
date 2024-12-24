@@ -25,7 +25,7 @@ import Carousel from 'react-bootstrap/Carousel';
 import CustomBreadcrumb from "../../../CustomJSComponents/CustomBreadcrumb/CustomBreadcrumb";
 import { IMediagallerydetailsProps } from "./IMediagallerydetailsProps";
 
-const HelloWorldContext = ({props}:any) => {
+const HelloWorldContext = ({ props }: any) => {
   const sp: SPFI = getSP();
   const { useHide }: any = React.useContext(UserContext);
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(true);
@@ -38,6 +38,7 @@ const HelloWorldContext = ({props}:any) => {
   const [showModal, setShowModal] = React.useState(false); // Modal state
   const [currentImageIndex, setCurrentImageIndex] = React.useState(0); // Current image for carousel
   
+  let videoRef: any;
   React.useEffect(() => {
     console.log("This function is called only once", useHide);
 
@@ -94,13 +95,13 @@ const HelloWorldContext = ({props}:any) => {
     const getMediaGalleryData = await fetchMediaGalleryInsideData(sp, Number(idNum));
 
     setMediaData(getMediaGalleryData);
-  
+
     const catdata = await fetchMediaGallerydata(sp);
     const selectedData = catdata.find(item => item.ID === Number(idNum));
     if (selectedData) {
       setTitle(selectedData.Title);
       console.log(selectedData.MediaGalleryCategory?.CategoryName);
-      
+
       setCategory(selectedData.MediaGalleryCategory?.CategoryName || '');
       setCreatedDate(new Date(selectedData.Created).toLocaleDateString());
       setCreatedDate(selectedData.Created);
@@ -110,8 +111,12 @@ const HelloWorldContext = ({props}:any) => {
   const handleImageClick = (index: number) => {
     setCurrentImageIndex(index);
     setShowModal(true);
+    if (videoRef) {
+      videoRef.pause(); // Pause the video
+    }
   };
   const siteUrl = props.siteUrl;
+  const videositeurl = props.siteUrl.split("/sites")[0];
   const Breadcrumb = [
     {
       "MainComponent": "Home",
@@ -122,38 +127,51 @@ const HelloWorldContext = ({props}:any) => {
       "ChildComponentURl": `${siteUrl}/SitePages/MediaGallery.aspx`
     }
   ]
+  const getvideo = (ele: any) => {
+    console.log("ele", ele);
+    videoRef = ele;
+    //ele.pause();
+  }
   return (
     <div id="wrapper">
       <div className="app-menu pt-4">
         <VerticalSideBar _context={sp} />
       </div>
       <div className="content-page">
-          <HorizontalNavbar  _context={sp} siteUrl={siteUrl}/>
-        <div className="content mt-0" style={{marginLeft: `${!useHide ? '240px' : '80px'}`,marginTop:'1.8rem'}}>
+        <HorizontalNavbar _context={sp} siteUrl={siteUrl} />
+        <div className="content mt-0" style={{ marginLeft: `${!useHide ? '240px' : '80px'}`, marginTop: '1.8rem' }}>
           <div className="container-fluid paddb">
             <div className="row" >
-            <div className="col-lg-3">
-                  <CustomBreadcrumb Breadcrumb={Breadcrumb} />
-                </div>
+              <div className="col-lg-3">
+                <CustomBreadcrumb Breadcrumb={Breadcrumb} />
+              </div>
             </div>
             <div className="row mt-2">
               <div className="col-lg-12">
-                <h4 className="page-title fw-700 mb-1  pe-5 font-28" style={{color:"black"}}>{title}</h4>
-                <p className="font-14"> <span className="pe-2 text-nowrap mb-0 d-inline-block">{moment(new Date(createdDate)).format("DD-MMM-YYYY")}</span> | <span className="text-nowrap mb-0 d-inline-block" style={{fontWeight: '600',
-    color: '#009157'}}>{category}</span></p>
+                <h4 className="page-title fw-700 mb-1  pe-5 font-28" style={{ color: "black" }}>{title}</h4>
+                <p className="font-14"> <span className="pe-2 text-nowrap mb-0 d-inline-block">{moment(new Date(createdDate)).format("DD-MMM-YYYY")}</span> | <span className="text-nowrap mb-0 d-inline-block" style={{
+                  fontWeight: '600',
+                  color: '#009157'
+                }}>{category}</span></p>
               </div>
             </div>
 
             <div className="row filterable-content internalmedia mt-1 mb-1">
-               { mediaData!=null&& mediaData.length>0&&mediaData.map((item: any, index: number) => (
+              {console.log("mediadataaaa", mediaData, siteUrl, videositeurl)}
+              {mediaData != null && mediaData.length > 0 && mediaData.map((item: any, index: number) => (
                 <div className="col-sm-6 col-xl-3 filter-item all web illustrator" key={index}>
                   <div className="gal-box mb-3" onClick={() => handleImageClick(index)}>
-                    <a  className="image-popup">
-                      <img
-                        src={item?.fileUrl ? item?.fileUrl : require("../../../Assets/ExtraImage/NoDataFound.png")}
-                        alt="media"
-                        style={{ maxWidth: "100%", height: "100%",width: "100%", borderRadius:"13px", objectFit:"cover"}}   
-                      />
+                    <a className="image-popup">
+                      {item.fileType.startsWith('video/') ?
+                        <video muted={true} id='Backendvideo' ref={getvideo} style={{ maxWidth: "100%", height: "100%", width: "100%", borderRadius: "13px", objectFit: "cover" }} className="img-fluid" controls={true}>
+                          <source src={(videositeurl + item.fileUrl) + "#t=5"} type="video/mp4"></source>
+                        </video> :
+                        <img
+                          src={item?.fileUrl ? item?.fileUrl : require("../../../Assets/ExtraImage/NoDataFound.png")}
+                          alt="media"
+                          style={{ maxWidth: "100%", height: "100%", width: "100%", borderRadius: "13px", objectFit: "cover" }}
+                        />
+                      }
                     </a>
                   </div>
                 </div>
@@ -166,34 +184,40 @@ const HelloWorldContext = ({props}:any) => {
       {/* Modal for Image Carousel */}
       <Modal show={showModal} onHide={() => setShowModal(false)} centered className="mediagallery">
 
-     
+
         <Modal.Header closeButton>
         </Modal.Header>
         <Modal.Body>
           <Carousel activeIndex={currentImageIndex} onSelect={(selectedIndex) => setCurrentImageIndex(selectedIndex)}>
-            {mediaData!=null&& mediaData.length>0&&mediaData.map((item: any, index: number) => (
+            {mediaData != null && mediaData.length > 0 && mediaData.map((item: any, index: number) => (
               <Carousel.Item key={index}>
-                <img
-                  className="d-block w-100"
-                  src={item?.fileUrl ? item?.fileUrl : require("../../../Assets/ExtraImage/NoDataFound.png")}
-                  alt={`Slide ${index}`}
-                  style={{ height: 'auto', objectFit: 'contain' }}
-                />
+                {item.fileType.startsWith('video/') ?
+                  <video muted={true} id='Backendvideo' ref={getvideo} style={{ width: "100%" }} className="img-fluid" controls={true}>
+                    <source src={videositeurl + item.fileUrl} type="video/mp4"></source>
+                  </video> :
+
+                  <img
+                    className="d-block w-100"
+                    src={item?.fileUrl ? item?.fileUrl : require("../../../Assets/ExtraImage/NoDataFound.png")}
+                    alt={`Slide ${index}`}
+                    style={{ height: 'auto', objectFit: 'contain' }}
+                  />
+                }
               </Carousel.Item>
             ))}
           </Carousel>
         </Modal.Body>
-       
+
       </Modal>
     </div>
   );
 };
 
 
-const Mediagallerydetails : React.FC<IMediagallerydetailsProps> = (props) => (
-  
+const Mediagallerydetails: React.FC<IMediagallerydetailsProps> = (props) => (
+
   <Provider>
-    <HelloWorldContext props={props}/>
+    <HelloWorldContext props={props} />
   </Provider>
 
 )

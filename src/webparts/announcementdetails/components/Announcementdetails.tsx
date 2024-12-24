@@ -20,6 +20,8 @@ import { Calendar, Link, Share } from 'react-feather';
 import moment from 'moment';
 import UserContext from '../../../GlobalContext/context';
 import context from '../../../GlobalContext/context';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 // Define types for reply and comment structures
 interface Reply {
   Id: number;
@@ -54,6 +56,7 @@ const AnnouncementdetailsContext = ({ props }: any) => {
   const sp: SPFI = getSP();
   console.log(sp, "sp");
   const siteUrl = props.siteUrl;
+  const videositeurl = props.siteUrl.split("/sites")[0];
   const elementRef = React.useRef<HTMLDivElement>(null);
   const [CurrentUser, setCurrentUser]: any[] = useState([]);
   const [comments, setComments] = useState<Comment[]>([]);
@@ -68,6 +71,7 @@ const AnnouncementdetailsContext = ({ props }: any) => {
   const [copySuccess, setCopySuccess] = useState('');
   const { useHide }: any = React.useContext(UserContext);
   const { setHide }: any = context;
+  let videoRef: any;
   // Load comments from localStorage on mount
   useEffect(() => {
     // const savedComments = localStorage.getItem('comments');
@@ -125,7 +129,7 @@ const AnnouncementdetailsContext = ({ props }: any) => {
     // const queryString = decryptId(Number(updatedString));
 
     setArrDetails(await getAnnouncementDetailsById(sp, Number(idNum)));
-    let Announcementsdata = await getAllAnnouncementnonselected(sp, Number(idNum),'Announcement');
+    let Announcementsdata = await getAllAnnouncementnonselected(sp, Number(idNum), 'Announcement');
     setArrtopAnnouncements(Announcementsdata);
 
 
@@ -140,7 +144,11 @@ const AnnouncementdetailsContext = ({ props }: any) => {
     setCurrentUserProfile(await getCurrentUserProfile(sp, siteUrl))
     getApiData()
   }
-
+  const getvideo = (ele: any) => {
+    console.log("ele", ele);
+    videoRef = ele;
+    //ele.pause();
+  }
   const getApiData = () => {
     let initialComments: any[] = [];
     let initialArray: any[] = [];
@@ -624,21 +632,21 @@ const AnnouncementdetailsContext = ({ props }: any) => {
   ]
   //#endregion
   console.log(ArrDetails, 'console.log(ArrDetails)')
-  const sendanEmail = (item:any) => {
+  const sendanEmail = (item: any) => {
     // window.open("https://outlook.office.com/mail/inbox");
-  
-     const subject ="Announcement Title-"+ item.Title;
-     const body = 'Here is the link to the announcement:'+ `${siteUrl}/SitePages/AnnouncementDetails.aspx?${item.Id}`;
-  
+
+    const subject = "Announcement Title-" + item.Title;
+    const body = 'Here is the link to the announcement:' + `${siteUrl}/SitePages/AnnouncementDetails.aspx?${item.Id}`;
+
     //const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-  
+
     // Open the link to launch the default mail client (like Outlook)
     //window.location.href = mailtoLink;
 
     const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
     window.open(office365MailLink, '_blank');
-   };
+  };
   return (
     <div id="wrapper" ref={elementRef}>
       <div
@@ -679,10 +687,10 @@ const AnnouncementdetailsContext = ({ props }: any) => {
                               <span className="pe-2 text-nowrap mb-0 d-inline-block">
                                 <Calendar size={18} /> {moment(item.Modified).format("DD-MMM-YYYY")}  &nbsp;  &nbsp;  &nbsp;|
                               </span>
-                              <span style={{cursor:'pointer'}} className="text-nowrap hovertext mb-0 d-inline-block"  onClick={() => sendanEmail(item)} >
+                              <span style={{ cursor: 'pointer' }} className="text-nowrap hovertext mb-0 d-inline-block" onClick={() => sendanEmail(item)} >
                                 <Share size={18} />  Share by email &nbsp;  &nbsp;  &nbsp;|&nbsp;  &nbsp;  &nbsp;
                               </span>
-                              <span style={{cursor:'pointer'}} className="text-nowrap hovertext mb-0 d-inline-block" onClick={() => copyToClipboard(item.Id)}>
+                              <span style={{ cursor: 'pointer' }} className="text-nowrap hovertext mb-0 d-inline-block" onClick={() => copyToClipboard(item.Id)}>
                                 <Link size={18} />    Copy link &nbsp;  &nbsp;  &nbsp;
                                 {copySuccess && <span className="text-success">{copySuccess}</span>}
                               </span>
@@ -705,12 +713,18 @@ const AnnouncementdetailsContext = ({ props }: any) => {
 
                             AnnouncementAndNewsGallaryJSON.length > 0 ?
                               AnnouncementAndNewsGallaryJSON.map((res: any) => {
+                                { console.log("resresannoucnemenres", res) }
                                 return (
                                   <div className="col-sm-6 col-xl-4 filter-item all web illustrator">
                                     <div className="gal-box">
                                       <a data-bs-toggle="modal" data-bs-target="#centermodal" className="image-popup mb-2" title="Screenshot-1">
-                                        <img src={`https://alrostamanigroupae.sharepoint.com${res.fileUrl}`} className="img-fluid imgcssscustom"
-                                          alt="work-thumbnail" data-themekey="#" style={{ width: '100%', height: '100%' }} />
+                                        {res.fileType.startsWith('video/') ?
+                                          <video muted={true} id='Backendvideo' ref={getvideo} style={{ width: '100%', cursor: 'auto', height: '100%' }} className="img-fluid imgcssscustom" controls={true}>
+                                            <source src={(videositeurl + res.fileUrl) + "#t=5"} type="video/mp4"></source>
+                                          </video> :
+                                          <img src={`${videositeurl}${res.fileUrl}`} className="img-fluid imgcssscustom"
+                                            alt="work-thumbnail" data-themekey="#" style={{ width: '100%', cursor: 'auto', height: '100%' }} />
+                                        }
                                       </a>
                                     </div>
                                   </div>
@@ -752,18 +766,18 @@ const AnnouncementdetailsContext = ({ props }: any) => {
                             className="form-control text-dark mb-0"
                             value={newComment}
                             onChange={(e) => setNewComment(e.target.value)}
-                           placeholder="Type your comment here..."
+                            placeholder="Type your comment here..."
                             rows={3} style={{ borderRadius: 'unset' }}
                           />
                           <div className="p-2 bg-light d-flex justify-content-between align-items-center">
-                          <button
-                            className="btn btn-primary mt-1 mb-1"
-                            onClick={handleAddComment}
-                            disabled={loading} // Disable button when loading
-                          >
-
-                            {loading ? 'Submitting...' : 'Post'} {/* Change button text */}
-                          </button></div>
+                            <button
+                              className="btn btn-primary mt-1 mb-1"
+                              onClick={handleAddComment}
+                              disabled={loading} // Disable button when loading
+                            >
+                              <FontAwesomeIcon style={{ float: 'left', margin: "7px 6px 0px 0px" }} icon={faPaperPlane} />
+                              {loading ? 'Submitting...' : 'Post'} {/* Change button text */}
+                            </button></div>
                         </div>
                       </div>
                     </div>
@@ -819,7 +833,7 @@ const AnnouncementdetailsContext = ({ props }: any) => {
 
               </div>
               <div className="col-lg-4">
-              <div style={{  position:'sticky', top:'90px' }} className="card  postion8">
+                <div style={{ position: 'sticky', top: '90px' }} className="card  postion8">
                   <div className="card-body">
                     <h4 className="header-title text-dark  fw-bold mb-0">
                       <span style={{ fontSize: '20px' }}>Latest Announcement</span>    <a className="font-11 btn btn-primary  waves-effect waves-light view-all cursor-pointer" href="#" onClick={NavigatetoEvents} style={{ float: 'right', lineHeight: '18px' }}>View All</a></h4>
@@ -829,7 +843,7 @@ const AnnouncementdetailsContext = ({ props }: any) => {
                         <div className="mainevent mt-2">
                           <div className="bordernew" >
                             <h3 className="twolinewrap font-16  text-dark fw-bold mb-2 hovertext cursor-pointer" style={{ cursor: "pointer" }} onClick={() => gotoNewsDetails(res)}>{res.Title}</h3>
-                            <p style={{ lineHeight: '20px', fontSize:'15px' }} className="text-muted twolinewrap">{res.Overview}</p>
+                            <p style={{ lineHeight: '20px', fontSize: '15px' }} className="text-muted twolinewrap">{res.Overview}</p>
                             <div className="row">
                               <div className="col-sm-12"> <span style={{ marginTop: "4px" }} className="date-color font-12 float-start  mb-1 ng-binding"><i className="fe-calendar"></i> {moment(res.Modified).format("DD-MMM-YYYY")}</span>  &nbsp; &nbsp; &nbsp; <span className="font-12" style={{ color: '#009157', fontWeight: '600' }}>  </span></div>
 

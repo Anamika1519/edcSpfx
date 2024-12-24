@@ -29,6 +29,8 @@ import { getMyRequestBlog, updateItemApproval } from "../../../APISearvice/Appro
 import { WorkflowAction } from "../../../CustomJSComponents/WorkflowAction/WorkflowAction";
 import { WorkflowAuditHistory } from "../../../CustomJSComponents/WorkflowAuditHistory/WorkflowAuditHistory";
 import { CONTENTTYPE_Blogs } from "../../../Shared/Constants";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 // Define types for reply and comment structures
 interface Reply {
   Id: number;
@@ -91,9 +93,9 @@ const BlogDetailsContext = ({ props }: any) => {
     // }
 
     ApiLocalStorageData();
-    getApiData()
+   // getApiData()
     ApICallData();
-    getApiData()
+   // getApiData()
     const showNavbar = (
       toggleId: string,
       navId: string,
@@ -152,6 +154,8 @@ const BlogDetailsContext = ({ props }: any) => {
     }
     if(blogDetail[0].Status !="Approved"){
       setshowComment(false);
+    } else {
+      getApiData()
     }
     setArrDetails(blogDetail)
      
@@ -715,6 +719,7 @@ const BlogDetailsContext = ({ props }: any) => {
                             onClick={handleAddComment}
                             disabled={loading} // Disable button when loading
                           >
+                            <FontAwesomeIcon style={{float:'left',margin:"7px 6px 0px 0px"}} icon={faPaperPlane} /> 
                             {loading ? "Submitting..." : "Add Comment"}{" "}
                             {/* Change button text */}
                           </button>

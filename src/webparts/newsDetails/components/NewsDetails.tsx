@@ -35,6 +35,8 @@ import { Calendar, Link, Share } from 'react-feather';
 import moment from 'moment';
 
 import UserContext from '../../../GlobalContext/context';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 
 interface Reply {
 
@@ -116,7 +118,7 @@ const NewsdetailsContext = ({ props }: any) => {
   const [CurrentUserProfile, setCurrentUserProfile]: any[] = useState("")
 
   const siteUrl = props.siteUrl;
-
+  const videositeurl = props.siteUrl.split("/sites")[0];
   const [copySuccess, setCopySuccess] = useState('');
 
   const [NewsId, setId] = useState(0)
@@ -129,7 +131,7 @@ const NewsdetailsContext = ({ props }: any) => {
   const [loadingReply, setLoadingReply] = useState<boolean>(false);
   const [loadingLike, setLoadingLike] = useState<boolean>(false);
   const [ArrtopNews, setArrtopNews]: any[] = useState([]);
-
+  let videoRef: any;
   const Breadcrumb = [
 
     {
@@ -248,7 +250,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
     // const queryString = decryptId(Number(updatedString));
     setArrDetails(await getAnnouncementDetailsById(sp, Number(idNum)));
-    let Newsdata = await getAllAnnouncementnonselected(sp, Number(idNum),'News');
+    let Newsdata = await getAllAnnouncementnonselected(sp, Number(idNum), 'News');
     setArrtopNews(Newsdata);
     // let arr = []
 
@@ -283,99 +285,99 @@ const NewsdetailsContext = ({ props }: any) => {
     let likeArray: any[] = []
     const idNum = originalString.substring(1);
     sp.web.lists.getByTitle("ARGAnnouncementandNewsComments").items
-    .select("*,AnnouncementAndNews/Id").expand("AnnouncementAndNews")
-    .filter(`AnnouncementAndNewsId eq ${Number(idNum)}`).orderBy("Created", false)()
-    .then(async (result: any) => {
-      
-      console.log(result, 'ARGAnnouncementandNewsComments data');
+      .select("*,AnnouncementAndNews/Id").expand("AnnouncementAndNews")
+      .filter(`AnnouncementAndNewsId eq ${Number(idNum)}`).orderBy("Created", false)()
+      .then(async (result: any) => {
+
+        console.log(result, 'ARGAnnouncementandNewsComments data');
 
 
 
-      initialComments = result;
+        initialComments = result;
 
-      for (var i = 0; i < initialComments.length; i++) {
-        await sp.web.lists
-          .getByTitle("ARGAnnouncementandNewsUserLikes")
-          .items.filter(`AnnouncementAndNewsCommentId eq ${Number(initialComments[i].Id)}`).select("ID,AuthorId,UserName,Like,Created")()
-          .then((result1: any) => {
-            console.log(result1, "ARGEventsUserLikes");
-            likeArray = []
-            for (var j = 0; j < result1.length; j++) {
-              arrLike = {
-                "ID": result1[j].Id,
-                "AuthorId": result1[j].AuthorId,
-                "UserName": result1[j].UserName,
-                "Like": result1[j].Like,
-                "Created": result1[j].Created
+        for (var i = 0; i < initialComments.length; i++) {
+          await sp.web.lists
+            .getByTitle("ARGAnnouncementandNewsUserLikes")
+            .items.filter(`AnnouncementAndNewsCommentId eq ${Number(initialComments[i].Id)}`).select("ID,AuthorId,UserName,Like,Created")()
+            .then((result1: any) => {
+              console.log(result1, "ARGEventsUserLikes");
+              likeArray = []
+              for (var j = 0; j < result1.length; j++) {
+                arrLike = {
+                  "ID": result1[j].Id,
+                  "AuthorId": result1[j].AuthorId,
+                  "UserName": result1[j].UserName,
+                  "Like": result1[j].Like,
+                  "Created": result1[j].Created
+                }
+                likeArray.push(arrLike)
               }
-              likeArray.push(arrLike)
-            }
-            let arr = {
-              Id: initialComments[i].Id,
-              UserName: initialComments[i].UserName,
-              AuthorId: initialComments[i].AuthorId,
-              Comments: initialComments[i].Comments,
-              Created: new Date(initialComments[i].Created).toLocaleString(), // Formatting the created date
-              UserLikesJSON: result1.length > 0 ? likeArray : []
-              , // Default to empty array if null
-              UserCommentsJSON:
-                initialComments[i].UserCommentsJSON != "" &&
-                  initialComments[i].UserCommentsJSON != null &&
-                  initialComments[i].UserCommentsJSON != undefined
-                  ? JSON.parse(initialComments[i].UserCommentsJSON)
-                  : [], // Default to empty array if null
-              userHasLiked: initialComments[i].userHasLiked,
-              UserProfile: initialComments[i].UserProfile
-            }
-            initialArray.push(arr);
-          })
-      }
-      setComments(initialArray)
-      // setComments(initialComments.map((res) => ({
+              let arr = {
+                Id: initialComments[i].Id,
+                UserName: initialComments[i].UserName,
+                AuthorId: initialComments[i].AuthorId,
+                Comments: initialComments[i].Comments,
+                Created: new Date(initialComments[i].Created).toLocaleString(), // Formatting the created date
+                UserLikesJSON: result1.length > 0 ? likeArray : []
+                , // Default to empty array if null
+                UserCommentsJSON:
+                  initialComments[i].UserCommentsJSON != "" &&
+                    initialComments[i].UserCommentsJSON != null &&
+                    initialComments[i].UserCommentsJSON != undefined
+                    ? JSON.parse(initialComments[i].UserCommentsJSON)
+                    : [], // Default to empty array if null
+                userHasLiked: initialComments[i].userHasLiked,
+                UserProfile: initialComments[i].UserProfile
+              }
+              initialArray.push(arr);
+            })
+        }
+        setComments(initialArray)
+        // setComments(initialComments.map((res) => ({
 
-      //   Id: res.Id,
+        //   Id: res.Id,
 
-      //   UserName: res.UserName,
+        //   UserName: res.UserName,
 
-      //   AuthorId: res.AuthorId,
+        //   AuthorId: res.AuthorId,
 
-      //   Comments: res.Comments,
+        //   Comments: res.Comments,
 
-      //   Created: new Date(res.Created).toLocaleString(), // Formatting the created date
+        //   Created: new Date(res.Created).toLocaleString(), // Formatting the created date
 
-      //   UserLikesJSON: res.UserLikesJSON != "" && res.UserLikesJSON != null && res.UserLikesJSON != undefined ? JSON.parse(res.UserLikesJSON) : [], // Default to empty array if null
+        //   UserLikesJSON: res.UserLikesJSON != "" && res.UserLikesJSON != null && res.UserLikesJSON != undefined ? JSON.parse(res.UserLikesJSON) : [], // Default to empty array if null
 
-      //   UserCommentsJSON: res.UserCommentsJSON != "" && res.UserCommentsJSON != null && res.UserCommentsJSON != undefined ? JSON.parse(res.UserCommentsJSON) : [], // Default to empty array if null
+        //   UserCommentsJSON: res.UserCommentsJSON != "" && res.UserCommentsJSON != null && res.UserCommentsJSON != undefined ? JSON.parse(res.UserCommentsJSON) : [], // Default to empty array if null
 
-      //   userHasLiked: res.userHasLiked,
+        //   userHasLiked: res.userHasLiked,
 
-      //   UserProfile: res.UserProfile
+        //   UserProfile: res.UserProfile
 
-      //   // Initialize as false
+        //   // Initialize as false
 
-      // })))
+        // })))
 
 
 
-      // getUserProfilePicture(CurrentUser.Id,sp).then((url) => {
+        // getUserProfilePicture(CurrentUser.Id,sp).then((url) => {
 
-      //   if (url) {
+        //   if (url) {
 
-      //     console.log("Profile Picture URL:", url);
+        //     console.log("Profile Picture URL:", url);
 
-      //   } else {
+        //   } else {
 
-      //     console.log("No profile picture found.");
+        //     console.log("No profile picture found.");
 
-      //   }
+        //   }
 
-      // });
+        // });
 
-    })
+      })
   }
   useEffect(() => {
     getApiData()
-  },[])
+  }, [])
   const ApICallData = async () => {
 
     debugger
@@ -417,6 +419,11 @@ const NewsdetailsContext = ({ props }: any) => {
 
 
   // Add a new comment
+  const getvideo = (ele: any) => {
+    console.log("ele", ele);
+    videoRef = ele;
+    //ele.pause();
+  }
   const NavigatetoEvents = () => {
     window.location.href = `${siteUrl}/SitePages/News.aspx`;
   };
@@ -680,21 +687,21 @@ const NewsdetailsContext = ({ props }: any) => {
 
   };
 
-  const sendanEmail = (item:any) => {
+  const sendanEmail = (item: any) => {
     // window.open("https://outlook.office.com/mail/inbox");
-  
-     const subject ="News Title-"+ item.Title;
-     const body = 'Here is the link to the news:'+ `${siteUrl}/SitePages/NewsDetails.aspx?${item.Id}`;
-  
-   // const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-  
+
+    const subject = "News Title-" + item.Title;
+    const body = 'Here is the link to the news:' + `${siteUrl}/SitePages/NewsDetails.aspx?${item.Id}`;
+
+    // const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
     // Open the link to launch the default mail client (like Outlook)
     //window.location.href = mailtoLink;
 
     const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
     window.open(office365MailLink, '_blank');
-   };
+  };
 
   return (
 
@@ -716,7 +723,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
         <div className="content" style={{ marginLeft: `${!useHide ? '240px' : '80px'}`, marginTop: '0rem' }}>
 
-          <div style={{paddingLeft:'1.3rem', paddingRight:'2.3rem'}} className="container-fluid  paddb">
+          <div style={{ paddingLeft: '1.3rem', paddingRight: '2.3rem' }} className="container-fluid  paddb">
             <div className='row'>
               <div className='col-lg-8'>
                 <div>
@@ -765,13 +772,13 @@ const NewsdetailsContext = ({ props }: any) => {
 
                                 </span>
 
-                                <span style={{cursor:'pointer'}} className="text-nowrap hovertext mb-0 d-inline-block"  onClick={() => sendanEmail(item)} >
+                                <span style={{ cursor: 'pointer' }} className="text-nowrap hovertext mb-0 d-inline-block" onClick={() => sendanEmail(item)} >
 
                                   <Share size={18} />  Share by email &nbsp;  &nbsp;  &nbsp;|&nbsp;  &nbsp;  &nbsp;
 
                                 </span>
 
-                                <span style={{cursor:'pointer'}} className="text-nowrap hovertext mb-0 d-inline-block" onClick={() => copyToClipboard(item.Id)}>
+                                <span style={{ cursor: 'pointer' }} className="text-nowrap hovertext mb-0 d-inline-block" onClick={() => copyToClipboard(item.Id)}>
 
                                   <Link size={18} />    Copy link &nbsp;  &nbsp;  &nbsp;
 
@@ -795,7 +802,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
 
 
-                            <p style={{ lineHeight: '22px',fontSize:'15px' }} className="d-block text-dark mt-2">
+                            <p style={{ lineHeight: '22px', fontSize: '15px' }} className="d-block text-dark mt-2">
 
                               {item.Overview}
 
@@ -812,7 +819,7 @@ const NewsdetailsContext = ({ props }: any) => {
                               AnnouncementAndNewsGallaryJSON.length > 0 ?
 
                                 AnnouncementAndNewsGallaryJSON.map((res: any) => {
-
+                                  { console.log("resresanewsssres", res) }
                                   return (
 
                                     <div className="col-sm-6 col-xl-4 filter-item all web illustrator">
@@ -820,14 +827,18 @@ const NewsdetailsContext = ({ props }: any) => {
                                       <div className="gal-box">
 
                                         <a data-bs-toggle="modal" data-bs-target="#centermodal" className="image-popup mb-2" title="Screenshot-1">
+                                          {res.fileType.startsWith('video/') ?
+                                            <video muted={true} id='Backendvideo' ref={getvideo} style={{
+                                              width: '100%', height: '100%', objectFit: 'cover', borderRadius: '13px', cursor: 'auto',
+                                            }} className="img-fluid imgcssscustom" controls={true}>
+                                              <source src={(videositeurl + res.fileUrl) + "#t=5"} type="video/mp4"></source>
+                                            </video> :
+                                            <img src={`${videositeurl}${res.fileUrl}`}
 
-                                          <img src={`https://alrostamanigroupae.sharepoint.com${res.fileUrl}`}
-
-                                            className="img-fluid imgcssscustom" alt="work-thumbnail" data-themekey="#" style={{
-                                              width: '100%', height: '100%', objectFit: 'cover',
-
-                                              borderRadius: '13px'
-                                            }} />
+                                              className="img-fluid imgcssscustom" alt="work-thumbnail" data-themekey="#" style={{
+                                                width: '100%', height: '100%', objectFit: 'cover', cursor: 'auto', borderRadius: '13px'
+                                              }} />
+                                          }
 
                                         </a>
 
@@ -849,7 +860,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
                           </div><div className="row mt-2">
 
-                            <p style={{ lineHeight: '22px',fontSize:'15px' }} className="d-block newpara text-dark mt-2 mb-0 font-14">
+                            <p style={{ lineHeight: '22px', fontSize: '15px' }} className="d-block newpara text-dark mt-2 mb-0 font-14">
 
                               <div
 
@@ -914,22 +925,22 @@ const NewsdetailsContext = ({ props }: any) => {
                               rows={3} style={{ borderRadius: 'unset' }}
 
                             />
-<div className="p-2 bg-light d-flex justify-content-end align-items-center">
-                            <button
+                            <div className="p-2 bg-light d-flex justify-content-end align-items-center">
+                              <button
 
-                              className="btn btn-primary mt-1 mb-1"
+                                className="btn btn-primary mt-1 mb-1"
 
-                              onClick={handleAddComment}
+                                onClick={handleAddComment}
 
-                              disabled={loading} // Disable button when loading
+                                disabled={loading} // Disable button when loading
 
-                            >
+                              >
 
 
+                                <FontAwesomeIcon style={{ float: 'left', margin: "7px 6px 0px 0px" }} icon={faPaperPlane} />
+                                {loading ? 'Submitting...' : 'Add Comment'} {/* Change button text */}
 
-                              {loading ? 'Submitting...' : 'Add Comment'} {/* Change button text */}
-
-                            </button>
+                              </button>
                             </div>
                           </div>
 
@@ -1000,7 +1011,7 @@ const NewsdetailsContext = ({ props }: any) => {
               </div>
 
               <div className="col-lg-4">
-                <div style={{position:'sticky', top:'90px'}} className="card postion8">
+                <div style={{ position: 'sticky', top: '90px' }} className="card postion8">
                   <div className="card-body">
                     <h4 className="header-title text-dark  fw-bold mb-0">
                       <span style={{ fontSize: '20px' }}>Latest News</span>    <a className="font-11 btn btn-primary  waves-effect waves-light view-all cursor-pointer" href="#" onClick={NavigatetoEvents} style={{ float: 'right', lineHeight: '12px' }}>View All</a></h4>
@@ -1009,8 +1020,8 @@ const NewsdetailsContext = ({ props }: any) => {
                       return (
                         <div className="mainevent mt-2">
                           <div className="bordernew">
-                            <h3 className="twolinewrap font-16 hovertext text-dark fw-bold mb-2 cursor-pointer" style={{ cursor: "pointer" }}  onClick={() => gotoNewsDetails(res)}>{res.Title}</h3>
-                            <p style={{ lineHeight: '20px', fontSize:'15px' }} className=" text-muted twolinewrap">{res.Overview}</p>
+                            <h3 className="twolinewrap font-16 hovertext text-dark fw-bold mb-2 cursor-pointer" style={{ cursor: "pointer" }} onClick={() => gotoNewsDetails(res)}>{res.Title}</h3>
+                            <p style={{ lineHeight: '20px', fontSize: '15px' }} className=" text-muted twolinewrap">{res.Overview}</p>
                             <div className="row">
                               <div className="col-sm-12"> <span style={{ marginTop: "4px" }} className="date-color font-12 float-start  mb-1 ng-binding"><i className="fe-calendar"></i> {moment(res.Modified).format("DD-MMM-YYYY")}</span>  &nbsp; &nbsp; &nbsp; <span className="font-12" style={{ color: '#009157', fontWeight: '600' }}>  </span></div>
 
