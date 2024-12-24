@@ -830,7 +830,7 @@ const DiscussionForumContext = ({ props }: any) => {
                   file,
                   sp,
                   "Documents",
-                  "https://alrostamanigroupae.sharepoint.com"
+                  "https://officeindia.sharepoint.com"
                 );
               }
             } else {
@@ -1148,7 +1148,7 @@ const DiscussionForumContext = ({ props }: any) => {
                 InviteMemebersId: selectedIds,
                 ARGDiscussionStatus: "Ongoing",
                 DiscussionInProgress: "In Progress",
-                DiscussionFileManager: `/sites/intranetUAT/ARGDiscussionFiles/${formData.topic}`,
+                DiscussionFileManager: `/sites/AlRostmaniSpfx2/ARGDiscussionFiles/${formData.topic}`,
                 DiscussionFolderName: formData.topic
               };
             }
@@ -1162,7 +1162,7 @@ const DiscussionForumContext = ({ props }: any) => {
                 DiscussionForumCategoryId: Number(formData.category),
                 ARGDiscussionStatus: "Ongoing",
                 DiscussionInProgress: "In Progress",
-                DiscussionFileManager: `/sites/intranetUAT/ARGDiscussionFiles/${formData.topic}`,
+                DiscussionFileManager: `/sites/AlRostmaniSpfx2/ARGDiscussionFiles/${formData.topic}`,
                 DiscussionFolderName: formData.topic
               };
             }
@@ -1271,7 +1271,7 @@ const DiscussionForumContext = ({ props }: any) => {
 
   const handleCancel = () => {
     window.location.href =
-      "https://alrostamanigroupae.sharepoint.com/sites/intranetUAT/SitePages/Blogs.aspx";
+      "https://officeindia.sharepoint.com/sites/AlRostmaniSpfx2/SitePages/Blogs.aspx";
   };
 
   const formats = [
@@ -1838,7 +1838,7 @@ const DiscussionForumContext = ({ props }: any) => {
                           >
                             <div
                               className="d-fle"
-                              style={{ justifyContent: "space-between" }}
+                              style={{ justifyContent: "space-evenly" }}
                             >
                               <span>S.No.</span>
                               {/* <span onClick={() => handleSortChange("SNo")}>
@@ -1859,7 +1859,7 @@ const DiscussionForumContext = ({ props }: any) => {
                             <div className="d-flex flex-column bd-highlight ">
                               <div
                                 className="d-flex"
-                                style={{ justifyContent: "space-between" }}
+                                style={{ justifyContent: "space-evenly" }}
                               >
                                 <span>Title</span>
                                 <span onClick={() => handleSortChange("Title")}>
@@ -1883,7 +1883,7 @@ const DiscussionForumContext = ({ props }: any) => {
                             <div className="d-flex flex-column bd-highlight ">
                               <div
                                 className="d-flex"
-                                style={{ justifyContent: "space-between" }}
+                                style={{ justifyContent: "space-evenly" }}
                               >
                                 <span>Overview</span>{" "}
                                 <span
@@ -1910,7 +1910,7 @@ const DiscussionForumContext = ({ props }: any) => {
                             <div className="d-flex flex-column bd-highlight ">
                               <div
                                 className="d-flex "
-                                style={{ justifyContent: "space-between" }}
+                                style={{ justifyContent: "space-evenly" }}
                               >
                                 <span>Category</span>{" "}
                                 <span
@@ -1936,7 +1936,7 @@ const DiscussionForumContext = ({ props }: any) => {
                             <div className="d-flex flex-column bd-highlight ">
                               <div
                                 className="d-flex "
-                                style={{ justifyContent: "space-between" }}
+                                style={{ justifyContent: "space-evenly" }}
                               >
                                 <span>Status</span>{" "}
                                 <span
@@ -1952,7 +1952,7 @@ const DiscussionForumContext = ({ props }: any) => {
                             <div className="d-flex flex-column bd-highlight ">
                               <div
                                 className="d-flex "
-                                style={{ justifyContent: "space-between" }}
+                                style={{ justifyContent: "space-evenly" }}
                               >
                                 <span>Type</span>{" "}
                                 <span

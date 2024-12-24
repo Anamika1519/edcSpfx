@@ -187,7 +187,7 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
                 UserName: initialComments[i].UserName,
                 AuthorId: initialComments[i].AuthorId,
                 Comments: initialComments[i].Comments,
-                Created: new Date(initialComments[i].Created).toLocaleString(), // Formatting the created date
+                Created: initialComments[i].Created, // Formatting the created date
                 UserLikesJSON: result1.length > 0 ? likeArray : []
                 , // Default to empty array if null
                 UserCommentsJSON:
@@ -262,7 +262,7 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
           UserName: ress.data.UserName,
           AuthorId: ress.data.AuthorId,
           Comments: ress.data.Comments,
-          Created: new Date(ress.data.Created).toLocaleString(),
+          Created: ress.data.Created,
           UserLikesJSON: [],
           UserCommentsJSON: [],
           userHasLiked: false, // Initialize as false
@@ -1061,7 +1061,7 @@ className="d-block mt-2 font-28"
                                 /></div> 
                           <h1 className="text-muted font-14 mt-2"><p className="text-dark font-16 text-center mb-2"> keerti jain</p>
                           <p className="text-dark font-14 text-center mb-1">Cloud Infrastructure Alchemist</p>
-                          <p className="text-muted font-12 text-center">keertijain@alrostamanigroupae.onmicrosoft.com  </p>
+                          <p className="text-muted font-12 text-center">keertijain@officeindia.onmicrosoft.com  </p>
                           </h1></div>
                           </div>
                           <div className="card mobile-5"  style={{ borderRadius: "22px" }}>

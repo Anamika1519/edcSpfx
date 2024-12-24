@@ -99,6 +99,7 @@
     margin-bottom: 10px;
     transition: all 0.3s ease; /* Smooth transition on hover and active state */
   }
+  .notification-sidebar .list-group-item:hover{background-color:#959b95 !important; color: #fff !important;}
   
   /* Active tab styles */
   .notification-sidebar .list-group-item.active {

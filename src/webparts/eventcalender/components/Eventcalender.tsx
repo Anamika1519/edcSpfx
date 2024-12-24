@@ -453,14 +453,14 @@ const EventcalenderContext = ({ props }: any) => {
                                     style={{ fontSize: "16px" }}
                                   >
                                     {truncateText(item.EventName, 90)}
-                                  </h4> </a>
+                                  </h4> </a></div>
                                   <p
                                     style={{ color: "#6b6b6b", fontSize: '15px' }}
-                                    className="mb-2 hovertext text-muted"
+                                    className="mb-2  text-muted"
                                   >
                                     {truncateText(item.Overview, 200)}
                                   </p>
-                                </div>
+                                
                               
 
                               <div className="row">

@@ -67,9 +67,9 @@ const NotificationList = ({ NotificationArray, handleNotificationClick, OnCleara
                     <div className="col-md-8">
                         <h5 className="p-1 font-16 text-dark">Notifications</h5>
                     </div>
-                    <div style={{textAlign:'right'}} className="col-md-4">
+                    {/* <div style={{textAlign:'right'}} className="col-md-4">
                     <h5 style={{ textDecoration: 'underline', cursor: 'pointer' }} className="pt-2 font-12" onClick={() => OnClearall('Clear')} >Clear All</h5>
-                    </div>
+                    </div> */}
                 </div>
             </div>
   <div className="heightlist">
@@ -165,8 +165,8 @@ const NotificationList = ({ NotificationArray, handleNotificationClick, OnCleara
                 <p>No notifications</p>
             )}
         </div>
-        <h5 style={{textDecoration:'underline',float:'left'}} className="p-1 font-12 text-center" onClick={goToNext}>View All</h5>
-        <h5 style={{float:'right'}} className="p-1 font-12 text-center" onClick={goToSettings}> <Settings size={18} /> </h5>
+        <h5 style={{textDecoration:'underline',float:'left'}} className="p-3 font-12 hovertext mb-0 text-center" onClick={goToNext}>View All</h5>
+        <h5 style={{float:'right'}} className="p-3 font-12 text-center mb-0" onClick={goToSettings}> <Settings size={18} /> </h5>
         </div>
     );
 };

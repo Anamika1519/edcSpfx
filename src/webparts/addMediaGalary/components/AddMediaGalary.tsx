@@ -630,7 +630,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
   const onFileChange = async (event: React.ChangeEvent<HTMLInputElement>, libraryName: string, docLib: string) => {
 
     debugger;
-   
+
 
     event.preventDefault();
 
@@ -656,37 +656,37 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
       if (libraryName === "Gallery" || libraryName === "bannerimg") {
 
-       
-  //       const imageVideoFiles: CustomFile[] = files
-  // .filter(file => file.type.startsWith('image/') || file.type.startsWith('video/')) // Filter files based on type
-  // .map(file => ({
-  //   ...file, // Spread existing properties of the file
-  //   fileUrl: URL.createObjectURL(file), // Add the new fileUrl property with the object URL
-  // }));
+
+        //       const imageVideoFiles: CustomFile[] = files
+        // .filter(file => file.type.startsWith('image/') || file.type.startsWith('video/')) // Filter files based on type
+        // .map(file => ({
+        //   ...file, // Spread existing properties of the file
+        //   fileUrl: URL.createObjectURL(file), // Add the new fileUrl property with the object URL
+        // }));
 
         const imageVideoFiles = files.filter(file =>
-         
+
           file.type.startsWith('image/') ||
 
           file.type.startsWith('video/')
 
         );
-       
+
 
         if (imageVideoFiles.length > 0) {
 
           var arr = {};
-         
+
 
           if (libraryName === "Gallery") {
-            arr={    
+            arr = {
               files: imageVideoFiles,
- 
+
               libraryName: libraryName,
- 
+
               docLib: docLib,
-             
- 
+
+
             };
 
             uloadImageFiles.push(arr);
@@ -763,18 +763,18 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
           } else {
 
-            arr={    
+            arr = {
               files: imageVideoFiles,
- 
+
               libraryName: libraryName,
- 
+
               docLib: docLib,
-              name :imageVideoFiles[0].name,
+              name: imageVideoFiles[0].name,
 
-              fileSize :imageVideoFiles[0].size,
+              fileSize: imageVideoFiles[0].size,
 
-              fileUrl : URL.createObjectURL(imageVideoFiles[0])
- 
+              fileUrl: URL.createObjectURL(imageVideoFiles[0])
+
             };
 
             // fileSize :formatFileSize(imageVideoFiles[0].size),
@@ -1931,7 +1931,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
               }
 
             }
-             setLoading(false);
+            setLoading(false);
             Swal.fire('Saved successfully.', '', 'success');
 
             sessionStorage.removeItem("mediaId")
@@ -2321,14 +2321,14 @@ const AddMediaGalaryContext = ({ props }: any) => {
                 <div className="row mt-2" >
 
                   {Loading ?
-                    <div style={{minHeight:'100vh',marginTop:'100px'}} className="loadernewadd mt-10">
-                    <div>
+                    <div style={{ minHeight: '100vh', marginTop: '100px' }} className="loadernewadd mt-10">
+                      <div>
                         <img
-                            src={require("../../../CustomAsset/birdloader.gif")}
-                            className="alignrightl"
-                            alt="Loading..."
-                          /> 
-                        </div> 
+                          src={require("../../../CustomAsset/birdloader.gif")}
+                          className="alignrightl"
+                          alt="Loading..."
+                        />
+                      </div>
                       <span>Loading </span>{" "}
                       <span>
                         <img
@@ -2341,306 +2341,306 @@ const AddMediaGalaryContext = ({ props }: any) => {
                     // <div className="loadercss" role="status">Loading...
                     //   <img src={require('../../../Assets/ExtraImage/loader.gif')} style={{ height: '80px', width: '70px' }} alt="Check" />
                     // </div>
-                  :
-                  <form className='row' >
+                    :
+                    <form className='row' >
 
-                    <div className="col-lg-4">
+                      <div className="col-lg-4">
 
-                      <div className="mb-3">
+                        <div className="mb-3">
 
-                        <label htmlFor="title" className="form-label">
+                          <label htmlFor="title" className="form-label">
 
-                          Title <span className="text-danger">*</span>
+                            Title <span className="text-danger">*</span>
 
-                        </label>
+                          </label>
 
-                        <input
+                          <input
 
-                          type="text"
+                            type="text"
 
-                          id="title"
+                            id="title"
 
-                          name="title"
+                            name="title"
 
-                          placeholder='Enter title'
+                            placeholder='Enter title'
 
-                          className={`form-control inputcs ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                            className={`form-control inputcs ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
 
-                          value={formData.title}
-                          disabled={InputDisabled}
+                            value={formData.title}
+                            disabled={InputDisabled}
 
-                          onChange={(e) => onChange(e.target.name, e.target.value)} />
+                            onChange={(e) => onChange(e.target.name, e.target.value)} />
 
-
-                      </div>
-
-                    </div>
-
-                    <div className="col-lg-4">
-
-                      <div className="mb-3">
-
-                        <label htmlFor="entity" className="form-label">
-
-                          Entity <span className="text-danger">*</span>
-
-                        </label>
-
-                        <select
-
-                          className={`form-control inputcs ${(!ValidSubmit) ? "border-on-error" : ""}`}
-
-                          id="entity"
-
-                          name="entity"
-
-                          value={formData.entity}
-                          disabled={InputDisabled}
-
-
-                          onChange={(e) => onChange(e.target.name, e.target.value)}
-
-                        >
-
-                          <option value="">Select</option>
-
-                          {
-
-                            EnityData.map((item, index) => (
-
-                              <option key={index} value={item.id}>{item.name}</option>
-
-                            ))
-
-                          }
-
-                        </select>
-
-                      </div>
-
-                    </div>
-
-                    <div className="col-lg-4">
-
-                      <div className="mb-3">
-
-                        <label htmlFor="Category" className="form-label">
-
-                          Category <span className="text-danger">*</span>
-
-                        </label>
-
-                        <select
-
-                          className={`form-control inputcs ${(!ValidSubmit) ? "border-on-error" : ""}`}
-
-                          id="Category"
-
-                          name="Category"
-
-                          value={formData.Category}
-                          disabled={InputDisabled}
-
-                          onChange={(e) => onChange(e.target.name, e.target.value)}
-
-                        >
-
-                          <option value="">Select</option>
-
-                          {
-
-                            mediaCategorydata.map((item, index) => (
-
-                              <option key={index} value={item.Id}>{item.CategoryName}</option>
-
-                            ))
-
-                          }
-
-                        </select>
-
-                      </div>
-
-                    </div>
-
-                    <div className="col-lg-4">
-
-                      <div className="mb-3">
-
-                        <div className='d-flex justify-content-between'>
-
-                          <div>
-
-                            <label htmlFor="bannerImage" className="form-label">
-
-                              Media Image<span className="text-danger">*</span>
-
-                            </label>
-
-                          </div>
-
-                          <div>
-
-                            {BnnerImagepostArr != undefined &&
-
-                              BnnerImagepostArr.length > 0 &&
-
-                              (<a onClick={() => setShowModalFunc(true, "Image")} style={{ fontSize: '0.875rem' }}>
-
-                                <FontAwesomeIcon icon={faPaperclip} /> 1 file Attached
-
-                              </a>)
-
-                            }
-
-                            {BnnerImagepostArr != undefined &&
-
-                              BnnerImagepostArr.length == 0 &&
-
-                              (<a onClick={() => setShowModalFunc(true, "Image")} style={{ fontSize: '0.875rem' }}>
-
-                                <FontAwesomeIcon icon={faPaperclip} /> 0 file Attached
-
-                              </a>)
-
-                            }
-
-                          </div>
 
                         </div>
 
-                        <input
+                      </div>
 
-                          type="file"
+                      <div className="col-lg-4">
 
-                          id="bannerImage"
+                        <div className="mb-3">
 
-                          name="bannerImage"
-                          className={`form-control inputcss ${(!ValidSubmit) ? "border-on-error" : ""}`}
-                          //className="form-control inputcss"
+                          <label htmlFor="entity" className="form-label">
 
-                          disabled={InputDisabled}
+                            Entity <span className="text-danger">*</span>
+
+                          </label>
+
+                          <select
+
+                            className={`form-control inputcs ${(!ValidSubmit) ? "border-on-error" : ""}`}
+
+                            id="entity"
+
+                            name="entity"
+
+                            value={formData.entity}
+                            disabled={InputDisabled}
 
 
-                          onChange={(e) => onFileChange(e, "bannerimg", "Document")} />
+                            onChange={(e) => onChange(e.target.name, e.target.value)}
+
+                          >
+
+                            <option value="">Select</option>
+
+                            {
+
+                              EnityData.map((item, index) => (
+
+                                <option key={index} value={item.id}>{item.name}</option>
+
+                              ))
+
+                            }
+
+                          </select>
+
+                        </div>
 
                       </div>
 
-                    </div>
+                      <div className="col-lg-4">
 
+                        <div className="mb-3">
 
-                    <div className="col-lg-4">
+                          <label htmlFor="Category" className="form-label">
 
-                      <div className="mb-3">
+                            Category <span className="text-danger">*</span>
 
+                          </label>
 
-                        <div className='d-flex justify-content-between'>
+                          <select
 
-                          <div>
+                            className={`form-control inputcs ${(!ValidSubmit) ? "border-on-error" : ""}`}
 
-                            <label htmlFor="  " className="form-label">
+                            id="Category"
 
-                              Media Gallery
+                            name="Category"
 
-                            </label>
+                            value={formData.Category}
+                            disabled={InputDisabled}
+
+                            onChange={(e) => onChange(e.target.name, e.target.value)}
+
+                          >
+
+                            <option value="">Select</option>
+
+                            {
+
+                              mediaCategorydata.map((item, index) => (
+
+                                <option key={index} value={item.Id}>{item.CategoryName}</option>
+
+                              ))
+
+                            }
+
+                          </select>
+
+                        </div>
+
+                      </div>
+
+                      <div className="col-lg-4">
+
+                        <div className="mb-3">
+
+                          <div className='d-flex justify-content-between'>
+
+                            <div>
+
+                              <label htmlFor="bannerImage" className="form-label">
+
+                                Media Image<span className="text-danger">*</span>
+
+                              </label>
+
+                            </div>
+
+                            <div>
+
+                              {BnnerImagepostArr != undefined &&
+
+                                BnnerImagepostArr.length > 0 &&
+
+                                (<a onClick={() => setShowModalFunc(true, "Image")} style={{ fontSize: '0.875rem' }}>
+
+                                  <FontAwesomeIcon icon={faPaperclip} /> 1 file Attached
+
+                                </a>)
+
+                              }
+
+                              {BnnerImagepostArr != undefined &&
+
+                                BnnerImagepostArr.length == 0 &&
+
+                                (<a onClick={() => setShowModalFunc(true, "Image")} style={{ fontSize: '0.875rem' }}>
+
+                                  <FontAwesomeIcon icon={faPaperclip} /> 0 file Attached
+
+                                </a>)
+
+                              }
+
+                            </div>
 
                           </div>
 
-                          <div>
+                          <input
+
+                            type="file"
+
+                            id="bannerImage"
+
+                            name="bannerImage"
+                            className={`form-control inputcss ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                            //className="form-control inputcss"
+
+                            disabled={InputDisabled}
 
 
-                            {ImagepostArr1 != null && ImagepostArr1.length > 0 &&
+                            onChange={(e) => onFileChange(e, "bannerimg", "Document")} />
 
-                              ImagepostArr1.length == 1 &&
+                        </div>
 
-                              (<a onClick={() => setShowModalFunc(true, "Gallery")} style={{ fontSize: '0.875rem' }}>
+                      </div>
 
-                                <FontAwesomeIcon icon={faPaperclip} /> {ImagepostArr1.length} file Attached
 
-                              </a>)
+                      <div className="col-lg-4">
 
-                              || ImagepostArr1 != null && ImagepostArr1.length > 0 && ImagepostArr1.length > 1 &&
+                        <div className="mb-3">
 
-                              (<a onClick={() => setShowModalFunc(true, "Gallery")} style={{ fontSize: '0.875rem' }}>
 
-                                <FontAwesomeIcon icon={faPaperclip} /> {ImagepostArr1.length} files Attached
+                          <div className='d-flex justify-content-between'>
 
-                              </a>)
-                               || (ImagepostArr1 == null || ImagepostArr1.length == 0 &&
+                            <div>
+
+                              <label htmlFor="  " className="form-label">
+
+                                Media Gallery
+
+                              </label>
+
+                            </div>
+
+                            <div>
+
+
+                              {ImagepostArr1 != null && ImagepostArr1.length > 0 &&
+
+                                ImagepostArr1.length == 1 &&
 
                                 (<a onClick={() => setShowModalFunc(true, "Gallery")} style={{ fontSize: '0.875rem' }}>
-  
-                                  <FontAwesomeIcon icon={faPaperclip} /> 0 file Attached
-  
-                                </a>))
-  
-                              
 
-                            }
+                                  <FontAwesomeIcon icon={faPaperclip} /> {ImagepostArr1.length} file Attached
 
+                                </a>)
+
+                                || ImagepostArr1 != null && ImagepostArr1.length > 0 && ImagepostArr1.length > 1 &&
+
+                                (<a onClick={() => setShowModalFunc(true, "Gallery")} style={{ fontSize: '0.875rem' }}>
+
+                                  <FontAwesomeIcon icon={faPaperclip} /> {ImagepostArr1.length} files Attached
+
+                                </a>)
+                                || (ImagepostArr1 == null || ImagepostArr1.length == 0 &&
+
+                                  (<a onClick={() => setShowModalFunc(true, "Gallery")} style={{ fontSize: '0.875rem' }}>
+
+                                    <FontAwesomeIcon icon={faPaperclip} /> 0 file Attached
+
+                                  </a>))
+
+
+
+                              }
+
+
+                            </div>
+
+                          </div>
+
+                          <input
+
+                            type="file"
+
+                            id="announcementGallery"
+
+                            name="announcementGallery"
+
+                            className="form-control inputcss"
+
+                            multiple
+
+                            disabled={InputDisabled}
+
+                            onChange={(e) => onFileChange(e, "Gallery", "MediaGallery")}
+
+                          />
+
+                        </div>
+
+                      </div>
+
+
+                      {!InputDisabled ? (<div className="text-center butncss">
+
+                        <div className="btn btn-success waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleSaveAsDraft}>
+
+                          <div className='d-flex' style={{ justifyContent: 'space-around' }}>
+
+                            <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} alt="Check" /> Save As Draft
 
                           </div>
 
                         </div>
 
-                        <input
+                        <div className="btn btn-success waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleFormSubmit}>
 
-                          type="file"
+                          <div className='d-flex' style={{ justifyContent: 'space-around', width: '70px' }}>
 
-                          id="announcementGallery"
+                            <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} alt="Check" /> Submit
 
-                          name="announcementGallery"
-
-                          className="form-control inputcss"
-
-                          multiple
-
-                          disabled={InputDisabled}
-
-                          onChange={(e) => onFileChange(e, "Gallery", "MediaGallery")}
-
-                        />
-
-                      </div>
-
-                    </div>
-
-
-                    {!InputDisabled ? (<div className="text-center butncss">
-
-                      <div className="btn btn-success waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleSaveAsDraft}>
-
-                        <div className='d-flex' style={{ justifyContent: 'space-around' }}>
-
-                          <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} alt="Check" /> Save As Draft
+                          </div>
 
                         </div>
 
-                      </div>
+                        <div className="btn btn-light waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleCancel}>
 
-                      <div className="btn btn-success waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleFormSubmit}>
+                          <div className='d-flex' style={{ justifyContent: 'space-around', width: '70px' }}>
 
-                        <div className='d-flex' style={{ justifyContent: 'space-around', width: '70px' }}>
+                            <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }} className='me-0' alt="x" />
 
-                          <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} alt="Check" /> Submit
+                            Cancel
 
-                        </div>
-
-                      </div>
-
-                      <div className="btn btn-light waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleCancel}>
-
-                        <div className='d-flex' style={{ justifyContent: 'space-around', width: '70px' }}>
-
-                          <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }} className='me-0' alt="x" />
-
-                          Cancel
+                          </div>
 
                         </div>
 
-                      </div>
-
-                    </div>) : (modeValue == 'view') && (<div className="text-center butncss">
+                      </div>) : (modeValue == 'view') && (<div className="text-center butncss">
                         <div className="btn btn-light waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleCancel}>
 
                           <div className='d-flex' style={{ justifyContent: 'space-around', width: '70px' }}>
@@ -2652,10 +2652,10 @@ const AddMediaGalaryContext = ({ props }: any) => {
                           </div>
 
                         </div>
-                    </div>)}
+                      </div>)}
 
-                  </form>
-}
+                    </form>
+                  }
                 </div>
               </div>
 
@@ -2935,170 +2935,172 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
             <Modal show={showModal} onHide={() => setShowModal(false)} size="lg">
 
-<Modal.Header closeButton>
+              <Modal.Header closeButton>
 
-  <Modal.Title>Media Gallery</Modal.Title>
+                <Modal.Title>Media Gallery</Modal.Title>
 
-  {/* {ImagepostArr1.length > 0 && showBannerModal && <Modal.Title>Media Images</Modal.Title>} */}
+                {/* {ImagepostArr1.length > 0 && showBannerModal && <Modal.Title>Media Images</Modal.Title>} */}
 
-</Modal.Header>
+              </Modal.Header>
 
-<Modal.Body className="scrollbar" id="style-5">
+              <Modal.Body className="scrollbar" id="style-5">
 
-  {/* {ImagepostArr1.length > 0 && showImgModal &&
+                {/* {ImagepostArr1.length > 0 && showImgModal &&
 
     (*/}
 
-  <>
+                <>
 
-    <table className="mtable table-bordered" style={{ fontSize: '0.75rem' }}>
+                  <table className="mtable table-bordered" style={{ fontSize: '0.75rem' }}>
 
-      <thead style={{ background: '#eef6f7' }}>
+                    <thead style={{ background: '#eef6f7' }}>
 
-        <tr>
+                      <tr>
 
-          <th>Serial No.</th>
+                        <th>Serial No.</th>
 
-          <th > Image </th>
+                        <th > Image </th>
 
-          <th>File Name</th>
+                        <th>File Name</th>
 
-          <th>File Size</th>
-          {modeValue == null &&
-            <th className='text-center'>Action</th>
-          }
-        </tr>
+                        <th>File Size</th>
+                        {modeValue == null &&
+                          <th className='text-center'>Action</th>
+                        }
+                      </tr>
 
-      </thead>
+                    </thead>
 
-      <tbody>
+                    <tbody>
 
-        {ImagepostArr1.map((file: any, index: number) => (
+                      {ImagepostArr1.map((file: any, index: number) => (
 
-          <tr key={index}>
+                        <tr key={index}>
 
-            <td className='text-center'>{index + 1}</td>
+                          <td className='text-center'>{index + 1}</td>
 
-            <td>
-              <img
-                className='imagefe'
-                src={file.fileUrl ?  file.fileUrl:`${siteUrl}/MediaGallery/${file.fileName}`}
-                alt={'default image'}
-              />
-            </td>
+                          <td>
+                            <img
+                              className='imagefe'
+                              src={file.fileType.startsWith('video/') ?
+                                require("../../../Assets/ExtraImage/video.jpg") :
+                                (file.fileUrl ? file.fileUrl : `${siteUrl}/MediaGallery/${file.fileName}`)}
+                              alt={'default image'}
+                            />
+                          </td>
 
-            <td>{file.fileName}</td>
+                          <td>{file.fileName}</td>
 
-            <td className='text-right'>{file.fileSize}</td>
-            {modeValue == null &&
-              <td className='text-center'> <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }}
+                          <td className='text-right'>{file.fileSize}</td>
+                          {modeValue == null &&
+                            <td className='text-center'> <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }}
 
-                onClick={() => deleteLocalFile(index, ImagepostArr1, "Gallery")} /> </td>
+                              onClick={() => deleteLocalFile(index, ImagepostArr1, "Gallery")} /> </td>
 
-            }
-          </tr>
+                          }
+                        </tr>
 
-        ))}
+                      ))}
 
-      </tbody>
+                    </tbody>
 
-    </table>
-  </>
+                  </table>
+                </>
 
-  {/*  )} */}
-
-
-
-</Modal.Body>
-
-</Modal>
+                {/*  )} */}
 
 
 
-<Modal show={showModal1} onHide={() => setShowModal1(false)} size="lg">
+              </Modal.Body>
 
-<Modal.Header closeButton>
-
-  <Modal.Title>Media Image</Modal.Title>
-
-  {/* {BnnerImagepostArr.length > 0 && showBannerModal2 && <Modal.Title>Media Image</Modal.Title>} */}
+            </Modal>
 
 
-</Modal.Header>
 
-<Modal.Body className="scrollbar" id="style-5">
+            <Modal show={showModal1} onHide={() => setShowModal1(false)} size="lg">
 
-  {/* {BnnerImagepostArr.length > 0 && showBannerModal2 &&
+              <Modal.Header closeButton>
+
+                <Modal.Title>Media Image</Modal.Title>
+
+                {/* {BnnerImagepostArr.length > 0 && showBannerModal2 && <Modal.Title>Media Image</Modal.Title>} */}
+
+
+              </Modal.Header>
+
+              <Modal.Body className="scrollbar" id="style-5">
+
+                {/* {BnnerImagepostArr.length > 0 && showBannerModal2 &&
 
     ( */}
 
-  <>
+                <>
 
-    <table className="mtable table-bordered" style={{ fontSize: '0.75rem' }}>
+                  <table className="mtable table-bordered" style={{ fontSize: '0.75rem' }}>
 
-      <thead style={{ background: '#eef6f7' }}>
+                    <thead style={{ background: '#eef6f7' }}>
 
-        <tr>
+                      <tr>
 
-          <th>Serial No.</th>
+                        <th>Serial No.</th>
 
-          <th > Image </th>
+                        <th > Image </th>
 
-          <th>File Name</th>
+                        <th>File Name</th>
 
-          <th>File Size</th>
-          {modeValue == null &&
-            <th className='text-center'>Action</th>
-          }
-        </tr>
+                        <th>File Size</th>
+                        {modeValue == null &&
+                          <th className='text-center'>Action</th>
+                        }
+                      </tr>
 
-      </thead>
+                    </thead>
 
-      <tbody>
+                    <tbody>
 
-        {BnnerImagepostArr.map((file: any, index: number) => (
+                      {BnnerImagepostArr.map((file: any, index: number) => (
 
-          <tr key={index}>
+                        <tr key={index}>
 
-            <td className='text-center'>{index + 1}</td>
+                          <td className='text-center'>{index + 1}</td>
 
-            <td>
-              <img
-                className="imagefe"
-                src={
-                  file.serverUrl && file.serverRelativeUrl
-                    ? `${file.serverUrl}${file.serverRelativeUrl}`
-                    : file.fileUrl // Fallback to file.fileUrl if other values are missing
-                }
-                alt="Preview"
-              />
-            </td>
+                          <td>
+                            <img
+                              className="imagefe"
+                              src={
+                                file.serverUrl && file.serverRelativeUrl
+                                  ? `${file.serverUrl}${file.serverRelativeUrl}`
+                                  : file.fileUrl // Fallback to file.fileUrl if other values are missing
+                              }
+                              alt="Preview"
+                            />
+                          </td>
 
-            <td>{file.fileName ? file.fileName : file.name}</td>
+                          <td>{file.fileName ? file.fileName : file.name}</td>
 
-            <td className='text-right'>{file.fileSize}</td>
-            {modeValue == null &&
-              <td className='text-center'> <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }}
+                          <td className='text-right'>{file.fileSize}</td>
+                          {modeValue == null &&
+                            <td className='text-center'> <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }}
 
-                onClick={() => deleteLocalFile(index, BnnerImagepostArr, "Image")} /> </td>
+                              onClick={() => deleteLocalFile(index, BnnerImagepostArr, "Image")} /> </td>
 
-            }
-          </tr>
+                          }
+                        </tr>
 
-        ))}
+                      ))}
 
-      </tbody>
+                    </tbody>
 
-    </table>
-  </>
+                  </table>
+                </>
 
-  {/* )} */}
+                {/* )} */}
 
 
 
-</Modal.Body>
+              </Modal.Body>
 
-</Modal>
+            </Modal>
 
           </div>
 

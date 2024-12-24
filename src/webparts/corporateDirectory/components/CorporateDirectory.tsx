@@ -1005,9 +1005,15 @@ const CorporateDirectoryContext = ({ props }: any) => {
     if (activeTab == "listView")
       setActiveTab("cardView");
     let txtSearch: any = e.target.value;
-    //(document.getElementById('searchInput') as HTMLInputElement).value;
+     //(document.getElementById('searchInput') as HTMLInputElement).value;
+    // filteredusers = usersitem.filter((item, index) => {
+    //   return (
+    //     (txtSearch === '' || item.Title.toLowerCase().includes(txtSearch.toLowerCase()))
+    //   );
+    // });
+
     console.log("usersitem", usersitem)
-    if (txtSearch.length > 1) {
+    if (txtSearch.length > 0) {
       filteredusers = usersitem.filter((x) => x.Title.toLowerCase().includes(txtSearch.toLowerCase()));
       if (filteredusers.length > 0) {
         setUsersArr(filteredusers);

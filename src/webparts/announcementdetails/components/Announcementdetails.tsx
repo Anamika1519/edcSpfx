@@ -181,7 +181,7 @@ const AnnouncementdetailsContext = ({ props }: any) => {
               UserName: initialComments[i].UserName,
               AuthorId: initialComments[i].AuthorId,
               Comments: initialComments[i].Comments,
-              Created: new Date(initialComments[i].Created).toLocaleString(), // Formatting the created date
+              Created: initialComments[i].Created,  // Formatting the created date
               UserLikesJSON: result1.length > 0 ? likeArray : []
               , // Default to empty array if null
               UserCommentsJSON:
@@ -244,7 +244,7 @@ const AnnouncementdetailsContext = ({ props }: any) => {
         UserName: ress.data.UserName,
         AuthorId: ress.data.AuthorId,
         Comments: ress.data.Comments,
-        Created: new Date(ress.data.Created).toLocaleString(),
+        Created: ress.data.Created,
         UserLikesJSON: [],
         UserCommentsJSON: [],
         userHasLiked: false, // Initialize as false
@@ -769,13 +769,13 @@ const AnnouncementdetailsContext = ({ props }: any) => {
                             placeholder="Type your comment here..."
                             rows={3} style={{ borderRadius: 'unset' }}
                           />
-                          <div className="p-2 bg-light d-flex justify-content-between align-items-center">
+                          <div className="p-2 bg-light d-flex justify-content-end align-items-center">
                             <button
                               className="btn btn-primary mt-1 mb-1"
                               onClick={handleAddComment}
                               disabled={loading} // Disable button when loading
                             >
-                              <FontAwesomeIcon style={{ float: 'left', margin: "7px 6px 0px 0px" }} icon={faPaperPlane} />
+                              <FontAwesomeIcon style={{ float: 'left', margin: "7px 0px 0px 6px" }} icon={faPaperPlane} />
                               {loading ? 'Submitting...' : 'Post'} {/* Change button text */}
                             </button></div>
                         </div>

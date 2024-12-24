@@ -197,7 +197,7 @@ const CustomNewsWebpartTemplate = ({ _sp, SiteUrl }) => {
                                                 <div className="w-100">
                                                     <a >  <h4 onClick={() => gotoNewsDetails(item)} className="hovertext mt-1 mb-1 font-16 fw-bold ng-binding" style={{ color: '#343a40', fontSize: '16px' }}> {truncateText(item.Title, 80)}
                                                     </h4> </a>
-                                                    <p style={{ color: '#6b6b6b', fontSize: '15px', height: '4rem' }} className="mb-2  ng-binding parah">
+                                                    <p style={{ color: '#6b6b6b', fontSize: '15px', cursor:'auto', height: '4rem' }} className="mb-2  ng-binding parah">
                                                         {truncateText(item.Overview, 250)}</p>
                                                     <div className="readmore" onClick={() => gotoNewsDetails(item)} style={{ cursor: 'pointer' }}>Read more..</div>
                                                 </div>

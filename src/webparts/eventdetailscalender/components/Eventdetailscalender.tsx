@@ -208,7 +208,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
                 UserName: initialComments[i].UserName,
                 AuthorId: initialComments[i].AuthorId,
                 Comments: initialComments[i].Comments,
-                Created: new Date(initialComments[i].Created).toLocaleString(), // Formatting the created date
+                Created: initialComments[i].Created, // Formatting the created date
                 UserLikesJSON: result1.length > 0 ? likeArray : []
                 , // Default to empty array if null
                 UserCommentsJSON:
@@ -306,7 +306,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
           UserName: ress.data.UserName,
           AuthorId: ress.data.AuthorId,
           Comments: ress.data.Comments,
-          Created: new Date(ress.data.Created).toLocaleString(),
+          Created: ress.data.Created,
           UserLikesJSON: [],
           UserCommentsJSON: [],
           userHasLiked: false, // Initialize as false
@@ -822,7 +822,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
                               onClick={handleAddComment}
                               disabled={loading} // Disable button when loading
                             >
-                              <FontAwesomeIcon style={{float:'left',margin:"7px 6px 0px 0px"}} icon={faPaperPlane} /> 
+                              <FontAwesomeIcon style={{float:'left',margin:"7px 0px 0px 6px"}} icon={faPaperPlane} /> 
                               {loading ? "Submitting..." : "Post"}{" "}
                               {/* Change button text */}
                             </button>

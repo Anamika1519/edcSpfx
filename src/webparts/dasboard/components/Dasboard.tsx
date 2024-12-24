@@ -562,14 +562,14 @@ const HelloWorldContext = ({ props }: any) => {
                                   <div className="mt-1 d-flex justify-between mb-0">
                                     <span
 
-                                      className="btn btn-sm btn-link text-muted mb-0 font-18 ps-0"
+                                      className="text-muted mb-0 font-18 ps-0"
                                     >
                                       <ThumbsUp size={15} color="#4fc6e1" />
                                       <span className="font-12  mx-1 margin01 float-right floatl">{announcement.LikeCount} Likes</span>
                                     </span>
                                     <span
 
-                                      className="btn btn-sm btn-link text-muted mb-0 font-18"
+                                      className="text-muted mb-0 font-18"
                                     >
                                       <MessageSquare size={15} color="#f7b84b" />
                                       <span className="font-12 margin01 mx-1  float-right floatl">
@@ -870,7 +870,7 @@ const HelloWorldContext = ({ props }: any) => {
                                         </span>
 
                                         <span className="tabvtext">
-                                          <span className="twolinewrap mb-1 fw-bold font-14 text-dark">  {item.Title} <br /> </span>
+                                          <span className="twolinewrap mb-1 fw-bold font-14 text-dark" onClick={() => GotoNextPageMediaDetails(item)}>  {item.Title} <br /> </span>
                                           <span style={{ paddingTop: "2px" }} className="font-12">
                                             <i className="fa fa-clock-o"></i>&nbsp;
                                             {moment(item.Created).format("DD-MMM-YYYY")}

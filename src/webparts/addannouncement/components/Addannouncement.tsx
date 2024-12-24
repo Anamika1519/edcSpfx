@@ -2195,7 +2195,7 @@ const AddannouncementContext = ({ props }: any) => {
                           {DocumentpostArr1.map((file: any, index: number) => (
                             <tr key={index}>
                               <td className='text-center'>{index + 1}</td>
-                              <td>{file.fileName.replace("/sites/intranetUAT", "")}</td>
+                              <td>{file.fileName.replace("/sites/AlRostmaniSpfx2", "")}</td>
                               <td className='text-right'>{file.fileSize}</td>
                               <td className='text-center'> <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, DocumentpostArr1, "docs")} /> </td>
                             </tr>
@@ -2254,7 +2254,13 @@ const AddannouncementContext = ({ props }: any) => {
                           {BnnerImagepostArr[0].files.map((file: any, index: number) => (
                             <tr key={index}>
                               <td className='text-center'>{index + 1}</td>
-                              <img src={`${siteUrl}/${file.name}`} />
+                              <img
+                              className='imagefe'
+                              src={file.fileType.startsWith('video/') ?
+                                require("../../../Assets/ExtraImage/video.jpg") :
+                                (file.fileUrl ? file.fileUrl : `${siteUrl}/MediaGallery/${file.fileName}`)}
+                              alt={'default image'}
+                            />
                               <td>{file.name}</td>
                               <td className='text-right'>{file.size}</td>
                               <td className='text-center'> <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, BnnerImagepostArr, "bannerimg")} /> </td>

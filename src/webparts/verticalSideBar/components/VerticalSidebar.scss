@@ -1100,7 +1100,7 @@ margin: 10px 0px !important ;
     font-size: 60px !important;
     font-weight: 900;
     line-height: 60px;
-    padding-bottom: 40px !important;
+    padding-bottom: 0px !important;
   }
   .heightcard {
       height: 200px !important;
@@ -1212,7 +1212,7 @@ margin: 10px 0px !important ;
     font-size: 42px !important;
   
     line-height: 45px;
-    padding-bottom: 32px !important;
+    padding-bottom: 0px !important;
   }
   .font-11 {
     font-size: 12px !important;
@@ -1383,6 +1383,10 @@ margin: 10px 0px !important ;
 .sidebar .menu_items .active .link_name1{
 color: #fff !important;
 }
+.sidebar .menu_items .active .link_name1:hover span{
+  color: #fff !important;
+  }
+
 .sidebar .menu_items .active{
   background: #1fb0e5 !important; 
 }
@@ -1393,6 +1397,7 @@ color: #fff !important;
   color:#6c757d !important;
 }
 
+.sidebar .menu_items .active .menu_items .link_name1:hover span{color: #1fb0e5 !important;}
 @media(max-width:1280px)
 {
   .card {
@@ -1618,7 +1623,7 @@ color: #fff !important;
 text-align: center;
   min-width: 130px;
   max-width: 130px;
-  padding:3px 10px !important;
+  padding:6px 10px !important;
   border-bottom: 0px solid #1b6363 !important;
 }
 
@@ -1632,7 +1637,7 @@ text-align: center;
 .mtbalenew td {
   min-width: 130px;
   max-width: 130px;
-  padding: 3px 10px; font-size: 14px;
+  padding: 6px 10px !important; font-size: 14px;
   text-align: left;
 
   overflow: hidden;
@@ -1887,7 +1892,7 @@ a:hover{color: #1fb0e5 !important; cursor: pointer;}
   background: #1fb0e5; color: #fff !important;
 }
 .mtbalenew input[type=text]:focus{border: 1px solid #1fb0e5 !important;}
-.pagination-container{margin-top: 5px !important; z-index: 0;}
+.pagination-container{margin-top: 5px !important; z-index: 0; position: relative;}
 .nav-pills .nav-link.active, .nav-pills .show>.nav-link{
   background: #1fb0e5 !important;
 border-radius: .5rem;
@@ -1907,7 +1912,7 @@ color: #fff !important;
   color: #6c757d;
   font-size: .875rem !important;
   font-weight: 400 !important;
-  height: 40px;
+  height: 34px !important;
   padding: .55rem .9rem !important;
 }
 .indexdesign {

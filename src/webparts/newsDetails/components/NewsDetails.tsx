@@ -317,7 +317,7 @@ const NewsdetailsContext = ({ props }: any) => {
                 UserName: initialComments[i].UserName,
                 AuthorId: initialComments[i].AuthorId,
                 Comments: initialComments[i].Comments,
-                Created: new Date(initialComments[i].Created).toLocaleString(), // Formatting the created date
+                Created: initialComments[i].Created, // Formatting the created date
                 UserLikesJSON: result1.length > 0 ? likeArray : []
                 , // Default to empty array if null
                 UserCommentsJSON:
@@ -475,7 +475,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
         Comments: ress.data.Comments,
 
-        Created: new Date(ress.data.Created).toLocaleString(),
+        Created:ress.data.Created,
 
         UserLikesJSON: [],
 
@@ -937,8 +937,8 @@ const NewsdetailsContext = ({ props }: any) => {
                               >
 
 
-                                <FontAwesomeIcon style={{ float: 'left', margin: "7px 6px 0px 0px" }} icon={faPaperPlane} />
-                                {loading ? 'Submitting...' : 'Add Comment'} {/* Change button text */}
+                                <FontAwesomeIcon style={{ float: 'left', margin: "7px 0px 0px 6px" }} icon={faPaperPlane} />
+                                {loading ? 'Submitting...' : 'Post'} {/* Change button text */}
 
                               </button>
                             </div>

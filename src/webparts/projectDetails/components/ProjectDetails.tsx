@@ -350,7 +350,7 @@ ApICallData();
                 UserName: initialComments[i].UserName,
                 AuthorId: initialComments[i].AuthorId,
                 Comments: initialComments[i].Comments,
-                Created: new Date(initialComments[i].Created).toLocaleString(), // Formatting the created date
+                Created: initialComments[i].Created, // Formatting the created date
                 UserLikesJSON: result1.length > 0 ? likeArray : []
                 , // Default to empty array if null
                 UserCommentsJSON:
@@ -508,7 +508,7 @@ if (projectDetails ) {
           UserName: ress.data.UserName,
           AuthorId: ress.data.AuthorId,
           Comments: ress.data.Comments,
-          Created: new Date(ress.data.Created).toLocaleString(),
+          Created: ress.data.Created,
           UserLikesJSON: [],
           UserCommentsJSON: [],
           userHasLiked: false, // Initialize as false

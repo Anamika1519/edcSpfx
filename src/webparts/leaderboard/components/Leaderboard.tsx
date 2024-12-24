@@ -593,7 +593,7 @@ const LeaderboardContext = ({ props }: any) => {
                             >
                               <thead>
                                 <tr>
-                                  <th style={{ verticalAlign: 'top', minWidth:'50px',maxWidth:'50px' }}>Sr. No</th> {/* Header for Sr. No */}
+                                  <th style={{ verticalAlign: 'top', minWidth:'50px',maxWidth:'50px' }}>S.No</th> {/* Header for Sr. No */}
                                   <th style={{ minWidth:'110px',maxWidth:'110px'}}>
                                     <div className="d-flex flex-column bd-highlight ">
                                       <div className="d-flex pb-2" style={{ justifyContent: "space-evenly" }}>
