@@ -187,11 +187,12 @@ display: -webkit-box;
 }
 #myHeader .dropdown #myDropdown{background: transparent !important; box-shadow: none !important;}
 .mtable th #myDropdown{cursor: pointer;}
-#myDropdownBell .heightlist{height: 350px;overflow-y: auto;overflow-x: hidden; padding: 10px;}
+.heightlist .text-dark{color: #000; font-weight: 600;}
+#myDropdownBell .heightlist{height: 350px;overflow-y: auto;overflow-x: hidden; border-bottom: 1px solid #ccc; padding: 10px;}
 #myDropdownBell .heightlist .notify-item
-{border: 0px solid #ccc !important;}
+{border: 0px solid #ccc !important;border-bottom: 1px solid #ccc !important; border-radius: 0px !important;}
 #myDropdownBell .heightlist .notify-item:nth-child(even)
-{background: #efefef !important;}
+{background: #fff !important;}
 #myDropdownBell .flex {border-bottom: 1px solid #efefef; padding: 10px 10px 0px 10px; }
 a:hover, a:active {
   text-decoration: none !important;

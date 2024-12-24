@@ -598,7 +598,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                     file,
                                     _sp,
                                     "Documents",
-                                    "https://officeindia.sharepoint.com"
+                                    "https://alrostamanigroupae.sharepoint.com"
                                 );
                             }
                         } else {
@@ -770,7 +770,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                 file,
                                 _sp,
                                 "Documents",
-                                "https://officeindia.sharepoint.com"
+                                "https://alrostamanigroupae.sharepoint.com"
                             );
                         }
                     }
@@ -1149,7 +1149,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                             let listID = SiteUrl.toLowerCase().includes('alrostmani') ? listIDAl : '1e0eead0-ed78-4b4d-92dc-4cd058deac82';
 
                             let img1 = imageData && imageData.fileName ? `${SiteUrl}/_api/v2.1/sites('${siteId}')/lists('${listID}')/items('${item.ID}')/attachments('${imageData.fileName}')/thumbnails/0/c400x400/content?prefer=noredirect%2Cclosestavailablesize` : ""
-                            let img = imageData && imageData.serverRelativeUrl ? `https://officeindia.sharepoint.com${imageData.serverRelativeUrl}` : img1
+                            let img = imageData && imageData.serverRelativeUrl ? `https://alrostamanigroupae.sharepoint.com${imageData.serverRelativeUrl}` : img1
                             const imageUrl = imageData
                                 ? img
                                 : require("../../webparts/businessApps/assets/userimg.png");

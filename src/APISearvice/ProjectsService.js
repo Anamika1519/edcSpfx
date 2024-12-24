@@ -37,9 +37,12 @@ let arggroups =[]
 export const fetchprojectdataTop = async (_sp) => {
   let arr = []
    console.log("first sexcute this and ")
-  await _sp.web.lists.getByTitle("ARGProject").items.select("*,TeamMembers/ID,TeamMembers/EMail,TeamMembers/Title").expand("TeamMembers").orderBy("Modified", false).top(3)().then(async(res) => {
-    console.log("checking the data of project---->>>", res);
+   let userID= ''
+   await _sp.web.currentUser().then((res) => {console.log(res);userID = res["Id"];})
 
+  await _sp.web.lists.getByTitle("ARGProject").items.select("*,TeamMembers/ID,TeamMembers/EMail,TeamMembers/Title , AuthorId , ProjectStatus").expand("TeamMembers").filter(`(AuthorId eq '${userID}' and ProjectStatus eq 'Ongoing') or TeamMembers/ID eq '${userID}'`).orderBy("Modified", false).top(3)().then(async(res) => {
+    console.log("checking the data of project---->>>", res);
+  
     //res.filter(x=>x.Category?.Category==str)
     for (var i = 0; i < res.length; i++) {
       const ARGProjectComment= await _sp.web.lists.getByTitle("ARGProjectComments").items.filter(`ARGProjectId eq ${res[i].Id}`)();
