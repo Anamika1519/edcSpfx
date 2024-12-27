@@ -1346,7 +1346,7 @@ const HelloWorldContext = ({ props }: any) => {
                                 role="tab"
                                 tabIndex={-1}
                               >
-                                Ongoing Projects
+                                Ongoing 
                               </a>
                             </li>
                             <li className="nav-item" role="presentation">
@@ -1389,15 +1389,15 @@ const HelloWorldContext = ({ props }: any) => {
                   {/* Map through the projects array and display a card for each */}
                   {loading ? (<div className="loadernewadd">
                     <div>
-                      <img style={{ width: '60px' }}
+                      <img 
                         src={require("../../../CustomAsset/birdloader.gif")}
                         className="alignrightl"
                         alt="Loading..."
                       />
                     </div>
-                    <span>Loading </span>{" "}
+                    <span style={{fontWeight:'400'}}>Loading </span>{" "}
                     <span>
-                      <img style={{ width: '35px' }}
+                      <img 
                         src={require("../assets/argloader.gif")}
                         className="alignrightbird"
                         alt="Loading..."
@@ -1493,23 +1493,23 @@ const HelloWorldContext = ({ props }: any) => {
                                   </p> */}
 
                                     {/* Task info */}
-                                    <p style={{ display: 'flex', gap: '10px' }} className="mb-1  text-muted font-12">
+                                    <p style={{ display: 'flex', gap: '10px' }} className="mb-1 mt-2  text-muted font-12">
                                       <span
 
-                                        className="pe-2 text-nowrap mb-1 d-inline-block"
+                                        className="pe-2 text-nowrap mb-1 text-muted d-inline-block"
                                       >
 
-                                        <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} />     <b>
+                                        <img className="newimg1" src={require("../assets/docunew.png")}  />     
                                           {/* {project?.ProjectsDocsId?.length} */}
-                                          {project?.FileCount}
-                                        </b> Documents
+                                          <span className="text-infonew">  {project?.FileCount}  </span>
+                                        Documents
                                       </span>
                                       <span
 
-                                        className="text-nowrap mb-1 d-inline-block"
+                                        className="text-nowrap text-muted mb-1 d-inline-block"
                                       >
 
-                                        <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />  <b>{project.CommentsCount || 0}</b> Comments
+                                        <img className="newimg2" src={require("../assets/commnew.png")}  /> {project.CommentsCount || 0}  Comments
                                       </span>
                                     </p>
                                     <div
@@ -1698,23 +1698,23 @@ const HelloWorldContext = ({ props }: any) => {
                                         "No description available..."}{" "}
 
                                     </p>
-                                    <p className="mb-1 text-muted font-12">
+                                    <p className="mb-1 mt-2 text-muted font-12">
                                       <span
 
-                                        className="pe-2 text-nowrap mb-1 d-inline-block"
+                                        className="pe-2 text-nowrap text-muted mb-1 d-inline-block"
                                       >
 
-                                        <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} />     <b>
+                                        <img className="newimg1" src={require("../assets/docunew.png")} />     <span className="text-infonew">
                                           {/* {project?.ProjectsDocsId?.length} */}
                                           {project?.FileCount}
-                                        </b> Documents
+                                        </span> Documents
                                       </span>
                                       <span
 
-                                        className="text-nowrap mb-1 d-inline-block"
+                                        className="text-nowrap text-muted mb-1 d-inline-block"
                                       >
 
-                                        <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />   <b>{project.CommentsCount || 0}</b> Comments
+                                        <img className="newimg2" src={require("../assets/commnew.png")} />   <span className="text-warningnew">{project.CommentsCount || 0}</span> Comments
                                       </span>
                                     </p>
 
@@ -1934,23 +1934,23 @@ const HelloWorldContext = ({ props }: any) => {
                                     </p>
 
                                     {/* Task info */}
-                                    <p style={{ display: 'flex', gap: '10px' }} className="mb-1 text-muted font-12">
+                                    <p style={{ display: 'flex', gap: '10px' }} className="mb-1 mt-2 text-muted font-12">
                                       <span
 
-                                        className="pe-2 text-nowrap mb-1 d-inline-block"
+                                        className="pe-2 text-nowrap text-muted mb-1 d-inline-block"
                                       >
 
-                                        <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} /> <b>
+                                        <img className="newimg1" src={require("../assets/docunew.png")} /> 
                                           {/* {project?.ProjectsDocsId?.length} */}
-                                          {project?.FileCount}
-                                        </b> Documents
+                                          <span className="text-infonew">  {project?.FileCount} </span>
+                                           Documents
                                       </span>
                                       <span
 
-                                        className="text-nowrap mb-1 d-inline-block"
+                                        className="text-nowrap text-muted mb-1 d-inline-block"
                                       >
 
-                                        <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />    <b>{project.CommentsCount || 0}</b> Comments
+                                        <img className="newimg2" src={require("../assets/commnew.png")}  /> {project.CommentsCount || 0} Comments
                                       </span>
                                     </p>
                                     <div
@@ -2054,11 +2054,11 @@ const HelloWorldContext = ({ props }: any) => {
             )}
             {activeTab === "profile1" && (
               <div className="row mt-3">
-                <div className="container">
+                <div className="">
                   {/* Map through the projects array and display a card for each */}
                   {loading ? (<div className="loadernewadd">
                     <div>
-                      <img style={{ width: '60px' }}
+                      <img 
                         src={require("../../../CustomAsset/birdloader.gif")}
                         className="alignrightl"
                         alt="Loading..."
@@ -2066,9 +2066,9 @@ const HelloWorldContext = ({ props }: any) => {
                     </div>
                     <span>Loading </span>{" "}
                     <span>
-                      <img style={{ width: '35px' }}
+                      <img style={{  }}
                         src={require("../assets/argloader.gif")}
-                        className="alignrightl"
+                        className="alignrightbird"
                         alt="Loading..."
                       />
                     </span>
@@ -2158,23 +2158,23 @@ const HelloWorldContext = ({ props }: any) => {
 
                                     </p>
 
-                                    <p className="mb-1 font-12">
+                                    <p className="mb-1 mt-2 font-12">
                                       <span
 
                                         className="pe-2 text-muted text-nowrap mb-1 d-inline-block"
                                       >
 
-                                        <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} />  <b>
+                                        <img className="newimg1" src={require("../assets/docunew.png")}  />  <span  className="text-infonew">
                                           {/* {project?.ProjectsDocsId?.length} */}
                                           {project?.FileCount}
-                                        </b> Documents
+                                        </span> Documents
                                       </span>
                                       <span
 
-                                        className="text-nowrap mb-1 d-inline-block"
+                                        className="text-nowrap text-muted mb-1 d-inline-block"
                                       >
-                                        <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />
-                                        <b>{project.CommentsCount || 0}</b> Comments
+                                        <img className="newimg2" src={require("../assets/commnew.png")}  />
+                                        <span  className="text-warningnew">{project.CommentsCount || 0}</span> Comments
                                       </span>
                                     </p>
                                     {/* Task info */}
@@ -2342,7 +2342,7 @@ const HelloWorldContext = ({ props }: any) => {
                   {/* Map through the projects array and display a card for each */}
                   {loading ? (<div className="loadernewadd">
                     <div>
-                      <img style={{ width: '60px' }}
+                      <img 
                         src={require("../../../CustomAsset/birdloader.gif")}
                         className="alignrightl"
                         alt="Loading..."
@@ -2350,9 +2350,9 @@ const HelloWorldContext = ({ props }: any) => {
                     </div>
                     <span>Loading </span>{" "}
                     <span>
-                      <img style={{ width: '35px' }}
+                      <img 
                         src={require("../assets/argloader.gif")}
-                        className="alignrightl"
+                        className="alignrightbird"
                         alt="Loading..."
                       />
                     </span>
@@ -2444,23 +2444,23 @@ const HelloWorldContext = ({ props }: any) => {
 
                                     </p>
 
-                                    <p className="mb-1 font-12">
+                                    <p className="mb-1 mt-2 font-12">
                                       <span
 
                                         className="pe-2 text-muted text-nowrap mb-1 d-inline-block"
                                       >
-                                        <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} />
-                                        <b>
+                                        <img className="newimg1" src={require("../assets/docunew.png")} />
+                                        <span  className="text-infonew">
                                           {/* {project?.ProjectsDocsId?.length} */}
                                           {project?.FileCount}
-                                        </b> Documents
+                                        </span> Documents
                                       </span>
                                       <span
 
-                                        className="text-nowrap mb-1 d-inline-block"
+                                        className="text-nowrap text-muted mb-1 d-inline-block"
                                       >
 
-                                        <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />   <b>{project.CommentsCount || 0}</b> Comments
+                                        <img className="newimg2" src={require("../assets/commnew.png")}  />   <span  className="text-warningnew">{project.CommentsCount || 0}</span> Comments
                                       </span>
                                     </p>
 
@@ -2625,7 +2625,7 @@ const HelloWorldContext = ({ props }: any) => {
                   {/* Map through the projects array and display a card for each */}
                   {loading ? (<div className="loadernewadd">
                     <div>
-                      <img style={{ width: '60px' }}
+                      <img 
                         src={require("../../../CustomAsset/birdloader.gif")}
                         className="alignrightl"
                         alt="Loading..."
@@ -2633,9 +2633,9 @@ const HelloWorldContext = ({ props }: any) => {
                     </div>
                     <span>Loading </span>{" "}
                     <span>
-                      <img style={{ width: '35px' }}
+                      <img 
                         src={require("../assets/argloader.gif")}
-                        className="alignrightl"
+                        className="alignrightbird"
                         alt="Loading..."
                       />
                     </span>
@@ -2728,23 +2728,23 @@ const HelloWorldContext = ({ props }: any) => {
 
                                       </p>
 
-                                      <p className="mb-1 text-muted font-12">
+                                      <p className="mb-1 mt-2 text-muted font-12">
                                         <span
 
-                                          className="pe-2 text-nowrap mb-1 d-inline-block"
+                                          className="pe-2 text-nowrap text-muted mb-1 d-inline-block"
                                         >
-                                          <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} />
-                                          <b>
+                                          <img className="newimg1" src={require("../assets/docunew.png")}  />
+                                          <span className="text-infonew">
                                             {/* {project?.ProjectsDocsId?.length} */}
                                             {project?.FileCount}
-                                          </b> Documents
+                                          </span> Documents
                                         </span>
                                         <span
 
-                                          className="text-nowrap mb-1 d-inline-block"
+                                          className="text-nowrap text-muted mb-1 d-inline-block"
                                         >
-                                          <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />
-                                          <b>{project.CommentsCount || 0}</b> Comments
+                                          <img className="newimg2" src={require("../assets/commnew.png")}  />
+                                          <span  className="text-warningnew">{project.CommentsCount || 0}</span> Comments
                                         </span>
                                       </p>
 
@@ -2973,14 +2973,14 @@ const HelloWorldContext = ({ props }: any) => {
 
                           //               className="pe-2 text-nowrap mb-1 d-inline-block"
                           //             >
-                          //               <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} />
+                          //               <img className="newimg1" src={require("../assets/docunew.png")} style={{ width: "12px" }} />
                           //               <b>{project?.ProjectsDocsId?.length}</b> Documents
                           //             </span>
                           //             <span
 
                           //               className="text-nowrap mb-1 d-inline-block"
                           //             >
-                          //               <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />
+                          //               <img className="newimg2" src={require("../assets/commnew.png")} style={{ width: "12px" }} />
                           //               <b>{project.CommentsCount || 0}</b> Comments
                           //             </span>
                           //           </p>
@@ -3221,23 +3221,23 @@ const HelloWorldContext = ({ props }: any) => {
                                       "No description available..."}{" "}
 
                                   </p>
-                                  <p className="mb-1 text-muted font-12">
+                                  <p className="mb-1 mt-2 text-muted font-12">
                                     <span
 
-                                      className="pe-2 text-nowrap mb-1 d-inline-block"
+                                      className="pe-2 text-nowrap text-muted mb-1 d-inline-block"
                                     >
-                                      <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} />
-                                      <b>
+                                      <img className="newimg1" src={require("../assets/docunew.png")}  />
+                                      <span  className="text-infonew">
                                         {/* {project?.ProjectsDocsId?.length} */}
                                         {project?.FileCount}
-                                      </b> Documents
+                                      </span> Documents
                                     </span>
                                     <span
 
-                                      className="text-nowrap mb-1 d-inline-block"
+                                      className="text-nowrap text-muted mb-1 d-inline-block"
                                     >
-                                      <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />
-                                      <b>{project.CommentsCount || 0}</b> Comments
+                                      <img className="newimg2" src={require("../assets/commnew.png")}  />
+                                      <span  className="text-warningnew">{project.CommentsCount || 0}</span> Comments
                                     </span>
                                   </p>
 

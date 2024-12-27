@@ -73,10 +73,12 @@
     margin-left: auto;
     position: absolute;
     top: 23px;
+    transition: transform .2s; /* Animation */
     width: 1.8rem ;cursor: pointer;
     background: #fff;
     border-radius: 1000px;
 }
+.alignright:hover{transform: scale(1.1);}
     .mtable th{position: relative;} 
     .mtable td{
         padding: 6px 10px !important;
@@ -147,16 +149,14 @@
     font-weight: bold;
     border-radius: 50%;
 }
-
+.alignrightl{width: 90px; margin-bottom: 20px; margin-top: 5px;}
 .product-price-tag {
     display: inline-block;
     padding: 8px;
     font-size: 12px;
     text-align: center;
 }
-.loadernewadd{color: #1fb0e5;display: block !important; text-align: center; font-size: 18px;gap: 0px;font-weight: 700;justify-content: center;
-    align-items: center;vertical-align: middle;}
-  .alignrightl{width: 50px; margin-top: 5px;}
+
 .posnew {
     background-color: #cce7dc;
     font-weight: 600;
@@ -299,7 +299,8 @@ input::-webkit-inner-spin-button {
   
   #s4-workspace{overflow-y: auto !important;}
 }
-.mtbalenew td{padding: 8px 10px !important;}
+.mtbalenew td{padding: 12px 10px !important;}
+.btn-secondary{padding: 8px 15px !important;}
 @media(max-width: 768px)
 {
 

@@ -451,7 +451,7 @@ const MediaMastercontext = ({ props }: any) => {
                                     maxWidth: "50px",
                                   }}
                                 >
-                               <div className='indexdesign'> {startIndex + index + 1}</div>     
+                               <div style={{marginLeft:'28px'}} className='indexdesign'> {startIndex + index + 1}</div>     
                                 </td>
                                 <td style={{
                                     minWidth: "110px",

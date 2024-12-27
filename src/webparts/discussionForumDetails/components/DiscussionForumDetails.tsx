@@ -1265,7 +1265,7 @@ alt="Check"
                                //</div> onClick={(e: any) => openModal(e)}
                                >
                                 {/* <FilePlus size={14} /> <span className="docu"> Documents</span> */}
-                                <FilePlus style={{marginTop:'0px'}} />  Documents <span>[{files.length}]</span>
+                                <FilePlus style={{marginTop:'0px'}} />  Documents <span style={{top:'13px'}} className="likecount1">{files.length}</span>
                               </span>
                             </div>
                             <div style={{cursor:"auto"}} className="tabcss mb-2 mt-2 me-1 newalign">
@@ -1753,7 +1753,7 @@ alt="Check"
                                       <p className="text-dark font-14 text-center mb-0">Responses & Replies</p>
 
                                     </div>
-                                    <span className="likecount">{commentCount}</span>
+                                    <span style={{top:'0px'}} className="likecount">{commentCount}</span>
 
 
                                   </div>

@@ -1721,7 +1721,7 @@ useEffect(()=>{
                  
                 >
                   {/* <FilePlus />  Documents */}
-                  <FilePlus style={{marginTop:'-2px'}} />  Documents <span>[{files.length}]</span>
+                  <FilePlus style={{marginTop:'-2px'}} />  Documents <span style={{top:'13px'}} className="likecount1">{files.length}</span> 
              
                 </button>
                         </div>

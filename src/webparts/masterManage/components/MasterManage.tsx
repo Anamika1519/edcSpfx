@@ -175,6 +175,20 @@ export const MastersettingContext = ({ props }: any) => {
       [name]: value,
     }));
   };
+
+  // Function to check the URL and show an alert
+function checkUrlForMembershipGroupId() {
+  const currentUrl = window.location.href;
+  const pattern = /_layouts\/15\/people\.aspx\?MembershipGroupId=32/;
+
+  if (pattern.test(currentUrl)) {
+    alert("Match found: MembershipGroupId=32");
+  }
+}
+
+// Call the function
+checkUrlForMembershipGroupId();
+
   return (
 
     <div id="wrapper" ref={elementRef}>
@@ -209,6 +223,42 @@ export const MastersettingContext = ({ props }: any) => {
                       </div>)
                     }) : (<div>Access Denied</div>)
                 }
+                {/* {
+  IsUserAlllowed ? (
+    settingArray.map((item: any) => {
+      const ImageUrl = item.ImageIcon == undefined || item.ImageIcon == null ? "" : JSON.parse(item.ImageIcon);
+      return (
+        <div className="col-sm-3 col-md-3 mt-2">
+          <div
+            className="card-master box1"
+            onClick={() => {
+              const iframe = document.createElement("iframe");
+              iframe.src = item?.LinkUrl;
+              iframe.style.width = "100%";
+              iframe.style.height = "600px"; // Adjust height as needed
+              iframe.style.border = "none";
+
+              const container = document.getElementById("iframeContainer");
+              container.innerHTML = ""; // Clear previous content
+              container.appendChild(iframe);
+            }}
+          >
+            <div className="icon">
+              <img src={ImageUrl?.serverUrl + ImageUrl?.serverRelativeUrl} alt="Icon" />
+            </div>
+            <p className="text-dark">{item.Title}</p>
+          </div>
+        </div>
+      );
+    })
+  ) : (
+    <div>Access Denied</div>
+  )
+}
+
+
+<div id="iframeContainer" style={{ marginTop: '20px' }}></div> */}
+
               </div>
               {/* <>
 

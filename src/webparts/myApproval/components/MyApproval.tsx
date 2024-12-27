@@ -739,10 +739,7 @@ const MyApprovalContext = ({ props }: any) => {
             case "Blog":
               sessionkey = "blogId";
               redirecturl =
-                `${siteUrl}/SitePages/Blogs.aspx` +
-                "?requestid=" +
-                Item?.Id +
-                "&mode=" + mode;
+                `${siteUrl}/SitePages/BlogDetails.aspx?` +Item?.ContentId;
               break;
           default:
         }

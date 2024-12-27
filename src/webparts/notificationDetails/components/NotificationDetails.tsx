@@ -138,28 +138,28 @@ const NotificationDetailsContext = ({ props }: any) => {
               <div className="notification-container">
                 <div className="row">
                   <div className="col-xl-3 col-lg-6 notification-sidebar">
-                    <div className="posinfixed">
+                    <div style={{position:'sticky', top:'90px'}} className="">
                     <div className="list-group list-group-flush font-15">
                       <a
 
                         onClick={() => handleTodayactiveTab()}
                         className={`list-group-item ${TodayactiveTab === true ? "active" : ""}`}
                       >
-                        <i className="fe-bell icon"></i> New Notification
+           <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="bx bx-bell desktoView dropcssBell"  style={{position:'relative'}}><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg> New Notification
                       </a>
                       <a
 
                         onClick={() => handlePreviousactiveTab()}
                         className={`list-group-item ${PreviousactiveTab === true ? "active" : ""}`}
                       >
-                        <i className="fe-bell icon"></i> Last 7 Days Notification
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="bx bx-bell desktoView dropcssBell"  style={{position:'relative'}}><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg> Last 7 Days Notification
                       </a>
                       <a
 
                         onClick={() => handleOldactiveTab()}
                         className={`list-group-item ${OldactiveTab === true ? "active" : ""}`}
                       >
-                        <i className="fe-bell icon"></i> Old Notification
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="bx bx-bell desktoView dropcssBell" style={{position:'relative'}}><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg> Old Notification
                       </a>
                     </div>
                     </div>
@@ -171,7 +171,8 @@ const NotificationDetailsContext = ({ props }: any) => {
                           <div className="card-body p-0">
                             <div className="inbox-widget">
                               <div className="simplebar-content">
-                                <h3 className="font-20">Today Notifications</h3> {/* Heading for the active tab */}
+                                {/* <h3 className="font-20">Today Notifications</h3> */}
+                                 {/* Heading for the active tab */}
                                 
 
                                 {TodayNotificationArray != null && TodayNotificationArray.length > 0 && TodayNotificationArray.map((notification) => (
@@ -184,7 +185,9 @@ const NotificationDetailsContext = ({ props }: any) => {
                                         } />
                                       </div>
                                       <div className="inbox-item-details">
-                                        <p className="inbox-item-author">{notification?.ActionUser?.Title}</p>
+                                        <p className="inbox-item-author mb-1"><span className="me-4"> {notification?.ActionUser?.Title} </span>  <span className="text-info font-12">
+                                        {moment(notification.Created).fromNow()}
+                                      </span></p>
                                         <p className="inbox-item-text text-muted mb-1">
                                           {notification.ContentName}
                                         </p>
@@ -192,11 +195,9 @@ const NotificationDetailsContext = ({ props }: any) => {
 
                                       </div>
                                     </div>
-                                    <p className="inbox-item-date me-3">
-                                      <a href="#" className="text-info font-13">
-                                        {moment(notification.Created).fromNow()}
-                                      </a>
-                                    </p>
+                                    {/* <p className="inbox-item-date me-3">
+                                     
+                                    </p> */}
                                   </div>
                                 ))}
 
@@ -215,7 +216,9 @@ const NotificationDetailsContext = ({ props }: any) => {
                           <div className="card-body p-0">
                             <div className="inbox-widget">
                               <div className="simplebar-content">
-                                <h3 className="font-20">Previous Notifications</h3> {/* Heading for the active tab */}
+                                {/* <h3 className="font-20">Previous Notifications</h3>  */}
+                                
+                                {/* Heading for the active tab */}
                       
                                 {lastSevenDaysNotificationArray != null && lastSevenDaysNotificationArray.length > 0 && lastSevenDaysNotificationArray.map((notification) => (
                                   <div className="inbox-item" key={notification.Id} style={{ justifyContent: 'space-between' }}>
@@ -227,7 +230,9 @@ const NotificationDetailsContext = ({ props }: any) => {
                                         } />
                                       </div>
                                       <div className="inbox-item-details">
-                                        <p className="inbox-item-author">{notification?.ActionUser?.Title}</p>
+                                        <p className="inbox-item-author mb-1"><span className="me-4">{notification?.ActionUser?.Title}</span>  <span style={{fontWeight:'400'}} className="text-info font-12">
+                                        {moment(notification.Created).fromNow()}
+                                      </span></p>
                                         <p className="inbox-item-text text-muted mb-1">
                                           {notification.ContentName}
                                         </p>
@@ -235,11 +240,7 @@ const NotificationDetailsContext = ({ props }: any) => {
 
                                       </div>
                                     </div>
-                                    <p className="inbox-item-date me-3">
-                                      <a href="#" className="text-info font-13">
-                                        {moment(notification.Created).fromNow()}
-                                      </a>
-                                    </p>
+                                  
                                   </div>
                                 ))}
                             
@@ -257,7 +258,9 @@ const NotificationDetailsContext = ({ props }: any) => {
                         <div className="card-body p-0">
                           <div className="inbox-widget">
                             <div className="simplebar-content">
-                              <h3 className="font-20">Old Notifications</h3> {/* Heading for the active tab */}
+                              {/* <h3 className="font-20">Old Notifications</h3>  */}
+                              
+                              {/* Heading for the active tab */}
                         
                             
                               {OlderNotificationArray != null && OlderNotificationArray.length > 0 && OlderNotificationArray.map((notification) => (
@@ -271,7 +274,9 @@ const NotificationDetailsContext = ({ props }: any) => {
                                         } />
                                     </div>
                                     <div className="inbox-item-details">
-                                      <p className="inbox-item-author">{notification?.ActionUser?.Title}</p>
+                                      <p className="inbox-item-author mb-1"> <span className="me-4"> {notification?.ActionUser?.Title} </span>  <span  className="text-info font-12">
+                                    {moment(notification.Created).fromNow()}
+                                    </span></p>
                                       <p className="inbox-item-text text-muted mb-1">
                                         {notification.ContentName}
                                       </p>
@@ -279,11 +284,9 @@ const NotificationDetailsContext = ({ props }: any) => {
 
                                     </div>
                                   </div>
-                                  <p className="inbox-item-date me-3">
-                                    <a href="#" className="text-info font-13">
-                                    {moment(notification.Created).fromNow()}
-                                    </a>
-                                  </p>
+                                  {/* <p className="inbox-item-date me-3">
+                                  
+                                  </p> */}
                                 </div>
                               ))}
                             </div>

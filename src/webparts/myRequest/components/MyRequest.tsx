@@ -792,10 +792,10 @@ const MyRequestContext = ({ props }: any) => {
             sessionkey = "mediaId";
             redirecturl = `${siteUrl}/SitePages/MediaGalleryForm.aspx` + "?requestid=" + Item?.Id + "&mode=view";
             break;
-            case "Blog":
-            sessionkey = "blogId";
-            redirecturl = `${siteUrl}/SitePages/Blogs.aspx` + "?requestid=" + Item?.Id + "&mode=view";
-            break;
+            case "Blogs":
+              sessionkey = "blogId";
+              redirecturl = `${siteUrl}/SitePages/BlogDetails.aspx?` +Item?.ContentID;
+              break;
           default: ;
         }
 
@@ -1562,7 +1562,7 @@ const MyRequestContext = ({ props }: any) => {
                                     >
 
                                       {/* {item.RequestID} */}
-                                      {activeTab == "Automation" ? item?.ProcessName : item?.SourceName}_{item?.ContentID}
+                                      {activeTab == "Automation" ? item?.RequestID : item?.SourceName_item?.ContentID}
 
                                     </td>
                                     <td

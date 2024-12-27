@@ -543,7 +543,7 @@ const EntityMastercontext = ({ props }: any) => {
 
                               >
 
-                                <div style={{marginLeft:'10px'}} className='indexdesign'> {startIndex + index + 1}</div>
+                                <div style={{marginLeft:'20px'}} className='indexdesign'> {startIndex + index + 1}</div>
 
                               </td>
 

@@ -93,18 +93,27 @@
     padding: 15px 20px;
  
     color: #6b6b6b;
-    background-color: #f7f9fb;
+    background-color: #f7fbfc;
     border: none; font-size: 14px;
     border-radius: 60px;
-    margin-bottom: 10px;
+    margin-bottom: 10px; font-weight: 600 !important;
     transition: all 0.3s ease; /* Smooth transition on hover and active state */
   }
   .notification-sidebar .list-group-item:hover{background-color:#959b95 !important; color: #fff !important;}
-  
+  .notification-sidebar .list-group-item svg{
+    position: relative;
+    float: left;
+    vertical-align: sub;
+    /* font-size: 13px !important; */
+    width: 18px !important;
+    margin-top: 0px;
+    margin-right: 5px;
+    height: 18px !important;
+  }
   /* Active tab styles */
   .notification-sidebar .list-group-item.active {
     background-color: #fff;
-    color: #007bff;
+    color: #1fb0e5;
     
   }
   
@@ -174,8 +183,8 @@
   
   /* Notification timestamp link styling */
   .inbox-item-date a {
-    font-size: 13px;
-    color: #0d6efd;
+    font-size: 14px;
+    color: #1fb0e5;
   }
   
   /* Hover effect on notification link */
@@ -186,8 +195,8 @@
   /* Styling for active list item */
   .list-group-item.active {
     background-color: #f0f0f0;
-    color: #007bff;
-    font-weight: bold;
+    color: #1fb0e5;
+    font-weight: 500;
   }
   
   /* Highlighted state for a notification */

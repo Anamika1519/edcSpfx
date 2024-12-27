@@ -39,6 +39,8 @@ import { WorkflowAuditHistory } from "../../../CustomJSComponents/WorkflowAuditH
 import { WorkflowAction } from "../../../CustomJSComponents/WorkflowAction/WorkflowAction";
 // import { getApprovalConfiguration, getLevel } from "../../../APISearvice/ApprovalService";
 import Multiselect from "multiselect-react-dropdown";
+import { Modal } from 'react-bootstrap';
+
 // import { CONTENTTYPE_Media, LIST_TITLE_ContentMaster, LIST_TITLE_MediaGallery, LIST_TITLE_MyRequest } from '../../../Shared/Constants';
 import { AddContentLevelMaster, AddContentMaster, getApprovalConfiguration, getLevel, UpdateContentMaster } from '../../../APISearvice/ApprovalService';
 
@@ -47,6 +49,7 @@ const BlogsContext = ({ props }: any) => {
   const sp: SPFI = getSP();
   const { useHide }: any = React.useContext(UserContext);
   const elementRef = React.useRef<HTMLDivElement>(null);
+  const [modeValue, setmode] = React.useState(null);
   const [rows, setRows] = React.useState<any>([]);
   const [formData, setFormData] = React.useState({
     topic: "",
@@ -183,6 +186,7 @@ const BlogsContext = ({ props }: any) => {
 
     if (event.target.files && event.target.files.length > 0) {
       const files = Array.from(event.target.files);
+      (event.target as HTMLInputElement).value = '';
 
       if (libraryName === "Docs") {
         const docFiles = files.filter(
@@ -254,7 +258,9 @@ const BlogsContext = ({ props }: any) => {
             files: imageVideoFiles,
             libraryName: libraryName,
             docLib: docLib,
+            fileUrl:  URL.createObjectURL(imageVideoFiles[0])
           };
+         
           console.log("arr-->>>", arr)
           if (libraryName === "Gallery") {
             uloadImageFiles.push(arr);
@@ -266,7 +272,7 @@ const BlogsContext = ({ props }: any) => {
                   ID: 0,
                   Createdby: "",
                   Modified: "",
-                  fileUrl: "",
+                  fileUrl:  URL.createObjectURL(ele),
                   fileSize: ele.size,
                   fileType: ele.type,
                   fileName: ele.name,
@@ -281,7 +287,7 @@ const BlogsContext = ({ props }: any) => {
                   ID: 0,
                   Createdby: "",
                   Modified: "",
-                  fileUrl: "",
+                  fileUrl: URL.createObjectURL(ele),
                   fileSize: ele.size,
                   fileType: ele.type,
                   fileName: ele.name,
@@ -394,14 +400,14 @@ const BlogsContext = ({ props }: any) => {
   };
   const dismissModal = () => {
     const modalElement = document.getElementById('discussionModal');
-    
+   
     // Remove Bootstrap classes and attributes manually
     modalElement.classList.remove('show');
     modalElement.style.display = 'none';
     modalElement.setAttribute('aria-hidden', 'true');
     modalElement.removeAttribute('aria-modal');
     modalElement.removeAttribute('role');
-  
+ 
     // Optionally, remove the backdrop if it was added manually
     const modalBackdrop = document.querySelector('.modal-backdrop');
     if (modalBackdrop) {
@@ -428,53 +434,53 @@ const BlogsContext = ({ props }: any) => {
   };
 
   const handleClick = async (contentId: number, contentName: any, EntityId: number) => {
-  
+ 
     //  console.log("Creating approval hierarchy with data:", rows);
-  
+ 
       let boolval = false
-  
+ 
       for (let i = 0; i < rows.length; i++) {
-  
+ 
         const userIds = rows[i].approvedUserListupdate.map((user: any) => user.id);
-  
+ 
         let arrPost = {
           LevelSequence: i + 1,
           ContentId: contentId,
-  
+ 
           ContentName: "ARGBlogs",
-  
+ 
           EntityMasterId: EntityId,
-  
+ 
           ARGLevelMasterId: rows[i].LevelId,
-  
+ 
           ApproverId: userIds,
-  
+ 
           ApprovalType: rows[i].selectionType == "All" ? 1 : 0,
-  
+ 
           SourceName: contentName
-  
+ 
         }
-  
+ 
         const addedData = await AddContentLevelMaster(sp, arrPost)
-  
+ 
         //console.log("created content level master items", addedData);
-  
-  
+ 
+ 
       }
-  
+ 
       boolval = true
-  
+ 
       return boolval;
-  
+ 
       // Process rows data, e.g., submit to server or save to SharePoint list
-  
+ 
       // Add your submit logic here
-  
+ 
     };
 
   const handleFormSubmit = async () => {
     if (validateForm()) {
-      
+     
         Swal.fire({
           title: "Are you sure you want to submit this blog?",
           showConfirmButton: true,
@@ -596,7 +602,7 @@ const BlogsContext = ({ props }: any) => {
          // //////######### changes ############  ////////////
 
                   let arr = {
-         
+                       Title:formData.topic,
                        ContentID: postId,
          
                        ContentName: "ARGBlogs",
@@ -680,12 +686,12 @@ const BlogsContext = ({ props }: any) => {
         const postResult = await addItem(postPayload, sp);
         const postId = postResult?.data?.ID;
         debugger;
-        
+       
         if (!postId) {
           console.error("Post creation failed.");
           return;
         } else {
-          
+         
           //sessionStorage.removeItem("announcementId");
           setTimeout(() => {
             dismissModal()
@@ -754,9 +760,49 @@ const BlogsContext = ({ props }: any) => {
         }, 2000);
       }
     });
-  
+ 
   }
 };
+
+//#region clearFileInput
+const clearFileInput = (name: any) => {
+
+  const input = document.querySelector(`input[name=${name}]`) as HTMLInputElement;
+  if (input) {
+    input.value = ''; // Clears the selected files
+  }
+  else if (input == null) {
+    input.value = ''; // Clears the selected files
+  }
+};
+//#endregion
+
+//#region deleteLocalFile
+const deleteLocalFile = (index: number, filArray: any[], name: string) => {
+  debugger
+  console.log(filArray, 'filArray');
+
+  // Remove the file at the specified index
+  filArray.splice(index, 1);
+  console.log(filArray, 'filArray');
+
+  // Update the state based on the title
+  if (name === "bannerimg") {
+    setBannerImagepostArr([...filArray]);
+    filArray[0].files.length > 0 ? "" : setShowModal(false); clearFileInput(name);
+  } else if (name === "Gallery") {
+    setImagepostArr1([...filArray]);
+    filArray[0].files.length > 0 ? "" : setShowModal(false); clearFileInput(name);
+  } else {
+    setDocumentpostArr1([...filArray]);
+    filArray[0].files.length > 0 ? "" : setShowModal(false); clearFileInput(name);
+  }
+  // Clear the file input
+
+};
+
+
+//#endregion
   const handleCancel = () => {
     debugger;
     window.location.href =
@@ -781,31 +827,31 @@ const BlogsContext = ({ props }: any) => {
     else if(name == "entity"){
 
        //ARGApprovalConfiguration
-      
+     
             const rowData: any[] = await getApprovalConfiguration(sp, Number(value)) //baseUrl
-      
+     
             const initialRows = rowData.map((item: any) => ({
-      
+     
               id: item.Id,
-      
+     
               Level: item.Level.Level,
-      
+     
               LevelId: item.LevelId,
-      
+     
               approvedUserListupdate: item.Users.map((user: any) => ({
-      
+     
                 id: user.ID,
-      
+     
                 name: user.Title,
-      
+     
                 email: user.EMail
-      
+     
               })),
-      
+     
               selectionType: 'All' // default selection type, if any
-      
+     
             }));
-      
+     
             setRows(initialRows);
 
     }
@@ -887,7 +933,7 @@ const BlogsContext = ({ props }: any) => {
 
   return (
     <div id="wrapper" ref={elementRef}>
-    <div 
+    <div
       className="app-menu"
       id="myHeader">
       <VerticalSideBar _context={sp} />
@@ -911,7 +957,7 @@ const BlogsContext = ({ props }: any) => {
                           <option>{item.Category}</option>
                         }):""
                       }
-                      
+                     
                     </select>
                   </div> */}
                   {/* <label className="me-2">From</label>
@@ -1026,7 +1072,7 @@ const BlogsContext = ({ props }: any) => {
                                             BnnerImagepostArr.length > 0 &&
                                             BnnerImagepostArr != undefined
                                             ? BnnerImagepostArr.length == 1 && (
-                                              <a style={{ fontSize: "0.875rem" }}>
+                                              <a style={{ fontSize: "0.875rem" }} onClick={() =>setShowModalFunc(true, "bannerimg")}>
                                                 <FontAwesomeIcon
                                                   icon={faPaperclip}
                                                 />
@@ -1181,140 +1227,140 @@ const BlogsContext = ({ props }: any) => {
 
 
                                {
-                              
+                             
                                             rows != null && rows.length > 0  && (
-                              
+                             
                                               <div className="container mt-2">
-                              
+                             
                                                 <div className="card cardborder p-4">
-                              
+                             
                                                   <div className="font-16">
-                              
+                             
                                                     <strong>Approval Hierarchy</strong>
-                              
+                             
                                                   </div>
-                              
-                                                  
-                              
-                              
+                             
+                                                 
+                             
+                             
                                                   <div className="d-flex flex-column">
-                              
+                             
                                                    
-                              
+                             
                                       {/* /////////changes/////////// */}
                                                     {rows.map((row: any) => (
-                              
+                             
                                                       <div className="row mb-2" key={row.id}>
-                              
+                             
                                                         <div className="col-12 col-md-5">
-                              
+                             
                                                           <label htmlFor={`Level-${row.id}`} className="form-label">
-                              
+                             
                                                             Select Level
-                              
+                             
                                                           </label>
-                              
+                             
                                                           <select
-                              
+                             
                                                             className="form-select"
-                              
+                             
                                                             id={`Level-${row.id}`}
-                              
+                             
                                                             name="Level"
-                              
+                             
                                                             value={row.LevelId}
                                                             disabled={true}
-                              
-                              
+                             
+                             
                                                             onChange={(e) => {
-                              
+                             
                                                               const selectedLevel = e.target.value;
-                              
+                             
                                                               setRows((prevRows: any) =>
-                              
+                             
                                                                 prevRows.map((r: any) =>
-                              
+                             
                                                                   r.id === row.id
-                              
+                             
                                                                     ? { ...r, LevelId: selectedLevel }
-                              
+                             
                                                                     : r
-                              
+                             
                                                                 )
-                              
+                             
                                                               );
-                              
+                             
                                                             }}
-                              
+                             
                                                           >
-                              
+                             
                                                             <option value="">Select</option>
-                              
+                             
                                                             {levels.map((item: any) => (
-                              
+                             
                                                               <option key={item.Id} value={item.Id}>
-                              
+                             
                                                                 {item.Level}
-                              
+                             
                                                               </option>
-                              
+                             
                                                             ))}
-                              
+                             
                                                           </select>
-                              
+                             
                                                         </div>
-                              
-                              
+                             
+                             
                                                         <div className="col-12 col-md-5">
-                              
+                             
                                                           <label htmlFor={`approver-${row.id}`} className="form-label">
-                              
+                             
                                                             Select Approver
-                              
+                             
                                                           </label>
-                              
+                             
                                                           <Multiselect
-                              
+                             
                                                             options={row.approvedUserList}
-                              
+                             
                                                             selectedValues={row.approvedUserListupdate}
-                              
+                             
                                                             onSelect={(selected) => handleUserSelect(selected, row.id)}
-                              
+                             
                                                             onRemove={(selected) => handleUserSelect(selected, row.id)}
-                              
+                             
                                                             displayValue="name"
                                                             disable={true}
                                                             placeholder=''
                                                             hidePlaceholder={true}
-                              
+                             
                                                           />
-                              
+                             
                                                         </div>
-                              
-                              
-                                                        
-                              
+                             
+                             
+                                                       
+                             
                                                       </div>
-                              
+                             
                                                     ))}
-                              
+                             
                                                   </div>
-                              
-                              
-                                                  
-                              
+                             
+                             
+                                                 
+                             
                                                 </div>
-                              
+                             
                                               </div>
-                              
+                             
                                             )
-                              
-                                  
-                              
+                             
+                                 
+                             
                                           }
-                              
-        
+                             
+       
 
                                           {/* /////////changes/////////// */}
 
@@ -1470,6 +1516,105 @@ const BlogsContext = ({ props }: any) => {
                       </div>
                     </div>
                   </div>
+
+                   {/* Modal to display uploaded files */}
+            <Modal show={showModal} onHide={() => setShowModal(false)} size='lg' >
+              <Modal.Header closeButton>
+                {DocumentpostArr1.length > 0 && showDocTable && <Modal.Title>Documents</Modal.Title>}
+                {ImagepostArr1.length > 0 && showImgModal && <Modal.Title>Gallery Images/Videos</Modal.Title>}
+                {BnnerImagepostArr.length > 0 && showBannerModal && <Modal.Title>Banner Images</Modal.Title>}
+              </Modal.Header>
+              <Modal.Body className="scrollbar" id="style-5">
+
+                {DocumentpostArr1.length > 0 && showDocTable &&
+                  (
+                    <>
+                      <table className="table table-bordered" style={{ fontSize: '0.75rem' }}>
+                        <thead style={{ background: '#eef6f7' }}>
+                          <tr>
+                            <th>Serial No.</th>
+                            <th>File Name</th>
+                            <th>File Size</th>
+                            <th className='text-center'>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {DocumentpostArr1.map((file: any, index: number) => (
+                            <tr key={index}>
+                              <td className='text-center'>{index + 1}</td>
+                              <td>{file.fileName.replace("/sites/intranetUAT", "")}</td>
+                              <td className='text-right'>{file.fileSize}</td>
+                              <td className='text-center'> <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, DocumentpostArr1, "docs")} /> </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table></>
+                  )
+                }
+                {ImagepostArr1.length > 0 && showImgModal &&
+                  (
+                    <>
+                      <table className="table table-bordered" style={{ fontSize: '0.75rem' }}>
+                        <thead style={{ background: '#eef6f7' }}>
+                          <tr>
+                            <th>Serial No.</th>
+                            <th> Image </th>
+                            <th>File Name</th>
+                            <th>File Size</th>
+                            {modeValue == 'null' && <th className='text-center'>Action</th>
+                            }
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {ImagepostArr1.map((file: any, index: number) => (
+                            <tr key={index}>
+                              <td className='text-center'>{index + 1}</td>
+                              <td>  <img className='imagefe' src={file.fileUrl ?file.fileUrl: `${siteUrl}/AnnouncementAndNewsGallary/${file.fileName}`}
+                              /></td>
+
+                              <td>{file.fileName}</td>
+                              <td className='text-right'>{file.fileSize}</td>
+                              {modeValue != 'view' && <td className='text-center'>
+                                <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, ImagepostArr1, "Gallery")} />
+
+                              </td>
+                              }
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table></>
+                  )}
+                {BnnerImagepostArr.length > 0 && showBannerModal &&
+                  (
+                    <>
+                      <table className="table table-bordered" style={{ fontSize: '0.75rem' }}>
+                        <thead style={{ background: '#eef6f7' }}>
+                          <tr>
+                            <th>Serial No.</th>
+                            <th>Image</th>
+                            <th>File Name</th>
+                            <th>File Size</th>
+                            <th className='text-center'>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {BnnerImagepostArr[0].files.map((file: any, index: number) => (
+                            <tr key={index}>
+                              <td className='text-center'>{index + 1}</td>
+                              <img src={BnnerImagepostArr[0].fileUrl?BnnerImagepostArr[0].fileUrl:`${siteUrl}/${file.name}`} />
+                              <td>{file.name}</td>
+                              <td className='text-right'>{file.size}</td>
+                              <td className='text-center'> <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, BnnerImagepostArr, "bannerimg")} /> </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table></>
+                  )}
+
+              </Modal.Body>
+
+            </Modal>
+            {/*  */}
                 </div>
               </div>
             </div>

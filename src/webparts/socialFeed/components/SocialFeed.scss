@@ -521,9 +521,11 @@ outline: none !important;  box-shadow: none !important;border: none !important; 
   left: 4rem;
   margin-left: auto;
   position: absolute;
+  transition: transform .2s; /* Animation */
   top: 23px;
   width: 1.8rem;cursor: pointer;
 }
+.alignright:hover{transform: scale(1.1);}
 .padd30px{padding-right: 69px;}
 
 .card-body {

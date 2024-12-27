@@ -21,11 +21,12 @@ import {
 } from "../../APISearvice/BlogService";
 import Multiselect from "multiselect-react-dropdown";
 import { CONTENTTYPE_Media, LIST_TITLE_ContentMaster, LIST_TITLE_Blogs, LIST_TITLE_MyRequest,CONTENTTYPE_Blogs } from '../../Shared/Constants';
-
+import { Modal } from 'react-bootstrap';
 import { AddContentLevelMaster, AddContentMaster, getApprovalConfiguration, getLevel, UpdateContentMaster,getMyRequestBlogPending } from '../../APISearvice/ApprovalService';
 
 
 const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
+    const siteUrl = SiteUrl;
     const [itemsToShow, setItemsToShow] = useState(5);
     const [copySuccess, setCopySuccess] = useState('');
     const [show, setShow] = useState(false)
@@ -40,6 +41,8 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
     const [Bookmarkblogs, setBookmarkblogs] = useState('');
     const [Bookmarkstatus, setBookmarkstatus] = useState('');
     const [EnityData, setEnityData] = React.useState([]);
+      const [modeValue, setmode] = React.useState(null);
+   
     const [ImagepostArr, setImagepostArr] = React.useState([]);
     const [ImagepostArr1, setImagepostArr1] = React.useState([]);
     const [BnnerImagepostArr, setBannerImagepostArr] = React.useState([]);
@@ -59,6 +62,10 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
     const [rows, setRows] = React.useState([]);
     const [levels, setLevel] = React.useState([]);
      const [ApprovalRequestItem, setApprovalRequestItem] = React.useState(null);
+      const [showModal, setShowModal] = React.useState(false);
+       const [showDocTable, setShowDocTable] = React.useState(false);
+       const [showImgModal, setShowImgTable] = React.useState(false);
+       const [showBannerModal, setShowBannerTable] = React.useState(false);
      
 
     const [formData, setFormData] = React.useState({
@@ -149,7 +156,16 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
     useEffect(() => {
         console.log("activeeee", activeTab);
         if (activeTab.toLowerCase() === "all") {
-            setFilteredBlogItems(blogData);
+            if(blogData.length >0){
+                 const filteredItems = blogData.filter(
+                (item) => item.Status === "Approved"
+            );
+             
+                 setFilteredBlogItems(filteredItems);
+            }
+           
+           // setFilteredBlogItems(blogData);
+         
         } else {
             // Find the selected category based on activeTab
             const selectedCategory = FilterOptions.find(
@@ -165,9 +181,21 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                    // console.log("currentEmailcurrentEmail", Bookmarkblogs)
                     setFilteredBlogItems(Bookmarkblogs);
                 } else {
-                    if (selectedCategory.Name == "Save as Draft" ||selectedCategory.Name == "Submitted"||selectedCategory.Name == "Rejected"||selectedCategory.Name == "Rejected" ||selectedCategory.Name == "Approved") {
+                    if (selectedCategory.Name == "Save as Draft") {
+                        const filteredItems = blogData.filter(
+                            (item) => item.Status === selectedCategory.Name && (item.Author.EMail == currentEmail || item.Editor.EMail == currentEmail)
+                        );
+                        setFilteredBlogItems(filteredItems);
+                    }
+                    else if (selectedCategory.Name == "Submitted"||selectedCategory.Name == "Rejected"||selectedCategory.Name == "Approved") {
                         const filteredItems = blogData.filter(
                             (item) => item.Status === selectedCategory.Name && item.Author.EMail == currentEmail
+                        );
+                        setFilteredBlogItems(filteredItems);
+                    }
+                    else if (selectedCategory.Name == "Rework") {
+                        const filteredItems = blogData.filter(
+                            (item) => (item.Status === selectedCategory.Name && item.Author.EMail == currentEmail)||item.WillReworkEdit ==true
                         );
                         setFilteredBlogItems(filteredItems);
                     }
@@ -204,7 +232,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
     useEffect(() => {
         ApIcall();
     }, []);
-    const FilterOptions = [{ id: 1, Name: "All", name: "All" },{ id: 2, Name: "Submitted", name: "Submitted" },
+    const FilterOptions = [{ id: 1, Name: "All", name: "All Published" },{ id: 2, Name: "Submitted", name: "Submitted" },
     //   { id: 3, Name: "Published", name: "Published" },
     { id: 3, Name: "Approved", name: "Approved" },
     { id: 4, Name: "Save as Draft", name: "Your Drafts" },{ id: 5, Name: "Rejected", name: "Rejected" },{ id: 6, Name: "Rework", name: "Rework" }, { id: 7, Name: "Bookmarked", name: "Bookmarked" }]
@@ -230,6 +258,26 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
 
     }
 // /**************changes**************** */
+const setShowModalFunc = (bol, name) => {
+    if (name == "bannerimg") {
+      setShowModal(bol);
+      setShowBannerTable(true);
+      setShowImgTable(false);
+      setShowDocTable(false);
+    } else if (name == "Gallery") {
+      setShowModal(bol);
+      setShowImgTable(true);
+      setShowBannerTable(false);
+      setShowDocTable(false);
+    } else {
+      setShowModal(bol);
+      setShowDocTable(true);
+      setShowBannerTable(false);
+      setShowImgTable(false);
+    }
+  };
+
+ 
     const handleClick = async (contentId, contentName, EntityId) => {
      
         //  console.log("Creating approval hierarchy with data:", rows);
@@ -436,6 +484,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
 
         if (event.target.files && event.target.files.length > 0) {
             const files = Array.from(event.target.files);
+            event.target.value = '';
             if (libraryName === "Gallery") {
                 setGalImageAdded(true);
             }
@@ -454,6 +503,8 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                         files: imageVideoFiles,
                         libraryName: libraryName,
                         docLib: docLib,
+                        name:imageVideoFiles[0].name,
+                        fileUrl:  URL.createObjectURL(imageVideoFiles[0])
                     };
                     // console.log("arr-->>>", arr)
                     if (libraryName === "Gallery") {
@@ -466,7 +517,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                     ID: 0,
                                     Createdby: "",
                                     Modified: "",
-                                    fileUrl: "",
+                                    fileUrl: URL.createObjectURL(ele),
                                     fileSize: ele.size,
                                     fileType: ele.type,
                                     fileName: ele.name,
@@ -481,7 +532,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                     ID: 0,
                                     Createdby: "",
                                     Modified: "",
-                                    fileUrl: "",
+                                    fileUrl: URL.createObjectURL(ele),
                                     fileSize: ele.size,
                                     fileType: ele.type,
                                     fileName: ele.name,
@@ -680,7 +731,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                  // //////######### changes ############  ////////////
                        
                                           let arr = {
-                                 
+                                              Title:formData.topic,
                                                ContentID: editID,
                                  
                                                ContentName: "ARGBlogs",
@@ -1304,7 +1355,12 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                                                                                         BnnerImagepostArr.length > 0 &&
                                                                                                         BnnerImagepostArr != undefined
                                                                                                         ? BnnerImagepostArr.length == 1 && (
-                                                                                                            <a style={{ fontSize: "0.875rem" }}>
+                                                                                                            <a style={{ fontSize: "0.875rem" }} onClick={() =>
+                                                                                                                setShowModalFunc(
+                                                                                                                    true,
+                                                                                                                    "bannerimg"
+                                                                                                                )
+                                                                                                            }>
                                                                                                                 <FontAwesomeIcon
                                                                                                                     icon={faPaperclip}
                                                                                                                 />
@@ -1657,6 +1713,8 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                                                                     </div>
                                                                 </div>
                                                             </div>
+
+                                                           
                                                         </div>
                                                     </div>
                                                     <div className="" style={{ position: 'relative' }}>
@@ -1698,6 +1756,105 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
                             <button onClick={() => handleLoadMore()} className="btn btn-primary mt-3">Load More</button>
                         </div>
                     )}
+
+                     {/* Modal to display uploaded files */}
+            <Modal show={showModal} onHide={() => setShowModal(false)} size='lg' >
+              <Modal.Header closeButton>
+                {DocumentpostArr1.length > 0 && showDocTable && <Modal.Title>Documents</Modal.Title>}
+                {ImagepostArr1.length > 0 && showImgModal && <Modal.Title>Gallery Images/Videos</Modal.Title>}
+                {BnnerImagepostArr.length > 0 && showBannerModal && <Modal.Title>Banner Images</Modal.Title>}
+              </Modal.Header>
+              <Modal.Body className="scrollbar" id="style-5">
+
+                {DocumentpostArr1.length > 0 && showDocTable &&
+                  (
+                    <>
+                      <table className="table table-bordered" style={{ fontSize: '0.75rem' }}>
+                        <thead style={{ background: '#eef6f7' }}>
+                          <tr>
+                            <th>Serial No.</th>
+                            <th>File Name</th>
+                            <th>File Size</th>
+                            <th className='text-center'>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {DocumentpostArr1.map((file, index) => (
+                            <tr key={index}>
+                              <td className='text-center'>{index + 1}</td>
+                              <td>{file.fileName.replace("/sites/intranetUAT", "")}</td>
+                              <td className='text-right'>{file.fileSize}</td>
+                              <td className='text-center'> <img src={require("../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, DocumentpostArr1, "docs")} /> </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table></>
+                  )
+                }
+                {ImagepostArr1.length > 0 && showImgModal &&
+                  (
+                    <>
+                      <table className="table table-bordered" style={{ fontSize: '0.75rem' }}>
+                        <thead style={{ background: '#eef6f7' }}>
+                          <tr>
+                            <th>Serial No.</th>
+                            <th> Image </th>
+                            <th>File Name</th>
+                            <th>File Size</th>
+                            {modeValue == 'null' && <th className='text-center'>Action</th>
+                            }
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {ImagepostArr1.map((file, index) => (
+                            <tr key={index}>
+                              <td className='text-center'>{index + 1}</td>
+                              <td>  <img className='imagefe' src={file.fileUrl ?file.fileUrl: `${siteUrl}/AnnouncementAndNewsGallary/${file.fileName}`}
+                              /></td>
+
+                              <td>{file.fileName}</td>
+                              <td className='text-right'>{file.fileSize}</td>
+                              {modeValue != 'view' && <td className='text-center'>
+                                <img src={require("../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, ImagepostArr1, "Gallery")} />
+
+                              </td>
+                              }
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table></>
+                  )}
+                {BnnerImagepostArr.length > 0 && showBannerModal &&
+                  (
+                    <>
+                      <table className="table table-bordered" style={{ fontSize: '0.75rem' }}>
+                        <thead style={{ background: '#eef6f7' }}>
+                          <tr>
+                            <th>Serial No.</th>
+                            <th>Image</th>
+                            <th>File Name</th>
+                            <th>File Size</th>
+                            <th className='text-center'>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {BnnerImagepostArr.map((file, index) => (
+                            <tr key={index}>
+                              <td className='text-center'>{index + 1}</td>
+                              <img src={BnnerImagepostArr[0].fileUrl?BnnerImagepostArr[0].fileUrl:`${file.serverUrl}${file.serverRelativeUrl}`} />
+                              <td>{file.name}</td>
+                              <td className='text-right'>{file.size}</td>
+                              <td className='text-center'> <img src={require("../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, BnnerImagepostArr, "bannerimg")} /> </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table></>
+                  )}
+
+              </Modal.Body>
+
+            </Modal>
+            {/*  */}
 
                 </div>
                 {/* {itemsToShow < blogData.length && (

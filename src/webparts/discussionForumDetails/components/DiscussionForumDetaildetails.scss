@@ -316,6 +316,9 @@ opacity: 1;
 .close-btn:hover {
   color: red;
 }
+.tabcss:hover img{
+  filter: brightness(0) invert(1);
+}
 .likecount{ background: #d2effa;
   color: #1fb0e5;
   font-size: 20px;

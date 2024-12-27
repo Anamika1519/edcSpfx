@@ -1961,7 +1961,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                           <div className="col-sm-2 txtr">
 
-                            <PlusCircle onClick={() => addFollowedGroup(user)} size={20} color='#008751' />
+                            <PlusCircle onClick={() => addFollowedGroup(user)} className='newhoverzom' size={20} color='#008751' />
 
                           </div>
 

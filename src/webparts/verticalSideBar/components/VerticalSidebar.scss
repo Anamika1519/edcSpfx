@@ -16,7 +16,10 @@
   font-size: 14px;
   font-weight: 500;
   padding: 10px 20px;
+  position: relative;
 }
+.newhoverzom{  transition: transform .2s; /* Animation */}
+.newhoverzom:hover{ transform: scale(1.5); cursor: pointer;}
 .activenew{background: #fff !important; color: #1fb0e5 !important;}
 .newalign svg{vertical-align: text-top !important;}
 .page-title{
@@ -185,6 +188,16 @@ display: -webkit-box;
 .card-body{
   padding: 0.8rem !important;
 }
+.likecount1{ background: #1fb0e5;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 3px 10px;
+  position: absolute;
+  right: 20px;
+  border-radius: 5px; }
+  .text-infonew{color: rgba(33,37,41,.75) ; font-weight: 500;}
+  .text-warningnew{color: rgba(33,37,41,.75) ; font-weight: 500;}
 #myHeader .dropdown #myDropdown{background: transparent !important; box-shadow: none !important;}
 .mtable th #myDropdown{cursor: pointer;}
 .heightlist .text-dark{color: #000; font-weight: 600;}
@@ -1913,9 +1926,10 @@ color: #fff !important;
   color: #6c757d;
   font-size: .875rem !important;
   font-weight: 400 !important;
-  height: 34px !important;
+  height: 40px !important;
   padding: .55rem .9rem !important;
 }
+.mtbalenew .inputcss {height: 34px !important;}
 .indexdesign {
   background: #d2effa !important;
   border: none;

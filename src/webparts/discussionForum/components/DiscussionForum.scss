@@ -1,5 +1,5 @@
 .inputcss {
-  height: 40px;
+  height: 40px !important;
   color: #6c757d;
   padding: .55rem .9rem !important;
   font-size: .875rem !important;
@@ -141,7 +141,7 @@ input.form-control.inputcss {
 .showNews {
   display: block;
 }
-.mtbalenew th{padding: 10px !important;}
+.mtbalenew th{padding:12px 10px !important;}
 .bordertesth:hover{text-decoration: underline;}
 .rounded-circlecss {
   border-radius: 50% !important;

@@ -1184,14 +1184,14 @@ const SocialFeedContext = ({ props }: any) => {
 
                           </span>{" "}
 
-                          Followers ({followwerLength})
+                          Followers <span style={{top:'11px'}} className="likecount1">{followwerLength}</span>  
 
                         </div>{" "}
 
                         <div className={`tabcss mb-2 mt-2 me-1 ${activeMainTab === "following" ? "activenew" : ""
 
                           }`} onClick={() => handleTabClick("following")} style={{ cursor: "pointer" }} >
-                          <span><Users /> </span> Following ({followingLength})</div>
+                          <span><Users /> </span> Following <span style={{top:'11px'}} className="likecount1">{followingLength}</span></div>
 
                       </div>
 
@@ -2081,7 +2081,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                           <div className="col-sm-2 txtr">
 
-                            <PlusCircle className='hovertext' size={20} color='#008751' onClick={(e) => follow(e, user.ID)} />
+                            <PlusCircle className='hovertext newhoverzom' size={20} color='#008751' onClick={(e) => follow(e, user.ID)} />
 
                           </div>
 

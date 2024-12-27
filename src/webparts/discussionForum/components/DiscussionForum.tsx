@@ -1392,7 +1392,7 @@ const DiscussionForumContext = ({ props }: any) => {
                     type="button"
                     data-bs-toggle="modal"
                     data-bs-target="#discussionModal"
-                    className="btn font-12 btn-secondary waves-effect waves-light"
+                    className="btn font-14 btn-secondary waves-effect waves-light"
                   >
                     <i className="fe-plus-circle"></i> Start New Discussion
                   </button>

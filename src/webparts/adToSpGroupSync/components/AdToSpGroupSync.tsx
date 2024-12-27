@@ -33,16 +33,46 @@ export default class AdToSpGroupSync extends React.Component<IAdToSpGroupSyncPro
   }
 
   // Fetch Azure AD Groups and SharePoint Groups on Mount
+  // async componentDidMount() {
+  //   try {      
+      
+  //     const adGroups = await this._graph.groups.filter("securityEnabled eq true")();      
+  //     const spGroups = await this._sp.web.siteGroups();
+  //     alert(adGroups.length)
+  //     this.setState({
+  //       adGroups: adGroups.map(group => ({ key: group.id, text: group.displayName })),
+  //       spGroups: spGroups.map(group => ({ key: group.Id, text: group.Title })),
+  //     });
+  //   } catch (error) {
+  //     console.error("Error fetching groups:", error);
+  //   }
+  // }
   async componentDidMount() {
     try {      
-      
-      const adGroups = await this._graph.groups.filter("securityEnabled eq true")();      
-      const spGroups = await this._sp.web.siteGroups();
-      alert(adGroups.length)
+      let adGroups=[];
+      let _adGroups = await this._graph.groups.filter("securityEnabled eq true").top(999).paged();      
+      // Add the members from the first page
+      adGroups.push(..._adGroups.value);
+ 
+      // Continue fetching while there are more pages
+      while (_adGroups.hasNext) {
+        _adGroups = await _adGroups.next();
+        adGroups.push(..._adGroups.value);
+      }
+ 
+ 
+      const spGroups = await this._sp.web.siteGroups.top(5000)();
+      //alert(adGroups.length)
       this.setState({
         adGroups: adGroups.map(group => ({ key: group.id, text: group.displayName })),
         spGroups: spGroups.map(group => ({ key: group.Id, text: group.Title })),
       });
+      console.log("Ad group count",adGroups.length);
+ 
+ 
+      console.log("Sp group count",spGroups.length);
+ 
+ 
     } catch (error) {
       console.error("Error fetching groups:", error);
     }
@@ -218,12 +248,15 @@ export default class AdToSpGroupSync extends React.Component<IAdToSpGroupSyncPro
     const { adGroups, spGroups, adGroupUsers, status } = this.state;
 
     return (
-      <div>
+      <div >
+                <span style={{ marginTop: '106px' }}>Total number of AD groups retreived:{adGroups.length}</span>
+
         <Dropdown
           placeholder="Select Azure AD Group"
           options={adGroups}
           onChange={(e, option) => this.setState({ selectedADGroup: option?.key as string })}
         />
+        <span>Total number of SP groups retreived:{spGroups.length}</span>
         <Dropdown
           placeholder="Select SharePoint Group"
           options={spGroups}
