@@ -114,6 +114,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
   const [Listusersitem, setListUsersArr] = useState<any[]>([]);
   const [usersitemcopy, setUsersitemcopy] = useState<any[]>([]);
   const [M365User, setM365User] = useState<any[]>([]);
+  const [AllusersInfolist, setAllusersInfolist] = useState<any[]>([]);
   const [firsttenusers, setfirsttenusers] = useState<any[]>([]);
   const [iconenable, seticonenable] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -175,12 +176,15 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
   const [isFollowing, setIsFollowing] = useState(false); // Track follow status for each user
 
+  const ApiCall = async () => {
 
+    fetchUserInformationList("onload");
+  }
   React.useEffect(() => {
     graph = graphfi().using(graphSPFx(props.context));
     console.log("This function is called only once", useHide);
+    ApiCall();
 
-    fetchUserInformationList("onload");
 
     //fetchAllUsers("onload");
 
@@ -391,7 +395,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
     try {
 
       const currentUser = await sp.web.currentUser();
-      setM365User(await getAllGroupMembers("onload"));
+
       let mypinnedusers: any[] = [];
       const pinRecordsnew = await sp.web.lists.getByTitle("ARGPinned").items
         .filter(`PinnedById eq ${currentUser.Id}`)
@@ -404,10 +408,11 @@ const CorporateDirectoryContext = ({ props }: any) => {
       let finalquery = mypinnedusers.map((x) => x).join(' or ');
       const strfilter = mypinnedusers.length > 0 ? `EMail ne null and ID ne ${currentUser.Id}  and ContentType eq 'Person' and (${finalquery})`
         : `EMail ne null and ID ne ${currentUser.Id} and ContentType eq 'Person'`
-      console.log(finalquery, 'finalquery', strfilter);
+
       // Fetch the user list, excluding the current user
       let nextLink: string | null = null;
       let userListSP: any[] = [];
+      console.log(finalquery, 'finalquery', strfilter, "tetttt", userListSP);
       if (loadVar == "onload") {
         setLoading(true);
         userListSP = await sp.web.lists
@@ -416,7 +421,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
           .select("ID", "Title", "EMail", "Department", "JobTitle", "Picture", "MobilePhone", "WorkPhone", "Name")
           .filter(strfilter)
           .orderBy("Id", false)
-          .top(10)
+          .top(4)
           ();
         let userrr = await sp.web.lists
           .getByTitle("User Information List")
@@ -424,23 +429,38 @@ const CorporateDirectoryContext = ({ props }: any) => {
           .select("ID", "Title", "EMail", "Department", "JobTitle", "Picture", "MobilePhone", "WorkPhone", "Name")
           .filter(`EMail ne null and ID ne ${currentUser.Id} and ContentType eq 'Person'`)
           .orderBy("Id", false)
-          .top(10 - userListSP.length)
+          .top(16 - userListSP.length)
           ();
+        let userrrall = await sp.web.lists
+          .getByTitle("User Information List")
+          .items
+          .select("ID", "Title", "EMail", "Department", "JobTitle", "Picture", "MobilePhone", "WorkPhone", "Name")
+          .filter(`EMail ne null and ID ne ${currentUser.Id} and ContentType eq 'Person'`)
+          .orderBy("Id", false)
+          .top(5000)
+          ();
+        setAllusersInfolist(userrrall);
+        console.log("userListSP nnn", userListSP, userrr, userrrall);
         userListSP = [...userListSP, ...userrr];
       }
-      else {
+      else if (loadVar == "loadmore") {
+        debugger
         setLoading(true);
         if (usersitem.length > 0) {
-          const smallest = usersitem.reduce((min, item) => (item.ID < min.ID ? item : min), usersitem[0]);
+          let usersitemnew = usersitem.filter((res) => res.pinstatus == false)
+          const smallest = usersitemnew.reduce((min, item) => (item.ID < min.ID ? item : min), usersitemnew[0]);
+
           setSmallestRecord(smallest);
-          userListSP = await sp.web.lists
-            .getByTitle("User Information List")
-            .items
-            .select("ID", "Title", "EMail", "Department", "JobTitle", "Picture", "MobilePhone", "WorkPhone", "Name")
-            .filter(`ContentType eq 'Person' and EMail ne null and ID ne ${currentUser.Id} and ID lt ${smallest.ID}`)
-            .orderBy("Id", false)
-            .top(10)
-            ();
+          // userListSP = await sp.web.lists
+          //   .getByTitle("User Information List")
+          //   .items
+          //   .select("ID", "Title", "EMail", "Department", "JobTitle", "Picture", "MobilePhone", "WorkPhone", "Name")
+          //   .filter(`ContentType eq 'Person' and EMail ne null and ID ne ${currentUser.Id} and ID lt ${smallest.ID}`)
+          //   .orderBy("Id", false)
+          //   .top(16)
+          //   ();
+          userListSP = AllusersInfolist.filter((x) => x.ID < smallest.ID && x.ID >= (smallest.ID - 16));
+          console.log("smallest", smallest, userListSP, usersitem);
         }
 
       }
@@ -459,27 +479,47 @@ const CorporateDirectoryContext = ({ props }: any) => {
       // //Adding dummy companies to users for testing
       // //m265userList.value=m265userList.value.map((m:any)=>{let x=m; x['companyName']='dunnycommpany'; return x;});
       // //.filter(`userPrincipalName eq '${currentUser.Email}'`)
-
-      // console.log("m265userList", m265userList);
       let userList: any[] = [];
       let AlluserList: any[] = [];
-      userList = userListSP.map(usr => {
-        let musrs = M365User.filter((usr1: any) => { return toLower(usr1.userPrincipalName) == toLower(usr.EMail) });
-        if (musrs.length > 0) {
-          usr['companyName'] = musrs[0]['companyName'];
-          usr['JobTitle'] = musrs[0]['jobTitle'];
-          usr['WorkPhone'] = musrs[0]['mobilePhone'];
-          usr['Department'] = musrs[0]['department'];
-          usr['Title'] = musrs[0]['displayName'];
-          usr['EMail'] = musrs[0]['userPrincipalName'];
-        }
-        else usr['companyName'] = 'NA';
-        return usr;
-      });
+      if (loadVar == "onload") {
+        let allusersAD = await getAllGroupMembers("onload").then((response) => {
+          setM365User(response)
+
+          userList = userListSP.map(usr => {
+            let musrs = response.filter((usr1: any) => { return toLower(usr1.userPrincipalName) == toLower(usr.EMail) });
+            if (musrs.length > 0) {
+              usr['companyName'] = musrs[0]['companyName'];
+              usr['JobTitle'] = musrs[0]['jobTitle'];
+              usr['WorkPhone'] = musrs[0]['mobilePhone'];
+              usr['Department'] = musrs[0]['department'];
+              usr['Title'] = musrs[0]['displayName'];
+              usr['EMail'] = musrs[0]['userPrincipalName'];
+            }
+            else usr['companyName'] = 'NA';
+            return usr;
+          });
+        });
+      } else {
+        userList = userListSP.map(usr => {
+          let musrs = M365User.filter((usr1: any) => { return toLower(usr1.userPrincipalName) == toLower(usr.EMail) });
+          if (musrs.length > 0) {
+            usr['companyName'] = musrs[0]['companyName'];
+            usr['JobTitle'] = musrs[0]['jobTitle'];
+            usr['WorkPhone'] = musrs[0]['mobilePhone'];
+            usr['Department'] = musrs[0]['department'];
+            usr['Title'] = musrs[0]['displayName'];
+            usr['EMail'] = musrs[0]['userPrincipalName'];
+          }
+          else usr['companyName'] = 'NA';
+          return usr;
+        });
+      }
+      console.log("m265userList", M365User);
+
       //userList = userListSP;
       console.log("userListuserList", userList, userListSP);
       //sort by title
-      userList = sortArray(userList, (a: any, b: any) => a.Title.toLowerCase().localeCompare(b.Title.toLowerCase()));
+      //userList = sortArray(userList, (a: any, b: any) => a.Title.toLowerCase().localeCompare(b.Title.toLowerCase()));
       const initialLoadingStatus: Record<number, boolean> = {};
       const initialFollowStatus: Record<number, boolean> = {};
       const initialPinStatus: Record<number, boolean> = {};
@@ -540,10 +580,11 @@ const CorporateDirectoryContext = ({ props }: any) => {
           .getAll();
         user.postCount = postData.length > 0 ? postData.length : 0;
       };
-      let users = usersitemcopy.length > 0 ? usersitemcopy.concat(userList) : userList;
+      //let users = usersitemcopy.length > 0 ? usersitemcopy.concat(userList) : userList;
       // Fetch details for each user in parallel
-
-      const userDetailsPromises = users.map(async (user) => {
+      //users = sortArray(users, (a: any, b: any) => a.Title.toLowerCase().localeCompare(b.Title.toLowerCase()));
+      userList = [...usersitem, ...userList];
+      const userDetailsPromises = userList.map(async (user) => {
         initialLoadingStatus[user.ID] = true;  // Set loading to true initially
         await fetchUserDetails(user);  // Fetch the user details (follow status and posts)
         initialLoadingStatus[user.ID] = false;  // Set loading to false after fetc
@@ -559,18 +600,29 @@ const CorporateDirectoryContext = ({ props }: any) => {
       setLoading(false);
 
       console.log("allusersbefore", usersitem, usersitemcopy, userList);
-
+      //const uniqueArray = userList.filter((item, index) => userList.indexOf(item) === index);
+      //userList = uniqueArray;
+      //userList = sortArray(userList, (a: any, b: any) => a.Title.toLowerCase().localeCompare(b.Title.toLowerCase()));
+      const uniqueArray = userList.filter((value, index, self) =>
+        index === self.findIndex((t) => (
+          t.Id === value.Id
+        ))
+      )
+      //let newUniquearray = [...Uniquearray]
+      userList = uniqueArray;
       if (loadVar == "onload") {
         let sortedData = [...userList].sort((a, b) => {
           return a.pinstatus === b.pinstatus ? 0 : a.pinstatus ? -1 : 1;
         });
-        allusersnew = userList;
+        //allusersnew = userList;
         setfirsttenusers(sortedData);
         setUsersArr(sortedData);
       }
       else {
-        allusersnew = [...usersitemcopy, ...userList];
-        let sortedData = [...allusersnew].sort((a, b) => {
+        // allusersnew = [...usersitem, ...userList];
+        //userList = sortArray(userList, (a: any, b: any) => a.Title.toLowerCase().localeCompare(b.Title.toLowerCase()));
+        //allusersnew = userList;
+        let sortedData = [...userList].sort((a, b) => {
           return a.pinstatus === b.pinstatus ? 0 : a.pinstatus ? -1 : 1;
         });
         setUsersArr(sortedData);
@@ -603,208 +655,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
     //alert(`All member of AD ${allMembers.length}`)
     return allMembers;
   }
-  const fetchAllUsers = async (loadVar: any) => {
 
-    try {
-
-      const currentUser = await sp.web.currentUser();
-      let Allusersnew = await sp.web.lists
-        .getByTitle("User Information List")
-        .items
-        .select("ID", "Title", "EMail", "Department", "JobTitle", "Picture", "MobilePhone", "WorkPhone", "Name")
-        .filter(`ContentType eq 'Person' and EMail ne null and ID ne ${currentUser.Id}`)
-        .orderBy("Id", false).top(5000)
-
-        ();
-      console.log("uuuuuu", Allusersnew);
-
-      let currentWPContext: WebPartContext = props.context;
-      const msgraphClient: MSGraphClientV3 = await currentWPContext.msGraphClientFactory.getClient('3');
-      let AlluserList: any[] = [];
-      AlluserList = Allusersnew;
-      // AlluserList = Allusersnew.map(async usr => {
-      //   msgraphClient.api("users")
-      //     .version("v1.0")
-      //     .filter(`mail eq '${usr.EMail}'`)
-      //     .select("displayName,mail,jobTitle,mobilePhone,companyName,userPrincipalName,mobile,department,officeLocation")
-      //     .get().then((rer)=>{
-      //       if (rer.value.length > 0) {
-      //         usr['companyName'] = rer.value[0]['companyName'];
-      //       }
-      //       else usr['companyName'] = 'NA';
-      //       return usr;
-      //     });
-      // });
-      //sort by title
-      console.log("AlluserListAlluserList", AlluserList)
-      AlluserList = sortArray(AlluserList, (a: any, b: any) => a.Title.toLowerCase().localeCompare(b.Title.toLowerCase()));
-      const initialLoadingStatus: Record<number, boolean> = {};
-      const initialFollowStatus: Record<number, boolean> = {};
-      const initialPinStatus: Record<number, boolean> = {};
-      // Function to fetch follow status and post count for each user
-      const fetchUserDetails1 = async (user: any) => {
-        const followRecords = await sp.web.lists.getByTitle("ARGFollows").items
-          .filter(`FollowerId eq ${currentUser.Id} and FollowedId eq ${user.ID}`)
-          .getAll();
-        const pinRecords = await sp.web.lists.getByTitle("ARGPinned").items
-          .filter(`PinnedById eq ${currentUser.Id} and PinnedId eq ${user.ID}`)
-          .getAll();
-        const MyPinnedCount = await sp.web.lists.getByTitle("ARGPinned").items
-          .filter(`PinnedById eq ${currentUser.Id}`)
-          .getAll();
-        console.log("MyPinnedCount", MyPinnedCount.length);
-        if (MyPinnedCount.length >= 4) {
-          setShowPin(true)
-        } else {
-          setShowPin(false)
-        }
-        const useris = await msgraphClient.api("users")
-          .version("v1.0")
-          .filter(`mail eq '${user.EMail}'`)
-          .select("displayName,mail,jobTitle,mobilePhone,companyName,userPrincipalName,mobile,department,officeLocation")
-          .get().then((rer) => {
-            if (rer.value.length > 0) {
-              user.companyName = rer.value[0]['companyName'];
-            }
-            else user.companyName = 'NA';
-
-          });
-        console.log("userisuseris", useris)
-        initialFollowStatus[user.ID] = followRecords.length > 0;
-        initialPinStatus[user.ID] = pinRecords.length > 0;
-        user.pinstatus = pinRecords.length > 0;
-        const followersCount = await sp.web.lists.getByTitle("ARGFollows").items
-          .filter(`FollowedId eq ${user.ID}`)
-          .select("Id")
-          .getAll();
-        const followingCount = await sp.web.lists.getByTitle("ARGFollows").items
-          .filter(`FollowerId eq ${user.ID}`)
-          .select("Id")
-          .getAll();
-        user.followersCount = followersCount.length;
-        user.followingCount = followingCount.length;
-        const postData = await sp.web.lists.getByTitle("ARGSocialFeed").items
-          .filter(`AuthorId eq ${user.ID}`)
-          .getAll();
-        user.postCount = postData.length > 0 ? postData.length : 0;
-      };
-      let users = AlluserList;
-      // Fetch details for each user in parallel
-
-      const userDetailsPromises = users.map(async (user) => {
-        initialLoadingStatus[user.ID] = true;  // Set loading to true initially
-        await fetchUserDetails1(user);  // Fetch the user details (follow status and posts)
-        initialLoadingStatus[user.ID] = false;  // Set loading to false after fetc
-      });
-
-      // Wait for all user details to be fetched
-      await Promise.all(userDetailsPromises);
-      // Update the state with the fetched data
-      setFollowStatus(initialFollowStatus);
-      setPinStatus(initialPinStatus);
-      console.log("allusersbefore", usersitem, usersitemcopy, AlluserList);
-      let sortedData = [...AlluserList].sort((a, b) => {
-        return a.pinstatus === b.pinstatus ? 0 : a.pinstatus ? -1 : 1;
-      });
-
-      setAllUsersArr(sortedData);
-
-      console.log("allusersallusers", AlluserList);
-    } catch (error) {
-
-      console.error("Error fetching users:", error);
-
-    }
-
-  };
-  const checkIfFollowing = async (item: any) => {
-
-
-    try {
-
-      const currentUser = await sp.web.currentUser();
-
-      const followRecords = await sp.web.lists.getByTitle("ARGFollows").items
-
-        .filter(`FollowerId eq ${item.ID} or FollowedId eq ${item.ID}`)();
-
-
-      debugger
-
-      console.log(followRecords);
-
-      if (followRecords.length) {
-
-        item.followstatus = true
-
-      }
-
-      else {
-
-        item.followstatus = false
-
-      }
-
-
-      setFollowStatus((prevStatus: any) => ({
-
-
-        [item.ID]: followRecords.length > 0 ? true : false,
-
-      }));
-
-      debugger
-
-      const followersCount = await sp.web.lists.getByTitle("ARGFollows").items
-
-        .filter(`FollowedId eq ${item.ID}`)
-
-        .select("Id")
-
-        .getAll();
-
-
-      const followingCount = await sp.web.lists.getByTitle("ARGFollows").items
-
-        .filter(`FollowerId eq ${item.ID}`)
-
-        .select("Id")
-
-        .getAll();
-
-      item.followersCount = followersCount.length
-
-      item.followingCount = followingCount.length
-
-      const postData = await sp.web.lists.getByTitle("ARGSocialFeed").items
-
-        .filter(`AuthorId eq ${item.ID}`)();
-
-      if (postData.length > 0) {
-
-        item.postCount = postData.length;
-
-      }
-
-      else {
-
-        item.postCount = 0;
-
-      }
-
-
-      setFollowerCount(followersCount.length);
-
-      setUnfollowerCount(followingCount.length);
-
-
-    } catch (error) {
-
-      console.error("Error checking follow status:", error);
-
-    }
-
-  };
 
 
   const [activeTab, setActiveTab] = useState<
@@ -860,7 +711,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
     }
     else {
       setActiveTab(tab);
-      setItemsToShow(9);
+      setItemsToShow(16);
       fetchUserInformationList("onload");
     }
 
@@ -1227,13 +1078,26 @@ const CorporateDirectoryContext = ({ props }: any) => {
         .items
         .select("ID", "Title", "EMail", "Department", "JobTitle", "Picture", "MobilePhone", "WorkPhone", "Name")
         .filter(`ContentType eq 'Person' and startswith(Title, '${txtSearch}')`)
-        .orderBy("ID", false).top(10)
+        .orderBy("ID", false).top(16)
         ();
       console.log("uuuuuu", Allusersnew, firsttenusers);
       let currentWPContext: WebPartContext = props.context;
       const msgraphClient: MSGraphClientV3 = await currentWPContext.msGraphClientFactory.getClient('3');
       //setUsersArr(Allusersnew);
       if (Allusersnew.length > 0) {
+        Allusersnew = Allusersnew.map(usr => {
+          let musrs = M365User.filter((usr1: any) => { return toLower(usr1.userPrincipalName) == toLower(usr.EMail) });
+          if (musrs.length > 0) {
+            usr['companyName'] = musrs[0]['companyName'];
+            usr['JobTitle'] = musrs[0]['jobTitle'];
+            usr['WorkPhone'] = musrs[0]['mobilePhone'];
+            usr['Department'] = musrs[0]['department'];
+            usr['Title'] = musrs[0]['displayName'];
+            usr['EMail'] = musrs[0]['userPrincipalName'];
+          }
+          else usr['companyName'] = 'NA';
+          return usr;
+        });
         setUsersArr(Allusersnew);
       } else {
         setUsersArr([]);
@@ -1408,11 +1272,12 @@ const CorporateDirectoryContext = ({ props }: any) => {
   }
 
   const loadMore = () => {
+    debugger
     event.preventDefault()
     event.stopImmediatePropagation()
 
 
-    setItemsToShow(itemsToShow + 9);
+    setItemsToShow(itemsToShow + 15);
     fetchUserInformationList("loadmore") // Increase the number by 8
   };
 
@@ -1752,7 +1617,9 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                   </p>
 
-                                  <h4 className="mt-2 mb-1">
+                                  <h4 style={{ whiteSpace: 'nowrap',
+                                        overflow:'hidden',
+                                        textOverflow:'ellipsis'}} className="mt-2 mb-1">
 
                                     <span
                                       //onClick={() => handleUserClick(item.ID, followStatus[item.ID])}
@@ -1764,7 +1631,10 @@ const CorporateDirectoryContext = ({ props }: any) => {
                                         textDecoration: "unset",
 
                                         fontSize: "20px",
-                                        whiteSpace: 'nowrap'
+                                        whiteSpace: 'nowrap',
+                                        overflow:'hidden',
+                                        textOverflow:'ellipsis'
+
                                       }}
 
                                     >
@@ -1784,7 +1654,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                     className="text-muted hovertext"
 
-                                    style={{ fontSize: "14px" }}
+                                    style={{ fontSize: "14px",height:'30px'}}
 
                                   >
 
@@ -1827,7 +1697,9 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                   </p>
                                   <p className="text-muted"
-                                    style={{ fontSize: "14px" }}
+                                    style={{ fontSize: "14px", whiteSpace: 'nowrap',
+                                      overflow:'hidden',
+                                      textOverflow:'ellipsis' }}
 
                                   >
                                     <span
@@ -1863,7 +1735,9 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                     className="text-muted"
 
-                                    style={{ fontSize: "11px" }}
+                                    style={{ fontSize: "11px", whiteSpace: 'nowrap',
+                                      overflow:'hidden',
+                                      textOverflow:'ellipsis' }}
 
                                   >
 
@@ -2081,7 +1955,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
                           </div> // end col
 
                         ))}
-                        {itemsToShow < usersitem.length && (
+                        {itemsToShow < AllusersInfolist.length && (
                           <div className="col-12 text-center mb-3 mt-3">
                             <button onClick={loadMore} className="btn btn-primary">
                               Load More
@@ -2121,7 +1995,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                 <tr>
 
-                                  <th style={{ minWidth: '50px', maxWidth: '50px' }}>
+                                  <th style={{ minWidth: '55px', maxWidth: '55px' }}>
 
                                     Connect
 
@@ -2626,9 +2500,9 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                           style={{
 
-                                            minWidth: "50px",
+                                            minWidth: "55px",
 
-                                            maxWidth: "50px", textAlign: 'center'
+                                            maxWidth: "55px", textAlign: 'center'
 
                                           }}
 
@@ -2674,9 +2548,13 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                         {/* <td>{item.ID}</td> */}
 
-                                        <td style={{ minWidth: '120px', maxWidth: '120px' }}>{item.EMail}</td>
-                                        <td style={{ minWidth: '100px', maxWidth: '100px' }}>{item.JobTitle}</td>
-                                        <td style={{ minWidth: '100px', maxWidth: '100px' }}>
+                                        <td style={{ minWidth: '120px', maxWidth: '120px' }} data-tooltip={item.EMail}>{item.EMail}</td>
+                                        <td style={{ minWidth: '100px', maxWidth: '100px' }} data-tooltip={item.JobTitle}>{item.JobTitle}</td>
+                                        <td style={{ minWidth: '100px', maxWidth: '100px' }} data-tooltip={item?.companyName != null
+
+                                          ? item?.companyName
+
+                                          : "NA"}>
                                           {item?.companyName != null
 
                                             ? item?.companyName
@@ -2686,7 +2564,11 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                         </td>
 
-                                        <td style={{ minWidth: '100px', maxWidth: '100px' }}>
+                                        <td style={{ minWidth: '100px', maxWidth: '100px' }} data-tooltip={item?.Department != null
+
+                                          ? item?.Department
+
+                                          : "NA"}>
 
                                           {item?.Department != null
 
@@ -2696,7 +2578,11 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                         </td>
 
-                                        <td style={{ minWidth: '100px', maxWidth: '100px' }}>
+                                        <td style={{ minWidth: '100px', maxWidth: '100px' }} data-tooltip={item?.WorkPhone != null
+
+                                          ? item?.WorkPhone
+
+                                          : "NA"}>
 
                                           {item?.WorkPhone != null
 

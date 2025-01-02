@@ -986,7 +986,9 @@ export const getARGNotificationHistory = async (sp) => {
 
   try {
 
-    const newItem = await sp.web.lists.getByTitle('ARGNotificationHistory').items.select("*,NotifiedUser/Id,NotifiedUser/Title,ActionUser/Id,ActionUser/Title").expand("NotifiedUser,ActionUser").filter(`NotifiedUserId eq ${currentUser.Id} and ReadStatus eq false`).getAll();
+   // const newItem = await sp.web.lists.getByTitle('ARGNotificationHistory').items.select("*,NotifiedUser/Id,NotifiedUser/Title,ActionUser/Id,ActionUser/Title").expand("NotifiedUser,ActionUser").filter(`NotifiedUserId eq ${currentUser.Id} and ReadStatus eq false`).getAll();
+   const newItem = await sp.web.lists.getByTitle('ARGNotificationHistory').items.select("*,NotifiedUser/Id,NotifiedUser/Title,ActionUser/Id,ActionUser/Title").expand("NotifiedUser,ActionUser")
+   .filter(`NotifiedUserId eq ${currentUser.Id} and ReadStatus eq false and ActionUserId ne ${currentUser.Id}`).getAll();
 
     
 

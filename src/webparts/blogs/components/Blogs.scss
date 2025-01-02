@@ -7,6 +7,11 @@
   font-size: .875rem !important;
   font-weight: 400 !important;
 }
+.newhoverzom{transition: transform .2s;}
+.newhoverzom:hover {
+  cursor: pointer;
+  transform: scale(1.03) !important;
+}
 .ql-snow .ql-toolbar button, .ql-snow.ql-toolbar button{
   min-width: 28px;
 }

@@ -8,6 +8,11 @@
     height: 100%;
     border-radius: 20px;
 }
+.newhoverzom{transition: transform .2s;}
+.newhoverzom:hover {
+  cursor: pointer;
+  transform: scale(1.03) !important;
+}
 .posnew {
     padding: 2px 12px !important;
     border-radius: 4px;

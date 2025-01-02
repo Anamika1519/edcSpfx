@@ -2546,7 +2546,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
                       style={{ background: "#12a8de", color: "#fff" }}
 
-                      className="card heightcard"
+                      className="card heightcard newhoverzom"
 
                     >
 
@@ -2692,7 +2692,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
                       style={{ background: "#12a8de", color: "#fff" }}
 
-                      className="card heightcard"
+                      className="card heightcard newhoverzom"
 
                     >
 
@@ -2838,7 +2838,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
                     <div
                       style={{ background: "#12a8de", color: "#fff" }}
-                      className="card heightcard"
+                      className="card heightcard newhoverzom"
                     >
                       {groupItem.GroupType == "All" && groupItem.Author.ID !== currentUser.Id &&
                         < div > {renderContent(groupItem)}</div>

@@ -4,9 +4,11 @@
     height: 2rem !important;
     width: 2rem !important;
   }
+  
   .project-box{height: 240px;}
   .alignrightl{width: 90px; margin-bottom: 20px; margin-top: 5px;}
   .project-box a:hover{color: #fff !important; cursor: auto;}
+  a.hovertext:hover{color: #1fb0e5 !important; cursor: pointer !important;}
   .two-line{    overflow: hidden; line-height: 18px !important;
     text-overflow: ellipsis;
     display: -webkit-box;

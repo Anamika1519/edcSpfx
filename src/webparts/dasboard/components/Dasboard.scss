@@ -175,6 +175,8 @@
     margin-top: .75rem !important;
 }
 .inbox-widget .heit8 {position: relative; white-space: nowrap; padding:.75rem 0;}
+
+
 @media (max-width: 1920px) {
     .tabcontentv, .tabv {
         height: 434px !important;
@@ -408,12 +410,14 @@ img, svg {
       .newheight .dropdown-item:active{background: #f8f9fa !important;}
       .newminus{margin-left: -12px !important;    min-width: 2rem;}
 .newimg1{    float: left;
-    margin: 1px 5px 0px 2px;}
-    .newimg2{ margin: -1px 5px 0px 0px;}
+    margin: 2px 5px 0px 2px;}
+    .clcom svg{vertical-align: -webkit-baseline-middle !important;}
+    .newimg2{ margin: -2px 5px 0px 0px;}
 .heit9 {height: 128px; display: flex; align-items: center; margin: auto; width: 98%;}
 @media(max-width:1600px){ 
     .inbox-widget .heit8{    padding: .75rem 0;}
     .gheightnew{height: 405px;}
+    .clcom svg{vertical-align:middle !important;}
     .heifgtgal{height: 414px;}
     .event{margin-bottom: 3px;
         margin-top: 13px;}
@@ -439,6 +443,10 @@ img, svg {
         .gheightnew{height: 374px;}
         .news-feed{
             height: 722px;
+        }
+        .clcom svg {
+            vertical-align: middle !important;
+            margin-top: 2px;
         }
        
 }
@@ -513,7 +521,7 @@ img, svg {
         height: auto;
     }
     .paddbnew {
-        padding: 30px 17px 30px 13px;
+        padding: 30px 17px 0px 15px !important;
     }
     .margint50 {
         height: auto;

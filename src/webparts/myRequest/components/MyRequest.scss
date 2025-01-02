@@ -5,7 +5,7 @@
     font-size: .875rem !important;
     font-weight: 400 !important;
   }
-  
+  .topv{vertical-align: top;}
   #cardCollpase4 .mtable {
     margin-top: 0px !important;
   }
@@ -123,6 +123,10 @@
   color: #fff !important;
   }
   .page-item{margin: 0px !important;}
+  .table-responsive{overflow-x: hidden;}
+  .DMSMasterContainer{margin-top: 10px;}
   @media(max-width:640px){
+    .table-responsive{overflow-x: auto;}
+    .DMSMasterContainer{display: grid; overflow: hidden;}
     .mtbalenew tbody tr td:nth-child(1),.mtbalenew thead tr th:nth-child(1) { min-width: 60px !important;max-width: 60px !important;}
   }

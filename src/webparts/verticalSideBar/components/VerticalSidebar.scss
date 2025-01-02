@@ -196,8 +196,8 @@ display: -webkit-box;
   position: absolute;
   right: 20px;
   border-radius: 5px; }
-  .text-infonew{color: rgba(33,37,41,.75) ; font-weight: 500;}
-  .text-warningnew{color: rgba(33,37,41,.75) ; font-weight: 500;}
+  .text-infonew{color: rgba(33,37,41,.75) ; font-weight: 400;}
+  .text-warningnew{color: rgba(33,37,41,.75) ; font-weight: 400;}
 #myHeader .dropdown #myDropdown{background: transparent !important; box-shadow: none !important;}
 .mtable th #myDropdown{cursor: pointer;}
 .heightlist .text-dark{color: #000; font-weight: 600;}
@@ -714,8 +714,8 @@ margin-left: 0px;
   color:unset !important;
   // color: #6c757d;
 }
-.sidebar.close .active {
-  color: #1fb0e5 !important;
+.close .active {
+  color: #fff !important;
 }
 
 .content-page .content {
@@ -1092,6 +1092,10 @@ margin: 10px 0px !important ;
 }
 .navlink_icon svg{    height: 22px;
   width: 22px;}
+  .announcementner .border-bottom {
+    padding-bottom:12px;
+}
+
 @media(max-width:1920px)
 {
   .inbox-rightbar .card {
@@ -1664,6 +1668,7 @@ text-align: center;
 .form-control:disabled{color: #000 !important;}
 .mtbalenew tbody tr:nth-child(even) td { background: #f9f9f9;}
 .mtbalenew tr:nth-child(2n):hover td { background: #ececec;}
+.mtbalenew tr:hover{background: #ececec !important;}
 .mtbalenew td:last-child{border-right: 0px solid #e1e1e1; text-align: center; }
 @media(max-width:640px){
   .tabview1,.tabcontentv, .tabv{
@@ -1679,7 +1684,7 @@ text-align: center;
   .nav-pills .nav-link{
     padding: 5px;
   }
-  .footer{text-align: left;}
+  .footer{text-align: center;}
   .nav-pills .nav-item{margin-bottom: 5px !important;}
   .mtable{overflow: auto !important;}
   .mtable tbody{overflow: visible !important;}

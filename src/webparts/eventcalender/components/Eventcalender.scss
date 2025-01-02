@@ -5,6 +5,11 @@
     color: white;
     border: none; min-width: auto; font-size: 12px;
 }
+.newhoverzom{transition: transform .2s;}
+.newhoverzom:hover {
+  cursor: pointer;
+  transform: scale(1.03) !important;
+}
 .imagehright img{
     border-radius: 15px;
     width: 100%;

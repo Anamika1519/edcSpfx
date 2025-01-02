@@ -99,6 +99,7 @@ import {
 } from "../../../APISearvice/ApprovalService";
 import DMSMyApprovalAction from "./DMSApprovalAction";
 import { getApprovalListsData } from "../../../APISearvice/BusinessAppsService";
+import DMSMyFolderApprovalAction from "./DMSFolderApprovalAction";
 
 const MyApprovalContext = ({ props }: any) => {
   const sp: SPFI = getSP();
@@ -172,76 +173,175 @@ const MyApprovalContext = ({ props }: any) => {
     setActiveComponent(Name); // Reset to show the main component
     console.log(activeComponent, "activeComponent updated");
   };
-  const getApprovalmasterTasklist = async () => {
+  // const getApprovalmasterTasklist = async () => {
+  //   try {
+  //     const items = await sp.web.lists
+  //       .getByTitle("DMSFileApprovalTaskList")
+  //       .items.select(
+  //         "Log",
+  //         "CurrentUser",
+  //         "Remark",
+  //         "LogHistory",
+  //         "FileUID/FileUID",
+  //         "FileUID/SiteName",
+  //         "FileUID/DocumentLibraryName",
+  //         "FileUID/FileName",
+  //         "FileUID/RequestNo",
+  //         // , "FileUID/FilePreviewUrl"
+  //         "FileUID/Status",
+  //         "FileUID/FolderPath",
+  //         "FileUID/RequestedBy",
+  //         "FileUID/Created",
+  //         "FileUID/ApproveAction",
+  //         "MasterApproval/ApprovalType",
+  //         "MasterApproval/Level",
+  //         "MasterApproval/DocumentLibraryName"
+  //       )
+  //       .expand("FileUID", "MasterApproval")
+  //       .filter(`CurrentUser eq '${currentUserEmailRef.current}'`)();
+  //     console.log(items, "DMSFileApprovalTaskList");
+  //     setMylistdata(items);
+  //   } catch (error) {
+  //     console.error("Error fetching list items:", error);
+  //   }
+  // };
+  // const MyDMSAPPROVALDATASTATUS = async (sp: any, value: any) => {
+  //   try {
+  //     const items = await sp.web.lists
+  //       .getByTitle("DMSFileApprovalTaskList")
+  //       .items.select(
+  //         "Log",
+  //         "CurrentUser",
+  //         "Remark",
+  //         "LogHistory",
+  //         "FileUID/FileUID",
+  //         "FileUID/SiteName",
+  //         "FileUID/DocumentLibraryName",
+  //         "FileUID/FileName",
+  //         "FileUID/RequestNo",
+  //         // , "FileUID/FilePreviewUrl"
+  //         "FileUID/Status",
+  //         "FileUID/FolderPath",
+  //         "FileUID/RequestedBy",
+  //         "FileUID/Created",
+  //         "FileUID/ApproveAction",
+  //         "MasterApproval/ApprovalType",
+  //         "MasterApproval/Level",
+  //         "MasterApproval/DocumentLibraryName"
+  //       )
+  //       .expand("FileUID", "MasterApproval")
+  //       .filter(`CurrentUser eq '${currentUserEmailRef.current}' and FileUID/Status eq '${value}'`)();
+  //     console.log(items, "DMSFileApprovalTaskList");
+  //     setMylistdata(items);
+  //   } catch (error) {
+  //     console.error("Error fetching list items:", error);
+  //   }
+  // };
+  const getUserTitleByEmail = async (userEmail: any) => {
     try {
-      const items = await sp.web.lists
-        .getByTitle("DMSFileApprovalTaskList")
-        .items.select(
-          "Log",
-          "CurrentUser",
-          "Remark",
-          "LogHistory",
-          "FileUID/FileUID",
-          "FileUID/SiteName",
-          "FileUID/DocumentLibraryName",
-          "FileUID/FileName",
-          "FileUID/RequestNo",
-          // , "FileUID/FilePreviewUrl"
-          "FileUID/Status",
-          "FileUID/FolderPath",
-          "FileUID/RequestedBy",
-          "FileUID/Created",
-          "FileUID/ApproveAction",
-          "MasterApproval/ApprovalType",
-          "MasterApproval/Level",
-          "MasterApproval/DocumentLibraryName"
-        )
+      const user = await sp.web.siteUsers.getByEmail(userEmail)();
+      return user.Title;
+    } catch (error) {
+      console.error("Error fetching user title:", error);
+      return null;
+    }
+  };
+  const getApprovalmasterTasklist = async (value: any) => {
+
+    try {
+      let arr = [];
+      const items = await sp.web.lists.getByTitle('DMSFileApprovalTaskList').items.select(
+        "Log", "CurrentUser", "Remark"
+        , "LogHistory"
+        , "FileUID/FileUID"
+        , "FileUID/SiteName"
+        , "FileUID/DocumentLibraryName"
+        , "FileUID/FileName"
+        , "FileUID/RequestNo"
+        , "FileUID/Processname"
+        //  ,"FileUID/FilePreviewUrl" 
+        , "FileUID/Status"
+        , "FileUID/FolderPath"
+        , "FileUID/RequestedBy"
+        , "FileUID/Created"
+        , "FileUID/ApproveAction"
+        , "MasterApproval/ApprovalType"
+        , "MasterApproval/Level"
+        , "MasterApproval/DocumentLibraryName"
+
+      )
         .expand("FileUID", "MasterApproval")
-        .filter(`CurrentUser eq '${currentUserEmailRef.current}'`)();
+        .filter(`CurrentUser eq '${currentUserEmailRef.current}'`).orderBy("Modified", true).getAll();
       console.log(items, "DMSFileApprovalTaskList");
-      setMylistdata(items);
+
+      const updatedItems = await Promise.all(items.map(async (item) => {
+        const requestedbyuserTitle = await getUserTitleByEmail(item?.FileUID?.RequestedBy);
+        return { ...item, RequestedByTitle: requestedbyuserTitle };
+      }));
+      // const Item2 :any = await sp.web.lists.getByTitle('DMSFolderDeligationApprovalTask').items.select(
+      //   "*",
+      //   "Folderdetail"	            
+      //   ,"Folderdetail/SiteTitle"	       
+      //   ,"Folderdetail/DocumentLibraryName"	
+      //   ,"Folderdetail/CurrentUser"
+      //   ,"Folderdetail/FolderPath"
+      //   ,"Folderdetail/FolderName"
+      //   ,"Folderdetail/ParentFolderId"
+      //   ,"Folderdetail/Department"	
+      //   ,"Folderdetail/Devision"	
+      //   ,"Folderdetail/RequestNo"	
+      //   ,"FolderMeta"	
+      //   ,"FolderMeta/SiteName"	
+      //   ,"FolderMeta/DocumentLibraryName"	
+      //   ,"FolderMeta/ColumnName",
+      //   "Folderdetail/ProcessName",
+      //   "Approver"
+      // ).expand("Folderdetail" ,"FolderMeta")
+      // .filter(`Approver eq '${currentUserEmailRef.current}'`)();
+      // console.log("Item2",Item2)
+      // const normalizeItem2 = (item:any) => ({
+      //   Log: item?.Log || '', // Replace with appropriate mappings
+      //   CurrentUser: item?.Folderdetail?.CurrentUser || '',
+      //   Remark: item?.Remark || '',
+      //   LogHistory: item?.LogHistory || '',
+      //   ProcessName:  item?.Folderdetail?.ProcessName,
+      //   FileUID: {
+      //     FileUID: item?.FolderMeta?.FileUID || item?.Folderdetail?.RequestNo,
+      //     SiteName: item?.FolderMeta?.SiteName || '',
+      //     DocumentLibraryName: item?.FolderMeta?.DocumentLibraryName || '',
+      //     FileName: item?.FolderMeta?.FolderName || '',
+      //     RequestNo: item?.Folderdetail?.RequestNo || '',
+      //     Status: item?.Status || '',
+      //     FolderPath: item?.Folderdetail?.FolderPath || '',
+      //     RequestedBy: item?.RequestedBy || item?.Folderdetail?.CurrentUser || '',
+      //     Created: item?.Created || '',
+      //     ApproveAction: item?.ApproveAction || ''
+      //   },
+      //   MasterApproval: {
+      //     ApprovalType: item?.ApprovalType || '',
+      //     Level: item?.Level || '',
+      //     DocumentLibraryName: item?.DocumentLibraryName || ''
+      //   }
+      // });
+      // const normalizeItem3 = Item2.map(normalizeItem2);
+      //  const CombinedItems  = [...items, ...normalizeItem3];
+      //  console.log(CombinedItems , "CombinedItems")
+      // setMylistdata(CombinedItems);
+      setMylistdata(updatedItems);
+
+      // return arr = CombinedItems
+
     } catch (error) {
       console.error("Error fetching list items:", error);
     }
   };
-  const MyDMSAPPROVALDATASTATUS = async (sp: any, value: any) => {
-    try {
-      const items = await sp.web.lists
-        .getByTitle("DMSFileApprovalTaskList")
-        .items.select(
-          "Log",
-          "CurrentUser",
-          "Remark",
-          "LogHistory",
-          "FileUID/FileUID",
-          "FileUID/SiteName",
-          "FileUID/DocumentLibraryName",
-          "FileUID/FileName",
-          "FileUID/RequestNo",
-          // , "FileUID/FilePreviewUrl"
-          "FileUID/Status",
-          "FileUID/FolderPath",
-          "FileUID/RequestedBy",
-          "FileUID/Created",
-          "FileUID/ApproveAction",
-          "MasterApproval/ApprovalType",
-          "MasterApproval/Level",
-          "MasterApproval/DocumentLibraryName"
-        )
-        .expand("FileUID", "MasterApproval")
-        .filter(`CurrentUser eq '${currentUserEmailRef.current}' and FileUID/Status eq '${value}'`)();
-      console.log(items, "DMSFileApprovalTaskList");
-      setMylistdata(items);
-    } catch (error) {
-      console.error("Error fetching list items:", error);
-    }
-  };
+
   console.log(Mylistdata, "Mylistdata");
   const currentUserEmailRef = useRef("");
   const getCurrrentuser = async () => {
     const userdata = await sp.web.currentUser();
     currentUserEmailRef.current = userdata.Email;
-    //getApprovalmasterTasklist();
+    getApprovalmasterTasklist('');
   };
   React.useEffect(() => {
     getCurrrentuser();
@@ -258,15 +358,24 @@ const MyApprovalContext = ({ props }: any) => {
   const getTaskItemsbyID = async (e: any, itemid: any) => {
     // currentItemID = itemid
     currentItemID = itemid;
-    // setActiveComponent("Approval Action");
+    setActiveComponent("Approval Action");
     console.log("itemid", itemid);
-    const items = await sp.web.lists
-      .getByTitle("DMSFileApprovalTaskList")
-      .items.select("CurrentUser", "FileUID/FileUID", "Log")
-      .expand("FileUID")
-      .filter(`FileUID/RequestNo eq '${itemid}'`)();
-    console.log(items, "items");
+    // const items = await sp.web.lists
+    //   .getByTitle("DMSFileApprovalTaskList")
+    //   .items.select("CurrentUser", "FileUID/FileUID", "Log")
+    //   .expand("FileUID")
+    //   .filter(`FileUID/RequestNo eq '${itemid}'`)();
+    // console.log(items, "items");
   };
+  const getTaskItemsbyID2 = async (e: any, itemid: any) => {
+    alert("Folder")
+    // currentItemID = itemid
+    currentItemID = itemid
+    setActiveComponent('DMS Folder Approval')
+    console.log("itemid", itemid)
+    // const items = await sp.web.lists.getByTitle('DMSFileApprovalTaskList').items.select("CurrentUser" , "FileUID/FileUID" , "Log").expand("FileUID").filter(`FileUID/RequestNo eq '${itemid}'`)();
+    //    console.log(items , "items")
+  }
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
@@ -400,18 +509,22 @@ const MyApprovalContext = ({ props }: any) => {
       // Filter records based on the selected type
       let MyApprovaldata = await getMyApproval(sp, value);
       let Automationdata = await getApprovalListsData(sp, value);
-      //let MyDMSAPPROVALDATA:any = await MyDMSAPPROVALDATASTATUS(sp, value)
+      // let MyDMSAPPROVALDATA:any = await MyDMSAPPROVALDATASTATUS(sp, value)
+      let MyDMSAPPROVALDATA: any = await getApprovalmasterTasklist(value)
+      console.log("MyDMSAPPROVALDATA", MyDMSAPPROVALDATA)
       setMyApprovalsDataAll(MyApprovaldata);
       setMyApprovalsDataAutomation(Automationdata);
       if (activeTab == "Intranet") {
         setMyApprovalsData(MyApprovaldata);
+      } else if (activeTab == "DMS") {
+        setMyApprovalsData(MyDMSAPPROVALDATA);
       } else if (activeTab == "Automation") {
         setMyApprovalsData(Automationdata);
         console.log("Automationdata", Automationdata);
       }
       else if (activeTab == "Automation") {
         setMyApprovalsData(null);
-        //setMyApprovalsData(MyDMSAPPROVALDATA);
+        setMyApprovalsData(MyDMSAPPROVALDATA);
         setMyApprovalsData(Mylistdata);
         console.log("Automationdata", Automationdata);
       }
@@ -535,27 +648,45 @@ const MyApprovalContext = ({ props }: any) => {
   const filteredNewsData = applyFiltersAndSorting(newsData);
 
   const [currentPage, setCurrentPage] = React.useState(1);
-
+  const [currentGroup, setCurrentGroup] = React.useState(1);
   const itemsPerPage = 10;
-
+  const pagesPerGroup = 10;
   const totalPages = Math.ceil(filteredMyApprovalData.length / itemsPerPage);
-
+  const totalGroups = Math.ceil(totalPages / pagesPerGroup);
   const [ContentData, setContentData] = React.useState<any>([]);
 
   const [currentItem, setCurrentItem] = React.useState<any>([]);
 
-  const handlePageChange = (pageNumber: any) => {
-    if (pageNumber > 0 && pageNumber <= totalPages) {
-      setCurrentPage(pageNumber);
+  // const handlePageChange = (pageNumber: any) => {
+  //   if (pageNumber > 0 && pageNumber <= totalPages) {
+  //     setCurrentPage(pageNumber);
+  //   }
+  // };
+  const handleGroupChange = (direction: "next" | "prev") => {
+    const newGroup = currentGroup + (direction === "next" ? 1 : -1);
+    if (newGroup > 0 && newGroup <= totalGroups) {
+      setCurrentGroup(newGroup);
+      setCurrentPage((newGroup - 1) * pagesPerGroup + 1); // Go to the first page of the new group
     }
   };
 
+  const handlePageChange = (pageNumber: any) => {
+
+    if (pageNumber > 0 && pageNumber <= totalPages) {
+
+      setCurrentPage(pageNumber);
+      const newGroup = Math.ceil(pageNumber / pagesPerGroup);
+      setCurrentGroup(newGroup);
+    }
+
+  };
   const startIndex = (currentPage - 1) * itemsPerPage;
 
   const endIndex = startIndex + itemsPerPage;
 
   const currentData = filteredMyApprovalData.slice(startIndex, endIndex);
-
+  const startPage = (currentGroup - 1) * pagesPerGroup + 1;
+  const endPage = Math.min(currentGroup * pagesPerGroup, totalPages);
   const newsCurrentData = filteredNewsData.slice(startIndex, endIndex);
 
   const [editID, setEditID] = React.useState(null);
@@ -736,11 +867,11 @@ const MyApprovalContext = ({ props }: any) => {
               Item?.Id +
               "&mode=" + mode;
             break;
-            case "Blog":
-              sessionkey = "blogId";
-              redirecturl =
-                `${siteUrl}/SitePages/BlogDetails.aspx?` +Item?.ContentId;
-              break;
+          case "Blog":
+            sessionkey = "blogId";
+            redirecturl =
+              `${siteUrl}/SitePages/BlogDetails.aspx?` + Item?.ContentId;
+            break;
           default:
         }
 
@@ -1317,7 +1448,7 @@ const MyApprovalContext = ({ props }: any) => {
                                               minWidth: "100px",
                                               maxWidth: "100px",
                                             }}
-                                            title= {activeTab == "Automation"
+                                            title={activeTab == "Automation"
                                               ? item?.Author?.Title
                                               : item?.Requester?.Title}
                                           >
@@ -1330,7 +1461,7 @@ const MyApprovalContext = ({ props }: any) => {
                                             style={{
                                               minWidth: "80px",
                                               maxWidth: "80px",
-                                              textAlign:'center'
+                                              textAlign: 'center'
                                             }}
                                           >
                                             <div className="btn btn-light">
@@ -1344,7 +1475,7 @@ const MyApprovalContext = ({ props }: any) => {
                                             style={{
                                               minWidth: "80px",
                                               maxWidth: "80px",
-                                               textAlign:'center'
+                                              textAlign: 'center'
                                             }}
                                           >
                                             <div className="btn btn-status">
@@ -1451,7 +1582,7 @@ const MyApprovalContext = ({ props }: any) => {
                                                 }
                                                 onKeyDown={(e) => {
                                                   if (e.key === 'Enter' && !e.shiftKey) {
-                                                    e.preventDefault(); // Prevents the new line in textarea
+                                                    e.preventDefault();
                                                   }
                                                 }}
                                                 className="inputcss"
@@ -1498,7 +1629,7 @@ const MyApprovalContext = ({ props }: any) => {
                                                   }
                                                   onKeyDown={(e) => {
                                                     if (e.key === 'Enter' && !e.shiftKey) {
-                                                      e.preventDefault(); // Prevents the new line in textarea
+                                                      e.preventDefault();
                                                     }
                                                   }}
                                                   className="inputcss"
@@ -1547,7 +1678,7 @@ const MyApprovalContext = ({ props }: any) => {
                                                   }
                                                   onKeyDown={(e) => {
                                                     if (e.key === 'Enter' && !e.shiftKey) {
-                                                      e.preventDefault(); // Prevents the new line in textarea
+                                                      e.preventDefault();
                                                     }
                                                   }}
                                                   className="inputcss"
@@ -1596,7 +1727,7 @@ const MyApprovalContext = ({ props }: any) => {
                                                   }
                                                   onKeyDown={(e) => {
                                                     if (e.key === 'Enter' && !e.shiftKey) {
-                                                      e.preventDefault(); // Prevents the new line in textarea
+                                                      e.preventDefault();
                                                     }
                                                   }}
                                                   className="inputcss"
@@ -1645,7 +1776,7 @@ const MyApprovalContext = ({ props }: any) => {
                                                   }
                                                   onKeyDown={(e) => {
                                                     if (e.key === 'Enter' && !e.shiftKey) {
-                                                      e.preventDefault(); // Prevents the new line in textarea
+                                                      e.preventDefault();
                                                     }
                                                   }}
                                                   className="inputcss"
@@ -1692,7 +1823,7 @@ const MyApprovalContext = ({ props }: any) => {
                                                   }
                                                   onKeyDown={(e) => {
                                                     if (e.key === 'Enter' && !e.shiftKey) {
-                                                      e.preventDefault(); // Prevents the new line in textarea
+                                                      e.preventDefault();
                                                     }
                                                   }}
                                                   className="inputcss"
@@ -1753,7 +1884,7 @@ const MyApprovalContext = ({ props }: any) => {
                                             }}
 
                                           >
-                                            <svg style={{top:'50%'}} xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                                            <svg style={{ top: '50%' }} xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
 
                                             <p className="font-14 text-muted text-center">No Approval found </p>
 
@@ -1788,28 +1919,18 @@ const MyApprovalContext = ({ props }: any) => {
 
                                                     textTransform: "capitalize",
                                                   }}
-                                                  title= {item?.FileUID.FileUID}
+                                                  title={item?.FileUID?.RequestNo}
                                                 >
-                                                  {item?.FileUID.FileUID}
+                                                  {item?.FileUID?.RequestNo}
                                                 </td>
-                                                {/* {activeTab == "Intranet" && 
-        <td
 
-          style={{ minWidth: "120px", maxWidth: "120px" }}
-
-        >
-
-          {item.Title}
-
-        </td>
-        } */}
                                                 <td
                                                   style={{
                                                     minWidth: "120px",
                                                     maxWidth: "120px",
                                                   }}
                                                 >
-                                                  DMS
+                                                  {item?.FileUID?.Processname}
                                                 </td>
 
                                                 <td
@@ -1818,21 +1939,19 @@ const MyApprovalContext = ({ props }: any) => {
                                                     maxWidth: "100px",
                                                   }}
                                                 >
-                                                  {item?.FileUID.RequestedBy}
+                                                  {item?.RequestedByTitle}
                                                 </td>
 
                                                 <td
                                                   style={{
                                                     minWidth: "100px",
                                                     maxWidth: "100px",
-                                                    textAlign:'center'
+                                                    textAlign: 'center'
                                                   }}
                                                 >
                                                   <div className="btn btn-light">
-                                                    {/* {new Date(
-                                                    item?.Created
-                                                  ).toLocaleDateString()} */}
-                                                    {item?.FileUID.Created}
+
+                                                    {item?.FileUID?.Created}
                                                   </div>
                                                 </td>
 
@@ -1843,7 +1962,7 @@ const MyApprovalContext = ({ props }: any) => {
                                                   }}
                                                 >
                                                   <div className="btn btn-status">
-                                                    {item?.FileUID.Status}
+                                                    {item?.FileUID?.Status}
                                                   </div>
                                                 </td>
 
@@ -1856,7 +1975,7 @@ const MyApprovalContext = ({ props }: any) => {
                                                 >
 
                                                   <Edit
-                                                    onClick={(e) => { getTaskItemsbyID(e, item.FileUID.FileUID); handleShowNestedDMSTable() }}
+                                                    onClick={(e) => { getTaskItemsbyID(e, item?.FileUID?.FileUID); handleShowNestedDMSTable() }}
                                                     style={{
                                                       minWidth: "20px",
 
@@ -1885,27 +2004,217 @@ const MyApprovalContext = ({ props }: any) => {
                                 )}
                               </div>
                             )}
+                            {/* {activeTab === "DMS" ?
+               (
+               <div>
+                    <div className="DMSMasterContainer">
+                <h4 className="page-title fw-bold mb-1 font-20">My Approvals 1</h4>
+                <div className="" style={{ backgroundColor: 'white', border:'1px solid #54ade0', marginTop:'20px', borderRadius:'20px', padding: '15px'}}>
+                <table className="mtbalenew">
+    <thead>
+      <tr>
+        <th
+          style={{
+            minWidth: '40px',
+            maxWidth: '40px',
+         
+          }}
+        >
+          S.No
+        </th>
+        <th>Request ID</th>
+        <th>Process Name</th>
+        <th>Requested By</th>
+        <th >Requested Date</th>
+        <th style={{ minWidth: '80px', maxWidth: '80px' }}>Status</th>
+        <th
+          style={{
+            minWidth: '70px',
+            maxWidth: '70px',
+         
+          }}
+        >
+          Action
+        </th>
+      </tr>
+    </thead>
+    <tbody style={{ maxHeight: '8007px' }}>
+       
+      {Mylistdata.length > 0  ? Mylistdata.map((item, index) => {
+      return(
+        <tr>
+<td style={{ minWidth: '40px', maxWidth: '40px'}}>
+  <span style={{marginLeft:'5px'}} className="indexdesign">{index}</span>
+  </td>
+<td >{(truncateText(item.FileUID.FileUID, 22))}</td>
+<td >{item?.ProcessName}</td>
+<td >{(truncateText(item.FileUID.RequestedBy, 22))}</td> 
+<td >
+<div
+  style={{
+    padding: '5px',
+    border: '1px solid #efefef',
+    background: '#fff', fontSize:'14px',
+    borderRadius: '30px',
+  
+  }}
+  className="btn btn-light"
+>
+ {item.FileUID.Created}
+</div>
+</td>
+<td style={{ minWidth: '80px', maxWidth: '80px', textAlign:'center' }}>
+<div className="finish mb-0">Pending</div>
+</td>
+<td style={{ minWidth: '70px', maxWidth: '70px' }}>
+  {item?.ProcessName === "DMS Folder Approval" ?
+    (<a onClick={(e )=>getTaskItemsbyID2(e , item.FileUID.FileUID)}>
+    <FontAwesomeIcon icon={faEye} />
+   </a>
+   ) : item?.ProcessName === "" || item?.ProcessName === null || item?.ProcessName === undefined ?    (
+      <a onClick={(e )=>getTaskItemsbyID(e , item.FileUID.FileUID)}>
+ <FontAwesomeIcon icon={faEye} />
+</a>
+    ) : null
+  }
+
+</td>
+</tr>
+      )
+
+       })
+       :""
+
+}
+
+      
+   
+
+     
+    </tbody>
+  </table>
+        </div>
+              </div>
+               </div>
+               ) : (
+                <div>
+                  {activeComponent === 'Approval Action' ? (
+                    <div>
+                   <button style={{float:'right'}} type="button" className="btn btn-secondary" onClick={()=>handleReturnToMain('')}> Back </button>
+                  <DMSMyApprovalAction props={currentItemID}/>
+                    </div>
+               
+                  ) : activeComponent === 'DMS Folder Approval' ? (
+                    <div>
+<button style={{float:'right'}} type="button" className="btn btn-secondary" onClick={()=>handleReturnToMain('')}> Back </button>
+<DMSMyFolderApprovalAction props={currentItemID}/>
+                    </div>
+                                       
+                  ) :null
+                  
+                  } 
+             
+                </div>
+               
+            
+               )
+               } */}
                           </div>
 
                           {currentData.length > 0 ? (
                             <nav className="pagination-container">
                               <ul className="pagination">
-                                <li
+                                {/* <li
                                   className={`page-item ${currentPage === 1 ? "disabled" : ""
                                     }`}
+                                > */}
+                                <li
+
+                                  className={`prevPage page-item ${currentGroup === 1 ? "disabled" : ""
+                                    }`}
+                                  onClick={() => handleGroupChange("prev")}
                                 >
+
                                   <a
                                     className="page-link"
-                                    onClick={() =>
-                                      handlePageChange(currentPage - 1)
-                                    }
+                                    // onClick={() =>
+                                    //   handlePageChange(currentPage - 1)
+                                    // }
                                     aria-label="Previous"
                                   >
                                     «
                                   </a>
                                 </li>
+                                {Array.from(
 
-                                {Array.from({ length: totalPages }, (_, num) => (
+                                  { length: endPage - startPage + 1 },
+
+                                  (_, num) => {
+                                    const pageNum = startPage + num;
+                                    return (
+
+                                      <li
+
+                                        key={pageNum}
+
+                                        className={`page-item ${currentPage === pageNum ? "active" : ""
+
+                                          }`}
+
+                                      >
+
+                                        <a
+
+                                          className="page-link"
+
+                                          onClick={() =>
+
+                                            handlePageChange(pageNum)
+
+                                          }
+
+                                        >
+
+                                          {pageNum}
+
+                                        </a>
+
+                                      </li>
+
+                                    )
+                                  }
+
+                                )}
+
+                                <li
+
+                                  className={`nextPage page-item ${currentGroup === totalGroups ? "disabled" : ""
+
+                                    }`}
+                                  onClick={() => handleGroupChange("next")}
+                                >
+
+                                  <a
+
+                                    className="page-link"
+
+                                    onClick={() =>
+
+                                      handlePageChange(currentPage + 1)
+
+                                    }
+
+                                    aria-label="Next"
+
+                                  >
+
+                                    »
+
+                                  </a>
+
+                                </li>
+                                {/* {Array.from(
+                                  { length: totalPages }, (_, num) => (
                                   <li
                                     key={num}
                                     className={`page-item ${currentPage === num + 1 ? "active" : ""
@@ -1933,7 +2242,7 @@ const MyApprovalContext = ({ props }: any) => {
                                   >
                                     »
                                   </a>
-                                </li>
+                                </li> */}
                               </ul>
                             </nav>
                           ) : (

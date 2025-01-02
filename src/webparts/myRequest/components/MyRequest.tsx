@@ -2004,7 +2004,7 @@ const MyRequestContext = ({ props }: any) => {
 
                                     </th>
 
-                                    <th
+                                    <th className="topv"
 
                                       style={{
 
@@ -2012,9 +2012,8 @@ const MyRequestContext = ({ props }: any) => {
 
                                         maxWidth: "50px",
                                         textAlign: "center",
-
-                                        verticalAlign: "top",
-
+                                        
+                                        
                                       }}
 
                                     >
@@ -2112,7 +2111,7 @@ const MyRequestContext = ({ props }: any) => {
                                         >
 
                                           {/* {item.RequestID} */}
-                                          {item.FileUID}
+                                          {item?.RequestNo}
 
                                         </td>
 
@@ -2131,7 +2130,7 @@ const MyRequestContext = ({ props }: any) => {
                                         >
 
                                           {/* {item.RequestID} */}
-                                          {item.FileName}
+                                          {item?.FileName}
 
                                         </td>
 
@@ -2141,8 +2140,8 @@ const MyRequestContext = ({ props }: any) => {
 
                                         >
 
-                                          {/* {item.ProcessName} */}
-                                          DMS
+                                          {item?.Processname}
+                                         
 
                                         </td>
 
@@ -2160,14 +2159,14 @@ const MyRequestContext = ({ props }: any) => {
                                         </td>
                                         <td
 
-                                          style={{ minWidth: "70px", maxWidth: "70px" }}
+                                          style={{ minWidth: "70px", maxWidth: "70px", textAlign:'center' }}
 
                                         >
                                           <div className="btn btn-status">
-                                            <a onClick={() => { getTaskItemsbyID(item.FileUID); handleShowNestedDMSTable("") }}> {item?.Status}</a>
+                                            <a onClick={() => { getTaskItemsbyID(item?.FileUID); handleShowNestedDMSTable("") }}> {item?.Status}</a>
                                           </div>
-                                          <div className="btn btn-status">
-                                            {item?.Status}</div>
+                                          {/* <div className="btn btn-status">
+                                            {item?.Status}</div> */}
 
                                         </td>
 
@@ -2181,9 +2180,9 @@ const MyRequestContext = ({ props }: any) => {
 
                                         >
 
+<img style={{ cursor: 'pointer' }} onClick={() => { getTaskItemsbyID(item?.FileUID); handleShowNestedDMSTable("DMSAuditHistory")}} src={require('../../../CustomAsset/Eye.png')} />
 
-
-                                          <Eye onClick={() => { getTaskItemsbyID(item.FileUID); handleShowNestedDMSTable("DMSAuditHistory") }}
+                                          {/* <Eye onClick={() => { getTaskItemsbyID(item.FileUID); handleShowNestedDMSTable("DMSAuditHistory") }}
 
                                             style={{
 
@@ -2195,7 +2194,7 @@ const MyRequestContext = ({ props }: any) => {
 
                                               cursor: "pointer",
 
-                                            }} />
+                                            }} /> */}
 
 
 

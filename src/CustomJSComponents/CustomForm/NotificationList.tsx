@@ -78,7 +78,7 @@ const NotificationList = ({ NotificationArray, handleNotificationClick, OnCleara
                     {/* Today Section */}
                     {categorizedNotifications.today.length > 0 && (
                         <div>
-                            <h6 className="text-dark font-13 fw-normal p-2 pb-0">Today</h6>
+                            <h6 className="text-dark font-14 fw-bold p-2 pb-0">Today</h6>
                             {categorizedNotifications.today.map((notify) => (
                                
                                 <a key={notify.Id} className="dropdown-item p-2 notify-item card unread-noti shadow-none mb-1"
@@ -86,15 +86,14 @@ const NotificationList = ({ NotificationArray, handleNotificationClick, OnCleara
                                     <div className="">
                                         <span className="float-start noti-close-btn text-muted">
                                             <img  src={require("../../CustomAsset/Noti.jpg")}
-                                        title="Badges"
-                                        alt="badge"
+                                       
                                         className="me-1 noti"
                                       /></span>
                                         <div className="d-flex align-items-center">
                                             <div className="flex-grow-1 text-truncate ms-2">
                                                 <h5 className="noti-item-title hovertext  fw-semibold font-14 mb-0" style={{ textTransform: 'capitalize' }}>
                                                 {notify.ContentName || notify.ContentComment}
-                                                    <small className="fw-normal text-muted ms-1" style={{ textTransform: 'lowercase' }}>{moment(notify.Created).fromNow()}</small>
+                                                    <small className="fw-normal text-muted ms-0" style={{ textTransform: 'lowercase' }}>{moment(notify.Created).fromNow()}</small>
                                                 </h5>
                                                 <small className="noti-item-subtitle text-muted">{notify?.ActionUser?.Title} {notify.ContentType0} on {notify?.NotifiedUser?.Title}</small>
                                             </div>
@@ -113,22 +112,21 @@ const NotificationList = ({ NotificationArray, handleNotificationClick, OnCleara
                     {/* Yesterday Section */}
                     {categorizedNotifications.yesterday.length > 0 && (
                         <div>
-                            <h6 className="text-dark font-13 fw-normal p-2 pb-0">Yesterday</h6>
+                            <h6 className="text-dark font-14 fw-bold p-2 pb-0">Yesterday</h6>
                             {categorizedNotifications.yesterday.map((notify) => (
                                 <a key={notify.Id} className="dropdown-item p-2 notify-item card unread-noti shadow-none mb-1"
-                                    onClick={() => handleNotificationClick(notify)} style={{ width: '18rem', display: 'flex', margin: '0px auto' }}>
+                                    onClick={() => handleNotificationClick(notify)} style={{ display: 'flex', margin: '0px auto' }}>
                                     <div className="">
                                     <span className="float-start noti-close-btn text-muted">
                                             <img  src={require("../../CustomAsset/Noti.jpg")}
-                                        title="Badges"
-                                        alt="badge"
+                                       
                                         className="me-1 noti"
                                       /></span>
                                         <div className="d-flex align-items-center">
                                             <div className="flex-grow-1 text-truncate ms-2">
                                                 <h5 className="noti-item-title hovertext  fw-semibold font-14 mb-0" style={{ textTransform: 'capitalize' }}>
                                                 {notify.ContentName || notify.ContentComment}
-                                                    <small className="fw-normal text-muted ms-1">{moment(notify.Created).fromNow()}</small>
+                                                    <small className="fw-normal text-muted ms-0">{moment(notify.Created).fromNow()}</small>
                                                 </h5>
                                                 <small className="noti-item-subtitle text-muted">{notify?.ActionUser?.Title} {notify.ContentType0} on {notify?.NotifiedUser?.Title}</small>
                                             </div>
@@ -147,21 +145,20 @@ const NotificationList = ({ NotificationArray, handleNotificationClick, OnCleara
                     {/* Earlier Section */}
                     {categorizedNotifications.earlier.length > 0 && (
                         <div>
-                            <h6 className="text-dark font-13 fw-normal p-2 pb-0">Earlier</h6>
+                            <h6 className="text-dark font-14 fw-bold p-2 pb-0">Earlier</h6>
                             {categorizedNotifications.earlier.map((notify) => (
                                 <a key={notify.Id} className="dropdown-item p-2 notify-item card unread-noti shadow-none mb-1"
-                                    onClick={() => handleNotificationClick(notify)} style={{ width: '18rem', display: 'flex', margin: '0px auto' }}>
+                                    onClick={() => handleNotificationClick(notify)} style={{ display: 'flex', margin: '0px auto' }}>
                                     <div className="">
                                     <span className="float-start noti-close-btn text-muted">
                                             <img  src={require("../../CustomAsset/Noti.jpg")}
-                                        title="Badges"
-                                        alt="badge"
-                                        className="me-1 noti"
+                                       
+               className="me-1 noti"
                                       /></span>
                                         <div className="d-flex align-items-center">
                                             <div className="flex-grow-1 text-truncate ms-2">
                                                 <h5 className="noti-item-title hovertext  fw-semibold font-14 mb-0" style={{ textTransform: 'capitalize' }}>
-                                                {notify.ContentName || notify.ContentComment} <small className="fw-normal text-muted ms-1">{moment(notify.Created).fromNow()}</small>
+                                                {notify.ContentName || notify.ContentComment} <small className="fw-normal text-muted ms-0">{moment(notify.Created).fromNow()}</small>
                                                 </h5>
                                                 <small className="noti-item-subtitle text-muted">{notify?.ActionUser?.Title} {notify.ContentType0} on {notify?.NotifiedUser?.Title}</small>
                                             </div>

@@ -569,9 +569,9 @@ const HelloWorldContext = ({ props }: any) => {
                                     </span>
                                     <span
 
-                                      className="text-muted mb-0 font-18"
+                                      className="text-muted mb-0 font-18 clcom"
                                     >
-                                      <MessageSquare size={15} color="#f7b84b" />
+                                      <MessageSquare  size={15} color="#f7b84b" />
                                       <span className="font-12 margin01 mx-1  float-right floatl">
                                         {announcement.CommentCount} Comments
                                       </span>
@@ -1266,20 +1266,20 @@ const HelloWorldContext = ({ props }: any) => {
 
                                       className="pe-2 text-nowrap"
                                     >
-                                      <img className="newimg1" src={require("../assets/projectdoc.png")} style={{ width: "12px" }} /> <b>
+                                      <img className="newimg1" src={require("../assets/docunew.png")} />
                                         {/* {project?.ProjectsDocsId?.length} */}
                                         {project?.FileCount || 0}
-                                      </b> Documents
+                                        &nbsp;Documents
                                     </span>
                                     <span>
-                                      <img className="newimg2" src={require("../assets/comment.png")} style={{ width: "12px" }} />
+                                      <img className="newimg2" src={require("../assets/commnew.png")}/>
                                       {/* Display fetched comment count */}
                                       {/* {commentsData[project.ID] !== undefined ? (
                                     `${commentsData[project.ID]} Comments`
                                   ) : (
                                     'Loading comments...'
                                   )} */}
-                                      <b>{project.CommentsCount || 0}</b> Comments
+                                      {project.CommentsCount || 0}  Comments
                                     </span>
 
                                   </p>

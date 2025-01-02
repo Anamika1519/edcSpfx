@@ -108,7 +108,8 @@ width: 450px;
   width: 10px;
   background-color: #F5F5F5;
 }
-
+#myDropdownBell .heightlist .notify-item:hover{background: #ededed !important; }
+#myDropdownBell .heightlist .notify-item:hover .noti-item-subtitle{color: #1fb0e5 !important;}
 #style-6::-webkit-scrollbar-thumb {
   background-color: #0ae;
   background-image: -webkit-linear-gradient(45deg,

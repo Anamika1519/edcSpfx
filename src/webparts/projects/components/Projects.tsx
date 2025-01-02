@@ -293,7 +293,7 @@ const HelloWorldContext = ({ props }: any) => {
   const handleCancel = () => {
     debugger;
     window.location.href =
-      "https://alrostamanigroupae.sharepoint.com/sites/intranetuat/SitePages/Project.aspx";
+      "https://alrostamanigroupae.sharepoint.com/sites/IntranetUAT/SitePages/Project.aspx";
   };
 
   const saveProjectData = async (formData: {
@@ -356,7 +356,7 @@ const HelloWorldContext = ({ props }: any) => {
         // // Budget: formData.Budget,
         ProjectOverview: formData.ProjectOverview,
         TeamMembersId: selectedIds,
-        ProjectFileManager: `/sites/intranetuat/ARGProjectsFiles/${formData.ProjectName}`,
+        ProjectFileManager: `/sites/IntranetUAT/ARGProjectsFiles/${formData.ProjectName}`,
         ProjectStatus: "Ongoing",
         ProjectFolderName: formData.ProjectName,
         FolderInProgress: 'In Progress'
@@ -1443,7 +1443,7 @@ const HelloWorldContext = ({ props }: any) => {
                                     {/* Title */}
                                     <h4 className="mt-0 mb-1 one-line">
                                       <a onClick={() => GotoNextPage(project)}
-                                        className="text-dark fw-bold font-16">
+                                        className="text-dark fw-bold font-16 hovertext">
                                         {truncateText(project.ProjectName, 40)}
                                         {/* {project.ProjectName} */}
                                       </a>
@@ -1664,7 +1664,7 @@ const HelloWorldContext = ({ props }: any) => {
                                     <h4 className="mt-0 mb-1 newalignv">
                                       <a
                                         onClick={() => GotoNextPage(project)}
-                                        className="text-dark fw-bold font-16"
+                                        className="text-dark fw-bold font-16 hovertext"
                                       >
                                         {project.ProjectName}
                                       </a>
@@ -1887,7 +1887,7 @@ const HelloWorldContext = ({ props }: any) => {
                                     {/* Title */}
                                     <h4 className="mt-0 mb-1 one-line">
                                       <a
-                                        className="text-dark fw-bold font-16" onClick={() => GotoNextPage(project)}
+                                        className="text-dark fw-bold font-16 hovertext" onClick={() => GotoNextPage(project)}
                                       >
                                         {project.ProjectName ||
                                           "Untitled Project"}
@@ -2121,7 +2121,7 @@ const HelloWorldContext = ({ props }: any) => {
                                     <h4 className="mt-0 mb-1 one-line">
                                       <a onClick={() => GotoNextPage(project)}
 
-                                        className="text-dark fw-bold font-16"
+                                        className="text-dark fw-bold font-16 hovertext"
                                       >
                                         {project.ProjectName}
                                       </a>
@@ -2406,7 +2406,7 @@ const HelloWorldContext = ({ props }: any) => {
                                     <h4 className="mt-0 mb-1">
                                       <a
                                         onClick={() => GotoNextPage(project)}
-                                        className="text-dark fw-bold font-16"
+                                        className="text-dark fw-bold font-16 hovertext"
                                       >
                                         {project.ProjectName ||
                                           "Untitled Project"}
@@ -2690,7 +2690,7 @@ const HelloWorldContext = ({ props }: any) => {
                                       <h4 className="mt-0 mb-1 one-line">
                                         <a
                                           onClick={() => GotoNextPage(project)}
-                                          className="text-dark fw-bold font-16"
+                                          className="text-dark fw-bold font-16 hovertext"
                                         >
                                           {project.ProjectName ||
                                             "Untitled Project"}
@@ -3183,7 +3183,7 @@ const HelloWorldContext = ({ props }: any) => {
                                   <h4 className="mt-0 mb-1 one-line">
                                     <a
                                       onClick={() => GotoNextPage(project)}
-                                      className="text-dark fw-bold font-16"
+                                      className="text-dark fw-bold font-16 hovertext"
                                     >
                                       {project.ProjectName ||
                                         "Untitled Project"}

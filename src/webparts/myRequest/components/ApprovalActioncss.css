@@ -136,3 +136,11 @@
   color: #3c3c3c;
   font-size: 13px;
 }
+.table-responsive{overflow-x: hidden;}
+  .DMSMasterContainer{margin-top: 10px;}
+  .topv{vertical-align: top;}
+  @media(max-width:640px){
+    .table-responsive{overflow-x: auto;}
+    .DMSMasterContainer{display: grid; overflow: hidden;}
+  
+  }

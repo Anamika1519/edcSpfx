@@ -453,7 +453,7 @@ const HorizontalNavbar = ({ _context, siteUrl }: any) => {
             </a>
 
             {isMenuOpen &&
-              <div id="myDropdownBell" className={`dropdown-content  ${isOpenBell ? 'show desktoView' : ''}`} style={{ width: '320px' }} ref={menuRef}>
+              <div id="myDropdownBell" className={`dropdown-content  ${isOpenBell ? 'show desktoView' : ''}`} style={{ width: '370px' }} ref={menuRef}>
 
 
                 <NotificationList NotificationArray={NotificationArray} handleNotificationClick={handleNotificationClick} OnClearall={OnClearall} />

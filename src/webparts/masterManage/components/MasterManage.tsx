@@ -19,6 +19,7 @@ import { faPaperclip } from '@fortawesome/free-solid-svg-icons';
 import HorizontalNavbar from '../../horizontalNavBar/components/HorizontalNavBar';
 import styles from "../components/MasterManage.module.scss"
 import { IMasterManageProps } from './IMasterManageProps';
+import { useEffect, useState } from 'react';
 const endsWith = (str: string, ending: string) => {
   console.log("strrrr",str,ending)
   return str.slice(-ending.length) === ending;
@@ -27,6 +28,79 @@ const endsWith = (str: string, ending: string) => {
 export const MastersettingContext = ({ props }: any) => {
   const sp: SPFI = getSP();
   console.log(sp, 'sp');
+  const [showIframe, setShowIframe] = useState(false);
+  const [iframeUrl, setIframeUrl] = useState('');
+  const handleCardClick = (url:any) => {
+    setIframeUrl(url);
+    setShowIframe(true);
+    // hideElementsInIframe()
+
+  };
+  useEffect(() => {
+    if (showIframe && iframeUrl) {
+      const iframe = document.querySelector('iframe');
+      if (iframe) {
+        const handleLoad = () => {
+          const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+          const sideNavBox = iframeDocument.getElementById('sideNavBox');
+          const s4TitleRow = iframeDocument.getElementById('s4-titlerow');
+          const mainribbon = iframeDocument.getElementById('suiteBarDelta');
+          
+          if (sideNavBox) {
+            // sideNavBox.style.display = 'none';
+            sideNavBox.remove()
+          }
+          if (mainribbon) {
+            // sideNavBox.style.display = 'none';
+            mainribbon.remove()
+          }
+          if (s4TitleRow) {
+            // s4TitleRow.style.display = 'none';
+            s4TitleRow.remove()
+          }
+        };
+
+        iframe.addEventListener('load', handleLoad);
+
+        // Cleanup the event listener
+        return () => {
+          iframe.removeEventListener('load', handleLoad);
+        };
+      }
+    }
+  }, [showIframe, iframeUrl]);
+  const handleBackClick = () => {
+    setShowIframe(false);
+  };
+  function hideElementsInIframe() {
+
+    const iframe = document.querySelector('iframe');
+    iframe.addEventListener('load', () => {
+
+      const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+      const sideNavBox = iframeDocument.getElementById('sideNavBox');
+      const s4TitleRow = iframeDocument.getElementById('s4-titlerow');
+      const s4TitleRow2 = iframeDocument.getElementById('s4-ribbonrow');
+      
+      if (sideNavBox) {
+         sideNavBox.remove()
+        // sideNavBox.style.display = 'none';
+      }
+      if (s4TitleRow) {
+        // s4TitleRow.style.display = 'none';
+        s4TitleRow.remove()
+      }
+      if (s4TitleRow2) {
+        // s4TitleRow.style.display = 'none';
+        s4TitleRow.remove()
+      }
+    });
+  }
+  const isSpecialGroup = (linkUrl:any) => {
+
+    const specialGroups = ['Super Admin Group', 'Content Contributor Group', 'Intranet Member Group'];
+    return specialGroups.some(group => linkUrl.includes(group));
+  };
   // const { useHide }: any = React.useContext(UserContext);
   // const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
   const { useHide }: any = React.useContext(UserContext);
@@ -206,7 +280,7 @@ checkUrlForMembershipGroupId();
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
               </div>
               <div className="row manage-master mt-3">
-                {console.log("IsUserAlllowed",IsUserAlllowed,settingArray)}
+                {/* {console.log("IsUserAlllowed",IsUserAlllowed,settingArray)}
                 {
                   IsUserAlllowed ?
                     settingArray.map((item: any) => {
@@ -222,7 +296,60 @@ checkUrlForMembershipGroupId();
                         </a>
                       </div>)
                     }) : (<div>Access Denied</div>)
-                }
+                } */}
+           
+      {!showIframe ? (
+        IsUserAlllowed ? (
+          settingArray.map((item) => {
+            const ImageUrl = item.ImageIcon == undefined || item.ImageIcon == null ? "" : JSON.parse(item.ImageIcon);
+            return (
+              <div className="col-sm-3 col-md-3 mt-2" key={item.Title}>
+                {isSpecialGroup(item?.Title) ? (
+                  <div
+                    className="card-master box1"
+                    onClick={() => handleCardClick(item?.LinkUrl)}
+                  >
+                    <div className="icon">
+                      <img src={ImageUrl?.serverUrl + ImageUrl?.serverRelativeUrl} alt="Icon" />
+                    </div>
+                    <p className="text-dark">{item.Title}</p>
+                  </div>
+                ) : (
+                  <a href={item?.LinkUrl}>
+                    <div className="card-master box1">
+                      <div className="icon">
+                        <img src={ImageUrl?.serverUrl + ImageUrl?.serverRelativeUrl} alt="Icon" />
+                      </div>
+                      <p className="text-dark">{item.Title}</p>
+                    </div>
+                  </a>
+                )}
+              </div>
+            );
+          })
+        ) : (
+          <div>Access Denied</div>
+        )
+      ) : (
+        <div>
+          <button 
+            style={{ margin: '10px' }} 
+            className="btn btn-secondary" 
+            onClick={handleBackClick}
+          >
+            Back
+          </button>
+          <iframe
+            id='iframe'
+            src={iframeUrl}
+            style={{ width: '100%', height: '600px', border: 'none' }}
+            title="Content"
+          ></iframe>
+        </div>
+      )}
+      <div id="iframeContainer" style={{ marginTop: '20px' }}></div>
+  
+
                 {/* {
   IsUserAlllowed ? (
     settingArray.map((item: any) => {
