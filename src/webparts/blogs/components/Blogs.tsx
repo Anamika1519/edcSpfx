@@ -511,7 +511,7 @@ const BlogsContext = ({ props }: any) => {
                   file,
                   sp,
                   "Documents",
-                  "https://alrostamanigroupae.sharepoint.com"
+                  "https://officeindia.sharepoint.com"
                 );
               }
             }
@@ -666,7 +666,7 @@ const BlogsContext = ({ props }: any) => {
               file,
               sp,
               "Documents",
-              "https://alrostamanigroupae.sharepoint.com"
+              "https://officeindia.sharepoint.com"
             );
           }
         }
@@ -1230,11 +1230,11 @@ const deleteLocalFile = (index: number, filArray: any[], name: string) => {
                              
                                             rows != null && rows.length > 0  && (
                              
-                                              <div className="container mt-2">
+                                              <div className="">
                              
-                                                <div className="card cardborder p-4">
+                                                <div className="p-0">
                              
-                                                  <div className="font-16">
+                                                  <div className="font-16 mb-2">
                              
                                                     <strong>Approval Hierarchy</strong>
                              
@@ -1252,7 +1252,7 @@ const deleteLocalFile = (index: number, filArray: any[], name: string) => {
                              
                                                       <div className="row mb-2" key={row.id}>
                              
-                                                        <div className="col-12 col-md-5">
+                                                        <div className="col-12 col-md-4">
                              
                                                           <label htmlFor={`Level-${row.id}`} className="form-label">
                              
@@ -1311,7 +1311,7 @@ const deleteLocalFile = (index: number, filArray: any[], name: string) => {
                                                         </div>
                              
                              
-                                                        <div className="col-12 col-md-5">
+                                                        <div className="col-12 col-md-8">
                              
                                                           <label htmlFor={`approver-${row.id}`} className="form-label">
                              
@@ -1454,7 +1454,7 @@ const deleteLocalFile = (index: number, filArray: any[], name: string) => {
                                 </div>
                               </div> */}
 
-                              <div className="text-center butncss">
+                              <div className="text-center butncss mt-2">
                               <div
                                   className="btn btn-success waves-effect waves-light m-1"
                                   style={{ fontSize: "0.875rem" }}
@@ -1542,7 +1542,7 @@ const deleteLocalFile = (index: number, filArray: any[], name: string) => {
                           {DocumentpostArr1.map((file: any, index: number) => (
                             <tr key={index}>
                               <td className='text-center'>{index + 1}</td>
-                              <td>{file.fileName.replace("/sites/IntranetUAT", "")}</td>
+                              <td>{file.fileName.replace("/sites/AlRostmaniSpfx2", "")}</td>
                               <td className='text-right'>{file.fileSize}</td>
                               <td className='text-center'> <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, DocumentpostArr1, "docs")} /> </td>
                             </tr>

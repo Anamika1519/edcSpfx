@@ -435,28 +435,28 @@ const HelloWorldContext = ({ props }: any) => {
                             style={{ borderRadius: "1rem" }}
                           >
                             {dynamicbanners.length == 0 &&
-                            <div
+                              <div
 
-                              className="no-results align-items-center  newiconsvg text-center mt25 "
+                                className="no-results align-items-center  newiconsvg text-center mt25 "
 
-                              style={{
+                                style={{
 
-                               
 
-                                justifyContent: "center",
-                                position: 'relative',
-                                marginTop: '10px',
-                                height: '300px',
-                                top:'70px'
 
-                              }}
+                                  justifyContent: "center",
+                                  position: 'relative',
+                                  marginTop: '10px',
+                                  height: '300px',
+                                  top: '70px'
 
-                            >
-                              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                                }}
 
-                              <p className="font-14 text-muted text-center">No Banner found </p>
+                              >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
 
-                            </div>}
+                                <p className="font-14 text-muted text-center">No Banner found </p>
+
+                              </div>}
                             {dynamicbanners.map((item, index) => {
                               const ImageUrl1 =
                                 item.BannerImage == undefined ||
@@ -479,9 +479,12 @@ const HelloWorldContext = ({ props }: any) => {
                                     className="d-block img-fluid"
                                   />
                                   <div className="carousel-caption d-none d-md-block">
-                                    <p className="font-18 mb-1 mt-1 ps-4 pe-4 py-0">
-                                      {item.Description}
+                                    <p style={{width:'100%'}} className="font-18 mb-0 mt-0 ps-4 pe-4 py-0">
+                                      {item.Title}
                                     </p>
+                                    <span style={{width:'100%'}} className="font-14 nwdescrp mb-1 mt-0 ps-4 pe-4 py-0">
+                                      {item.Description}
+                                    </span>
                                   </div>
                                 </div>
                               );
@@ -571,7 +574,7 @@ const HelloWorldContext = ({ props }: any) => {
 
                                       className="text-muted mb-0 font-18 clcom"
                                     >
-                                      <MessageSquare  size={15} color="#f7b84b" />
+                                      <MessageSquare size={15} color="#f7b84b" />
                                       <span className="font-12 margin01 mx-1  float-right floatl">
                                         {announcement.CommentCount} Comments
                                       </span>
@@ -1267,12 +1270,12 @@ const HelloWorldContext = ({ props }: any) => {
                                       className="pe-2 text-nowrap"
                                     >
                                       <img className="newimg1" src={require("../assets/docunew.png")} />
-                                        {/* {project?.ProjectsDocsId?.length} */}
-                                        {project?.FileCount || 0}
-                                        &nbsp;Documents
+                                      {/* {project?.ProjectsDocsId?.length} */}
+                                      {project?.FileCount || 0}
+                                      &nbsp;Documents
                                     </span>
                                     <span>
-                                      <img className="newimg2" src={require("../assets/commnew.png")}/>
+                                      <img className="newimg2" src={require("../assets/commnew.png")} />
                                       {/* Display fetched comment count */}
                                       {/* {commentsData[project.ID] !== undefined ? (
                                     `${commentsData[project.ID]} Comments`

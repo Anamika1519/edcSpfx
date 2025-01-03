@@ -393,11 +393,12 @@ if(Currusers){
         <HorizontalNavbar _context={sp} siteUrl={siteUrl} />
         <div className="content" style={{ marginLeft: `${!useHide ? '240px' : '80px'}`, marginTop: '0rem' }}>
           <div className="container-fluid  paddb">
-            <div className="row">
+            <div style={{paddingLeft:'0.5rem'}} className="row">
               <div className="col-lg-5">
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
               </div>
             </div>
+            <div style={{paddingLeft:'1.3rem', paddingRight:'1.5rem'}} className="row">
             <div className="card mt-3" >
               <div className="card-body">
                 <div className="row mt-2">
@@ -477,7 +478,7 @@ if(Currusers){
                             options={rows}
                             value={selectedOption}
                             name="rows"
-                            className={`form-control inputcs ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                            className={`form-control inputcs newse ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
                             onChange={(selectedOption:any) => onSelect(selectedOption)}
                             placeholder="Select"
                           />
@@ -654,7 +655,7 @@ if(Currusers){
                       </div> */}
                       {
                         !InputDisabled ?
-                          (<div className="text-center" style={{ marginTop: '3rem' }}>
+                          (<div className="text-center" style={{ marginTop: '1.5rem' }}>
                             {/* <div className="btn btn-success waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleSaveAsDraft}>
                               <div className='d-flex' style={{ justifyContent: 'space-around' }}>
                                 <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} alt="Check" /> Save As Draft
@@ -665,7 +666,7 @@ if(Currusers){
                                 <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} alt="Check" /> Submit
                               </div>
                             </div>
-                            <button type="button" className="btn btn-light waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleCancel}>
+                            <button type="button" className="btn btn-light1 waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleCancel}>
                               <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }}
                                 className='me-1' alt="x" />
                               Cancel
@@ -682,7 +683,7 @@ if(Currusers){
                 </div>
               </div>
             </div>
-            
+            </div>
 
 
           </div>

@@ -29,10 +29,10 @@
     border-color: #1abc9c;
 }
 
-.btn-light {
+.btn-light1 {
     background-color: #f8f9fa;
     border-color: #f8f9fa;
-    padding: 6px 10px !important;
+    padding: 7px 12px !important;
 }
 
 /* Add hover effect to buttons */
@@ -168,3 +168,8 @@ div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm)
  border-bottom: 1px solid #e1e1e1 !important;
 }
 .table-responsive{display: grid;}
+.css-hlgwow{padding: 2px 14px !important;
+    box-sizing: border-box;
+    margin: -7px !important;}
+.btn-light1{padding:7px 12px !important;}
+.newse{padding: 0px !important; margin: 0px !important; border: 0px solid #ccc !important; height: 36px !important;}
