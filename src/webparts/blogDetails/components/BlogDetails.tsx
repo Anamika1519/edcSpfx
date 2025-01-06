@@ -31,6 +31,7 @@ import { WorkflowAuditHistory } from "../../../CustomJSComponents/WorkflowAuditH
 import { CONTENTTYPE_Blogs } from "../../../Shared/Constants";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import { getUrlParameterValue } from "../../../Shared/Helper";
 // Define types for reply and comment structures
 interface Reply {
   Id: number;
@@ -77,25 +78,26 @@ const BlogDetailsContext = ({ props }: any) => {
   const [loadingLike, setLoadingLike] = useState<boolean>(false);
   const [loadingReply, setLoadingReply] = useState<boolean>(false);
   const [ArrtopBlogs, setArrtopBlogs]: any[] = useState([]);
-
+  const [pageValue, setpage] = React.useState("");
   const [showComment, setshowComment] = useState<boolean>(true);
   const [showAppRemark, setshowAppRemark] = useState<boolean>(false);
- const [ApprovalRequestItem, setApprovalRequestItem] = React.useState(null);
-   const [formData, setFormData] = React.useState({
-      Remarks: "",
-     
-    });
+  const [ApprovalRequestItem, setApprovalRequestItem] = React.useState(null);
+  const [formData, setFormData] = React.useState({
+    Remarks: "",
+
+  });
   // Load comments from localStorage on mount
   useEffect(() => {
     // const savedComments = localStorage.getItem('comments');
     // if (savedComments) {
     //   setComments(JSON.parse(savedComments));
     // }
-
+    let page = getUrlParameterValue('page');
+    setpage(page);
     ApiLocalStorageData();
-   // getApiData()
+    // getApiData()
     ApICallData();
-   // getApiData()
+    // getApiData()
     const showNavbar = (
       toggleId: string,
       navId: string,
@@ -140,30 +142,30 @@ const BlogDetailsContext = ({ props }: any) => {
     const originalString = ids;
     const idNum = originalString.substring(1);
     // const queryString = decryptId(Number(updatedString));
-    const blogDetail =  await getBlogDetailsById(sp, Number(idNum));
+    const blogDetail = await getBlogDetailsById(sp, Number(idNum));
 
     let myrequestdata = await getMyRequestBlog(sp, blogDetail[0]);
-    if(myrequestdata){
+    if (myrequestdata) {
       setApprovalRequestItem(myrequestdata[0]);
     }
     // sp.web.lists.getByTitle('ARGMyRequest').items.getById(Number(idNum))().then(itm => {
     //   setApprovalRequestItem(itm);
     // })
-    if(myrequestdata.length >0 && myrequestdata[0].Status =="Pending" ){
+    if (myrequestdata.length > 0 && myrequestdata[0].Status == "Pending") {
       setshowAppRemark(true);
     }
-    if(blogDetail[0].Status !="Approved"){
+    if (blogDetail[0].Status != "Approved") {
       setshowComment(false);
     } else {
       getApiData()
     }
     setArrDetails(blogDetail)
-     
-   console.log("ArrDetails[0]",ArrDetails[0],blogDetail);
-   if(blogDetail){
-    let Blogsdata = await getAllBlogsnonselected(sp, Number(idNum),blogDetail[0]?.BlogCategory!=null?blogDetail[0]?.BlogCategory.ID:null);
-     setArrtopBlogs(Blogsdata);
-   }
+
+    console.log("ArrDetails[0]", ArrDetails[0], blogDetail);
+    if (blogDetail) {
+      let Blogsdata = await getAllBlogsnonselected(sp, Number(idNum), blogDetail[0]?.BlogCategory != null ? blogDetail[0]?.BlogCategory.ID : null);
+      setArrtopBlogs(Blogsdata);
+    }
   };
   const getApiData = () => {
     let initialComments: any[] = [];
@@ -279,14 +281,14 @@ const BlogDetailsContext = ({ props }: any) => {
           UserName: ress.data.UserName,
           AuthorId: ress.data.AuthorId,
           Comments: ress.data.Comments,
-          Created:ress.data.Created,
+          Created: ress.data.Created,
           UserLikesJSON: [],
           UserCommentsJSON: [],
           userHasLiked: false, // Initialize as false
           UserProfile: ress.data.UserProfile,
         };
         getApiData();
-       // setComments((prevComments) => [...prevComments, newCommentData1]);
+        // setComments((prevComments) => [...prevComments, newCommentData1]);
         let notifiedArr = {
           ContentId: ArrDetails[0].Id,
           NotifiedUserId: ArrDetails[0].AuthorId,
@@ -504,21 +506,21 @@ const BlogDetailsContext = ({ props }: any) => {
   ];
   //#endregion
   console.log(ArrDetails, "console.log(ArrDetails)");
-  const sendanEmail = (item:any) => {
+  const sendanEmail = (item: any) => {
     // window.open("https://outlook.office.com/mail/inbox");
-  
-     const subject ="Blog Title-"+ item.Title;
-     const body = 'Here is the link to the Blog:'+ `${siteUrl}/SitePages/BlogDetails.aspx?${item.Id}`;
-  
+
+    const subject = "Blog Title-" + item.Title;
+    const body = 'Here is the link to the Blog:' + `${siteUrl}/SitePages/BlogDetails.aspx?${item.Id}`;
+
     //const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-  
+
     // Open the link to launch the default mail client (like Outlook)
-   // window.location.href = mailtoLink;
+    // window.location.href = mailtoLink;
 
     const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
     window.open(office365MailLink, '_blank');
-   };
+  };
 
   const handleUpdateStatus = async (statusnew: string) => {
     const ids = window.location.search;
@@ -530,35 +532,45 @@ const BlogDetailsContext = ({ props }: any) => {
 
     let myrequestdata = await getMyRequestBlog(sp, blogDetail[0]);
 
-       const postPayload = {
-         Remark: formData.Remarks,
-         Status :statusnew
-   
-       };
-   
-       //console.log(postPayload);
-   
-       const postResult = await updateItemApproval(
-         postPayload,
-         sp,
-         myrequestdata[0].ID
-       );
-       
-       setTimeout(() => {
-        window.location.reload();
-      }, 100);
+    const postPayload = {
+      Remark: formData.Remarks,
+      Status: statusnew
+
+    };
+
+    //console.log(postPayload);
+
+    const postResult = await updateItemApproval(
+      postPayload,
+      sp,
+      myrequestdata[0].ID
+    );
+
+    setTimeout(() => {
+      window.location.reload();
+    }, 100);
 
 
   }
 
-    const onChange = async (name: string, value: string) => {
-       setFormData((prevData) => ({
-         ...prevData,
-         [name]: value,
-       }));  
-      
-     };
-  
+  const onChange = async (name: string, value: string) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+
+  };
+  const handleCancel = () => {
+
+    debugger
+    if (pageValue == "MyRequest") {
+      window.location.href = `${siteUrl}/SitePages/MyRequests.aspx`;
+    } else if (pageValue == "MyApproval") {
+      window.location.href = `${siteUrl}/SitePages/MyApprovals.aspx`;
+    }
+    //window.location.href = `${siteUrl}/SitePages/MediaGalleryMaster.aspx`;
+
+  }
 
   return (
     <div id="wrapper" ref={elementRef}>
@@ -604,7 +616,7 @@ const BlogDetailsContext = ({ props }: any) => {
                                   {moment(item.Created).format("DD-MMM-YYYY")}{" "}
                                   &nbsp; &nbsp; &nbsp;|
                                 </span>
-                                <span className="text-nowrap hovertext mb-0 d-inline-block"  onClick={() => sendanEmail(item)} >
+                                <span className="text-nowrap hovertext mb-0 d-inline-block" onClick={() => sendanEmail(item)} >
                                   <Share size={14} /> Share by email &nbsp; &nbsp;
                                   &nbsp;|&nbsp; &nbsp; &nbsp;
                                 </span>
@@ -622,7 +634,7 @@ const BlogDetailsContext = ({ props }: any) => {
                         </div>
                         <div className="row " >
                           <p
-                           style={{ lineHeight: '22px', fontSize:'15px' }}
+                            style={{ lineHeight: '22px', fontSize: '15px' }}
                             className="d-block text-dark mt-2"
                           >
                             {item.Overview}
@@ -638,18 +650,18 @@ const BlogDetailsContext = ({ props }: any) => {
                                 <div className="col-sm-6 col-xl-4 filter-item all web illustrator">
                                   <div
                                     className="gal-box">
-                                    <a style={{cursor:'auto'}}
+                                    <a style={{ cursor: 'auto' }}
                                       data-bs-toggle="modal"
                                       data-bs-target="#centermodal"
                                       className="image-popup mb-2"
                                       title="Screenshot-1"
                                     >
                                       <img
-                                        src={`https://alrostamanigroupae.sharepoint.com${res.fileUrl}`}
+                                        src={`https://officeIndia.sharepoint.com${res.fileUrl}`}
                                         className="img-fluid imgcssscustom"
                                         alt="work-thumbnail"
                                         data-themekey="#"
-                                        style={{ width: "100%", height: "100%", cursor:'auto', objectFit: "cover", borderRadius: "13px" }}
+                                        style={{ width: "100%", height: "100%", cursor: 'auto', objectFit: "cover", borderRadius: "13px" }}
                                       />
                                     </a>
                                   </div>
@@ -665,7 +677,7 @@ const BlogDetailsContext = ({ props }: any) => {
 
                         >
                           <p
-                          style={{ lineHeight: '22px', fontSize:'15px' }}
+                            style={{ lineHeight: '22px', fontSize: '15px' }}
                             className="d-block text-dark newtextc mt-2 mb-0"
                           >
                             <div
@@ -699,7 +711,7 @@ const BlogDetailsContext = ({ props }: any) => {
                         boxShadow: "0 3px 20px #1d26260d",
                       }}
                     >
-                     {showComment && <div className="card-body" style={{ padding: "1rem 0.9rem" }}>
+                      {showComment && <div className="card-body" style={{ padding: "1rem 0.9rem" }}>
                         {/* New comment input */}
                         <h4 className="mt-0 mb-3 text-dark fw-bold font-16">
                           Comments
@@ -719,13 +731,13 @@ const BlogDetailsContext = ({ props }: any) => {
                             onClick={handleAddComment}
                             disabled={loading} // Disable button when loading
                           >
-                            <FontAwesomeIcon style={{float:'left',margin:"7px 6px 0px 0px"}} icon={faPaperPlane} /> 
+                            <FontAwesomeIcon style={{ float: 'left', margin: "7px 6px 0px 0px" }} icon={faPaperPlane} />
                             {loading ? "Submitting..." : "Add Comment"}{" "}
                             {/* Change button text */}
                           </button>
                         </div>
                       </div>
-                  }
+                      }
                     </div>
                   </div>
                 </div>
@@ -757,11 +769,19 @@ const BlogDetailsContext = ({ props }: any) => {
 
 
               </div>
-
-              
-                
+              {pageValue !== "" &&
+                <div className="col-lg-4">
+                  <div className="text-center butncss">
+                    <button type="button" className="btn btn-light waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleCancel}>
+                      <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }}
+                        className='me-1' alt="x" />
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              }
               <div className="col-lg-4">
-              <div style={{  position:'sticky', top:'90px' }} className="card  postion8">
+                <div style={{ position: 'sticky', top: '90px' }} className="card  postion8">
                   <div className="card-body">
                     <h4 className="header-title text-dark  fw-bold mb-0">
                       <span style={{ fontSize: '20px' }}>Related Latest Blogs</span>    <a className="font-11 btn btn-primary  waves-effect waves-light view-all cursor-pointer" href="#" onClick={NavigatetoEvents} style={{ float: 'right', lineHeight: '18px' }}>View All</a></h4>
@@ -771,7 +791,7 @@ const BlogDetailsContext = ({ props }: any) => {
                         <div className="mainevent mt-2">
                           <div className="bordernew">
                             <h3 className="twolinewrap font-16  text-dark fw-bold hovertext mb-2 cursor-pointer" style={{ cursor: "pointer" }} onClick={() => gotoNewsDetails(res)}>{res.Title}</h3>
-                            <p style={{ lineHeight: '22px', fontSize:'15px' }} className="text-muted twolinewrap">{res.Overview}</p>
+                            <p style={{ lineHeight: '22px', fontSize: '15px' }} className="text-muted twolinewrap">{res.Overview}</p>
                             <div className="row">
                               <div className="col-sm-12"> <span style={{ marginTop: "4px" }} className="date-color font-12 float-start  mb-1 ng-binding"><i className="fe-calendar"></i> {moment(res.Created).format("DD-MMM-YYYY")}</span>  &nbsp; &nbsp; &nbsp; <span className="font-12" style={{ color: '#009157', fontWeight: '600' }}>  </span></div>
 
@@ -784,11 +804,11 @@ const BlogDetailsContext = ({ props }: any) => {
                   </div>
                 </div>
 
-               
+
               </div>
 
-               {/* ******* changes */}
-             {/* {showAppRemark == true &&<div><div>
+              {/* ******* changes */}
+              {/* {showAppRemark == true &&<div><div>
               
               <div className="mb-3">
                         <label htmlFor="title" className="form-label">
@@ -837,28 +857,28 @@ const BlogDetailsContext = ({ props }: any) => {
                           </div>
              } */}
 
-                 {/* ******* changes */}
-                  {
-                               //let forrework=ApprovalRequestItem && ApprovalRequestItem.IsRework=='Yes'&& ApprovalRequestItem.LevelSequence!=0;
-                               ( ApprovalRequestItem)|| (ApprovalRequestItem && ApprovalRequestItem.IsRework == 'Yes' && ApprovalRequestItem.LevelSequence != 0 ) ? (
-                                 <WorkflowAction currentItem={ApprovalRequestItem} ctx={props.context}
-                                   DisableApproval={ApprovalRequestItem && ApprovalRequestItem.IsRework == 'Yes'&& ApprovalRequestItem.LevelSequence != 0 }
-                                   DisableCancel={ApprovalRequestItem && ApprovalRequestItem.IsRework == 'Yes' && ApprovalRequestItem.LevelSequence != 0}
-                                 //  DisableReject={ApprovalRequestItem && ApprovalRequestItem.IsRework=='Yes'&& ApprovalRequestItem.LevelSequence!=0}
-                                 />
-                               ) : (<div></div>)
-                             }
-                             {/* {
+              {/* ******* changes */}
+              {
+                //let forrework=ApprovalRequestItem && ApprovalRequestItem.IsRework=='Yes'&& ApprovalRequestItem.LevelSequence!=0;
+                (ApprovalRequestItem) || (ApprovalRequestItem && ApprovalRequestItem.IsRework == 'Yes' && ApprovalRequestItem.LevelSequence != 0) ? (
+                  <WorkflowAction currentItem={ApprovalRequestItem} ctx={props.context}
+                    DisableApproval={ApprovalRequestItem && ApprovalRequestItem.IsRework == 'Yes' && ApprovalRequestItem.LevelSequence != 0}
+                    DisableCancel={ApprovalRequestItem && ApprovalRequestItem.IsRework == 'Yes' && ApprovalRequestItem.LevelSequence != 0}
+                  //  DisableReject={ApprovalRequestItem && ApprovalRequestItem.IsRework=='Yes'&& ApprovalRequestItem.LevelSequence!=0}
+                  />
+                ) : (<div></div>)
+              }
+              {/* {
                                <WorkflowAuditHistory ContentItemId={editID} ContentType={CONTENTTYPE_Blogs} ctx={props.context} />
                              } */}
-             {/* ******* changes */}
-             {/* <WorkflowAction currentItem={ApprovalRequestItem} ctx={props.context}
+              {/* ******* changes */}
+              {/* <WorkflowAction currentItem={ApprovalRequestItem} ctx={props.context}
                                    DisableApproval={ApprovalRequestItem && ApprovalRequestItem.IsRework == 'Yes' && ApprovalRequestItem.LevelSequence != 0}
                                    DisableCancel={ApprovalRequestItem && ApprovalRequestItem.IsRework == 'Yes' && ApprovalRequestItem.LevelSequence != 0}
                                  //  DisableReject={ApprovalRequestItem && ApprovalRequestItem.IsRework=='Yes'&& ApprovalRequestItem.LevelSequence!=0}
                                  /> */}
 
-                 
+
             </div>
 
 

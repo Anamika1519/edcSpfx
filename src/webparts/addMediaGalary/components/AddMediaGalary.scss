@@ -77,7 +77,13 @@ div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm)
 	overflow-y: scroll;
 	margin-bottom: 25px;
 }
+.searchWrapper{padding: 0px 5PX !important;}
+.multiSelectContainer input {
+  
+  margin-top: 3px;
+  height: 36px !important;
 
+}
 .force-overflow
 {
 	min-height: 450px;

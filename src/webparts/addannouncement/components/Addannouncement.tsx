@@ -76,6 +76,7 @@ const AddannouncementContext = ({ props }: any) => {
   }>({});
   const [IsAdded, setIsAdded] = React.useState(false);
   const [modeValue, setmode] = React.useState("");
+  const [pageValue, setpage] = React.useState("");
 
   const [Loading, setLoading] = React.useState(false);
   //#region State to hold form data
@@ -148,6 +149,8 @@ const AddannouncementContext = ({ props }: any) => {
 
     let mode = getUrlParameterValue('mode');
     setmode(mode);
+    let page = getUrlParameterValue('page');
+    setpage(page);
     if (mode && mode == 'approval') {
       setApprovalMode(true);
       let requestid = getUrlParameterValue('requestid');
@@ -1450,7 +1453,14 @@ const AddannouncementContext = ({ props }: any) => {
 
   const handleCancel = () => {
     debugger
-    window.location.href = `${siteUrl}/SitePages/announcementmaster.aspx`;
+    if(pageValue == "MyRequest"){
+      window.location.href = `${siteUrl}/SitePages/MyRequests.aspx`;
+    }else if(pageValue == "MyApproval"){
+      window.location.href = `${siteUrl}/SitePages/MyApprovals.aspx`;
+    }else{
+      window.location.href = `${siteUrl}/SitePages/announcementmaster.aspx`;
+    }
+   
   }
   const formats = [
     "header", "height", "bold", "italic",
@@ -2195,7 +2205,7 @@ const AddannouncementContext = ({ props }: any) => {
                           {DocumentpostArr1.map((file: any, index: number) => (
                             <tr key={index}>
                               <td className='text-center'>{index + 1}</td>
-                              <td>{file.fileName.replace("/sites/Intranetuat", "")}</td>
+                              <td>{file.fileName.replace("/sites/alrostmanispfx2", "")}</td>
                               <td className='text-right'>{file.fileSize}</td>
                               <td className='text-center'> <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, DocumentpostArr1, "docs")} /> </td>
                             </tr>

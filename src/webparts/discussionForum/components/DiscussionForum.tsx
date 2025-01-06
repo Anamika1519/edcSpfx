@@ -830,7 +830,7 @@ const DiscussionForumContext = ({ props }: any) => {
                   file,
                   sp,
                   "Documents",
-                  "https://alrostamanigroupae.sharepoint.com"
+                  "https://officeIndia.sharepoint.com"
                 );
               }
             } else {
@@ -1148,7 +1148,7 @@ const DiscussionForumContext = ({ props }: any) => {
                 InviteMemebersId: selectedIds,
                 ARGDiscussionStatus: "Ongoing",
                 DiscussionInProgress: "In Progress",
-                DiscussionFileManager: `/sites/Intranetuat/ARGDiscussionFiles/${formData.topic}`,
+                DiscussionFileManager: `/sites/alrostmanispfx2/ARGDiscussionFiles/${formData.topic}`,
                 DiscussionFolderName: formData.topic
               };
             }
@@ -1162,7 +1162,7 @@ const DiscussionForumContext = ({ props }: any) => {
                 DiscussionForumCategoryId: Number(formData.category),
                 ARGDiscussionStatus: "Ongoing",
                 DiscussionInProgress: "In Progress",
-                DiscussionFileManager: `/sites/Intranetuat/ARGDiscussionFiles/${formData.topic}`,
+                DiscussionFileManager: `/sites/alrostmanispfx2/ARGDiscussionFiles/${formData.topic}`,
                 DiscussionFolderName: formData.topic
               };
             }
@@ -1271,7 +1271,7 @@ const DiscussionForumContext = ({ props }: any) => {
 
   const handleCancel = () => {
     window.location.href =
-      "https://alrostamanigroupae.sharepoint.com/sites/Intranetuat/SitePages/Blogs.aspx";
+      "https://officeIndia.sharepoint.com/sites/alrostmanispfx2/SitePages/Blogs.aspx";
   };
 
   const formats = [

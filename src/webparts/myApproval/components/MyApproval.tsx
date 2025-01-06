@@ -842,7 +842,7 @@ const MyApprovalContext = ({ props }: any) => {
               `${siteUrl}/SitePages/AddAnnouncement.aspx` +
               "?requestid=" +
               Item?.Id +
-              "&mode=" + mode;
+            "&mode=" + mode + "&page=MyApproval";
             break;
           case "News":
             sessionkey = "announcementId";
@@ -850,7 +850,7 @@ const MyApprovalContext = ({ props }: any) => {
               `${siteUrl}/SitePages/AddAnnouncement.aspx` +
               "?requestid=" +
               Item?.Id +
-              "&mode=" + mode;
+            "&mode=" + mode + "&page=MyApproval";
             break;
           case "Event":
             sessionkey = "EventId";
@@ -858,7 +858,7 @@ const MyApprovalContext = ({ props }: any) => {
               `${siteUrl}/SitePages/EventMasterForm.aspx` +
               "?requestid=" +
               Item?.Id +
-              "&mode=" + mode;
+            "&mode=" + mode + "&page=MyApproval";
             break;
           case "Media":
             sessionkey = "mediaId";
@@ -866,12 +866,12 @@ const MyApprovalContext = ({ props }: any) => {
               `${siteUrl}/SitePages/MediaGalleryForm.aspx` +
               "?requestid=" +
               Item?.Id +
-              "&mode=" + mode;
+            "&mode=" + mode + "&page=MyApproval";
             break;
           case "Blog":
             sessionkey = "blogId";
             redirecturl =
-              `${siteUrl}/SitePages/BlogDetails.aspx?` + Item?.ContentId;
+              `${siteUrl}/SitePages/BlogDetails.aspx?` + Item?.ContentId + "&page=MyApproval";
             break;
           default:
         }
@@ -1044,7 +1044,9 @@ const MyApprovalContext = ({ props }: any) => {
                           <div className="table-responsive pt-0">
                             {activeTab === "Intranet" ||
                               activeTab === "Automation" ? (
-                              <table
+                               
+                                <>
+                                                            <table
                                 className="mtbalenew mt-0 table-centered table-nowrap table-borderless mb-0"
                                 style={{ position: "relative" }}
                               >
@@ -1465,7 +1467,7 @@ const MyApprovalContext = ({ props }: any) => {
                                               textAlign: 'center'
                                             }}
                                           >
-                                            <div className="btn btn-light">
+                                            <div className="btn btn-light1">
                                               {new Date(
                                                 item?.Created
                                               ).toLocaleDateString()}
@@ -1488,6 +1490,7 @@ const MyApprovalContext = ({ props }: any) => {
                                             style={{
                                               minWidth: "50px",
                                               maxWidth: "50px",
+                                              textAlign:'center'
                                             }}
                                             className="fe-eye font-18"
                                           >
@@ -1504,7 +1507,7 @@ const MyApprovalContext = ({ props }: any) => {
 
                                                   maxWidth: "20px",
 
-                                                  marginLeft: "15px",
+                                                  
 
                                                   cursor: "pointer",
 
@@ -1521,7 +1524,7 @@ const MyApprovalContext = ({ props }: any) => {
 
                                                   maxWidth: "20px",
 
-                                                  marginLeft: "15px",
+                                                  marginLeft: "0px",
 
                                                   cursor: "pointer",
                                                 }}
@@ -1534,6 +1537,105 @@ const MyApprovalContext = ({ props }: any) => {
                                   )}
                                 </tbody>
                               </table>
+
+{currentData?.length > 0 ? (
+  <nav className="pagination-container">
+    <ul className="pagination">
+      {/* <li
+        className={`page-item ${currentPage === 1 ? "disabled" : ""
+          }`}
+      > */}
+      <li
+
+        className={`prevPage page-item ${currentGroup === 1 ? "disabled" : ""
+          }`}
+        onClick={() => handleGroupChange("prev")}
+      >
+
+        <a
+          className="page-link"
+          // onClick={() =>
+          //   handlePageChange(currentPage - 1)
+          // }
+          aria-label="Previous"
+        >
+          «
+        </a>
+      </li>
+      {Array.from(
+
+        { length: endPage - startPage + 1 },
+
+        (_, num) => {
+          const pageNum = startPage + num;
+          return (
+
+            <li
+
+              key={pageNum}
+
+              className={`page-item ${currentPage === pageNum ? "active" : ""
+
+                }`}
+
+            >
+
+              <a
+
+                className="page-link"
+
+                onClick={() =>
+
+                  handlePageChange(pageNum)
+
+                }
+
+              >
+
+                {pageNum}
+
+              </a>
+
+            </li>
+
+          )
+        }
+
+      )}
+
+      <li
+
+        className={`nextPage page-item ${currentGroup === totalGroups ? "disabled" : ""
+
+          }`}
+        onClick={() => handleGroupChange("next")}
+      >
+
+        <a
+
+          className="page-link"
+
+          onClick={() =>
+
+            handlePageChange(currentPage + 1)
+
+          }
+
+          aria-label="Next"
+
+        >
+
+          »
+
+        </a>
+
+      </li>
+      
+    </ul>
+  </nav>
+) : (
+  <></>
+)} </>
                             ) : null}
 
                             {activeTab === "DMS" && (
@@ -1560,7 +1662,7 @@ const MyApprovalContext = ({ props }: any) => {
                                             <div
                                               className="d-flex pb-2"
                                               style={{
-                                                justifyContent: "space-between",
+                                                justifyContent: "space-evenly",
                                               }}
                                             >
                                               <span>S.No.</span>
@@ -1602,7 +1704,7 @@ const MyApprovalContext = ({ props }: any) => {
                                               <div
                                                 className="d-flex pb-2"
                                                 style={{
-                                                  justifyContent: "space-between",
+                                                  justifyContent: "space-evenly",
                                                 }}
                                               >
                                                 <span>Request ID</span>
@@ -1649,7 +1751,7 @@ const MyApprovalContext = ({ props }: any) => {
                                               <div
                                                 className="d-flex pb-2"
                                                 style={{
-                                                  justifyContent: "space-between",
+                                                  justifyContent: "space-evenly",
                                                 }}
                                               >
                                                 <span>Title</span>
@@ -1697,7 +1799,7 @@ const MyApprovalContext = ({ props }: any) => {
                                               <div
                                                 className="d-flex  pb-2"
                                                 style={{
-                                                  justifyContent: "space-between",
+                                                  justifyContent: "space-evenly",
                                                 }}
                                               >
                                                 <span>Process Name</span>{" "}
@@ -1746,7 +1848,7 @@ const MyApprovalContext = ({ props }: any) => {
                                               <div
                                                 className="d-flex  pb-2"
                                                 style={{
-                                                  justifyContent: "space-between",
+                                                  justifyContent: "space-evenly",
                                                 }}
                                               >
                                                 <span>Requested By</span>{" "}
@@ -1795,7 +1897,7 @@ const MyApprovalContext = ({ props }: any) => {
                                               <div
                                                 className="d-flex  pb-2"
                                                 style={{
-                                                  justifyContent: "space-between",
+                                                  justifyContent: "space-evenly",
                                                 }}
                                               >
                                                 <span>Requested Date</span>{" "}
@@ -1844,7 +1946,7 @@ const MyApprovalContext = ({ props }: any) => {
                                               <div
                                                 className="d-flex  pb-2"
                                                 style={{
-                                                  justifyContent: "space-between",
+                                                  justifyContent: "space-evenly",
                                                 }}
                                               >
                                                 <span>Status</span>{" "}
@@ -2003,12 +2105,12 @@ const MyApprovalContext = ({ props }: any) => {
 
                                                 <td
                                                   style={{
-                                                    minWidth: "100px",
+                                                    minWidth: "80px",  maxWidth: "80px",
                                                     // maxWidth: "100px",
                                                     textAlign: 'center'
                                                   }}
                                                 >
-                                                  <div className="btn btn-light">
+                                                  <div className="btn btn-light1">
 
                                                     {/* {item?.FileUID?.Created} */}
                                                     {new Date(item?.FileUID?.Created).toLocaleString('en-US', { 
@@ -2027,6 +2129,7 @@ year: 'numeric',
                                                   style={{
                                                     minWidth: "80px",
                                                     maxWidth: "80px",
+                                                     textAlign: 'center'
                                                   }}
                                                 >
                                                   <div className="btn btn-status">
@@ -2061,13 +2164,113 @@ year: 'numeric',
                                         )}
                                       </tbody>
                                     </table>
+                                    {currentData?.length > 0 ? (
+  <nav className="pagination-container">
+    <ul className="pagination">
+      {/* <li
+        className={`page-item ${currentPage === 1 ? "disabled" : ""
+          }`}
+      > */}
+      <li
+
+        className={`prevPage page-item ${currentGroup === 1 ? "disabled" : ""
+          }`}
+        onClick={() => handleGroupChange("prev")}
+      >
+
+        <a
+          className="page-link"
+          // onClick={() =>
+          //   handlePageChange(currentPage - 1)
+          // }
+          aria-label="Previous"
+        >
+          «
+        </a>
+      </li>
+      {Array.from(
+
+        { length: endPage - startPage + 1 },
+
+        (_, num) => {
+          const pageNum = startPage + num;
+          return (
+
+            <li
+
+              key={pageNum}
+
+              className={`page-item ${currentPage === pageNum ? "active" : ""
+
+                }`}
+
+            >
+
+              <a
+
+                className="page-link"
+
+                onClick={() =>
+
+                  handlePageChange(pageNum)
+
+                }
+
+              >
+
+                {pageNum}
+
+              </a>
+
+            </li>
+
+          )
+        }
+
+      )}
+
+      <li
+
+        className={`nextPage page-item ${currentGroup === totalGroups ? "disabled" : ""
+
+          }`}
+        onClick={() => handleGroupChange("next")}
+      >
+
+        <a
+
+          className="page-link"
+
+          onClick={() =>
+
+            handlePageChange(currentPage + 1)
+
+          }
+
+          aria-label="Next"
+
+        >
+
+          »
+
+        </a>
+
+      </li>
+      
+    </ul>
+  </nav>
+) : (
+  <></>
+)}
+                                   
                                   </div>
                                 ) : (
                                   <div>
-                                    <div>
+                                    <DMSMyApprovalAction props={currentItemID} />
+                                       <div className="col-sm-12 text-center">
                                       {/* <button style={{ float: 'right' }} type="button" className="btn btn-secondary" onClick={() => setShowNestedDMSTable(false)}> Back </button> */}
-                                      <DMSMyApprovalAction props={currentItemID} />
-                                      <button type="button" className="btn btn-light waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={() => setShowNestedDMSTable(false)}>
+                                      
+                                      <button type="button" className="btn btn-light newp waves-effect waves-light m-3" style={{ fontSize: '0.875rem' }} onClick={() => setShowNestedDMSTable(false)}>
                                 <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }}
                                     className='me-1' alt="x" />
                                 Cancel
@@ -2194,133 +2397,7 @@ year: 'numeric',
                } */}
                           </div>
 
-                          {currentData?.length > 0 ? (
-                            <nav className="pagination-container">
-                              <ul className="pagination">
-                                {/* <li
-                                  className={`page-item ${currentPage === 1 ? "disabled" : ""
-                                    }`}
-                                > */}
-                                <li
-
-                                  className={`prevPage page-item ${currentGroup === 1 ? "disabled" : ""
-                                    }`}
-                                  onClick={() => handleGroupChange("prev")}
-                                >
-
-                                  <a
-                                    className="page-link"
-                                    // onClick={() =>
-                                    //   handlePageChange(currentPage - 1)
-                                    // }
-                                    aria-label="Previous"
-                                  >
-                                    «
-                                  </a>
-                                </li>
-                                {Array.from(
-
-                                  { length: endPage - startPage + 1 },
-
-                                  (_, num) => {
-                                    const pageNum = startPage + num;
-                                    return (
-
-                                      <li
-
-                                        key={pageNum}
-
-                                        className={`page-item ${currentPage === pageNum ? "active" : ""
-
-                                          }`}
-
-                                      >
-
-                                        <a
-
-                                          className="page-link"
-
-                                          onClick={() =>
-
-                                            handlePageChange(pageNum)
-
-                                          }
-
-                                        >
-
-                                          {pageNum}
-
-                                        </a>
-
-                                      </li>
-
-                                    )
-                                  }
-
-                                )}
-
-                                <li
-
-                                  className={`nextPage page-item ${currentGroup === totalGroups ? "disabled" : ""
-
-                                    }`}
-                                  onClick={() => handleGroupChange("next")}
-                                >
-
-                                  <a
-
-                                    className="page-link"
-
-                                    onClick={() =>
-
-                                      handlePageChange(currentPage + 1)
-
-                                    }
-
-                                    aria-label="Next"
-
-                                  >
-
-                                    »
-
-                                  </a>
-
-                                </li>
-                                {/* {Array.from(
-                                  { length: totalPages }, (_, num) => (
-                                  <li
-                                    key={num}
-                                    className={`page-item ${currentPage === num + 1 ? "active" : ""
-                                      }`}
-                                  >
-                                    <a
-                                      className="page-link"
-                                      onClick={() => handlePageChange(num + 1)}
-                                    >
-                                      {num + 1}
-                                    </a>
-                                  </li>
-                                ))}
-
-                                <li
-                                  className={`page-item ${currentPage === totalPages ? "disabled" : ""
-                                    }`}
-                                >
-                                  <a
-                                    className="page-link"
-                                    onClick={() =>
-                                      handlePageChange(currentPage + 1)
-                                    }
-                                    aria-label="Next"
-                                  >
-                                    »
-                                  </a>
-                                </li> */}
-                              </ul>
-                            </nav>
-                          ) : (
-                            <></>
-                          )}
+                        
                         </div>
                       </div>
                     </div>

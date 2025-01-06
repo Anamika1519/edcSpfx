@@ -65,11 +65,17 @@
     .paddb{
       min-height: calc(100vh - 159px);
     }
-    #s4-workspace{overflow: hidden !important;}
+    #s4-workspace{overflow-y: auto !important;}
     @media(max-width:1920px){
       .paddb{min-height: calc(100vh - 168px);}
   }
-  
+  .page-item:last-child .page-link{border-top-right-radius: 50% !important;border-bottom-right-radius: 50% !important; background: transparent;}
+  .page-item:first-child .page-link{border-top-left-radius: 50% !important;border-bottom-left-radius: 50% !important;background: transparent;}
+  .newp{line-height: 28px;
+    padding: 5px 16px !important;
+    font-size: 1rem !important;}
+    
+  .newtabo th{padding: 10px !important;}
   @media(max-width:1600px){
     
     #s4-workspace{overflow-y: auto !important;}

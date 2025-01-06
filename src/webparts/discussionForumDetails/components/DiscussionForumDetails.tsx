@@ -1061,7 +1061,7 @@ className="d-block mt-2 font-28"
                                 /></div> 
                           <h1 className="text-muted font-14 mt-2"><p className="text-dark font-16 text-center mb-2"> keerti jain</p>
                           <p className="text-dark font-14 text-center mb-1">Cloud Infrastructure Alchemist</p>
-                          <p className="text-muted font-12 text-center">keertijain@alrostamanigroupae.onmicrosoft.com  </p>
+                          <p className="text-muted font-12 text-center">keertijain@officeIndia.onmicrosoft.com  </p>
                           </h1></div>
                           </div>
                           <div className="card mobile-5"  style={{ borderRadius: "22px" }}>

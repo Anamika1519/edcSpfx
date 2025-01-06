@@ -164,6 +164,15 @@ declare global {
   const [activeComponent, setActiveComponent] = useState<string >('');
   ////
   console.log(activeComponent , "activeComponent")
+  const getUserTitleByEmail = async (userEmail:any) => {
+    try {
+      const user = await sp.web.siteUsers.getByEmail(userEmail)();
+      return user.Title;
+    } catch (error) {
+      console.error("Error fetching user title:", error);
+      return null;
+    }
+  };
   const handleReturnToMain = (Name:any) => {
     setActiveComponent(Name); // Reset to show the main component
     console.log(activeComponent , "activeComponent updated")
@@ -190,15 +199,30 @@ declare global {
         )
         .expand("FileUID", "MasterApproval")
         .filter(`FileUID/FileUID eq '${props}'`)
-        .orderBy("Created", false).getAll();
+        .orderBy("Modified", false)();
         console.log(items, "DMSFileApprovalTaskList");
-       
+         // Fetch user titles
+      const updatedItems = await Promise.all(items.map(async (item) => {
+      const userTitle = await getUserTitleByEmail(item.FileUID.RequestedBy);
+      const assignedtouserTitle = await getUserTitleByEmail(item.CurrentUser);
+  
+      // alert(userTitle)
+      return { ...item, RequestedByTitle: userTitle , AssignedToTitle:assignedtouserTitle};
+    }));
+      
        
   
         // start
         items.forEach((item)=>{
-            if(currentUserEmailRef.current === item.CurrentUser && item.Log === null){
+          console.log(item ,"item data ")
+          console.log(currentUserEmailRef.current , "currentUserEmailRef.current")
+          console.log(item.CurrentUser , "item.CurrentUser")
+          console.log(item.Log , "item.Log")
+            if(currentUserEmailRef.current === item.CurrentUser){
+              if(item.LogHistory === null){
                 setToggleLog(true);
+              }
+            
             }
             console.log("FileUID" , item.FileUID.FileUID)
               FileUID = item.FileUID.FileUID
@@ -206,24 +230,123 @@ declare global {
         })
         // end
   
-        setMylistdata(items);
+        setMylistdata(updatedItems);
         
         
       } catch (error) {
         console.error("Error fetching list items:", error);
       }
+      // try {
+      //   console.log("here")
+      //   const updatedData:any = await sp.web.lists.getByTitle("DMSFileApprovalList").items
+      //   .select("FileUID", "ID", "ApproveAction", "ApprovedLevel", "SiteName", "DocumentLibraryName", "ApprovedLevel" , "FilePreviewUrl")
+      //   .filter(`FileUID eq '${FileUID}'`)()
+      //   .catch((error) => console.error("Error fetching data from DMSFileApprovalList:", error));
+      //   console.log(updatedData , "updatedData")
+      //     filepreviewurl = updatedData[0]?.FilePreviewUrl;
+      //     console.log(filepreviewurl , "file url")
+      // } catch (error) {
+      //   console.error("Error fetching list items:", error);
+      // }
       try {
         console.log("here")
         const updatedData:any = await sp.web.lists.getByTitle("DMSFileApprovalList").items
-        .select("FileUID", "ID", "ApproveAction", "ApprovedLevel", "SiteName", "DocumentLibraryName", "ApprovedLevel" , "FilePreviewUrl")
+        .select("FileUID", "ID", "ApproveAction", "ApprovedLevel", "SiteName", "DocumentLibraryName", "ApprovedLevel" , "FilePreviewUrl","FolderPath" , "FileName")
         .filter(`FileUID eq '${FileUID}'`)()
         .catch((error) => console.error("Error fetching data from DMSFileApprovalList:", error));
         console.log(updatedData , "updatedData")
           filepreviewurl = updatedData[0]?.FilePreviewUrl;
           console.log(filepreviewurl , "file url")
+  
+          const siteData=await sp.web.lists.getByTitle('MasterSiteURL').items.select("Id","SiteID").filter(`Title eq '${updatedData[0]?.SiteName}'`)();
+          console.log("siteData",siteData);
+          const {web}=await sp.site.openWebById(siteData[0].SiteID);
+      
+         // Get the list item  corresponding to the file
+         const fileItem:any = await web.getFileById(props).expand("ListItemAllFields")();
+         console.log("fileItem",fileItem.ListItemAllFields.Status);
+        
+        // fetched the columns details corresponding to the file 
+        const fileColumns =await sp.web.lists.getByTitle("DMSPreviewFormMaster").items.select("ColumnName","SiteName","DocumentLibraryName","IsRename").filter(`SiteName eq '${updatedData[0]?.SiteName}' and DocumentLibraryName eq '${updatedData[0]?.DocumentLibraryName}' and IsDocumentLibrary ne 1`)();
+        console.log("fileColumns",fileColumns);
+      
+        // Create an array of objects to store the columnName with there corresponding value
+        const resultArrayThatContainstheColumnDetails = fileColumns.map((column) => {
+          
+        let columnName = column.ColumnName;
+        const columnValue = fileItem.ListItemAllFields[columnName];
+          if(column.IsRename !== null){
+            columnName=column.IsRename
+          }
+      
+          return {
+            label: columnName,
+            value: columnValue !== undefined ? columnValue : null // Handle missing fields
+          };
+        });
+      
+        const objectForStatus={
+          label:"Status",
+          value:fileItem.ListItemAllFields.Status || ""
+        }
+         const objectforfilename = {
+          label:"File Name",
+          value:updatedData[0]?.FileName
+         }
+        const objectForDocumentLibrary={
+          label:"Folder Name",
+          value:updatedData[0]?.FolderPath.substring(updatedData[0]?.FolderPath.lastIndexOf('/') + 1) || ""
+        }
+  
+        const objectForSiteName={
+          label:"Site Name",
+          value:updatedData[0]?.SiteName || ""
+        }
+      
+        resultArrayThatContainstheColumnDetails.push(objectForStatus);
+        resultArrayThatContainstheColumnDetails.push(objectforfilename);
+         resultArrayThatContainstheColumnDetails.push(objectForSiteName);
+         resultArrayThatContainstheColumnDetails.push(objectForDocumentLibrary);
+        console.log("result",resultArrayThatContainstheColumnDetails);
+        // Variable to hold generated HTML
+      let detailRowsHTML = "";
+      
+      // Dynamically generate HTML with inline CSS
+      resultArrayThatContainstheColumnDetails.forEach((item, index) => {
+        // Start a new row every 3rd item
+        if (index % 3 === 0) {
+          detailRowsHTML += `<div style="margin-bottom: 10px;" class="row">`;
+        }
+      
+        // Add detail column for each item with inline CSS
+        detailRowsHTML += `
+          <div style="padding: 12px; " class="col-sm-4">
+            <div style="font-weight: bold; margin-bottom: 5px;">${item.label}</div>
+            <div>${item.value}</div>
+          </div>
+        `;
+      
+        // Close the row after every 3rd item
+        if ((index + 1) % 3 === 0) {
+          detailRowsHTML += `</div>`;
+        }
+      });
+      
+      // Close the last row if not already closed
+      if (resultArrayThatContainstheColumnDetails.length % 3 !== 0) {
+        detailRowsHTML += `</div>`;
+      }
+      
+      // Add the generated HTML to a container
+      document.getElementById("dynamicDetailsContainer").innerHTML = detailRowsHTML;
+  
+      if(filepreviewurl){
+        previewFile(filepreviewurl)
+      }
       } catch (error) {
         console.error("Error fetching list items:", error);
       }
+  
     };
   
     console.log(Mylistdata , "Mylistdata")
@@ -399,12 +522,12 @@ declare global {
                         .then(async (items) => {
                             if (items.length > 0) {
                                 const itemId = items[0].Id; // Assuming one item per FileUID
-                                alert(`${itemId} item id is 1`)
+                                // alert(`${itemId} item id is 1`)
                                 await sp.web.lists.getByTitle("DMSFileApprovalList").items.getById(itemId).update({
                                     Status: "Approved",
                                 });
                                 console.log("Updated DMSFileApprovalList with Approved status");
-                                alert(`${itemId} Updated DMSFileApprovalList with Approved status`)
+                                // alert(`${itemId} Updated DMSFileApprovalList with Approved status`)
                             }
                         });
                       } catch (error) {
@@ -454,12 +577,12 @@ declare global {
                             .then(async (items) => {
                                 if (items.length > 0) {
                                     const itemId = items[0].Id; // Assuming one item per FileUID
-                                    alert(`${itemId} item id is 2`)
+                                    // alert(`${itemId} item id is 2`)
                                     await sp.web.lists.getByTitle("DMSFileApprovalList").items.getById(itemId).update({
                                         Status: "Approved",
                                     });
                                     console.log("Updated DMSFileApprovalList with Approved status");
-                                    alert(`${itemId} Updated DMSFileApprovalList with Approved status`)
+                                    // alert(`${itemId} Updated DMSFileApprovalList with Approved status`)
                                 }
                             });
                           } catch (error) {
@@ -542,8 +665,8 @@ declare global {
         console.log("Updated data",updateddata)
         if(buttonText === "Rework"){
           setFinalStatus = 'Rework'
-          alert(`this is SiteName ${filterData.FileUID.SiteName}`)
-          alert(`this is Filereqno ${filterData.FileUID.RequestNo}`)
+          // alert(`this is SiteName ${filterData.FileUID.SiteName}`)
+          // alert(`this is Filereqno ${filterData.FileUID.RequestNo}`)
           const updateStatusinMaster = await sp.web.lists.getByTitle(`DMS${filterData.FileUID.SiteName}FileMaster`).items.filter(`RequestNo eq '${filterData.FileUID.RequestNo}'`)()
           console.log(updateStatusinMaster , "updateStatusinMaster")
           for (let item of updateStatusinMaster) { 
@@ -558,7 +681,7 @@ declare global {
       if (getTaskdata && getTaskdata.length > 0) {
           console.log(getTaskdata, "getTaskdatagetTaskdata");
           for (const item of getTaskdata) {
-            alert(item.ID)
+            // alert(item.ID)
               await sp.web.lists.getByTitle("DMSFileApprovalTaskList").items.getById(item.ID).delete();
           }
       } else {
@@ -641,7 +764,64 @@ declare global {
         checkAndHideButton();
       };
     }
-   
+    const previewFile = async (previewUrl: string) => {
+      try {
+        console.log("Previewing file at URL:", previewUrl);
+        const iframe = document.getElementById("filePreview") as HTMLIFrameElement;
+        const spinner = document.getElementById("spinner") as HTMLElement;
+    
+        // Show the spinner and hide the iframe initially
+        spinner.style.display = "block";
+        iframe.style.display = "none";
+        iframe.src = previewUrl;
+    
+        // Add an onload event listener to the iframe
+        iframe.onload = () => {
+          console.log("Iframe has loaded");
+    
+          const checkAndHideButton = () => {
+            try {
+              const iframeDocument = iframe.contentDocument || iframe.contentWindow?.document;
+              if (iframeDocument) {
+                const button = iframeDocument.getElementById("OneUpCommandBar") as HTMLElement;
+                const excelToolbar = iframeDocument.getElementById("m_excelEmbedRenderer_m_ewaEmbedViewerBar") as HTMLElement;
+                if(excelToolbar){
+                  excelToolbar.style.display= "none"
+                }
+                if (button) {
+                  console.log("Hiding the OneUpCommandBar element");
+                  button.style.display = "none";
+    
+  
+                  spinner.style.display = "none";
+                  iframe.style.display = "block"; 
+  
+  
+                } else {
+                  console.log("OneUpCommandBar not found, rechecking...");
+                }
+                
+                const helpbutton = iframeDocument.getElementById("m_excelEmbedRenderer_m_ewaEmbedViewerBar") as HTMLElement; 
+                if(helpbutton){
+                  helpbutton.style.display = "none"
+                }
+              }
+            } catch (error) {
+              console.error("Error accessing iframe content:", error);
+            }
+    
+  
+            setTimeout(checkAndHideButton, 100);
+          };
+    
+  
+          checkAndHideButton();
+        };
+      } catch (error) {
+        console.error("Error previewing file:", error);
+      }
+  
+    };
     return (
      
             <div>
@@ -654,96 +834,10 @@ declare global {
                       <div className="row">
                         <div className="col-12">
                          
-                          <div>
-                            <div className="DMSMasterContainer">
-                                {/* <h4 className="page-title fw-bold mb-1 font-20">Settings</h4> */}
-                                <div className="" style={{ backgroundColor: 'white', border:'1px solid #54ade0', marginTop:'20px', borderRadius:'20px', padding: '15px'}}>
-                                    <table className="mtbalenew">
-                                      <thead >
-                                        <tr>
-                                          <th
-                                            style={{
-                                            minWidth: '40px',
-                                            maxWidth: '40px',
-                                           
-                                            }}
-                                          >
-                                               S.No
-                                          </th>
-                                          <th>Request ID</th>
-                                          {/* <th style={{ minWidth: '120px', maxWidth: '120px' }}>Process Name</th> */}
-                                          <th >Log</th>
-                                          <th>Log History</th>
-                                          <th>Requested By</th>
-                                          <th style={{ minWidth: '150px', maxWidth: '150px' }}>Requested Date</th>
-                                          <th style={{ minWidth: '80px', maxWidth: '80px' }}>Status</th>
-                                          <th
-                                            style={{
-                                            minWidth: '70px',
-                                            maxWidth: '70px',
-                                           
-                                            }}
-                                            >
-                                              Remark
-                                            </th>
-                                          </tr>
-                                        </thead>
-                                        <tbody style={{ maxHeight: '8007px' }}>
-         
-                                              {Mylistdata.length > 0  ? Mylistdata.map((item, index) => {
-                                              return(
-                                                    <tr>
-                                                      <td style={{ minWidth: '40px', maxWidth: '40px' }}>
-                                                        <span style={{marginLeft:'0px'}} className="indexdesign">
-                                                        {index+1}</span></td>
-                                                      <td>{(truncateText(item.FileUID.RequestNo, 20))}
-                                                      </td>
-                                                      <td >{
-                                                        item.Log
-                                                        }</td>
-                                                        <td>
-                                                          
-                                                       
-                                                             {item.LogHistory}
-  
-                                                         </td>
-                                                      <td >{(truncateText(item.FileUID.RequestedBy, 25))}</td> 
-                                                      <td style={{ minWidth: '150px', maxWidth: '150px' }}>
-                                                          <div
-                                                            style={{
-                                                              padding: '5px',
-                                                              border: '1px solid #efefef',
-                                                              background: '#fff',
-                                                              borderRadius: '30px',fontSize:'14px',
-                                                            
-                                                            }}
-                                                            className="btn btn-light"
-                                                          >
-                                                            {item.FileUID.Created}
-                                                          </div>
-                                                      </td>
-                                                      <td style={{ minWidth: '80px', maxWidth: '80px', textAlign:'center' }}>
-                                                          {/* <div className="finish mb-0"></div> */}
-                                                          <div className="finish mb-0">  {item.FileUID.Status} </div>
-                                                          </td>
-                                                      {/* <td style={{ minWidth: '70px', maxWidth: '70px' }}>
-                                                            <a onClick={(e )=>getTaskItemsbyID(e , item.FileUID.FileUID)}>
-                                                                <FontAwesomeIcon icon={faEye} />
-                                                            </a>
-                                                      </td> */}
-                                                      <td style={{ minWidth: '70px', maxWidth: '70px' }}>
-                                                        {item.Remark}
-                                                      </td>
-                                                      </tr>
-                                                        )
-                                                              })
-                                                            :""
-                                                        }       
-                                      </tbody>
-                                </table>
-                            </div>
-                        </div>
-                      </div> 
+                        <div className="" style={{ backgroundColor: 'white', border:'1px solid #54ade0', marginTop:'20px', borderRadius:'20px', padding: '15px'}}>
+                        <h3 className="text-dark font-16 mb-1">Basic Information</h3>
+                      <div id="dynamicDetailsContainer"></div>
+                      </div>
   
                           
                     {toggleLog && (
@@ -752,7 +846,7 @@ declare global {
                            <div className="">
                             <div className="">
                             
-                              <div className="row">
+                              <div className="row mt-3">
                            
                                 <div className="col-lg-12">
                                   <div className="mb-0">
@@ -788,7 +882,7 @@ declare global {
                                       
                                       onClick={handleLogAndLogHistory}
                                       type="button"
-                                      className="btn btn-orange waves-effect waves-light m-1"
+                                      className="btn btn-warning waves-effect waves-light m-1"
                                     >
                                       <i className="fe-check-circle me-1"></i>{" "}
                                       Rework
@@ -819,7 +913,117 @@ declare global {
                       </div>
                         
                     )}
-                          
+                               <div>
+                            <div className="DMSMasterContainer">
+                                {/* <h4 className="page-title fw-bold mb-1 font-20">Settings</h4> */}
+                                <div className="" style={{ backgroundColor: 'white', border:'1px solid #54ade0', marginTop:'20px', borderRadius:'20px', padding: '15px'}}>
+                                    <table className="mtbalenew">
+                                      <thead >
+                                        <tr>
+                                          <th
+                                            style={{
+                                            minWidth: '55px',
+                                            maxWidth: '55px',
+                                           
+                                            }}
+                                          >
+                                               S.No
+                                          </th>
+                                          <th>Level</th>
+                                          {/* <th style={{ minWidth: '120px', maxWidth: '120px' }}>Process Name</th> */}
+                                          <th >Assigned To</th>
+                                          <th>Requester Name</th>
+                                          <th>Requested Date</th>
+                                          <th style={{ minWidth: '150px', maxWidth: '150px' }}>Action Taken By</th>
+                                          <th style={{ minWidth: '150px', maxWidth: '150px' }}>Action Taken On</th>
+                                          <th
+                                            style={{
+                                            minWidth: '70px',
+                                            maxWidth: '70px',
+                                           
+                                            }}
+                                            >
+                                              Remark
+                                            </th>
+                                          <th
+                                            style={{
+                                            minWidth: '70px',
+                                            maxWidth: '70px',
+                                           
+                                            }}
+                                            >
+                                              Status
+                                            </th>
+
+                                          </tr>
+                                        </thead>
+                                        <tbody style={{ maxHeight: '8007px' }}>
+         
+                                              {Mylistdata.length > 0  ? Mylistdata.map((item, index) => {
+                                              return(
+                                                    <tr>
+                                                      <td style={{ minWidth: '55px', maxWidth: '55px' }}>
+                                                        <span style={{marginLeft:'0px'}} className="indexdesign">
+                                                        {index+1}</span></td>
+                                                      <td>
+                                                        {/* {(truncateText(item?.FileUID?.RequestNo, 20))} */}
+                                                        {item?.MasterApproval?.Level}
+                                                      </td>
+                                                      <td >{
+                                                        item?.AssignedToTitle
+                                                        }</td>
+                                                        <td>
+                                                          
+                                                       
+                                                             {item.RequestedByTitle}
+  
+                                                         </td>
+                                                      <td style={{ minWidth: '150px', maxWidth: '150px' }}>
+                                                <div className="btn btn-light1">{new Date(item?.FileUID?.Created).toLocaleString('en-US', { 
+  month: '2-digit',
+  day: '2-digit',
+  year: 'numeric',
+  // hour: '2-digit',
+  // minute: '2-digit',
+  // second: '2-digit',
+  // hour12: true 
+})}
+</div>
+                                                        </td> 
+                                                      <td style={{ minWidth: '150px', maxWidth: '150px' }}>
+                                                          <div
+                                                            style={{
+                                                              padding: '5px',
+                                                              border: '1px solid #efefef',
+                                                              background: '#fff',
+                                                              borderRadius: '30px',fontSize:'13px',
+                                                            
+                                                            }}
+                                                            className=""
+                                                          >
+                                                            {item?.AssignedToTitle}
+                                                            
+                                                          </div>
+                                                      </td>
+                                                  
+                                                
+                                                      <td style={{ minWidth: '70px', maxWidth: '70px' }}>
+                                                        {item.Remark}
+                                                      </td>
+                                                      <td style={{ minWidth: '70px',  maxWidth: '70px',textAlign:'center' }}>
+                                                          {/* <div className="finish mb-0"></div> */}
+                                                          <div className="finish mb-0">  {item.FileUID.Status} </div>
+                                                          </td>
+                                                      </tr>
+                                                        )
+                                                              })
+                                                            :""
+                                                        }       
+                                      </tbody>
+                                </table>
+                            </div>
+                        </div>
+                      </div> 
                         </div>
                       </div>
                     </div>

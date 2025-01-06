@@ -782,24 +782,24 @@ const MyRequestContext = ({ props }: any) => {
         switch (Item?.SourceName) {
           case "Announcement":
             sessionkey = "announcementId";
-            redirecturl = `${siteUrl}/SitePages/AddAnnouncement.aspx` + "?requestid=" + Item?.Id + "&mode=view";
+            redirecturl = `${siteUrl}/SitePages/AddAnnouncement.aspx` + "?requestid=" + Item?.Id + "&mode=view" + "&page=MyRequest";
             break;
           case "News":
             sessionkey = "announcementId";
-            redirecturl = `${siteUrl}/SitePages/AddAnnouncement.aspx` + "?requestid=" + Item?.Id + "&mode=view";
+            redirecturl = `${siteUrl}/SitePages/AddAnnouncement.aspx` + "?requestid=" + Item?.Id + "&mode=view" + "&page=MyRequest";
             break;
           case "Event":
             sessionkey = "EventId";
-            redirecturl = `${siteUrl}/SitePages/EventMasterForm.aspx` + "?requestid=" + Item?.Id + "&mode=view";
+            redirecturl = `${siteUrl}/SitePages/EventMasterForm.aspx` + "?requestid=" + Item?.Id + "&mode=view" + "&page=MyRequest";
             break;
           case "Media":
             sessionkey = "mediaId";
-            redirecturl = `${siteUrl}/SitePages/MediaGalleryForm.aspx` + "?requestid=" + Item?.Id + "&mode=view";
+            redirecturl = `${siteUrl}/SitePages/MediaGalleryForm.aspx` + "?requestid=" + Item?.Id + "&mode=view" + "&page=MyRequest";
             break;
-            case "Blogs":
-              sessionkey = "blogId";
-              redirecturl = `${siteUrl}/SitePages/BlogDetails.aspx?` +Item?.ContentID;
-              break;
+          case "Blogs":
+            sessionkey = "blogId";
+            redirecturl = `${siteUrl}/SitePages/BlogDetails.aspx?` + Item?.ContentID + "&page=MyRequest";
+            break;
           default: ;
         }
 
@@ -1610,6 +1610,98 @@ const MyRequestContext = ({ props }: any) => {
                             </tbody>
 
                           </table>
+                          {currentData?.length > 0 ? (
+
+<nav className="pagination-container">
+
+  <ul className="pagination">
+
+    <li  style={{margin:'0px'}}
+
+      className={`page-item ${currentPage === 1 ? "disabled" : ""
+
+        }`}
+
+    >
+
+      <a
+
+        className="page-link"
+
+        onClick={() => handlePageChange(currentPage - 1)}
+
+        aria-label="Previous"
+
+      >
+
+        «
+
+      </a>
+
+    </li>
+
+    {Array.from({ length: totalPages }, (_, num) => (
+
+      <li 
+
+        key={num}
+
+        className={`page-item ${currentPage === num + 1 ? "active" : ""
+
+          }`}
+
+      >
+
+        <a
+
+          className="page-link"
+
+          onClick={() => handlePageChange(num + 1)}
+
+        >
+
+          {num + 1}
+
+        </a>
+
+      </li>
+
+    ))}
+
+
+
+    <li  style={{margin:'0px'}}
+
+      className={`page-item ${currentPage === totalPages ? "disabled" : ""
+
+        }`}
+
+    >
+
+      <a
+
+        className="page-link"
+
+        onClick={() => handlePageChange(currentPage + 1)}
+
+        aria-label="Next"
+
+      >
+
+        »
+
+      </a>
+
+    </li>
+
+  </ul>
+
+</nav>
+
+) : (
+
+<></>
+)}
                         </>
                       ) :
                         null
@@ -2132,7 +2224,10 @@ year: 'numeric',
           
                   >
            
-                   {item?.Processname == "New File Request" ?  <Eye onClick={() => {getTaskItemsbyID(item.FileUID) ; handleShowNestedDMSTable("DMSAuditHistory")}}
+                   {item?.Processname == "New File Request" ? 
+                   
+                   
+                   <Eye onClick={() => {getTaskItemsbyID(item.FileUID) ; handleShowNestedDMSTable("DMSAuditHistory")}}
           
           style={{
           
@@ -2173,6 +2268,99 @@ year: 'numeric',
           
           </tbody>
                         </table>
+                        {currentData?.length > 0 ? (
+
+<nav className="pagination-container">
+
+  <ul className="pagination">
+
+    <li style={{margin:'0px'}}
+
+      className={`page-item ${currentPage === 1 ? "disabled" : ""
+
+        }`}
+
+    >
+
+      <a
+
+        className="page-link"
+
+        onClick={() => handlePageChange(currentPage - 1)}
+
+        aria-label="Previous"
+
+      >
+
+        «
+
+      </a>
+
+    </li>
+
+    {Array.from({ length: totalPages }, (_, num) => (
+
+      <li 
+
+        key={num}
+
+        className={`page-item ${currentPage === num + 1 ? "active" : ""
+
+          }`}
+
+      >
+
+        <a
+
+          className="page-link"
+
+          onClick={() => handlePageChange(num + 1)}
+
+        >
+
+          {num + 1}
+
+        </a>
+
+      </li>
+
+    ))}
+
+
+
+    <li style={{margin:'0px'}}
+ 
+      className={`page-item ${currentPage === totalPages ? "disabled" : ""
+
+        }`}
+
+    >
+
+      <a
+
+        className="page-link"
+
+        onClick={() => handlePageChange(currentPage + 1)}
+
+        aria-label="Next"
+
+      >
+
+        »
+
+      </a>
+
+    </li>
+
+  </ul>
+
+</nav>
+
+) : (
+
+<></>
+)}
+                     
                         <Modal show={showModal2} onHide={handleCloseModal} className="newmodal">
              <Modal.Header closeButton>
                <Modal.Title>Audit History</Modal.Title>
@@ -2188,6 +2376,7 @@ year: 'numeric',
                         </Modal>
                        </div>
                      ) 
+                     
         //              : 
         //              showNestedDMSTable === "DMSFilePreview" ? 
         //  (
@@ -2213,11 +2402,13 @@ year: 'numeric',
                            <div>
                           {/* <button style={{float:'right'}} type="button" className="btn btn-secondary" onClick={() => setShowNestedDMSTable("")}> Back </button> */}
                          <DMSMyrequestLog props={currentItemID }/>
-                         <button type="button" className="btn btn-light waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={() => setShowNestedDMSTable("")}>
+                         <div className="col-sm-12 text-center">
+                         <button type="button" className="btn btn-light newp waves-effect waves-light m-4" style={{ fontSize: '0.875rem' }} onClick={() => setShowNestedDMSTable("")}>
                                 <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }}
                                     className='me-1' alt="x" />
                                 Cancel
                             </button>
+                            </div>
                            </div>
                        </div>
                      </div>
@@ -2242,99 +2433,9 @@ year: 'numeric',
                      : null}
                    </div>
                     )}
+                     
                   </div>
-                  {currentData?.length > 0 ? (
-
-                    <nav className="pagination-container">
-
-                      <ul className="pagination">
-
-                        <li style={{ margin: '0px' }}
-
-                          className={`page-item ${currentPage === 1 ? "disabled" : ""
-
-                            }`}
-
-                        >
-
-                          <a
-
-                            className="page-link"
-
-                            onClick={() => handlePageChange(currentPage - 1)}
-
-                            aria-label="Previous"
-
-                          >
-
-                            «
-
-                          </a>
-
-                        </li>
-
-                        {Array.from({ length: totalPages }, (_, num) => (
-
-                          <li style={{ margin: '0px' }}
-
-                            key={num}
-
-                            className={`page-item ${currentPage === num + 1 ? "active" : ""
-
-                              }`}
-
-                          >
-
-                            <a
-
-                              className="page-link"
-
-                              onClick={() => handlePageChange(num + 1)}
-
-                            >
-
-                              {num + 1}
-
-                            </a>
-
-                          </li>
-
-                        ))}
-
-
-
-                        <li style={{ margin: '0px' }}
-
-                          className={`page-item ${currentPage === totalPages ? "disabled" : ""
-
-                            }`}
-
-                        >
-
-                          <a
-
-                            className="page-link"
-
-                            onClick={() => handlePageChange(currentPage + 1)}
-
-                            aria-label="Next"
-
-                          >
-
-                            »
-
-                          </a>
-
-                        </li>
-
-                      </ul>
-
-                    </nav>
-
-                  ) : (
-
-                    <></>
-                  )}
+                 
                 </div>
               </div>
             </div>

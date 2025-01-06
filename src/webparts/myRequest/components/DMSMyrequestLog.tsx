@@ -282,12 +282,12 @@ let detailRowsHTML = "";
 resultArrayThatContainstheColumnDetails.forEach((item, index) => {
   // Start a new row every 3rd item
   if (index % 3 === 0) {
-    detailRowsHTML += `<div style="display: flex; gap: 15px; margin-bottom: 10px;">`;
+    detailRowsHTML += `<div style="margin-bottom: 10px;" class="row">`;
   }
 
   // Add detail column for each item with inline CSS
   detailRowsHTML += `
-    <div style="flex: 1; padding: 10px;">
+    <div style="padding: 12px;" class="col-sm-4">
       <div style="font-weight: bold; margin-bottom: 5px;">${item.label}:</div>
       <div>${item.value}</div>
     </div>
@@ -833,11 +833,104 @@ try {
                     <div className="row">
                       <div className="col-12">
                        
-                        <div>
+                      
+                    <div className="row">
+                     <div className="col-12 text-center">
+                       <h1>
+                        
+                       </h1>
+                       
+                     </div>
+                    </div>
+                    <div className="" style={{ backgroundColor: 'white', border:'1px solid #54ade0', marginTop:'10px', borderRadius:'20px', padding: '15px'}}>
+                      <h3 className="text-dark font-16 mb-1">Basic Information</h3>
+                      <div id="dynamicDetailsContainer"></div>
+                    </div>
+                    <div className="" style={{ backgroundColor: 'white', border:'1px solid #54ade0', marginTop:'18px', borderRadius:'20px', padding: '15px'}}>
+                      <div >
+                      <h3 className="text-dark font-16 mb-2">File Preview</h3>
+                      <div id="spinner" style={{display: "none"}}>Loading...</div>
+                      <iframe id="filePreview" width="100%" height="400"></iframe>
+                      </div>
+                    </div>
+                  {toggleLog && (
+                                <div className="" style={{ backgroundColor: 'white', border:'1px solid #54ade0', marginTop:'20px', borderRadius:'20px', padding: '15px'}}>
+ <iframe id="filePreview" width="100%" height="400"></iframe>
+                         <div className="mt-3">
+                          <div className="">
+                          
+                            <div className="row">
+                         
+                              <div className="col-lg-12">
+                                <div className="mb-0">
+                                  <label className="form-label text-dark font-14">
+                                    Remarks:
+                                  </label>
+                                  <input
+                                   type="text" style={{height:'70px'}}  className="form-control"
+                                   onChange={handleRemark}
+                                  //  value={remark}
+                                    />
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="row mt-3">
+                              <div className="col-12 text-center">
+                                <a >
+                                  {" "}
+                                  <button
+                                    
+                                    onClick={handleLogAndLogHistory}
+                                    type="button"
+                                    className="btn btn-success waves-effect waves-light m-1"
+                                  >
+                                    <i className="fe-check-circle me-1"></i>{" "}
+                                    Approve
+                                  </button>
+                                </a>
+                                <a >
+                                  {" "}
+                                  <button
+                                    
+                                    onClick={handleLogAndLogHistory}
+                                    type="button"
+                                    className="btn btn-orange waves-effect waves-light m-1"
+                                  >
+                                    <i className="fe-check-circle me-1"></i>{" "}
+                                    Rework
+                                  </button>
+                                </a>
+                                {/* <a >  <button type="button" className="btn btn-warning waves-effect waves-light m-1"><i className="fe-corner-up-left me-1"></i> Rework</button></a>   */}
+                                <a >
+                                  {" "}
+                                  <button
+                                    onClick={handleLogAndLogHistory}
+                                    type="button"
+                                    className="btn btn-danger waves-effect waves-light m-1"
+                                  >
+                                    <i className="fe-x-circle me-1"></i>{" "}
+                                    Reject
+                                  </button>
+                                </a>
+                                <button
+                                  type="button"
+                                  className="btn btn-light newbp waves-effect waves-light m-1"
+                                >
+                                  <i className="fe-x me-1"></i> Cancel
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+                      
+                  )}
+                          <div>
                           <div className="DMSMasterContainer">
                               {/* <h4 className="page-title fw-bold mb-1 font-20">Settings</h4> */}
                               <div className="" style={{ backgroundColor: 'white', border:'1px solid #54ade0', marginTop:'20px', borderRadius:'20px', padding: '15px'}}>
-                                  <table className="mtbalenew">
+                                  <table className="mtbalenew newtabo">
                                     <thead >
                                       <tr>
                                         <th
@@ -987,99 +1080,6 @@ year: 'numeric',
                           </div>
                       </div>
                     </div> 
-                    <div className="row">
-                     <div className="col-12 text-center">
-                       <h1>
-                        
-                       </h1>
-                       
-                     </div>
-                    </div>
-                    <div className="" style={{ backgroundColor: 'white', border:'1px solid #54ade0', marginTop:'20px', borderRadius:'20px', padding: '15px'}}>
-                      <h3 className="text-dark font-16 mb-1">Meta columns details</h3>
-                      <div id="dynamicDetailsContainer"></div>
-                    </div>
-                    <div className="" style={{ backgroundColor: 'white', border:'1px solid #54ade0', marginTop:'20px', borderRadius:'20px', padding: '15px'}}>
-                      <div >
-                      <h3 className="text-dark font-16 mb-1">File Preview</h3>
-                      <div id="spinner" style={{display: "none"}}>Loading...</div>
-                      <iframe id="filePreview" width="100%" height="400"></iframe>
-                      </div>
-                    </div>
-                  {toggleLog && (
-                                <div className="" style={{ backgroundColor: 'white', border:'1px solid #54ade0', marginTop:'20px', borderRadius:'20px', padding: '15px'}}>
- <iframe id="filePreview" width="100%" height="400"></iframe>
-                         <div className="mt-3">
-                          <div className="">
-                          
-                            <div className="row">
-                         
-                              <div className="col-lg-12">
-                                <div className="mb-0">
-                                  <label className="form-label text-dark font-14">
-                                    Remarks:
-                                  </label>
-                                  <input
-                                   type="text" style={{height:'70px'}}  className="form-control"
-                                   onChange={handleRemark}
-                                  //  value={remark}
-                                    />
-                                </div>
-                              </div>
-                            </div>
-
-                            <div className="row mt-3">
-                              <div className="col-12 text-center">
-                                <a >
-                                  {" "}
-                                  <button
-                                    
-                                    onClick={handleLogAndLogHistory}
-                                    type="button"
-                                    className="btn btn-success waves-effect waves-light m-1"
-                                  >
-                                    <i className="fe-check-circle me-1"></i>{" "}
-                                    Approve
-                                  </button>
-                                </a>
-                                <a >
-                                  {" "}
-                                  <button
-                                    
-                                    onClick={handleLogAndLogHistory}
-                                    type="button"
-                                    className="btn btn-orange waves-effect waves-light m-1"
-                                  >
-                                    <i className="fe-check-circle me-1"></i>{" "}
-                                    Rework
-                                  </button>
-                                </a>
-                                {/* <a >  <button type="button" className="btn btn-warning waves-effect waves-light m-1"><i className="fe-corner-up-left me-1"></i> Rework</button></a>   */}
-                                <a >
-                                  {" "}
-                                  <button
-                                    onClick={handleLogAndLogHistory}
-                                    type="button"
-                                    className="btn btn-danger waves-effect waves-light m-1"
-                                  >
-                                    <i className="fe-x-circle me-1"></i>{" "}
-                                    Reject
-                                  </button>
-                                </a>
-                                <button
-                                  type="button"
-                                  className="btn btn-light waves-effect waves-light m-1"
-                                >
-                                  <i className="fe-x me-1"></i> Cancel
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                    </div>
-                      
-                  )}
-                        
                       </div>
                     </div>
                   </div>

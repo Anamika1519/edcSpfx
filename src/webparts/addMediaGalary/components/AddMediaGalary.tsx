@@ -89,7 +89,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
 
   const [EnityData, setEnityData] = React.useState([])
-
+  const [pageValue, setpage] = React.useState("");
   const [mediaCategorydata, setMediaCategory] = React.useState([])
   const [Loading, setLoading] = React.useState(false);
   const [modeValue, setmode] = React.useState("");
@@ -182,7 +182,8 @@ const AddMediaGalaryContext = ({ props }: any) => {
   React.useEffect(() => {
 
     ApiCallFunc();
-
+    let page = getUrlParameterValue('page');
+    setpage(page);
     mode = getUrlParameterValue('mode');
     setmode(mode);
     if (mode && mode == 'approval') {
@@ -906,8 +907,14 @@ const AddMediaGalaryContext = ({ props }: any) => {
   const handleCancel = () => {
 
     debugger
-
-    window.location.href = `${siteUrl}/SitePages/MediaGalleryMaster.aspx`;
+    if(pageValue == "MyRequest"){
+      window.location.href = `${siteUrl}/SitePages/MyRequests.aspx`;
+    }else if(pageValue == "MyApproval"){
+      window.location.href = `${siteUrl}/SitePages/MyApprovals.aspx`;
+    }else{
+      window.location.href = `${siteUrl}/SitePages/MediaGalleryMaster.aspx`;
+    }
+    //window.location.href = `${siteUrl}/SitePages/MediaGalleryMaster.aspx`;
 
   }
 
@@ -2669,7 +2676,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
                   <div className="card cardborder p-4">
 
-                    <div className="font-16">
+                    <div className="font-16 mb-2">
 
                       <strong>Approval Hierarchy</strong>
 
@@ -2721,7 +2728,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
                       {rows.map((row: any) => (
 
-                        <div className="row mb-2" key={row.id}>
+                        <div className="row mb-2 mt-2" key={row.id}>
 
                           <div className="col-12 col-md-5">
 

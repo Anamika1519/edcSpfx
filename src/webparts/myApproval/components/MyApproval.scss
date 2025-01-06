@@ -5,7 +5,19 @@
     font-size: .875rem !important;
     font-weight: 400 !important;
   }
-  
+  .btn-light1 {
+    background: #fff;
+    border: 1px solid #efefef;
+    border-radius: 30px;
+    color: #3c3c3c; cursor: auto;
+    font-size: 13px;
+  }.table-responsive{overflow-x: hidden !important;}
+  .newp{line-height: 28px;
+    padding: 5px 16px !important;
+    font-size: 1rem !important;}
+  .btn-light1:hover{background: #fff !important;border: 1px solid #efefef !important;}
+  .cardCss .card-body{padding: 0px !important;}
+  .cardCss{border: none !important; background: transparent !important; box-shadow: none !important; border-radius: 0px !important;}
   #cardCollpase4 .mtable {
     margin-top: 0px !important;
   }

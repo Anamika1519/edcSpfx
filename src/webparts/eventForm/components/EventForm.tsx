@@ -47,6 +47,7 @@ const HelloWorldContext = ({ props }: any) => {
   const context = React.useContext(UserContext);
   const { setHide }: any = context;
   const [isDarkMode, setIsDarkMode] = React.useState(false);
+  const [pageValue, setpage] = React.useState("");
   const siteUrl = props.siteUrl;
   const videositeurl = props.siteUrl.split("/sites")[0];
   const tenantUrl = props.siteUrl.split("/sites/")[0];
@@ -112,7 +113,8 @@ const HelloWorldContext = ({ props }: any) => {
   //#endregion
   React.useEffect(() => {
     ApiCallFunc()
-
+    let page = getUrlParameterValue('page');
+    setpage(page);
     mode = getUrlParameterValue('mode');
     if (mode && mode == 'approval') {
       setApprovalMode(true);
@@ -924,7 +926,14 @@ const HelloWorldContext = ({ props }: any) => {
 
   const handleCancel = () => {
     //debugger
-    window.location.href = `${siteUrl}/SitePages/EventMaster.aspx`;
+    if(pageValue == "MyRequest"){
+      window.location.href = `${siteUrl}/SitePages/MyRequests.aspx`;
+    }else if(pageValue == "MyApproval"){
+      window.location.href = `${siteUrl}/SitePages/MyApprovals.aspx`;
+    }else{
+      window.location.href = `${siteUrl}/SitePages/EventMaster.aspx`;
+    }
+    //window.location.href = `${siteUrl}/SitePages/EventMaster.aspx`;
   }
   //#region flatArray
   const flatArray = (arr: any[]): any[] => {

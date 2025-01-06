@@ -314,7 +314,7 @@ console.log(siteUrl)
             for (const file of BnnerImagepostArr) {
               if (!file.serverRelativeUrl) {
                 // const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
-                bannerImageArray = await uploadFile(file, sp, "Documents", "https://alrostamanigroupae.sharepoint.com");
+                bannerImageArray = await uploadFile(file, sp, "Documents", "https://officeIndia.sharepoint.com");
               }
 
             }
@@ -381,7 +381,7 @@ console.log(siteUrl)
           if (BnnerImagepostArr.length > 0) {
             for (const file of BnnerImagepostArr) {
               // const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
-              bannerImageArray = await uploadFile(file, sp, "Documents", "https://alrostamanigroupae.sharepoint.com");
+              bannerImageArray = await uploadFile(file, sp, "Documents", "https://officeIndia.sharepoint.com");
             }
           }
           debugger

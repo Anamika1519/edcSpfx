@@ -58,7 +58,7 @@
     max-width: 130px;
     padding: 8px 10px; font-size: 15px;
     text-align: left;
-    background-color: #fff;
+    
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap; color: #6b6b6b;
