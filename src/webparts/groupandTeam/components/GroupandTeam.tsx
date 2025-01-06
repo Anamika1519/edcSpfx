@@ -2343,7 +2343,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
                               <textarea
 
-                                className="form-control inputcss"
+                                className="form-control"
 
                                 id="GroupDescription"
 
@@ -2592,9 +2592,12 @@ const GroupandTeamcontext = ({ props }: any) => {
 
                   </div>
 
-                ))) : (<div className="loadernewadd">
-                  <span>No Groups found </span>{" "}
-                </div>))}
+                ))) : 
+                // (<div className="loadernewadd">
+                //   <span>No Groups found </span>{" "}
+                // </div>)
+                ""
+              )}
                 {/* {groupsData.map((groupItem: any, index: number) => (
 
                   <div
@@ -2662,7 +2665,9 @@ const GroupandTeamcontext = ({ props }: any) => {
 
             {activeTab === "groupsyoucreated" && (
               <div className="row mt-2">
-                {loading ? (<div className="loadernewadd">
+               
+                {loading ? 
+                (<div className="loadernewadd">
                   <div>
                     <img style={{ width: '60px' }}
                       src={require("../../../CustomAsset/birdloader.gif")}
@@ -2739,9 +2744,33 @@ const GroupandTeamcontext = ({ props }: any) => {
 
                   </div>
 
-                ))) : (<div className="loadernewadd">
-                  <span>No Groups found </span>{" "}
-                </div>))}
+                ))) :
+                //  (<div className="loadernewadd">
+                //   <span>No Groups found </span>{" "}
+                // </div>)
+                (
+                  <div
+
+                    className="no-results card card-body align-items-center  annusvg text-center "
+
+                    style={{
+
+                      display: "flex",
+
+                      justifyContent: "center",
+                      position: 'relative',
+                      marginTop: '10px',
+                      height: '300px'
+
+                    }}
+
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg>
+
+                    <p className="font-14 text-muted text-center">No Team found </p>
+
+                  </div>)
+              )}
                 {/* {groupsData.map((groupItem: any, index: number) => (
 
                   <div
@@ -2810,6 +2839,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
             {activeTab === "groupsyoufollow" && (
               <div className="row mt-4">
+               
                 {loading ? (<div className="loadernewadd">
                   <div>
                     <img style={{ width: '60px' }}
@@ -2872,9 +2902,33 @@ const GroupandTeamcontext = ({ props }: any) => {
 
                   </div>
 
-                ))) : (<div className="loadernewadd">
-                  <span>No Groups found </span>{" "}
-                </div>))}
+                ))) :
+                //  (<div className="loadernewadd">
+                //   <span>No Groups found </span>{" "}
+                // </div>)
+                (
+                  <div
+
+                    className="no-results card card-body align-items-center  annusvg text-center "
+
+                    style={{
+
+                      display: "flex",
+
+                      justifyContent: "center",
+                      position: 'relative',
+                      marginTop: '10px',
+                      height: '300px'
+
+                    }}
+
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg>
+
+                    <p className="font-14 text-muted text-center">No Team found </p>
+
+                  </div>)
+              )}
                 {/* {groupsData.map((groupItem: any, index: number) => (
 
                   <div

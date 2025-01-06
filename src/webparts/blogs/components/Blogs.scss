@@ -46,7 +46,11 @@ input.form-control.inputcss {
    
     cursor: pointer;
   }
- 
+  .newm{z-index: 99999 !important;}
+  .newm .modal-dialog{left: 0.5% !important;}
+  .show, .showNews{padding-left: 0px !important;}
+  .btn-light1{padding: 7px 12px !important; background: #f8f9fa !important; border-color:#f8f9fa !important; border-radius: 7px !important;}
+  .btn-light1:hover{background: #008751 !important; border-color: #008751 !important;}
   .dropdown-content {
     background-color: #fff;
     box-shadow: 0 2px 4px -2px rgba(0, 0, 0, .16), 0 2px 6px 0 rgba(0, 0, 0, .12);
@@ -86,5 +90,6 @@ input.form-control.inputcss {
   {
     height: auto;
   }
+  
   .eventcommm .nose{padding: 0px !important; margin: 0px !important; }
   

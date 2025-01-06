@@ -175,7 +175,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
 
   const [isFollowing, setIsFollowing] = useState(false); // Track follow status for each user
-
+  const [handlesearch, sethandlesearch] = useState(false);
   const ApiCall = async () => {
 
     fetchUserInformationList("onload");
@@ -481,7 +481,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
       // //.filter(`userPrincipalName eq '${currentUser.Email}'`)
       let userList: any[] = [];
       let AlluserList: any[] = [];
-      if (loadVar == "onload") {
+      if (loadVar == "onload" && M365User.length == 0) {
         let allusersAD = await getAllGroupMembers("onload").then((response) => {
           setM365User(response)
 
@@ -1057,6 +1057,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
   const handleSearch = async (e: {
     target: { value: React.SetStateAction<string> };
   }) => {
+    sethandlesearch(true);
     let filteredusers: any[] = [];
     if (activeTab == "listView")
       setActiveTab("cardView");
@@ -1069,7 +1070,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
     // });
 
     let AlluserList: any[] = [];
-
+    const currentUser = await sp.web.currentUser();
     console.log("usersitem", usersitem)
     if (e.target.value.length > 0) {
       //setUsersArr([]);
@@ -1098,7 +1099,63 @@ const CorporateDirectoryContext = ({ props }: any) => {
           else usr['companyName'] = 'NA';
           return usr;
         });
+         const initialLoadingStatus: Record<number, boolean> = {};
+        const initialFollowStatus: Record<number, boolean> = {};
+        const initialPinStatus: Record<number, boolean> = {};
+        // Function to fetch follow status and post count for each user
+        const fetchUserDetails = async (user: any) => {
+          const followRecords = await sp.web.lists.getByTitle("ARGFollows").items
+            .filter(`FollowerId eq ${currentUser.Id} and FollowedId eq ${user.ID}`)
+            .getAll();
+          const pinRecords = await sp.web.lists.getByTitle("ARGPinned").items
+            .filter(`PinnedById eq ${currentUser.Id} and PinnedId eq ${user.ID}`)
+            .getAll();
+          const MyPinnedCount = await sp.web.lists.getByTitle("ARGPinned").items
+            .filter(`PinnedById eq ${currentUser.Id}`)
+            .getAll();
+          console.log("MyPinnedCount", MyPinnedCount.length);
+          if (MyPinnedCount.length >= 4) {
+            setShowPin(true)
+          } else {
+            setShowPin(false)
+          }
+          initialFollowStatus[user.ID] = followRecords.length > 0;
+          initialPinStatus[user.ID] = pinRecords.length > 0;
+          user.pinstatus = pinRecords.length > 0;
+          const followersCount = await sp.web.lists.getByTitle("ARGFollows").items
+            .filter(`FollowedId eq ${user.ID}`)
+            .select("Id")
+            .getAll();
+          const followingCount = await sp.web.lists.getByTitle("ARGFollows").items
+            .filter(`FollowerId eq ${user.ID}`)
+            .select("Id")
+            .getAll();
+          user.followersCount = followersCount.length;
+          user.followingCount = followingCount.length;
+          const postData = await sp.web.lists.getByTitle("ARGSocialFeed").items
+            .filter(`AuthorId eq ${user.ID}`)
+            .getAll();
+          user.postCount = postData.length > 0 ? postData.length : 0;
+        };
+        //let users = usersitemcopy.length > 0 ? usersitemcopy.concat(userList) : userList;
+        // Fetch details for each user in parallel
+        //users = sortArray(users, (a: any, b: any) => a.Title.toLowerCase().localeCompare(b.Title.toLowerCase()));
+        //userList = [...usersitem, ...userList];
+        const userDetailsPromises = Allusersnew.map(async (user) => {
+          initialLoadingStatus[user.ID] = true;  // Set loading to true initially
+          await fetchUserDetails(user);  // Fetch the user details (follow status and posts)
+          initialLoadingStatus[user.ID] = false;  // Set loading to false after fetc
+        });
+
+        // Wait for all user details to be fetched
+        await Promise.all(userDetailsPromises);
+        // Update the state with the fetched data
+        setFollowStatus(initialFollowStatus);
+        setPinStatus(initialPinStatus);
         setUsersArr(Allusersnew);
+        setItemsToShow(Allusersnew.length);
+        setUsersArr(Allusersnew);
+        setItemsToShow(Allusersnew.length);
       } else {
         setUsersArr([]);
       }
@@ -1106,6 +1163,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
     else if (e.target.value.length == 0) {
       // let useee = sortArray(usersitemcopy, (a: any, b: any) => a.Title.toLowerCase().localeCompare(b.Title.toLowerCase()))
       // setUsersArr(useee)
+      sethandlesearch(false);
       setUsersArr(firsttenusers);
       //await fetchUserInformationList("onload");
     }
@@ -1506,10 +1564,10 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                   // Card View Content (only displayed when "cardView" is active)
                   <div>
-                    {loading && (
+                    {loading && usersitem.length == 0 && (
                       <div className="loadernewadd">
                         <div>
-                          <img style={{ width: '60px' }}
+                          <img 
                             src={require("../../../CustomAsset/birdloader.gif")}
                             className="alignrightl"
                             alt="Loading..."
@@ -1518,7 +1576,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
                         <div className="loadnewarg">
                           <span>Loading </span>{" "}
                           <span>
-                            <img style={{ width: '35px' }}
+                            <img 
                               src={require("../assets/argloader.gif")}
                               className="alignrightbird"
                               alt="Loading..."
@@ -1527,7 +1585,10 @@ const CorporateDirectoryContext = ({ props }: any) => {
                         </div>
                       </div>
                     )}
-                    {!loading && (
+                   {
+                      usersitem.length > 0
+                      //!loading
+                      && (
                       <div className="row card-view">
                         {console.log("usersssitem", usersitem, followStatus, pinStatus)}
                         {/* {usersitem.length == 0 && <div> No users found...</div>} */}
@@ -1617,11 +1678,9 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                   </p>
 
-                                  <h4 style={{ whiteSpace: 'nowrap',
-                                        overflow:'hidden',
-                                        textOverflow:'ellipsis'}} className="mt-2 mb-1">
+                                  <span className="mt-2 mb-1"  data-tooltip={item.Title}>
 
-                                    <span
+                                    <h4
                                       //onClick={() => handleUserClick(item.ID, followStatus[item.ID])}
 
                                       className="text-dark font-16 fw-bold"
@@ -1645,9 +1704,9 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
 
 
-                                    </span>
+                                    </h4>
 
-                                  </h4>
+                                  </span>
 
 
                                   <p
@@ -1662,7 +1721,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                       openEmailDialog(item.EMail)
 
-                                    } data-tooltip={item.EMail}>
+                                    } >
 
                                       {truncateText(item.EMail && item.EMail, 28)}
 
@@ -1731,17 +1790,10 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                   </p>
 
-                                  <p
-
-                                    className="text-muted"
-
-                                    style={{ fontSize: "11px", whiteSpace: 'nowrap',
-                                      overflow:'hidden',
-                                      textOverflow:'ellipsis' }}
-
-                                  >
-
-                                    <span data-tooltip={item.companyName}>
+                                  <span data-tooltip={item.companyName} >
+ <p  className="text-muted" style={{ fontSize: "11px", whiteSpace: 'nowrap',
+  overflow:'hidden',
+  textOverflow:'ellipsis' }}>
 
                                       {/* {truncateText(item.WorkPhone != null
 
@@ -1759,10 +1811,10 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                           : " NA ", 25)}
 
-                                    </span>
+                                    </p>
 
 
-                                  </p>
+                                  </span>
 
                                   <div
 
@@ -1955,7 +2007,29 @@ const CorporateDirectoryContext = ({ props }: any) => {
                           </div> // end col
 
                         ))}
-                        {itemsToShow < AllusersInfolist.length && (
+
+                         {loading && usersitem.length > 0 && (
+                            <div className="loadernewadd">
+                              <div>
+                                <img style={{ width: '60px' }}
+                                  src={require("../../../CustomAsset/birdloader.gif")}
+                                  className="alignrightl"
+                                  alt="Loading..."
+                                />
+                              </div>
+                              <div className="loadnewarg">
+                                <span>Loading </span>{" "}
+                                <span>
+                                  <img style={{ width: '35px' }}
+                                    src={require("../assets/argloader.gif")}
+                                    className="alignrightbird"
+                                    alt="Loading..."
+                                  />
+                                </span>
+                              </div>
+                            </div>
+                          )}
+                          {itemsToShow < AllusersInfolist.length && !handlesearch &&(
                           <div className="col-12 text-center mb-3 mt-3">
                             <button onClick={loadMore} className="btn btn-primary">
                               Load More
@@ -2003,7 +2077,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                   </th>
 
-                                  <th style={{ minWidth: '120px', maxWidth: '120px' }}>
+                                  <th style={{ minWidth: '100px', maxWidth: '100px' }}>
 
                                     <div className="d-flex flex-column bd-highlight ">
 
@@ -2074,9 +2148,9 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                     style={{
 
-                                      minWidth: "120px",
+                                      minWidth: "202px",
 
-                                      maxWidth: "120px",
+                                      maxWidth: "202px",
 
                                     }}
 
@@ -2510,7 +2584,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                           {" "}
 
-                                          <img style={{ width: '18px' }}
+                                          <img style={{ width: '18px',cursor:'pointer' }}
 
                                             src={require("../assets/calling.png")}
 
@@ -2544,22 +2618,22 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                         </td>
 
-                                        <td style={{ minWidth: '120px', maxWidth: '120px' }}>{item.Title}</td>
+                                        <td style={{ minWidth: '100px', maxWidth: '100px' }}> <p>{item.Title}</p> </td>
 
                                         {/* <td>{item.ID}</td> */}
 
-                                        <td style={{ minWidth: '120px', maxWidth: '120px' }} data-tooltip={item.EMail}>{item.EMail}</td>
-                                        <td style={{ minWidth: '100px', maxWidth: '100px' }} data-tooltip={item.JobTitle}>{item.JobTitle}</td>
+                                        <td style={{ minWidth: '202px', maxWidth: '202px' }} data-tooltip={item.EMail}> <p>{item.EMail}</p> </td>
+                                        <td style={{ minWidth: '100px', maxWidth: '100px' }} data-tooltip={item.JobTitle}><p>{item.JobTitle}</p> </td>
                                         <td style={{ minWidth: '100px', maxWidth: '100px' }} data-tooltip={item?.companyName != null
 
                                           ? item?.companyName
 
                                           : "NA"}>
-                                          {item?.companyName != null
+                                       <p>  {item?.companyName != null
 
                                             ? item?.companyName
 
-                                            : "NA"}
+                                            : "NA"}</p> 
 
 
                                         </td>
@@ -2570,11 +2644,11 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                           : "NA"}>
 
-                                          {item?.Department != null
+<p>  {item?.Department != null
 
                                             ? item?.Department
 
-                                            : "NA"}
+                                            : "NA"} </p>
 
                                         </td>
 
@@ -2584,11 +2658,11 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                           : "NA"}>
 
-                                          {item?.WorkPhone != null
+<p>  {item?.WorkPhone != null
 
                                             ? item?.WorkPhone
 
-                                            : "NA"}
+                                            : "NA"} </p>
 
                                         </td>
 

@@ -42,7 +42,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
     const [Bookmarkstatus, setBookmarkstatus] = useState('');
     const [EnityData, setEnityData] = React.useState([]);
       const [modeValue, setmode] = React.useState(null);
-   
+   const [Loading, setLoading] = React.useState(false);
     const [ImagepostArr, setImagepostArr] = React.useState([]);
     const [ImagepostArr1, setImagepostArr1] = React.useState([]);
     const [BnnerImagepostArr, setBannerImagepostArr] = React.useState([]);
@@ -154,7 +154,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
         "size",
     ];
     useEffect(() => {
-        console.log("activeeee", activeTab);
+        //console.log("activeeee", activeTab);
         if (activeTab.toLowerCase() === "all") {
             if(blogData.length >0){
                  const filteredItems = blogData.filter(
@@ -171,14 +171,14 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
             const selectedCategory = FilterOptions.find(
                 (category) => category.Name.toLowerCase() === activeTab.toLowerCase()
             );
-           // { console.log("filteredMediaItemsselectedCategory", filteredBlogItems, activeTab, selectedCategory, currentEmail, blogData) }
+           // { //console.log("filteredMediaItemsselectedCategory", filteredBlogItems, activeTab, selectedCategory, currentEmail, blogData) }
             if (selectedCategory) {
                 // Filter items based on the selected category's ID
                 if (selectedCategory.Name == "Bookmarked") {
                     // const filteredItems = blogData.filter(
                     //     (item) =>item.BookmarkedBy && item.BookmarkedBy.EMail === currentEmail
                     // );
-                   // console.log("currentEmailcurrentEmail", Bookmarkblogs)
+                   // //console.log("currentEmailcurrentEmail", Bookmarkblogs)
                     setFilteredBlogItems(Bookmarkblogs);
                 } else {
                     if (selectedCategory.Name == "Save as Draft") {
@@ -214,7 +214,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
             }
 
         }
-        // { console.log("filteredMediaItemsafter", filteredBlogItems) }
+        // { //console.log("filteredMediaItemsafter", filteredBlogItems) }
         const handleClickOutside = (event) => {
             if (menuRef.current && !menuRef.current.contains(event.target)) {
                 // setIsMenuOpenshare(false);
@@ -230,6 +230,7 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
     }, [_sp, SiteUrl, activeTab, blogData])
 
     useEffect(() => {
+        setActiveTab("All");
         ApIcall();
     }, []);
     const FilterOptions = [{ id: 1, Name: "All", name: "All Published" },{ id: 2, Name: "Submitted", name: "Submitted" },
@@ -247,13 +248,13 @@ const CustomBlogWebpartTemplate = ({ _sp, SiteUrl }) => {
         //setBlogCategoryData(await GetBlogCategory(_sp));
 
 
-        setActiveTab("All");
+   
         setBookmarkblogs(await fetchBookmarkBlogdata(_sp));
-        setActiveTab("All");
+        // setActiveTab("All");
         setEnityData(await getEntity(_sp)) //Entity
-        // console.log("check data of blogs---",blogData)
+        // //console.log("check data of blogs---",blogData)
         // const dataofblog = await fetchBlogdata(sp);
-        // console.log("check the data of blog",dataofblog)
+        // //console.log("check the data of blog",dataofblog)
         // setBlogData(dataofblog);
 
     }
@@ -277,10 +278,34 @@ const setShowModalFunc = (bol, name) => {
     }
   };
 
+  //#region deleteLocalFile
+const deleteLocalFile = (index, filArray, name) => {
+    debugger
+    //console.log(filArray, 'filArray');
+ 
+    // Remove the file at the specified index
+    filArray.splice(index, 1);
+    //console.log(filArray, 'filArray');
+ 
+    // Update the state based on the title
+    if (name === "bannerimg") {
+      setBannerImagepostArr([...filArray]);
+      filArray[0].files.length > 0 ? "" : setShowModal(false); clearFileInput(name);
+    } else if (name === "Gallery") {
+      setImagepostArr1([...filArray]);
+      filArray[0].files.length > 0 ? "" : setShowModal(false); clearFileInput(name);
+    } else {
+      setDocumentpostArr1([...filArray]);
+      filArray[0].files.length > 0 ? "" : setShowModal(false); clearFileInput(name);
+    }
+    // Clear the file input
+ 
+  };
+
  
     const handleClick = async (contentId, contentName, EntityId) => {
      
-        //  console.log("Creating approval hierarchy with data:", rows);
+        //  //console.log("Creating approval hierarchy with data:", rows);
      
           let boolval = false
      
@@ -308,7 +333,7 @@ const setShowModalFunc = (bol, name) => {
      
             const addedData = await AddContentLevelMaster(_sp, arrPost)
      
-            //console.log("created content level master items", addedData);
+            ////console.log("created content level master items", addedData);
      
      
           }
@@ -366,7 +391,7 @@ const setShowModalFunc = (bol, name) => {
         localStorage.setItem("NewsArr", JSON.stringify(valurArr))
         setTimeout(() => {
             window.location.href = `${SiteUrl}/SitePages/BlogDetails.aspx?${valurArr.Id}`;
-        }, 1000);
+        }, 500);
     }
 
     const copyToClipboard = (Id) => {
@@ -428,7 +453,7 @@ const setShowModalFunc = (bol, name) => {
         setEditFormData(selectedData);
         setEditID(id);
         setEditForm(true)
-        // console.log(id, "----id", selectedData);
+        // //console.log(id, "----id", selectedData);
         //setCategoryData(await getCategory(_sp, Number(selectedData[0].Category)));
         setFormData((prevData) => ({
             ...prevData,
@@ -456,13 +481,13 @@ const setShowModalFunc = (bol, name) => {
         setDocumentpostArr1(selectedData[0].BlogDocsJSON)
         if (selectedData[0].BannerImage.length > 0) {
             banneimagearr = selectedData[0].BannerImage
-            // console.log(banneimagearr, 'banneimagearr');
+            // //console.log(banneimagearr, 'banneimagearr');
             setBannerImagepostArr(banneimagearr);
             setBannerImagepostArrEdit(banneimagearr);
             setImagepostArr1Edit(selectedData[0].BlogGalleryJSON)
             //setFormData(arr)
         }
-        // console.log("editformdata", EditFormData, selectedData)
+        // //console.log("editformdata", EditFormData, selectedData)
         //window.location.href = `${SiteUrl}/SitePages/DiscussionForumDetail.aspx?${id}`;
     };
 
@@ -471,8 +496,8 @@ const setShowModalFunc = (bol, name) => {
         libraryName,
         docLib
     ) => {
-        debugger;
-        // console.log("libraryName-->>>>", libraryName)
+        //debugger;
+        // //console.log("libraryName-->>>>", libraryName)
         event.preventDefault();
         let uloadDocsFiles = [];
         let uloadDocsFiles1 = [];
@@ -493,10 +518,20 @@ const setShowModalFunc = (bol, name) => {
             }
            
             if (libraryName === "Gallery" || libraryName === "bannerimg") {
-                const imageVideoFiles = files.filter(
-                    (file) =>
-                        file.type.startsWith("image/") || file.type.startsWith("video/")
-                );
+                var imageVideoFiles =[];
+                if(libraryName === "Gallery"){
+                    imageVideoFiles = files.filter(
+                        (file) =>
+                            file.type.startsWith("image/") || file.type.startsWith("video/")
+                    );
+                }
+                else if(libraryName === "bannerimg"){
+                    imageVideoFiles = files.filter(
+                        (file) =>
+                            file.type.startsWith("image/")
+                    );
+                }
+               
 
                 if (imageVideoFiles.length > 0) {
                     const arr = {
@@ -506,13 +541,13 @@ const setShowModalFunc = (bol, name) => {
                         name:imageVideoFiles[0].name,
                         fileUrl:  URL.createObjectURL(imageVideoFiles[0])
                     };
-                    // console.log("arr-->>>", arr)
+                    // //console.log("arr-->>>", arr)
                     if (libraryName === "Gallery") {
                         uloadImageFiles.push(arr);
                         setImagepostArr(uloadImageFiles);
                         if (ImagepostArr1.length > 0) {
                             imageVideoFiles.forEach((ele) => {
-                                // console.log("ele in if-->>>>", ele)
+                                // //console.log("ele in if-->>>>", ele)
                                 let arr1 = {
                                     ID: 0,
                                     Createdby: "",
@@ -527,7 +562,7 @@ const setShowModalFunc = (bol, name) => {
                             setImagepostArr1(ImagepostArr1);
                         } else {
                             imageVideoFiles.forEach((ele) => {
-                                // console.log("ele in else-->>>>", ele)
+                                // //console.log("ele in else-->>>>", ele)
                                 let arr1 = {
                                     ID: 0,
                                     Createdby: "",
@@ -543,11 +578,15 @@ const setShowModalFunc = (bol, name) => {
                         }
                     } else if (libraryName === "bannerimg") {
                         uloadBannerImageFiles.push(arr);
-                        // console.log("uloadBannerImageFiles-->>", uloadBannerImageFiles)
+                        // //console.log("uloadBannerImageFiles-->>", uloadBannerImageFiles)
                         setBannerImagepostArr(uloadBannerImageFiles);
                     }
                 } else {
-                    Swal.fire("only image & video can be upload");
+                    if(libraryName === "bannerimg"){
+                                Swal.fire("only image can be upload");
+                              }else{
+                                Swal.fire("only image & video can be upload");
+                              }
                 }
             }
         }
@@ -624,39 +663,44 @@ const setShowModalFunc = (bol, name) => {
                     cancelButtonText: "No",
                     icon: "warning",
                 }).then(async (result) => {
-                    // console.log(result);
+                    // //console.log(result);
                     if (result.isConfirmed) {
-                        //console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
-                        debugger;
+                        ////console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
+                        // //debugger;
+                        setLoading(true);
+                        const modalBackdrop = document.querySelector('.modal-backdrop');
+                        if (modalBackdrop) {
+                            modalBackdrop.classList.remove('modal-backdrop');
+                            modalBackdrop.classList.remove('fade');
+                            modalBackdrop.classList.remove('show');
+                            // modalBackdrop.remove();
+                        }
                         let bannerImageArray = {};
                         let galleryIds = [];
                         let documentIds = [];
                         let galleryArray = [];
                         let documentArray = [];
 
-                        // formData.FeaturedAnnouncement === "on"?  true :false;
-                        // console.log("BnnerImagepostArr submit edit", BnnerImagepostArr)
-                        // Upload Banner Images
                         if (
                             BnnerImagepostArr.length > 0 &&
                             BnnerImagepostArr[0]?.files?.length > 0 && IsBannerAdded
                         ) {
-                            debugger
+                            //debugger
                             for (const file of BnnerImagepostArr[0].files) {
-                                debugger
+                                //debugger
                                 //  const uploadedBanner = await uploadFile(file, _sp, "Documents", Url);
                                 bannerImageArray = await uploadFileBanner(
                                     file,
                                     _sp,
                                     "Documents",
-                                    "https://officeindia.sharepoint.com"
+                                    "https://alrostamanigroupae.sharepoint.com"
                                 );
                             }
                         } else {
                             bannerImageArray = null;
                         }
-                        debugger;
-                        // console.log("bannerImageArraybannerImageArray on submit", bannerImageArray,
+                        // //debugger;
+                        // //console.log("bannerImageArraybannerImageArray on submit", bannerImageArray,
                         //     BnnerImagepostArrEdit,
                         //     BnnerImagepostArrEdit.length
                         // )
@@ -685,11 +729,11 @@ const setShowModalFunc = (bol, name) => {
                                     //BlogBannerImage: bannerImageArray && JSON.stringify(bannerImageArray)
                                     // DiscussionForumCategoryId: Number(formData.category),
                                 };
-                            // console.log("postPayload-->>>>>", postPayload);
+                            // //console.log("postPayload-->>>>>", postPayload);
 
                             const postResult = await updateItem(postPayload, _sp, editID);
                             const postId = postResult?.data?.ID;
-                            debugger;
+                            // //debugger;
                          
                             if (ImagepostArr.length > 0 && IsGalImageAdded) {
                                 for (const file of ImagepostArr[0]?.files) {
@@ -703,11 +747,11 @@ const setShowModalFunc = (bol, name) => {
                                         uploadedGalleryImage.map((item) => item.ID)
                                     );
                                     galleryArray.push(uploadedGalleryImage);
-                                    // console.log("uploadedGalleryImage draft", uploadedGalleryImage, galleryIds)
+                                    // //console.log("uploadedGalleryImage draft", uploadedGalleryImage, galleryIds)
                                 }
                             }
 
-                            // console.log("IsGalImageAdded draft", IsGalImageAdded)
+                            // //console.log("IsGalImageAdded draft", IsGalImageAdded)
                             if (IsGalImageAdded) {
                                 const updatePayload = {
                                     ...(galleryIds.length > 0 && {
@@ -721,7 +765,7 @@ const setShowModalFunc = (bol, name) => {
 
                                 if (Object.keys(updatePayload).length > 0) {
                                     const updateResult = await updateItem(updatePayload, _sp, editID);
-                                    // console.log("Update Result:", updateResult);
+                                    // //console.log("Update Result:", updateResult);
                                 }
                             }
                            
@@ -769,17 +813,27 @@ const setShowModalFunc = (bol, name) => {
                                     // //////######### changes ############  ////////////
                        
                         // Swal.fire("Item updated successfully", "", "success");
+                        dismissModal();
                         if (boolval == true) {
                             Swal.fire("Item submitted successfully", "", "success");
                         setTimeout(async () => {
+                           
                             setBlogData(await fetchBlogdata(_sp));
-                            dismissModal();
-                            window.location.href = `${SiteUrl}/SitePages/Blogs.aspx`;
-                        }, 500);
+                           
+                            // dismissModal();
+                            ApIcall();
+                            setLoading(false);
+                            const modalBackdrop = document.querySelector('.modal-backdrop');
+                        if (modalBackdrop) {
+                            modalBackdrop.classList.remove('modal-backdrop');
+                            modalBackdrop.classList.remove('fade');
+                            modalBackdrop.classList.remove('show');
+                            // modalBackdrop.remove();
+                        }
+                            // window.location.href = `${SiteUrl}/SitePages/Blogs.aspx`;
+                        }, 100);
                     }
-                        // setTimeout(() => {
-
-                        // }, 2000);
+                       
                     }
                 });
             }
@@ -798,9 +852,17 @@ const setShowModalFunc = (bol, name) => {
                 cancelButtonText: "No",
                 icon: "warning",
             }).then(async (result) => {
-                //console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
+                ////console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
                 if (result.isConfirmed) {
-                    debugger;
+                    // //debugger;
+                    setLoading(true);
+                    const modalBackdrop = document.querySelector('.modal-backdrop');
+                    if (modalBackdrop) {
+                        modalBackdrop.classList.remove('modal-backdrop');
+                        modalBackdrop.classList.remove('fade');
+                        modalBackdrop.classList.remove('show');
+                        // modalBackdrop.remove();
+                    }
                     let bannerImageArray = {};
                     let galleryIds = [];
                     let documentIds = [];
@@ -810,7 +872,7 @@ const setShowModalFunc = (bol, name) => {
                     // formData.FeaturedAnnouncement === "on"?  true :false;
 
                     // Upload Banner Images
-                    // console.log("BnnerImagepostArrBnnerImagepostArr draft", BnnerImagepostArr)
+                    // //console.log("BnnerImagepostArrBnnerImagepostArr draft", BnnerImagepostArr)
                     if (
                         BnnerImagepostArr.length > 0 &&
                         BnnerImagepostArr[0]?.files?.length > 0 && IsBannerAdded
@@ -821,13 +883,13 @@ const setShowModalFunc = (bol, name) => {
                                 file,
                                 _sp,
                                 "Documents",
-                                "https://officeindia.sharepoint.com"
+                                "https://alrostamanigroupae.sharepoint.com"
                             );
                         }
                     }
-                    debugger;
+                    // //debugger;
                     // Create Post
-                    // console.log("BnnerImagepostArrBnnerImagepostArr draft", bannerImageArray)
+                    // //console.log("BnnerImagepostArrBnnerImagepostArr draft", bannerImageArray)
                     const postPayload = IsBannerAdded ?
                         {
                             Title: formData.topic,
@@ -845,13 +907,13 @@ const setShowModalFunc = (bol, name) => {
                             EntityId: formData.entity && Number(formData.entity),
                             Status: "Save as Draft",
                         };
-                    console.log("postPayload 3-->>>>>", postPayload);
+                    //console.log("postPayload 3-->>>>>", postPayload);
 
                     const postResult = await updateItem(postPayload, _sp, editID);
                     const postId = postResult?.data?.ID;
-                    debugger;
-                    console.log("postID", postId, postResult)
-                    console.log("ImagepostArrImagepostArr draft", ImagepostArr, IsGalImageAdded)
+                    // //debugger;
+                    //console.log("postID", postId, postResult)
+                    //console.log("ImagepostArrImagepostArr draft", ImagepostArr, IsGalImageAdded)
                     if (ImagepostArr.length > 0 && IsGalImageAdded) {
                         for (const file of ImagepostArr[0]?.files) {
                             const uploadedGalleryImage = await uploadFileToLibrary(
@@ -864,11 +926,11 @@ const setShowModalFunc = (bol, name) => {
                                 uploadedGalleryImage.map((item) => item.ID)
                             );
                             galleryArray.push(uploadedGalleryImage);
-                            console.log("uploadedGalleryImage draft", uploadedGalleryImage, galleryIds)
+                            //console.log("uploadedGalleryImage draft", uploadedGalleryImage, galleryIds)
                         }
                     }
 
-                    console.log("IsGalImageAdded draft", IsGalImageAdded)
+                    //console.log("IsGalImageAdded draft", IsGalImageAdded)
                     if (IsGalImageAdded) {
                         const updatePayload = {
                             ...(galleryIds.length > 0 && {
@@ -882,16 +944,22 @@ const setShowModalFunc = (bol, name) => {
 
                         if (Object.keys(updatePayload).length > 0) {
                             const updateResult = await updateItem(updatePayload, _sp, editID);
-                            console.log("Update Result:", updateResult);
+                            //console.log("Update Result:", updateResult);
                         }
                     }
+                    dismissModal();
                     Swal.fire("Item saved successfully", "", "success");
                     setTimeout(async () => {
+                       
                         setBlogData(await fetchBlogdata(_sp));
-                        dismissModal()
-                        window.location.href = `${SiteUrl}/SitePages/Blogs.aspx`;
+                       
+                       
+                        ApIcall();
+                        setLoading(false);
+                       
+                        // window.location.href = `${SiteUrl}/SitePages/Blogs.aspx`;
 
-                    }, 2000);
+                    }, 100);
                 }
             });
         }
@@ -903,7 +971,7 @@ const setShowModalFunc = (bol, name) => {
 
         // Remove Bootstrap classes and attributes manually
         modalElement.classList.remove('show');
-        modalElement.style.display = 'none';
+        // modalElement.style.display = 'none';
         modalElement.setAttribute('aria-hidden', 'true');
         modalElement.removeAttribute('aria-modal');
         modalElement.removeAttribute('role');
@@ -911,7 +979,10 @@ const setShowModalFunc = (bol, name) => {
         // Optionally, remove the backdrop if it was added manually
         const modalBackdrop = document.querySelector('.modal-backdrop');
         if (modalBackdrop) {
-            modalBackdrop.remove();
+            modalBackdrop.classList.remove('modal-backdrop');
+            modalBackdrop.classList.remove('fade');
+            modalBackdrop.classList.remove('show');
+            // modalBackdrop.remove();
         }
     };
     const onChange = async (name, value) => {
@@ -970,7 +1041,7 @@ const setShowModalFunc = (bol, name) => {
         }).then((result) => {
             if (result.isConfirmed) {
                 const DeleteRes = DeleteBusinessAppsAPI(_sp, id)
-             
+                setLoading(true);
                 ApIcall();
                 Swal.fire({
                     title: "Deleted!",
@@ -978,9 +1049,11 @@ const setShowModalFunc = (bol, name) => {
                     icon: "success"
                 }).then(async res => {
                     setBlogData(await fetchBlogdata(_sp));
+                    setLoading(false);
                 }
                 ).catch(async err => {
                     setBlogData(await fetchBlogdata(_sp));
+                    setLoading(false);
                 }
                 )
 
@@ -999,7 +1072,7 @@ const setShowModalFunc = (bol, name) => {
     };
     const togglePin = async (e, item) => {
 
-        debugger
+        //debugger
 
         e.preventDefault();
 
@@ -1007,6 +1080,8 @@ const setShowModalFunc = (bol, name) => {
 
 
         try {
+
+            setLoading(true);
 
             const currentUser = await _sp.web.currentUser();
 
@@ -1023,6 +1098,8 @@ const setShowModalFunc = (bol, name) => {
                 await _sp.web.lists.getByTitle("ARGSavedBlogs").items.getById(saveRecords[0].Id).delete();
 
                 setBookmarkstatus((prev) => ({ ...prev, [item.ID]: false })); // Update [pin] status
+                // setLoading(false);
+
 
             } else {
 
@@ -1036,7 +1113,8 @@ const setShowModalFunc = (bol, name) => {
 
                 }).then(async (ress) => {
 
-                    console.log(ress);
+                    //console.log(ress);
+                    // setLoading(false);
                 });
 
                 setBookmarkstatus((prev) => ({ ...prev, [item.ID]: true })); // Update pin status
@@ -1046,11 +1124,12 @@ const setShowModalFunc = (bol, name) => {
                     icon: 'success',
                     confirmButtonText: 'OK'
                 });
+               
 
             }
 
         } catch (error) {
-
+            setLoading(false);
             //setLoadingUsers((prev) => ({ ...prev, [item.ID]: false })); // End loading state for the specific user
 
 
@@ -1059,6 +1138,7 @@ const setShowModalFunc = (bol, name) => {
             alert("Failed to toggle pin status. Please try again.");
 
         } finally {
+            setLoading(false);
             ApIcall();
             //  fetchUserInformationList()
 
@@ -1157,7 +1237,7 @@ const setShowModalFunc = (bol, name) => {
                                         marginBottom: "unset",
                                     }}
                                 >
-                                    {console.log("FilterOptions", FilterOptions)}
+                                    {/* {//console.log("FilterOptions", FilterOptions)} */}
                                     {FilterOptions.length > 0 && FilterOptions.map((res) => (
                                         <li className="nav-itemcss">
                                             <a
@@ -1183,6 +1263,26 @@ const setShowModalFunc = (bol, name) => {
                     </div>
                 </div>
             </div>
+            {Loading ?
+                   
+                   <div style={{minHeight:'100vh',marginTop:'100px'}} className="loadernewadd mt-10">
+                   <div>
+                       <img
+                           src={require("../../CustomAsset/birdloader.gif")}
+                           className="alignrightl"
+                           alt="Loading..."
+                         />
+                       </div>
+                     <span>Loading </span>{" "}
+                     <span>
+                       <img
+                         src={require("../../CustomAsset/argloader.gif")}
+                         className="alignrightl"
+                         alt="Loading..."
+                       />
+                     </span>
+                   </div>
+                 :
             <div className="tab-content mt-2">
                 <div className="tab-pane show active" id="home1" role="tabpanel">
                     {filteredBlogItems.length > 0 ?  
@@ -1200,11 +1300,11 @@ const setShowModalFunc = (bol, name) => {
                             let listID = SiteUrl.toLowerCase().includes('alrostmani') ? listIDAl : '1e0eead0-ed78-4b4d-92dc-4cd058deac82';
 
                             let img1 = imageData && imageData.fileName ? `${SiteUrl}/_api/v2.1/sites('${siteId}')/lists('${listID}')/items('${item.ID}')/attachments('${imageData.fileName}')/thumbnails/0/c400x400/content?prefer=noredirect%2Cclosestavailablesize` : ""
-                            let img = imageData && imageData.serverRelativeUrl ? `https://officeindia.sharepoint.com${imageData.serverRelativeUrl}` : img1
+                            let img = imageData && imageData.serverRelativeUrl ? `https://alrostamanigroupae.sharepoint.com${imageData.serverRelativeUrl}` : img1
                             const imageUrl = imageData
                                 ? img
                                 : require("../../webparts/businessApps/assets/userimg.png");
-                            { console.log("imageData", imageData, imageUrl, item, SiteUrl, img) }
+                            // { console.log("imageData", imageData, imageUrl, item, SiteUrl, img) }
 
                             return (
                                 <div className="card mb-2 annuncementcard">
@@ -1226,8 +1326,10 @@ const setShowModalFunc = (bol, name) => {
 
                                                         <span className="font-12 date-color float-start mt-0 mb-2 ng-binding" style={{ color: '#6b6b6b', fontSize: '12px' }}>{moment(item.Created).format("DD-MMM-YYYY")}
                                                             {/* 12-Mar-2024 18:37 */}
-                                                        </span>
+                                                        </span><br></br>
                                                     </div>
+                                                    <h6  className="font-12 date-color float-start mt-0 mb-2 ng-binding" style={{ color: '#6b6b6b', fontSize: '12px' }}> {item.Author.Title}  </h6>
+
                                                 </div>
                                                 <a> <div className="w-100">
                                                     <h4 className="mt-0 mb-1 font-16 fw-bold ng-binding" style={{ color: '#343a40', fontSize: '16px' }}> {truncateText(item.Title, 90)}
@@ -1265,7 +1367,7 @@ const setShowModalFunc = (bol, name) => {
                                                                 </div></>
                                                         }
                                                         {/* Bootstrap Modal */}
-                                                        {console.log("formdata", formData)}
+                                                        {/* {//console.log("formdata", formData)} */}
                                                         <div
                                                             className="modal fade bd-example-modal-lg"
                                                             id="discussionModalEdit"
@@ -1287,6 +1389,7 @@ const setShowModalFunc = (bol, name) => {
                                                                             aria-label="Close"
                                                                         ></button>
                                                                     </div>
+                                                                   
                                                                     <div className="modal-body">
                                                                         <form className="row">
                                                                             <div className="col-lg-3">
@@ -1381,6 +1484,7 @@ const setShowModalFunc = (bol, name) => {
                                                                                         id="bannerImage"
                                                                                         name="bannerImage"
                                                                                         className="form-control inputcss"
+                                                                                         accept="image/*"
                                                                                         onChange={(e) =>
                                                                                             onFileChange(e, "bannerimg", "Document")
                                                                                         }
@@ -1528,7 +1632,7 @@ const setShowModalFunc = (bol, name) => {
 
                                                                                             </div>
 
-
+                                                                                     
 
 
                                                                                             <div className="d-flex flex-column">
@@ -1696,7 +1800,7 @@ const setShowModalFunc = (bol, name) => {
                                                                                 </div>
                                                                                 <button
                                                                                     type="button"
-                                                                                    className="btn btn-light waves-effect waves-light m-1"
+                                                                                    className="btn btn-light1 waves-effect waves-light m-1"
                                                                                     data-bs-dismiss="modal"
                                                                                     aria-label="Close"
                                                                                 >
@@ -1711,6 +1815,7 @@ const setShowModalFunc = (bol, name) => {
                                                                             </div>
                                                                         </form>
                                                                     </div>
+                 
                                                                 </div>
                                                             </div>
 
@@ -1758,15 +1863,15 @@ const setShowModalFunc = (bol, name) => {
                     )}
 
                      {/* Modal to display uploaded files */}
-            <Modal show={showModal} onHide={() => setShowModal(false)} size='lg' >
+            {/* <Modal show={showModal} onHide={() => setShowModal(false)} size='lg' >
               <Modal.Header closeButton>
-                {DocumentpostArr1.length > 0 && showDocTable && <Modal.Title>Documents</Modal.Title>}
-                {ImagepostArr1.length > 0 && showImgModal && <Modal.Title>Gallery Images/Videos</Modal.Title>}
-                {BnnerImagepostArr.length > 0 && showBannerModal && <Modal.Title>Banner Images</Modal.Title>}
+                {showDocTable && <Modal.Title>Documents</Modal.Title>}
+                {showImgModal && <Modal.Title>Gallery Images/Videos</Modal.Title>}
+                {showBannerModal && <Modal.Title>Banner Images</Modal.Title>}
               </Modal.Header>
               <Modal.Body className="scrollbar" id="style-5">
 
-                {DocumentpostArr1.length > 0 && showDocTable &&
+                {showDocTable &&
                   (
                     <>
                       <table className="table table-bordered" style={{ fontSize: '0.75rem' }}>
@@ -1782,7 +1887,7 @@ const setShowModalFunc = (bol, name) => {
                           {DocumentpostArr1.map((file, index) => (
                             <tr key={index}>
                               <td className='text-center'>{index + 1}</td>
-                              <td>{file.fileName.replace("/sites/AlRostmaniSpfx2", "")}</td>
+                              <td>{file.fileName.replace("/sites/Intranetuat", "")}</td>
                               <td className='text-right'>{file.fileSize}</td>
                               <td className='text-center'> <img src={require("../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, DocumentpostArr1, "docs")} /> </td>
                             </tr>
@@ -1791,7 +1896,7 @@ const setShowModalFunc = (bol, name) => {
                       </table></>
                   )
                 }
-                {ImagepostArr1.length > 0 && showImgModal &&
+                {showImgModal &&
                   (
                     <>
                       <table className="table table-bordered" style={{ fontSize: '0.75rem' }}>
@@ -1800,31 +1905,37 @@ const setShowModalFunc = (bol, name) => {
                             <th>Serial No.</th>
                             <th> Image </th>
                             <th>File Name</th>
-                            <th>File Size</th>
-                            {modeValue == 'null' && <th className='text-center'>Action</th>
-                            }
+                            <th>File Size</th> */}
+                            {/* {modeValue == 'null' && <th className='text-center'>Action</th>
+                            } */}
+                            {/* <th className='text-center'>Action</th>
                           </tr>
                         </thead>
                         <tbody>
                           {ImagepostArr1.map((file, index) => (
                             <tr key={index}>
                               <td className='text-center'>{index + 1}</td>
-                              <td>  <img className='imagefe' src={file.fileUrl ?file.fileUrl: `${siteUrl}/AnnouncementAndNewsGallary/${file.fileName}`}
+                              <td>  <img className='imagefe' src={file.fileType.startsWith('video/') ?
+                                        require("../../Assets/ExtraImage/video.jpg") :file.fileUrl ?file.fileUrl: `${siteUrl}/AnnouncementAndNewsGallary/${file.fileName}`}
                               /></td>
 
                               <td>{file.fileName}</td>
-                              <td className='text-right'>{file.fileSize}</td>
-                              {modeValue != 'view' && <td className='text-center'>
+                              <td className='text-right'>{file.fileSize}</td> */}
+                              {/* {modeValue != 'view' && <td className='text-center'>
                                 <img src={require("../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, ImagepostArr1, "Gallery")} />
 
                               </td>
-                              }
+                              } */}
+                              {/* <td className='text-center'>
+                                <img src={require("../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, ImagepostArr1, "Gallery")} />
+
+                              </td>
                             </tr>
                           ))}
                         </tbody>
                       </table></>
                   )}
-                {BnnerImagepostArr.length > 0 && showBannerModal &&
+                {showBannerModal &&
                   (
                     <>
                       <table className="table table-bordered" style={{ fontSize: '0.75rem' }}>
@@ -1842,7 +1953,7 @@ const setShowModalFunc = (bol, name) => {
                             <tr key={index}>
                               <td className='text-center'>{index + 1}</td>
                               <img src={BnnerImagepostArr[0].fileUrl?BnnerImagepostArr[0].fileUrl:`${file.serverUrl}${file.serverRelativeUrl}`} />
-                              <td>{file.name}</td>
+                              <td>{file.name?file.name:file.fileName?file.fileName:""}</td>
                               <td className='text-right'>{file.size}</td>
                               <td className='text-center'> <img src={require("../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, BnnerImagepostArr, "bannerimg")} /> </td>
                             </tr>
@@ -1853,8 +1964,212 @@ const setShowModalFunc = (bol, name) => {
 
               </Modal.Body>
 
-            </Modal>
+            </Modal> */}
             {/*  */}
+
+            {/* modal css */}
+
+            <Modal show={showModal} onHide={() => setShowModal(false)} size='lg' className="newm" >
+              <Modal.Header closeButton>
+                { showDocTable && <Modal.Title>Documents</Modal.Title>}
+                { showImgModal && <Modal.Title>Gallery Images/Videos</Modal.Title>}
+                {BnnerImagepostArr.length > 0 && showBannerModal && <Modal.Title>Banner Images</Modal.Title>}
+              </Modal.Header>
+              <Modal.Body className="" id="style-5">
+ 
+                { showDocTable &&
+                  (
+                    <>
+                      <table className="mtbalenew" style={{ fontSize: '0.75rem' }}>
+                        <thead style={{ background: '#eef6f7' }}>
+                          <tr>
+                            <th style={{minWidth:'40px',maxWidth:'40px'}}>Serial No.</th>
+                            <th style={{minWidth:'100px',maxWidth:'100px'}}>File Name</th>
+                            <th style={{minWidth:'40px',maxWidth:'40px'}}>File Size</th>
+                            <th style={{minWidth:'40px',maxWidth:'40px'}} className='text-center'>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {DocumentpostArr1.map((file, index) => (
+                            <tr key={index}>
+                              <td style={{minWidth:'40px',maxWidth:'40px'}} className='text-center'>{index + 1}</td>
+                              <td style={{minWidth:'100px',maxWidth:'100px'}}>{file.fileName.replace("/sites/Intranetuat", "")}</td>
+                              <td style={{minWidth:'40px',maxWidth:'40px'}} className='text-right'>{file.fileSize}</td>
+                              <td style={{minWidth:'40px',maxWidth:'40px'}} className='text-center'> <img style={{cursor:'pointer'}} src={require("../../CustomAsset/del.png")}  onClick={() => deleteLocalFile(index, DocumentpostArr1, "docs")} /> </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table></>
+                  )
+                }
+                { showImgModal &&
+                  (
+                    <>
+                      <table className="mtbalenew" style={{ fontSize: '0.75rem' }}>
+                        <thead style={{ background: '#eef6f7' }}>
+                          <tr>
+                            <th  style={{minWidth:'40px',maxWidth:'40px'}}>Serial No.</th>
+                            <th style={{minWidth:'50px',maxWidth:'50px'}}> Image </th>
+                            <th>File Name</th>
+                            <th  style={{minWidth:'40px',maxWidth:'40px'}}>File Size</th>
+                            <th className='text-center'>Action</th>
+                           
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {ImagepostArr1.map((file, index) => (
+                            <tr key={index}>
+                              <td style={{minWidth:'40px',maxWidth:'40px'}} className='text-center'>{index + 1}</td>
+                              <td style={{minWidth:'50px',maxWidth:'50px', textAlign:'center'}}>  <img style={{width:'40px',height:'40px', borderRadius:'1000px'}} className='imagefe' src={file.fileType.startsWith('video/') ?
+                                        require("../../Assets/ExtraImage/video.jpg") :file.fileUrl ?file.fileUrl: `${siteUrl}/AnnouncementAndNewsGallary/${file.fileName}`}
+                              /></td>
+ 
+                              <td  >{file.fileName}</td>
+                              <td  style={{minWidth:'40px',maxWidth:'40px'}} className='text-right'>{file.fileSize}</td>
+                              <td className='text-center'>
+                                <img style={{cursor:'pointer'}} src={require("../../CustomAsset/del.png")}  onClick={() => deleteLocalFile(index, ImagepostArr1, "Gallery")} />
+ 
+                              </td>
+                             
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table></>
+                  )}
+                {BnnerImagepostArr.length > 0 && showBannerModal &&
+                  (
+                    <>
+                      <table className="mtbalenew" style={{ fontSize: '0.75rem' }}>
+                        <thead style={{ background: '#eef6f7' }}>
+                          <tr>
+                            <th style={{minWidth:'40px',maxWidth:'40px'}}>Serial No.</th>
+                            <th style={{minWidth:'50px',maxWidth:'50px'}}>Image</th>
+                            <th>File Name</th>
+                            <th style={{minWidth:'40px',maxWidth:'40px'}}>File Size</th>
+                            <th style={{minWidth:'40px',maxWidth:'40px'}} className='text-center'>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {BnnerImagepostArr[0].files.map((file, index) => (
+                            <tr key={index}>
+                              <td style={{minWidth:'40px',maxWidth:'40px'}} className='text-center'>{index + 1}</td>
+                             <td style={{minWidth:'50px',maxWidth:'50px',textAlign:'center'}} >  <img style={{width:'40px',height:'40px', borderRadius:'1000px'}} src={BnnerImagepostArr[0].fileUrl?BnnerImagepostArr[0].fileUrl:`${siteUrl}/${file.name}`} /></td>
+                              <td>{file.name}</td>
+                             
+                              <td style={{minWidth:'40px',maxWidth:'40px'}} className='text-right'>{file.name?file.name:file.fileName?file.fileName:""}</td>
+                              <td style={{minWidth:'40px',maxWidth:'40px'}} className='text-center'> <img style={{cursor:'pointer'}} src={require("../../CustomAsset/del.png")}  onClick={() => deleteLocalFile(index, BnnerImagepostArr, "bannerimg")} /> </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table></>
+                  )}
+ 
+              </Modal.Body>
+ 
+            </Modal>
+ 
+
+ 
+ 
+  <Modal show={showModal} onHide={() => setShowModal(false)} size='lg' className="newm" >
+              <Modal.Header closeButton>
+                {DocumentpostArr1.length > 0 && showDocTable && <Modal.Title>Documents</Modal.Title>}
+                {ImagepostArr1.length > 0 && showImgModal && <Modal.Title>Gallery Images/Videos</Modal.Title>}
+                {BnnerImagepostArr.length > 0 && showBannerModal && <Modal.Title>Banner Images</Modal.Title>}
+              </Modal.Header>
+              <Modal.Body className="" id="style-5">
+ 
+                {DocumentpostArr1.length > 0 && showDocTable &&
+                  (
+                    <>
+                      <table className="mtbalenew" style={{ fontSize: '0.75rem' }}>
+                        <thead style={{ background: '#eef6f7' }}>
+                          <tr>
+                            <th style={{minWidth:'40px',maxWidth:'40px'}}>Serial No.</th>
+                            <th >File Name</th>
+                            <th style={{minWidth:'40px',maxWidth:'40px'}}>File Size</th>
+                            <th style={{minWidth:'40px',maxWidth:'40px'}} className='text-center'>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {DocumentpostArr1.map((file, index) => (
+                            <tr key={index}>
+                              <td style={{minWidth:'40px',maxWidth:'40px'}} className='text-center'>{index + 1}</td>
+                              <td>{file.fileName.replace("/sites/Intranetuat", "")}</td>
+                              <td style={{minWidth:'40px',maxWidth:'40px'}} className='text-right'>{file.fileSize}</td>
+                              <td style={{minWidth:'40px',maxWidth:'40px'}}className='text-center'> <img src={require("../../CustomAsset/del.png")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, DocumentpostArr1, "docs")} /> </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table></>
+                  )
+                }
+                {ImagepostArr1.length > 0 && showImgModal &&
+                  (
+                    <>
+                      <table className="mtbalenew" style={{ fontSize: '0.75rem' }}>
+                        <thead style={{ background: '#eef6f7' }}>
+                          <tr>
+                            <th style={{minWidth:'40px',maxWidth:'40px'}}>Serial No.</th>
+                            <th style={{minWidth:'50px',maxWidth:'50px'}}> Image </th>
+                            <th>File Name</th>
+                            <th style={{minWidth:'40px',maxWidth:'40px'}}>File Size</th>
+                            {modeValue == 'null' && <th className='text-center'>Action</th>
+                            }
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {ImagepostArr1.map((file, index) => (
+                            <tr key={index}>
+                              <td style={{minWidth:'40px',maxWidth:'40px'}} className='text-center'>{index + 1}</td>
+                              <td style={{minWidth:'50px',maxWidth:'50px', textAlign:'center'}}>  <img style={{Width:'40px',height:'40px', borderRadius:'1000px'}}  className='imagefe' src={file.fileUrl ?file.fileUrl: `${siteUrl}/AnnouncementAndNewsGallary/${file.fileName}`}
+                              /></td>
+ 
+                              <td>{file.fileName}</td>
+                              <td style={{minWidth:'40px',maxWidth:'40px'}} className='text-right'>{file.fileSize}</td>
+                              {modeValue != 'view' && <td className='text-center'>
+                                <img src={require("../../CustomAsset/del.png")} style={{ cursor:'pointer' }} onClick={() => deleteLocalFile(index, ImagepostArr1, "Gallery")} />
+ 
+                              </td>
+                              }
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table></>
+                  )}
+                {BnnerImagepostArr.length > 0 && showBannerModal &&
+                  (
+                    <>
+                      <table className="mtbalenew" style={{ fontSize: '0.75rem' }}>
+                        <thead style={{ background: '#eef6f7' }}>
+                          <tr>
+                            <th style={{minWidth:'40px',maxWidth:'40px'}}>Serial No.</th>
+                            <th style={{minWidth:'50px',maxWidth:'50px'}}>Image</th>
+                            <th>File Name</th>
+                            <th style={{minWidth:'40px',maxWidth:'40px'}}>File Size</th>
+                            <th style={{minWidth:'40px',maxWidth:'40px'}} className='text-center'>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {BnnerImagepostArr.map((file, index) => (
+                            <tr key={index}>
+                              <td style={{minWidth:'40px',maxWidth:'40px'}} className='text-center'>{index + 1}</td>
+                             <td style={{minWidth:'50px',maxWidth:'50px', textAlign:'center'}}><img style={{Width:'40px',height:'40px',borderRadius:'1000px'}} src={BnnerImagepostArr[0].fileUrl?BnnerImagepostArr[0].fileUrl:`${file.serverUrl}${file.serverRelativeUrl}`} /> </td>
+                              <td>{file.name}</td>
+                              <td style={{minWidth:'40px',maxWidth:'40px'}} className='text-right'>{file.size}</td>
+                              <td style={{minWidth:'40px',maxWidth:'40px'}} className='text-center'> <img src={require("../../CustomAsset/del.png")} style={{ cursor:'pointer' }} onClick={() => deleteLocalFile(index, BnnerImagepostArr, "bannerimg")} /> </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table></>
+                  )}
+ 
+              </Modal.Body>
+ 
+            </Modal>
+ 
+
+            {/* modal css ends */}
 
                 </div>
                 {/* {itemsToShow < blogData.length && (
@@ -1864,7 +2179,9 @@ const setShowModalFunc = (bol, name) => {
                         </button>
                     </div>
                 )} */}
-            </div></>
+            </div>
+}
+            </>
 
     )
 }

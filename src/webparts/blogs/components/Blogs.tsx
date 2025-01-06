@@ -51,6 +51,7 @@ const BlogsContext = ({ props }: any) => {
   const elementRef = React.useRef<HTMLDivElement>(null);
   const [modeValue, setmode] = React.useState(null);
   const [rows, setRows] = React.useState<any>([]);
+   const [Loading, setLoading] = React.useState(false);
   const [formData, setFormData] = React.useState({
     topic: "",
     category: "",
@@ -122,7 +123,7 @@ const BlogsContext = ({ props }: any) => {
   ];
 
   React.useEffect(() => {
-    console.log("This function is called only once", useHide);
+    //console.log("This function is called only once", useHide);
     sessionStorage.removeItem("announcementId");
     ApiCall();
     const showNavbar = (
@@ -165,7 +166,7 @@ const BlogsContext = ({ props }: any) => {
   // const ApiCall = async () => {
   //   const dataofblog = await fetchBlogdata(sp);
   //   setBlogData(dataofblog);
-  //   console.log("check-data-of--dataofblog", dataofblog);
+  //   //console.log("check-data-of--dataofblog", dataofblog);
   // };
 
   const onFileChange = async (
@@ -174,7 +175,7 @@ const BlogsContext = ({ props }: any) => {
     docLib: string
   ) => {
     debugger;
-    console.log("libraryName-->>>>", libraryName)
+    //console.log("libraryName-->>>>", libraryName)
     event.preventDefault();
     let uloadDocsFiles: any[] = [];
     let uloadDocsFiles1: any[] = [];
@@ -248,10 +249,23 @@ const BlogsContext = ({ props }: any) => {
         }
       }
       if (libraryName === "Gallery" || libraryName === "bannerimg") {
-        const imageVideoFiles = files.filter(
-          (file) =>
-            file.type.startsWith("image/") || file.type.startsWith("video/")
-        );
+        // const imageVideoFiles = files.filter(
+        //   (file) =>
+        //     file.type.startsWith("image/") || file.type.startsWith("video/")
+        // );
+        var imageVideoFiles: any[] =[];
+        if(libraryName === "Gallery"){
+           imageVideoFiles = files.filter(
+              (file) =>
+                  file.type.startsWith("image/") || file.type.startsWith("video/")
+          );
+      }
+      else if(libraryName === "bannerimg"){
+           imageVideoFiles = files.filter(
+              (file) =>
+                  file.type.startsWith("image/")
+          );
+      }      
 
         if (imageVideoFiles.length > 0) {
           const arr = {
@@ -261,13 +275,13 @@ const BlogsContext = ({ props }: any) => {
             fileUrl:  URL.createObjectURL(imageVideoFiles[0])
           };
          
-          console.log("arr-->>>", arr)
+          //console.log("arr-->>>", arr)
           if (libraryName === "Gallery") {
             uloadImageFiles.push(arr);
             setImagepostArr(uloadImageFiles);
             if (ImagepostArr1.length > 0) {
               imageVideoFiles.forEach((ele) => {
-                console.log("ele in if-->>>>", ele)
+                //console.log("ele in if-->>>>", ele)
                 let arr1 = {
                   ID: 0,
                   Createdby: "",
@@ -282,7 +296,7 @@ const BlogsContext = ({ props }: any) => {
               setImagepostArr1(ImagepostArr1);
             } else {
               imageVideoFiles.forEach((ele) => {
-                console.log("ele in else-->>>>", ele)
+                //console.log("ele in else-->>>>", ele)
                 let arr1 = {
                   ID: 0,
                   Createdby: "",
@@ -298,11 +312,16 @@ const BlogsContext = ({ props }: any) => {
             }
           } else {
             uloadBannerImageFiles.push(arr);
-            console.log("uloadBannerImageFiles-->>", uloadBannerImageFiles)
+            //console.log("uloadBannerImageFiles-->>", uloadBannerImageFiles)
             setBannerImagepostArr(uloadBannerImageFiles);
           }
         } else {
-          Swal.fire("only image & video can be upload");
+          if(libraryName === "bannerimg"){
+            Swal.fire("only image can be upload");
+          }else{
+            Swal.fire("only image & video can be upload");
+          }
+         
         }
       }
     }
@@ -410,9 +429,12 @@ const BlogsContext = ({ props }: any) => {
  
     // Optionally, remove the backdrop if it was added manually
     const modalBackdrop = document.querySelector('.modal-backdrop');
-    if (modalBackdrop) {
-      modalBackdrop.remove();
-    }
+                        if (modalBackdrop) {
+                            modalBackdrop.classList.remove('modal-backdrop');
+                            modalBackdrop.classList.remove('fade');
+                            modalBackdrop.classList.remove('show');
+                            // modalBackdrop.remove();
+                        }
   };
 
   const handleUserSelect = (selectedUsers: any, rowId: any) => {
@@ -435,7 +457,7 @@ const BlogsContext = ({ props }: any) => {
 
   const handleClick = async (contentId: number, contentName: any, EntityId: number) => {
  
-    //  console.log("Creating approval hierarchy with data:", rows);
+    //  //console.log("Creating approval hierarchy with data:", rows);
  
       let boolval = false
  
@@ -463,7 +485,7 @@ const BlogsContext = ({ props }: any) => {
  
         const addedData = await AddContentLevelMaster(sp, arrPost)
  
-        //console.log("created content level master items", addedData);
+        ////console.log("created content level master items", addedData);
  
  
       }
@@ -489,9 +511,17 @@ const BlogsContext = ({ props }: any) => {
           cancelButtonText: "No",
           icon: "warning",
         }).then(async (result) => {
-          //console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
+          ////console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
           if (result.isConfirmed) {
-            debugger;
+            // debugger;
+            setLoading(true);
+            const modalBackdrop = document.querySelector('.modal-backdrop');
+                        if (modalBackdrop) {
+                            modalBackdrop.classList.remove('modal-backdrop');
+                            modalBackdrop.classList.remove('fade');
+                            modalBackdrop.classList.remove('show');
+                            // modalBackdrop.remove();
+                        }
             let bannerImageArray: any = {};
             let galleryIds: any[] = [];
             let documentIds: any[] = [];
@@ -511,11 +541,11 @@ const BlogsContext = ({ props }: any) => {
                   file,
                   sp,
                   "Documents",
-                  "https://officeindia.sharepoint.com"
+                  "https://alrostamanigroupae.sharepoint.com"
                 );
               }
             }
-            debugger;
+            // debugger;
             // Create Post
             const postPayload = {
               Title: formData.topic,
@@ -526,7 +556,7 @@ const BlogsContext = ({ props }: any) => {
               BlogBannerImage: JSON.stringify(bannerImageArray)
               // DiscussionForumCategoryId: Number(formData.category),
             };
-            console.log("postPayload 3-->>>>>", postPayload);
+            //console.log("postPayload 3-->>>>>", postPayload);
 
             const postResult = await addItem(postPayload, sp);
             const postId = postResult?.data?.ID;
@@ -536,16 +566,16 @@ const BlogsContext = ({ props }: any) => {
               return;
             }
 
-            console.log(
-              ImagepostArr,
-              "ImagepostArr",
-              ImagepostArr1,
-              "ImagepostArr1",
-              DocumentpostArr1,
-              "DocumentpostArr1",
-              DocumentpostArr,
-              "DocumentpostArr"
-            );
+            // //console.log(
+            //   ImagepostArr,
+            //   "ImagepostArr",
+            //   ImagepostArr1,
+            //   "ImagepostArr1",
+            //   DocumentpostArr1,
+            //   "DocumentpostArr1",
+            //   DocumentpostArr,
+            //   "DocumentpostArr"
+            // );
 
             // Upload Gallery Images
             if (ImagepostArr.length > 0) {
@@ -596,7 +626,7 @@ const BlogsContext = ({ props }: any) => {
 
             if (Object.keys(updatePayload).length > 0) {
               const updateResult = await updateItem(updatePayload, sp, postId);
-              console.log("Update Result:", updateResult);
+              //console.log("Update Result:", updateResult);
             }
 
          // //////######### changes ############  ////////////
@@ -626,6 +656,7 @@ const BlogsContext = ({ props }: any) => {
             // sessionStorage.removeItem("bannerId");
             setTimeout(async () => {
               setAnnouncementData(await getBlog(sp));
+              setLoading(false);
               dismissModal()
               window.location.href = `${siteUrl}/SitePages/Blogs.aspx`;
             }, 1000);
@@ -644,9 +675,17 @@ const BlogsContext = ({ props }: any) => {
       cancelButtonText: "No",
       icon: "warning",
     }).then(async (result) => {
-      //console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
+      ////console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
       if (result.isConfirmed) {
-        debugger;
+        // debugger;
+        setLoading(true);
+        const modalBackdrop = document.querySelector('.modal-backdrop');
+                        if (modalBackdrop) {
+                            modalBackdrop.classList.remove('modal-backdrop');
+                            modalBackdrop.classList.remove('fade');
+                            modalBackdrop.classList.remove('show');
+                            // modalBackdrop.remove();
+                        }
         let bannerImageArray: any = {};
         let galleryIds: any[] = [];
         let documentIds: any[] = [];
@@ -666,11 +705,11 @@ const BlogsContext = ({ props }: any) => {
               file,
               sp,
               "Documents",
-              "https://officeindia.sharepoint.com"
+              "https://alrostamanigroupae.sharepoint.com"
             );
           }
         }
-        debugger;
+        // debugger;
         // Create Post
         const postPayload = {
           Title: formData.topic,
@@ -681,7 +720,7 @@ const BlogsContext = ({ props }: any) => {
           BlogBannerImage:bannerImageArray && JSON.stringify(bannerImageArray)
           // DiscussionForumCategoryId: Number(formData.category),
         };
-        console.log("postPayload 3-->>>>>", postPayload);
+        //console.log("postPayload 3-->>>>>", postPayload);
 
         const postResult = await addItem(postPayload, sp);
         const postId = postResult?.data?.ID;
@@ -694,8 +733,9 @@ const BlogsContext = ({ props }: any) => {
          
           //sessionStorage.removeItem("announcementId");
           setTimeout(() => {
+            setLoading(false);
             dismissModal()
-          }, 1000);
+          }, 500);
         }
         // Upload Gallery Images
         if (ImagepostArr.length > 0) {
@@ -713,21 +753,6 @@ const BlogsContext = ({ props }: any) => {
           }
         }
 
-        // Upload Documents
-        // if (DocumentpostArr.length > 0) {
-        //   for (const file of DocumentpostArr[0]?.files) {
-        //     const uploadedDocument = await uploadFileToLibrary(
-        //       file,
-        //       sp,
-        //       "BlogsDoc"
-        //     );
-        //     documentIds = documentIds.concat(
-        //       uploadedDocument.map((item: { ID: any }) => item.ID)
-        //     );
-        //     documentArray.push(uploadedDocument);
-        //   }
-        // }
-
         // Update Post with Gallery and Document Information
         const updatePayload = {
           ...(galleryIds.length > 0 && {
@@ -736,17 +761,12 @@ const BlogsContext = ({ props }: any) => {
               flatArray(galleryArray)
             ),
           }),
-          // ...(documentIds.length > 0 && {
-          //   BlogsDocsId: documentIds,
-          //   BlogDocsJSON: JSON.stringify(
-          //     flatArray(documentArray)
-          //   ),
-          // }),
+         
         };
 
         if (Object.keys(updatePayload).length > 0) {
           const updateResult = await updateItem(updatePayload, sp, postId);
-          console.log("Update Result:", updateResult);
+          //console.log("Update Result:", updateResult);
         }
 
         // Swal.fire("Item added successfully", "", "success");
@@ -754,10 +774,11 @@ const BlogsContext = ({ props }: any) => {
         setTimeout(async () => {
          // Swal.fire("Item saved successfully", "", "success");
           dismissModal();
+          setLoading(false);
           setAnnouncementData(await getBlog(sp));
           window.location.href = `${siteUrl}/SitePages/Blogs.aspx`;
          
-        }, 2000);
+        }, 1000);
       }
     });
  
@@ -780,11 +801,11 @@ const clearFileInput = (name: any) => {
 //#region deleteLocalFile
 const deleteLocalFile = (index: number, filArray: any[], name: string) => {
   debugger
-  console.log(filArray, 'filArray');
+  //console.log(filArray, 'filArray');
 
   // Remove the file at the specified index
   filArray.splice(index, 1);
-  console.log(filArray, 'filArray');
+  //console.log(filArray, 'filArray');
 
   // Update the state based on the title
   if (name === "bannerimg") {
@@ -804,9 +825,15 @@ const deleteLocalFile = (index: number, filArray: any[], name: string) => {
 
 //#endregion
   const handleCancel = () => {
-    debugger;
-    window.location.href =
-      `${siteUrl}/SitePages/Blogs.aspx`;
+    // debugger;
+ 
+    setBannerImagepostArr([]);
+    setDocumentpostArr([]);
+    setDocumentpostArr1([]);
+    setImagepostArr([]);
+    setImagepostArr1([]);
+    // window.location.href =
+    //   `${siteUrl}/SitePages/Blogs.aspx`;
   };
   const handleChangeCheckBox = (name: string, value: string | boolean) => {
     setFormData((prevValues) => ({
@@ -942,33 +969,37 @@ const deleteLocalFile = (index: number, filArray: any[], name: string) => {
         <HorizontalNavbar  _context={sp} siteUrl={siteUrl}/>
       <div className="content mt-0" style={{marginLeft: `${!useHide ? '240px' : '80px'}`}}>
           <div className="container-fluid  paddb">
+          {Loading ?
+                    // <div className="loadercss" role="status">Loading...
+                    //   <img src={require('../../../Assets/ExtraImage/loader.gif')} style={{ height: '80px', width: '70px' }} alt="Check" />
+                    // </div>
+                    <div style={{minHeight:'100vh',marginTop:'100px'}} className="loadernewadd mt-10">
+                    <div>
+                        <img
+                            src={require("../../../CustomAsset/birdloader.gif")}
+                            className="alignrightl"
+                            alt="Loading..."
+                          />
+                        </div>
+                      <span>Loading </span>{" "}
+                      <span>
+                        <img
+                          src={require("../../../CustomAsset/argloader.gif")}
+                          className="alignrightl"
+                          alt="Loading..."
+                        />
+                      </span>
+                    </div>
+                  :
             <div className="row">
               <div className="col-lg-3">
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
               </div>
+             
+             
               <div className="col-lg-9">
                 <div className="d-flex flex-wrap align-items-center justify-content-end mt-0 mb-3">
-                  {/* <div style={{ width: '310px' }}>
-                    <label style={{ float: 'left', textAlign: 'right', width: '150px' }} className="me-2 mt-1" >Select Category</label>
-                    <select style={{ float: 'left', width: '130px' }} className="form-select me-1">
-                      {
-                       AllCategory.length>0? AllCategory.map((item:any)=>
-                        {
-                          <option>{item.Category}</option>
-                        }):""
-                      }
-                     
-                    </select>
-                  </div> */}
-                  {/* <label className="me-2">From</label>
-                  <div className="me-3">
-                    <input type="date" className="form-control my-1 my-md-0" id="inputPassword2" placeholder="Search..." />
-                  </div>
-
-                  <label className="me-2">To</label>
-                  <div className="me-2">
-                    <input type="date" className="form-control my-1 my-md-0" id="inputPassword2" placeholder="Search..." />
-                  </div> */}
+                 
                   <div className="col-lg-8">
                     <div className="d-flex flex-wrap align-items-center justify-content-end mt-2">
                       {/* Button to trigger modal */}
@@ -1093,6 +1124,7 @@ const deleteLocalFile = (index: number, filArray: any[], name: string) => {
                                     id="bannerImage"
                                     name="bannerImage"
                                     className="form-control inputcss"
+                                    accept="image/*"
                                     onChange={(e) =>
                                       onFileChange(e, "bannerimg", "Document")
                                     }
@@ -1497,7 +1529,7 @@ const deleteLocalFile = (index: number, filArray: any[], name: string) => {
                                 </div>
                                 <button
                                   type="button"
-                                  className="btn btn-light waves-effect waves-light m-1"
+                                  className="btn btn-light1 waves-effect waves-light m-1"
                                   style={{ fontSize: "0.875rem" }}
                                   onClick={handleCancel}
                                 >
@@ -1518,15 +1550,16 @@ const deleteLocalFile = (index: number, filArray: any[], name: string) => {
                   </div>
 
                    {/* Modal to display uploaded files */}
-            <Modal show={showModal} onHide={() => setShowModal(false)} size='lg' >
+            {/* <Modal show={showModal} onHide={() => setShowModal(false)} size='lg' >
               <Modal.Header closeButton>
-                {DocumentpostArr1.length > 0 && showDocTable && <Modal.Title>Documents</Modal.Title>}
-                {ImagepostArr1.length > 0 && showImgModal && <Modal.Title>Gallery Images/Videos</Modal.Title>}
-                {BnnerImagepostArr.length > 0 && showBannerModal && <Modal.Title>Banner Images</Modal.Title>}
+                {showDocTable && <Modal.Title>Documents</Modal.Title>}
+                {showImgModal && <Modal.Title>Gallery Images/Videos</Modal.Title>}
+                {showBannerModal && <Modal.Title>Banner Images</Modal.Title>}
               </Modal.Header>
+             
               <Modal.Body className="scrollbar" id="style-5">
 
-                {DocumentpostArr1.length > 0 && showDocTable &&
+                {showDocTable &&
                   (
                     <>
                       <table className="table table-bordered" style={{ fontSize: '0.75rem' }}>
@@ -1542,7 +1575,7 @@ const deleteLocalFile = (index: number, filArray: any[], name: string) => {
                           {DocumentpostArr1.map((file: any, index: number) => (
                             <tr key={index}>
                               <td className='text-center'>{index + 1}</td>
-                              <td>{file.fileName.replace("/sites/AlRostmaniSpfx2", "")}</td>
+                              <td>{file.fileName.replace("/sites/Intranetuat", "")}</td>
                               <td className='text-right'>{file.fileSize}</td>
                               <td className='text-center'> <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, DocumentpostArr1, "docs")} /> </td>
                             </tr>
@@ -1551,7 +1584,7 @@ const deleteLocalFile = (index: number, filArray: any[], name: string) => {
                       </table></>
                   )
                 }
-                {ImagepostArr1.length > 0 && showImgModal &&
+                {showImgModal &&
                   (
                     <>
                       <table className="table table-bordered" style={{ fontSize: '0.75rem' }}>
@@ -1560,31 +1593,38 @@ const deleteLocalFile = (index: number, filArray: any[], name: string) => {
                             <th>Serial No.</th>
                             <th> Image </th>
                             <th>File Name</th>
-                            <th>File Size</th>
-                            {modeValue == 'null' && <th className='text-center'>Action</th>
-                            }
+                            <th>File Size</th> */}
+                            {/* {modeValue == 'null' && <th className='text-center'>Action</th>
+                            } */}
+                            {/* <th className='text-center'>Action</th>
                           </tr>
                         </thead>
                         <tbody>
                           {ImagepostArr1.map((file: any, index: number) => (
                             <tr key={index}>
                               <td className='text-center'>{index + 1}</td>
-                              <td>  <img className='imagefe' src={file.fileUrl ?file.fileUrl: `${siteUrl}/AnnouncementAndNewsGallary/${file.fileName}`}
+                              <td>  <img className='imagefe' src={file.fileType.startsWith('video/') ?
+                             
+                                        require("../../../Assets/ExtraImage/video.jpg") : file.fileUrl ?file.fileUrl: `${siteUrl}/AnnouncementAndNewsGallary/${file.fileName}`}
                               /></td>
 
                               <td>{file.fileName}</td>
-                              <td className='text-right'>{file.fileSize}</td>
-                              {modeValue != 'view' && <td className='text-center'>
+                              <td className='text-right'>{file.fileSize}</td> */}
+                              {/* {modeValue != 'view' && <td className='text-center'>
                                 <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, ImagepostArr1, "Gallery")} />
 
                               </td>
-                              }
+                              } */}
+                              {/* <td className='text-center'>
+                                <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, ImagepostArr1, "Gallery")} />
+
+                              </td>
                             </tr>
                           ))}
                         </tbody>
                       </table></>
                   )}
-                {BnnerImagepostArr.length > 0 && showBannerModal &&
+                {showBannerModal &&
                   (
                     <>
                       <table className="table table-bordered" style={{ fontSize: '0.75rem' }}>
@@ -1601,7 +1641,8 @@ const deleteLocalFile = (index: number, filArray: any[], name: string) => {
                           {BnnerImagepostArr[0].files.map((file: any, index: number) => (
                             <tr key={index}>
                               <td className='text-center'>{index + 1}</td>
-                              <img src={BnnerImagepostArr[0].fileUrl?BnnerImagepostArr[0].fileUrl:`${siteUrl}/${file.name}`} />
+                              <img src={file.fileType.startsWith('video/') ?
+                                        require("../../../Assets/ExtraImage/video.jpg") :BnnerImagepostArr[0].fileUrl?BnnerImagepostArr[0].fileUrl:`${siteUrl}/${file.name}`} />
                               <td>{file.name}</td>
                               <td className='text-right'>{file.size}</td>
                               <td className='text-center'> <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, BnnerImagepostArr, "bannerimg")} /> </td>
@@ -1612,12 +1653,119 @@ const deleteLocalFile = (index: number, filArray: any[], name: string) => {
                   )}
 
               </Modal.Body>
+       
 
-            </Modal>
+            </Modal> */}
             {/*  */}
+
+
+
+            {/* modal css */}
+            <Modal show={showModal} onHide={() => setShowModal(false)} size='lg' className="newm" >
+              <Modal.Header closeButton>
+                { showDocTable && <Modal.Title>Documents</Modal.Title>}
+                { showImgModal && <Modal.Title>Gallery Images/Videos</Modal.Title>}
+                { showBannerModal && <Modal.Title>Banner Images</Modal.Title>}
+              </Modal.Header>
+              <Modal.Body className="" id="style-5">
+ 
+                { showDocTable &&
+                  (
+                    <>
+                      <table className="mtbalenew" style={{ fontSize: '0.75rem' }}>
+                        <thead style={{ background: '#eef6f7' }}>
+                          <tr>
+                            <th style={{minWidth:'40px',maxWidth:'40px'}}>Serial No.</th>
+                            <th style={{minWidth:'100px',maxWidth:'100px'}}>File Name</th>
+                            <th style={{minWidth:'40px',maxWidth:'40px'}}>File Size</th>
+                            <th style={{minWidth:'40px',maxWidth:'40px'}} className='text-center'>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {DocumentpostArr1.map((file: any, index: number) => (
+                            <tr key={index}>
+                              <td style={{minWidth:'40px',maxWidth:'40px'}} className='text-center'>{index + 1}</td>
+                              <td style={{minWidth:'100px',maxWidth:'100px'}}>{file.fileName.replace("/sites/Intranetuat", "")}</td>
+                              <td style={{minWidth:'40px',maxWidth:'40px'}} className='text-right'>{file.fileSize}</td>
+                              <td style={{minWidth:'40px',maxWidth:'40px'}} className='text-center'> <img style={{cursor:'pointer'}} src={require("../../../CustomAsset/del.png")}  onClick={() => deleteLocalFile(index, DocumentpostArr1, "docs")} /> </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table></>
+                  )
+                }
+                { showImgModal &&
+                  (
+                    <>
+                      <table className="mtbalenew" style={{ fontSize: '0.75rem' }}>
+                        <thead style={{ background: '#eef6f7' }}>
+                          <tr>
+                            <th  style={{minWidth:'40px',maxWidth:'40px'}}>Serial No.</th>
+                            <th style={{minWidth:'50px',maxWidth:'50px'}}> Image </th>
+                            <th>File Name</th>
+                            <th  style={{minWidth:'40px',maxWidth:'40px'}}>File Size</th>
+                             <th className='text-center'>Action</th>
+                           
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {ImagepostArr1.map((file: any, index: number) => (
+                            <tr key={index}>
+                              <td style={{minWidth:'40px',maxWidth:'40px'}} className='text-center'>{index + 1}</td>
+                              <td style={{minWidth:'50px',maxWidth:'50px', textAlign:'center'}}>  <img style={{width:'40px',height:'40px', borderRadius:'1000px'}} className='imagefe' src={file.fileType.startsWith('video/') ?
+                             
+                              require("../../../Assets/ExtraImage/video.jpg") :file.fileUrl ?file.fileUrl: `${siteUrl}/AnnouncementAndNewsGallary/${file.fileName}`}
+                              /></td>
+ 
+                              <td  >{file.fileName}</td>
+                              <td  style={{minWidth:'40px',maxWidth:'40px'}} className='text-right'>{file.fileSize}</td>
+                              <td className='text-center'>
+                                <img style={{cursor:'pointer'}} src={require("../../../CustomAsset/del.png")}  onClick={() => deleteLocalFile(index, ImagepostArr1, "Gallery")} />
+ 
+                              </td>
+                             
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table></>
+                  )}
+                { showBannerModal &&
+                  (
+                    <>
+                      <table className="mtbalenew" style={{ fontSize: '0.75rem' }}>
+                        <thead style={{ background: '#eef6f7' }}>
+                          <tr>
+                            <th style={{minWidth:'40px',maxWidth:'40px'}}>Serial No.</th>
+                            <th style={{minWidth:'50px',maxWidth:'50px'}}>Image</th>
+                            <th>File Name</th>
+                            <th style={{minWidth:'40px',maxWidth:'40px'}}>File Size</th>
+                            <th style={{minWidth:'40px',maxWidth:'40px'}} className='text-center'>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {BnnerImagepostArr[0].files.map((file: any, index: number) => (
+                            <tr key={index}>
+                              <td style={{minWidth:'40px',maxWidth:'40px'}} className='text-center'>{index + 1}</td>
+                             <td style={{minWidth:'50px',maxWidth:'50px',textAlign:'center'}} >  <img style={{width:'40px',height:'40px', borderRadius:'1000px'}} src={BnnerImagepostArr[0].fileUrl?BnnerImagepostArr[0].fileUrl:`${siteUrl}/${file.name}`} /></td>
+                              <td>{file.name}</td>
+                              <td style={{minWidth:'40px',maxWidth:'40px'}} className='text-right'>{file.size}</td>
+                              <td style={{minWidth:'40px',maxWidth:'40px'}} className='text-center'> <img style={{cursor:'pointer'}} src={require("../../../CustomAsset/del.png")}  onClick={() => deleteLocalFile(index, BnnerImagepostArr, "bannerimg")} /> </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table></>
+                  )}
+ 
+              </Modal.Body>
+ 
+            </Modal>
+
+            {/* modal css ends */}
                 </div>
               </div>
+           
             </div>
+             }
             <CustomBlogpartTemplate _sp={sp} SiteUrl={SiteUrl} />
             <div style={{height:'20px'}}></div>
 

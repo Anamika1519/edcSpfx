@@ -160,7 +160,7 @@ const DMSMyrequestLog = ({ props }: any) => {
 const [storedUserInfo, setStoredUserInfo] = useState(null);
 const [ApprovedStatus, setApprovedStatus] = useState('');  // State for ApprovalType 0
 // const [approvedLevel, setApprovedLevel] = useState<number>();
-
+const [columnsData,setColumnsData]=useState([]);
 const [activeComponent, setActiveComponent] = useState<string >('');
 ////
 console.log(activeComponent , "activeComponent")
@@ -206,14 +206,14 @@ const getUserTitleByEmail = async (userEmail:any) => {
       console.log(items, "DMSFileApprovalTaskList");
      
      
-  // Fetch user titles
-  const updatedItems = await Promise.all(items.map(async (item) => {
-    const userTitle = await getUserTitleByEmail(item.FileUID.RequestedBy);
-    const assignedtouserTitle = await getUserTitleByEmail(item.CurrentUser);
+ // Fetch user titles
+    const updatedItems = await Promise.all(items.map(async (item) => {
+      const userTitle = await getUserTitleByEmail(item.FileUID.RequestedBy);
+      const assignedtouserTitle = await getUserTitleByEmail(item.CurrentUser);
+      // alert(userTitle)
+      return { ...item, RequestedByTitle: userTitle  , assignedtouserTitle : assignedtouserTitle };
+    }));
  
-    return { ...item, RequestedByTitle: userTitle  , assignedtouserTitle : assignedtouserTitle };
-  }));
-    
 
       setMylistdata(updatedItems);
       console.log(Mylistdata , "Mylistdata")
@@ -224,12 +224,95 @@ const getUserTitleByEmail = async (userEmail:any) => {
     try {
       console.log("here")
       const updatedData:any = await sp.web.lists.getByTitle("DMSFileApprovalList").items
-      .select("FileUID", "ID", "ApproveAction", "ApprovedLevel", "SiteName", "DocumentLibraryName", "ApprovedLevel" , "FilePreviewUrl")
-      .filter(`FileUID eq '${FileUID}'`)()
+      .select("FileUID", "ID", "ApproveAction", "ApprovedLevel", "SiteName", "DocumentLibraryName", "ApprovedLevel" , "FilePreviewUrl","FolderPath")
+      .filter(`FileUID eq '${props}'`)()
       .catch((error) => console.error("Error fetching data from DMSFileApprovalList:", error));
       console.log(updatedData , "updatedData")
         filepreviewurl = updatedData[0]?.FilePreviewUrl;
         console.log(filepreviewurl , "file url")
+
+    const siteData=await sp.web.lists.getByTitle('MasterSiteURL').items.select("Id","SiteID").filter(`Title eq '${updatedData[0]?.SiteName}'`)();
+    console.log("siteData",siteData);
+    const {web}=await sp.site.openWebById(siteData[0].SiteID);
+
+   // Get the list item  corresponding to the file
+   const fileItem:any = await web.getFileById(props).expand("ListItemAllFields")();
+   console.log("fileItem",fileItem.ListItemAllFields.Status);
+  
+  // fetched the columns details corresponding to the file 
+  const fileColumns =await sp.web.lists.getByTitle("DMSPreviewFormMaster").items.select("ColumnName","SiteName","DocumentLibraryName","IsRename").filter(`SiteName eq '${updatedData[0]?.SiteName}' and DocumentLibraryName eq '${updatedData[0]?.DocumentLibraryName}' and IsDocumentLibrary ne 1`)();
+  console.log("fileColumns",fileColumns);
+
+  // Create an array of objects to store the columnName with there corresponding value
+  const resultArrayThatContainstheColumnDetails = fileColumns.map((column) => {
+    
+  let columnName = column.ColumnName;
+  const columnValue = fileItem.ListItemAllFields[columnName];
+    if(column.IsRename !== null){
+      columnName=column.IsRename
+    }
+
+    return {
+      label: columnName,
+      value: columnValue !== undefined ? columnValue : null // Handle missing fields
+    };
+  });
+
+  const objectForStatus={
+    label:"Status",
+    value:fileItem.ListItemAllFields.Status || ""
+  }
+  // const objectForDocumentLibrary={
+  //   label:"Folder Name",
+  //   value:updatedData[0]?.FolderPath.substring(updatedData[0]?.FolderPath.lastIndexOf('/') + 1) || ""
+  // }
+
+  // const objectForSiteName={
+  //   label:"Site Name",
+  //   value:updatedData[0]?.SiteName || ""
+  // }
+  resultArrayThatContainstheColumnDetails.push(objectForStatus);
+  // resultArrayThatContainstheColumnDetails.push(objectForSiteName);
+  // resultArrayThatContainstheColumnDetails.push(objectForDocumentLibrary);
+  console.log("result",resultArrayThatContainstheColumnDetails);
+  // Variable to hold generated HTML
+let detailRowsHTML = "";
+
+// Dynamically generate HTML with inline CSS
+resultArrayThatContainstheColumnDetails.forEach((item, index) => {
+  // Start a new row every 3rd item
+  if (index % 3 === 0) {
+    detailRowsHTML += `<div style="display: flex; gap: 15px; margin-bottom: 10px;">`;
+  }
+
+  // Add detail column for each item with inline CSS
+  detailRowsHTML += `
+    <div style="flex: 1; padding: 10px;">
+      <div style="font-weight: bold; margin-bottom: 5px;">${item.label}:</div>
+      <div>${item.value}</div>
+    </div>
+  `;
+
+  // Close the row after every 3rd item
+  if ((index + 1) % 3 === 0) {
+    detailRowsHTML += `</div>`;
+  }
+});
+
+// Close the last row if not already closed
+if (resultArrayThatContainstheColumnDetails.length % 3 !== 0) {
+  detailRowsHTML += `</div>`;
+}
+
+// Add the generated HTML to a container
+document.getElementById("dynamicDetailsContainer").innerHTML = detailRowsHTML;
+    // const site = await sp.site.openWebById(updatedData[0]?.SiteName); 
+    // console.log("Site ID:", site);
+    // console.log("Site ID:", site.);
+    if(filepreviewurl){
+      previewFile(filepreviewurl)
+    }
+    
     } catch (error) {
       console.error("Error fetching list items:", error);
     }
@@ -386,9 +469,10 @@ console.log(items, "Filter Query");
         }
          //start
 try {
+  // alert(`this is props ${props}`)
   const updatedData1:any = await sp.web.lists.getByTitle("DMSFileApprovalList").items
   .select("FileUID", "ID", "ApproveAction", "ApprovedLevel", "SiteName", "DocumentLibraryName", "ApprovedLevel" , "FilePreviewUrl")
-  .filter(`FileUID eq '${FileUID}'`)()
+  .filter(`FileUID eq '${props}'`)()
   .catch((error) => console.error("Error fetching data from DMSFileApprovalList:", error));
   console.log(updatedData1 , "updatedData")
 
@@ -615,62 +699,127 @@ try {
       console.log("updateddata1",updateddata1);
      
   }
-  const iframe = document.getElementById("filePreview") as HTMLIFrameElement;
+  // const iframe = document.getElementById("filePreview") as HTMLIFrameElement;
   // const spinner = document.getElementById("spinner") as HTMLElement;
 
   // Show the spinner and hide the iframe initially
   // spinner.style.display = "block";
-  if(iframe){
-    iframe.style.display = "none";
-    iframe.src = filepreviewurl;
-  }
+  // if(iframe){
+  //   iframe.style.display = "none";
+  //   iframe.src = filepreviewurl;
+  // }
 
 
   // Add an onload event listener to the iframe
-  if(iframe){
+  // if(iframe){
 
-    iframe.onload = () => {
-      console.log("Iframe has loaded");
+  //   iframe.onload = () => {
+  //     console.log("Iframe has loaded");
   
-      const checkAndHideButton = () => {
-        try {
-          const iframeDocument = iframe.contentDocument || iframe.contentWindow?.document;
-          if (iframeDocument) {
-            const button = iframeDocument.getElementById("OneUpCommandBar") as HTMLElement;
-            const excelToolbar = iframeDocument.getElementById("m_excelEmbedRenderer_m_ewaEmbedViewerBar") as HTMLElement;
-            if(excelToolbar){
-              excelToolbar.style.display= "none"
-            }
-            if (button) {
-              console.log("Hiding the OneUpCommandBar element");
-              button.style.display = "none";
+  //     const checkAndHideButton = () => {
+  //       try {
+  //         const iframeDocument = iframe.contentDocument || iframe.contentWindow?.document;
+  //         if (iframeDocument) {
+  //           const button = iframeDocument.getElementById("OneUpCommandBar") as HTMLElement;
+  //           const excelToolbar = iframeDocument.getElementById("m_excelEmbedRenderer_m_ewaEmbedViewerBar") as HTMLElement;
+  //           if(excelToolbar){
+  //             excelToolbar.style.display= "none"
+  //           }
+  //           if (button) {
+  //             console.log("Hiding the OneUpCommandBar element");
+  //             button.style.display = "none";
   
-              // Hide the spinner and show the iframe after the button is hidden
-              // spinner.style.display = "none";
-              iframe.style.display = "block"; 
+  //             // Hide the spinner and show the iframe after the button is hidden
+  //             // spinner.style.display = "none";
+  //             iframe.style.display = "block"; 
   
-             // Exit the loop once the button is found and hidden
-            } else {
-              console.log("OneUpCommandBar not found, rechecking...");
-            }
+  //            // Exit the loop once the button is found and hidden
+  //           } else {
+  //             console.log("OneUpCommandBar not found, rechecking...");
+  //           }
             
-            const helpbutton = iframeDocument.getElementById("m_excelEmbedRenderer_m_ewaEmbedViewerBar") as HTMLElement; 
-            if(helpbutton){
-              helpbutton.style.display = "none"
+  //           const helpbutton = iframeDocument.getElementById("m_excelEmbedRenderer_m_ewaEmbedViewerBar") as HTMLElement; 
+  //           if(helpbutton){
+  //             helpbutton.style.display = "none"
+  //           }
+  //         }
+  //       } catch (error) {
+  //         console.error("Error accessing iframe content:", error);
+  //       }
+  
+  //       // Re-check after a short delay if the button wasn't found
+  //       setTimeout(checkAndHideButton, 100);
+  //     };
+  
+  //     // Start checking for the button
+  //     checkAndHideButton();
+  //   };
+  // }
+
+  const previewFile = async (previewUrl: string) => {
+    try {
+      console.log("Previewing file at URL:", previewUrl);
+      const iframe = document.getElementById("filePreview") as HTMLIFrameElement;
+      const spinner = document.getElementById("spinner") as HTMLElement;
+  
+      // Show the spinner and hide the iframe initially
+      spinner.style.display = "block";
+      iframe.style.display = "none";
+      iframe.src = previewUrl;
+  
+      // Add an onload event listener to the iframe
+      iframe.onload = () => {
+        console.log("Iframe has loaded");
+  
+        const checkAndHideButton = () => {
+          try {
+            const iframeDocument = iframe.contentDocument || iframe.contentWindow?.document;
+            if (iframeDocument) {
+              const button = iframeDocument.getElementById("OneUpCommandBar") as HTMLElement;
+              const excelToolbar = iframeDocument.getElementById("m_excelEmbedRenderer_m_ewaEmbedViewerBar") as HTMLElement;
+              if(excelToolbar){
+                excelToolbar.style.display= "none"
+              }
+              if (button) {
+                console.log("Hiding the OneUpCommandBar element");
+                button.style.display = "none";
+  
+
+                spinner.style.display = "none";
+                iframe.style.display = "block"; 
+
+
+              } else {
+                console.log("OneUpCommandBar not found, rechecking...");
+              }
+              
+              const helpbutton = iframeDocument.getElementById("m_excelEmbedRenderer_m_ewaEmbedViewerBar") as HTMLElement; 
+              if(helpbutton){
+                helpbutton.style.display = "none"
+              }
             }
+          } catch (error) {
+            console.error("Error accessing iframe content:", error);
           }
-        } catch (error) {
-          console.error("Error accessing iframe content:", error);
-        }
   
-        // Re-check after a short delay if the button wasn't found
-        setTimeout(checkAndHideButton, 100);
+
+          setTimeout(checkAndHideButton, 100);
+        };
+  
+
+        checkAndHideButton();
       };
-  
-      // Start checking for the button
-      checkAndHideButton();
-    };
-  }
+    } catch (error) {
+      console.error("Error previewing file:", error);
+    }
+
+  };
+
+  React.useEffect(()=>{
+    const fetchColumnsData=async()=>{
+      // const siteData=await sp.web.lists.getByTitle('MasterSiteURL').items.select("Id","SiteID").filter('Title eq '')
+    }
+  })
  
   return (
    
@@ -693,8 +842,8 @@ try {
                                       <tr>
                                         <th
                                           style={{
-                                          minWidth: '40px',
-                                          maxWidth: '40px',
+                                          minWidth: '55px',
+                                          maxWidth: '55px',
                                          
                                           }}
                                         >
@@ -726,9 +875,9 @@ try {
                                             {Mylistdata.length > 0  ? Mylistdata.map((item, index) => {
                                             return(
                                                   <tr>
-                                                    <td style={{ minWidth: '40px', maxWidth: '40px' }}>
+                                                    <td style={{ minWidth: '55px', maxWidth: '55px' }}>
                                                       <span style={{marginLeft:'0px'}} className="indexdesign">
-                                                      {index}</span></td>
+                                                      {index+1}</span></td>
                                                     {/* <td>{(truncateText(item.FileUID.FileUID, 20))}
                                                     </td> */}
                                                     <td >Level {
@@ -737,7 +886,7 @@ try {
                                                       <td>
                                                         
                                                      
-                                                      {item.assignedtouserTitle}
+                                                         {item.assignedtouserTitle}
                                                           
                                                            {/* {getUserTitleByEmail(item?.CurrentUser)} */}
 
@@ -751,62 +900,69 @@ try {
                                                           style={{
                                                             padding: '5px',
                                                             border: '1px solid #efefef',
-                                                            background: '#fff',
-                                                            borderRadius: '30px',fontSize:'14px',
+                                                            background: '#fff', cursor:'auto',
+                                                            borderRadius: '30px',fontSize:'13px',
                                                           
                                                           }}
-                                                          className="btn btn-light"
+                                                          className="btn btn-light1"
                                                         >
                                                           {/* {new Date(item?.FileUID?.Created).toLocaleDateString()} */}
                                                           {new Date(item?.FileUID?.Created).toLocaleString('en-US', { 
   month: '2-digit',
   day: '2-digit',
   year: 'numeric',
-  hour: '2-digit',
-  minute: '2-digit',
-  second: '2-digit',
-  hour12: true 
+  // hour: '2-digit',
+  // minute: '2-digit',
+  // second: '2-digit',
+  // hour12: true 
 })}
 
-                                                        </div>
-                                                    </td>
-                                                    <td style={{ minWidth: '150px', maxWidth: '150px' }}>
-                                                        <div
-                                                          style={{
-                                                            padding: '5px',
-                                                            border: '1px solid #efefef',
-                                                            background: '#fff',
-                                                            borderRadius: '30px',fontSize:'14px',
-                                                          
-                                                          }}
-                                                          className="btn btn-light"
-                                                        >
+                                                          </div>
+                                                      </td>
+                                                      <td style={{ minWidth: '150px', maxWidth: '150px' }}>
+                                                      {item.FileUID.Status === 'Approved' && (
+                                                         <div
+                                                         style={{
+                                                           padding: '5px',
+                                                           border: '1px solid #efefef',
+                                                           background: '#fff', cursor:'auto',
+                                                           borderRadius: '30px',fontSize:'13px',
+                                                         
+                                                         }}
+                                                         className="btn btn-light1"
+                                                       >
                                                          {item.assignedtouserTitle}
 
-                                                        </div>
+                                                     </div>
+                                                      )}
+                                                         
                                                     </td>
                                                     <td style={{ minWidth: '150px', maxWidth: '150px' }}>
-                                                        <div
-                                                          style={{
-                                                            padding: '5px',
-                                                            border: '1px solid #efefef',
-                                                            background: '#fff',
-                                                            borderRadius: '30px',fontSize:'14px',
-                                                          
-                                                          }}
-                                                          className="btn btn-light"
-                                                        >
-                                                          {/* {item.Modified} */}
-                                                          {new Date(item?.Modified).toLocaleString('en-US', { 
-  month: '2-digit',
-  day: '2-digit',
-  year: 'numeric',
-  hour: '2-digit',
-  minute: '2-digit',
-  second: '2-digit',
-  hour12: true 
+                                                    {item.FileUID.Status === 'Approved' && (
+                                                       <div
+                                                       style={{
+                                                         padding: '5px',
+                                                         border: '1px solid #efefef',
+                                                         background: '#fff', cursor:'auto',
+                                                         borderRadius: '30px',fontSize:'13px',
+                                                       
+                                                       }}
+                                                       className="btn btn-light1"
+                                                     >
+                                                       {/* {item.Modified} */}
+                                                  
+                                                       {new Date(item?.Modified).toLocaleString('en-US', { 
+month: '2-digit',
+day: '2-digit',
+year: 'numeric',
+// hour: '2-digit',
+// minute: '2-digit',
+// second: '2-digit',
+// hour12: true 
 })}
-                                                        </div>
+                                                     </div>
+                                                    )} 
+                                                        
                                                     </td>
                                                     <td style={{ minWidth: '70px', maxWidth: '70px' }}>
                                                       {item.Remark}
@@ -831,12 +987,29 @@ try {
                           </div>
                       </div>
                     </div> 
-
+                    <div className="row">
+                     <div className="col-12 text-center">
+                       <h1>
                         
+                       </h1>
+                       
+                     </div>
+                    </div>
+                    <div className="" style={{ backgroundColor: 'white', border:'1px solid #54ade0', marginTop:'20px', borderRadius:'20px', padding: '15px'}}>
+                      <h3 className="text-dark font-16 mb-1">Meta columns details</h3>
+                      <div id="dynamicDetailsContainer"></div>
+                    </div>
+                    <div className="" style={{ backgroundColor: 'white', border:'1px solid #54ade0', marginTop:'20px', borderRadius:'20px', padding: '15px'}}>
+                      <div >
+                      <h3 className="text-dark font-16 mb-1">File Preview</h3>
+                      <div id="spinner" style={{display: "none"}}>Loading...</div>
+                      <iframe id="filePreview" width="100%" height="400"></iframe>
+                      </div>
+                    </div>
                   {toggleLog && (
                                 <div className="" style={{ backgroundColor: 'white', border:'1px solid #54ade0', marginTop:'20px', borderRadius:'20px', padding: '15px'}}>
  <iframe id="filePreview" width="100%" height="400"></iframe>
-                         <div className="">
+                         <div className="mt-3">
                           <div className="">
                           
                             <div className="row">

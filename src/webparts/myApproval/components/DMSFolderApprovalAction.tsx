@@ -702,7 +702,7 @@ declare global {
                                                     <tr>
                                                       <td style={{ minWidth: '40px', maxWidth: '40px' }}>
                                                         <span style={{marginLeft:'0px'}} className="indexdesign">
-                                                        {index}</span></td>
+                                                        {index+1}</span></td>
                                                       <td>{(truncateText(item.Folderdetail.RequestNo, 20))}
                                                       </td>
                                                       <td >{
@@ -813,12 +813,12 @@ declare global {
                                       Reject
                                     </button>
                                   </a>
-                                  <button
+                                  {/* <button
                                     type="button"
                                     className="btn btn-light waves-effect waves-light m-1"
                                   >
                                     <i className="fe-x me-1"></i> Cancel
-                                  </button>
+                                  </button> */}
                                 </div>
                               </div>
                             </div>

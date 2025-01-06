@@ -28,13 +28,13 @@ export const getDiscussionForum = async (_sp) => {
         .catch((error) => {
             console.log("Error fetching data: ", error);
         });
-//item?.Author?.ID == currentUser && 
+    //item?.Author?.ID == currentUser && 
     // arr = arr1.filter(item =>
     //     item?.Author?.ID != currentUser && item.InviteMemebersId != null ? ((item.InviteMemebersId && item.InviteMemebersId.includes(currentUser))) : (item)
     // );
     arr = arr1.filter(item =>
-        item.GroupType == "Private" ? (item?.Author?.ID != currentUser && item.InviteMemebersId != null ? ((item.InviteMemebersId && item.InviteMemebersId.includes(currentUser))):item?.Author?.ID == currentUser) : (item)
-      );
+        item.GroupType == "Private" ? (item?.Author?.ID != currentUser && item.InviteMemebersId != null ? ((item.InviteMemebersId && item.InviteMemebersId.includes(currentUser))) : item?.Author?.ID == currentUser) : (item)
+    );
     return arr;
 }
 export const get7DaysDiscussionForum = async (_sp) => {
@@ -66,21 +66,21 @@ export const get7DaysDiscussionForum = async (_sp) => {
 
     // Fetch all discussion forum data created within the last 7 days (without filtering by current user in InviteMemebersId)
     await _sp.web.lists.getByTitle("ARGDiscussionForum")
-        .items.select("*,DiscussionForumCategory/Id,DiscussionForumCategory/CategoryName,Author/ID,Author/Title,InviteMemebers/Id,InviteMemebers/Title,InviteMemebers/EMail,GroupType")
+        .items.select("*,DiscussionForumCategory/Id,DiscussionForumCategory/CategoryName,Author/ID,Author/Title,Author/EMail,InviteMemebers/Id,InviteMemebers/Title,InviteMemebers/EMail,GroupType")
         .expand("DiscussionForumCategory,Author,InviteMemebers")
         .filter(`Created ge '${lastWeekStr}T00:00:00Z' and Created le '${todayStr}T23:59:59Z'`) // Filter by date range only
         .orderBy("Created", false) // Order by 'Created' field in descending order
         .getAll()
         .then((res) => {
-            console.log("--discussion", res);   
+            console.log("--discussion", res);
             arr1 = res;
         })
         .catch((error) => {
             console.log("Error fetching data: ", error);
         });
-//item?.Author?.ID == currentUser &&    
+    //item?.Author?.ID == currentUser &&    
     arr = arr1.filter(item =>
-      item.GroupType == "Private" ? (item?.Author?.ID != currentUser && item.InviteMemebersId != null ? ((item.InviteMemebersId && item.InviteMemebersId.includes(currentUser))):item?.Author?.ID == currentUser) : (item)
+        item.GroupType == "Private" ? (item?.Author?.ID != currentUser && item.InviteMemebersId != null ? ((item.InviteMemebersId && item.InviteMemebersId.includes(currentUser))) : item?.Author?.ID == currentUser) : (item)
     );
 
     return arr;
@@ -114,7 +114,7 @@ export const getOldDiscussionForum = async (_sp) => {
     let variableBool = false;
     // Fetch all discussion forum data created within the last 7 days (without filtering by current user in InviteMemebersId)
     await _sp.web.lists.getByTitle("ARGDiscussionForum")
-        .items.select("*,DiscussionForumCategory/Id,DiscussionForumCategory/CategoryName,Author/ID,Author/Title,InviteMemebers/Id,InviteMemebers/Title,InviteMemebers/EMail,GroupType")
+        .items.select("*,DiscussionForumCategory/Id,DiscussionForumCategory/CategoryName,Author/ID,Author/Title,Author/EMail,InviteMemebers/Id,InviteMemebers/Title,InviteMemebers/EMail,GroupType")
         .expand("DiscussionForumCategory,Author,InviteMemebers")
         .filter(`GroupType eq 'Public'`) // Filter by date range only
         .orderBy("Created", false) // Order by 'Created' field in descending order
@@ -165,7 +165,7 @@ export const addItem = async (itemData, _sp) => {
     let resultArr = []
     try {
         const newItem = await _sp.web.lists.getByTitle('ARGDiscussionForum').items.add(itemData);
-        
+
         console.log('Item added successfully:', newItem);
 
         resultArr = newItem
@@ -192,7 +192,7 @@ export const fetchTrendingDiscussionBasedOn = async (_sp) => {
 }
 
 export const getDiscussionForumByID = async (_sp, id) => {
-    
+
     let arr = []
     let arrs = []
     let bannerimg = []
@@ -247,10 +247,10 @@ export const getDiscussionForumDetailsById = async (_sp, idNum) => {
     let arr = []
     let arr1 = []
     await _sp.web.lists.getByTitle("ARGDiscussionForum").items.getById(idNum).select("*,DiscussionForumCategory/ID,DiscussionForumCategory/CategoryName,Entity/ID,Entity/Entity,InviteMemebers/Id,InviteMemebers/Title,InviteMemebers/EMail,GroupType,Author/ID,Author/Title,Author/EMail,ARGDiscussionStatus").expand("Entity,DiscussionForumCategory,InviteMemebers,Author")()
-    .then((res) => {
-    // await _sp.web.lists.getByTitle("ARGDiscussionForum").items.getById(idNum)
-    //     .select("*,DiscussionForumCategory/ID,DiscussionForumCategory/CategoryName,Entity/ID,Entity/Entity,InviteMemebers/Id,InviteMemebers/Title,InviteMemebers/EMail,GroupType ,Author/ID,Author/Title,Author/EMail ").expand("Entity,DiscussionForumCategory,InviteMemebers , Author")()
-    //     .then((res) => {
+        .then((res) => {
+            // await _sp.web.lists.getByTitle("ARGDiscussionForum").items.getById(idNum)
+            //     .select("*,DiscussionForumCategory/ID,DiscussionForumCategory/CategoryName,Entity/ID,Entity/Entity,InviteMemebers/Id,InviteMemebers/Title,InviteMemebers/EMail,GroupType ,Author/ID,Author/Title,Author/EMail ").expand("Entity,DiscussionForumCategory,InviteMemebers , Author")()
+            //     .then((res) => {
             // arr=res;
             console.log(res, 'hhhjhjh');
 
@@ -352,8 +352,8 @@ export const getDiscussionFilter = async (_sp) => {
     const yesterday = today.minus({ days: 1 });
     const lastWeek = today.minus({ weeks: 1 });
     const lastMonth = today.minus({ months: 1 });
-    const filtervalue =  await fetchTrendingDiscussionBasedOn(_sp);
-    
+    const filtervalue = await fetchTrendingDiscussionBasedOn(_sp);
+
     // Build the filter query based on the selected option
     switch (filtervalue.Title) {
         case "Today":
@@ -381,18 +381,18 @@ export const getDiscussionFilter = async (_sp) => {
         .then(async (res) => {
             //arr = res;
             for (let i = 0; i < res.length > 0; i++) {
-                const comment = await getDiscussionCommentsByID(_sp,res[i].ID)
-                 let arrs = {
-                    Topic:res[i].Topic,
+                const comment = await getDiscussionCommentsByID(_sp, res[i].ID)
+                let arrs = {
+                    Topic: res[i].Topic,
                     Overview: res[i].Overview,
-                    DiscussionForumCategory:res[i].DiscussionForumCategory,
-                    CommentLength: comment,    
-                    ID:res[i].ID   
-                 }
-                 arr.push(arrs);
+                    DiscussionForumCategory: res[i].DiscussionForumCategory,
+                    CommentLength: comment,
+                    ID: res[i].ID
+                }
+                arr.push(arrs);
             }
             arr.sort((a, b) => b.CommentLength - a.CommentLength);
-       
+
         }).catch((error) => {
             console.log("Error fetching data: ", error);
         });
@@ -405,12 +405,12 @@ export const getDiscussionCommentsByID = async (sp, Id) => {
     let arrUsers = []
     let CreatedDate = ""
     await sp.web.lists.getByTitle("ARGDiscussionComments").items.select("*,Author/Id,Author/Title,Author/EMail").expand("Author").filter(`DiscussionForumId eq ${Id}`)().then(res => {
-        
+
         let arrs;
         console.log(res, 'resres');
 
-        arrLength = res.length         
-      
+        arrLength = res.length
+
     }
     )
     return arrLength;
@@ -421,7 +421,7 @@ export const getDiscussionComments = async (sp, Id) => {
     let arrUsers = []
     let CreatedDate = ""
     await sp.web.lists.getByTitle("ARGDiscussionComments").items.select("*,Author/Id,Author/Title,Author/EMail").expand("Author").filter(`DiscussionForumId eq ${Id}`)().then(res => {
-        
+
         let arrs;
         console.log(res, 'resres');
 
@@ -433,13 +433,13 @@ export const getDiscussionComments = async (sp, Id) => {
             }
             arrUsers.push(arrs)
         }
-        
+
         const uniqueArray = arrUsers.filter((item, index) => arrUsers.indexOf(item) === index);
 
         console.log(uniqueArray);
-        
+
         var lengthcount = res.length - 1
-        CreatedDate =res.length>0? res[res.length - 1].Created:"NA"
+        CreatedDate = res.length > 0 ? res[res.length - 1].Created : "NA"
         const totalLikes = res.reduce((total, res1) => total + ((res1.UserLikesJSON != "" && res1.UserLikesJSON != null && res1.UserLikesJSON != undefined) && JSON.parse(res1.UserLikesJSON).length || 0), 0);
 
         const totalRepliesCount = res.reduce(
@@ -451,8 +451,8 @@ export const getDiscussionComments = async (sp, Id) => {
             arrLength: res.length,
             arrUser: uniqueArray,
             CreatedDate: CreatedDate,
-            totalLikes:totalLikes,
-            totalRepliesCount:totalRepliesCount
+            totalLikes: totalLikes,
+            totalRepliesCount: totalRepliesCount
         }
         arr = mainArray
     }

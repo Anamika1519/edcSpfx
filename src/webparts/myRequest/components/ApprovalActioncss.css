@@ -31,12 +31,17 @@
       padding: 0px 1px !important;
       border-radius: 1000px; text-align: center; font-weight: 600;
   }
+  .cardCss .card-body{padding: 0px !important;}
+  .cardCss{border: none !important; background: transparent !important; box-shadow: none !important; border-radius: 0px !important;}
+  .modal-title{    font-size: 1.25rem !important;}
   .pagination-container{margin-top: 5px !important;}
-  #audittable{min-width: 80%;}
-  #audittable .modal-body .cardCss {border: 0px solid #ccc !important;margin: 0px !important;}
-  #audittable .modal-body .cardCss .card-body{padding: 0px !important;}
-  #audittable .modal-body .cardCss .card-body h3{display: none;}
-  #audittable .modal-body .cardCss .card-body table{margin: 0px !important;}
+  .newmodal .mtbalenew th{padding: 10px !important;     background: #f2f3f5 !important;}
+  #audittable,.newmodal .modal-dialog{min-width: 80%;}
+  #audittable .modal-body .cardCss, .newmodal .modal-body .popsn  {border: 0px solid #ccc !important;margin: 0px !important;}
+  .newmodal .modal-body .popsn{padding: 0px !important;}
+  #audittable .modal-body .cardCss .card-body,.newmodal .modal-body  .card-body {padding: 0px !important;}
+  #audittable .modal-body .cardCss .card-body h3,.newmodal .modal-body .card-body h3{display: none;}
+  #audittable .modal-body .cardCss .card-body table,.newmodal .modal-body  .card-body table{margin: 0px !important;}
   .stausbg{
   
       border-radius: 4px;
@@ -136,7 +141,15 @@
   color: #3c3c3c;
   font-size: 13px;
 }
-.table-responsive{overflow-x: hidden;}
+.btn-light1 {
+  background: #fff;
+  border: 1px solid #efefef;
+  border-radius: 30px;
+  color: #3c3c3c;
+  font-size: 13px;
+}
+.btn-light1:hover{background: #fff !important;border: 1px solid #efefef !important;}
+.table-responsive{overflow-x: hidden !important;}
   .DMSMasterContainer{margin-top: 10px;}
   .topv{vertical-align: top;}
   @media(max-width:640px){

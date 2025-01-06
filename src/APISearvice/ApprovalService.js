@@ -384,7 +384,7 @@ export const gteDMSApproval = async (sp, value) => {
           .getByTitle(fileItem.FileMasterList)
           .items.select("ID", "FileName", "FileUID", "FileSize", "FileVersion", "Status", "SiteID", "CurrentFolderPath", "DocumentLibraryName", "SiteName", "FilePreviewURL", "IsDeleted", "MyRequest", "*")
           .filter(`CurrentUser eq '${currentUser.Email}' and MyRequest eq 1 and Status eq '${value}'`)
-          .orderBy("Modified", false)
+          .orderBy("Created", false)
           .getAll();
 
         arr = [...arr, ...filesData];

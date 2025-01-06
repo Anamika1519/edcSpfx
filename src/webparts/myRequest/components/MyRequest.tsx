@@ -109,7 +109,8 @@ import DMSMyrequestLog from "./DMSMyrequestLog";
 // import { WorkflowAuditHistory } from "../../../CustomJSComponents/WorkflowAuditHistory/WorkflowAuditHistory";
 import { Button, Modal } from "react-bootstrap";
 import { WorkflowAuditHistory } from "../../../CustomJSComponents/WorkflowAuditHistory/WorkflowAuditHistory";
-
+import DMSFolderreqLog from "./DMSFolderreqLog";
+import Myrequestaudithistory from './DMSMyrequestAuditHistory'
 const MyRequestContext = ({ props }: any) => {
 
   const sp: SPFI = getSP();
@@ -259,7 +260,7 @@ const MyRequestContext = ({ props }: any) => {
   const handleTabClick = async (tab: React.SetStateAction<string>) => {
     setShowNestedDMSTable("");
     setActiveTab(tab);
-
+    setCurrentPage(1);
     console.log("tab", tab)
     // alert(activeTab);
     if (tab == "Intranet") {
@@ -386,9 +387,9 @@ const MyRequestContext = ({ props }: any) => {
 
         (filters.ProcessName === "" ||
 
-          (item.SourceName != undefined &&
+          ((activeTab == "Automation" ? item?.ProcessName : item?.SourceName) != undefined &&
 
-            item.SourceName.toLowerCase().includes(
+            (activeTab == "Automation" ? item?.ProcessName : item?.SourceName).toLowerCase().includes(
 
               filters.ProcessName.toLowerCase()
 
@@ -396,13 +397,16 @@ const MyRequestContext = ({ props }: any) => {
 
         (filters.RequestID === "" ||
 
-          (item.SourceName != undefined &&
+          ((activeTab == "Automation" ? item?.ProcessName : item?.SourceName) != undefined &&
+          (activeTab == "Automation" ? item?.RequestID : item?.SourceName + "_" + item?.ContentID) != undefined &&
 
-            (item.SourceName.toLowerCase().includes(
+          (
+            // (activeTab == "Automation" ? item?.ProcessName : item?.SourceName).toLowerCase().includes(
 
-              filters.RequestID.toLowerCase()
+            //   filters.RequestID.toLowerCase()
 
-            ) || item.ContentID.toLowerCase().includes(
+            // ) || 
+            (activeTab == "Automation" ? item?.RequestID : item?.SourceName + "_" + item?.ContentID).toLowerCase().includes(
 
               filters.RequestID.toLowerCase()
 
@@ -421,7 +425,7 @@ const MyRequestContext = ({ props }: any) => {
             .startsWith(filters.RequestedDate + ""))
         &&
         (filters.Title === "" ||
-
+          item?.Title != undefined  &&
           item.Title.toLowerCase().includes(filters.Title.toLowerCase()))
         // (filters.RequestedBy === "" ||
         //   (activeTab == "Automation" ? (item?.Author?.Title?.toLowerCase().includes(
@@ -1275,65 +1279,7 @@ const MyRequestContext = ({ props }: any) => {
 
                                 </th>
 
-                                {/* <th style={{ minWidth: "100px", maxWidth: "100px" }}>
-
-                                  <div className="d-flex flex-column bd-highlight ">
-
-                                    <div
-
-                                      className="d-flex  pb-2"
-
-                                      style={{ justifyContent: "space-between" }}
-
-                                    >
-
-                                      <span>Requested By</span>{" "}
-
-                                      <span
-
-                                        onClick={() =>
-
-                                          handleSortChange("RequestedBy")
-
-                                        }
-
-                                      >
-
-                                        <FontAwesomeIcon icon={faSort} />{" "}
-
-                                      </span>
-
-                                    </div>
-
-                                    <div className=" bd-highlight">
-
-                                      <input
-
-                                        type="text"
-
-                                        placeholder="Filter by Approver By"
-
-                                        onChange={(e) =>
-
-                                          handleFilterChange(e, "RequestedBy")
-
-                                        }
-                                        onKeyDown={(e) => {
-                                          if (e.key === 'Enter' && !e.shiftKey) {
-                                            e.preventDefault(); // Prevents the new line in textarea
-                                          }
-                                        }}
-                                        className="inputcss"
-
-                                        style={{ width: "100%" }}
-
-                                      />
-
-                                    </div>
-
-                                  </div>
-
-                                </th> */}
+                             
                                 <th style={{ minWidth: "70px", maxWidth: "70px", verticalAlign: "Top" }}>
 
                                   <div className="d-flex flex-column bd-highlight ">
@@ -1533,7 +1479,7 @@ const MyRequestContext = ({ props }: any) => {
 
                                     key={index}
 
-                                    style={{ cursor: "pointer" }}
+                                    
 
                                   >
 
@@ -1543,7 +1489,7 @@ const MyRequestContext = ({ props }: any) => {
 
                                     >
 
-                                      <div style={{ marginLeft: '3px' }} className="indexdesign">{startIndex + index + 1}</div>
+                                      <div style={{ marginLeft: '13px' }} className="indexdesign">{startIndex + index + 1}</div>
 
                                     </td>
 
@@ -1562,7 +1508,7 @@ const MyRequestContext = ({ props }: any) => {
                                     >
 
                                       {/* {item.RequestID} */}
-                                      {activeTab == "Automation" ? item?.RequestID : item?.SourceName_item?.ContentID}
+                                      {activeTab == "Automation" ? item?.RequestID : item?.SourceName + "_" + item?.ContentID}
 
                                     </td>
                                     <td
@@ -1612,7 +1558,7 @@ const MyRequestContext = ({ props }: any) => {
 
                                     >
 
-<div className="btn btn-light font-14"> {new Date(item?.Created).toLocaleDateString()} </div>
+<div style={{cursor:'auto'}} className="btn btn-light1"> {new Date(item?.Created).toLocaleDateString()} </div>
 
                                     </td>
                                     <td
@@ -1620,7 +1566,7 @@ const MyRequestContext = ({ props }: any) => {
                                       style={{ minWidth: "70px", maxWidth: "70px", textAlign: 'center' }}
 
                                     >
-                                      <div className="btn btn-status">
+                                      <div style={{cursor:'pointer'}} className="btn btn-status">
                                         <a onClick={() => openAuditModal(item)}> {item?.Status}</a>
                                       </div>
 
@@ -1668,595 +1614,633 @@ const MyRequestContext = ({ props }: any) => {
                       ) :
                         null
                     }
-                    {activeTab === "DMS" && (
-                      <div>
-                        {
-                          showNestedDMSTable === "" ? (
+                      {activeTab === "DMS" && (
+                     <div>
+                     {
+                     showNestedDMSTable === "" ? (
+                       <div>
+                         <table
+          className="mt-0 mtbalenew table-centered table-nowrap table-borderless mb-0"
+          style={{ position: "relative" }}
+          >
+          <thead>
+          
+            <tr>
+            {/*Table sr no */}
+              <th
+          
+                style={{
+          
+                 
+          
+                  minWidth: "40px",
+          
+                  maxWidth: "40px",
+          
+                  
+          
+                }}
+          
+              >
+          
+                <div
+          
+                  className="d-flex pb-2"
+          
+                  style={{ justifyContent: "space-between" }}
+          
+                >
+          
+                  <span>S.No.</span>
+          
+                  <span onClick={() => handleSortChange("SNo")}>
+          
+                    <FontAwesomeIcon icon={faSort} />
+          
+                  </span>
+          
+                </div>
+          
+                <div className="bd-highlight">
+          
+                  <input
+          
+                    type="text"
+          
+                    placeholder="index"
+          
+                    onChange={(e) => handleFilterChange(e, "SNo")}
+          
+                    className="inputcss"
+          
+                    style={{ width: "100%" }}
+          
+                  />
+          
+                </div>
+          
+              </th>
+                {/*Table req ID */}
+              <th style={{ minWidth: "80px", maxWidth: "80px" }}>
+          
+                <div className="d-flex flex-column bd-highlight ">
+          
+                  <div
+          
+                    className="d-flex pb-2"
+          
+                    style={{ justifyContent: "space-between" }}
+          
+                  >
+          
+                    <span>Request ID</span>
+          
+                    <span
+          
+                      onClick={() => handleSortChange("RequestID")}
+          
+                    >
+          
+                      <FontAwesomeIcon icon={faSort} />
+          
+                    </span>
+          
+                  </div>
+          
+                  <div className=" bd-highlight">
+          
+                    <input
+          
+                      type="text"
+          
+                      placeholder="Filter by Request ID"
+          
+                      onChange={(e) =>
+          
+                        handleFilterChange(e, "RequestID")
+          
+                      }
+          
+                      className="inputcss"
+          
+                      style={{ width: "100%" }}
+          
+                    />
+          
+                  </div>
+          
+                </div>
+          
+              </th>
+           {/*Table Title*/}
+           <th style={{ minWidth: "80px", maxWidth: "80px" }}>
+          
+          <div className="d-flex flex-column bd-highlight ">
+         
+            <div
+         
+              className="d-flex pb-2"
+         
+              style={{ justifyContent: "space-between" }}
+         
+            >
+         
+              <span>Title</span>
+         
+              <span
+         
+                onClick={() => handleSortChange("Title")}
+         
+              >
+         
+                <FontAwesomeIcon icon={faSort} />
+         
+              </span>
+         
+            </div>
+         
+            <div className=" bd-highlight">
+         
+              <input
+         
+                type="text"
+         
+                placeholder="Filter by Title"
+         
+                onChange={(e) =>
+         
+                  handleFilterChange(e, "Title")
+         
+                }
+         
+                className="inputcss"
+         
+                style={{ width: "100%" }}
+         
+              />
+         
+            </div>
+         
+          </div>
+         
+            </th>
+              <th style={{ minWidth: "120px", maxWidth: "120px" }}>
+          
+                <div className="d-flex flex-column bd-highlight ">
+          
+                  <div
+          
+                    className="d-flex  pb-2"
+          
+                    style={{ justifyContent: "space-between" }}
+          
+                  >
+          
+                    <span>Process Name</span>{" "}
+          
+                    <span
+          
+                      onClick={() =>
+          
+                        handleSortChange("ProcessName")
+          
+                      }
+          
+                    >
+          
+                      <FontAwesomeIcon icon={faSort} />{" "}
+          
+                    </span>
+          
+                  </div>
+          
+                  <div className=" bd-highlight">
+          
+                    <input
+          
+                      type="text"
+          
+                      placeholder="Filter by Process Name"
+          
+                      onChange={(e) =>
+          
+                        handleFilterChange(e, "ProcessName")
+          
+                      }
+          
+                      className="inputcss"
+          
+                      style={{ width: "100%" }}
+          
+                    />
+          
+                  </div>
+          
+                </div>
+          
+              </th>
+          
+              <th style={{ minWidth: "80px", maxWidth: "80px" }}>
+          
+          <div className="d-flex flex-column bd-highlight ">
+    
+            <div
+    
+              className="d-flex  pb-2"
+    
+              style={{ justifyContent: "space-between" }}
+    
+            >
+    
+              <span>Requested Date</span>{" "}
+    
+              <span
+    
+                onClick={() =>
+    
+                  handleSortChange("RequestedBy")
+    
+                }
+    
+              >
+    
+                <FontAwesomeIcon icon={faSort} />{" "}
+    
+              </span>
+    
+            </div>
+    
+            <div className=" bd-highlight">
+    
+              <input
+    
+                type="text"
+    
+                placeholder="Filter by Requested Date"
+    
+                onChange={(e) =>
+    
+                  handleFilterChange(e, "RequestedBy")
+    
+                }
+    
+                className="inputcss"
+    
+                style={{ width: "100%" }}
+    
+              />
+    
+            </div>
+    
+          </div>
+    
+        </th>
+          
+              <th style={{ minWidth: "80px", maxWidth: "80px" }}>
+          
+                <div className="d-flex flex-column bd-highlight ">
+          
+                  <div
+          
+                    className="d-flex  pb-2"
+          
+                    style={{ justifyContent: "space-between" }}
+          
+                  >
+          
+                    <span>Status</span>{" "}
+          
+                    <span
+          
+                      onClick={() => handleSortChange("Status")}
+          
+                    >
+          
+                      <FontAwesomeIcon icon={faSort} />{" "}
+          
+                    </span>
+          
+                  </div>
+          
+                  <div className=" bd-highlight">
+          
+                    <input
+          
+                      type="text"
+          
+                      placeholder="Filter by Status"
+          
+                      onChange={(e) =>
+          
+                        handleFilterChange(e, "Status")
+          
+                      }
+          
+                      className="inputcss"
+          
+                      style={{ width: "100%" }}
+          
+                    />
+          
+                  </div>
+          
+                </div>
+          
+              </th>
+      
+            
+                
+              <th
+         
+         style={{
+         
+           minWidth: "50px",
+         
+           maxWidth: "50px",
+           textAlign: "center",
+         
+           verticalAlign: "top",
+         
+         }}
+         
+         >
+         
+         <div className="d-flex flex-column bd-highlight ">
+         
+           <div
+         
+             className="d-flex  pb-2"
+         
+             style={{ justifyContent: "space-between" }}
+         
+           >
+         
+             <span>View Details</span>{" "}
+         
+         
+           </div>
+         
+         
+         
+         </div>
+         
+         </th>
+            </tr>
+          
+          </thead>
+          
+          <tbody>
+          
+            {currentData?.length === 0 ? (
+          
+              <div
+          
+                className="no-results"
+          
+                style={{
+          
+                  display: "flex",
+          
+                  justifyContent: "center",
+          
+                }}
+          
+              >
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
+                No results found
+          
+              </div>
+          
+            ) : (
+          
+              currentData?.map((item: any, index: number) => (
+          
+                <tr
+          
+                  onClick={() =>
+          
+                    handleRedirect(item.RedirectionLink)
+          
+                  }
+          
+                  key={index}
+          
+                
+          
+                >
+          
+                  <td
+          
+                    style={{ minWidth: "40px", maxWidth: "40px" }}
+          
+                  >
+          
+          <div style={{ marginLeft: '13px' }} className="indexdesign">     {startIndex + index + 1} </div>
+          
+                  </td>
+          
+                  <td
+          
+                    style={{
+          
+                      minWidth: "80px",
+          
+                      maxWidth: "80px",
+          
+                      textTransform: "capitalize",
+          
+                    }}
+          
+                  >
+          
+                    {/* {item.RequestID} */}
+                    {item?.RequestNo}
+          
+                  </td>
+          
+                  <td
+          
+                    style={{
+          
+                      minWidth: "80px",
+          
+                      maxWidth: "80px",
+          
+                      textTransform: "capitalize",
+          
+                    }}
+          
+                  >
+          
+                    {/* {item.RequestID} */}
+                    {item.FileName}
+          
+                  </td>
+          
+                  <td
+          
+                    style={{ minWidth: "120px", maxWidth: "120px" }}
+          
+                  >
+          
+                    {/* {item.ProcessName} */}
+                    {item?.Processname}
+          
+                  </td>
+          
+               
+                  <td
+          
+          style={{ minWidth: "80px", maxWidth: "80px", textAlign:'center' }}
+
+        >
+
+          {/* {new Date(item?.Created).toLocaleDateString()} */}
+     <div style={{cursor:'auto'}} className="btn btn-light1">  {new Date(item?.Created).toLocaleString('en-US', { 
+month: '2-digit',
+day: '2-digit',
+year: 'numeric',
+// hour: '2-digit',
+// minute: '2-digit',
+// second: '2-digit',
+// hour12: true 
+})}
+</div>
+
+        </td>
+          
+          
+                  <td
+          
+                    style={{ minWidth: "80px", maxWidth: "80px", textAlign:'center' }}
+          
+                  >
+                     <div className="btn btn-status">
+                                        <a onClick={() => {getTaskItemsbyID(item.FileUID) ; handleShowNestedDMSTable("")}}> {item?.Status}</a>
+                                      </div>
+
+          
+                  </td>
+             
+                
+          
+                  <td
+          
+                    style={{ minWidth: "50px", maxWidth: "50px" }}
+          
+                    className="fe-eye font-18"
+          
+                  >
+           
+                   {item?.Processname == "New File Request" ?  <Eye onClick={() => {getTaskItemsbyID(item.FileUID) ; handleShowNestedDMSTable("DMSAuditHistory")}}
+          
+          style={{
+          
+          minWidth: "20px",
+          
+          maxWidth: "20px",
+          
+          marginLeft: "15px",
+          
+          cursor: "pointer",
+          
+          }} /> : item?.Processname == "New Folder Request" ?  <Eye onClick={() => {getTaskItemsbyID(item.FileUID) ; handleShowNestedDMSTable("DMSFolderAuditHistory")}}
+          
+          style={{
+          
+          minWidth: "20px",
+          
+          maxWidth: "20px",
+          
+          marginLeft: "15px",
+          
+          cursor: "pointer",
+          
+          }} /> : null}
+           
+         
+          
+                   
+          
+                  </td>
+               
+          
+                </tr>
+          
+              ))
+          
+            )}
+          
+          </tbody>
+                        </table>
+                        <Modal show={showModal2} onHide={handleCloseModal} className="newmodal">
+             <Modal.Header closeButton>
+               <Modal.Title>Audit History</Modal.Title>
+             </Modal.Header>
+             <Modal.Body>
+               <Myrequestaudithistory props={currentItemID} />
+             </Modal.Body>
+             <Modal.Footer>
+               {/* <Button variant="secondary" onClick={handleCloseModal}>
+                 Close
+               </Button> */}
+             </Modal.Footer>
+                        </Modal>
+                       </div>
+                     ) 
+        //              : 
+        //              showNestedDMSTable === "DMSFilePreview" ? 
+        //  (
+        //    <Modal show={showModal2} onHide={handleCloseModal}>
+        //      <Modal.Header closeButton>
+        //        <Modal.Title>DMS Audit History</Modal.Title>
+        //      </Modal.Header>
+        //      <Modal.Body>
+        //        <DMSMyrequestLog props={currentItemID} />
+        //      </Modal.Body>
+        //      <Modal.Footer>
+        //        <Button variant="secondary" onClick={handleCloseModal}>
+        //          Close
+        //        </Button>
+        //      </Modal.Footer>
+        //    </Modal>
+        //  )
+                     : 
+                     showNestedDMSTable === "DMSAuditHistory" ?
+                      (
+                       <div>
+                       <div>
+                           <div>
+                          {/* <button style={{float:'right'}} type="button" className="btn btn-secondary" onClick={() => setShowNestedDMSTable("")}> Back </button> */}
+                         <DMSMyrequestLog props={currentItemID }/>
+                         <button type="button" className="btn btn-light waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={() => setShowNestedDMSTable("")}>
+                                <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }}
+                                    className='me-1' alt="x" />
+                                Cancel
+                            </button>
+                           </div>
+                       </div>
+                     </div>
+                     )
+                    
+                     : showNestedDMSTable === "DMSFolderAuditHistory" ? 
+                     (
+                        <div>
+                        <div>
                             <div>
-                              <table
-                                className="mt-0 mtbalenew table-centered table-nowrap table-borderless mb-0"
-                                style={{ position: "relative" }}
-                              >
-                                <thead>
-
-                                  <tr>
-                                    {/*Table sr no */}
-                                    <th
-
-                                      style={{
-
-
-
-                                        minWidth: "40px",
-
-                                        maxWidth: "40px",
-
-
-
-                                      }}
-
-                                    >
-
-                                      <div
-
-                                        className="d-flex pb-2"
-
-                                        style={{ justifyContent: "space-evenly" }}
-
-                                      >
-
-                                        <span>S.No.</span>
-
-                                        <span onClick={() => handleSortChange("SNo")}>
-
-                                          <FontAwesomeIcon icon={faSort} />
-
-                                        </span>
-
-                                      </div>
-
-                                      <div className="bd-highlight">
-
-                                        <input
-
-                                          type="text"
-
-                                          placeholder="index"
-
-                                          onChange={(e) => handleFilterChange(e, "SNo")}
-
-                                          className="inputcss"
-
-                                          style={{ width: "100%" }}
-
-                                        />
-
-                                      </div>
-
-                                    </th>
-                                    {/*Table req ID */}
-                                    <th style={{ minWidth: "80px", maxWidth: "80px" }}>
-
-                                      <div className="d-flex flex-column bd-highlight ">
-
-                                        <div
-
-                                          className="d-flex pb-2"
-
-                                          style={{ justifyContent: "space-evenly" }}
-
-                                        >
-
-                                          <span>Request ID</span>
-
-                                          <span
-
-                                            onClick={() => handleSortChange("RequestID")}
-
-                                          >
-
-                                            <FontAwesomeIcon icon={faSort} />
-
-                                          </span>
-
-                                        </div>
-
-                                        <div className=" bd-highlight">
-
-                                          <input
-
-                                            type="text"
-
-                                            placeholder="Filter by Request ID"
-
-                                            onChange={(e) =>
-
-                                              handleFilterChange(e, "RequestID")
-
-                                            }
-
-                                            className="inputcss"
-
-                                            style={{ width: "100%" }}
-
-                                          />
-
-                                        </div>
-
-                                      </div>
-
-                                    </th>
-                                    {/*Table Title*/}
-                                    <th style={{ minWidth: "80px", maxWidth: "80px" }}>
-
-                                      <div className="d-flex flex-column bd-highlight ">
-
-                                        <div
-
-                                          className="d-flex pb-2"
-
-                                          style={{ justifyContent: "space-evenly" }}
-
-                                        >
-
-                                          <span>Title</span>
-
-                                          <span
-
-                                            onClick={() => handleSortChange("Title")}
-
-                                          >
-
-                                            <FontAwesomeIcon icon={faSort} />
-
-                                          </span>
-
-                                        </div>
-
-                                        <div className=" bd-highlight">
-
-                                          <input
-
-                                            type="text"
-
-                                            placeholder="Filter by Title"
-
-                                            onChange={(e) =>
-
-                                              handleFilterChange(e, "Title")
-
-                                            }
-
-                                            className="inputcss"
-
-                                            style={{ width: "100%" }}
-
-                                          />
-
-                                        </div>
-
-                                      </div>
-
-                                    </th>
-                                    <th style={{ minWidth: "120px", maxWidth: "120px" }}>
-
-                                      <div className="d-flex flex-column bd-highlight ">
-
-                                        <div
-
-                                          className="d-flex  pb-2"
-
-                                          style={{ justifyContent: "space-evenly" }}
-
-                                        >
-
-                                          <span>Process Name</span>{" "}
-
-                                          <span
-
-                                            onClick={() =>
-
-                                              handleSortChange("ProcessName")
-
-                                            }
-
-                                          >
-
-                                            <FontAwesomeIcon icon={faSort} />{" "}
-
-                                          </span>
-
-                                        </div>
-
-                                        <div className=" bd-highlight">
-
-                                          <input
-
-                                            type="text"
-
-                                            placeholder="Filter by Process Name"
-
-                                            onChange={(e) =>
-
-                                              handleFilterChange(e, "ProcessName")
-
-                                            }
-
-                                            className="inputcss"
-
-                                            style={{ width: "100%" }}
-
-                                          />
-
-                                        </div>
-
-                                      </div>
-
-                                    </th>
-
-
-
-
-                                    <th style={{ minWidth: "70px", maxWidth: "70px" }}>
-
-                                      <div className="d-flex flex-column bd-highlight ">
-
-                                        <div
-
-                                          className="d-flex  pb-2"
-
-                                          style={{ justifyContent: "space-evenly" }}
-
-                                        >
-
-                                          <span>Requested Date</span>{" "}
-
-                                          <span
-
-                                            onClick={() =>
-
-                                              handleSortChange("RequestedBy")
-
-                                            }
-
-                                          >
-
-                                            <FontAwesomeIcon icon={faSort} />{" "}
-
-                                          </span>
-
-                                        </div>
-
-                                        <div className=" bd-highlight">
-
-                                          <input
-
-                                            type="text"
-
-                                            placeholder="Filter by Approver By"
-
-                                            onChange={(e) =>
-
-                                              handleFilterChange(e, "RequestedBy")
-
-                                            }
-
-                                            className="inputcss"
-
-                                            style={{ width: "100%" }}
-
-                                          />
-
-                                        </div>
-
-                                      </div>
-
-                                    </th>
-                                    <th style={{ minWidth: "70px", maxWidth: "70px" }}>
-
-                                      <div className="d-flex flex-column bd-highlight ">
-
-                                        <div
-
-                                          className="d-flex  pb-2"
-
-                                          style={{ justifyContent: "space-evenly" }}
-
-                                        >
-
-                                          <span>Status</span>{" "}
-
-                                          <span
-
-                                            onClick={() => handleSortChange("Status")}
-
-                                          >
-
-                                            <FontAwesomeIcon icon={faSort} />{" "}
-
-                                          </span>
-
-                                        </div>
-
-                                        <div className=" bd-highlight">
-
-                                          <input
-
-                                            type="text"
-
-                                            placeholder="Filter by Status"
-
-                                            onChange={(e) =>
-
-                                              handleFilterChange(e, "Status")
-
-                                            }
-
-                                            className="inputcss"
-
-                                            style={{ width: "100%" }}
-
-                                          />
-
-                                        </div>
-
-                                      </div>
-
-                                    </th>
-
-                                    <th className="topv"
-
-                                      style={{
-
-                                        minWidth: "50px",
-
-                                        maxWidth: "50px",
-                                        textAlign: "center",
-                                        
-                                        
-                                      }}
-
-                                    >
-
-                                      <div className="d-flex flex-column bd-highlight ">
-
-                                        <div
-
-                                          className="d-flex  pb-2"
-
-                                          style={{ justifyContent: "space-evenly" }}
-
-                                        >
-
-                                          <span>View Details</span>{" "}
-
-
-                                        </div>
-
-
-
-                                      </div>
-
-                                    </th>
-                                  </tr>
-
-                                </thead>
-
-                                <tbody>
-
-                                  {currentData?.length === 0 ? (
-
-                                    <div
-
-                                      className="no-results card card-body align-items-center  annusvg text-center "
-
-                                      style={{
-
-                                        display: "flex",
-
-                                        justifyContent: "center",
-                                        position: 'relative',
-                                        marginTop: '10px',
-                                        height: '300px'
-
-                                      }}
-
-                                    >
-                                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
-
-                                      <p className="font-14 text-muted text-center">No Request found </p>
-
-                                    </div>
-
-                                  ) : (
-
-                                    currentData?.map((item: any, index: number) => (
-
-                                      <tr
-
-                                        onClick={() =>
-
-                                          handleRedirect(item.RedirectionLink)
-
-                                        }
-
-                                        key={index}
-
-                                        style={{ cursor: "pointer" }}
-
-                                      >
-
-                                        <td
-
-                                          style={{ minWidth: "40px", maxWidth: "40px" }}
-
-                                        >
-
-                                          {startIndex + index + 1}
-
-                                        </td>
-
-                                        <td
-
-                                          style={{
-
-                                            minWidth: "80px",
-
-                                            maxWidth: "80px",
-
-                                            textTransform: "capitalize",
-
-                                          }}
-
-                                        >
-
-                                          {/* {item.RequestID} */}
-                                          {item?.RequestNo}
-
-                                        </td>
-
-                                        <td
-
-                                          style={{
-
-                                            minWidth: "80px",
-
-                                            maxWidth: "80px",
-
-                                            textTransform: "capitalize",
-
-                                          }}
-
-                                        >
-
-                                          {/* {item.RequestID} */}
-                                          {item?.FileName}
-
-                                        </td>
-
-                                        <td
-
-                                          style={{ minWidth: "120px", maxWidth: "120px" }}
-
-                                        >
-
-                                          {item?.Processname}
-                                         
-
-                                        </td>
-
-
-
-
-                                        <td
-
-                                          style={{ minWidth: "70px", maxWidth: "70px", textAlign:'center' }}
-
-                                        >
-
-<div className="btn btn-light">  {new Date(item?.Created).toLocaleDateString()} </div>
-
-                                        </td>
-                                        <td
-
-                                          style={{ minWidth: "70px", maxWidth: "70px", textAlign:'center' }}
-
-                                        >
-                                          <div className="btn btn-status">
-                                            <a onClick={() => { getTaskItemsbyID(item?.FileUID); handleShowNestedDMSTable("") }}> {item?.Status}</a>
-                                          </div>
-                                          {/* <div className="btn btn-status">
-                                            {item?.Status}</div> */}
-
-                                        </td>
-
-
-
-                                        <td
-
-                                          style={{ minWidth: "50px", maxWidth: "50px" }}
-
-                                          className="fe-eye font-18"
-
-                                        >
-
-<img style={{ cursor: 'pointer' }} onClick={() => { getTaskItemsbyID(item?.FileUID); handleShowNestedDMSTable("DMSAuditHistory")}} src={require('../../../CustomAsset/Eye.png')} />
-
-                                          {/* <Eye onClick={() => { getTaskItemsbyID(item.FileUID); handleShowNestedDMSTable("DMSAuditHistory") }}
-
-                                            style={{
-
-                                              minWidth: "20px",
-
-                                              maxWidth: "20px",
-
-                                              marginLeft: "15px",
-
-                                              cursor: "pointer",
-
-                                            }} /> */}
-
-
-
-                                        </td>
-
-
-                                      </tr>
-
-                                    ))
-
-                                  )}
-
-                                </tbody>
-                              </table>
-                              <Modal show={showModal2} onHide={handleCloseModal} id="audittable">
-                                <Modal.Header closeButton>
-                                  <Modal.Title className="modal-title">DMS Audit History</Modal.Title>
-                                </Modal.Header>
-                                <Modal.Body>
-                                  <DMSMyrequestLog props={currentItemID} />
-                                </Modal.Body>
-                                <Modal.Footer>
-                                  {/* <Button variant="secondary" onClick={handleCloseModal}>
-                                    Close
-                                  </Button> */}
-                                </Modal.Footer>
-                              </Modal>
+                           {/* <button style={{float:'right'}} type="button" className="btn btn-secondary" onClick={() => setShowNestedDMSTable("")}> Back </button> */}
+                         <DMSFolderreqLog props={currentItemID}/>
                             </div>
-                          )
-                            //              : 
-                            //              showNestedDMSTable === "DMSFilePreview" ? 
-                            //  (
-                            //    <Modal show={showModal2} onHide={handleCloseModal}>
-                            //      <Modal.Header closeButton>
-                            //        <Modal.Title>DMS Audit History</Modal.Title>
-                            //      </Modal.Header>
-                            //      <Modal.Body>
-                            //        <DMSMyrequestLog props={currentItemID} />
-                            //      </Modal.Body>
-                            //      <Modal.Footer>
-                            //        <Button variant="secondary" onClick={handleCloseModal}>
-                            //          Close
-                            //        </Button>
-                            //      </Modal.Footer>
-                            //    </Modal>
-                            //  )
-                            :
-                            showNestedDMSTable === "DMSAuditHistory" ?
-                              (
-                                <div>
-                                  <div>
-                                    <div>
-                                      <button style={{ float: 'right' }} type="button" className="btn btn-secondary" onClick={() => setShowNestedDMSTable("")}> Back </button>
-                                      <DMSMyrequestLog props={currentItemID} />
-                                    </div>
-                                  </div>
-                                </div>
-                              )
-
-                              :
-                              null}
-                      </div>
+                            <button type="button" className="btn btn-light waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={() => setShowNestedDMSTable("")}>
+                                <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }}
+                                    className='me-1' alt="x" />
+                                Cancel
+                            </button>
+                        </div>
+                        </div>
+                     )
+                     : null}
+                   </div>
                     )}
                   </div>
                   {currentData?.length > 0 ? (

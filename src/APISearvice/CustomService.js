@@ -169,7 +169,7 @@ export const getCurrentUserProfile = async (_sp, siteUrl) => {
 
 
 export const getCurrentUserName = async (_sp) => {
-
+console.log("____sp",_sp);
   let arr = ""
 
   await _sp.web.currentUser()

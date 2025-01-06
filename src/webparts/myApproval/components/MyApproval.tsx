@@ -271,7 +271,7 @@ const MyApprovalContext = ({ props }: any) => {
 
       )
         .expand("FileUID", "MasterApproval")
-        .filter(`CurrentUser eq '${currentUserEmailRef.current}'`).orderBy("Modified", true).getAll();
+        .filter(`CurrentUser eq '${currentUserEmailRef.current}' and FileUID/Status eq '${value}'`).orderBy("Created", false).getAll();
       console.log(items, "DMSFileApprovalTaskList");
 
       const updatedItems = await Promise.all(items.map(async (item) => {
@@ -341,7 +341,7 @@ const MyApprovalContext = ({ props }: any) => {
   const getCurrrentuser = async () => {
     const userdata = await sp.web.currentUser();
     currentUserEmailRef.current = userdata.Email;
-    getApprovalmasterTasklist('');
+    getApprovalmasterTasklist('Pending');
   };
   React.useEffect(() => {
     getCurrrentuser();
@@ -517,6 +517,7 @@ const MyApprovalContext = ({ props }: any) => {
       if (activeTab == "Intranet") {
         setMyApprovalsData(MyApprovaldata);
       } else if (activeTab == "DMS") {
+        alert(value)
         setMyApprovalsData(MyDMSAPPROVALDATA);
       } else if (activeTab == "Automation") {
         setMyApprovalsData(Automationdata);
@@ -559,7 +560,7 @@ const MyApprovalContext = ({ props }: any) => {
       filters.RequestID
     );
 
-    const filteredData = data.filter((item, index) => {
+    const filteredData = data?.filter((item, index) => {
       return (
         (filters.SNo === "" || String(index + 1).includes(filters.SNo)) &&
         (filters.Title === "" ||
@@ -596,7 +597,7 @@ const MyApprovalContext = ({ props }: any) => {
       );
     });
 
-    const sortedData = filteredData.sort((a, b) => {
+    const sortedData = filteredData?.sort((a, b) => {
       if (sortConfig.key === "SNo") {
         // Sort by index
 
@@ -651,7 +652,7 @@ const MyApprovalContext = ({ props }: any) => {
   const [currentGroup, setCurrentGroup] = React.useState(1);
   const itemsPerPage = 10;
   const pagesPerGroup = 10;
-  const totalPages = Math.ceil(filteredMyApprovalData.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredMyApprovalData?.length / itemsPerPage);
   const totalGroups = Math.ceil(totalPages / pagesPerGroup);
   const [ContentData, setContentData] = React.useState<any>([]);
 
@@ -684,10 +685,10 @@ const MyApprovalContext = ({ props }: any) => {
 
   const endIndex = startIndex + itemsPerPage;
 
-  const currentData = filteredMyApprovalData.slice(startIndex, endIndex);
+  const currentData = filteredMyApprovalData?.slice(startIndex, endIndex);
   const startPage = (currentGroup - 1) * pagesPerGroup + 1;
   const endPage = Math.min(currentGroup * pagesPerGroup, totalPages);
-  const newsCurrentData = filteredNewsData.slice(startIndex, endIndex);
+  const newsCurrentData = filteredNewsData?.slice(startIndex, endIndex);
 
   const [editID, setEditID] = React.useState(null);
 
@@ -1367,7 +1368,7 @@ const MyApprovalContext = ({ props }: any) => {
                                   isActivedata
                                 )}
                                 <tbody>
-                                  {currentData.length === 0 ? (
+                                  {currentData?.length === 0 ? (
                                     <div
 
                                       className="no-results card card-body align-items-center  annusvg text-center "
@@ -1390,11 +1391,11 @@ const MyApprovalContext = ({ props }: any) => {
 
                                     </div>
                                   ) : (
-                                    currentData.map(
+                                    currentData?.map(
                                       (item: any, index: number) => (
                                         <tr
                                           key={index}
-                                          style={{ cursor: "pointer" }}
+                                         
                                         >
                                           <td
                                             style={{
@@ -1621,6 +1622,53 @@ const MyApprovalContext = ({ props }: any) => {
                                                 <input
                                                   type="text"
                                                   placeholder="Filter by Request ID"
+                                                  onChange={(e) =>
+                                                    handleFilterChange(
+                                                      e,
+                                                      "RequestID"
+                                                    )
+                                                  }
+                                                  onKeyDown={(e) => {
+                                                    if (e.key === 'Enter' && !e.shiftKey) {
+                                                      e.preventDefault();
+                                                    }
+                                                  }}
+                                                  className="inputcss"
+                                                  style={{ width: "100%" }}
+                                                />
+                                              </div>
+                                            </div>
+                                          </th>
+                                          <th
+                                            style={{
+                                              minWidth: "80px",
+                                              maxWidth: "80px",
+                                            }}
+                                          >
+                                            <div className="d-flex flex-column bd-highlight ">
+                                              <div
+                                                className="d-flex pb-2"
+                                                style={{
+                                                  justifyContent: "space-between",
+                                                }}
+                                              >
+                                                <span>Title</span>
+
+                                                <span
+                                                  onClick={() =>
+                                                    handleSortChange("Title")
+                                                  }
+                                                >
+                                                  <FontAwesomeIcon
+                                                    icon={faSort}
+                                                  />
+                                                </span>
+                                              </div>
+
+                                              <div className=" bd-highlight">
+                                                <input
+                                                  type="text"
+                                                  placeholder="Filter by Title"
                                                   onChange={(e) =>
                                                     handleFilterChange(
                                                       e,
@@ -1867,7 +1915,7 @@ const MyApprovalContext = ({ props }: any) => {
                                         isActivedata
                                       )}
                                       <tbody>
-                                        {currentData.length === 0 ? (
+                                        {currentData?.length === 0 ? (
                                           <div
 
                                             className="no-results card card-body align-items-center  annusvg text-center "
@@ -1890,11 +1938,11 @@ const MyApprovalContext = ({ props }: any) => {
 
                                           </div>
                                         ) : (
-                                          currentData.map(
+                                          currentData?.map(
                                             (item: any, index: number) => (
                                               <tr
                                                 key={index}
-                                                style={{ cursor: "pointer" }}
+                                                
                                               >
                                                 <td
                                                   style={{
@@ -1923,7 +1971,18 @@ const MyApprovalContext = ({ props }: any) => {
                                                 >
                                                   {item?.FileUID?.RequestNo}
                                                 </td>
+                                                <td
+                                                  style={{
+                                                    minWidth: "80px",
 
+                                                    maxWidth: "80px",
+
+                                             
+                                                  }}
+                                                  title={item?.FileUID?.FileName}
+                                                >
+                                                  {item?.FileUID?.FileName}
+                                                </td>
                                                 <td
                                                   style={{
                                                     minWidth: "120px",
@@ -1945,13 +2004,22 @@ const MyApprovalContext = ({ props }: any) => {
                                                 <td
                                                   style={{
                                                     minWidth: "100px",
-                                                    maxWidth: "100px",
+                                                    // maxWidth: "100px",
                                                     textAlign: 'center'
                                                   }}
                                                 >
                                                   <div className="btn btn-light">
 
-                                                    {item?.FileUID?.Created}
+                                                    {/* {item?.FileUID?.Created} */}
+                                                    {new Date(item?.FileUID?.Created).toLocaleString('en-US', { 
+month: '2-digit',
+day: '2-digit',
+year: 'numeric',
+// hour: '2-digit',
+// minute: '2-digit',
+// second: '2-digit',
+// hour12: true 
+})}
                                                   </div>
                                                 </td>
 
@@ -1997,8 +2065,13 @@ const MyApprovalContext = ({ props }: any) => {
                                 ) : (
                                   <div>
                                     <div>
-                                      <button style={{ float: 'right' }} type="button" className="btn btn-secondary" onClick={() => setShowNestedDMSTable(false)}> Back </button>
+                                      {/* <button style={{ float: 'right' }} type="button" className="btn btn-secondary" onClick={() => setShowNestedDMSTable(false)}> Back </button> */}
                                       <DMSMyApprovalAction props={currentItemID} />
+                                      <button type="button" className="btn btn-light waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={() => setShowNestedDMSTable(false)}>
+                                <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }}
+                                    className='me-1' alt="x" />
+                                Cancel
+                            </button>
                                     </div>
                                   </div>
                                 )}
@@ -2121,7 +2194,7 @@ const MyApprovalContext = ({ props }: any) => {
                } */}
                           </div>
 
-                          {currentData.length > 0 ? (
+                          {currentData?.length > 0 ? (
                             <nav className="pagination-container">
                               <ul className="pagination">
                                 {/* <li

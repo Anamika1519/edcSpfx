@@ -535,31 +535,39 @@ const SocialFeedContext = ({ props }: any) => {
 
   const fetchPosts = async () => {
 
-    let followersCheck: any[] = []
+    let followersCheck: any[] = [];
+    let followedCheck: any[] = []
 
     try {
       const currentUser = await sp.web.currentUser();
       const followers = await sp.web.lists.getByTitle("ARGFollows").items
+        //.filter(`FollowedId eq ${currentUser.Id}`)
         .filter(`FollowedId eq ${currentUser.Id}`)
-        .expand("Follower")
-        .select("Follower/Title", "Follower/EMail", "Follower/Department", "Follower/ID")();
+        .select("Follower/Title", "Follower/EMail", "Follower/Department", "Follower/ID")
+        .expand("Follower")();
+        const followed = await sp.web.lists.getByTitle("ARGFollows").items
+        //.filter(`FollowedId eq ${currentUser.Id}`)
+        .filter(`FollowerId eq ${currentUser.Id}`)
+        .select("Follower/Title", "Follower/EMail", "Follower/Department", "Follower/ID")
+        .expand("Follower")();
       console.log(followers, 'followers');
 
       followers.forEach(element => {
         checkIfFollower(element);
       });
 
-      console.log(followers, "followers");
+      
 
-      followersCheck = followers.map(f => f.Follower)
-
+      followersCheck = followers.map(f => f.Follower);
+      followedCheck = followed.map(f => f.Follower)
+      console.log(followers, "followersre",followersCheck);
       setfollowwerLength(followersCheck.length)
-      if (followersCheck.length > 0) {//chhaya
-        followersCheck.forEach(async element => {
+      if (followedCheck.length > 0) {//chhaya
+        followedCheck.forEach(async element => {
           try {
 
             let newPost: any[] = []
-            let filterQuery = followersCheck.length > 0 ? `AuthorId eq ${element.ID} or AuthorId eq ${currentUser.Id}` : `AuthorId eq ${element.ID}`;
+            let filterQuery = followedCheck.length > 0 ? `AuthorId eq ${element.ID} or AuthorId eq ${currentUser.Id}` : `AuthorId eq ${element.ID}`;
             await sp.web.lists
 
               .getByTitle("ARGSocialFeed") // SharePoint list name
@@ -678,7 +686,7 @@ const SocialFeedContext = ({ props }: any) => {
                 )
 
                 const updatedPosts = [newPost, ...posts];
-                console.log(updatedPosts);
+                console.log("updatedPosts",updatedPosts);
 
                 setPosts(updatedPosts[0]);
 

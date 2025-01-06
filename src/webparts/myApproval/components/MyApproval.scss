@@ -121,7 +121,7 @@
     border-radius: 30px;
     font-size: 13px;
     color: #3c3c3c;
-    background: #fff;
+    background: #fff; cursor: auto;
     border: 1px solid #efefef;
   }
   .mtable tbody tr:nth-of-type(2n) {
@@ -136,8 +136,12 @@
     font-size: 13px;
     color: #3c3c3c;
     background: #fff;
-    border: 1px solid #efefef;
+    border: 1px solid #efefef; cursor: auto;
   }
+  .btn-light:hover{
+    background: #fff;
+  }
+  .btn-status{cursor: auto;}
   .indexdesign {
     background: #d2effa !important;
     border: none;

@@ -36,13 +36,28 @@
 .postion8{position: fixed; width:16%; }
   .bordernew{border-bottom: 1px solid #ccc; padding: 10px 0px;}
   .bordernew:last-child{border-bottom: 0px !important;}
+  .newt6 svg {
+    margin-top: 1.5px;
+    
+}
+ 
+ 
+  
   @media(max-width:1920px)
   {
       .postion8{width:24%; }
+      .newt6 svg {
+      margin-top: 7.5px;
+      
+  }
   }
   @media(max-width:1600px)
   {
       .postion8{width:23%; }
+      .newt6 svg {
+        margin-top: 4.5px;
+        
+    }
   }
   
   @media(max-width:1440px)
@@ -51,6 +66,10 @@
       .internalmedia .gal-box .image-popup {
         height: 200px !important;
     }
+    .newt6 svg {
+      margin-top: 1.5px;
+      
+  }
   }
   @media(max-width:1280px)
   {
@@ -60,3 +79,4 @@
   {
       .postion8{width:24%; }
   }
+  

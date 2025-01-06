@@ -638,14 +638,14 @@ const BlogDetailsContext = ({ props }: any) => {
                                 <div className="col-sm-6 col-xl-4 filter-item all web illustrator">
                                   <div
                                     className="gal-box">
-                                    <a
+                                    <a style={{cursor:'auto'}}
                                       data-bs-toggle="modal"
                                       data-bs-target="#centermodal"
                                       className="image-popup mb-2"
                                       title="Screenshot-1"
                                     >
                                       <img
-                                        src={`https://officeindia.sharepoint.com${res.fileUrl}`}
+                                        src={`https://alrostamanigroupae.sharepoint.com${res.fileUrl}`}
                                         className="img-fluid imgcssscustom"
                                         alt="work-thumbnail"
                                         data-themekey="#"
