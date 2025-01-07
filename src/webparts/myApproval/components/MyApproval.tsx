@@ -1635,7 +1635,8 @@ const MyApprovalContext = ({ props }: any) => {
   </nav>
 ) : (
   <></>
-)} </>
+)} 
+</>
                             ) : null}
 
                             {activeTab === "DMS" && (

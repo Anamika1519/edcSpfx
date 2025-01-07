@@ -479,7 +479,7 @@ const SocialFeedContext = ({ props }: any) => {
               ContentId: ele.data.Id,
               NotifiedUserId: ele.data.AuthorId,
               ContentType0: "Post By User",
-              ContentName: ele.data.Contentpost,
+              ContentName: truncateText(ele.data.Contentpost, 250),
               ActionUserId: CurrentUser.Id,
               DeatilPage: "SocialFeed",
               ReadStatus: false,
@@ -548,19 +548,16 @@ const SocialFeedContext = ({ props }: any) => {
         const followed = await sp.web.lists.getByTitle("ARGFollows").items
         //.filter(`FollowedId eq ${currentUser.Id}`)
         .filter(`FollowerId eq ${currentUser.Id}`)
-        .select("Follower/Title", "Follower/EMail", "Follower/Department", "Follower/ID")
-        .expand("Follower")();
-      console.log(followers, 'followers');
+                 .select("Follower/Title", "Follower/EMail", "Follower/Department", "Follower/ID", "Followed/Title", "Followed/EMail", "Followed/Department", "Followed/ID")
+          .expand("Follower","Followed")();
+      console.log(followers, 'followers', followed);
 
       followers.forEach(element => {
         checkIfFollower(element);
       });
-
-      
-
       followersCheck = followers.map(f => f.Follower);
-      followedCheck = followed.map(f => f.Follower)
-      console.log(followers, "followersre",followersCheck);
+      followedCheck = followed.map(f => f.Followed)
+      console.log(followers, "followersre", followersCheck, "followedCheck0", followedCheck);
       setfollowwerLength(followersCheck.length)
       if (followedCheck.length > 0) {//chhaya
         followedCheck.forEach(async element => {

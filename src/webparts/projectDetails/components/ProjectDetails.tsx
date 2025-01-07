@@ -244,11 +244,47 @@ const [options, setOpions] = useState([]);
   //   getCurrrentuser()
 
   // }, []);
-  const onSelect = (selectedList:any) => {
-    console.log(selectedList , "selectedList");
-    setSelectedValue(selectedList);  // Set the selected users
-  };
+  // const onSelect = (selectedList:any) => {
+  //   console.log(selectedList , "selectedList");
+  //   setSelectedValue(selectedList);  // Set the selected users
+  // };
+  const onSelect = (selectedOptions: any[]) => {
+    console.log(argcurrentgroupuser[0] , "argcurrentgroupuser[0]")
+    // Ensure existing members are lowercase
+    const existingMembers = argcurrentgroupuser[0]?.TeamMembers?.map((member: any) =>
+        member.Title.toLowerCase()
+    ) || [];
 
+    console.log("Existing Members:", existingMembers);
+
+    // Filter selected options to exclude already existing members
+    const newSelections = selectedOptions.filter(
+        (option: any) => option?.label && !existingMembers.includes(option.label.toLowerCase())
+    );
+
+    console.log("Selected Options:", selectedOptions);
+    console.log("New Selections:", newSelections);
+
+    // Check for duplicates
+    const duplicates = selectedOptions.filter(
+        (option: any) => option?.label && existingMembers.includes(option.label.toLowerCase())
+    );
+
+    console.log("Duplicates:", duplicates);
+
+    // Show alert if duplicates were found
+    if (duplicates.length > 0) {
+      Swal.fire(`User Already Exist in Project Member`, "Please change the User", "warning");
+    }
+
+    // Update the state with new valid selections
+    setSelectedValue(newSelections);
+};
+
+  
+  
+  
+  
   const onRemove = (removedItem:any) => {
     setSelectedValue(prev => prev.filter(item => item.value !== removedItem.value));  // Remove the user from the selection
   };
@@ -1613,11 +1649,13 @@ useEffect(()=>{
               <label htmlFor="name">Select Users </label>
                 {/* React-Select component */}
                 <Select
-                options={users}
-                value={selectedValue}
-                onChange={(selectedOption:any) => onSelect(selectedOption)} // For multi-select, you'll need to handle array of options
-                isMulti
-              />
+    options={users}
+    value={selectedValue}
+    onRemove={onRemove}
+    onChange={(selectedOptions:any) => onSelect(selectedOptions)} // For multi-select, you'll need to handle array of options
+    isMulti 
+/>
+
 
               {/* Multiselect component */}
               {/* <Multiselect

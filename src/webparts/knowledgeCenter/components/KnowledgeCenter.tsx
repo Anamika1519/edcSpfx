@@ -13,9 +13,9 @@ import CustomCarousel from "../../../CustomJSComponents/carousel/CustomCarousel"
 import "../../../Assets/Figtree/Figtree-VariableFont_wght.ttf";
 import FeatherIcon from "feather-icons-react";
 import "./KnowledgeCenter.scss";
-import { Dropdown } from "react-bootstrap";
+import { Carousel, Dropdown, Modal } from "react-bootstrap";
 // import "../../../APISearvice/MediaDetailsServies"
-import { fetchKnowledgeCentercategory, fetchARGKnowledgeCenterdata } from "../../../APISearvice/MediaDetailsServies";
+import { fetchKnowledgeCentercategory, fetchARGKnowledgeCenterdata } from "../../../APISearvice/KnowledgeCenterService";
 import { IKnowledgeCenterProps } from "./IKnowledgeCenterProps";
 import { encryptId } from "../../../APISearvice/CryptoService";
 import HorizontalNavbar from "../../horizontalNavBar/components/HorizontalNavBar";
@@ -29,6 +29,7 @@ import { WorkflowAuditHistory } from '../../../CustomJSComponents/WorkflowAuditH
 import { CONTENTTYPE_Media, LIST_TITLE_MediaGallery, LIST_TITLE_EventMaster } from '../../../Shared/Constants';
 let siteID: any;
 let response: any;
+let videoRef: any;
 const HelloWorldContext = ({ props }: any) => {
   const sp: SPFI = getSP();
   // console.log(sp, "sp");
@@ -46,7 +47,8 @@ const HelloWorldContext = ({ props }: any) => {
   const [ValidDraft, setValidDraft] = React.useState(true);
   const [ValidSubmit, setValidSubmit] = React.useState(true);
   const [loading, setLoading] = useState(true);
-
+  const [mediaData, setMediaData] = React.useState<any[]>([]);
+  const [showModal, setShowModal] = React.useState(false); // Modal state
   React.useEffect(() => {
     // console.log("This function is called only once", useHide);
 
@@ -147,14 +149,21 @@ const HelloWorldContext = ({ props }: any) => {
     const CategoryArr = await fetchKnowledgeCentercategory(sp);
     setMediaGalleryCategory(CategoryArr);
     const GalleryData = await fetchARGKnowledgeCenterdata(sp);
-    setKnowledgeCenterData(GalleryData)
+    setKnowledgeCenterData(GalleryData);
+    //setMediaData(getknowledgecenterdata);
   };
-
+  const handleImageClick = (index: number) => {
+    //setCurrentImageIndex(index);
+    setShowModal(true);
+    if (videoRef) {
+      videoRef.pause(); // Pause the video
+    }
+  };
   const visibleCategories = mediagallerycategory.slice(0, 5);
   const overflowCategories = mediagallerycategory.slice(5);
 
   const siteUrl = props.siteUrl;
-
+  const videositeurl = props.siteUrl.split("/sites")[0];
   const GotoNextPage = (item: any) => {
     // console.log("item-->>>>",item)
     const encryptedId = encryptId(String(item.ID));
@@ -172,6 +181,11 @@ const HelloWorldContext = ({ props }: any) => {
       "ChildComponentURl": `${siteUrl}/SitePages/KnowledgeCenter.aspx`
     }
   ]
+  const getvideo = (ele: any) => {
+    console.log("ele", ele);
+    videoRef = ele;
+    //ele.pause();
+  }
   return (
     <div id="wrapper" ref={elementRef}>
       <div
@@ -324,14 +338,14 @@ const HelloWorldContext = ({ props }: any) => {
                 filteredMediaItems.map((item) => {
                   const imageData = item.Image ? JSON.parse(item.Image) : null;
                   let siteId = siteID;
-                let listID = response.Id;
-                let img1 = imageData && imageData.fileName ? `${siteUrl}/_api/v2.1/sites('${siteId}')/lists('${listID}')/items('${item.ID}')/attachments('${imageData.fileName}')/thumbnails/0/c400x400/content?prefer=noredirect%2Cclosestavailablesize` : ""
-                let img = imageData && imageData.serverRelativeUrl ? `https://officeIndia.sharepoint.com${imageData.serverRelativeUrl}` : img1
-                const imageUrl = imageData
-                  //? `${siteUrl}/SiteAssets/Lists/ea596702-57db-4833-8023-5dcd2bba46e3/${imageData.fileName}`
-                  //? `${imageData.serverUrl}${imageData.serverRelativeUrl}`
-                  ? img
-                  : require("../assets/userimg.png");
+                  let listID = response.Id;
+                  let img1 = imageData && imageData.fileName ? `${siteUrl}/_api/v2.1/sites('${siteId}')/lists('${listID}')/items('${item.ID}')/attachments('${imageData.fileName}')/thumbnails/0/c400x400/content?prefer=noredirect%2Cclosestavailablesize` : ""
+                  let img = imageData && imageData.serverRelativeUrl ? `https://officeIndia.sharepoint.com${imageData.serverRelativeUrl}` : img1
+                  const imageUrl = imageData
+                    //? `${siteUrl}/SiteAssets/Lists/ea596702-57db-4833-8023-5dcd2bba46e3/${imageData.fileName}`
+                    //? `${imageData.serverUrl}${imageData.serverRelativeUrl}`
+                    ? img
+                    : require("../assets/userimg.png");
                   // const imageUrl = imageData
                   //   ? `${imageData.serverUrl}${imageData.serverRelativeUrl}`
                   //   : require("../../../Assets/ExtraImage/userimg.png"); // Fallback if no image
@@ -341,22 +355,24 @@ const HelloWorldContext = ({ props }: any) => {
                       key={item.ID}
                       className="col-sm-6 col-xl-3 filter-item all web illustrator "
                     >
-                      <div className="gal-box" onClick={() => GotoNextPage(item)} style={{ background: '#fff' }}>
+                      <div className="gal-box"
+                        onClick={() => handleImageClick(item)}
+                        style={{ background: '#fff' }}>
                         <a
 
                           className="image-popup" style={{}}
                           title={`Screenshot of ${item.Title || "Untitled"}`}
                         >
-                          <img
-                            // src={
-                            //   item.Image && item.Image.serverRelativeUrl
-                            //     ? item.Image.serverRelativeUrl
-                            //     : require("../../../Assets/ExtraImage/userimg.png") // Default image
-                            // }
-                            src={imageUrl}
-                            className="img-fluid"
-                            alt={item.Title || "Untitled"}
-                          />
+                          {arrjson.fileType.startsWith('video/') ?
+                            <video muted={true} id='Backendvideo' ref={getvideo} style={{ maxWidth: "100%", height: "100%", width: "100%", borderRadius: "13px", objectFit: "cover" }} className="img-fluid" controls={true}>
+                              <source src={(videositeurl + arrjson.fileUrl) + "#t=5"} type="video/mp4"></source>
+                            </video> :
+                            <img
+                              src={arrjson?.fileUrl ? arrjson?.fileUrl : require("../../../Assets/ExtraImage/NoDataFound.png")}
+                              alt="media"
+                              style={{ maxWidth: "100%", height: "100%", width: "100%", borderRadius: "13px", objectFit: "cover" }}
+                            />
+                          }
                         </a>
                         <div className="gall-info">
                           <h4 className="font-16 twolinewrap hovertext mb-0 text-dark fw-bold mt-0">
@@ -372,7 +388,7 @@ const HelloWorldContext = ({ props }: any) => {
                              <Image size={15} />&nbsp;{arrjson?.length} &nbsp; Photos
                             </span>
                           </a> */}
-                          <div className=" row">
+                          {/* <div className=" row">
                             <a
                             // href="media-internal.html"
                             >
@@ -386,7 +402,7 @@ const HelloWorldContext = ({ props }: any) => {
                                 View Album
                               </div>
                             </a>
-                          </div>
+                          </div> */}
                         </div>
                       </div>
                     </div>
@@ -397,6 +413,33 @@ const HelloWorldContext = ({ props }: any) => {
           </div>
         </div>
       </div>
+      {/* Modal for Image Carousel */}
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered className="mediagallery">
+
+
+        <Modal.Header closeButton>
+        </Modal.Header>
+        <Modal.Body>
+          {mediaData != null && mediaData.length > 0 && mediaData.map((item: any, index: number) => {
+
+            {
+              item.fileType.startsWith('video/') ?
+              <video muted={true} id='Backendvideo' ref={getvideo} style={{ width: "100%" }} className="img-fluid" controls={true}>
+                <source src={videositeurl + item.fileUrl} type="video/mp4"></source>
+              </video> :
+
+              <img
+                className="d-block w-100"
+                src={item?.fileUrl ? item?.fileUrl : require("../../../Assets/ExtraImage/NoDataFound.png")}
+                alt={`Slide ${index}`}
+                style={{ height: 'auto', objectFit: 'contain' }}
+              />
+            }
+
+          })}
+        </Modal.Body>
+
+      </Modal>
     </div>
 
   );

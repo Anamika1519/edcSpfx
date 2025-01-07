@@ -441,6 +441,22 @@
           "manifest": "./src/webparts/knowledgeCenterDetails/KnowledgeCenterDetailsWebPart.manifest.json"
         }
       ]
+    },
+    "knowledge-center-form-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/knowledgeCenterForm/KnowledgeCenterFormWebPart.js",
+          "manifest": "./src/webparts/knowledgeCenterForm/KnowledgeCenterFormWebPart.manifest.json"
+        }
+      ]
+    },
+    "knowledge-center-master-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/knowledgeCenterMaster/KnowledgeCenterMasterWebPart.js",
+          "manifest": "./src/webparts/knowledgeCenterMaster/KnowledgeCenterMasterWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {
@@ -509,6 +525,8 @@
     "ArgDelegationWebPartStrings": "lib/webparts/argDelegation/loc/{locale}.js",
     "ArgDelegationMasterWebPartStrings": "lib/webparts/argDelegationMaster/loc/{locale}.js",
     "KnowledgeCenterWebPartStrings": "lib/webparts/knowledgeCenter/loc/{locale}.js",
-    "KnowledgeCenterDetailsWebPartStrings": "lib/webparts/knowledgeCenterDetails/loc/{locale}.js"
+    "KnowledgeCenterDetailsWebPartStrings": "lib/webparts/knowledgeCenterDetails/loc/{locale}.js",
+    "KnowledgeCenterFormWebPartStrings": "lib/webparts/knowledgeCenterForm/loc/{locale}.js",
+    "KnowledgeCenterMasterWebPartStrings": "lib/webparts/knowledgeCenterMaster/loc/{locale}.js"
   }
 }

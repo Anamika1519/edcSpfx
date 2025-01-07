@@ -18,7 +18,7 @@ import "./KnowledgeCenterdetails.scss"
 import {
   fetchARGKnowledgeCenterdata,
   fetchARGKnowledgeCenterInsideData,
-} from "../../../APISearvice/MediaDetailsServies";
+} from "../../../APISearvice/KnowledgeCenterService";
 import HorizontalNavbar from "../../horizontalNavBar/components/HorizontalNavBar";
 import Modal from 'react-bootstrap/Modal';
 import Carousel from 'react-bootstrap/Carousel';

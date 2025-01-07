@@ -1054,9 +1054,11 @@ const CorporateDirectoryContext = ({ props }: any) => {
     setIsOpen(!isOpen);
 
   };
-  const handleSearch = async (e: {
-    target: { value: React.SetStateAction<string> };
-  }) => {
+  const handleSearch = async (e:any
+  //   : {
+  //   target: { value: React.SetStateAction<string> };
+  // }
+) => {
     sethandlesearch(true);
     let filteredusers: any[] = [];
     if (activeTab == "listView")
@@ -1402,7 +1404,12 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                         placeholder="Search by name in Card View..."
                         onChange={(e) => handleSearch(e)}
-
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' && !e.shiftKey) {
+                            e.preventDefault(); // Prevents a new line
+                            handleSearch(e); // Calls the function to add a reply
+                          }
+                        }}
                       />
 
                       <span

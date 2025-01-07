@@ -161,9 +161,9 @@ background-color: #0056b3;
 .postion8{ width:95%; float: right; margin-top: 92px; }
 .mainevent {border-bottom: 1px solid #ccc; padding: 10px 0px;}
 .mainevent:last-child{border-bottom: 0px !important;}
-.gal-boximg{cursor:auto;}
+.gal-box img{cursor:auto;}
 .btn-primary{border-color: #1fb0e5 !important;}
-.form-control:focus{box-shadow: none !important; outline: 1px solid #1fb0e5 !important;}
+.form-control:focus{box-shadow: none !important; outline: 0px solid #1fb0e5 !important; border-color: #ccc !important;}
 .newpara p{line-height: 22px !important; font-size: 15px; }
 @media(max-width:1440px)
 {
