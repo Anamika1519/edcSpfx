@@ -90,6 +90,21 @@ input.form-control.inputcss {
   {
     height: auto;
   }
-  
+  .disable_ms {
+    opacity: 1 !important;
+    pointer-events: none;
+    font-size: 1rem !important;
+    font-weight: 500 !important;
+}
+.removeb{background: transparent !important; padding: 0px !important;}
+  .mtbalenew th{padding: 10px 10px !important;}
+  .newpad{padding: 10px !important; }
   .eventcommm .nose{padding: 0px !important; margin: 0px !important; }
-  
+  .removeb .searchWrapper{border: 0px solid #ccc !important;}
+  .modal .modal-content select.removeb{border: 0px solid #ccc !important;opacity: 1 !important;
+    pointer-events: none;
+    font-size: 1rem !important;
+    font-weight: 500 !important;}
+  .removeb input{display: none !important;}
+  .removeb .chip img{display: none !important;}
+  .removeb .chip{background: transparent !important;     color: #212529 !important; font-size: 1rem !important;}

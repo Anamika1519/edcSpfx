@@ -15,8 +15,8 @@ import UserContext from '../../../GlobalContext/context';
 
 import { getCurrentUser, getEntity } from '../../../APISearvice/CustomService';
 
-import {  getMediaByID, getUrl, updateItem, uploadFile, uploadFileToLibrary } from '../../../APISearvice/MediaService';
-import {  addItemKnowledge, ARGKnowledgeCenterCategory, updateItemKnowledge, } from '../../../APISearvice/KnowledgeCenterService';
+import { getMediaByID, getUrl, updateItem, uploadFile, uploadFileToLibrary } from '../../../APISearvice/MediaService';
+import { addItemKnowledge, ARGKnowledgeCenterCategory, updateItemKnowledge, } from '../../../APISearvice/KnowledgeCenterService';
 
 import { decryptId } from '../../../APISearvice/CryptoService';
 
@@ -494,12 +494,14 @@ const AddMediaGalaryContext = ({ props }: any) => {
   }
 
 
-  
+
   const onFileChange = async (event: React.ChangeEvent<HTMLInputElement>, libraryName: string, docLib: string) => {
 
     debugger;
+    if (ImagepostArr1.length > 0) {
+      deleteLocalFile(0, ImagepostArr1, "Gallery");
+    }
 
-    deleteLocalFile(0, ImagepostArr1, "Gallery");
     event.preventDefault();
     setImagepostArr1([]);
     let uloadBannerImageFiles: any[] = [];
@@ -552,40 +554,40 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
             setImagepostArr(uloadImageFiles);
 
-            // if (ImagepostArr1.length > 0) {
+            if (ImagepostArr1.length > 0) {
 
-            //   imageVideoFiles.forEach(ele => {
+              imageVideoFiles.forEach(ele => {
 
-            //     let arr1 = {
+                let arr1 = {
 
-            //       "ID": 0,
+                  "ID": 0,
 
-            //       "Createdby": "",
+                  "Createdby": "",
 
-            //       "Modified": "",
+                  "Modified": "",
 
-            //       "fileUrl": URL.createObjectURL(ele),
+                  "fileUrl": URL.createObjectURL(ele),
 
-            //       "fileSize": ele.size,
+                  "fileSize": ele.size,
 
-            //       "fileType": ele.type,
+                  "fileType": ele.type,
 
-            //       "fileName": ele.name
+                  "fileName": ele.name
 
-            //     }
+                }
 
-            //     ImagepostArr1.push(arr1);
+                ImagepostArr1.push(arr1);
 
 
-            //   }
+              }
 
-            //   )
+              )
 
-            //   setImagepostArr1(ImagepostArr1);
+              setImagepostArr1(ImagepostArr1);
 
-            // }
+            }
 
-            //else {
+            else {
 
 
               imageVideoFiles.forEach(ele => {
@@ -618,7 +620,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
               setImagepostArr1(uloadImageFiles1);
 
 
-            //}
+            }
 
           } else {
 
@@ -1243,168 +1245,168 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
       // else {
 
-        Swal.fire({
+      Swal.fire({
 
-          title: 'Do you want to submit this request?',
+        title: 'Do you want to submit this request?',
 
-          showConfirmButton: true,
+        showConfirmButton: true,
 
-          showCancelButton: true,
+        showCancelButton: true,
 
-          confirmButtonText: "Yes ",
+        confirmButtonText: "Yes ",
 
-          cancelButtonText: "No",
+        cancelButtonText: "No",
 
-          icon: 'warning'
+        icon: 'warning'
 
-        }
+      }
 
-        ).then(async (result) => {
+      ).then(async (result) => {
 
-          if (result.isConfirmed) {
+        if (result.isConfirmed) {
 
-            //console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
-            setLoading(true);
-            debugger
+          //console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
+          setLoading(true);
+          debugger
 
-            let bannerImageArray: any = {};
+          let bannerImageArray: any = {};
 
-            let galleryIds: any[] = [];
+          let galleryIds: any[] = [];
 
-            let galleryArray: any[] = [];
+          let galleryArray: any[] = [];
 
 
-            // Upload Banner Images
+          // Upload Banner Images
 
-            // if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
+          // if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
 
-            //   for (const file of BnnerImagepostArr[0].files) {
+          //   for (const file of BnnerImagepostArr[0].files) {
 
-            //     //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
+          //     //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
 
-            //     bannerImageArray = await uploadFile(file, sp, "Documents", tenantUrl);
+          //     bannerImageArray = await uploadFile(file, sp, "Documents", tenantUrl);
 
-            //   }
+          //   }
 
-            // }
+          // }
 
-            debugger
+          debugger
 
-            // Create Post
+          // Create Post
 
-            const postPayload = {
+          const postPayload = {
 
-              Title: formData.title,
+            Title: formData.title,
 
-              //EntityMasterId: Number(formData.entity),
+            //EntityMasterId: Number(formData.entity),
 
-              Status: "Submitted",
+            Status: "Submitted",
 
-              AuthorId: currentUser.Id,
+            AuthorId: currentUser.Id,
 
-              //Image: JSON.stringify(bannerImageArray),
+            //Image: JSON.stringify(bannerImageArray),
 
-              MediaGalleryCategoryId: formData.Category
+            MediaGalleryCategoryId: formData.Category
 
-            };
+          };
 
-            console.log(postPayload);
+          console.log(postPayload);
 
 
-            const postResult = await addItemKnowledge(postPayload, sp);
+          const postResult = await addItemKnowledge(postPayload, sp);
 
-            const postId = postResult?.data?.ID;
+          const postId = postResult?.data?.ID;
 
-            debugger
+          debugger
 
-            if (!postId) {
+          if (!postId) {
 
-              console.error("Post creation failed.");
+            console.error("Post creation failed.");
 
-              return;
-
-            }
-
-
-            // Upload Gallery Images
-
-            if (ImagepostArr.length > 0) {
-
-              for (const file of ImagepostArr[0]?.files) {
-
-                const uploadedGalleryImage = await uploadFileToLibrary(file, sp, "KnowledgeCenterGallery");
-
-
-                galleryIds = galleryIds.concat(uploadedGalleryImage.map((item: { ID: any }) => item.ID));
-
-                galleryArray.push(uploadedGalleryImage);
-
-              }
-
-            }
-
-
-            // Update Post with Gallery and Document Information
-
-            const updatePayload = {
-
-              ...(galleryIds.length > 0 && {
-
-                MediaGalleriesId: galleryIds,
-
-                MediaGalleryJSON: JSON.stringify(flatArray(galleryArray)),
-
-              }),
-
-
-            };
-
-
-            if (Object.keys(updatePayload).length > 0) {
-
-              const updateResult = await updateItemKnowledge(updatePayload, sp, postId);
-
-              console.log("Update Result:", updateResult);
-
-            }
-
-            let arr = {
-
-              ContentID: postId,
-
-              ContentName: "ARGKnowledgeCenter",
-
-              Status: "Pending",
-
-              //EntityId: Number(formData.entity),
-              Title: formData.title,
-              SourceName: "KnowledgeCenter",
-              ReworkRequestedBy: "Initiator"
-
-
-            }
-
-            //await AddContentMaster(sp, arr)
-
-            //const boolval = await handleClick(postId, "Media", Number(formData.entity))
-
-            //if (boolval == true) {
-              setLoading(false);
-              Swal.fire('Submitted successfully.', '', 'success');
-
-              // sessionStorage.removeItem("bannerId")
-
-              setTimeout(() => {
-
-                window.location.href = `${siteUrl}/SitePages/KnowledgeCenterMaster.aspx`;
-
-              }, 2000);
-
-            //}
+            return;
 
           }
 
-        })
+
+          // Upload Gallery Images
+
+          if (ImagepostArr.length > 0) {
+
+            for (const file of ImagepostArr[0]?.files) {
+
+              const uploadedGalleryImage = await uploadFileToLibrary(file, sp, "KnowledgeCenterGallery");
+
+
+              galleryIds = galleryIds.concat(uploadedGalleryImage.map((item: { ID: any }) => item.ID));
+
+              galleryArray.push(uploadedGalleryImage);
+
+            }
+
+          }
+
+
+          // Update Post with Gallery and Document Information
+
+          const updatePayload = {
+
+            ...(galleryIds.length > 0 && {
+
+              MediaGalleriesId: galleryIds,
+
+              MediaGalleryJSON: JSON.stringify(flatArray(galleryArray)),
+
+            }),
+
+
+          };
+
+          console.log("updatePayload", postId , postResult?.data?.ID, ImagepostArr, updatePayload)
+          if (Object.keys(updatePayload).length > 0) {
+
+            const updateResult = await updateItemKnowledge(updatePayload, sp, postId);
+
+            console.log("Update Result:h", updateResult);
+
+          }
+
+          let arr = {
+
+            ContentID: postId,
+
+            ContentName: "ARGKnowledgeCenter",
+
+            Status: "Pending",
+
+            //EntityId: Number(formData.entity),
+            Title: formData.title,
+            SourceName: "KnowledgeCenter",
+            ReworkRequestedBy: "Initiator"
+
+
+          }
+
+          //await AddContentMaster(sp, arr)
+
+          //const boolval = await handleClick(postId, "Media", Number(formData.entity))
+
+          //if (boolval == true) {
+          setLoading(false);
+          Swal.fire('Submitted successfully.', '', 'success');
+
+          // sessionStorage.removeItem("bannerId")
+
+          setTimeout(() => {
+
+            window.location.href = `${siteUrl}/SitePages/KnowledgeCenterMaster.aspx`;
+
+          }, 2000);
+
+          //}
+
+        }
+
+      })
 
 
       //}
@@ -2338,7 +2340,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
                               <label htmlFor="  " className="form-label">
 
-                               Knowledge Center Gallery
+                                Knowledge Center Gallery
 
                               </label>
 
@@ -2346,7 +2348,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
                             <div>
 
-
+                              {console.log("ImagepostArr1ImagepostArr1", ImagepostArr1, ImagepostArr)}
                               {ImagepostArr1 != null && ImagepostArr1.length > 0 &&
 
                                 ImagepostArr1.length == 1 &&
@@ -2609,69 +2611,69 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
               <Modal.Body className="scrollbar" id="style-5">
 
-                {/* {ImagepostArr1.length > 0 && showImgModal &&
+                {ImagepostArr1.length > 0 && showImgModal &&
 
-    (*/}
+                  (
 
-                <>
+                    <>
 
-                  <table className="mtable table-bordered" style={{ fontSize: '0.75rem' }}>
+                      <table className="mtable table-bordered" style={{ fontSize: '0.75rem' }}>
 
-                    <thead style={{ background: '#eef6f7' }}>
+                        <thead style={{ background: '#eef6f7' }}>
 
-                      <tr>
+                          <tr>
 
-                        <th>Serial No.</th>
+                            <th>Serial No.</th>
 
-                        <th > Image </th>
+                            <th > Image </th>
 
-                        <th>File Name</th>
+                            <th>File Name</th>
 
-                        <th>File Size</th>
-                        {/* {modeValue == null && */}
-                          <th className='text-center'>Action</th>
-                        {/* } */}
-                      </tr>
+                            <th>File Size</th>
+                            {/* {modeValue == null && */}
+                            <th className='text-center'>Action</th>
+                            {/* } */}
+                          </tr>
 
-                    </thead>
+                        </thead>
 
-                    <tbody>
+                        <tbody>
 
-                      {ImagepostArr1.map((file: any, index: number) => (
+                          {ImagepostArr1.map((file: any, index: number) => (
 
-                        <tr key={index}>
+                            <tr key={index}>
 
-                          <td className='text-center'>{index + 1}</td>
+                              <td className='text-center'>{index + 1}</td>
 
-                          <td>
-                            <img
-                              className='imagefe'
-                              src={file.fileType.startsWith('video/') ?
-                                require("../../../Assets/ExtraImage/video.jpg") :
-                                (file.fileUrl ? file.fileUrl : `${siteUrl}/MediaGallery/${file.fileName}`)}
-                              alt={'default image'}
-                            />
-                          </td>
+                              <td>
+                                <img
+                                  className='imagefe'
+                                  src={file.fileType.startsWith('video/') ?
+                                    require("../../../Assets/ExtraImage/video.jpg") :
+                                    (file.fileUrl ? file.fileUrl : `${siteUrl}/MediaGallery/${file.fileName}`)}
+                                  alt={'default image'}
+                                />
+                              </td>
 
-                          <td>{file.fileName}</td>
+                              <td>{file.fileName}</td>
 
-                          <td className='text-right'>{file.fileSize}</td>
-                          {/* {modeValue == null && */}
-                            <td className='text-center'> <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }}
+                              <td className='text-right'>{file.fileSize}</td>
+                              {/* {modeValue == null && */}
+                              <td className='text-center'> <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }}
 
-                              onClick={() => deleteLocalFile(index, ImagepostArr1, "Gallery")} /> </td>
+                                onClick={() => deleteLocalFile(index, ImagepostArr1, "Gallery")} /> </td>
 
-                          {/* } */}
-                        </tr>
+                              {/* } */}
+                            </tr>
 
-                      ))}
+                          ))}
 
-                    </tbody>
+                        </tbody>
 
-                  </table>
-                </>
+                      </table>
+                    </>
 
-                {/*  )} */}
+                  )}
 
 
 
@@ -2690,7 +2692,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
                 {/* {BnnerImagepostArr.length > 0 && showBannerModal2 && <Modal.Title>Media Image</Modal.Title>} */}
 
 
-              {/* </Modal.Header>
+            {/* </Modal.Header>
 
               <Modal.Body className="scrollbar" id="style-5">
 
@@ -2698,73 +2700,73 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
     ( */}
 
-                <>
+            <>
 
-                  <table className="mtable table-bordered" style={{ fontSize: '0.75rem' }}>
+              <table className="mtable table-bordered" style={{ fontSize: '0.75rem' }}>
 
-                    <thead style={{ background: '#eef6f7' }}>
+                <thead style={{ background: '#eef6f7' }}>
 
-                      <tr>
+                  <tr>
 
-                        <th>Serial No.</th>
+                    <th>Serial No.</th>
 
-                        <th > Image </th>
+                    <th > Image </th>
 
-                        <th>File Name</th>
+                    <th>File Name</th>
 
-                        <th>File Size</th>
-                        {modeValue == null &&
-                          <th className='text-center'>Action</th>
-                        }
-                      </tr>
+                    <th>File Size</th>
+                    {modeValue == null &&
+                      <th className='text-center'>Action</th>
+                    }
+                  </tr>
 
-                    </thead>
+                </thead>
 
-                    <tbody>
+                <tbody>
 
-                      {BnnerImagepostArr.map((file: any, index: number) => (
+                  {BnnerImagepostArr.map((file: any, index: number) => (
 
-                        <tr key={index}>
+                    <tr key={index}>
 
-                          <td className='text-center'>{index + 1}</td>
+                      <td className='text-center'>{index + 1}</td>
 
-                          <td>
-                            <img
-                              className="imagefe"
-                              src={
-                                file.serverUrl && file.serverRelativeUrl
-                                  ? `${file.serverUrl}${file.serverRelativeUrl}`
-                                  : file.fileUrl // Fallback to file.fileUrl if other values are missing
-                              }
-                              alt="Preview"
-                            />
-                          </td>
-
-                          <td>{file.fileName ? file.fileName : file.name}</td>
-
-                          <td className='text-right'>{file.fileSize}</td>
-                          {modeValue == null &&
-                            <td className='text-center'> <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }}
-
-                              onClick={() => deleteLocalFile(index, BnnerImagepostArr, "Image")} /> </td>
-
+                      <td>
+                        <img
+                          className="imagefe"
+                          src={
+                            file.serverUrl && file.serverRelativeUrl
+                              ? `${file.serverUrl}${file.serverRelativeUrl}`
+                              : file.fileUrl // Fallback to file.fileUrl if other values are missing
                           }
-                        </tr>
+                          alt="Preview"
+                        />
+                      </td>
 
-                      ))}
+                      <td>{file.fileName ? file.fileName : file.name}</td>
 
-                    </tbody>
+                      <td className='text-right'>{file.fileSize}</td>
+                      {modeValue == null &&
+                        <td className='text-center'> <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }}
 
-                  </table>
-                </>
+                          onClick={() => deleteLocalFile(index, BnnerImagepostArr, "Image")} /> </td>
 
-                {/* )} */}
+                      }
+                    </tr>
+
+                  ))}
+
+                </tbody>
+
+              </table>
+            </>
+
+            {/* )} */}
 
 
 
-              {/* </Modal.Body>
+            {/* </Modal.Body>
 
-            </Modal> */} 
+            </Modal> */}
 
           </div>
 

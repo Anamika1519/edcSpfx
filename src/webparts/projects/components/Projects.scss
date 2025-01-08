@@ -75,10 +75,20 @@
         .newheight .dropdown-item:active{background: #f8f9fa !important;}
         .newminus{margin-left: -12px !important;    min-width: 2rem;}
     #ProjectName{height: 38px;}
-  .nav-pills .nav-link{    border: 1px solid #54ade0 ;
-    margin: 0px 5px;
-    color: #3c3c3c;
-    font-size: 14px;}
+  .nav-pills .nav-link{    
+    border: 1px solid #54ade0;
+    border-radius: 3px !important;
+    color: #000;
+    font-size: 14px;
+    font-weight: 500;
+    margin: 0 5px;
+    padding: .7rem 1rem !important;}
+    .searchWrapper{border: 0px solid #ccc !important; padding: 0px !important;}
+    .multiSelectContainer .searchWrapper input{width: 100% !important; border-radius: 7px !important;}
+    .multiSelectContainer input{border: 0px solid #ccc !important;color: #212529 !important;
+      font-size: 1rem !important;
+      font-weight: 500 !important;
+      padding: 4px 10px !important;}
     .ml20{padding-left: 19px; display: flex; padding-top: 10px;}
     .ml20 img{width: 2.5rem !important; height: 2.5rem !important; border-radius: 1000px !important;}
 

@@ -711,7 +711,7 @@ const HelloWorldContext = ({ props }: any) => {
                   <div className="card-body">
                     <div className="row">
                       <div className="col-md-12">
-                        <div style={{ gap: '5px' }} className="text-center filter-menu d-flex justify-content-center">
+                        <div  className="text-center filter-menu d-flex justify-content-center">
                           {/* Main tabs */}
 
                           <a

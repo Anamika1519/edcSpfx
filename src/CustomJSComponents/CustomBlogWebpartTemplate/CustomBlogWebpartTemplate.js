@@ -1231,7 +1231,7 @@ const deleteLocalFile = (index, filArray, name) => {
                                     className="navs nav-pillss navtab-bgs"
                                     role="tablist"
                                     style={{
-                                        gap: "5px",
+                                        
                                         display: "flex",
                                         listStyle: "none",
                                         marginBottom: "unset",
@@ -1334,14 +1334,14 @@ const deleteLocalFile = (index, filArray, name) => {
                                                 <a> <div className="w-100">
                                                     <h4 className="mt-0 mb-1 font-16 fw-bold ng-binding" style={{ color: '#343a40', fontSize: '16px' }}> {truncateText(item.Title, 90)}
                                                     </h4>
-                                                    <p style={{ color: '#6b6b6b', fontSize: '15px', lineHeight:'20px', height: '4rem' }} className="mb-2 ng-binding">
+                                                    <p style={{ color: '#6b6b6b', fontSize: '15px', lineHeight:'20px' }} className="mb-2 ng-binding">
                                                         {truncateText(item.Overview, 200)}</p>
                                                     <div className="readmore" onClick={() => gotoBlogsDetails(item)} style={{ cursor: 'pointer' }}>Read more..                                                    {item.Status == "Submitted" &&<span style={{marginLeft:'82%'}}>Waiting for approval</span>}
                                                     </div>
                                                 </div>
                                                 </a>
                                             </div>
-                                            <div className="col-sm-1">
+                                            <div className="col-sm-1 posx">
                                                 <div className="d-flex" style={{ justifyContent: 'end', gap: '10px', marginRight: '3px', cursor: 'pointer' }}>
                                                     <div className="col-lg-12">
                                                         {(item.Status == "Save as Draft" || item.WillReworkEdit == true) &&
@@ -1402,7 +1402,7 @@ const deleteLocalFile = (index, filArray, name) => {
                                                                                         id="topic"
                                                                                         name="topic"
                                                                                         placeholder="Enter Topic"
-                                                                                        className="form-control inputcss"
+                                                                                        className="form-control"
                                                                                         value={formData.topic}
                                                                                         onChange={(e) =>
                                                                                             onChange(e.target.name, e.target.value)
@@ -1421,7 +1421,7 @@ const deleteLocalFile = (index, filArray, name) => {
                                                                                         <span className="text-danger">*</span>
                                                                                     </label>
                                                                                     <select
-                                                                                        className="form-select inputcss"
+                                                                                        className="form-select"
                                                                                         id="entity"
                                                                                         name="entity"
                                                                                         value={formData.entity}
@@ -1483,7 +1483,7 @@ const deleteLocalFile = (index, filArray, name) => {
                                                                                         type="file"
                                                                                         id="bannerImage"
                                                                                         name="bannerImage"
-                                                                                        className="form-control inputcss"
+                                                                                        className="form-control"
                                                                                          accept="image/*"
                                                                                         onChange={(e) =>
                                                                                             onFileChange(e, "bannerimg", "Document")
@@ -1543,7 +1543,7 @@ const deleteLocalFile = (index, filArray, name) => {
                                                                                         type="file"
                                                                                         id="discussionforumGallery"
                                                                                         name="discussionforumGallery"
-                                                                                        className="form-control inputcss"
+                                                                                        className="form-control"
                                                                                         multiple
                                                                                         onChange={(e) =>
                                                                                             onFileChange(
@@ -1566,7 +1566,7 @@ const deleteLocalFile = (index, filArray, name) => {
                                                                                         <span className="text-danger">*</span>
                                                                                     </label>
                                                                                     <textarea
-                                                                                        className="form-control inputcss"
+                                                                                        className="form-control"
                                                                                         id="overview"
                                                                                         placeholder="Enter Overview"
                                                                                         name="overview"
@@ -1600,7 +1600,7 @@ const deleteLocalFile = (index, filArray, name) => {
                                                                                             theme="snow"
                                                                                             modules={modules}
                                                                                             formats={formats}
-                                                                                            placeholder={"Write your content ..."}
+                                                                                            placeholder={""}
                                                                                             value={richTextValues.description}
                                                                                             onChange={(content) => {
                                                                                                 setRichTextValues((prevValues) => ({
@@ -1622,13 +1622,15 @@ const deleteLocalFile = (index, filArray, name) => {
 
                                                                                 rows != null && rows.length > 0 && (
 
-                                                                                    <div className="container mt-2">
+                                                                                    <div className="">
 
-                                                                                        <div className="card cardborder p-4">
-
-                                                                                            <div className="font-16">
-
-                                                                                                <strong>Approval Hierarchy</strong>
+                                                                                        
+                                                <div style={{border:"1px solid #ccc", borderRadius:'7px'}} className="p-3">
+                             
+                             <div >
+        
+                               <strong className="font-16 mb-1">Approval Hierarchy</strong>
+                               <p className="font-14 text-muted mb-3">Define Approval Hierarchy for the document submitted</p>
 
                                                                                             </div>
 
@@ -1636,27 +1638,30 @@ const deleteLocalFile = (index, filArray, name) => {
 
 
                                                                                             <div className="d-flex flex-column">
+                                                                                            <table className="mtbalenew ">
+                                                    <thead>
+                                                      <tr>
+                                                      <th style={{minWidth:'60px', maxWidth:'60px'}} className="newpad">  Select Level</th>
+                                                      <th className="newpad"> Select Approver</th>
+                                                      </tr>
+                                                    </thead>
+                                                    </table>
 
 
 
 
                                                                                                 {rows.map((row) => (
 
-                                                                                                    <div className="row mb-2" key={row.id}>
+                                                                                                    <div className="row mb-0" key={row.id}>
 
-                                                                                                        <div className="col-12 col-md-5">
-
-                                                                                                            <label htmlFor={`Level-${row.id}`} className="form-label">
-
-                                                                                                                Select Level
-
-                                                                                                            </label>
-
-                                                                                                            <select
-
-                                                                                                                className="form-select"
-
-                                                                                                                id={`Level-${row.id}`}
+<table className="mtbalenew">
+                                                    <tbody>
+                                                      <tr>
+                                                        <td style={{minWidth:'60px', maxWidth:'60px'}}>
+                                                        <select style={{border:"0px solid #ccc", background:'#fff'}}
+                             
+                             className="form-control removeb"
+                                      id={`Level-${row.id}`}
 
                                                                                                                 name="Level"
 
@@ -1699,21 +1704,10 @@ const deleteLocalFile = (index, filArray, name) => {
                                                                                                                 ))}
 
                                                                                                             </select>
-
-                                                                                                        </div>
-
-
-                                                                                                        <div className="col-12 col-md-5">
-
-                                                                                                            <label htmlFor={`approver-${row.id}`} className="form-label">
-
-                                                                                                                Select Approver
-
-                                                                                                            </label>
-
-                                                                                                            <Multiselect
-
-                                                                                                                options={row.approvedUserList}
+                                                        </td>
+                                                        <td>
+                                                        <Multiselect className="removeb" style={{border:"0px solid #ccc", background:'#fff'}}
+                                              options={row.approvedUserList}
 
                                                                                                                 selectedValues={row.approvedUserListupdate}
 
@@ -1728,6 +1722,35 @@ const deleteLocalFile = (index, filArray, name) => {
 
                                                                                                             />
 
+
+                                                        </td>
+                                                      </tr>
+                                                    </tbody>
+
+                                                  </table>
+
+                                                                                                        <div className="col-12 col-md-5">
+
+                                                                                                            {/* <label htmlFor={`Level-${row.id}`} className="form-label">
+
+                                                                                                                Select Level
+
+                                                                                                            </label> */}
+
+                                                                                                            
+
+                                                                                                        </div>
+
+
+                                                                                                        <div className="col-12 col-md-5">
+
+                                                                                                            {/* <label htmlFor={`approver-${row.id}`} className="form-label">
+
+                                                                                                                Select Approver
+
+                                                                                                            </label> */}
+
+                                                                                                            
                                                                                                         </div>
 
 
@@ -1757,56 +1780,56 @@ const deleteLocalFile = (index, filArray, name) => {
                                                                                                                   {/* /////////changes/////////// */}
 
 
-                                                                            <div className="text-center butncss">
-                                                                                <div
+                                                                            <div className="text-center butncss mt-2">
+                                                                                <div style={{width:'140px', justifyContent:'center', textAlign:'center'}}
                                                                                     className="btn btn-success waves-effect waves-light m-1"
-                                                                                    style={{ fontSize: "0.875rem" }}
+                                                                                  
                                                                                     onClick={handleFormSaveasDraft}
                                                                                 >
                                                                                     <div
                                                                                         className="d-flex"
                                                                                         style={{
-                                                                                            justifyContent: "space-around",
-                                                                                            width: "120px",
+                                                                                            justifyContent: "center",
+                                                                                            
                                                                                         }}
                                                                                     >
                                                                                         <img
                                                                                             src={require("../../Assets/ExtraImage/checkcircle.svg")}
-                                                                                            style={{ width: "1rem" }}
+                                                                                            style={{ width: "1rem", marginRight:'3px' }}
                                                                                             alt="Check"
                                                                                         />{" "}
                                                                                         Save as Draft
                                                                                     </div>
                                                                                 </div>
-                                                                                <div
+                                                                                <div style={{width:'140px', justifyContent:'center', textAlign:'center'}}
                                                                                     className="btn btn-success waves-effect waves-light m-1"
-                                                                                    style={{ fontSize: "0.875rem" }}
+                                                                                  
                                                                                     onClick={handleFormSubmit}
                                                                                 >
                                                                                     <div
                                                                                         className="d-flex"
                                                                                         style={{
-                                                                                            justifyContent: "space-around",
-                                                                                            width: "70px",
+                                                                                            justifyContent: "center",
+                                                                                           
                                                                                         }}
                                                                                     >
                                                                                         <img
                                                                                             src={require("../../Assets/ExtraImage/checkcircle.svg")}
-                                                                                            style={{ width: "1rem" }}
+                                                                                            style={{ width: "1rem", marginRight:'3px' }}
                                                                                             alt="Check"
                                                                                         />{" "}
                                                                                         Submit
                                                                                     </div>
                                                                                 </div>
-                                                                                <button
+                                                                                <button style={{width:"140px", justifyContent:'center'}}
                                                                                     type="button"
-                                                                                    className="btn btn-light1 waves-effect waves-light m-1"
+                                                                                    className="btn cancel-btn waves-effect waves-light m-1"
                                                                                     data-bs-dismiss="modal"
                                                                                     aria-label="Close"
                                                                                 >
                                                                                     <img
                                                                                         src={require("../../Assets/ExtraImage/xIcon.svg")}
-                                                                                        style={{ width: "1rem" }}
+                                                                                        style={{ width: "1rem", marginRight:'3px' }}
                                                                                         className="me-1"
                                                                                         alt="x"
                                                                                     />
@@ -1854,7 +1877,7 @@ const deleteLocalFile = (index, filArray, name) => {
                                 </div>
                             )
                         }
-                        ) : <div className='row mt-2'>
+                        ) : <div className='mt-2'>
                         <div style={{ height: '300px' }} className="card card-body align-items-center  annusvg text-center"
                         >
 

@@ -1022,7 +1022,7 @@ const deleteLocalFile = (index: number, filArray: any[], name: string) => {
                       aria-hidden="true"
                       data-target=".bd-example-modal-lg"
                     >
-                      <div className="modal-dialog modal-lg ">
+                      <div style={{minWidth:'80%'}} className="modal-dialog modal-lg ">
                         <div className="modal-content">
                           <div className="modal-header d-block">
                             <h5 className="modal-title" id="exampleModalLabel">
@@ -1037,7 +1037,7 @@ const deleteLocalFile = (index: number, filArray: any[], name: string) => {
                           </div>
                           <div className="modal-body">
                             <form className="row">
-                              <div className="col-lg-6">
+                              <div className="col-lg-3">
                                 <div className="mb-3">
                                   <label htmlFor="topic" className="form-label">
                                     Topic <span className="text-danger">*</span>
@@ -1056,7 +1056,7 @@ const deleteLocalFile = (index: number, filArray: any[], name: string) => {
                                 </div>
                               </div>
 
-                              <div className="col-lg-6">
+                              <div className="col-lg-3">
                                 <div className="mb-3">
                                   <label
                                     htmlFor="entity"
@@ -1084,7 +1084,7 @@ const deleteLocalFile = (index: number, filArray: any[], name: string) => {
                                 </div>
                               </div>
 
-                              <div className="col-lg-6">
+                              <div className="col-lg-3">
                                 <div className="mb-3">
                                   <div className="d-flex justify-content-between">
                                     <div>
@@ -1132,7 +1132,7 @@ const deleteLocalFile = (index: number, filArray: any[], name: string) => {
                                 </div>
                               </div>
 
-                              <div className="col-lg-6">
+                              <div className="col-lg-3">
                                 <div className="mb-3">
                                   <div className="d-flex justify-content-between">
                                     <div>
@@ -1239,7 +1239,7 @@ const deleteLocalFile = (index: number, filArray: any[], name: string) => {
                                       theme="snow"
                                       modules={modules}
                                       formats={formats}
-                                      placeholder={"Write your content ..."}
+                                      placeholder={""}
                                       value={richTextValues.description}
                                       onChange={(content) => {
                                         setRichTextValues((prevValues) => ({
@@ -1264,13 +1264,16 @@ const deleteLocalFile = (index: number, filArray: any[], name: string) => {
                              
                                               <div className="">
                              
-                                                <div className="p-0">
+                                                <div style={{border:"1px solid #ccc", borderRadius:'7px'}} className="p-3">
                              
-                                                  <div className="font-16 mb-2">
+                                                  <div >
                              
-                                                    <strong>Approval Hierarchy</strong>
+                                                    <strong className="font-16 mb-1">Approval Hierarchy</strong>
+                                                    <p className="font-14 text-muted mb-3">Define Approval Hierarchy for the document submitted</p>
                              
                                                   </div>
+
+                                                 
                              
                                                  
                              
@@ -1280,93 +1283,117 @@ const deleteLocalFile = (index: number, filArray: any[], name: string) => {
                                                    
                              
                                       {/* /////////changes/////////// */}
+                                      <table className="mtbalenew ">
+                                                    <thead>
+                                                      <tr>
+                                                      <th style={{minWidth:'60px', maxWidth:'60px'}} className="newpad">  Select Level</th>
+                                                      <th className="newpad"> Select Approver</th>
+                                                      </tr>
+                                                    </thead>
+                                                    </table>
+                                                    
                                                     {rows.map((row: any) => (
+                                                      <div className="row mb-0" key={row.id}>
+                                                         
+                                                   
+                                                            <table className="mtbalenew">
+                                                    <tbody>
+                                                      <tr>
+                                                        <td style={{minWidth:'60px', maxWidth:'60px'}}>
+                                                        <select style={{border:"0px solid #ccc", background:'#fff'}}
                              
-                                                      <div className="row mb-2" key={row.id}>
+                             className="form-control removeb"
+
+                             id={`Level-${row.id}`}
+
+                             name="Level"
+
+                             value={row.LevelId}
+                             disabled={true}
+
+
+                             onChange={(e) => {
+
+                               const selectedLevel = e.target.value;
+
+                               setRows((prevRows: any) =>
+
+                                 prevRows.map((r: any) =>
+
+                                   r.id === row.id
+
+                                     ? { ...r, LevelId: selectedLevel }
+
+                                     : r
+
+                                 )
+
+                               );
+
+                             }}
+
+                           >
+
+                             <option value="">Select</option>
+
+                             {levels.map((item: any) => (
+
+                               <option key={item.Id} value={item.Id}>
+
+                                 {item.Level}
+
+                               </option>
+
+                             ))}
+
+                           </select>
+                                                        </td>
+                                                        <td>
+                                                        <Multiselect className="removeb" style={{border:"0px solid #ccc", background:'#fff'}}
+                             
+                             options={row.approvedUserList}
+
+                             selectedValues={row.approvedUserListupdate}
+
+                             onSelect={(selected) => handleUserSelect(selected, row.id)}
+
+                             onRemove={(selected) => handleUserSelect(selected, row.id)}
+
+                             displayValue="name"
+                             disable={true}
+                             placeholder=''
+                             hidePlaceholder={true}
+
+                           />
+
+                                                        </td>
+                                                      </tr>
+                                                    </tbody>
+
+                                                  </table>
                              
                                                         <div className="col-12 col-md-4">
                              
-                                                          <label htmlFor={`Level-${row.id}`} className="form-label">
+                                                          {/* <label htmlFor={`Level-${row.id}`} className="form-label">
                              
                                                             Select Level
                              
-                                                          </label>
+                                                          </label> */}
                              
-                                                          <select
-                             
-                                                            className="form-select"
-                             
-                                                            id={`Level-${row.id}`}
-                             
-                                                            name="Level"
-                             
-                                                            value={row.LevelId}
-                                                            disabled={true}
-                             
-                             
-                                                            onChange={(e) => {
-                             
-                                                              const selectedLevel = e.target.value;
-                             
-                                                              setRows((prevRows: any) =>
-                             
-                                                                prevRows.map((r: any) =>
-                             
-                                                                  r.id === row.id
-                             
-                                                                    ? { ...r, LevelId: selectedLevel }
-                             
-                                                                    : r
-                             
-                                                                )
-                             
-                                                              );
-                             
-                                                            }}
-                             
-                                                          >
-                             
-                                                            <option value="">Select</option>
-                             
-                                                            {levels.map((item: any) => (
-                             
-                                                              <option key={item.Id} value={item.Id}>
-                             
-                                                                {item.Level}
-                             
-                                                              </option>
-                             
-                                                            ))}
-                             
-                                                          </select>
+                                                          
                              
                                                         </div>
                              
                              
                                                         <div className="col-12 col-md-8">
                              
-                                                          <label htmlFor={`approver-${row.id}`} className="form-label">
+                                                          {/* <label htmlFor={`approver-${row.id}`} className="form-label">
                              
                                                             Select Approver
                              
-                                                          </label>
+                                                          </label> */}
                              
-                                                          <Multiselect
-                             
-                                                            options={row.approvedUserList}
-                             
-                                                            selectedValues={row.approvedUserListupdate}
-                             
-                                                            onSelect={(selected) => handleUserSelect(selected, row.id)}
-                             
-                                                            onRemove={(selected) => handleUserSelect(selected, row.id)}
-                             
-                                                            displayValue="name"
-                                                            disable={true}
-                                                            placeholder=''
-                                                            hidePlaceholder={true}
-                             
-                                                          />
+                                                         
                              
                                                         </div>
                              
@@ -1487,7 +1514,7 @@ const deleteLocalFile = (index: number, filArray: any[], name: string) => {
                               </div> */}
 
                               <div className="text-center butncss mt-2">
-                              <div
+                              <div style={{width:'140px', justifyContent:'center', textAlign:'center'}}
                                   className="btn btn-success waves-effect waves-light m-1"
                                   
                                   onClick={handleFormSaevasDraft}
@@ -1495,8 +1522,8 @@ const deleteLocalFile = (index: number, filArray: any[], name: string) => {
                                   <div
                                                                                         className="d-flex"
                                                                                         style={{
-                                                                                            justifyContent: "space-around",
-                                                                                            width: "105px",
+                                                                                            justifyContent: "center",
+                                                                                           
                                                                                         }}
                                                                                     >
                                                                                         <img
@@ -1507,7 +1534,7 @@ const deleteLocalFile = (index: number, filArray: any[], name: string) => {
                                                                                         Save as Draft
                                                                                     </div>
                                 </div>
-                                <div
+                                <div style={{width:'140px', justifyContent:'center', textAlign:'center'}}
                                   className="btn btn-success waves-effect waves-light m-1"
                                  
                                   onClick={handleFormSubmit}
@@ -1515,8 +1542,8 @@ const deleteLocalFile = (index: number, filArray: any[], name: string) => {
                                   <div
                                     className="d-flex"
                                     style={{
-                                      justifyContent: "space-around",
-                                      width: "105px",
+                                      justifyContent: "center",
+                                     
                                     }}
                                   >
                                     <img
@@ -1528,7 +1555,7 @@ const deleteLocalFile = (index: number, filArray: any[], name: string) => {
                                   </div>
                                 </div>
                                 <button
-                                  type="button"
+                                  type="button" style={{width:'140px', justifyContent:'center', textAlign:'center'}}
                                   className="btn cancel-btn waves-effect waves-light m-1"
                                   
                                   onClick={handleCancel}

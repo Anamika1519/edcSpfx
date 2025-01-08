@@ -263,12 +263,14 @@ const MediaMastercontext = ({ props }: any) => {
     }).then((result) => {
       if (result.isConfirmed) {
         const DeleteRes = DeleteKnowledgecenterAPI(sp, id)
-        ApiCall()
-        Swal.fire({
-          title: "Deleted!",
-          text: "Item has been deleted.",
-          icon: "success"
-        })
+        if (DeleteRes != null) {
+          ApiCall()
+          Swal.fire({
+            title: "Deleted!",
+            text: "Item has been deleted.",
+            icon: "success"
+          })
+        }
         // .then(async res => {
         //   setmediaData(await getMedia(sp));
         // }
@@ -513,13 +515,19 @@ const MediaMastercontext = ({ props }: any) => {
                                         {/* <FontAwesomeIcon icon={faEdit} /> */}
                                       {/* </a>
                                     </span> */} 
-                                    <span>
-                                      {(item.Status === "Save as draft") ? (<a
+                                      <span>
+                                      <a
                                         className="action-icon text-danger"
                                         onClick={() => Deletemedia(item.ID)}
                                       > <img src={require('../../../CustomAsset/del.png')} />
                                         {/* <FontAwesomeIcon icon={faTrashAlt} /> */}
-                                      </a>) : (<div></div>)}
+                                      </a>
+                                      {/* {(item.Status === "Save as draft") ? (<a
+                                        className="action-icon text-danger"
+                                        onClick={() => Deletemedia(item.ID)}
+                                      > <img src={require('../../../CustomAsset/del.png')} />
+                                        {/* <FontAwesomeIcon icon={faTrashAlt} /> */}
+                                      {/* </a>) : (<div></div>)} */} 
                                     </span>
                                   </div>
                                 </td>

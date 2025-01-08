@@ -15,7 +15,7 @@ import FeatherIcon from "feather-icons-react";
 import "./KnowledgeCenter.scss";
 import { Carousel, Dropdown, Modal } from "react-bootstrap";
 // import "../../../APISearvice/MediaDetailsServies"
-import { fetchKnowledgeCentercategory, fetchARGKnowledgeCenterdata } from "../../../APISearvice/KnowledgeCenterService";
+import { fetchKnowledgeCentercategory, fetchARGKnowledgeCenterdata, fetchARGKnowledgeCenterInsideData } from "../../../APISearvice/KnowledgeCenterService";
 import { IKnowledgeCenterProps } from "./IKnowledgeCenterProps";
 import { encryptId } from "../../../APISearvice/CryptoService";
 import HorizontalNavbar from "../../horizontalNavBar/components/HorizontalNavBar";
@@ -152,8 +152,11 @@ const HelloWorldContext = ({ props }: any) => {
     setKnowledgeCenterData(GalleryData);
     //setMediaData(getknowledgecenterdata);
   };
-  const handleImageClick = (index: number) => {
+  const handleImageClick = async (item: any) => {
     //setCurrentImageIndex(index);
+    const getknowledgecenterdata = await fetchARGKnowledgeCenterInsideData(sp, Number(item.ID));
+    setMediaData(getknowledgecenterdata);
+    console.log("getknowledgecenterdata", getknowledgecenterdata)
     setShowModal(true);
     if (videoRef) {
       videoRef.pause(); // Pause the video
@@ -363,12 +366,12 @@ const HelloWorldContext = ({ props }: any) => {
                           className="image-popup" style={{}}
                           title={`Screenshot of ${item.Title || "Untitled"}`}
                         >
-                          {arrjson != null && arrjson.fileType.startsWith('video/') ?
+                          {arrjson != null && arrjson[0].fileType.startsWith('video/') ?
                             <video muted={true} id='Backendvideo' ref={getvideo} style={{ maxWidth: "100%", height: "100%", width: "100%", borderRadius: "13px", objectFit: "cover" }} className="img-fluid" controls={true}>
-                              <source src={(videositeurl + arrjson.fileUrl) + "#t=5"} type="video/mp4"></source>
+                              <source src={(videositeurl + arrjson[0].fileUrl) + "#t=5"} type="video/mp4"></source>
                             </video> :
                             <img
-                              src={arrjson?.fileUrl ? arrjson?.fileUrl : require("../../../Assets/ExtraImage/NoDataFound.png")}
+                              src={arrjson[0]?.fileUrl ? arrjson[0]?.fileUrl : require("../../../Assets/ExtraImage/NoDataFound.png")}
                               alt="media"
                               style={{ maxWidth: "100%", height: "100%", width: "100%", borderRadius: "13px", objectFit: "cover" }}
                             />
@@ -414,29 +417,30 @@ const HelloWorldContext = ({ props }: any) => {
         </div>
       </div>
       {/* Modal for Image Carousel */}
-      <Modal show={showModal} onHide={() => setShowModal(false)} centered className="mediagallery">
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered className="mediagallery" closeButton>
 
 
         <Modal.Header closeButton>
         </Modal.Header>
         <Modal.Body>
-          {mediaData != null && mediaData.length > 0 && mediaData.map((item: any, index: number) => {
+          {console.log("mediaDatamediaData", mediaData)}
+          {/* {mediaData != null && mediaData.length > 0 && mediaData.map((item: any, index: number) => { */}
 
-            {
-              item.fileType.startsWith('video/') ?
-              <video muted={true} id='Backendvideo' ref={getvideo} style={{ width: "100%" }} className="img-fluid" controls={true}>
-                <source src={videositeurl + item.fileUrl} type="video/mp4"></source>
-              </video> :
 
-              <img
-                className="d-block w-100"
-                src={item?.fileUrl ? item?.fileUrl : require("../../../Assets/ExtraImage/NoDataFound.png")}
-                alt={`Slide ${index}`}
-                style={{ height: 'auto', objectFit: 'contain' }}
-              />
-            }
+          {mediaData.length > 0 && mediaData[0].fileType.startsWith('video/') ?
+            <video muted={true} id='Backendvideo' ref={getvideo} style={{ width: "100%" }} className="img-fluid" controls={true}>
+              <source src={videositeurl + mediaData[0].fileUrl} type="video/mp4"></source>
+            </video> :
 
-          })}
+            <img
+              className="d-block w-100"
+              src={mediaData[0]?.fileUrl ? mediaData[0]?.fileUrl : require("../../../Assets/ExtraImage/NoDataFound.png")}
+              //alt={`Slide ${index}`}
+              style={{ height: 'auto', objectFit: 'contain' }}
+            />
+          }
+
+          {/* // })} */}
         </Modal.Body>
 
       </Modal>

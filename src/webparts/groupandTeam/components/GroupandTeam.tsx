@@ -2158,7 +2158,7 @@ const GroupandTeamcontext = ({ props }: any) => {
                                 maxLength={100}
                                 placeholder="Enter Group Name"
 
-                                className="form-control inputcss"
+                                className="form-control"
 
                                 value={formData.GroupName}
 
@@ -2186,7 +2186,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
                               <select
 
-                                className="form-select inputcss"
+                                className="form-select"
 
                                 id="Type"
 
@@ -2371,11 +2371,17 @@ const GroupandTeamcontext = ({ props }: any) => {
 
                           <div className="text-center butncss">
 
-                            <div
+                            <div  style={{
+
+justifyContent: "center",
+
+width: "105px",
+
+}}
 
                               className="btn btn-success waves-effect waves-light m-1"
 
-                              style={{ fontSize: "0.875rem" }}
+                              
 
                               onClick={handleFormSubmit}
 
@@ -2387,9 +2393,9 @@ const GroupandTeamcontext = ({ props }: any) => {
 
                                 style={{
 
-                                  justifyContent: "space-around",
+                                  justifyContent: "center",
 
-                                  width: "70px",
+                                 
 
                                 }}
 
@@ -2399,7 +2405,7 @@ const GroupandTeamcontext = ({ props }: any) => {
 
                                   src={require("../../../Assets/ExtraImage/checkcircle.svg")}
 
-                                  style={{ width: "1rem" }}
+                                  style={{ width: "1rem", marginRight:'3px' }}
 
                                   alt="Check"
 
@@ -2411,13 +2417,13 @@ const GroupandTeamcontext = ({ props }: any) => {
 
                             </div>
 
-                            <button
+                            <button style={{width:'100px', justifyContent:'center'}}
 
                               type="button"
 
-                              className="btn btn-light waves-effect waves-light m-1"
+                              className="btn cancel-btn waves-effect waves-light m-1"
 
-                              style={{ fontSize: "0.875rem" }}
+                              
 
                               data-bs-dismiss="modal"
 
@@ -2429,9 +2435,9 @@ const GroupandTeamcontext = ({ props }: any) => {
 
                                 src={require("../../../Assets/ExtraImage/xIcon.svg")}
 
-                                style={{ width: "1rem" }}
+                                style={{ width: "1rem",marginRight:'3px' }}
 
-                                className="me-1"
+                                
 
                                 alt="x"
 
@@ -2664,7 +2670,7 @@ const GroupandTeamcontext = ({ props }: any) => {
             )}
 
             {activeTab === "groupsyoucreated" && (
-              <div className="row mt-2">
+              <div className="row mt-4">
                
                 {loading ? 
                 (<div className="loadernewadd">

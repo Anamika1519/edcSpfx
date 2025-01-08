@@ -934,7 +934,7 @@ declare global {
                                           <th >Assigned To</th>
                                           <th>Requester Name</th>
                                           <th>Requested Date</th>
-                                          <th style={{ minWidth: '150px', maxWidth: '150px' }}>Action Taken By</th>
+                                          {/* <th style={{ minWidth: '150px', maxWidth: '150px' }}>Action Taken By</th> */}
                                           <th style={{ minWidth: '150px', maxWidth: '150px' }}>Action Taken On</th>
                                           <th
                                             style={{
@@ -978,7 +978,7 @@ declare global {
                                                              {item.RequestedByTitle}
   
                                                          </td>
-                                                      <td style={{ minWidth: '150px', maxWidth: '150px' }}>
+                                                      <td style={{ minWidth: '150px', maxWidth: '150px', textAlign:'center' }}>
                                                 <div className="btn btn-light1">{new Date(item?.FileUID?.Created).toLocaleString('en-US', { 
   month: '2-digit',
   day: '2-digit',
@@ -991,19 +991,10 @@ declare global {
 </div>
                                                         </td> 
                                                       <td style={{ minWidth: '150px', maxWidth: '150px' }}>
-                                                          <div
-                                                            style={{
-                                                              padding: '5px',
-                                                              border: '1px solid #efefef',
-                                                              background: '#fff',
-                                                              borderRadius: '30px',fontSize:'13px',
-                                                            
-                                                            }}
-                                                            className=""
-                                                          >
+                                                          
                                                             {item?.AssignedToTitle}
                                                             
-                                                          </div>
+                                                       
                                                       </td>
                                                   
                                                 

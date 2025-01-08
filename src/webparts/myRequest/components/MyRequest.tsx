@@ -898,10 +898,10 @@ const MyRequestContext = ({ props }: any) => {
               </div>
               <div className="col-md-4">
                 <div className="row">
-                  <div style={{ textAlign: "right" }} className="col-md-4 newtexleft">
+                <div style={{ textAlign: "right", padding:'0px' }} className="col-md-4 newtexleft">
                     <div className="mb-0">
-                      <label htmlFor="Status" className="form-label mt-2">
-                        Filter By
+                      <label htmlFor="Status" className="form-label newfil mt-0 mb-0">
+                      <svg fill="#3c3c3c" width="23px" height="36px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" stroke="#b3b3b3"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M12,25l6.67,6.67a1,1,0,0,0,.7.29.91.91,0,0,0,.39-.08,1,1,0,0,0,.61-.92V13.08L31.71,1.71A1,1,0,0,0,31.92.62,1,1,0,0,0,31,0H1A1,1,0,0,0,.08.62,1,1,0,0,0,.29,1.71L11.67,13.08V24.33A1,1,0,0,0,12,25ZM3.41,2H28.59l-10,10a1,1,0,0,0-.3.71V28.59l-4.66-4.67V12.67a1,1,0,0,0-.3-.71Z"></path> </g></svg>
                       </label>
                     </div>
                   </div>
@@ -1294,7 +1294,7 @@ const MyRequestContext = ({ props }: any) => {
 
                                       <span>Requested Date</span>{" "}
 
-                                      <span
+                                      {/* <span
 
                                         onClick={() =>
 
@@ -1306,7 +1306,7 @@ const MyRequestContext = ({ props }: any) => {
 
                                         <FontAwesomeIcon icon={faSort} />{" "}
 
-                                      </span>
+                                      </span> */}
 
                                     </div>
 
@@ -1353,7 +1353,7 @@ const MyRequestContext = ({ props }: any) => {
 
                                       <span>Status</span>{" "}
 
-                                      <span
+                                      {/* <span
 
                                         onClick={() => handleSortChange("Status")}
 
@@ -1361,7 +1361,7 @@ const MyRequestContext = ({ props }: any) => {
 
                                         <FontAwesomeIcon icon={faSort} />{" "}
 
-                                      </span>
+                                      </span> */}
 
                                     </div>
 
@@ -1443,7 +1443,7 @@ const MyRequestContext = ({ props }: any) => {
 
                               {currentData?.length === 0 ? (
 
-                                <div
+                                <div 
 
                                   className="no-results card card-body align-items-center  annusvg text-center "
 
@@ -1454,12 +1454,12 @@ const MyRequestContext = ({ props }: any) => {
                                     justifyContent: "center",
                                     position: 'relative',
                                     marginTop: '10px',
-                                    height: '300px'
+                                    height: '500px'
 
                                   }}
 
                                 >
-                                  <svg style={{top:'50%'}} xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+                                  <svg style={{top:'0%'}} xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
 
                                   <p className="font-14 text-muted text-center">No Request found </p>
 
@@ -1500,6 +1500,7 @@ const MyRequestContext = ({ props }: any) => {
                                         minWidth: "80px",
 
                                         maxWidth: "80px",
+                                        textAlign:'center',
 
                                         textTransform: "capitalize",
 
@@ -1508,7 +1509,7 @@ const MyRequestContext = ({ props }: any) => {
                                     >
 
                                       {/* {item.RequestID} */}
-                                      {activeTab == "Automation" ? item?.RequestID : item?.SourceName + "_" + item?.ContentID}
+                                      <span  className="badge font-12 bg-info">  {activeTab == "Automation" ? item?.RequestID : item?.SourceName + "_" + item?.ContentID} </span>
 
                                     </td>
                                     <td
@@ -1739,7 +1740,7 @@ const MyRequestContext = ({ props }: any) => {
           
                   className="d-flex pb-2"
           
-                  style={{ justifyContent: "space-between" }}
+                  style={{ justifyContent: "space-evenly" }}
           
                 >
           
@@ -1781,7 +1782,7 @@ const MyRequestContext = ({ props }: any) => {
           
                     className="d-flex pb-2"
           
-                    style={{ justifyContent: "space-between" }}
+                    style={{ justifyContent: "space-evenly" }}
           
                   >
           
@@ -1833,7 +1834,7 @@ const MyRequestContext = ({ props }: any) => {
          
               className="d-flex pb-2"
          
-              style={{ justifyContent: "space-between" }}
+              style={{ justifyContent: "space-evenly" }}
          
             >
          
@@ -1884,7 +1885,7 @@ const MyRequestContext = ({ props }: any) => {
           
                     className="d-flex  pb-2"
           
-                    style={{ justifyContent: "space-between" }}
+                    style={{ justifyContent: "space-evenly" }}
           
                   >
           
@@ -1932,7 +1933,7 @@ const MyRequestContext = ({ props }: any) => {
           
               </th>
           
-              <th style={{ minWidth: "80px", maxWidth: "80px" }}>
+              <th style={{ minWidth: "70px", maxWidth: "70px" }}>
           
           <div className="d-flex flex-column bd-highlight ">
     
@@ -1940,13 +1941,13 @@ const MyRequestContext = ({ props }: any) => {
     
               className="d-flex  pb-2"
     
-              style={{ justifyContent: "space-between" }}
+              style={{ justifyContent: "space-evenly" }}
     
             >
     
               <span>Requested Date</span>{" "}
     
-              <span
+              {/* <span
     
                 onClick={() =>
     
@@ -1958,7 +1959,7 @@ const MyRequestContext = ({ props }: any) => {
     
                 <FontAwesomeIcon icon={faSort} />{" "}
     
-              </span>
+              </span> */}
     
             </div>
     
@@ -1988,7 +1989,7 @@ const MyRequestContext = ({ props }: any) => {
     
         </th>
           
-              <th style={{ minWidth: "80px", maxWidth: "80px" }}>
+              <th style={{ minWidth: "70px", maxWidth: "70px" }}>
           
                 <div className="d-flex flex-column bd-highlight ">
           
@@ -1996,13 +1997,13 @@ const MyRequestContext = ({ props }: any) => {
           
                     className="d-flex  pb-2"
           
-                    style={{ justifyContent: "space-between" }}
+                    style={{ justifyContent: "space-evenly" }}
           
                   >
           
                     <span>Status</span>{" "}
           
-                    <span
+                    {/* <span
           
                       onClick={() => handleSortChange("Status")}
           
@@ -2010,7 +2011,7 @@ const MyRequestContext = ({ props }: any) => {
           
                       <FontAwesomeIcon icon={faSort} />{" "}
           
-                    </span>
+                    </span> */}
           
                   </div>
           
@@ -2063,7 +2064,7 @@ const MyRequestContext = ({ props }: any) => {
          
              className="d-flex  pb-2"
          
-             style={{ justifyContent: "space-between" }}
+             style={{ justifyContent: "space-evenly" }}
          
            >
          
@@ -2085,24 +2086,27 @@ const MyRequestContext = ({ props }: any) => {
           
             {currentData?.length === 0 ? (
           
-              <div
-          
-                className="no-results"
-          
-                style={{
-          
-                  display: "flex",
-          
-                  justifyContent: "center",
-          
-                }}
-          
-              >
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
-                No results found
-          
-              </div>
-          
+          <div 
+
+          className="no-results card card-body align-items-center  annusvg text-center "
+
+          style={{
+
+            display: "flex",
+
+            justifyContent: "center",
+            position: 'relative',
+            marginTop: '10px',
+            height: '500px'
+
+          }}
+
+        >
+          <svg style={{top:'0%'}} xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+
+          <p className="font-14 text-muted text-center">No Request found </p>
+
+        </div>
             ) : (
           
               currentData?.map((item: any, index: number) => (
@@ -2146,7 +2150,7 @@ const MyRequestContext = ({ props }: any) => {
                   >
           
                     {/* {item.RequestID} */}
-                    {item?.RequestNo}
+                    <span  className="badge font-12 bg-info">{item?.RequestNo}</span>
           
                   </td>
           
@@ -2183,7 +2187,7 @@ const MyRequestContext = ({ props }: any) => {
                
                   <td
           
-          style={{ minWidth: "80px", maxWidth: "80px", textAlign:'center' }}
+          style={{ minWidth: "70px", maxWidth: "70px", textAlign:'center' }}
 
         >
 
@@ -2204,7 +2208,7 @@ year: 'numeric',
           
                   <td
           
-                    style={{ minWidth: "80px", maxWidth: "80px", textAlign:'center' }}
+                    style={{ minWidth: "70px", maxWidth: "70px", textAlign:'center' }}
           
                   >
                      <div className="btn btn-status">

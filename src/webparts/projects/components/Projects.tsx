@@ -961,7 +961,7 @@ const HelloWorldContext = ({ props }: any) => {
                                 id="ProjectName"
                                 name="ProjectName"
                                 placeholder="Enter Project Name"
-                                className="form-control inputcss"
+                                className="form-control"
                                 value={formData.ProjectName}
                                 // onChange={(e) =>
                                 //   onChange(e.target.name, e.target.value)
@@ -1074,7 +1074,7 @@ const HelloWorldContext = ({ props }: any) => {
                                 type="date"
                                 id="startDate"
                                 name="startDate"
-                                className="form-control inputcss"
+                                className="form-control"
                                 value={formData.startDate}
                                 onChange={(e) =>
                                   onChange(e.target.name, e.target.value)
@@ -1093,7 +1093,7 @@ const HelloWorldContext = ({ props }: any) => {
                                 type="date"
                                 id="dueDate"
                                 name="dueDate"
-                                className="form-control inputcss"
+                                className="form-control"
                                 value={formData.dueDate}
                                 onChange={(e) =>
                                   onChange(e.target.name, e.target.value)
@@ -1186,7 +1186,7 @@ const HelloWorldContext = ({ props }: any) => {
                                 <span className="text-danger">*</span>
                               </label>
 
-                              <Multiselect
+                              <Multiselect className="removeb"
                                 options={options}
                                 selectedValues={selectedValue}
                                 onSelect={onSelect}
@@ -1243,22 +1243,25 @@ const HelloWorldContext = ({ props }: any) => {
                               ></textarea>
                             </div>
                           </div>
-                          <div className="text-center butncss mt-5">
-                            <div
+                          <div className="text-center butncss mt-2">
+                            <div style={{
+                                  justifyContent: "center",
+                                  width: "100px",
+                                }}
                               className="btn btn-success waves-effect waves-light m-1"
-                              style={{ fontSize: "0.875rem" }}
+                              
                               onClick={handleFormSubmit}
                             >
                               <div
                                 className="d-flex"
                                 style={{
-                                  justifyContent: "space-around",
-                                  width: "70px",
+                                  justifyContent: "center",
+                                  
                                 }}
                               >
                                 <img
                                   src={require("../../../Assets/ExtraImage/checkcircle.svg")}
-                                  style={{ width: "1rem" }}
+                                  style={{ width: "1rem", marginRight:'3px' }}
                                   alt="Check"
                                 />{" "}
                                 Create
@@ -1266,14 +1269,14 @@ const HelloWorldContext = ({ props }: any) => {
                             </div>
                             <button
                               type="button"
-                              className="btn btn-light1 waves-effect waves-light m-1"
-                              style={{ fontSize: "0.875rem" }}
+                              className="btn cancel-btn waves-effect waves-light m-1"
+                              style={{ width:'100px', justifyContent:'center' }}
                               onClick={dismissModal}
                             >
                               <img
                                 src={require("../../../Assets/ExtraImage/xIcon.svg")}
-                                style={{ width: "1rem" }}
-                                className="me-1"
+                                style={{ width: "1rem", marginRight:'3px' }}
+                                
                                 alt="x"
                               />
                               Cancel

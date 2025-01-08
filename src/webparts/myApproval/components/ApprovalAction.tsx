@@ -772,7 +772,7 @@ try {
                               <div className="col-12 text-center">
                                 <a >
                                   {" "}
-                                  <button
+                                  <button style={{width:'110px'}}
                                     
                                     onClick={handleLogAndLogHistory}
                                     type="button"
@@ -784,7 +784,7 @@ try {
                                 </a>
                                 <a >
                                   {" "}
-                                  <button
+                                  <button style={{width:'110px'}}
                                     
                                     onClick={handleLogAndLogHistory}
                                     type="button"
@@ -797,7 +797,7 @@ try {
                                 {/* <a >  <button type="button" className="btn btn-warning waves-effect waves-light m-1"><i className="fe-corner-up-left me-1"></i> Rework</button></a>   */}
                                 <a >
                                   {" "}
-                                  <button
+                                  <button style={{width:'110px'}}
                                     onClick={handleLogAndLogHistory}
                                     type="button"
                                     className="btn btn-danger waves-effect waves-light m-1"
@@ -806,9 +806,9 @@ try {
                                     Reject
                                   </button>
                                 </a>
-                                <button
+                                <button style={{width:'110px'}}
                                   type="button"
-                                  className="btn btn-light waves-effect waves-light m-1"
+                                  className="btn cancel-btn waves-effect waves-light m-1"
                                 >
                                   <i className="fe-x me-1"></i> Cancel
                                 </button>

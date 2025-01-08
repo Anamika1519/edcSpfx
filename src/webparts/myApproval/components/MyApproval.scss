@@ -8,10 +8,16 @@
   .btn-light1 {
     background: #fff;
     border: 1px solid #efefef;
-    border-radius: 30px;
+    border-radius: 30px; width: 100px;
     color: #3c3c3c; cursor: auto;
     font-size: 13px;
   }.table-responsive{overflow-x: hidden !important;}
+  .svg-inline--fa {
+    height: 17px;
+    position: relative;
+    width: 20px;
+    z-index: 9;
+}
   .newp{line-height: 28px;
     padding: 5px 16px !important;
     font-size: 1rem !important;}
@@ -279,3 +285,24 @@ color: #fff !important;
    
  }
   
+ .mtbalenew tbody tr:nth-child(even) td {
+  background: #f9f9f9;
+}
+.mtbalenew tbody tr:nth-child(odd) {
+  background-color: #fff !important;
+}
+.mtbalenew tr:nth-child(odd):hover {
+  background: #ececec !important;
+}
+.mtbalenew tr:nth-child(even):hover {
+  background: #ececec !important;
+}
+.no-results{border: 0px solid #ccc !important; border-radius: 0px !important;}
+.newfil svg{margin-top: 2px;}
+.fe-eye svg:hover{color: #1fb0e5 !important;}
+.pagination-container{margin-bottom: 15px !important;}
+.btn-status{
+  
+    border-radius: 30px !important;
+    padding: 6px 0.5rem !important;
+}

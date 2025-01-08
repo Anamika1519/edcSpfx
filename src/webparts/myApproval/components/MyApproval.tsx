@@ -945,10 +945,10 @@ const MyApprovalContext = ({ props }: any) => {
 
               <div className="col-md-4">
                 <div className="row">
-                  <div style={{ textAlign: "right" }} className="col-md-4 newtexleft">
+                  <div style={{ textAlign: "right", padding:'0px' }} className="col-md-4 newtexleft">
                     <div className="mb-0">
-                      <label htmlFor="Status" className="form-label mt-2">
-                        Filter By
+                      <label htmlFor="Status" className="form-label newfil mt-0 mb-0">
+                      <svg fill="#3c3c3c" width="23px" height="36px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" stroke="#b3b3b3"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M12,25l6.67,6.67a1,1,0,0,0,.7.29.91.91,0,0,0,.39-.08,1,1,0,0,0,.61-.92V13.08L31.71,1.71A1,1,0,0,0,31.92.62,1,1,0,0,0,31,0H1A1,1,0,0,0,.08.62,1,1,0,0,0,.29,1.71L11.67,13.08V24.33A1,1,0,0,0,12,25ZM3.41,2H28.59l-10,10a1,1,0,0,0-.3.71V28.59l-4.66-4.67V12.67a1,1,0,0,0-.3-.71Z"></path> </g></svg>
                       </label>
                     </div>
                   </div>
@@ -1270,13 +1270,13 @@ const MyApprovalContext = ({ props }: any) => {
                                           style={{ justifyContent: "space-evenly" }}
                                         >
                                           <span>Requested Date</span>{" "}
-                                          <span
+                                          {/* <span
                                             onClick={() =>
                                               handleSortChange("RequestedDate")
                                             }
                                           >
                                             <FontAwesomeIcon icon={faSort} />{" "}
-                                          </span>
+                                          </span> */}
                                         </div>
 
                                         <div className=" bd-highlight">
@@ -1313,13 +1313,13 @@ const MyApprovalContext = ({ props }: any) => {
                                           style={{ justifyContent: "space-evenly" }}
                                         >
                                           <span>Status</span>{" "}
-                                          <span
+                                          {/* <span
                                             onClick={() =>
                                               handleSortChange("Status")
                                             }
                                           >
                                             <FontAwesomeIcon icon={faSort} />{" "}
-                                          </span>
+                                          </span> */}
                                         </div>
 
                                         <div className=" bd-highlight">
@@ -1385,12 +1385,12 @@ const MyApprovalContext = ({ props }: any) => {
                                         justifyContent: "center",
                                         position: 'relative',
                                         marginTop: '10px',
-                                        height: '300px'
+                                        height: '500px'
 
                                       }}
 
                                     >
-                                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                                      <svg style={{ top: '0%' }}  xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
 
                                       <p className="font-14 text-muted text-center">No Approval found </p>
 
@@ -1422,12 +1422,13 @@ const MyApprovalContext = ({ props }: any) => {
                                               minWidth: "80px",
 
                                               maxWidth: "80px",
+                                              textAlign:'center',
 
                                               textTransform: "capitalize",
                                             }}
                                             title={item.RequestID}
                                           >
-                                            {item.RequestID}
+                                      <span  className="badge font-12 bg-info">{item.RequestID} </span>
                                           </td>
                                           {activeTab == "Intranet" && (
                                             <td
@@ -1747,8 +1748,8 @@ const MyApprovalContext = ({ props }: any) => {
                                           </th>
                                           <th
                                             style={{
-                                              minWidth: "80px",
-                                              maxWidth: "80px",
+                                              minWidth: "120px",
+                                              maxWidth: "120px",
                                             }}
                                           >
                                             <div className="d-flex flex-column bd-highlight ">
@@ -1893,8 +1894,8 @@ const MyApprovalContext = ({ props }: any) => {
 
                                           <th
                                             style={{
-                                              minWidth: "100px",
-                                              maxWidth: "100px",
+                                              minWidth: "80px",
+                                              maxWidth: "80px",
                                             }}
                                           >
                                             <div className="d-flex flex-column bd-highlight ">
@@ -1905,7 +1906,7 @@ const MyApprovalContext = ({ props }: any) => {
                                                 }}
                                               >
                                                 <span>Requested Date</span>{" "}
-                                                <span
+                                                {/* <span
                                                   onClick={() =>
                                                     handleSortChange(
                                                       "RequestedDate"
@@ -1915,7 +1916,7 @@ const MyApprovalContext = ({ props }: any) => {
                                                   <FontAwesomeIcon
                                                     icon={faSort}
                                                   />{" "}
-                                                </span>
+                                                </span> */}
                                               </div>
 
                                               <div className=" bd-highlight">
@@ -1954,7 +1955,7 @@ const MyApprovalContext = ({ props }: any) => {
                                                 }}
                                               >
                                                 <span>Status</span>{" "}
-                                                <span
+                                                {/* <span
                                                   onClick={() =>
                                                     handleSortChange("Status")
                                                   }
@@ -1962,7 +1963,7 @@ const MyApprovalContext = ({ props }: any) => {
                                                   <FontAwesomeIcon
                                                     icon={faSort}
                                                   />{" "}
-                                                </span>
+                                                </span> */}
                                               </div>
 
                                               <div className=" bd-highlight">
@@ -2033,12 +2034,12 @@ const MyApprovalContext = ({ props }: any) => {
                                               justifyContent: "center",
                                               position: 'relative',
                                               marginTop: '10px',
-                                              height: '300px'
+                                              height: '500px'
 
                                             }}
 
                                           >
-                                            <svg style={{ top: '50%' }} xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                                            <svg style={{ top: '0%' }} xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
 
                                             <p className="font-14 text-muted text-center">No Approval found </p>
 
@@ -2070,18 +2071,20 @@ const MyApprovalContext = ({ props }: any) => {
                                                     minWidth: "80px",
 
                                                     maxWidth: "80px",
+                                                    textAlign:'center',
 
                                                     textTransform: "capitalize",
                                                   }}
                                                   title={item?.FileUID?.RequestNo}
                                                 >
-                                                  {item?.FileUID?.RequestNo}
+                                                                                        <span className="badge font-12 bg-info">{item?.FileUID?.RequestNo} </span>
+                                                  
                                                 </td>
                                                 <td
                                                   style={{
-                                                    minWidth: "80px",
+                                                    minWidth: "120px",
 
-                                                    maxWidth: "80px",
+                                                    maxWidth: "120px",
 
                                              
                                                   }}
@@ -2274,7 +2277,7 @@ year: 'numeric',
                                        <div className="col-sm-12 text-center">
                                       {/* <button style={{ float: 'right' }} type="button" className="btn btn-secondary" onClick={() => setShowNestedDMSTable(false)}> Back </button> */}
                                       
-                                      <button type="button" className="btn btn-light newp waves-effect waves-light m-3" style={{ fontSize: '0.875rem' }} onClick={() => setShowNestedDMSTable(false)}>
+                                      <button type="button" className="btn cancel-btn newp waves-effect waves-light m-3" style={{ fontSize: '0.875rem' }} onClick={() => setShowNestedDMSTable(false)}>
                                 <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }}
                                     className='me-1' alt="x" />
                                 Cancel
@@ -2589,7 +2592,7 @@ year: 'numeric',
 
                                       <button
                                         type="button"
-                                        className="btn btn-light waves-effect waves-light m-1"
+                                        className="btn cancel-btn waves-effect waves-light m-1"
                                         onClick={(e) => handleCancel()}
                                       >
                                         <i className="fe-x me-1"></i> Cancel

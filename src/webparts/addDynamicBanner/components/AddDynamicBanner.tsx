@@ -22,7 +22,7 @@ import "../../../CustomJSComponents/CustomForm/CustomForm.scss"
 import HorizontalNavbar from '../../horizontalNavBar/components/HorizontalNavBar';
 import context from '../../../GlobalContext/context';
 import { useRef } from 'react';
-
+import { Modal } from 'react-bootstrap';
 const AddDynamicBannerContext = ({ props }: any) => {
   const sp: SPFI = getSP();
   const Spurl = sp.web;
@@ -37,6 +37,7 @@ const AddDynamicBannerContext = ({ props }: any) => {
   const [editID, setEditID] = React.useState(null);
   const { setHide }: any = context;
   const siteUrl = props.siteUrl;
+  const tenantUrl = props.siteUrl.split("/sites/")[0];
   const [BnnerImagepostArr, setBannerImagepostArr]:any = React.useState();
   const inputFile = useRef(null);
   const [ValidSubmit, setValidSubmit] = React.useState(true);
@@ -183,7 +184,9 @@ const AddDynamicBannerContext = ({ props }: any) => {
           URL: setBannerById[0].URL
         }
         let banneimagearr = []
-        banneimagearr = JSON.parse(setBannerById[0].BannerImage)
+       // banneimagearr = JSON.parse(setBannerById[0].BannerImage)
+       banneimagearr = setBannerById[0].BannerImage
+       console.log(setBannerById, 'setBannerById', setBannerById[0].BannerImage, banneimagearr);
         setBannerImagepostArr(banneimagearr);
         setFormData(arr)
       }
@@ -310,14 +313,26 @@ console.log(siteUrl)
 
         if (editID) {
           // Upload Banner Images
-          if (BnnerImagepostArr.length > 0) {
-            for (const file of BnnerImagepostArr) {
-              if (!file.serverRelativeUrl) {
-                // const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
-                bannerImageArray = await uploadFile(file, sp, "Documents", "https://alrostamanigroupae.sharepoint.com");
-              }
+          // if (BnnerImagepostArr.length > 0) {
+          //   for (const file of BnnerImagepostArr) {
+          //     if (!file.serverRelativeUrl) {
+          //       // const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
+          //       bannerImageArray = await uploadFile(file, sp, "Documents", "https://alrostamanigroupae.sharepoint.com");
+          //     }
 
+          //   }
+          // }
+          if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
+            for (const file of BnnerImagepostArr[0].files) {
+              //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
+              bannerImageArray = await uploadFile(file, sp, "Documents", tenantUrl);
             }
+          }
+          else if (BnnerImagepostArr.length > 0) {
+            bannerImageArray = BnnerImagepostArr[0];
+          }
+          else {
+            bannerImageArray = null
           }
           debugger
           let bannerPost={}
@@ -378,10 +393,16 @@ console.log(siteUrl)
         }
         else {
           // Upload Banner Images
-          if (BnnerImagepostArr.length > 0) {
-            for (const file of BnnerImagepostArr) {
-              // const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
-              bannerImageArray = await uploadFile(file, sp, "Documents", "https://alrostamanigroupae.sharepoint.com");
+          // if (BnnerImagepostArr.length > 0) {
+          //   for (const file of BnnerImagepostArr) {
+          //     // const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
+          //     bannerImageArray = await uploadFile(file, sp, "Documents", "https://alrostamanigroupae.sharepoint.com");
+          //   }
+          // }
+          if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
+            for (const file of BnnerImagepostArr[0].files) {
+              //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
+              bannerImageArray = await uploadFile(file, sp, "Documents", tenantUrl);
             }
           }
           debugger
@@ -578,7 +599,7 @@ console.log(siteUrl)
                 </div>
               </div>
               {/* Modal to display uploaded files */}
-              {/* <Modal show={showModal} onHide={() => setShowModal(false)}>
+              <Modal show={showModal} onHide={() => setShowModal(false)}>
                 <Modal.Header closeButton>
                   {BnnerImagepostArr.length > 0 && showBannerModal && <Modal.Title>Banner Images</Modal.Title>}
                 </Modal.Header>
@@ -597,7 +618,7 @@ console.log(siteUrl)
                           </thead>
                           <tbody>
                             {editForm ?
-                              // BnnerImagepostArr.map((file: any, index: number) => (
+                               BnnerImagepostArr.map((file: any, index: number) => (
                                 <tr key={index}>
                                   <td className='text-center'>{index + 1}</td>
                                   <td>{file.fileName}</td>
@@ -617,7 +638,8 @@ console.log(siteUrl)
                         </table></>
                     )}
                 </Modal.Body>
-              </Modal> */}
+              </Modal>
+             
             </div>
           </div>
         </div>

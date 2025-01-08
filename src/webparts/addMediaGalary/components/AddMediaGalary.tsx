@@ -2523,7 +2523,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
                             id="bannerImage"
 
                             name="bannerImage"
-                            className={`form-control inputcss ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                            className={`form-control ${(!ValidSubmit) ? "border-on-error" : ""}`}
                             //className="form-control inputcss"
 
                             disabled={InputDisabled}
@@ -2598,7 +2598,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
                             name="announcementGallery"
 
-                            className="form-control inputcss"
+                            className="form-control"
 
                             multiple
 
@@ -2613,53 +2613,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
                       </div>
 
 
-                      {!InputDisabled ? (<div className="text-center butncss">
-
-                        <div className="btn btn-success waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleSaveAsDraft}>
-
-                          <div className='d-flex' style={{ justifyContent: 'space-around' }}>
-
-                            <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} alt="Check" /> Save As Draft
-
-                          </div>
-
-                        </div>
-
-                        <div className="btn btn-success waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleFormSubmit}>
-
-                          <div className='d-flex' style={{ justifyContent: 'space-around', width: '70px' }}>
-
-                            <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} alt="Check" /> Submit
-
-                          </div>
-
-                        </div>
-
-                        <div className="btn btn-light waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleCancel}>
-
-                          <div className='d-flex' style={{ justifyContent: 'space-around', width: '70px' }}>
-
-                            <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }} className='me-0' alt="x" />
-
-                            Cancel
-
-                          </div>
-
-                        </div>
-
-                      </div>) : (modeValue == 'view') && (<div className="text-center butncss">
-                        <div className="btn btn-light waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleCancel}>
-
-                          <div className='d-flex' style={{ justifyContent: 'space-around', width: '70px' }}>
-
-                            <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }} className='me-1' alt="x" />
-
-                            Cancel
-
-                          </div>
-
-                        </div>
-                      </div>)}
+                     
 
                     </form>
                   }
@@ -2672,13 +2626,14 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
               rows != null && rows.length > 0 && !ApprovalMode && (
 
-                <div className="container mt-2">
+                <div className="mt-2">
 
                   <div className="card cardborder p-4">
 
-                    <div className="font-16 mb-2">
+                    <div className="">
 
-                      <strong>Approval Hierarchy</strong>
+                      <strong className='font-16 mb-1'>Approval Hierarchy</strong>
+                      <p className='font-14 text-muted mb-3'>Define Approaval Hierarchy for the documents.</p>
 
                     </div>
 
@@ -2725,95 +2680,114 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
                       </div> */}
 
-
+<table className="mtbalenew ">
+                                                    <thead>
+                                                      <tr>
+                                                      <th style={{minWidth:'60px', maxWidth:'60px'}} className="newpad">  Select Level</th>
+                                                      <th className="newpad"> Select Approver</th>
+                                                      </tr>
+                                                    </thead>
+                                                    </table>
                       {rows.map((row: any) => (
 
-                        <div className="row mb-2 mt-2" key={row.id}>
+                        <div className="row mb-0 mt-0" key={row.id}>
+                          <table className="mtbalenew ">
+                                                    <tbody>
+                                                      <tr>
+                                                      <td style={{minWidth:'60px', maxWidth:'60px'}} className="">   
+                                                        <select style={{border:"0px solid #ccc", background:'#fff'}}
+
+className="form-select removeb"
+
+id={`Level-${row.id}`}
+
+name="Level"
+
+value={row.LevelId}
+disabled={true}
+
+
+onChange={(e) => {
+
+  const selectedLevel = e.target.value;
+
+  setRows((prevRows: any) =>
+
+    prevRows.map((r: any) =>
+
+      r.id === row.id
+
+        ? { ...r, LevelId: selectedLevel }
+
+        : r
+
+    )
+
+  );
+
+}}
+
+>
+
+<option value="">Select</option>
+
+{levels.map((item: any) => (
+
+  <option key={item.Id} value={item.Id}>
+
+    {item.Level}
+
+  </option>
+
+))}
+
+</select>  </td>
+                                                      <td className=""> 
+                                                      <Multiselect className="removeb" style={{border:"0px solid #ccc", background:'#fff'}}
+
+options={row.approvedUserList}
+
+selectedValues={row.approvedUserListupdate}
+
+onSelect={(selected) => handleUserSelect(selected, row.id)}
+
+onRemove={(selected) => handleUserSelect(selected, row.id)}
+
+displayValue="name"
+disable={true}
+placeholder=''
+hidePlaceholder={true}
+
+/>
+
+
+                                                      </td>
+                                                      </tr>
+                                                    </tbody>
+                                                    </table>
 
                           <div className="col-12 col-md-5">
 
-                            <label htmlFor={`Level-${row.id}`} className="form-label">
+                            {/* <label htmlFor={`Level-${row.id}`} className="form-label">
 
                               Select Level
 
-                            </label>
+                            </label> */}
 
-                            <select
-
-                              className="form-select"
-
-                              id={`Level-${row.id}`}
-
-                              name="Level"
-
-                              value={row.LevelId}
-                              disabled={true}
-
-
-                              onChange={(e) => {
-
-                                const selectedLevel = e.target.value;
-
-                                setRows((prevRows: any) =>
-
-                                  prevRows.map((r: any) =>
-
-                                    r.id === row.id
-
-                                      ? { ...r, LevelId: selectedLevel }
-
-                                      : r
-
-                                  )
-
-                                );
-
-                              }}
-
-                            >
-
-                              <option value="">Select</option>
-
-                              {levels.map((item: any) => (
-
-                                <option key={item.Id} value={item.Id}>
-
-                                  {item.Level}
-
-                                </option>
-
-                              ))}
-
-                            </select>
+                         
 
                           </div>
 
 
                           <div className="col-12 col-md-5">
 
-                            <label htmlFor={`approver-${row.id}`} className="form-label">
+                            {/* <label htmlFor={`approver-${row.id}`} className="form-label">
 
                               Select Approver
 
-                            </label>
+                            </label> */}
 
-                            <Multiselect
-
-                              options={row.approvedUserList}
-
-                              selectedValues={row.approvedUserListupdate}
-
-                              onSelect={(selected) => handleUserSelect(selected, row.id)}
-
-                              onRemove={(selected) => handleUserSelect(selected, row.id)}
-
-                              displayValue="name"
-                              disable={true}
-                              placeholder=''
-                              hidePlaceholder={true}
-
-                            />
-
+                            
                           </div>
 
 
@@ -2937,6 +2911,54 @@ const AddMediaGalaryContext = ({ props }: any) => {
             {
               <WorkflowAuditHistory ContentItemId={editID} ContentType={CONTENTTYPE_Media} ctx={props.context} />
             }
+
+{!InputDisabled ? (<div className="text-center butncss">
+
+<div className="btn btn-success waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleSaveAsDraft}>
+
+  <div className='d-flex' style={{ justifyContent: 'space-around' }}>
+
+    <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} alt="Check" /> Save As Draft
+
+  </div>
+
+</div>
+
+<div className="btn btn-success waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleFormSubmit}>
+
+  <div className='d-flex' style={{ justifyContent: 'space-around', width: '70px' }}>
+
+    <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} alt="Check" /> Submit
+
+  </div>
+
+</div>
+
+<div className="btn cancel-btn waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleCancel}>
+
+  <div className='d-flex' style={{ justifyContent: 'space-around', width: '70px' }}>
+
+    <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }} className='me-0' alt="x" />
+
+    Cancel
+
+  </div>
+
+</div>
+
+</div>) : (modeValue == 'view') && (<div className="text-center butncss">
+<div className="btn btn-light waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleCancel}>
+
+  <div className='d-flex' style={{ justifyContent: 'space-around', width: '70px' }}>
+
+    <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }} className='me-1' alt="x" />
+
+    Cancel
+
+  </div>
+
+</div>
+</div>)}
 
             {/* Modal to display uploaded files */}
 

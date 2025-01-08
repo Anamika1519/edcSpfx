@@ -792,7 +792,7 @@ const BlogDetailsContext = ({ props }: any) => {
               {pageValue !== "" &&
                 <div className="col-lg-4">
                   <div className="text-center butncss">
-                    <button type="button" className="btn btn-light waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleCancel}>
+                    <button type="button" className="btn cancel-btn waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleCancel}>
                       <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }}
                         className='me-1' alt="x" />
                       Cancel
