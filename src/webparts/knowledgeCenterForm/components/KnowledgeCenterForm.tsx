@@ -750,7 +750,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
     } else if (pageValue == "MyApproval") {
       window.location.href = `${siteUrl}/SitePages/MyApprovals.aspx`;
     } else {
-      window.location.href = `${siteUrl}/SitePages/MediaGalleryMaster.aspx`;
+      window.location.href = `${siteUrl}/SitePages/KnowledgecenterMaster.aspx`;
     }
     //window.location.href = `${siteUrl}/SitePages/MediaGalleryMaster.aspx`;
 
@@ -2700,65 +2700,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
     ( */}
 
-            <>
-
-              <table className="mtable table-bordered" style={{ fontSize: '0.75rem' }}>
-
-                <thead style={{ background: '#eef6f7' }}>
-
-                  <tr>
-
-                    <th>Serial No.</th>
-
-                    <th > Image </th>
-
-                    <th>File Name</th>
-
-                    <th>File Size</th>
-                    {modeValue == null &&
-                      <th className='text-center'>Action</th>
-                    }
-                  </tr>
-
-                </thead>
-
-                <tbody>
-
-                  {BnnerImagepostArr.map((file: any, index: number) => (
-
-                    <tr key={index}>
-
-                      <td className='text-center'>{index + 1}</td>
-
-                      <td>
-                        <img
-                          className="imagefe"
-                          src={
-                            file.serverUrl && file.serverRelativeUrl
-                              ? `${file.serverUrl}${file.serverRelativeUrl}`
-                              : file.fileUrl // Fallback to file.fileUrl if other values are missing
-                          }
-                          alt="Preview"
-                        />
-                      </td>
-
-                      <td>{file.fileName ? file.fileName : file.name}</td>
-
-                      <td className='text-right'>{file.fileSize}</td>
-                      {modeValue == null &&
-                        <td className='text-center'> <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }}
-
-                          onClick={() => deleteLocalFile(index, BnnerImagepostArr, "Image")} /> </td>
-
-                      }
-                    </tr>
-
-                  ))}
-
-                </tbody>
-
-              </table>
-            </>
+          
 
             {/* )} */}
 
