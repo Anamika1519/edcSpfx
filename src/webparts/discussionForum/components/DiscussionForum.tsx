@@ -830,7 +830,7 @@ const DiscussionForumContext = ({ props }: any) => {
                   file,
                   sp,
                   "Documents",
-                  "https://officeIndia.sharepoint.com"
+                  "https://alrostamanigroupae.sharepoint.com"
                 );
               }
             } else {
@@ -1148,7 +1148,7 @@ const DiscussionForumContext = ({ props }: any) => {
                 InviteMemebersId: selectedIds,
                 ARGDiscussionStatus: "Ongoing",
                 DiscussionInProgress: "In Progress",
-                DiscussionFileManager: `/sites/alrostmanispfx2/ARGDiscussionFiles/${formData.topic}`,
+                DiscussionFileManager: `/sites/IntranetUAT/ARGDiscussionFiles/${formData.topic}`,
                 DiscussionFolderName: formData.topic
               };
             }
@@ -1162,7 +1162,7 @@ const DiscussionForumContext = ({ props }: any) => {
                 DiscussionForumCategoryId: Number(formData.category),
                 ARGDiscussionStatus: "Ongoing",
                 DiscussionInProgress: "In Progress",
-                DiscussionFileManager: `/sites/alrostmanispfx2/ARGDiscussionFiles/${formData.topic}`,
+                DiscussionFileManager: `/sites/IntranetUAT/ARGDiscussionFiles/${formData.topic}`,
                 DiscussionFolderName: formData.topic
               };
             }
@@ -1271,7 +1271,7 @@ const DiscussionForumContext = ({ props }: any) => {
 
   const handleCancel = () => {
     window.location.href =
-      "https://officeIndia.sharepoint.com/sites/alrostmanispfx2/SitePages/Blogs.aspx";
+      "https://alrostamanigroupae.sharepoint.com/sites/IntranetUAT/SitePages/Blogs.aspx";
   };
 
   const formats = [
@@ -1432,7 +1432,7 @@ const DiscussionForumContext = ({ props }: any) => {
                                 id="topic"
                                 name="topic"
                                 placeholder="Enter Topic"
-                                className="form-control inputcss"
+                                className="form-control"
                                 value={formData.topic}
                                 onChange={(e) =>
                                   onChange(e.target.name, e.target.value)
@@ -1447,7 +1447,7 @@ const DiscussionForumContext = ({ props }: any) => {
                                 Category <span className="text-danger">*</span>
                               </label>
                               <select
-                                className="form-select inputcss"
+                                className="form-select"
                                 id="category"
                                 name="category"
                                 value={formData.category}
@@ -1470,7 +1470,7 @@ const DiscussionForumContext = ({ props }: any) => {
                                 Entity <span className="text-danger">*</span>
                               </label>
                               <select
-                                className="form-select inputcss"
+                                className="form-select"
                                 id="entity"
                                 name="entity"
                                 value={formData.entity}
@@ -1619,7 +1619,7 @@ const DiscussionForumContext = ({ props }: any) => {
                                 <span className="text-danger">*</span>
                               </label>
                               <select
-                                className="form-select inputcss"
+                                className="form-select"
                                 id="Type"
                                 name="GroupType"
                                 value={formData.GroupType}
@@ -1716,10 +1716,10 @@ const DiscussionForumContext = ({ props }: any) => {
                             </div>
                           </div> */}
 
-                          <div className="text-center butncss mt-5">
+                          <div className="text-center butncss mt-2">
                             <div
                               className="btn btn-success waves-effect waves-light m-1"
-                              style={{ fontSize: "0.875rem" }}
+                              style={{ width:'100px' }}
                               onClick={handleFormSubmit}
                             >
                               <div
@@ -1739,8 +1739,8 @@ const DiscussionForumContext = ({ props }: any) => {
                             </div>
                             <button
                               type="button"
-                              className="btn btn-light waves-effect waves-light m-1"
-                              style={{ fontSize: "0.875rem" }}
+                              className="btn cancel-btn waves-effect waves-light m-1"
+                              style={{ width:'100px' }}
                               onClick={dismissModal}
                             >
                               <img

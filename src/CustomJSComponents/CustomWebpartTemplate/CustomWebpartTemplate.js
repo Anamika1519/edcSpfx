@@ -203,12 +203,12 @@ const CustomWebpartTemplate = ({ _sp, SiteUrl }) => {
                                                 <a onClick={() => gotoAnnouncementDetails(item)}>
                                                     <div className="w-100">
                                                         <h4 className="mt-1 mb-1 hovertext font-16 fw-bold ng-binding" style={{ color: '#343a40', fontSize: '16px' }}>{truncateText(item.Title, 90)}</h4>
-                                                        <p style={{ color: '#6b6b6b', fontSize: '15px' }} className="mb-2 ng-binding">{truncateText(item.Overview, 350)}</p>
+                                                        <p style={{ color: '#6b6b6b', fontSize: '15px',height: '4rem' }} className="mb-2 ng-binding">{truncateText(item.Overview, 350)}</p>
                                                         <div className="readmore mt-3 mb-0">Read more..</div>
                                                     </div>
                                                 </a>
                                             </div>
-                                            <div className="col-sm-1">
+                                            <div className="col-sm-1 posx">
                                                 <div className="d-flex" style={{ justifyContent: 'end', cursor: 'pointer' }}>
                                                     <div className="" style={{ position: 'relative', right: '10px' }}>
                                                         <div className="" onClick={() => toggleDropdown(item.Id)} key={item.Id}>

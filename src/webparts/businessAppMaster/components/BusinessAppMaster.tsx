@@ -210,11 +210,11 @@ const BusinessAppscontext = ({ props }: any) => {
   const Breadcrumb = [
     {
       "MainComponent": "Settings",
-      "MainComponentURl": `${siteUrl}SitePages/Settings.aspx`
+      "MainComponentURl": `${siteUrl}/SitePages/Settings.aspx`
     },
     {
       "ChildComponent": "Business App Master",
-      "ChildComponentURl": `${siteUrl}/SitePages/BusinessAppMaster.aspx`
+      "ChildComponentURl": `${siteUrl}/SitePages/BusinessAppsMaster.aspx`
     }
   ]
   //#endregion

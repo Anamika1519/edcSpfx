@@ -1392,7 +1392,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                     </label>
 
-                    <div className="me-1 position-relative">
+                    <div className="me-3 position-relative">
 
                       <input
 

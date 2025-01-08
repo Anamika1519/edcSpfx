@@ -276,12 +276,15 @@ a.nav-linkss.active {
     padding: 0.70rem;
 }
 a.nav-linkss {
-    border: 1px solid #1fb0e5;
+    
     background: #fff !important;
-    text-decoration: unset;
+    border: 1px solid #54ade0;
+    border-radius: 3px !important;
     color: #000;
-    border-radius: 0.5rem;
-    padding: 0.70rem;
+    font-size: 14px;
+    font-weight: 500;
+    margin: 0 5px;
+    padding: .7rem 1rem !important;
 }
 .mtable td, .mtable th{font-size: 14px;}
 .mtable td, .mtable th{font-size: 14px;}

@@ -18,6 +18,7 @@
   padding: 10px 20px;
   position: relative;
 }
+
 .newhoverzom{  transition: transform .2s; /* Animation */}
 .newhoverzom:hover{ transform: scale(1.5); cursor: pointer;}
 .activenew{background: #fff !important; color: #1fb0e5 !important;}
@@ -1856,17 +1857,17 @@ text-align: center;
       width: 320px;
     }
   }
-  .form-control:focus{border-color: #ccc  !important;}
+  .form-control:focus{border-color: #ccc  !important; box-shadow: none;}
   .posx svg:hover{color: #1fb0e5 !important;}
 span.navlink.active {color: white;}
 .link_name1:visited {color: #54ade0;}
 .nav_link .submenu_item .link_name1 span.navlink.active {color: #54ade0;}
 .rounded-circlecss { border-radius: 50% !important;height: 2rem !important;width: 2rem !important; margin-right: 5px;}
-.nav-pills .nav-link{    border: 1px solid #54ade0 ; margin: 0px 5px; color: #3c3c3c;font-size: 14px}
+.nav-pills .nav-link{    border: 1px solid #54ade0 ; margin: 0px 5px; border-radius: 3px !important; font-weight: 500;  color: #000;font-size: 14px;    padding: .7rem 1rem !important;}
   #myDropdownBell {right: 0rem !important;}
-  .gfg_tooltip { position: relative; display: inline-block;color: black;
+  .gfg_tooltip { position: relative; display: inline-block;color: #000000;
   width:30px;text-align: center; display: inline-block;font-size: 13px;}
-
+ 
 .gfg_tooltip .gfg_text {visibility: hidden;width: auto;background-color: #3c3c3c;color: #fff; width: 140px;
     text-align: center; border-radius: 6px; padding: 5px 0;
     position: absolute;
@@ -1962,3 +1963,31 @@ color: #fff !important;
 .ms-fullscreenmode #contentBox{
   margin-left: 0px !important;
 }
+label{color: #6c757d !important;font-size: .875rem !important;}
+.form-control, .form-select, textarea{color: #212529 !important;font-size: 1rem;}
+.form-control::placeholder{
+  color: #212529 !important;font-size: 1rem;
+}
+.ql-container.ql-snow {
+  border: 1px solid #ccc;
+  border-bottom-left-radius: 7px;
+  border-bottom-right-radius: 7px;
+}
+.ql-toolbar.ql-snow{border-top-left-radius: 7px;border-top-right-radius: 7px;}
+.ql-editor{ color: #212529;font-size: 1rem;    font-weight: 500;}
+.modal .form-control::placeholder,.ql-editor::placeholder{
+  color: #212529 !important;font-size: 1rem; text-shadow: none; font-style: normal; font-weight: 500;
+}
+
+.cancel-btn{background: #d3d4d5 !important;padding: 6px 12px !important;
+  border-radius: 0.375rem !important; border-color: #d3d4d5 !important;}
+  .form-control[type=file] {
+    
+    padding: 7px;
+    border-radius: 7px;
+    font-size: 1rem !important;
+}
+  .cancel-btn:hover,.btn-success:hover{background: #008751 !important; border-color: #008751 !important; }
+  .modal .modal-content label{color: #6c757d !important;font-size: .875rem !important;}
+.modal .modal-content input,.modal .modal-content select,.modal .modal-content textarea{border: 1px solid #ccc !important;color: #212529 !important;font-size: 1rem !important;}
+.modal .modal-content input:focus,.modal .modal-content select:focus,.modal .modal-content textarea:focus{border: 1px solid #ccc !important; box-shadow: none !important}

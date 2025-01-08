@@ -259,13 +259,13 @@ const HelloWorldContext = ({ props }: any) => {
       if (!EventName) {
         valid = false;
       }
-      else if (EventDate && moment(new Date(EventDate)).format("DD-MM-YYYY") < moment(new Date()).format("DD-MM-YYYY")) {
+      else if (EventDate && new Date(EventDate).getTime() < new Date().getTime()) {
         valid = false;
       }
-      else if (RegistrationDueDate && moment(new Date(RegistrationDueDate)).format("DD-MM-YYYY") < moment(new Date()).format("DD-MM-YYYY")) {
+      else if (RegistrationDueDate && new Date(RegistrationDueDate).getTime() < new Date().getTime()) {
         valid = false;
       }
-      else if (EventDate && RegistrationDueDate && moment(new Date(RegistrationDueDate)).format("DD-MM-YYYY") > moment(new Date(EventDate)).format("DD-MM-YYYY")) {
+      else if (EventDate && RegistrationDueDate && new Date(RegistrationDueDate).getTime() > new Date(EventDate).getTime()) {
         valid = false;
       }
       setValidDraft(valid);
@@ -273,15 +273,25 @@ const HelloWorldContext = ({ props }: any) => {
     else {
       if (!EventName) {
         valid = false;
-      } else if (!EventDate || (EventDate && moment(new Date(EventDate)).format("DD-MM-YYYY") < moment(new Date()).format("DD-MM-YYYY"))) {
+      }
+      //  else if (!EventDate || (EventDate && moment(new Date(EventDate)).format("DD-MM-YYYY") < moment(new Date()).format("DD-MM-YYYY"))) {
+      //   valid = false;
+      // }
+      else if (!EventDate || (EventDate && new Date(EventDate).getTime() < new Date().getTime())) {
         valid = false;
       }
-      else if (!RegistrationDueDate || RegistrationDueDate && moment(new Date(RegistrationDueDate)).format("DD-MM-YYYY") < moment(new Date()).format("DD-MM-YYYY")) {
+      else if (!RegistrationDueDate || RegistrationDueDate && new Date(RegistrationDueDate).getTime() < new Date().getTime()) {
         valid = false;
       }
-      else if (EventDate && RegistrationDueDate && moment(new Date(RegistrationDueDate)).format("DD-MM-YYYY") > moment(new Date(EventDate)).format("DD-MM-YYYY")) {
+      else if (EventDate && RegistrationDueDate && new Date(RegistrationDueDate).getTime() > new Date(EventDate).getTime()) {
         valid = false;
       }
+      // else if (!RegistrationDueDate || RegistrationDueDate && moment(new Date(RegistrationDueDate)).format("DD-MM-YYYY") < moment(new Date()).format("DD-MM-YYYY")) {
+      //   valid = false;
+      // }
+      // else if (EventDate && RegistrationDueDate && moment(new Date(RegistrationDueDate)).format("DD-MM-YYYY") > moment(new Date(EventDate)).format("DD-MM-YYYY")) {
+      //   valid = false;
+      // }
       else if (!EntityId) {
         valid = false;
       }
@@ -295,12 +305,12 @@ const HelloWorldContext = ({ props }: any) => {
     }
     console.log("new Date(RegistrationDueDate) > new Date(EventDate)", EventGalleryArr1.length, BnnerImagepostArr.length, valid);
 
-    if (!valid && (EventDate && RegistrationDueDate && moment(new Date(RegistrationDueDate)).format("DD-MM-YYYY") > moment(new Date(EventDate)).format("DD-MM-YYYY"))) {
+    if (!valid && (EventDate && RegistrationDueDate && new Date(RegistrationDueDate).getTime() > new Date(EventDate).getTime())) {
       Swal.fire('Registration date cannot be later than the event date.');
-    } else if (!valid && (EventDate && moment(new Date(EventDate)).format("DD-MM-YYYY") < moment(new Date()).format("DD-MM-YYYY"))) {
+    } else if (!valid && (EventDate && new Date(EventDate).getTime() < new Date().getTime())) {
       Swal.fire('Event date cannot be earlier than today.');
     }
-    else if (!valid && (RegistrationDueDate && moment(new Date(RegistrationDueDate)).format("DD-MM-YYYY") < moment(new Date()).format("DD-MM-YYYY"))) {
+    else if (!valid && (RegistrationDueDate && new Date(RegistrationDueDate).getTime() < new Date().getTime())) {
       Swal.fire('Registration date cannot be earlier than today.');
     }
     else {

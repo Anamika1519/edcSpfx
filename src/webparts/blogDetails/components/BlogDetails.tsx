@@ -138,9 +138,25 @@ const BlogDetailsContext = ({ props }: any) => {
     debugger;
 
     //Get the Id parameter
-    const ids = window.location.search;
+    // const ids = window.location.search;
+    // const originalString = ids;
+    // const idNum = originalString.substring(1);
+    var ids = null;
+    //Get the Id parameter
+    // const ids = window.location.search;
+    if (window.location.search.includes("&page=MyRequest") || window.location.search.includes("&page=MyApproval")) {
+      // Extract the ID using a regular expression
+      const match = window.location.search.match(/^\?(\d+)&page=(MyRequest|MyApproval)$/);
+      if (match) {
+        ids = match[1]; // Capture group 1 contains the ID
+      }
+    }
+    else {
+      ids = window.location.search.substring(1);
+    }
     const originalString = ids;
-    const idNum = originalString.substring(1);
+    // const idNum = originalString.substring(1);
+    const idNum = originalString;
     // const queryString = decryptId(Number(updatedString));
     const blogDetail = await getBlogDetailsById(sp, Number(idNum));
 
@@ -657,7 +673,7 @@ const BlogDetailsContext = ({ props }: any) => {
                                       title="Screenshot-1"
                                     >
                                       <img
-                                        src={`https://officeIndia.sharepoint.com${res.fileUrl}`}
+                                        src={`https://alrostamanigroupae.sharepoint.com${res.fileUrl}`}
                                         className="img-fluid imgcssscustom"
                                         alt="work-thumbnail"
                                         data-themekey="#"
@@ -701,46 +717,50 @@ const BlogDetailsContext = ({ props }: any) => {
               }
  
             </div> */}
-                <div className="row mt-4" >
-                  <div className="col-md-12">
-                    <div
-                      className="card"
-                      style={{
-                        border: "1px solid #54ade0",
-                        borderRadius: "20px",
-                        boxShadow: "0 3px 20px #1d26260d",
-                      }}
-                    >
-                      {showComment && <div className="card-body" style={{ padding: "1rem 0.9rem" }}>
-                        {/* New comment input */}
-                        <h4 className="mt-0 mb-3 text-dark fw-bold font-16">
-                          Comments
-                        </h4>
-                        <div className="mt-3">
-                          <textarea
-                            id="example-textarea"
-                            className="form-control text-dark form-control-light mb-2"
-                            value={newComment}
-                            onChange={(e) => setNewComment(e.target.value)}
-                            placeholder="Type your comment here..."
-                            rows={3}
-                            style={{ borderRadius: "unset" }}
-                          />
-                          <button
-                            className="btn btn-primary mt-2"
-                            onClick={handleAddComment}
-                            disabled={loading} // Disable button when loading
-                          >
-                            <FontAwesomeIcon style={{ float: 'left', margin: "7px 6px 0px 0px" }} icon={faPaperPlane} />
-                            {loading ? "Submitting..." : "Add Comment"}{" "}
-                            {/* Change button text */}
-                          </button>
+                {showComment &&
+                  <div className="row mt-4" >
+
+                    <div className="col-md-12">
+                      <div
+                        className="card"
+                        style={{
+                          border: "1px solid #54ade0",
+                          borderRadius: "20px",
+                          boxShadow: "0 3px 20px #1d26260d",
+                        }}
+                      >
+
+                        <div className="card-body" style={{ padding: "1rem 0.9rem" }}>
+                          {/* New comment input */}
+                          <h4 className="mt-0 mb-3 text-dark fw-bold font-16">
+                            Comments
+                          </h4>
+                          <div className="mt-3">
+                            <textarea
+                              id="example-textarea"
+                              className="form-control text-dark form-control-light mb-2"
+                              value={newComment}
+                              onChange={(e) => setNewComment(e.target.value)}
+                              placeholder="Type your comment here..."
+                              rows={3}
+                              style={{ borderRadius: "unset" }}
+                            />
+                            <button
+                              className="btn btn-primary mt-2"
+                              onClick={handleAddComment}
+                              disabled={loading} // Disable button when loading
+                            >
+                              <FontAwesomeIcon style={{ float: 'left', margin: "7px 6px 0px 0px" }} icon={faPaperPlane} />
+                              {loading ? "Submitting..." : "Add Comment"}{" "}
+                              {/* Change button text */}
+                            </button>
+                          </div>
                         </div>
+
                       </div>
-                      }
                     </div>
                   </div>
-                </div>
+                }
                 <div className="row ">
                   {/* New comment input */}
 

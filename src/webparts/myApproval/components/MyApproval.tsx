@@ -833,7 +833,10 @@ const MyApprovalContext = ({ props }: any) => {
       //window.location.href = `${Item.RedirectionLink}`;
     } else if (activeTab == "Intranet") {
       setContentData(await getDataByID(sp, Item?.ContentId, Item?.ContentName));
-      setisActivedata(true);
+    
+      if (Item?.ProcessName !== "Blog"){
+        setisActivedata(true);
+      }  
       if (Item?.ProcessName) {
         switch (Item?.ProcessName) {
           case "Announcement":

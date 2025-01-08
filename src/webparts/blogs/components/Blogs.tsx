@@ -541,7 +541,7 @@ const BlogsContext = ({ props }: any) => {
                   file,
                   sp,
                   "Documents",
-                  "https://officeIndia.sharepoint.com"
+                  "https://alrostamanigroupae.sharepoint.com"
                 );
               }
             }
@@ -705,7 +705,7 @@ const BlogsContext = ({ props }: any) => {
               file,
               sp,
               "Documents",
-              "https://officeIndia.sharepoint.com"
+              "https://alrostamanigroupae.sharepoint.com"
             );
           }
         }
@@ -1042,12 +1042,12 @@ const deleteLocalFile = (index: number, filArray: any[], name: string) => {
                                   <label htmlFor="topic" className="form-label">
                                     Topic <span className="text-danger">*</span>
                                   </label>
-                                  <input
+                                  <input style={{height:"38px"}}
                                     type="text"
                                     id="topic"
                                     name="topic"
                                     placeholder="Enter Topic"
-                                    className="form-control inputcss"
+                                    className="form-control"
                                     value={formData.topic}
                                     onChange={(e) =>
                                       onChange(e.target.name, e.target.value)
@@ -1066,7 +1066,7 @@ const deleteLocalFile = (index: number, filArray: any[], name: string) => {
                                     <span className="text-danger">*</span>
                                   </label>
                                   <select
-                                    className="form-select inputcss"
+                                    className="form-select"
                                     id="entity"
                                     name="entity"
                                     value={formData.entity}
@@ -1123,7 +1123,7 @@ const deleteLocalFile = (index: number, filArray: any[], name: string) => {
                                     type="file"
                                     id="bannerImage"
                                     name="bannerImage"
-                                    className="form-control inputcss"
+                                    className="form-control"
                                     accept="image/*"
                                     onChange={(e) =>
                                       onFileChange(e, "bannerimg", "Document")
@@ -1183,7 +1183,7 @@ const deleteLocalFile = (index: number, filArray: any[], name: string) => {
                                     type="file"
                                     id="discussionforumGallery"
                                     name="discussionforumGallery"
-                                    className="form-control inputcss"
+                                    className="form-control"
                                     multiple
                                     onChange={(e) =>
                                       onFileChange(
@@ -1206,7 +1206,7 @@ const deleteLocalFile = (index: number, filArray: any[], name: string) => {
                                     <span className="text-danger">*</span>
                                   </label>
                                   <textarea
-                                    className="form-control inputcss"
+                                    className="form-control"
                                     id="overview"
                                     placeholder="Enter Overview"
                                     name="overview"
@@ -1489,19 +1489,19 @@ const deleteLocalFile = (index: number, filArray: any[], name: string) => {
                               <div className="text-center butncss mt-2">
                               <div
                                   className="btn btn-success waves-effect waves-light m-1"
-                                  style={{ fontSize: "0.875rem" }}
+                                  
                                   onClick={handleFormSaevasDraft}
                                 >
                                   <div
                                                                                         className="d-flex"
                                                                                         style={{
                                                                                             justifyContent: "space-around",
-                                                                                            width: "120px",
+                                                                                            width: "105px",
                                                                                         }}
                                                                                     >
                                                                                         <img
                                                                                             src={require("../assets/checkcircle.svg")}
-                                                                                            style={{ width: "1rem" }}
+                                                                                            style={{ width: "1rem", marginRight:'3px' }}
                                                                                             alt="Check"
                                                                                         />{" "}
                                                                                         Save as Draft
@@ -1509,19 +1509,19 @@ const deleteLocalFile = (index: number, filArray: any[], name: string) => {
                                 </div>
                                 <div
                                   className="btn btn-success waves-effect waves-light m-1"
-                                  style={{ fontSize: "0.875rem" }}
+                                 
                                   onClick={handleFormSubmit}
                                 >
                                   <div
                                     className="d-flex"
                                     style={{
                                       justifyContent: "space-around",
-                                      width: "70px",
+                                      width: "105px",
                                     }}
                                   >
                                     <img
                                       src={require("../assets/checkcircle.svg")}
-                                      style={{ width: "1rem" }}
+                                      style={{ width: "1rem",marginRight:'3px' }}
                                       alt="Check"
                                     />{" "}
                                     Submit
@@ -1529,13 +1529,13 @@ const deleteLocalFile = (index: number, filArray: any[], name: string) => {
                                 </div>
                                 <button
                                   type="button"
-                                  className="btn btn-light1 waves-effect waves-light m-1"
-                                  style={{ fontSize: "0.875rem" }}
+                                  className="btn cancel-btn waves-effect waves-light m-1"
+                                  
                                   onClick={handleCancel}
                                 >
                                   <img
                                     src={require("../assets/xIcon.svg")}
-                                    style={{ width: "1rem" }}
+                                    style={{ width: "1rem",marginRight:'3px' }}
                                     className="me-1"
                                     alt="x"
                                   />
@@ -1575,7 +1575,7 @@ const deleteLocalFile = (index: number, filArray: any[], name: string) => {
                           {DocumentpostArr1.map((file: any, index: number) => (
                             <tr key={index}>
                               <td className='text-center'>{index + 1}</td>
-                              <td>{file.fileName.replace("/sites/alrostmanispfx2", "")}</td>
+                              <td>{file.fileName.replace("/sites/IntranetUAT", "")}</td>
                               <td className='text-right'>{file.fileSize}</td>
                               <td className='text-center'> <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, DocumentpostArr1, "docs")} /> </td>
                             </tr>
@@ -1685,7 +1685,7 @@ const deleteLocalFile = (index: number, filArray: any[], name: string) => {
                           {DocumentpostArr1.map((file: any, index: number) => (
                             <tr key={index}>
                               <td style={{minWidth:'40px',maxWidth:'40px'}} className='text-center'>{index + 1}</td>
-                              <td style={{minWidth:'100px',maxWidth:'100px'}}>{file.fileName.replace("/sites/alrostmanispfx2", "")}</td>
+                              <td style={{minWidth:'100px',maxWidth:'100px'}}>{file.fileName.replace("/sites/IntranetUAT", "")}</td>
                               <td style={{minWidth:'40px',maxWidth:'40px'}} className='text-right'>{file.fileSize}</td>
                               <td style={{minWidth:'40px',maxWidth:'40px'}} className='text-center'> <img style={{cursor:'pointer'}} src={require("../../../CustomAsset/del.png")}  onClick={() => deleteLocalFile(index, DocumentpostArr1, "docs")} /> </td>
                             </tr>

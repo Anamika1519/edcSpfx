@@ -508,13 +508,14 @@ const AddannouncementContext = ({ props }: any) => {
 
               // Upload Gallery Images
               // Upload Gallery Images
-              if (ImagepostArr[0]?.files?.length > 0) {
+              console.log(ImagepostArr, 'ImagepostArrImagepostArrImagepostArr');
+              if (ImagepostArr[0]?.files?.length > 0 && ImagepostArr[0]?.files?.length < 6) {
                 for (const file of ImagepostArr[0].files) {
 
                   const uploadedGalleryImage = await uploadFileToLibrary(file, sp, "AnnouncementAndNewsGallary");
 
                   galleryIds = galleryIds.concat(uploadedGalleryImage.map((item: { ID: any }) => item.ID));
-                  if (ImagepostArr1.length > 0) {
+                  if (ImagepostArr1.length > 0 && ImagepostArr1.length < 6) {
 
                     ImagepostArr1.push(uploadedGalleryImage[0])
                     const updatedData = ImagepostArr1.filter(item => item.ID !== 0);
@@ -623,17 +624,18 @@ const AddannouncementContext = ({ props }: any) => {
 
               // Upload Gallery Images
               // Upload Gallery Images
-              if (ImagepostArr[0]?.files?.length > 0) {
+              console.log(ImagepostArr, 'updatedDatarewrImagepostArr');
+              if (ImagepostArr[0]?.files?.length > 0 && ImagepostArr[0]?.files?.length < 6) {
                 for (const file of ImagepostArr[0].files) {
 
                   const uploadedGalleryImage = await uploadFileToLibrary(file, sp, "AnnouncementAndNewsGallary");
 
                   galleryIds = galleryIds.concat(uploadedGalleryImage.map((item: { ID: any }) => item.ID));
-                  if (ImagepostArr1.length > 0) {
+                  if (ImagepostArr1.length > 0 && ImagepostArr1.length < 6) {
 
                     ImagepostArr1.push(uploadedGalleryImage[0])
                     const updatedData = ImagepostArr1.filter(item => item.ID !== 0);
-                    console.log(updatedData, 'updatedData');
+                    console.log(updatedData, 'updatedDatarewr');
                     galleryArray = updatedData;
                     // galleryArray.push(ImagepostArr1);
 
@@ -1308,7 +1310,7 @@ const AddannouncementContext = ({ props }: any) => {
 
     let uloadBannerImageFiles: any[] = [];
 
-    if (event.target.files && event.target.files.length > 0) {
+    if (event.target.files && event.target.files.length > 0 && event.target.files.length < 6) {
       const files = Array.from(event.target.files);
 
       // if (libraryName === "Docs") {
@@ -1391,7 +1393,7 @@ const AddannouncementContext = ({ props }: any) => {
           if (libraryName === "Gallery") {
             uloadImageFiles.push(arr);
             setImagepostArr(uloadImageFiles);
-            if (ImagepostArr1.length > 0) {
+            if (ImagepostArr1.length > 0 && ImagepostArr1.length < 6) {
               imageVideoFiles.forEach(ele => {
                 let arr1 = {
                   "ID": 0,
@@ -1538,11 +1540,11 @@ const AddannouncementContext = ({ props }: any) => {
   //#region deleteLocalFile
   const deleteLocalFile = (index: number, filArray: any[], name: string) => {
     debugger
-    console.log(filArray, 'filArray');
+    console.log(filArray, 'filArrayhj');
 
     // Remove the file at the specified index
     filArray.splice(index, 1);
-    console.log(filArray, 'filArray');
+    console.log(filArray, 'filArraymmmmmm');
 
     // Update the state based on the title
     if (name === "bannerimg") {
@@ -1556,7 +1558,7 @@ const AddannouncementContext = ({ props }: any) => {
       filArray[0].files.length > 0 ? "" : setShowModal(false); clearFileInput(name);
     }
     // Clear the file input
-
+    console.log(filArray, 'filArray');
   };
   //#endregion
 
@@ -2177,7 +2179,8 @@ const AddannouncementContext = ({ props }: any) => {
                 />
               ) : (<div></div>)
             }
-            {
+            
+            {formData.title != "" &&
               <WorkflowAuditHistory ContentItemId={editID} ContentType={CONTENTTYPE_Announcement} ctx={props.context} />
             }
             {/* Modal to display uploaded files */}
@@ -2205,7 +2208,7 @@ const AddannouncementContext = ({ props }: any) => {
                           {DocumentpostArr1.map((file: any, index: number) => (
                             <tr key={index}>
                               <td className='text-center'>{index + 1}</td>
-                              <td>{file.fileName.replace("/sites/alrostmanispfx2", "")}</td>
+                              <td>{file.fileName.replace("/sites/IntranetUAT", "")}</td>
                               <td className='text-right'>{file.fileSize}</td>
                               <td className='text-center'> <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, DocumentpostArr1, "docs")} /> </td>
                             </tr>
@@ -2237,7 +2240,7 @@ const AddannouncementContext = ({ props }: any) => {
 
                               <td>{file.fileName}</td>
                               <td className='text-right'>{file.fileSize}</td>
-                              {modeValue != 'view' && <td className='text-center'>
+                              {(modeValue != 'view' || pageValue != 'MyApproval') && <td className='text-center'>
                                 <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, ImagepostArr1, "Gallery")} />
 
                               </td>
