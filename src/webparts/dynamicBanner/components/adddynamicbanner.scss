@@ -33,12 +33,20 @@ min-height: calc(100vh - 156px);
   background-color: #1abc9c;
   border-color: #1abc9c;
 }
-
-.btn-light {
-  background-color: #f8f9fa;
-  border-color: #f8f9fa;
+.btn-status {
+  border-radius: 30px !important;
+  padding: 6px .5rem !important;
 }
-
+.btn-light{
+  border-radius: 30px;
+  font-size: 13px;
+  color: #3c3c3c;
+  background: #fff;
+  border: 1px solid #efefef;
+  border-radius: 30px !important;
+  padding: 6px .5rem !important;
+  width: 100px;
+}
 /* Add hover effect to buttons */
 .btn-success:hover,
 .btn-light:hover {

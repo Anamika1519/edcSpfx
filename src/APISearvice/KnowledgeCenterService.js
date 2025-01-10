@@ -108,6 +108,33 @@ export const getKnowledgeCenter = async (_sp, isSuperAdmin) => {
       });
     return arr;
   }
+  export const getKnowledgeCenterByID = async (_sp, id) => {
+    debugger
+    let arr = []
+    let arrs = []
+    await _sp.web.lists.getByTitle("ARGKnowledgeCenter").items.getById(id).select("*,MediaGalleryCategory/Id,MediaGalleryCategory/CategoryName").expand("MediaGalleryCategory")()
+      .then((res) => {
+        console.log(res, ' let arrs=[]');
+        const parsedValues = {
+          Title: res.Title,
+          ID: res.ID,
+          //entity: res.EntityMaster?.Id,
+          //Image: res.Image,
+          MediaGalleriesId: res?.MediaGalleriesId,
+          MediaGalleryJSON: res?.MediaGalleryJSON,
+          Category: res?.MediaGalleryCategory?.Id
+          // other fields as needed
+        };
+        arr.push(parsedValues)
+        arrs = arr
+        console.log(arrs, 'arr');
+      })
+      .catch((error) => {
+        console.log("Error fetching data: ", error);
+      });
+    console.log(arrs, 'arr');
+    return arrs;
+  }
   export const fetchARGKnowledgeCenterInsideData = async (_sp, Id) => {
     let arr = [];
   

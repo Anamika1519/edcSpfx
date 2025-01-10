@@ -16,7 +16,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "../../../CustomCss/mainCustom.scss";
 import "../../verticalSideBar/components/VerticalSidebar.scss";
 import "../../../CustomJSComponents/CustomTable/CustomTable.scss";
-import "../components/adddynamicbanner.scss"
+import "./adddynamicbanner.scss"
 import * as XLSX from 'xlsx';
 import HorizontalNavbar from '../../horizontalNavBar/components/HorizontalNavBar';
 import moment from 'moment';
@@ -447,7 +447,7 @@ const DynamicBannercontext = ({ props }: any) => {
                                 <td style={{ minWidth: '150px', maxWidth: '150px' }}>{item.Title}</td>
 
                                 <td style={{ minWidth: '40px', maxWidth: '40px' }}>  <div className='btn btn-status'> {item.Status} </div> </td>
-                                <td style={{ minWidth: '40px', maxWidth: '40px' }}> {moment(item.Created).format("DD-MMM-YYYY")}</td>
+                                <td style={{ minWidth: '40px', maxWidth: '40px' }}> <div className='btn btn-light'>{moment(item.Created).format("DD-MMM-YYYY")} </div> </td>
                                 <td style={{ minWidth: '50px', maxWidth: '50px' }} className="ng-binding">
                                   <div className="d-flex  pb-0" style={{ justifyContent: 'center', gap: '5px' }}>
                                     <span > <a className="action-icon text-primary" onClick={() => EditBanner(item.ID)}>

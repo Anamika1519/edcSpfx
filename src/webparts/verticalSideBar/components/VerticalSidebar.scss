@@ -217,6 +217,9 @@ a:hover, a:active {
 .mtbalenew  th,.mtable  th {
   position: relative;
 }
+input[type=text][disabled]{
+  background-color: #e9ecef !important;
+}
 .mtbalenew  th .svg-inline--fa,.mtable  th .svg-inline--fa {
   cursor: pointer !important;
   height: 12PX !important;

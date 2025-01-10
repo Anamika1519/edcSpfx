@@ -4,23 +4,24 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
 }
+.card .card-body .quill{
+    height: 165px !important;
+    max-height: 165px !important;
+    overflow-y: auto !important;
+}
 
 /* Ensure inputs and selects have consistent padding and border radius */
 .form-control, 
 .form-select {
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ced4da;
-    box-shadow: none;
-    transition: border-color 0.2s ease-in-out;
+
 }
 
 /* Focused input styling */
 .form-control:focus, 
 .form-select:focus {
-    border-color: #80bdff;
+
     outline: 0;
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    box-shadow:none;
 }
 
 /* Custom button styling for consistency */
@@ -48,12 +49,7 @@
 }
 
 /* Style the description textarea */
-textarea.form-control {
-    resize: none;
-    border-radius: 5px;
-    border: 1px solid #ced4da;
-    padding: 10px;
-}
+
 
 /* Center the form buttons */
 .row.mt-3 .col-12.text-center {
@@ -168,3 +164,22 @@ div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm)
  border-bottom: 1px solid #e1e1e1 !important;
 }
 .table-responsive{display: grid;}
+.disable_ms {
+    opacity: 1 !important;
+    pointer-events: none;
+    font-size: 1rem !important;
+    font-weight: 500 !important;
+}
+.nretabl0 tbody{overflow: hidden !important;}
+.removeb{background: transparent !important; border:0px solid #ccc !important; padding: 0px !important;}
+  .mtbalenew th{padding: 10px 10px !important;}
+  .newpad{padding: 10px !important; }
+  .eventcommm .nose{padding: 0px !important; margin: 0px !important; }
+  .removeb .searchWrapper{border: 0px solid #ccc !important;}
+  .modal .modal-content select.removeb{border: 0px solid #ccc !important;opacity: 1 !important;
+    pointer-events: none;
+    font-size: 1rem !important;
+    font-weight: 500 !important;}
+  .removeb input{background: transparent !important;}
+  .removeb .chip img{display: none !important;}
+  .removeb .chip{background: transparent !important;     color: #212529 !important; font-size: 1rem !important;}

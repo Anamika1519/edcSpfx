@@ -136,7 +136,7 @@ a.filter-menu-item.dropdown-item {
     height: auto; width: 100%;
     border-radius: 15px;
     position: relative;
-    border: 2px solid #54ade0;
+    border: 1px solid #54ade0;
     background-color: var(--ct-secondary-bg);
     box-shadow: var(--ct-box-shadow);
 }
@@ -167,9 +167,9 @@ a.filter-menu-item.dropdown-item {
     font-weight: 800;
     color: #000;
 }
-.gal-box{height: 328px;}
+.gal-box{height: 290px;}
 @media (max-width: 1920px) {.font-16 {font-size: 20px !important; line-height: 28px !important;}
-.gal-box{height: 414px;}
+.gal-box{height: 360px;}
 .gal-box .image-popup {
         height: 245px !important;
     }
@@ -182,13 +182,13 @@ a.filter-menu-item.dropdown-item {
     .gal-box .image-popup {
         height: 235px !important;
     }
-    .gal-box{height: 400px;}
+    .gal-box{height: 350px;}
 }
 @media (max-width: 1660px) {
     .gal-box .image-popup {
         height: 215px !important;
     }
-    .gal-box{height: 375px;}
+    .gal-box{height: 325px;}
     .font-16 {
         font-size: 16px !important;
         line-height: 24px !important;
@@ -198,7 +198,7 @@ a.filter-menu-item.dropdown-item {
     .gal-box .image-popup {
         height: 190px !important;
     }   
-    .gal-box{height: 344px;}
+    .gal-box{height: 300px;}
 }
 @media (max-width: 1280px) {
     .gal-box .image-popup {
@@ -219,7 +219,7 @@ a.filter-menu-item.dropdown-item {
         height: 260px !important;
     }
     .gal-box {
-        height: 386px;
+        height: 360px;
     }
     .gal-box .gall-info h4{height: 30px;}
     .gal-box .gall-info h4 {

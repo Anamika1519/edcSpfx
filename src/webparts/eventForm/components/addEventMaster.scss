@@ -177,4 +177,41 @@
     border-bottom: 1px solid #e1e1e1 !important;
   }
   .table-responsive{display: grid;}
-  .btn-light {padding: 6px 10px !important;}
+  .disable_ms {
+    opacity: 1 !important;
+    pointer-events: none;
+    font-size: 1rem !important;
+    font-weight: 500 !important;
+}
+.mediagallery .modal-dialog{min-width: 80%;}
+.mtbalenew{overflow: auto !important;}
+.mediagallery .modal-header{padding: 0px !important; border: 0px !important;}
+.mtbalenew tbody{overflow-y: visible !important;}
+.removeb{background: transparent !important; border:0px solid #ccc !important; padding: 0px !important;}
+  .mtbalenew th{padding: 10px 10px !important;}
+  .newpad{padding: 10px !important; }
+  .eventcommm .nose{padding: 0px !important; margin: 0px !important; }
+  .removeb .searchWrapper{border: 0px solid #ccc !important;
+    float: left;
+    width: 100%;
+    height: 30px;
+    display: flex
+;
+  }
+  .modal .modal-content select.removeb{border: 0px solid #ccc !important;opacity: 1 !important;
+    pointer-events: none;
+    font-size: 1rem !important;
+    font-weight: 500 !important;}
+  .removeb input{background: transparent !important;}
+  .multiSelectContainer input {
+  
+    margin-top: 3px;
+    height: 28px !important; background: transparent !important;
+  
+  }
+  .multiSelectContainer input[type=text][disabled]{background: transparent !important;}
+  .removeb .chip img{display: none !important;}
+  .scrollrem{
+    overflow: hidden !important;
+  }
+  .removeb .chip{background: transparent !important;     color: #212529 !important; font-size: 1rem !important;}

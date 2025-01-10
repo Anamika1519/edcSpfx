@@ -271,29 +271,29 @@ export const getMyRequest = async (sp, status) => {
     })
   return arr
 }
-export const getMyApproval = async (sp, status) => {
+// export const getMyApproval = async (sp, status) => {
 
-  const currentUser = await sp.web.currentUser();
+//   const currentUser = await sp.web.currentUser();
 
-  let arr = []
+//   let arr = []
 
-  await sp.web.lists.getByTitle("ARGMyRequest").items.select("*,Requester/Id,Requester/Title,Approver/Id,Approver/Title").expand("Approver,Requester")
+//   await sp.web.lists.getByTitle("ARGMyRequest").items.select("*,Requester/Id,Requester/Title,Approver/Id,Approver/Title").expand("Approver,Requester")
 
-    .filter(`ApproverId eq ${currentUser.Id} and Status eq '${status}'`)
+//     .filter(`ApproverId eq ${currentUser.Id} and Status eq '${status}'`)
 
-    .orderBy("Created", false)
+//     .orderBy("Created", false)
 
-    .getAll().then((res) => {
+//     .getAll().then((res) => {
 
-      arr = res
+//       arr = res
 
-      console.log(arr, 'arr');
+//       console.log(arr, 'arr');
 
-    })
+//     })
 
-  return arr
+//   return arr
 
-}
+// }
 // export const gteDMSApproval = async(sp)=>{
 //   alert("DMS")
 //   const currentUser = await sp.web.currentUser();
@@ -364,6 +364,46 @@ export const getMyApproval = async (sp, status) => {
 
 //   return arr; // Return the collected data
 // }
+export const getMyApproval = async (sp, status, actingfor) => {
+  try {
+    alert(`Actingfor is ${actingfor}`);
+    let arr = [];
+    
+    if (!actingfor) {
+      alert(`Actingfor is null ${actingfor}`);
+      const currentUser = await sp.web.currentUser();
+      
+      arr = await sp.web.lists.getByTitle("ARGMyRequest").items.select("*,Requester/Id,Requester/Title,Approver/Id,Approver/Title", "Approver/EMail")
+        .expand("Approver,Requester")
+        .filter(`ApproverId eq ${currentUser.Id} and Status eq '${status}'`)
+        .orderBy("Created", false)
+        .getAll();
+        
+      console.log(arr, 'arr of intranet if actingfor is null');
+    } else {
+      alert(`Actingfor is not null ${actingfor}`);
+      const user = await sp.web.siteUsers.getByEmail(actingfor)();
+      alert(user.Id);
+      
+      if (user.Id) {
+        arr = await sp.web.lists.getByTitle("ARGMyRequest").items.select("*,Requester/Id,Requester/Title,Approver/Id,Approver/Title" ,"Approver/EMail")
+          .expand("Approver,Requester")
+          .filter(`ApproverId eq ${user.Id} and Status eq '${status}'`)
+          .orderBy("Created", false)
+          .getAll();
+        
+        console.log(arr, 'arr of intranet if actingfor is not null');
+      } else {
+        console.log("User not found in Approval");
+      }
+    }
+    
+    return arr;
+  } catch (error) {
+    console.error("Error fetching list items:", error);
+    return [];
+  }
+};
 export const gteDMSApproval = async (sp, value) => {
   try {
     const currentUser = await sp.web.currentUser();

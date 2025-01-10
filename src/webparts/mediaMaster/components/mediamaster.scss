@@ -11,12 +11,36 @@
   min-height: calc(100vh - 159px);
 }
 #s4-workspace{overflow: hidden !important;}
+.btn-status {
+  border-radius: 30px !important;
+  padding: 6px .5rem !important;
+}
 .btn-light{
   border-radius: 30px;
   font-size: 13px;
   color: #3c3c3c;
   background: #fff;
   border: 1px solid #efefef;
+  border-radius: 30px !important;
+    padding: 6px .5rem !important;
+    width: 100px; cursor: auto;
+}
+.mtbalenew th .svg-inline--fa {
+
+  top: 8px;
+}
+.mtbalenew th #myDropdown{min-width: 86px !important;
+  padding: 6px !important;
+  right: 1px !important;
+  text-align: center;
+  transform: translateY(0) !important;
+  width: 70px;
+  align-items: center;
+ 
+;
+}
+.mtbalenew th #myDropdown svg{
+  top: 0px !important;
 }
 .indexdesign {
   background: #d2effa !important;
@@ -117,4 +141,6 @@ input.form-control.inputcss {
   
   #s4-workspace{overflow-y: auto !important;}
 }
+
+.mtbalenew tbody{overflow: visible !important;}
   .mtable td{font-size: 14px; color: #3c3c3c;  border-bottom: 1px solid #efefef !important;  vertical-align: middle;}

@@ -12,14 +12,33 @@
   padding: 10px;
   border-radius: 20px;
   text-align: center;
-  display: flex; gap: 10px;
+  display: flex; gap: 0px;
   justify-content: center;border: 1px solid #54ade0 !important;
 }
 .mtable td{font-size: 14px; border-bottom: 1px solid #efefef !important;   vertical-align: middle;}
 .mtable td:first-child{border-top-left-radius:0px; border-bottom-left-radius: 0px;}
 .mtable td:last-child{border-top-right-radius: 0px; border-bottom-right-radius: 0px;}
-.nav-tabs .nav-link.active{background:#54ade0 !important ; color: #fff;}
-.nav-tabs .nav-link{border:1px solid #54ade0;}
+
+.nav-tabs .nav-link{
+  background-color: #fff;
+  border: 1px solid #54ade0 !important;
+  border-radius: 3px;
+  color: #000;
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 0;
+  margin-right: 2px;
+  margin: 0 5px;
+  padding: .7rem 1rem !important;
+  transition: all .3s ease-out;
+
+}
+.btn-status {
+  border-radius: 30px !important;
+  padding: 6px .5rem !important;
+}
+.nav-tabs .nav-link.active{background:#1fb0e5 !important ; color: #fff;}
 input.form-control.inputcss {
   display: block;
   width: 100%;
@@ -84,7 +103,11 @@ input.form-control.inputcss {
     color: #3c3c3c;
     background: #fff;
     border: 1px solid #efefef;
+    border-radius: 30px !important;
+    padding: 6px .5rem !important;
+    width: 100px;
   }
+  
   .indexdesign {
     background: #d2effa !important;
     border: none;
@@ -107,6 +130,8 @@ input.form-control.inputcss {
     .paddb{
       min-height: calc(100vh - 159px);
     }
+    .mtbalenew tbody{overflow: hidden !important;}
+    .removeb .searchWrapper input{background:transparent !important;}
     #s4-workspace{overflow: hidden !important;}
     @media(max-width:1920px){
       .paddb{min-height: calc(100vh - 165px);}

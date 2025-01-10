@@ -43,7 +43,13 @@
   top: 0px !important;
   width: 100% !important;
 }
-.dropdown #myDropdown{  padding:10px 0px 0px 0px !important;  min-width: 323px !important;}
+.dropdown #myDropdown{  padding:0px 0px 0px 0px !important;  min-width: 130px !important;}
+.dropdown #myDropdown .dropdown-content a {
+  color: #707070 !important;
+ 
+  padding: 10px 16px !important;
+}
+
 .navcss{padding-right: 0px;}
 .rounded-circlecss1 {
   width: 40px !important;
@@ -148,8 +154,15 @@ width: 450px;
 
   right: 1.5rem !important;
 }
+
+.newdrop .dropdown-content a{
+  color: #707070 !important;
+}
+.newdrop .dropdown-content a:hover {
+  background-color: #fff !important;  color: #1fb0e5 !important;
+}
 .dropdown-content a:hover {
-  background-color: #fff !important;
+  background-color: #fff !important;  
 }
 .link_name1:hover span{color: #1fb0e5 !important;}
 .newi:hover{color: #1fb0e5 !important; cursor: pointer !important;}
@@ -184,3 +197,8 @@ span.badge.bg-danger.noti-icon-badge {
 @media(max-width:640px){
   .newalinc{align-items: baseline;}
 }
+.newdrop{
+  right: 0rem !important; top: 32px !important;
+}
+.newdrop a{background: #fff;font-size: 14px; text-align: center; padding: 9px 16px !important; color: #707070 !important;}
+.newdrop a:hover{ color: #1fb0e5 !important;}

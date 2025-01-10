@@ -2325,7 +2325,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
               <div className="card-body">
 
 
-                <div className="row mt-2" >
+                <div className="" >
 
                   {Loading ?
                     <div style={{ minHeight: '100vh', marginTop: '100px' }} className="loadernewadd mt-10">
@@ -2350,6 +2350,12 @@ const AddMediaGalaryContext = ({ props }: any) => {
                     // </div>
                     :
                     <form className='row' >
+                      <div className="">
+
+<strong className='font-16 mb-1'>Basic Information</strong>
+<p className='font-14 text-muted mb-3 mt-1'>Specify basic information </p>
+
+</div>
 
                       <div className="col-lg-4">
 
@@ -2429,7 +2435,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
                       <div className="col-lg-4">
 
-                        <div className="mb-3">
+                        <div className="mb-0">
 
                           <label htmlFor="Category" className="form-label">
 
@@ -2472,7 +2478,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
                       <div className="col-lg-4">
 
-                        <div className="mb-3">
+                        <div className="mb-0">
 
                           <div className='d-flex justify-content-between'>
 
@@ -2538,7 +2544,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
                       <div className="col-lg-4">
 
-                        <div className="mb-3">
+                        <div className="mb-0">
 
 
                           <div className='d-flex justify-content-between'>
@@ -2633,7 +2639,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
                     <div className="">
 
                       <strong className='font-16 mb-1'>Approval Hierarchy</strong>
-                      <p className='font-14 text-muted mb-3'>Define Approaval Hierarchy for the documents.</p>
+                      <p className='font-14 text-muted mb-3 mt-1'>Define Approaval Hierarchy for the documents.</p>
 
                     </div>
 
@@ -2680,21 +2686,22 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
                       </div> */}
 
-<table className="mtbalenew ">
+<table className="mtbalenew nretabl0">
                                                     <thead>
                                                       <tr>
                                                       <th style={{minWidth:'60px', maxWidth:'60px'}} className="newpad">  Select Level</th>
                                                       <th className="newpad"> Select Approver</th>
                                                       </tr>
                                                     </thead>
-                                                    </table>
+                                                    <tbody style={{overflowX:'hidden',overflow:'initial'}}>
+                                                    
                       {rows.map((row: any) => (
 
                         <div className="row mb-0 mt-0" key={row.id}>
-                          <table className="mtbalenew ">
-                                                    <tbody>
-                                                      <tr>
-                                                      <td style={{minWidth:'60px', maxWidth:'60px'}} className="">   
+                        
+                                                    
+                                                      <tr style={{overflow:'initial'}}>
+                                                      <td style={{minWidth:'60px', maxWidth:'60px',overflow:'initial'}} className="">   
                                                         <select style={{border:"0px solid #ccc", background:'#fff'}}
 
 className="form-select removeb"
@@ -2742,7 +2749,7 @@ onChange={(e) => {
 ))}
 
 </select>  </td>
-                                                      <td className=""> 
+                                                      <td style={{overflow:'initial'}} className=""> 
                                                       <Multiselect className="removeb" style={{border:"0px solid #ccc", background:'#fff'}}
 
 options={row.approvedUserList}
@@ -2763,8 +2770,8 @@ hidePlaceholder={true}
 
                                                       </td>
                                                       </tr>
-                                                    </tbody>
-                                                    </table>
+                                                   
+                                                    
 
                           <div className="col-12 col-md-5">
 
@@ -2866,6 +2873,11 @@ hidePlaceholder={true}
                         </div>
 
                       ))}
+                      <tr>
+                        <td style={{height:'30px', background:'#fff', border:'0px solid #ccc'}}></td>
+                        <td style={{height:'30px', background:'#fff', border:'0px solid #ccc'}}> </td>
+                      </tr>
+  </tbody>  </table>
 
                     </div>
 
@@ -2914,31 +2926,31 @@ hidePlaceholder={true}
 
 {!InputDisabled ? (<div className="text-center butncss">
 
-<div className="btn btn-success waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleSaveAsDraft}>
+<div className="btn btn-success waves-effect waves-light m-1" style={{ width:'145px' }} onClick={handleSaveAsDraft}>
 
-  <div className='d-flex' style={{ justifyContent: 'space-around' }}>
+  <div className='d-flex' style={{ justifyContent: 'center' }}>
 
-    <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} alt="Check" /> Save As Draft
-
-  </div>
-
-</div>
-
-<div className="btn btn-success waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleFormSubmit}>
-
-  <div className='d-flex' style={{ justifyContent: 'space-around', width: '70px' }}>
-
-    <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} alt="Check" /> Submit
+    <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem', marginRight:'3px' }} alt="Check" /> Save As Draft
 
   </div>
 
 </div>
 
-<div className="btn cancel-btn waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleCancel}>
+<div className="btn btn-success waves-effect waves-light m-1" style={{ width:'145px' }} onClick={handleFormSubmit}>
 
-  <div className='d-flex' style={{ justifyContent: 'space-around', width: '70px' }}>
+  <div className='d-flex' style={{ justifyContent: 'center' }}>
 
-    <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }} className='me-0' alt="x" />
+    <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem', marginRight:'3px' }} alt="Check" /> Submit
+
+  </div>
+
+</div>
+
+<div className="btn cancel-btn waves-effect waves-light m-1" style={{ width:'145px' }} onClick={handleCancel}>
+
+  <div className='d-flex' style={{ justifyContent: 'center'}}>
+
+    <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem', marginRight:'3px' }}  alt="x" />
 
     Cancel
 
@@ -2947,7 +2959,7 @@ hidePlaceholder={true}
 </div>
 
 </div>) : (modeValue == 'view') && (<div className="text-center butncss">
-<div className="btn btn-light waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleCancel}>
+<div className="btn cancel-btn waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleCancel}>
 
   <div className='d-flex' style={{ justifyContent: 'space-around', width: '70px' }}>
 

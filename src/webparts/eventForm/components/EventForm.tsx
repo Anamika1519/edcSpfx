@@ -106,7 +106,7 @@ const HelloWorldContext = ({ props }: any) => {
       "MainComponentURl": `${siteUrl}/SitePages/Settings.aspx`
     },
     {
-      "ChildComponent": "Add-Event",
+      "ChildComponent": "Add-Event test",
       "ChildComponentURl": `${siteUrl}/SitePages/EventMaster.aspx`
     }
   ]
@@ -1372,7 +1372,7 @@ const HelloWorldContext = ({ props }: any) => {
             </div>
             <div className="card mt-3">
               <div className="card-body">
-                <div className="row mt-2">
+                <div className="mt-0">
                   {Loading ?
                     <div style={{ minHeight: '100vh', marginTop: '100px' }} className="loadernewadd mt-10">
                       <div>
@@ -1396,6 +1396,12 @@ const HelloWorldContext = ({ props }: any) => {
                     // </div>
                     :
                     <form className='row'  >
+                      <div className="">
+
+<strong className='font-16 mb-1'>Basic Information</strong>
+<p className='font-14 text-muted mb-3 mt-1'>Specify basic information </p>
+
+</div>
                       <div className="col-lg-4">
                         <div className="mb-3">
                           <label htmlFor="title" className="form-label">
@@ -1406,7 +1412,7 @@ const HelloWorldContext = ({ props }: any) => {
                             id="title"
                             name="EventName"
                             placeholder='Enter Event Name'
-                            className={`form-control inputcs ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                            className={`form-control ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
                             value={formData.EventName}
                             onChange={(e) => onChange(e.target.name, e.target.value)}
                             disabled={InputDisabled}
@@ -1423,7 +1429,7 @@ const HelloWorldContext = ({ props }: any) => {
                             id="EventDate"
                             name="EventDate"
                             placeholder='Enter Event Date'
-                            className={`form-control inputcs ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                            className={`form-control ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
                             value={formData.EventDate}
                             // value={formData.EventDate}
                             onChange={(e) => onChange(e.target.name, e.target.value)}
@@ -1442,7 +1448,7 @@ const HelloWorldContext = ({ props }: any) => {
                             name="RegistrationDueDate"
                             value={formData.RegistrationDueDate}
                             placeholder='Enter Registration Due Date'
-                            className={`form-control inputcs ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                            className={`form-control ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
                             // value={formData.RegistrationDueDate}
                             onChange={(e) => onChange(e.target.name, e.target.value)}
                             disabled={InputDisabled}
@@ -1457,7 +1463,7 @@ const HelloWorldContext = ({ props }: any) => {
                             Entity <span className="text-danger">*</span>
                           </label>
                           <select
-                            className={`form-control inputcs ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                            className={`form-control ${(!ValidSubmit) ? "border-on-error" : ""}`}
                             id="EntityId"
                             name="EntityId"
                             value={formData.EntityId}
@@ -1507,7 +1513,7 @@ const HelloWorldContext = ({ props }: any) => {
                             name="bannerImage"
                             accept=".jpeg,.jpg,.png,.gif"
                             //value={}
-                            className={`form-control inputcs ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                            className={`form-control ${(!ValidSubmit) ? "border-on-error" : ""}`}
                             onChange={(e) => onFileChange(e, "bannerimg", "Document")}
                             disabled={InputDisabled}
                           />
@@ -1545,7 +1551,7 @@ const HelloWorldContext = ({ props }: any) => {
                             id="EventGallery"
                             name="EventGallery"
                             accept=".jpeg,.jpg,.png,.gif,.mp4,.mp3,.mkv,.webm,.flv,.vob,.ogg,.wmv,.yuv.,MTS,.TS,.m4p..mpeg,.mpe,.mpv,.m4v,.svi,.3gp,.3g2,.roq,.nsv,.flv,.f4v,.f4p,.f4a,.f4b"
-                            className={`form-control inputcs ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                            className={`form-control ${(!ValidSubmit) ? "border-on-error" : ""}`}
                             multiple
                             onChange={(e) => onFileChange(e, "Gallery", "EventGallery")}
                             disabled={InputDisabled}
@@ -1594,7 +1600,7 @@ const HelloWorldContext = ({ props }: any) => {
                             Event Overview
                           </label>
                           <textarea
-                            className="form-control inputcss"
+                            className="form-control"
                             id="overview"
                             placeholder='Enter Event Overview'
                             name="Overview"
@@ -1609,13 +1615,13 @@ const HelloWorldContext = ({ props }: any) => {
 
 
                       <div className="col-lg-12">
-                        <div className="mb-3">
+                        <div className="mb-0">
                           <label htmlFor="EventAgenda" className="form-label">
                             Event Agenda
                           </label>
                           <div style={{ display: "contents", justifyContent: "start" }}>
                             <textarea
-                              className="form-control inputcss"
+                              className="form-control"
                               id="EventAgenda"
                               placeholder='Enter Event Agenda'
                               name="EventAgenda"
@@ -1629,30 +1635,7 @@ const HelloWorldContext = ({ props }: any) => {
                         </div>
                       </div>
 
-                      {
-                        !InputDisabled ? (<div className="text-center butncss">
-                          <div className="btn btn-success waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleSaveAsDraft}>
-                            <div className='d-flex' style={{ justifyContent: 'space-around' }}>
-                              <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} alt="Check" /> Save As Draft
-                            </div>
-                          </div>
-                          <div className="btn btn-success waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleFormSubmit}>
-                            <div className='d-flex' style={{ justifyContent: 'space-around', width: '70px' }}>
-                              <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} alt="Check" /> Submit
-                            </div>
-                          </div>
-                          <button type="button" className="btn btn-light waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleCancel}>
-                            <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }}
-                              className='me-1' alt="x" />
-                            Cancel
-                          </button>
-                        </div>) : (<div className="text-center butncss">
-                          <button type="button" className="btn btn-light waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleCancel}>
-                            <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }}
-                              className='me-1' alt="x" />
-                            Cancel
-                          </button>
-                        </div>)}
+                     
                     </form>
                   }
                 </div>
@@ -1660,11 +1643,14 @@ const HelloWorldContext = ({ props }: any) => {
             </div>
             {
               rows != null && rows.length > 0 && !ApprovalMode && (
-                <div className="mt-2">
-                  <div className="card cardborder p-4">
-                    <div className="font-16">
-                      <strong>Approval Hierarchy</strong>
-                    </div>
+                <div className="card cardborder mt-2">
+                  <div className="card-body p-4">
+                  <div className="">
+
+<strong className='font-16 mb-1'>Approval Hierarchy</strong>
+<p className='font-14 text-muted mb-3 mt-1'>Define Approaval Hierarchy for the documents.</p>
+
+</div>
                     {/* <div className="d-flex justify-content-between align-items-center">
                       <p className="font-14 mb-3 flex-grow-1">
                         Define approval hierarchy for the documents submitted by Team members in this folder.
@@ -1687,15 +1673,21 @@ const HelloWorldContext = ({ props }: any) => {
                           <label className="form-label">Approver</label>
                         </div>
                       </div> */}
+                      <table className="mtbalenew scrollrem">
+                                                    <thead>
+                                                      <tr>
+                                                      <th style={{minWidth:'60px', maxWidth:'60px'}} className="newpad">  Select Level</th>
+                                                      <th className="newpad"> Select Approver</th>
+                                                      </tr>
+                                                    </thead>
+                                                    <tbody style={{overflowX:'hidden',overflow:'initial'}}>
 
                       {rows.map((row: any) => (
-                        <div className="row mb-2" key={row.id}>
-                          <div className="col-12 col-md-5">
-                            <label htmlFor={`Level-${row.id}`} className="form-label">
-                              Select Level
-                            </label>
-                            <select
-                              className="form-select"
+                        <div className="row mb-0" key={row.id}>
+                                                                  <tr style={{overflow:'initial'}}>
+                                                                  <td style={{minWidth:'60px', maxWidth:'60px',overflow:'initial'}} className=""> 
+                                                                  <select style={{border:"0px solid #ccc", background:'#fff'}}
+                              className="form-select removeb"
                               id={`Level-${row.id}`}
                               name="Level"
                               value={row.LevelId}
@@ -1718,14 +1710,9 @@ const HelloWorldContext = ({ props }: any) => {
                                   {item.Level}
                                 </option>
                               ))}
-                            </select>
-                          </div>
-
-                          <div className="col-12 col-md-5">
-                            <label htmlFor={`approver-${row.id}`} className="form-label">
-                              Select Approver
-                            </label>
-                            <Multiselect
+                            </select> </td>
+                                                                    <td style={{overflow:'initial'}}>
+                                                                    <Multiselect className="removeb" style={{border:"0px solid #ccc", background:'#fff'}}
                               options={row.approvedUserList}
                               selectedValues={row.approvedUserListupdate}
                               onSelect={(selected) => handleUserSelect(selected, row.id)}
@@ -1735,6 +1722,21 @@ const HelloWorldContext = ({ props }: any) => {
                               placeholder=''
                               hidePlaceholder={true}
                             />
+
+                                                                    </td>
+                                                                    </tr>
+                          <div className="col-12 col-md-5">
+                            {/* <label htmlFor={`Level-${row.id}`} className="form-label">
+                              Select Level
+                            </label> */}
+                         
+                          </div>
+
+                          <div className="col-12 col-md-5">
+                            {/* <label htmlFor={`approver-${row.id}`} className="form-label">
+                              Select Approver
+                            </label> */}
+                          
                           </div>
 
                           {/* <div className="col-12 col-md-2 d-flex align-items-center" style={{ gap: '10px' }}>
@@ -1776,6 +1778,11 @@ const HelloWorldContext = ({ props }: any) => {
                           </div> */}
                         </div>
                       ))}
+                      <tr>
+                        <td style={{height:'30px', background:'#fff', border:'0px solid #ccc'}}></td>
+                        <td style={{height:'30px', background:'#fff', border:'0px solid #ccc'}}> </td>
+                      </tr>
+  </tbody>  </table>
                     </div>
 
                     {/* <div className="text-center butncss">
@@ -1807,6 +1814,31 @@ const HelloWorldContext = ({ props }: any) => {
             {
               <WorkflowAuditHistory ContentItemId={editID} ContentType={CONTENTTYPE_Event} ctx={props.context} />
             }
+
+{
+                        !InputDisabled ? (<div className="text-center butncss mb-4">
+                          <div className="btn btn-success waves-effect waves-light m-1" style={{ width:'145px' }} onClick={handleSaveAsDraft}>
+                            <div className='d-flex' style={{ justifyContent: 'center' }}>
+                              <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem',marginRight:'3px' }} alt="Check" /> Save As Draft
+                            </div>
+                          </div>
+                          <div className="btn btn-success waves-effect waves-light m-1" style={{ width:'145px' }} onClick={handleFormSubmit}>
+                            <div className='d-flex' style={{ justifyContent: 'center' }}>
+                              <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem', marginRight:'3px' }} alt="Check" /> Submit
+                            </div>
+                          </div>
+                          <button type="button" className="btn cancel-btn waves-effect waves-light m-1" style={{ width:'145px'}} onClick={handleCancel}>
+                            <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem', marginRight:'3px' }}
+                              className='me-1' alt="x" />
+                            Cancel
+                          </button>
+                        </div>) : (<div className="text-center butncss mb-4">
+                          <button type="button" className="btn cancel-btn waves-effect waves-light m-1" onClick={handleCancel}>
+                            <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem', marginRight:'3px' }}
+                              className='me-1' alt="x" />
+                            Cancel
+                          </button>
+                        </div>)}
             {/* Modal to display uploaded files */}
             <Modal show={showModal} onHide={() => setShowModal(false)} size='lg' >
               <Modal.Header closeButton>

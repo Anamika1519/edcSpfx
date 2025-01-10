@@ -109,7 +109,7 @@ export const WorkflowAuditHistory = (props: IWorkflowAuditHistoryProps) => {
   return (
 
 
-    <div className="card cardCss mb-0 mt-4">
+    <div className="card cardCss mb-0 mt-3">
 
  
       <div className="card-body"> 
@@ -118,7 +118,7 @@ export const WorkflowAuditHistory = (props: IWorkflowAuditHistoryProps) => {
         <div id="cardCollpase4" className="collapse show">
 
           <h3 className="font-16 mb-1 fw-bold text-dark">Audit History</h3>
-          <p className="font-14 mb-3 text-muted"></p>
+          <p className="font-14 mb-3 text-muted">Below table describes the status of approval at various level </p>
 
           {console.log("AuditHistoryRows", AuditHistoryRows)}
 

@@ -38,7 +38,7 @@ const AddDynamicBannerContext = ({ props }: any) => {
   const { setHide }: any = context;
   const siteUrl = props.siteUrl;
   const tenantUrl = props.siteUrl.split("/sites/")[0];
-  const [BnnerImagepostArr, setBannerImagepostArr]:any = React.useState();
+  const [BnnerImagepostArr, setBannerImagepostArr]: any = React.useState();
   const inputFile = useRef(null);
   const [ValidSubmit, setValidSubmit] = React.useState(true);
   const [bannerByIDArr, setBannerByIdArr] = React.useState({
@@ -62,8 +62,8 @@ const AddDynamicBannerContext = ({ props }: any) => {
   })
 
   const validateForm = async () => {
-     const { title, URL,description } = formData;
-    
+    const { title, URL, description } = formData;
+
     let valid = true;
     let validatetitlelength = false;
     let validateTitle = false;
@@ -81,21 +81,20 @@ const AddDynamicBannerContext = ({ props }: any) => {
       valid = false;
     }
     if (!title) {
-      
+
       valid = false;
     }
     else if (!description) {
-     
+
       valid = false;
-    } else if (BnnerImagepostArr.length == 0)
-      {
-     
-        valid = false;
-      }
-      setValidSubmit(valid);
-      if(!valid) 
-        Swal.fire(errormsg !== "" ? errormsg : 'Please fill all the mandatory fields.');
-     
+    } else if (BnnerImagepostArr.length == 0) {
+
+      valid = false;
+    }
+    setValidSubmit(valid);
+    if (!valid)
+      Swal.fire(errormsg !== "" ? errormsg : 'Please fill all the mandatory fields.');
+
     return valid;
   };
   const handleReset = () => {
@@ -157,11 +156,11 @@ const AddDynamicBannerContext = ({ props }: any) => {
 
   //#region  all api call
   const ApiCallFunc = async () => {
-    setCurrentUser(await getCurrentUser(sp,siteUrl))
+    setCurrentUser(await getCurrentUser(sp, siteUrl))
     setBaseUrl(await (getUrl(sp)))
 
 
-   
+
 
     //setBannerByIdArr(bannerByIDArrs)
     //setFormData(bannerByIDArr)
@@ -184,16 +183,16 @@ const AddDynamicBannerContext = ({ props }: any) => {
           URL: setBannerById[0].URL
         }
         let banneimagearr = []
-       // banneimagearr = JSON.parse(setBannerById[0].BannerImage)
-       banneimagearr = setBannerById[0].BannerImage
-       console.log(setBannerById, 'setBannerById', setBannerById[0].BannerImage, banneimagearr);
+        // banneimagearr = JSON.parse(setBannerById[0].BannerImage)
+        banneimagearr = setBannerById[0].BannerImage
+        console.log(setBannerById, 'setBannerById', setBannerById[0].BannerImage, banneimagearr);
         setBannerImagepostArr(banneimagearr);
         setFormData(arr)
       }
     }
   }
   //#endregion
-console.log(siteUrl)
+  console.log(siteUrl)
   //#region OnchangeData
   const onChange = (name: string, value: string) => {
     debugger
@@ -207,7 +206,7 @@ console.log(siteUrl)
   //#region File select function
   const onFileChange = async (event: React.ChangeEvent<HTMLInputElement>, libraryName: string, docLib: string) => {
     debugger;
-    let arrr:any[]=[];
+    let arrr: any[] = [];
     event.preventDefault();
     let uloadBannerImageFiles: any[] = [];
 
@@ -216,10 +215,10 @@ console.log(siteUrl)
 
       if (libraryName === "Gallery" || libraryName === "bannerimg") {
         const imageVideoFiles = files.filter(file =>
-          file.type.startsWith('image/') 
+          file.type.startsWith('image/')
           //|| file.type.startsWith('video/')
         );
-       
+
         setBannerImagepostArr(arrr);
         console.log("imageVideoFiles", files, imageVideoFiles, BnnerImagepostArr)
         if (imageVideoFiles.length > 0) {
@@ -283,168 +282,168 @@ console.log(siteUrl)
 
   const handleCancel = () => {
     debugger
-    window.location.href =  `${siteUrl}/SitePages/BannerMaster.aspx`;
+    window.location.href = `${siteUrl}/SitePages/BannerMaster.aspx`;
   }
   // Handle form submission
   //#region  Submit Form
   const handleFormSubmit = async () => {
-   
+
     if (await validateForm()) {
-    Swal.fire({
-      title: 'Do you want to submit',
-      showConfirmButton: true,
-      showCancelButton: true,
-      confirmButtonText: "Yes",
-      cancelButtonText: "No",
-      icon: 'warning'
-    }
-    ).then(async (result) => {
-      //console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
-      if (result.isConfirmed) {
-        // Swal.fire("Saved!", "", "success");
-        
-        let bannerImageArray: any=[];
-        let galleryIds: any[] = [];
-        let documentIds: any[] = [];
-        let galleryArray: any[] = [];
-        let documentArray: any[] = [];
+      Swal.fire({
+        title: 'Do you want to submit',
+        showConfirmButton: true,
+        showCancelButton: true,
+        confirmButtonText: "Yes",
+        cancelButtonText: "No",
+        icon: 'warning'
+      }
+      ).then(async (result) => {
+        //console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
+        if (result.isConfirmed) {
+          // Swal.fire("Saved!", "", "success");
 
-        // formData.FeaturedAnnouncement === "on"?  true :false;
+          let bannerImageArray: any = [];
+          let galleryIds: any[] = [];
+          let documentIds: any[] = [];
+          let galleryArray: any[] = [];
+          let documentArray: any[] = [];
 
-        if (editID) {
-          // Upload Banner Images
-          // if (BnnerImagepostArr.length > 0) {
-          //   for (const file of BnnerImagepostArr) {
-          //     if (!file.serverRelativeUrl) {
-          //       // const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
-          //       bannerImageArray = await uploadFile(file, sp, "Documents", "https://alrostamanigroupae.sharepoint.com");
-          //     }
+          // formData.FeaturedAnnouncement === "on"?  true :false;
 
-          //   }
-          // }
-          if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
-            for (const file of BnnerImagepostArr[0].files) {
-              //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
-              bannerImageArray = await uploadFile(file, sp, "Documents", tenantUrl);
+          if (editID) {
+            // Upload Banner Images
+            // if (BnnerImagepostArr.length > 0) {
+            //   for (const file of BnnerImagepostArr) {
+            //     if (!file.serverRelativeUrl) {
+            //       // const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
+            //       bannerImageArray = await uploadFile(file, sp, "Documents", "https://alrostamanigroupae.sharepoint.com");
+            //     }
+
+            //   }
+            // }
+            if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
+              for (const file of BnnerImagepostArr[0].files) {
+                //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
+                bannerImageArray = await uploadFile(file, sp, "Documents", tenantUrl);
+              }
             }
-          }
-          else if (BnnerImagepostArr.length > 0) {
-            bannerImageArray = BnnerImagepostArr[0];
+            else if (BnnerImagepostArr.length > 0) {
+              bannerImageArray = BnnerImagepostArr[0];
+            }
+            else {
+              bannerImageArray = null
+            }
+            debugger
+            let bannerPost = {}
+            if (BnnerImagepostArr.serverRelativeUrl != undefined && BnnerImagepostArr.serverRelativeUrl != null) {
+              let bannerPost = {
+                filename: BnnerImagepostArr.fileName,
+                size: BnnerImagepostArr.size,
+                type: BnnerImagepostArr.type
+              }
+              const jsonString = JSON.stringify(bannerPost)
+              // Create Post
+              const postPayload = {
+                Title: formData.title,
+                Description: formData.description,
+                IsImage: formData.IsImage === "on" ? true : false,
+                // IsVideo: formData.IsVedio === "on"?  true :false,
+                URL: formData.URL,
+                Status: "Submitted",
+                AuthorId: currentUser.Id,
+                BannerImage: JSON.stringify(bannerImageArray),
+                BannerImageJSON: jsonString
+              };
+              console.log(postPayload);
+              const postResult = await updateItem(postPayload, sp, editID);
+              const postId = postResult?.data?.ID;
+
+              if (postResult != null) {
+                sessionStorage.removeItem("bannerId")
+                window.location.href = `${siteUrl}/SitePages/BannerMaster.aspx`;
+              }
+            }
+            else {
+              const postPayload = {
+                Title: formData.title,
+                Description: formData.description,
+                IsImage: formData.IsImage === "on" ? true : false,
+                // IsVideo: formData.IsVedio === "on"?  true :false,
+                URL: formData.URL,
+                Status: "Submitted",
+                AuthorId: currentUser.Id,
+                BannerImage: JSON.stringify(bannerImageArray),
+                // BannerImageJSON: jsonString
+              };
+              console.log(postPayload);
+              const postResult = await updateItem(postPayload, sp, editID);
+              const postId = postResult?.data?.ID;
+              if (postResult != null) {
+                sessionStorage.removeItem("bannerId")
+                setTimeout(() => {
+
+                  window.location.href = `${siteUrl}/SitePages/BannerMaster.aspx`;
+                }, 2000);
+
+              }
+            }
+            // let bannerImg =JSON.stringify(BnnerImagepostArr[0])
+
           }
           else {
-            bannerImageArray = null
-          }
-          debugger
-          let bannerPost={}
-          if (BnnerImagepostArr.serverRelativeUrl!=undefined&& BnnerImagepostArr.serverRelativeUrl!=null) {
-          let bannerPost = {
-            filename: BnnerImagepostArr.fileName,
-            size: BnnerImagepostArr.size,
-            type: BnnerImagepostArr.type
-          }
-          const jsonString = JSON.stringify(bannerPost)
-          // Create Post
-          const postPayload = {
-            Title: formData.title,
-            Description: formData.description,
-            IsImage: formData.IsImage === "on" ? true : false,
-            // IsVideo: formData.IsVedio === "on"?  true :false,
-            URL: formData.URL,
-            Status: "Submitted",
-            AuthorId: currentUser.Id,
-            BannerImage:JSON.stringify(bannerImageArray),
-            BannerImageJSON: jsonString
-          };
-          console.log(postPayload);
-          const postResult = await updateItem(postPayload,sp, editID);
-          const postId = postResult?.data?.ID;
-       
-          if (postResult != null) {
-            sessionStorage.removeItem("bannerId")
-            window.location.href = `${siteUrl}/SitePages/BannerMaster.aspx`;
-          }
-        }
-        else{
-          const postPayload = {
-            Title: formData.title,
-            Description: formData.description,
-            IsImage: formData.IsImage === "on" ? true : false,
-            // IsVideo: formData.IsVedio === "on"?  true :false,
-            URL: formData.URL,
-            Status: "Submitted",
-            AuthorId: currentUser.Id,
-            BannerImage:JSON.stringify(bannerImageArray),
-            // BannerImageJSON: jsonString
-          };
-          console.log(postPayload);
-          const postResult = await updateItem(postPayload,sp,editID);
-          const postId = postResult?.data?.ID;
-          if (postResult != null) {
-            sessionStorage.removeItem("bannerId")
-            setTimeout(() => {
-              
-              window.location.href = `${siteUrl}/SitePages/BannerMaster.aspx`;
-            }, 2000);
-           
-          }
-        }
-          // let bannerImg =JSON.stringify(BnnerImagepostArr[0])
-         
-        }
-        else {
-          // Upload Banner Images
-          // if (BnnerImagepostArr.length > 0) {
-          //   for (const file of BnnerImagepostArr) {
-          //     // const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
-          //     bannerImageArray = await uploadFile(file, sp, "Documents", "https://alrostamanigroupae.sharepoint.com");
-          //   }
-          // }
-          if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
-            for (const file of BnnerImagepostArr[0].files) {
-              //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
-              bannerImageArray = await uploadFile(file, sp, "Documents", tenantUrl);
+            // Upload Banner Images
+            // if (BnnerImagepostArr.length > 0) {
+            //   for (const file of BnnerImagepostArr) {
+            //     // const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
+            //     bannerImageArray = await uploadFile(file, sp, "Documents", "https://alrostamanigroupae.sharepoint.com");
+            //   }
+            // }
+            if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
+              for (const file of BnnerImagepostArr[0].files) {
+                //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
+                bannerImageArray = await uploadFile(file, sp, "Documents", tenantUrl);
+              }
+            }
+            debugger
+            let bannerPost = {
+              filename: BnnerImagepostArr.name,
+              size: BnnerImagepostArr.size,
+              type: BnnerImagepostArr.type
+            }
+            // let bannerImg =JSON.stringify(BnnerImagepostArr[0])
+            const jsonString = JSON.stringify(bannerPost)
+            // Create Post
+            const postPayload = {
+              Title: formData.title,
+              Description: formData.description,
+              IsImage: formData.IsImage === "on" ? true : false,
+              // IsVideo: formData.IsVedio === "on"?  true :false,
+              URL: formData.URL,
+              Status: "Submitted",
+              AuthorId: currentUser.Id,
+              BannerImage: JSON.stringify(bannerImageArray),
+              BannerImageJSON: jsonString
+            };
+            console.log(postPayload);
+            const postResult = await addItem(postPayload, sp);
+            const postId = postResult?.data?.ID;
+            if (postResult != null) {
+              sessionStorage.removeItem("bannerId")
+              setTimeout(() => {
+                window.location.href = `${siteUrl}/SitePages/BannerMaster.aspx`;
+              }, 2000);
+
             }
           }
-          debugger
-          let bannerPost = {
-            filename: BnnerImagepostArr.name,
-            size: BnnerImagepostArr.size,
-            type: BnnerImagepostArr.type
-          }
-          // let bannerImg =JSON.stringify(BnnerImagepostArr[0])
-          const jsonString = JSON.stringify(bannerPost)
-          // Create Post
-          const postPayload = {
-            Title: formData.title,
-            Description: formData.description,
-            IsImage: formData.IsImage === "on" ? true : false,
-            // IsVideo: formData.IsVedio === "on"?  true :false,
-            URL: formData.URL,
-            Status: "Submitted",
-            AuthorId: currentUser.Id,
-            BannerImage:  JSON.stringify(bannerImageArray) ,
-            BannerImageJSON: jsonString
-          };
-          console.log(postPayload);
-          const postResult = await addItem(postPayload, sp);
-          const postId = postResult?.data?.ID;
-          if (postResult != null) {
-            sessionStorage.removeItem("bannerId")
-            setTimeout(() => {
-              window.location.href = `${siteUrl}/SitePages/BannerMaster.aspx`;
-            }, 2000);
-           
-          }
+        } else if (result.isDenied) {
+          Swal.fire("Changes are not saved", "", "info");
         }
-      } else if (result.isDenied) {
+        // if(postResult?.data?.ID)
+      }).catch(error => {
         Swal.fire("Changes are not saved", "", "info");
       }
-      // if(postResult?.data?.ID)
-    }).catch(error => {
-      Swal.fire("Changes are not saved", "", "info");
+      )
     }
-    )
-  }
   }
 
   //#endregion
@@ -477,94 +476,94 @@ console.log(siteUrl)
       input.value = ''; // Clears the selected files
     }
   };
- 
-  console.log(BnnerImagepostArr,"BnnerImagepostArr");
-  
+
+  console.log(BnnerImagepostArr, "BnnerImagepostArr");
+
   return (
- <div id="wrapper" ref={elementRef}>
+    <div id="wrapper" ref={elementRef}>
       <div
         className="app-menu"
         id="myHeader">
         <VerticalSideBar _context={sp} />
       </div>
       <div className="content-page">
-          <HorizontalNavbar  _context={sp} siteUrl={siteUrl}/>
-        <div className="content" style={{marginLeft: `${!useHide ? '240px' : '80px'}`}}>
-            <div className="container-fluid  paddb">
-              <div className="row">
-                <div className="col-lg-3">
-                  <CustomBreadcrumb Breadcrumb={Breadcrumb} />
-                </div>
+        <HorizontalNavbar _context={sp} siteUrl={siteUrl} />
+        <div className="content" style={{ marginLeft: `${!useHide ? '240px' : '80px'}` }}>
+          <div className="container-fluid  paddb">
+            <div className="row">
+              <div className="col-lg-3">
+                <CustomBreadcrumb Breadcrumb={Breadcrumb} />
               </div>
-              <div className="card mt-3">
-                <div className="card-body">
-                  <div className="row mt-2">
-                    <form className='row' >
-                      <div className="col-lg-6">
-                        <div className="mb-3">
-                          <label htmlFor="title" className="form-label">
-                            Title <span className="text-danger">*</span>
-                          </label>
-                          <input
-                            type="text"
-                            id="title"
-                            name="title"
-                            placeholder='Enter Title'
+            </div>
+            <div className="card mt-3">
+              <div className="card-body">
+                <div className="row mt-2">
+                  <form className='row' >
+                    <div className="col-lg-6">
+                      <div className="mb-3">
+                        <label htmlFor="title" className="form-label">
+                          Title <span className="text-danger">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          id="title"
+                          name="title"
+                          placeholder='Enter Title'
                           className={`form-control inputcs ${(!ValidSubmit) ? "border-on-error" : ""}`}
-                            value={formData.title}
-                            onChange={(e) => onChange(e.target.name, e.target.value)} />
-                        </div>
+                          value={formData.title}
+                          onChange={(e) => onChange(e.target.name, e.target.value)} />
                       </div>
-                      <div className="col-lg-6">
-                        <div className="mb-3">
-                          <div className='d-flex justify-content-between'>
-                            <div>
-                              <label htmlFor="bannerImage" className="form-label">
-                                Banner Image <span className="text-danger">*</span>
-                              </label>
-                            </div>
-                            <div>
-                            {BnnerImagepostArr != undefined && BnnerImagepostArr.length > 0?
-                                (<><a style={{ fontSize: '0.875rem' }}>
-                                  <FontAwesomeIcon icon={faPaperclip} /> 1 file Attached {BnnerImagepostArr[0]?.fieldName}
-                                </a>
-                                {/* <img src={`${BnnerImagepostArr[0]?.serverUrl + BnnerImagepostArr[0]?.serverRelativeUrl}`} /> */}
-                                </>
-                                ):""
-                                
-                               
-                              }
-                               {/* {BnnerImagepostArr!=undefined&& BnnerImagepostArr.length>0&&
-                           (<img src={`${BnnerImagepostArr[0].serverUrl +BnnerImagepostArr[0].serverRelativeUrl}`} />)}  */}
-                            </div>
+                    </div>
+                    <div className="col-lg-6">
+                      <div className="mb-3">
+                        <div className='d-flex justify-content-between'>
+                          <div>
+                            <label htmlFor="bannerImage" className="form-label">
+                              Banner Image <span className="text-danger">*</span>
+                            </label>
                           </div>
-                          <input 
-                            type="file"
-                            ref={inputFile}
-                            id="bannerImage"
-                            name="bannerImage"
-                          className={`form-control inputcs ${(!ValidSubmit) ? "border-on-error" : ""}`}
-                            onChange={(e) => onFileChange(e, "bannerimg", "Document")} />
-                          
+                          <div>
+                            {BnnerImagepostArr != undefined && BnnerImagepostArr.length > 0 ?
+                              (<><a style={{ fontSize: '0.875rem' }}>
+                                <FontAwesomeIcon icon={faPaperclip} /> 1 file Attached {BnnerImagepostArr[0]?.fieldName}
+                              </a>
+                                {/* <img src={`${BnnerImagepostArr[0]?.serverUrl + BnnerImagepostArr[0]?.serverRelativeUrl}`} /> */}
+                              </>
+                              ) : ""
+
+
+                            }
+                            {/* {BnnerImagepostArr!=undefined&& BnnerImagepostArr.length>0&&
+                           (<img src={`${BnnerImagepostArr[0].serverUrl +BnnerImagepostArr[0].serverRelativeUrl}`} />)}  */}
+                          </div>
                         </div>
-                      </div>
-                      <div className="col-lg-12">
-                        <div className="mb-3">
-                          <label htmlFor="description" className="form-label">
-                            Description <span className="text-danger">*</span>
-                          </label>
-                          <textarea
-                            id="description"
-                            name="description"
-                            placeholder='Enter description'
+                        <input
+                          type="file"
+                          ref={inputFile}
+                          id="bannerImage"
+                          name="bannerImage"
                           className={`form-control inputcs ${(!ValidSubmit) ? "border-on-error" : ""}`}
-                            style={{ height: '50px' }}
-                            value={formData.description}
-                            onChange={(e) => onChange(e.target.name, e.target.value)}>
-                          </textarea>
-                        </div>
+                          onChange={(e) => onFileChange(e, "bannerimg", "Document")} />
+
                       </div>
-                      {/* <div className="col-lg-6">
+                    </div>
+                    <div className="col-lg-12">
+                      <div className="mb-3">
+                        <label htmlFor="description" className="form-label">
+                          Description <span className="text-danger">*</span>
+                        </label>
+                        <textarea
+                          id="description"
+                          name="description"
+                          placeholder='Enter description'
+                          className={`form-control inputcs ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                          style={{ height: '50px' }}
+                          value={formData.description}
+                          onChange={(e) => onChange(e.target.name, e.target.value)}>
+                        </textarea>
+                      </div>
+                    </div>
+                    {/* <div className="col-lg-6">
                         <div className="mb-3">
                           <label htmlFor="url" className="form-label">
                             URL <span className="text-danger">*</span>
@@ -582,23 +581,24 @@ console.log(siteUrl)
                       </div> */}
                     {/* {BnnerImagepostArr!=undefined&&BnnerImagepostArr.length>0?
                     (<><div>{BnnerImagepostArr[0].fileName}</div><img src={BnnerImagepostArr[0].fileName} /></>):""} */}
-                      <div className="text-center butncss">
-                        <div className="btn btn-success waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleFormSubmit}>
-                          <div className='d-flex' style={{ justifyContent: 'space-around', width: '70px' }}>
-                            <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} alt="Check" /> Submit
-                          </div>
+                    <div className="text-center butncss">
+                      <div className="btn btn-success waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleFormSubmit}>
+                        <div className='d-flex' style={{ justifyContent: 'space-around', width: '70px' }}>
+                          <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} alt="Check" /> Submit
                         </div>
-                        <button type="button" className="btn btn-light waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleCancel}>
-                          <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }}
-                            className='me-1' alt="x" />
-                          Cancel
-                        </button>
                       </div>
-                    </form>
-                  </div>
+                      <button type="button" className="btn btn-light waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleCancel}>
+                        <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }}
+                          className='me-1' alt="x" />
+                        Cancel
+                      </button>
+                    </div>
+                  </form>
                 </div>
               </div>
-              {/* Modal to display uploaded files */}
+            </div>
+            {/* Modal to display uploaded files */}
+            {BnnerImagepostArr != undefined && BnnerImagepostArr.length > 0 ?
               <Modal show={showModal} onHide={() => setShowModal(false)}>
                 <Modal.Header closeButton>
                   {BnnerImagepostArr.length > 0 && showBannerModal && <Modal.Title>Banner Images</Modal.Title>}
@@ -618,7 +618,7 @@ console.log(siteUrl)
                           </thead>
                           <tbody>
                             {editForm ?
-                               BnnerImagepostArr.map((file: any, index: number) => (
+                              BnnerImagepostArr.map((file: any, index: number) => (
                                 <tr key={index}>
                                   <td className='text-center'>{index + 1}</td>
                                   <td>{file.fileName}</td>
@@ -638,12 +638,12 @@ console.log(siteUrl)
                         </table></>
                     )}
                 </Modal.Body>
-              </Modal>
-             
-            </div>
+              </Modal> : ""
+            }
           </div>
         </div>
       </div>
+    </div>
   )
 };
 const AddDynamicBanner: React.FC<IAddDynamicBannerProps> = (props) => {

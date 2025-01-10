@@ -20,9 +20,9 @@
 /* Focused input styling */
 .form-control:focus, 
 .form-select:focus {
-    border-color: #80bdff;
+    
     outline: 0;
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    box-shadow:none !important;
 }
 
 /* Custom button styling for consistency */
@@ -37,6 +37,9 @@
 }
 .btn-light {
   padding: 7px 10px !important;
+}
+.modal-title{
+  font-size: 1.25rem !important;
 }
 /* Add hover effect to buttons */
 .btn-success:hover,
@@ -81,7 +84,7 @@ div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm)
 .multiSelectContainer input {
   
   margin-top: 3px;
-  height: 36px !important;
+  height: 28px !important;
 
 }
 .force-overflow
@@ -187,6 +190,11 @@ div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm)
   }
   .mtable tr{border: 0px !important; width: 100% !important; display: table !important;}
   .table-responsive{display: grid;}
+  @media(max-width:1400px)
+  {
+    .mtbalenew{overflow: auto;}
+ 
+  }
   @media(max-width:1280px){
     .mtable td,.mtable th{min-width:95px;max-width: 95px;}
   }
@@ -200,6 +208,8 @@ div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm)
     font-size: 1rem !important;
     font-weight: 500 !important;
 }
+.nretabl0 tbody{overflow: hidden !important;}
+.removeb .searchWrapper input{background:transparent !important;}
 .removeb{background: transparent !important; border:0px solid #ccc !important; padding: 0px !important;}
   .mtbalenew th{padding: 10px 10px !important;}
   .newpad{padding: 10px !important; }
@@ -209,6 +219,6 @@ div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm)
     pointer-events: none;
     font-size: 1rem !important;
     font-weight: 500 !important;}
-  .removeb input{display: none !important;}
+  .removeb input{background: transparent !important;}
   .removeb .chip img{display: none !important;}
   .removeb .chip{background: transparent !important;     color: #212529 !important; font-size: 1rem !important;}

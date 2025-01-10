@@ -199,7 +199,7 @@ const HelloWorldContext = ({ props }: any) => {
       <div className="content-page">
         <HorizontalNavbar _context={sp} siteUrl={siteUrl} />
         <div className="content" style={{ marginLeft: `${!useHide ? '240px' : '80px'}`, marginTop: '0rem' }}>
-          <div className="container-fluid paddb">
+          <div style={{ paddingTop: '12px' }} className="container-fluid paddb">
             <div className="row">
               <div className="col-lg-4">
 
@@ -367,11 +367,11 @@ const HelloWorldContext = ({ props }: any) => {
                           title={`Screenshot of ${item.Title || "Untitled"}`}
                         >
                           {arrjson != null && arrjson[0].fileType.startsWith('video/') ?
-                            <video muted={true} id='Backendvideo' ref={getvideo} style={{ maxWidth: "100%", height: "100%", width: "100%", borderRadius: "13px", objectFit: "cover" }} className="img-fluid" controls={true}>
+                            <video muted={true} id='Backendvideo' ref={getvideo} style={{ maxWidth: "100%", height: "100%", width: "100%", borderRadius: "13px", objectFit: "fill" }} className="img-fluid" controls={true}>
                               <source src={(videositeurl + arrjson[0].fileUrl) + "#t=5"} type="video/mp4"></source>
                             </video> :
                             <img
-                              src={arrjson[0]?.fileUrl ? arrjson[0]?.fileUrl : require("../../../Assets/ExtraImage/NoDataFound.png")}
+                              src={arrjson != null && arrjson[0]?.fileUrl ? arrjson[0]?.fileUrl : require("../../../Assets/ExtraImage/NoDataFound.png")}
                               alt="media"
                               style={{ maxWidth: "100%", height: "100%", width: "100%", borderRadius: "13px", objectFit: "cover" }}
                             />
@@ -417,33 +417,35 @@ const HelloWorldContext = ({ props }: any) => {
         </div>
       </div>
       {/* Modal for Image Carousel */}
-      <Modal show={showModal} onHide={() => setShowModal(false)} centered className="mediagallery" closeButton>
+      {mediaData.length > 0 &&
+        <Modal show={showModal} onHide={() => setShowModal(false)} centered className="mediagallery" closeButton>
 
 
-        <Modal.Header closeButton>
-        </Modal.Header>
-        <Modal.Body>
-          {console.log("mediaDatamediaData", mediaData)}
-          {/* {mediaData != null && mediaData.length > 0 && mediaData.map((item: any, index: number) => { */}
+          <Modal.Header closeButton>
+          </Modal.Header>
+          <Modal.Body>
+            {console.log("mediaDatamediaData", mediaData)}
+            {/* {mediaData != null && mediaData.length > 0 && mediaData.map((item: any, index: number) => { */}
 
 
-          {mediaData.length > 0 && mediaData[0].fileType.startsWith('video/') ?
-            <video muted={true} id='Backendvideo' ref={getvideo} style={{ width: "100%" }} className="img-fluid" controls={true}>
-              <source src={videositeurl + mediaData[0].fileUrl} type="video/mp4"></source>
-            </video> :
+            {mediaData.length > 0 && mediaData[0].fileType.startsWith('video/') ?
+              <video muted={true} id='Backendvideo' ref={getvideo} style={{ width: "100%", height: '100%', objectFit: 'fill' }} className="img-fluid" controls={true}>
+                <source src={videositeurl + mediaData[0].fileUrl} type="video/mp4"></source>
+              </video> :
 
-            <img
-              className="d-block w-100"
-              src={mediaData[0]?.fileUrl ? mediaData[0]?.fileUrl : require("../../../Assets/ExtraImage/NoDataFound.png")}
-              //alt={`Slide ${index}`}
-              style={{ height: 'auto', objectFit: 'contain' }}
-            />
-          }
+              <img
+                className="d-block w-100"
+                src={mediaData[0]?.fileUrl ? mediaData[0]?.fileUrl : require("../../../Assets/ExtraImage/NoDataFound.png")}
+                //alt={`Slide ${index}`}
+                style={{ height: 'auto', objectFit: 'contain' }}
+              />
+            }
 
-          {/* // })} */}
-        </Modal.Body>
+            {/* // })} */}
+          </Modal.Body>
 
-      </Modal>
+        </Modal>
+      }
     </div>
 
   );

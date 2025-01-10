@@ -332,7 +332,7 @@ const MediaMastercontext = ({ props }: any) => {
                         <tr>
                           <th style={{ borderBottomLeftRadius: '0px', minWidth: '0px', maxWidth: '50px', borderTopLeftRadius: '0px' }}>
  
-                            <div className="d-flex pb-0"
+                            <div className="d-flex pb-2"
                               style={{ justifyContent: 'space-evenly' }}>
                               <span>S.No.</span>
                               <span onClick={() => handleSortChange('SNo')}>
@@ -422,7 +422,7 @@ const MediaMastercontext = ({ props }: any) => {
                           <th style={{ textAlign: 'center', minWidth:'50px', maxWidth:'50px' }}>
                             <div className="d-flex flex-column bd-highlight pb-2">
                               <div className="d-flex  pb-0" style={{ justifyContent: 'space-evenly' }}>  <span >Action</span> <div className="dropdown">
-                                <FontAwesomeIcon icon={faEllipsisV} onClick={toggleDropdown} size='xl' />
+                                <FontAwesomeIcon style={{top:'4px'}} icon={faEllipsisV} onClick={toggleDropdown} size='xl' />
                               </div>
                               </div>
                               <div className=" bd-highlight">   <div id="myDropdown" className={`dropdown-content ${isOpen ? 'show' : ''}`}>

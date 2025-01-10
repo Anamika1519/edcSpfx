@@ -752,7 +752,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                 <div className="d-flex flex-column bd-highlight ">
 
-                                  <div className="d-flex  pb-0" style={{ justifyContent: 'space-evenly' }}>  <span >Status</span>  <span onClick={() => handleSortChange('Status')}><FontAwesomeIcon icon={faSort} /> </span></div>
+                                  <div className="d-flex  pb-2" style={{ justifyContent: 'space-evenly' }}>  <span >Status</span>  <span onClick={() => handleSortChange('Status')}><FontAwesomeIcon icon={faSort} /> </span></div>
 
                                   <div className=" bd-highlight">     <input type="text" placeholder="Filter by Status" onChange={(e) => handleFilterChange(e, 'Status')}
                                     onKeyDown={(e) => {
@@ -770,7 +770,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                 <div className="d-flex flex-column bd-highlight ">
 
-                                  <div className="d-flex  pb-0" style={{ justifyContent: 'space-evenly' }}>  <span >Submitted Date</span>  <span onClick={() => handleSortChange('SubmittedDate')}><FontAwesomeIcon icon={faSort} /> </span></div>
+                                  <div className="d-flex  pb-2" style={{ justifyContent: 'space-evenly' }}>  <span >Submitted Date</span>  <span onClick={() => handleSortChange('SubmittedDate')}><FontAwesomeIcon icon={faSort} /> </span></div>
 
                                   <div className=" bd-highlight">     <input type="text" placeholder="Filter by Submitted Date" onChange={(e) => handleFilterChange(e, 'SubmittedDate')}
                                     onKeyDown={(e) => {
@@ -788,7 +788,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                 <div className="d-flex  pb-2" style={{ justifyContent: 'space-evenly' }}>  <span >Action</span> <div className="dropdown">
 
-                                  <FontAwesomeIcon icon={faEllipsisV} onClick={toggleDropdown} size='xl' />
+                                  <FontAwesomeIcon style={{top:'4px'}} icon={faEllipsisV} onClick={toggleDropdown} size='xl' />
 
                                 </div>
 
@@ -798,7 +798,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                   <div onClick={handleExportClick} className="" >
 
-                                    <FontAwesomeIcon icon={faFileExport} />  Export
+                                    <FontAwesomeIcon style={{top:'4px'}} icon={faFileExport} />  Export
 
                                   </div>
 
@@ -859,7 +859,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                   <td style={{ minWidth: "80px", maxWidth: "80px",textAlign:'center' }} className="ng-binding">
 
-                                    <div className="d-flex pb-0" style={{ justifyContent: "space-around" }}>
+                                    <div className="d-flex pb-0" style={{ justifyContent: "center" }}>
 
                                       {/* Conditionally render the edit button based on status */}
 
@@ -1010,7 +1010,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
               <Tab eventKey="News" title="News">
 
-                <div className="card cardCss mt-4">
+                <div className="card cardCss mt-0">
 
                   <div className="card-body">
 
@@ -1024,7 +1024,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                             <tr>
 
-                              <th style={{ borderBottomLeftRadius: '10px', minWidth: '50px', maxWidth: '50px', borderTopLeftRadius: '10px' }}>
+                              <th style={{ borderBottomLeftRadius: '0px', minWidth: '50px', maxWidth: '50px', borderTopLeftRadius: '0px' }}>
 
                                 <div className="d-flex pb-2" style={{ justifyContent: 'space-evenly' }}>
 
@@ -1096,7 +1096,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                               </th> */}
 
-                              <th style={{ minWidth: '100px', maxWidth: '100px' }}>
+                              <th >
 
                                 <div className="d-flex flex-column bd-highlight ">
 
@@ -1114,7 +1114,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                               </th>
 
-                              <th style={{ minWidth: '100px', maxWidth: '100px' }}>
+                              <th>
 
                                 <div className="d-flex flex-column bd-highlight ">
 
@@ -1173,7 +1173,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                   <div className="d-flex  pb-2" style={{ justifyContent: 'space-evenly' }}>  <span >Action</span> <div className="dropdown">
 
-                                    <FontAwesomeIcon icon={faEllipsisV} onClick={toggleDropdownNews} fontSize={18} />
+                                    <FontAwesomeIcon style={{top:'4px'}} icon={faEllipsisV} onClick={toggleDropdownNews} fontSize={18} />
 
                                   </div>
 
@@ -1240,9 +1240,9 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                     <td >{item.Title}</td>
 
-                                    <td style={{ minWidth: '100px', maxWidth: '100px' }}>{item?.Category?.Category}</td>
+                                    <td>{item?.Category?.Category}</td>
 
-                                    <td style={{ minWidth: '100px', maxWidth: '100px' }}>
+                                    <td>
 
                                       {
 
@@ -1261,6 +1261,7 @@ const Announcementmastercontext = ({ props }: any) => {
                                         minWidth: "100px",
 
                                         maxWidth: "100px",
+                                        textAlign:'center'
 
                                       }}
 
@@ -1277,12 +1278,13 @@ const Announcementmastercontext = ({ props }: any) => {
                                         minWidth: "100px",
 
                                         maxWidth: "100px",
+                                        textAlign:'center'
 
                                       }}
 
                                     >
 
-                                      {moment(item.Created).format("L")}
+<div className='btn  btn-light'>      {moment(item.Created).format("L")} </div>
 
                                     </td>
 

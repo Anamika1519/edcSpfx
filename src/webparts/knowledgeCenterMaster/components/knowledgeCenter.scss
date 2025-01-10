@@ -17,6 +17,7 @@
   color: #3c3c3c;
   background: #fff;
   border: 1px solid #efefef;
+  width: 100px;
 }
 .indexdesign {
   background: #d2effa !important;
@@ -35,6 +36,7 @@
   padding: 0 1px !important;
   width: 28px !important;
 }
+.content-page{top:-1px !important;}
 .btn-primary svg, .btn-secondary svg{height: 13px;
   vertical-align: text-top;
   margin-top: 2px;}
@@ -76,8 +78,17 @@ input.form-control.inputcss {
 .mtable tbody tr:hover {
   box-shadow: 0 0 0px #ccc !important;
 }
-.content-page{top: 0rem !important;}
+
 .mtable td{color: #6c757d;}
+.mtbalenew th .svg-inline--fa {
+
+  top: 8px;
+}
+.btn-light, .btn-status {
+  border-radius: 30px !important;
+  padding: 7px .5rem !important;
+}
+.btn-light:hover{background: #fff; cursor: auto;}
 .mtable th:first-child,.mtable td:first-child{border-top-left-radius: 0px;border-bottom-left-radius: 0px;}
 .mtable th:last-child,.mtable td:last-child{border-top-right-radius: 0px;border-bottom-right-radius: 0px;}
 .mtable td .svg-inline--fa{font-size: 20px;}

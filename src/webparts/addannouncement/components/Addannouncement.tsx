@@ -1687,7 +1687,7 @@ const AddannouncementContext = ({ props }: any) => {
               </div>
             </div>
             <div className="card mt-3" >
-              <div className="card-body">
+              <div className="card-body pb-5">
                 <div className="row mt-2">
                   {Loading ?
                     // <div className="loadercss" role="status">Loading...
@@ -1712,6 +1712,7 @@ const AddannouncementContext = ({ props }: any) => {
                     </div>
                   :
                   <form className='row' >
+                    <div className=""><strong className="font-16 mb-1">Basic Information</strong><p className="font-14 text-muted mb-3 mt-1">Specify basic information </p></div>
                     <div className="col-lg-4">
                       <div className="mb-3">
                         <label htmlFor="title" className="form-label">
@@ -1723,7 +1724,7 @@ const AddannouncementContext = ({ props }: any) => {
                           name="title"
                           placeholder='Enter Title'
                           // className="form-control inputcss"
-                          className={`form-control inputcs ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                          className={`form-control ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
                           value={formData.title}
                           onChange={(e) => onChange(e.target.name, e.target.value)}
                           disabled={InputDisabled}
@@ -1742,7 +1743,7 @@ const AddannouncementContext = ({ props }: any) => {
                           name="Type"
                           value={formData.Type}
                           onChange={(e) => onChange(e.target.name, e.target.value)}
-                          className={`form-control inputcs ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                          className={`form-control ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
                           disabled={InputDisabled}
                         >
                           <option>Select</option>
@@ -1764,7 +1765,7 @@ const AddannouncementContext = ({ props }: any) => {
                         </label>
                         <select
                           // className="form-select inputcss"
-                          className={`form-control inputcs ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                          className={`form-control ${(!ValidSubmit) ? "border-on-error" : ""}`}
                           id="category"
                           name="category"
                           value={formData.category}
@@ -1793,7 +1794,7 @@ const AddannouncementContext = ({ props }: any) => {
                         </label>
                         <select
                           // className="form-select inputcss"
-                          className={`form-control inputcs ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                          className={`form-control ${(!ValidSubmit) ? "border-on-error" : ""}`}
                           id="entity"
                           name="entity"
                           value={formData.entity}
@@ -1841,7 +1842,7 @@ const AddannouncementContext = ({ props }: any) => {
                           id="bannerImage"
                           name="bannerImage"
                           accept=".jpeg,.jpg,.png,.gif"
-                          className={`form-control inputcss ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                          className={`form-control  ${(!ValidSubmit) ? "border-on-error" : ""}`}
                           // className="form-control inputcss"
                           onChange={(e) => onFileChange(e, "bannerimg", "Document")}
                           // disabled={ApprovalMode}
@@ -1883,7 +1884,7 @@ const AddannouncementContext = ({ props }: any) => {
                           accept=".jpeg,.jpg,.png,.gif,.mp4,.mp3,.mkv,.webm,.flv,.vob,.ogg,.wmv,.yuv.,MTS,.TS,.m4p..mpeg,.mpe,.mpv,.m4v,.svi,.3gp,.3g2,.roq,.nsv,.flv,.f4v,.f4p,.f4a,.f4b"
 
                           //className="form-control inputcss"
-                          className={`form-control inputcss ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                          className={`form-control  ${(!ValidSubmit) ? "border-on-error" : ""}`}
                           multiple
                           maxLength={5}
                           onChange={(e) => onFileChange(e, "Gallery", "AnnouncementAndNewsGallary")}
@@ -1959,7 +1960,7 @@ const AddannouncementContext = ({ props }: any) => {
                           Overview <span className="text-danger">*</span>
                         </label>
                         <textarea
-                          className={`form-control inputcss ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                          className={`form-control  ${(!ValidSubmit) ? "border-on-error" : ""}`}
                           // className="form-control inputcss"
                           id="overview"
                           placeholder='Enter Overview'
@@ -1985,7 +1986,7 @@ const AddannouncementContext = ({ props }: any) => {
                             theme="snow"
                             modules={modules}
                             formats={formats}
-                            placeholder={'Write your content ...'}
+                            placeholder={''}
                             value={richTextValues.description}
                             onChange={(content) => {
                               setRichTextValues((prevValues) => ({
@@ -1999,31 +2000,7 @@ const AddannouncementContext = ({ props }: any) => {
                         </div>
                       </div>
                     </div>
-                    {
-                      !InputDisabled ?
-                        (<div className="text-center" style={{ marginTop: '3rem' }}>
-                          <div className="btn btn-success waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleSaveAsDraft}>
-                            <div className='d-flex' style={{ justifyContent: 'space-around' }}>
-                              <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} alt="Check" /> Save As Draft
-                            </div>
-                          </div>
-                          <div className="btn btn-success waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleFormSubmit}>
-                            <div className='d-flex' style={{ justifyContent: 'space-around', width: '70px' }}>
-                              <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} alt="Check" /> Submit
-                            </div>
-                          </div>
-                          <button type="button" className="btn btn-light waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleCancel}>
-                            <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }}
-                              className='me-1' alt="x" />
-                            Cancel
-                          </button>
-                        </div>) :
-                        (modeValue == 'view') && (<div className="text-center" style={{ marginTop: '3rem' }}><button type="button" className="btn btn-light waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleCancel}>
-                          <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }}
-                            className='me-1' alt="x" />
-                          Cancel
-                        </button></div>)
-                    }
+                  
                   </form>
                   }
                 </div>
@@ -2035,9 +2012,12 @@ const AddannouncementContext = ({ props }: any) => {
                 (
                   <div className="mt-2">
                     <div className="card cardborder p-4">
-                      <div className="font-16">
-                        <strong>Approval Hierarchy</strong>
-                      </div>
+                    <div className="">
+
+<strong className='font-16 mb-1'>Approval Hierarchy</strong>
+<p className='font-14 text-muted mb-3 mt-1'>Define Approaval Hierarchy for the documents.</p>
+
+</div>
                       {/* <div className="d-flex justify-content-between align-items-center">
                       <p className="font-14 mb-3 flex-grow-1">
                         Define approval hierarchy for the documents submitted by Team members in this folder.
@@ -2061,14 +2041,21 @@ const AddannouncementContext = ({ props }: any) => {
                         </div>
                       </div> */}
 
+<table className="mtbalenew nretabl0">
+                                                    <thead>
+                                                      <tr>
+                                                      <th style={{minWidth:'60px', maxWidth:'60px'}} className="newpad">  Select Level</th>
+                                                      <th className="newpad"> Select Approver</th>
+                                                      </tr>
+                                                    </thead>
+                                                    <tbody style={{overflowX:'hidden',overflow:'initial'}}>
+
                         {rows.map((row: any) => (
-                          <div className="row mb-2" key={row.id}>
-                            <div className="col-12 col-md-5">
-                              <label htmlFor={`Level-${row.id}`} className="form-label">
-                                Select Level
-                              </label>
-                              <select
-                                className="form-select"
+                          <div className="row mb-0" key={row.id}>
+                             <tr style={{overflow:'initial'}}>
+                      <td style={{minWidth:'60px', maxWidth:'60px',overflow:'initial'}} className=""> 
+                        <select style={{border:"0px solid #ccc", background:'#fff'}}
+                                className="form-select removeb"
                                 id={`Level-${row.id}`}
                                 name="Level"
                                 value={row.LevelId}
@@ -2090,64 +2077,26 @@ const AddannouncementContext = ({ props }: any) => {
                                     {item.Level}
                                   </option>
                                 ))}
-                              </select>
-                            </div>
-
-                            <div className="col-12 col-md-5">
-                              <label htmlFor={`approver-${row.id}`} className="form-label">
-                                Select Approver
-                              </label>
-                              <Multiselect
-                                options={row.approvedUserList}
-                                selectedValues={row.approvedUserListupdate}
-                                onSelect={(selected) => handleUserSelect(selected, row.id)}
-                                onRemove={(selected) => handleUserSelect(selected, row.id)}
-                                displayValue="name"
-                                disable={true}
-                                placeholder=''
-                                hidePlaceholder={true}
-                              />
-                            </div>
-
-                            {/* <div className="col-12 col-md-2 d-flex align-items-center" style={{ gap: '10px' }}>
-                            <div className="d-flex align-items-center">
-                              <input
-                                className="form-check-input custom-radio"
-                                type="radio"
-                                name={`selection-${row.id}`}
-                                value="all"
-                                checked={row.selectionType === 'All'}
-                                onChange={() => handleSelectionModeChange(row.id, 'All')}
-                                style={{ marginRight: '5px' }}
-                              />
-                              <label className="form-check-label mb-0" htmlFor={`all-${row.id}`}>
-                                All
-                              </label>
-                            </div>
-
-                            <div className="d-flex align-items-center">
-                              <input
-                                className="form-check-input custom-radio"
-                                type="radio"
-                                name={`selection-${row.id}`}
-                                value="one"
-                                checked={row.selectionType === 'One'}
-                                onChange={() => handleSelectionModeChange(row.id, 'One')}
-                                style={{ marginRight: '5px' }}
-                              />
-                              <label className="form-check-label mb-0" htmlFor={`one-${row.id}`}>
-                                One
-                              </label>
-                            </div>
-
-                            {row.id !== 0 && (
-                              <a onClick={(e) => handleRemoveRow(row.id, e)} style={{ cursor: 'pointer' }}>
-                                <Delete />
-                              </a>
-                            )}
-                          </div> */}
+                              </select>  
+                                                        
+                                                        </td>
+                                                        <td style={{overflow:'initial'}} className=""> 
+                                                      <Multiselect className="removeb" style={{border:"0px solid #ccc", background:'#fff'}}
+                                                      options={row.approvedUserList}
+                                                      selectedValues={row.approvedUserListupdate}
+                                                      onSelect={(selected) => handleUserSelect(selected, row.id)}
+                                                      onRemove={(selected) => handleUserSelect(selected, row.id)}
+                                                      displayValue="name"
+                                                      disable={true}
+                                                      placeholder=''
+                                                      hidePlaceholder={true}
+                                                    /> </td>
+                                                        </tr>
+                         
                           </div>
                         ))}
+                        </tbody>
+                        </table>
                       </div>
 
                       {/* <div className="text-center butncss">
@@ -2179,7 +2128,31 @@ const AddannouncementContext = ({ props }: any) => {
                 />
               ) : (<div></div>)
             }
-            
+              {
+                      !InputDisabled ?
+                        (<div className="text-center" style={{ marginTop: '2rem',marginBottom: '2rem'  }}>
+                          <div className="btn btn-success waves-effect waves-light m-1" style={{width:'145px' }} onClick={handleSaveAsDraft}>
+                            <div className='d-flex' style={{ justifyContent: 'center' }}>
+                              <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} className='me-1' alt="Check" /> Save As Draft
+                            </div>
+                          </div>
+                          <div className="btn btn-success waves-effect waves-light m-1" style={{ width:'145px' }} onClick={handleFormSubmit}>
+                            <div className='d-flex' style={{ justifyContent: 'center'}}>
+                              <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} className='me-1' alt="Check" /> Submit
+                            </div>
+                          </div>
+                          <button type="button" className="btn cancel-btn waves-effect waves-light m-1" style={{width:'145px' }} onClick={handleCancel}>
+                            <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }}
+                              className='me-1' alt="x" />
+                            Cancel
+                          </button>
+                        </div>) :
+                        (modeValue == 'view') && (<div className="text-center" style={{ marginTop: '2rem' }}><button type="button" className="btn cancel-btn waves-effect waves-light m-1" style={{ width:'145px' }} onClick={handleCancel}>
+                          <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }}
+                            className='me-1' alt="x" />
+                          Cancel
+                        </button></div>)
+                    }
             {formData.title != "" &&
               <WorkflowAuditHistory ContentItemId={editID} ContentType={CONTENTTYPE_Announcement} ctx={props.context} />
             }

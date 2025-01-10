@@ -100,7 +100,7 @@ import {
 import DMSMyApprovalAction from "./DMSApprovalAction";
 import { getApprovalListsData } from "../../../APISearvice/BusinessAppsService";
 import DMSMyFolderApprovalAction from "./DMSFolderApprovalAction";
-
+let actingforuseremail:any
 const MyApprovalContext = ({ props }: any) => {
   const sp: SPFI = getSP();
   const [activeComponent, setActiveComponent] = useState<string>("");
@@ -246,38 +246,173 @@ const MyApprovalContext = ({ props }: any) => {
       return null;
     }
   };
-  const getApprovalmasterTasklist = async (value: any) => {
+  const [loading, setLoading] = useState(true);
+  const [actingForUser, setSetActingForUser] = useState([]);
+
+  const myActingfordata = async () => {
+    try {
+      const currentUserEmail = currentUserEmailRef.current;
+      console.log("currentUserEmail myActingfordata", currentUserEmail);
+      const today = new Date().toISOString();
+      const delegateListItems = await sp.web.lists.getByTitle('ARGDelegateList').items.select(
+        "DelegateName/EMail",
+        "ActingFor/EMail",
+        "ActingFor/Title",
+        "DelegateName/Title",
+        "StartDate",
+        "EndDate",
+        "Status"
+      )
+      .expand("DelegateName", "ActingFor")
+      .filter(`ActingFor/EMail eq '${currentUserEmail}' and Status eq 'Active' and StartDate le '${today}' and EndDate ge '${today}'`)();
+
+      console.log("delegateListItems myActingfordata", delegateListItems);
+
+ // Extract unique ActingFor.Title and EMail values
+const uniqueTitlesAndEmails = [
+  ...new Map(
+    delegateListItems.map((item) => [item.DelegateName?.Title, { title: item.DelegateName?.Title, email: item.DelegateName?.EMail }])
+  ).values(),
+];
+
+// Set state with unique titles and emails
+setSetActingForUser(uniqueTitlesAndEmails.map((item, index) => ({ id: index.toString(), name: item.title, email: item.email })));
+console.log("setSetActingForUser", actingForUser);
+console.log("uniqueTitlesAndEmails", uniqueTitlesAndEmails);
+
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+const getApprovalmasterTasklist = async (value: any , actingfor:any) => {
+  alert(`Status value is ${value} is acting for ${actingfor} in DMS`)
 
     try {
+      // Retrieve current user email
+const currentUserEmail = currentUserEmailRef.current;
+
+// Fetch the ARGDelegateList items where the current user is in the ActingFor column
+const today = new Date().toISOString(); // Get today's date in YYYY-MM-DD format
+// console.log("today", today);
+
+// const delegateListItems = await sp.web.lists.getByTitle('ARGDelegateList').items.select(
+//   "DelegateName/EMail",
+//   "ActingFor/EMail",
+//   "ActingFor/Title",
+//   "StartDate",
+//   "EndDate",
+//   "Status"
+// )
+// .expand("DelegateName", "ActingFor")
+// .filter(`ActingFor/EMail eq '${currentUserEmail}' and Status eq 'Active' and StartDate le '${today}' and EndDate ge '${today}'`)();
+
+// console.log("delegateListItems", delegateListItems);
+
+// const additionalFilters = delegateListItems.map((item:any) => `CurrentUser eq '${item.DelegateName.EMail}'`).join(' or ');
+// const combinedFilters = `CurrentUser eq '${currentUserEmail}'${additionalFilters ? ` or (${additionalFilters})` : ''} and FileUID/Status eq '${value}'`;
+
+// // Fetch items from DMSFileApprovalTaskList based on the combined filters
+// const items2 = await sp.web.lists.getByTitle('DMSFileApprovalTaskList').items.select(
+//   "Log", "CurrentUser", "Remark", "LogHistory", "FileUID/FileUID",
+//   "FileUID/SiteName", "FileUID/DocumentLibraryName", "FileUID/FileName",
+//   "FileUID/RequestNo", "FileUID/Processname", "FileUID/Status",
+//   "FileUID/FolderPath", "FileUID/RequestedBy", "FileUID/Created",
+//   "FileUID/ApproveAction", "MasterApproval/ApprovalType", "MasterApproval/Level",
+//   "MasterApproval/DocumentLibraryName"
+// )
+// .expand("FileUID", "MasterApproval")
+// .filter(combinedFilters)
+// .orderBy("Created", false)
+// .getAll();
+
+// console.log(items2, "DMSFileApprovalTaskList");
+
+
+
       let arr = [];
-      const items = await sp.web.lists.getByTitle('DMSFileApprovalTaskList').items.select(
-        "Log", "CurrentUser", "Remark"
-        , "LogHistory"
-        , "FileUID/FileUID"
-        , "FileUID/SiteName"
-        , "FileUID/DocumentLibraryName"
-        , "FileUID/FileName"
-        , "FileUID/RequestNo"
-        , "FileUID/Processname"
-        //  ,"FileUID/FilePreviewUrl" 
-        , "FileUID/Status"
-        , "FileUID/FolderPath"
-        , "FileUID/RequestedBy"
-        , "FileUID/Created"
-        , "FileUID/ApproveAction"
-        , "MasterApproval/ApprovalType"
-        , "MasterApproval/Level"
-        , "MasterApproval/DocumentLibraryName"
+      if(actingfor === ""){
+        const items = await sp.web.lists.getByTitle('DMSFileApprovalTaskList').items.select(
+          "Log", "CurrentUser", "Remark"
+          , "LogHistory"
+          , "FileUID/FileUID"
+          , "FileUID/SiteName"
+          , "FileUID/DocumentLibraryName"
+          , "FileUID/FileName"
+          , "FileUID/RequestNo"
+          , "FileUID/Processname"
+          //  ,"FileUID/FilePreviewUrl" 
+          , "FileUID/Status"
+          , "FileUID/FolderPath"
+          , "FileUID/RequestedBy"
+          , "FileUID/Created"
+          , "FileUID/ApproveAction"
+          , "MasterApproval/ApprovalType"
+          , "MasterApproval/Level"
+          , "MasterApproval/DocumentLibraryName"
+  
+        )
+          .expand("FileUID", "MasterApproval")
+          .filter( `(CurrentUser eq '${currentUserEmailRef.current}') and FileUID/Status eq '${value}'`).orderBy("Created", false).getAll();
+        console.log(items, "DMSFileApprovalTaskList");
+           items.map( (item) => {
+                if(item.CurrentUser !== currentUserEmailRef.current ){
+                  arr.push(item)
+                   alert(`Delegate user ${item.CurrentUser} is acting for ${item.FileUID.FileName}`)
+                }
+  
+            });
+        const updatedItems = await Promise.all(items.map(async (item) => {
+          const requestedbyuserTitle = await getUserTitleByEmail(item?.FileUID?.RequestedBy);
+          return { ...item, RequestedByTitle: requestedbyuserTitle };
+        }));
+        setMylistdata(updatedItems);
+      }
+      if(actingfor !== ""){
+        const items = await sp.web.lists.getByTitle('DMSFileApprovalTaskList').items.select(
+          "Log", "CurrentUser", "Remark"
+          , "LogHistory"
+          , "FileUID/FileUID"
+          , "FileUID/SiteName"
+          , "FileUID/DocumentLibraryName"
+          , "FileUID/FileName"
+          , "FileUID/RequestNo"
+          , "FileUID/Processname"
+          //  ,"FileUID/FilePreviewUrl" 
+          , "FileUID/Status"
+          , "FileUID/FolderPath"
+          , "FileUID/RequestedBy"
+          , "FileUID/Created"
+          , "FileUID/ApproveAction"
+          , "MasterApproval/ApprovalType"
+          , "MasterApproval/Level"
+          , "MasterApproval/DocumentLibraryName"
+  
+        )
+          .expand("FileUID", "MasterApproval")
+          .filter( `(CurrentUser eq '${actingfor}') and FileUID/Status eq '${value}'`).orderBy("Created", false).getAll();
+        console.log(items, "DMSFileApprovalTaskList");
+           items.map( (item) => {
+                if(item.CurrentUser !== currentUserEmailRef.current ){
+                  arr.push(item)
+                   alert(`Delegate user ${item.CurrentUser} is acting for ${item.FileUID.FileName}`)
+                }
+  
+            });
+        const updatedItems = await Promise.all(items.map(async (item) => {
+          const requestedbyuserTitle = await getUserTitleByEmail(item?.FileUID?.RequestedBy);
+          return { ...item, RequestedByTitle: requestedbyuserTitle };
+        }));
+        setMylistdata(updatedItems);
+      }
 
-      )
-        .expand("FileUID", "MasterApproval")
-        .filter(`CurrentUser eq '${currentUserEmailRef.current}' and FileUID/Status eq '${value}'`).orderBy("Created", false).getAll();
-      console.log(items, "DMSFileApprovalTaskList");
-
-      const updatedItems = await Promise.all(items.map(async (item) => {
-        const requestedbyuserTitle = await getUserTitleByEmail(item?.FileUID?.RequestedBy);
-        return { ...item, RequestedByTitle: requestedbyuserTitle };
-      }));
+      // const updatedItems2 = await Promise.all(items2.map(async (item) => {
+      //   const requestedbyuserTitle = await getUserTitleByEmail(item?.FileUID?.RequestedBy);
+      //   return { ...item, RequestedByTitle: requestedbyuserTitle };
+      // }));
       // const Item2 :any = await sp.web.lists.getByTitle('DMSFolderDeligationApprovalTask').items.select(
       //   "*",
       //   "Folderdetail"	            
@@ -327,7 +462,8 @@ const MyApprovalContext = ({ props }: any) => {
       //  const CombinedItems  = [...items, ...normalizeItem3];
       //  console.log(CombinedItems , "CombinedItems")
       // setMylistdata(CombinedItems);
-      setMylistdata(updatedItems);
+      // setMylistdata(updatedItems);
+      
 
       // return arr = CombinedItems
 
@@ -341,7 +477,8 @@ const MyApprovalContext = ({ props }: any) => {
   const getCurrrentuser = async () => {
     const userdata = await sp.web.currentUser();
     currentUserEmailRef.current = userdata.Email;
-    getApprovalmasterTasklist('Pending');
+    getApprovalmasterTasklist('Pending' , '');
+    myActingfordata()
   };
   React.useEffect(() => {
     getCurrrentuser();
@@ -483,13 +620,15 @@ const MyApprovalContext = ({ props }: any) => {
   const ApiCall = async (status: string) => {
     // if(activeTab == "Intranet"){
     let MyApprovaldata = await getMyApproval(sp, status);
-    let Automationdata = await getApprovalListsData(sp, status);
+    let Automationdata1 = await getApprovalListsData(sp, status);
     let typedata = await getType(sp);
     setMyApprovalsData(MyApprovaldata);
     setMyApprovalsDataAll(MyApprovaldata);
     //}
     //else if(activeTab == "Automation"){
-
+      let Automationdata = [...Automationdata1].sort((a, b) => {
+        return a.Created === b.Created ? 0 : a.Created ? -1 : 1;
+      });
     setMyApprovalsDataAutomation(Automationdata);
 
     console.log("Automationdata", Automationdata);
@@ -501,16 +640,22 @@ const MyApprovalContext = ({ props }: any) => {
   //   setAnnouncementData(await getDiscussionFilterAll(sp, optionFilter));
 
   // };
-  const handleStatusChange = async (name: string, value: string) => {
+  const handleStatusChange = async (name: string, value: string , actingfor:any) => {
+    actingforuseremail = actingfor
+    alert(`Status value is ${value} is acting for ${actingfor}`)
+     if (actingforuseremail === undefined || actingforuseremail === null || actingforuseremail === "") {
+      alert("acting for is undefined")
+      }
+
     if (value === "") {
       // Show all records if no type is selected
       console.log("No status selected");
     } else {
       // Filter records based on the selected type
-      let MyApprovaldata = await getMyApproval(sp, value);
-      let Automationdata = await getApprovalListsData(sp, value);
+      let MyApprovaldata = await getMyApproval(sp, value , actingfor);
+      let Automationdata = await getApprovalListsData(sp, value , actingfor);
       // let MyDMSAPPROVALDATA:any = await MyDMSAPPROVALDATASTATUS(sp, value)
-      let MyDMSAPPROVALDATA: any = await getApprovalmasterTasklist(value)
+      let MyDMSAPPROVALDATA: any = await getApprovalmasterTasklist(value , actingfor)
       console.log("MyDMSAPPROVALDATA", MyDMSAPPROVALDATA)
       setMyApprovalsDataAll(MyApprovaldata);
       setMyApprovalsDataAutomation(Automationdata);
@@ -944,7 +1089,7 @@ const MyApprovalContext = ({ props }: any) => {
               </div>
 
               <div className="col-md-4">
-                <div className="row">
+              <div className="row">
                   <div style={{ textAlign: "right", padding:'0px' }} className="col-md-4 newtexleft">
                     <div className="mb-0">
                       <label htmlFor="Status" className="form-label newfil mt-0 mb-0">
@@ -957,7 +1102,7 @@ const MyApprovalContext = ({ props }: any) => {
                       id="Type"
                       name="Type"
                       onChange={(e) =>
-                        handleStatusChange(e.target.name, e.target.value)
+                        handleStatusChange(e.target.name,  e.target.value , actingforuseremail)
                       }
                       className="form-select"
                     >
@@ -970,6 +1115,34 @@ const MyApprovalContext = ({ props }: any) => {
                     </select>
                   </div>
                 </div>
+                <div className="row">
+                  <div style={{ textAlign: "right" }} className="col-md-4 newtexleft">
+                    <div className="mb-0">
+                      <label htmlFor="Status" className="form-label mt-2">
+                        Filter By Acting For
+                      </label>
+                    </div>
+                  </div>
+                  <div className="col-md-8">
+                    <select
+        id="Type"
+        name="Type"
+        onChange={(e) => handleStatusChange(e.target.name, 'Pending' , e.target.value)}
+        className="form-select"
+        disabled={loading || actingForUser.length === 0}
+      >
+        <option value="">
+          {loading ? "Loading..." : actingForUser.length === 0 ? "No data" : "Select an option"}
+        </option>
+        {actingForUser.map((item, index) => (
+          <option key={index} value={item.email}>
+            {item.name}
+          </option>
+        ))}
+      </select>
+                  </div>
+                </div>
+
               </div>
             </div>
 
@@ -1428,7 +1601,7 @@ const MyApprovalContext = ({ props }: any) => {
                                             }}
                                             title={item.RequestID}
                                           >
-                                      <span  className="badge font-12 bg-info">{item.RequestID} </span>
+                                      {item.RequestID} 
                                           </td>
                                           {activeTab == "Intranet" && (
                                             <td
@@ -1445,9 +1618,10 @@ const MyApprovalContext = ({ props }: any) => {
                                             style={{
                                               minWidth: "120px",
                                               maxWidth: "120px",
+                                              textAlign:'center'
                                             }}
                                           >
-                                            {item.ProcessName}
+                                        <span  className="badge font-12 bg-info">   {item.ProcessName}</span> 
                                           </td>
 
                                           <td
@@ -2055,6 +2229,9 @@ const MyApprovalContext = ({ props }: any) => {
                                                   style={{
                                                     minWidth: "40px",
                                                     maxWidth: "40px",
+                                             
+                                                      backgroundColor: item?.CurrentUser !== currentUserEmailRef.current ? "green" : "transparent",
+                                                  
                                                   }}
                                                 >
                                                   <div
@@ -2077,7 +2254,7 @@ const MyApprovalContext = ({ props }: any) => {
                                                   }}
                                                   title={item?.FileUID?.RequestNo}
                                                 >
-                                                                                        <span className="badge font-12 bg-info">{item?.FileUID?.RequestNo} </span>
+                                                                                    {item?.FileUID?.RequestNo} 
                                                   
                                                 </td>
                                                 <td
@@ -2096,9 +2273,10 @@ const MyApprovalContext = ({ props }: any) => {
                                                   style={{
                                                     minWidth: "120px",
                                                     maxWidth: "120px",
+                                                    textAlign:'center'
                                                   }}
                                                 >
-                                                  {item?.FileUID?.Processname}
+                                                    <span  className="badge font-12 bg-info">  {item?.FileUID?.Processname} </span>
                                                 </td>
 
                                                 <td

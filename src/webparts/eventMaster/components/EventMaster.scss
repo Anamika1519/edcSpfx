@@ -4,6 +4,10 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
 }
+.btn-status {
+    border-radius: 30px !important;
+    padding: 6px .5rem !important;
+  }
 .mtable td{color: #6c757d;}
 table td, table th {
     font-size: 14px;
@@ -85,6 +89,9 @@ div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm)
     color: #3c3c3c;
     background: #fff;
     border: 1px solid #efefef;
+    border-radius: 30px !important;
+    padding: 6px .5rem !important;
+    width: 100px; cursor: auto;
   }
   .indexdesign {
     background: #d2effa !important;
@@ -119,3 +126,5 @@ div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm)
       
       #s4-workspace{overflow-y: auto !important;}
     }
+    .mtbalenew tbody{overflow-y: visible !important;}
+    .searchWrapper{padding: 0px !important;}

@@ -236,8 +236,8 @@ const MediaMastercontext = ({ props }: any) => {
     // setUseId(id)
 
     const encryptedId = encryptId(String(id));
-    sessionStorage.setItem("mediaId", encryptedId)
-    window.location.href = `${siteUrl}/SitePages/MediaGalleryForm.aspx`;
+    sessionStorage.setItem("knowledgecenterId", encryptedId)
+    window.location.href = `${siteUrl}/SitePages/KnowledgeCenterForm.aspx`;
   }
   //#endregion
 
@@ -301,7 +301,7 @@ const MediaMastercontext = ({ props }: any) => {
       <div className="content-page">
         <HorizontalNavbar _context={sp} siteUrl={siteUrl} />
         <div className="content" style={{ marginLeft: `${!useHide ? '240px' : '80px'}` }}>
-          <div className="container-fluid  paddb">
+          <div style={{paddingTop:'20px'}} className="container-fluid  paddb">
             <div className="row pt-0">
               <div className="col-lg-3">
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
@@ -332,9 +332,9 @@ const MediaMastercontext = ({ props }: any) => {
                     <table className="mtbalenew mt-0 pt-0 table-centered table-nowrap table-borderless mb-0">
                       <thead>
                         <tr>
-                          <th style={{ borderBottomLeftRadius: '0px', minWidth: '0px', maxWidth: '50px', borderTopLeftRadius: '0px' }}>
+                          <th style={{ borderBottomLeftRadius: '0px', minWidth: '40px', maxWidth: '40px', borderTopLeftRadius: '0px' }}>
 
-                            <div className="d-flex pb-0"
+                            <div className="d-flex pb-2"
                               style={{ justifyContent: 'space-evenly' }}>
                               <span>S.No.</span>
                               <span onClick={() => handleSortChange('SNo')}>
@@ -423,8 +423,8 @@ const MediaMastercontext = ({ props }: any) => {
                           </div></th>
                           <th style={{ textAlign: 'center', minWidth: '50px', maxWidth: '50px' }}>
                             <div className="d-flex flex-column bd-highlight pb-2">
-                              <div className="d-flex  pb-0" style={{ justifyContent: 'space-evenly' }}>  <span >Action</span> <div className="dropdown">
-                                <FontAwesomeIcon icon={faEllipsisV} onClick={toggleDropdown} size='xl' />
+                              <div className="d-flex  pb-2" style={{ justifyContent: 'space-evenly' }}>  <span >Action</span> <div className="dropdown">
+                                <FontAwesomeIcon style={{top:'4px'}} icon={faEllipsisV} onClick={toggleDropdown} size='xl' />
                               </div>
                               </div>
                               {/* <div className=" bd-highlight">   <div id="myDropdown" className={`dropdown-content ${isOpen ? 'show' : ''}`}>
@@ -449,8 +449,8 @@ const MediaMastercontext = ({ props }: any) => {
                               <tr key={index}>
                                 <td
                                   style={{
-                                    minWidth: "50px",
-                                    maxWidth: "50px",
+                                    minWidth: "40px",
+                                    maxWidth: "40px",
                                   }}
                                 >
                                   <div style={{ marginLeft: '28px' }} className='indexdesign'> {startIndex + index + 1}</div>
@@ -488,16 +488,17 @@ const MediaMastercontext = ({ props }: any) => {
                                     style={{ justifyContent: "center", gap: '3px' }}
                                   >
                                     {/* Conditionally render the edit button based on status */}
-                                    {/* <span>
+                                    <span>
                                       <a
                                         className={`action-icon ${item.Status === "Save as draft"
                                           ? "text-primary"
                                           : "text-muted"
                                           }`}
                                         onClick={
-                                          item.Status === "Save as draft"
-                                            ? () => Editmedia(item.ID)
-                                            : () => ViewFormReadOnly(item.ID)
+                                          // item.Status === "Save as draft"
+                                          //   ? () => Editmedia(item.ID)
+                                          //   : () => ViewFormReadOnly(item.ID)
+                                          () => Editmedia(item.ID)
                                         }
                                         style={{
 
@@ -513,8 +514,8 @@ const MediaMastercontext = ({ props }: any) => {
                                       >
                                         <img src={require('../../../CustomAsset/edit.png')} />
                                         {/* <FontAwesomeIcon icon={faEdit} /> */}
-                                      {/* </a>
-                                    </span> */} 
+                                      </a>
+                                    </span>  
                                       <span>
                                       <a
                                         className="action-icon text-danger"

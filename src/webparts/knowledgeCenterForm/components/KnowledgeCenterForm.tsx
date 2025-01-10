@@ -16,7 +16,7 @@ import UserContext from '../../../GlobalContext/context';
 import { getCurrentUser, getEntity } from '../../../APISearvice/CustomService';
 
 import { getMediaByID, getUrl, updateItem, uploadFile, uploadFileToLibrary } from '../../../APISearvice/MediaService';
-import { addItemKnowledge, ARGKnowledgeCenterCategory, updateItemKnowledge, } from '../../../APISearvice/KnowledgeCenterService';
+import { addItemKnowledge, ARGKnowledgeCenterCategory, getKnowledgeCenterByID, updateItemKnowledge, } from '../../../APISearvice/KnowledgeCenterService';
 
 import { decryptId } from '../../../APISearvice/CryptoService';
 
@@ -163,7 +163,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
       "MainComponent": "Settings",
 
-      "MainComponentURl": `${siteUrl}SitePages/Settings.aspx`
+      "MainComponentURl": `${siteUrl}/SitePages/Settings.aspx`
 
     },
 
@@ -308,8 +308,8 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
     let formitemid;
     //#region getdataByID
-    if (sessionStorage.getItem("mediaId") != undefined) {
-      const iD = sessionStorage.getItem("mediaId")
+    if (sessionStorage.getItem("knowledgecenterId") != undefined) {
+      const iD = sessionStorage.getItem("knowledgecenterId")
       let iDs = decryptId(iD)
       formitemid = Number(iDs);
       setFormItemId(Number(iDs))
@@ -332,13 +332,13 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
       // let iDs = decryptId(iD)
 
-      const setMediaById = await getMediaByID(sp, Number(formitemid))
+      const setMediaById = await getKnowledgeCenterByID(sp, Number(formitemid))
 
 
       console.log(setMediaById, 'setMediaById');
-
-      setEditID(Number(setMediaById[0].ID))
-
+      if (setMediaById.length > 0){
+        setEditID(Number(setMediaById[0].ID))
+      }
       if (setMediaById.length > 0) {
 
         debugger
@@ -350,7 +350,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
           title: setMediaById[0].Title,
 
-          entity: setMediaById[0]?.entity,
+          entity: "",
 
           BannerImage: setMediaById[0]?.Image != null ? setMediaById[0]?.Image : [],
 
@@ -402,31 +402,31 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
         }
 
-        const rowData: any[] = await getApprovalConfiguration(sp, Number(setMediaById[0].EntityId)) //baseUrl
+        // const rowData: any[] = await getApprovalConfiguration(sp, Number(setMediaById[0].EntityId)) //baseUrl
 
-        const initialRows = rowData.map((item: any) => ({
+        // const initialRows = rowData.map((item: any) => ({
 
-          id: item.Id,
+        //   id: item.Id,
 
-          Level: item.Level.Level,
+        //   Level: item.Level.Level,
 
-          LevelId: item.LevelId,
+        //   LevelId: item.LevelId,
 
-          approvedUserListupdate: item.Users.map((user: any) => ({
+        //   approvedUserListupdate: item.Users.map((user: any) => ({
 
-            id: user.ID,
+        //     id: user.ID,
 
-            name: user.Title,
+        //     name: user.Title,
 
-            email: user.EMail
+        //     email: user.EMail
 
-          })),
+        //   })),
 
-          selectionType: 'All' // default selection type, if any
+        //   selectionType: 'All' // default selection type, if any
 
-        }));
+        // }));
 
-        setRows(initialRows);
+        // setRows(initialRows);
 
 
       }
@@ -804,7 +804,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
         valid = false;
 
       }
-      else if (ImagepostArr1.length == 0) {
+      else if (ImagepostArr1.length == 0 && ImagepostArr.length == 0) {
 
         //Swal.fire('Error', 'Category is required!', 'error');
 
@@ -851,399 +851,399 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
     if (validateForm(FormSubmissionMode.SUBMIT)) {
 
-      // if (editForm) {
+      if (editForm) {
 
-      //   Swal.fire({
+        Swal.fire({
 
-      //     title: 'Do you want to submit this request?',
+          title: 'Do you want to submit this request?',
 
-      //     showConfirmButton: true,
+          showConfirmButton: true,
 
-      //     showCancelButton: true,
+          showCancelButton: true,
 
-      //     confirmButtonText: "Save",
+          confirmButtonText: "Save",
 
-      //     cancelButtonText: "Cancel",
+          cancelButtonText: "Cancel",
 
-      //     icon: 'warning'
+          icon: 'warning'
 
-      //   }
+        }
 
-      //   ).then(async (result) => {
+        ).then(async (result) => {
 
-      //     //console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
+          //console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
 
-      //     if (result.isConfirmed) {
-      //       setLoading(true);
-      //       debugger
+          if (result.isConfirmed) {
+            setLoading(true);
+            debugger
 
-      //       let bannerImageArray: any = {};
+            let bannerImageArray: any = {};
 
-      //       let galleryIds: any[] = [];
+            let galleryIds: any[] = [];
 
-      //       let documentIds: any[] = [];
+            let documentIds: any[] = [];
 
-      //       let galleryArray: any[] = [];
+            let galleryArray: any[] = [];
 
-      //       let documentArray: any[] = [];
+            let documentArray: any[] = [];
 
 
-      //       // formData.FeaturedAnnouncement === "on"?  true :false;
+            // formData.FeaturedAnnouncement === "on"?  true :false;
 
 
-      //       // Upload Banner Images
+            // Upload Banner Images
 
-      //       if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
+            if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
 
-      //         for (const file of BnnerImagepostArr[0].files) {
+              for (const file of BnnerImagepostArr[0].files) {
 
-      //           //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
+                //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
 
-      //           bannerImageArray = await uploadFile(file, sp, "Documents", tenantUrl);
+                bannerImageArray = await uploadFile(file, sp, "Documents", tenantUrl);
 
-      //         }
+              }
 
-      //       }
-      //       else if (BnnerImagepostArr.length > 0) {
-      //         bannerImageArray = BnnerImagepostArr[0];
-      //       }
+            }
+            else if (BnnerImagepostArr.length > 0) {
+              bannerImageArray = BnnerImagepostArr[0];
+            }
 
-      //       else {
+            else {
 
-      //         bannerImageArray = null
+              bannerImageArray = null
 
-      //       }
+            }
 
-      //       debugger
+            debugger
 
-      //       if (bannerImageArray != null) {
+            if (bannerImageArray != null) {
 
-      //         // Create Post
+              // Create Post
 
-      //         const postPayload = {
+              const postPayload = {
 
-      //           Title: formData.title,
+                Title: formData.title,
 
-      //           EntityMasterId: Number(formData.entity),
+                //EntityMasterId: Number(formData.entity),
 
-      //           Status: "Submitted",
+                Status: "Submitted",
 
-      //           AuthorId: currentUser.Id,
+                AuthorId: currentUser.Id,
 
-      //           Image: bannerImageArray != "{}" && JSON.stringify(bannerImageArray),
+                //Image: bannerImageArray != "{}" && JSON.stringify(bannerImageArray),
 
-      //           MediaGalleryCategoryId: formData.Category
+                MediaGalleryCategoryId: formData.Category
 
-      //         };
+              };
 
-      //         console.log(postPayload);
+              console.log(postPayload);
 
 
-      //         const postResult = await updateItem(postPayload, sp, editID);
+              const postResult = await updateItemKnowledge(postPayload, sp, editID);
 
-      //         const postId = postResult?.data?.ID;
+              const postId = postResult?.data?.ID;
 
-      //         debugger
+              debugger
 
-      //         // if (!postId) {
+              // if (!postId) {
 
-      //         //   console.error("Post creation failed.");
+              //   console.error("Post creation failed.");
 
-      //         //   return;
+              //   return;
 
-      //         // }
+              // }
 
 
-      //         // Upload Gallery Images
+              // Upload Gallery Images
 
-      //         // Upload Gallery Images
+              // Upload Gallery Images
 
-      //         if (ImagepostArr[0]?.files?.length > 0) {
+              if (ImagepostArr[0]?.files?.length > 0) {
 
-      //           for (const file of ImagepostArr[0].files) {
+                for (const file of ImagepostArr[0].files) {
 
 
-      //             const uploadedGalleryImage = await uploadFileToLibrary(file, sp, "MediaGallery");
+                  const uploadedGalleryImage = await uploadFileToLibrary(file, sp, "KnowledgeCenterGallery");
 
 
-      //             galleryIds = galleryIds.concat(uploadedGalleryImage.map((item: { ID: any }) => item.ID));
+                  galleryIds = galleryIds.concat(uploadedGalleryImage.map((item: { ID: any }) => item.ID));
 
-      //             if (ImagepostArr1.length > 0) {
+                  if (ImagepostArr1.length > 0) {
 
 
-      //               ImagepostArr1.push(uploadedGalleryImage[0])
+                    ImagepostArr1.push(uploadedGalleryImage[0])
 
-      //               const updatedData = ImagepostArr1.filter(item => item.ID !== 0);
+                    const updatedData = ImagepostArr1.filter(item => item.ID !== 0);
 
-      //               console.log(updatedData, 'updatedData');
+                    console.log(updatedData, 'updatedData');
 
-      //               galleryArray = updatedData;
+                    galleryArray = updatedData;
 
-      //               //galleryArray.push(ImagepostArr1);
+                    //galleryArray.push(ImagepostArr1);
 
 
-      //               ImagepostIdsArr.push(galleryIds[0]) //galleryIds.push(ImagepostIdsArr)
+                    ImagepostIdsArr.push(galleryIds[0]) //galleryIds.push(ImagepostIdsArr)
 
-      //               galleryIds = ImagepostIdsArr
+                    galleryIds = ImagepostIdsArr
 
-      //             }
+                  }
 
-      //             else {
+                  else {
 
-      //               galleryArray.push(uploadedGalleryImage);
+                    galleryArray.push(uploadedGalleryImage);
 
-      //             }
+                  }
 
-      //           }
+                }
 
-      //         }
+              }
 
-      //         else {
+              else {
 
-      //           galleryIds = ImagepostIdsArr
+                galleryIds = ImagepostIdsArr
 
-      //           galleryArray = ImagepostArr1;
+                galleryArray = ImagepostArr1;
 
-      //         }
+              }
 
 
-      //         let ars = galleryArray.filter(x => x.ID == 0)
+              let ars = galleryArray.filter(x => x.ID == 0)
 
-      //         if (ars.length > 0) {
+              if (ars.length > 0) {
 
-      //           for (let i = 0; i < ars.length; i++) {
+                for (let i = 0; i < ars.length; i++) {
 
-      //             galleryArray.slice(i, 1)
+                  galleryArray.slice(i, 1)
 
-      //           }
+                }
 
-      //         }
+              }
 
 
-      //         console.log(galleryIds, 'galleryIds');
+              console.log(galleryIds, 'galleryIds');
 
-      //         // Update Post with Gallery and Document Information
+              // Update Post with Gallery and Document Information
 
-      //         const updatePayload = {
+              const updatePayload = {
 
-      //           ...(galleryIds.length > 0 && {
+                ...(galleryIds.length > 0 && {
 
-      //             MediaGalleriesId: galleryIds,
+                  MediaGalleriesId: galleryIds,
 
-      //             MediaGalleryJSON: JSON.stringify(flatArray(galleryArray)),
+                  MediaGalleryJSON: JSON.stringify(flatArray(galleryArray)),
 
-      //           }),
+                }),
 
 
-      //         };
+              };
 
 
-      //         if (Object.keys(updatePayload).length > 0) {
+              if (Object.keys(updatePayload).length > 0) {
 
-      //           const updateResult = await updateItem(updatePayload, sp, editID);
+                const updateResult = await updateItemKnowledge(updatePayload, sp, editID);
 
-      //           console.log("Update Result:", updateResult);
+                console.log("Update Result:", updateResult);
 
-      //         }
+              }
 
 
-      //       }
+            }
 
-      //       else {
+            else {
 
-      //         // Create Post
+              // Create Post
 
-      //         const postPayload = {
+              const postPayload = {
 
-      //           Title: formData.title,
+                Title: formData.title,
 
-      //           EntityMasterId: Number(formData.entity),
+                EntityMasterId: Number(formData.entity),
 
-      //           Status: "Submitted",
+                Status: "Submitted",
 
-      //           AuthorId: currentUser.Id,
+                AuthorId: currentUser.Id,
 
-      //           MediaGalleryCategoryId: formData.Category
+                MediaGalleryCategoryId: formData.Category
 
-      //         };
+              };
 
-      //         console.log(postPayload);
+              console.log(postPayload);
 
 
-      //         const postResult = await updateItem(postPayload, sp, editID);
+              const postResult = await updateItem(postPayload, sp, editID);
 
-      //         const postId = postResult?.data?.ID;
+              const postId = postResult?.data?.ID;
 
-      //         debugger
+              debugger
 
-      //         // if (!postId) {
+              // if (!postId) {
 
-      //         //   console.error("Post creation failed.");
+              //   console.error("Post creation failed.");
 
-      //         //   return;
+              //   return;
 
-      //         // }
+              // }
 
 
-      //         // Upload Gallery Images
+              // Upload Gallery Images
 
-      //         // Upload Gallery Images
+              // Upload Gallery Images
 
-      //         if (ImagepostArr[0]?.files?.length > 0) {
+              if (ImagepostArr[0]?.files?.length > 0) {
 
-      //           for (const file of ImagepostArr[0].files) {
+                for (const file of ImagepostArr[0].files) {
 
 
-      //             const uploadedGalleryImage = await uploadFileToLibrary(file, sp, "MediaGallery");
+                  const uploadedGalleryImage = await uploadFileToLibrary(file, sp, "MediaGallery");
 
 
-      //             galleryIds = galleryIds.concat(uploadedGalleryImage.map((item: { ID: any }) => item.ID));
+                  galleryIds = galleryIds.concat(uploadedGalleryImage.map((item: { ID: any }) => item.ID));
 
-      //             if (ImagepostArr1.length > 0) {
+                  if (ImagepostArr1.length > 0) {
 
 
-      //               ImagepostArr1.push(uploadedGalleryImage[0])
+                    ImagepostArr1.push(uploadedGalleryImage[0])
 
-      //               const updatedData = ImagepostArr1.filter(item => item.ID !== 0);
+                    const updatedData = ImagepostArr1.filter(item => item.ID !== 0);
 
-      //               console.log(updatedData, 'updatedData');
+                    console.log(updatedData, 'updatedData');
 
-      //               galleryArray = updatedData;
+                    galleryArray = updatedData;
 
-      //               // documentArray.push(documentArray);
+                    // documentArray.push(documentArray);
 
 
-      //               ImagepostIdsArr.push(galleryIds[0]) //galleryIds.push(ImagepostIdsArr)
+                    ImagepostIdsArr.push(galleryIds[0]) //galleryIds.push(ImagepostIdsArr)
 
-      //               galleryIds = ImagepostIdsArr
+                    galleryIds = ImagepostIdsArr
 
-      //             }
+                  }
 
-      //             else {
+                  else {
 
-      //               galleryArray.push(uploadedGalleryImage);
+                    galleryArray.push(uploadedGalleryImage);
 
-      //             }
+                  }
 
-      //           }
+                }
 
-      //         }
+              }
 
-      //         else {
+              else {
 
-      //           galleryIds = ImagepostIdsArr
+                galleryIds = ImagepostIdsArr
 
-      //           galleryArray = ImagepostArr1;
+                galleryArray = ImagepostArr1;
 
-      //         }
+              }
 
 
 
-      //         let ars = galleryArray.filter(x => x.ID == 0)
+              let ars = galleryArray.filter(x => x.ID == 0)
 
-      //         if (ars.length > 0) {
+              if (ars.length > 0) {
 
-      //           for (let i = 0; i < ars.length; i++) {
+                for (let i = 0; i < ars.length; i++) {
 
-      //             galleryArray.slice(i, 1)
+                  galleryArray.slice(i, 1)
 
-      //           }
+                }
 
-      //         }
+              }
 
 
-      //         console.log(galleryIds, 'galleryIds');
+              console.log(galleryIds, 'galleryIds');
 
-      //         // Update Post with Gallery and Document Information
+              // Update Post with Gallery and Document Information
 
-      //         const updatePayload = {
+              const updatePayload = {
 
-      //           ...(galleryIds.length > 0 && {
+                ...(galleryIds.length > 0 && {
 
-      //             MediaGalleriesId: galleryIds,
+                  MediaGalleriesId: galleryIds,
 
 
-      //             MediaGalleryJSON: JSON.stringify(flatArray(galleryArray)),
+                  MediaGalleryJSON: JSON.stringify(flatArray(galleryArray)),
 
-      //           }),
+                }),
 
 
-      //         };
+              };
 
 
-      //         if (Object.keys(updatePayload).length > 0) {
+              if (Object.keys(updatePayload).length > 0) {
 
-      //           const updateResult = await updateItem(updatePayload, sp, editID);
+                const updateResult = await updateItemKnowledge(updatePayload, sp, editID);
 
-      //           console.log("Update Result:", updateResult);
+                console.log("Update Result:", updateResult);
 
-      //         }
+              }
 
-      //       }
+            }
 
-      //       let arr = {
+            // let arr = {
 
-      //         ContentID: editID,
+            //   ContentID: editID,
 
-      //         ContentName: "ARGMediaGallery",
+            //   ContentName: "ARGMediaGallery",
 
-      //         Status: "Pending",
+            //   Status: "Pending",
 
-      //         EntityId: Number(formData.entity),
-      //         Title: formData.title,
-      //         SourceName: "Media",
-      //         ReworkRequestedBy: "Initiator"
+            //   EntityId: Number(formData.entity),
+            //   Title: formData.title,
+            //   SourceName: "Media",
+            //   ReworkRequestedBy: "Initiator"
 
 
-      //       }
+            // }
 
-      //       // await AddContentMaster(sp, arr)
+            // await AddContentMaster(sp, arr)
 
-      //       // const boolval = await handleClick(editID, "Media", Number(formData.entity))
+            // const boolval = await handleClick(editID, "Media", Number(formData.entity))
 
-      //       let boolval = false;
-      //       if (ApprovalRequestItem && ApprovalRequestItem.IsRework && ApprovalRequestItem.IsRework == 'Yes') {
-      //         const ctmasteritm = await sp.web.lists.getByTitle(LIST_TITLE_ContentMaster).items.filter('ContentID eq ' + ApprovalRequestItem.ContentId + " and SourceName eq '" + CONTENTTYPE_Media + "'")();
-      //         if (ctmasteritm && ctmasteritm.length > 0) {
-      //           let updaterec = { 'Status': 'Pending', 'ReworkRequestedBy': 'Initiator' }
-      //           if (ApprovalRequestItem.LevelSequence == 1) updaterec.ReworkRequestedBy = "Level 1";
-      //           await UpdateContentMaster(sp, ctmasteritm[0].Id, updaterec);
-      //           await sp.web.lists.getByTitle(LIST_TITLE_MyRequest).items.getById(ApprovalRequestItem.Id).update({ 'Status': 'Submitted' });
-      //           await sp.web.lists.getByTitle(LIST_TITLE_MediaGallery).items.getById(editID).update({ 'Status': 'Submitted' });
-      //           boolval = true;
-      //         }
-      //       }
-      //       else {
+            // let boolval = false;
+            // if (ApprovalRequestItem && ApprovalRequestItem.IsRework && ApprovalRequestItem.IsRework == 'Yes') {
+            //   const ctmasteritm = await sp.web.lists.getByTitle(LIST_TITLE_ContentMaster).items.filter('ContentID eq ' + ApprovalRequestItem.ContentId + " and SourceName eq '" + CONTENTTYPE_Media + "'")();
+            //   if (ctmasteritm && ctmasteritm.length > 0) {
+            //     let updaterec = { 'Status': 'Pending', 'ReworkRequestedBy': 'Initiator' }
+            //     if (ApprovalRequestItem.LevelSequence == 1) updaterec.ReworkRequestedBy = "Level 1";
+            //     await UpdateContentMaster(sp, ctmasteritm[0].Id, updaterec);
+            //     await sp.web.lists.getByTitle(LIST_TITLE_MyRequest).items.getById(ApprovalRequestItem.Id).update({ 'Status': 'Submitted' });
+            //     await sp.web.lists.getByTitle(LIST_TITLE_MediaGallery).items.getById(editID).update({ 'Status': 'Submitted' });
+            //     boolval = true;
+            //   }
+            // }
+            // else {
 
-      //         console.log(" form edit content master");
-      //         debugger
-      //         await AddContentMaster(sp, arr)
-      //         console.log(" form edit content master - added content master");
+            //   console.log(" form edit content master");
+            //   debugger
+            //   await AddContentMaster(sp, arr)
+            //   console.log(" form edit content master - added content master");
 
-      //         boolval = await handleClick(editID, "Media", Number(formData.entity))
-      //       }
-      //       if (boolval == true) {
-      //         setLoading(false);
-      //         Swal.fire('Submitted successfully.', '', 'success');
+            //   boolval = await handleClick(editID, "Media", Number(formData.entity))
+            // }
+            //if (boolval == true) {
+              setLoading(false);
+              Swal.fire('Submitted successfully.', '', 'success');
 
-      //         sessionStorage.removeItem("mediaId")
+            sessionStorage.removeItem("knowledgecenterId")
 
-      //         setTimeout(() => {
+              setTimeout(() => {
 
-      //           window.location.href = `${siteUrl}/SitePages/MediaGalleryMaster.aspx`;
+                window.location.href = `${siteUrl}/SitePages/KnowledgeCenterMaster.aspx`;
 
-      //         }, 2000);
+              }, 2000);
 
-      //       }
+            //}
 
-      //     }
+          }
 
 
-      //   })
+        })
 
-      // }
+      }
 
-      // else {
+      else {
 
       Swal.fire({
 
@@ -1361,7 +1361,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
           };
 
-          console.log("updatePayload", postId , postResult?.data?.ID, ImagepostArr, updatePayload)
+          console.log("updatePayload", postId, postResult?.data?.ID, ImagepostArr, updatePayload)
           if (Object.keys(updatePayload).length > 0) {
 
             const updateResult = await updateItemKnowledge(updatePayload, sp, postId);
@@ -1370,21 +1370,21 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
           }
 
-          let arr = {
+          // let arr = {
 
-            ContentID: postId,
+          //   ContentID: postId,
 
-            ContentName: "ARGKnowledgeCenter",
+          //   ContentName: "ARGKnowledgeCenter",
 
-            Status: "Pending",
+          //   Status: "Pending",
 
-            //EntityId: Number(formData.entity),
-            Title: formData.title,
-            SourceName: "KnowledgeCenter",
-            ReworkRequestedBy: "Initiator"
+          //   //EntityId: Number(formData.entity),
+          //   Title: formData.title,
+          //   SourceName: "KnowledgeCenter",
+          //   ReworkRequestedBy: "Initiator"
 
 
-          }
+          // }
 
           //await AddContentMaster(sp, arr)
 
@@ -1409,7 +1409,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
       })
 
 
-      //}
+      }
       //fetchAudithistory();
     }
 
@@ -2144,9 +2144,9 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
         <HorizontalNavbar _context={sp} siteUrl={siteUrl} />
 
-        <div className="content" style={{ marginLeft: `${!useHide ? '240px' : '80px'}`, marginTop: '1.6rem' }}>
+        <div className="content" style={{ marginLeft: `${!useHide ? '240px' : '80px'}` }}>
 
-          <div className="container-fluid  paddb">
+          <div style={{ paddingTop: '35px' }} className="container-fluid  paddb">
 
             <div className="row ">
 
@@ -2209,7 +2209,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
                             placeholder='Enter title'
 
-                            className={`form-control inputcs ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                            className={`form-control ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
 
                             value={formData.title}
                             disabled={InputDisabled}
@@ -2232,7 +2232,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
                           <select
 
-                            className={`form-control inputcs ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                            className={`form-control ${(!ValidSubmit) ? "border-on-error" : ""}`}
 
                             id="Category"
 
@@ -2391,7 +2391,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
                             name="announcementGallery"
 
-                            className="form-control inputcss"
+                            className="form-control"
 
                             disabled={InputDisabled}
 
@@ -2404,53 +2404,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
                       </div>
 
 
-                      {!InputDisabled ? (<div className="text-center butncss">
 
-                        {/* <div className="btn btn-success waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleSaveAsDraft}>
-
-                          <div className='d-flex' style={{ justifyContent: 'space-around' }}>
-
-                            <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} alt="Check" /> Save As Draft
-
-                          </div>
-
-                        </div> */}
-
-                        <div className="btn btn-success waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleFormSubmit}>
-
-                          <div className='d-flex' style={{ justifyContent: 'space-around', width: '70px' }}>
-
-                            <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} alt="Check" /> Submit
-
-                          </div>
-
-                        </div>
-
-                        <div className="btn btn-light waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleCancel}>
-
-                          <div className='d-flex' style={{ justifyContent: 'space-around', width: '70px' }}>
-
-                            <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }} className='me-0' alt="x" />
-
-                            Cancel
-
-                          </div>
-
-                        </div>
-
-                      </div>) : (modeValue == 'view') && (<div className="text-center butncss">
-                        <div className="btn btn-light waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleCancel}>
-
-                          <div className='d-flex' style={{ justifyContent: 'space-around', width: '70px' }}>
-
-                            <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }} className='me-1' alt="x" />
-
-                            Cancel
-
-                          </div>
-
-                        </div>
-                      </div>)}
 
                     </form>
                   }
@@ -2458,6 +2412,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
               </div>
 
             </div>
+
 
             {/* {
 
@@ -2597,90 +2552,139 @@ const AddMediaGalaryContext = ({ props }: any) => {
               <WorkflowAuditHistory ContentItemId={editID} ContentType={CONTENTTYPE_Media} ctx={props.context} />
             } */}
 
+            {!InputDisabled ? (<div className="text-center butncss">
+
+              {/* <div className="btn btn-success waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleSaveAsDraft}>
+
+  <div className='d-flex' style={{ justifyContent: 'space-around' }}>
+
+    <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} alt="Check" /> Save As Draft
+
+  </div>
+
+</div> */}
+
+              <div className="btn btn-success waves-effect waves-light m-1" style={{ width: '100px' }} onClick={handleFormSubmit}>
+
+                <div className='d-flex' style={{ justifyContent: 'center' }}>
+
+                  <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem', marginRight: '3px' }} alt="Check" /> Submit
+
+                </div>
+
+              </div>
+
+              <div className="btn cancel-btn waves-effect waves-light m-1" style={{ width: '100px' }} onClick={handleCancel}>
+
+                <div className='d-flex' style={{ justifyContent: 'center' }}>
+
+                  <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem', marginRight: '3px' }} className='me-0' alt="x" />
+
+                  Cancel
+
+                </div>
+
+              </div>
+
+            </div>) : (modeValue == 'view') && (<div className="text-center butncss">
+              <div className="btn cancel-btn waves-effect waves-light m-1" style={{ width: '100px' }} onClick={handleCancel}>
+
+                <div className='d-flex' style={{ justifyContent: 'center' }}>
+
+                  <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem', marginRight: '3px' }} className='me-1' alt="x" />
+
+                  Cancel
+
+                </div>
+
+              </div>
+            </div>)}
+
+
             {/* Modal to display uploaded files */}
+            {ImagepostArr1 != null && ImagepostArr1.length > 0 &&
+              <Modal show={showModal} onHide={() => setShowModal(false)} size="lg">
 
-            <Modal show={showModal} onHide={() => setShowModal(false)} size="lg">
+                <Modal.Header closeButton>
 
-              <Modal.Header closeButton>
+                  <Modal.Title>Knowledge Center Gallery</Modal.Title>
 
-                <Modal.Title>Knowledge Center Gallery</Modal.Title>
+                  {/* {ImagepostArr1.length > 0 && showBannerModal && <Modal.Title>Media Images</Modal.Title>} */}
 
-                {/* {ImagepostArr1.length > 0 && showBannerModal && <Modal.Title>Media Images</Modal.Title>} */}
+                </Modal.Header>
 
-              </Modal.Header>
+                <Modal.Body className="scrollbar" id="style-5">
 
-              <Modal.Body className="scrollbar" id="style-5">
+                  {ImagepostArr1.length > 0 && showImgModal &&
 
-                {ImagepostArr1.length > 0 && showImgModal &&
+                    (
 
-                  (
+                      <>
 
-                    <>
+                        <table className="mtable table-bordered" style={{ fontSize: '0.75rem' }}>
 
-                      <table className="mtable table-bordered" style={{ fontSize: '0.75rem' }}>
+                          <thead style={{ background: '#eef6f7' }}>
 
-                        <thead style={{ background: '#eef6f7' }}>
+                            <tr>
 
-                          <tr>
+                              <th>Serial No.</th>
 
-                            <th>Serial No.</th>
+                              <th > Image </th>
 
-                            <th > Image </th>
+                              <th>File Name</th>
 
-                            <th>File Name</th>
-
-                            <th>File Size</th>
-                            {/* {modeValue == null && */}
-                            <th className='text-center'>Action</th>
-                            {/* } */}
-                          </tr>
-
-                        </thead>
-
-                        <tbody>
-
-                          {ImagepostArr1.map((file: any, index: number) => (
-
-                            <tr key={index}>
-
-                              <td className='text-center'>{index + 1}</td>
-
-                              <td>
-                                <img
-                                  className='imagefe'
-                                  src={file.fileType.startsWith('video/') ?
-                                    require("../../../Assets/ExtraImage/video.jpg") :
-                                    (file.fileUrl ? file.fileUrl : `${siteUrl}/MediaGallery/${file.fileName}`)}
-                                  alt={'default image'}
-                                />
-                              </td>
-
-                              <td>{file.fileName}</td>
-
-                              <td className='text-right'>{file.fileSize}</td>
+                              <th>File Size</th>
                               {/* {modeValue == null && */}
-                              <td className='text-center'> <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }}
-
-                                onClick={() => deleteLocalFile(index, ImagepostArr1, "Gallery")} /> </td>
-
+                              <th className='text-center'>Action</th>
                               {/* } */}
                             </tr>
 
-                          ))}
+                          </thead>
 
-                        </tbody>
+                          <tbody>
 
-                      </table>
-                    </>
+                            {ImagepostArr1.map((file: any, index: number) => (
 
-                  )}
+                              <tr key={index}>
+
+                                <td className='text-center'>{index + 1}</td>
+
+                                <td>
+                                  <img
+                                    className='imagefe'
+                                    src={file.fileType.startsWith('video/') ?
+                                      require("../../../Assets/ExtraImage/video.jpg") :
+                                      (file.fileUrl ? file.fileUrl : `${siteUrl}/MediaGallery/${file.fileName}`)}
+                                    alt={'default image'}
+                                  />
+                                </td>
+
+                                <td>{file.fileName}</td>
+
+                                <td className='text-right'>{file.fileSize}</td>
+                                {/* {modeValue == null && */}
+                                <td className='text-center'> <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }}
+
+                                  onClick={() => deleteLocalFile(index, ImagepostArr1, "Gallery")} /> </td>
+
+                                {/* } */}
+                              </tr>
+
+                            ))}
+
+                          </tbody>
+
+                        </table>
+                      </>
+
+                    )}
 
 
 
-              </Modal.Body>
+                </Modal.Body>
 
-            </Modal>
-
+              </Modal>
+            }
 
 
             {/* <Modal show={showModal1} onHide={() => setShowModal1(false)} size="lg">
@@ -2700,7 +2704,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
     ( */}
 
-          
+
 
             {/* )} */}
 
