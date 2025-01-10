@@ -425,11 +425,11 @@ const MediaMastercontext = ({ props }: any) => {
                                 <FontAwesomeIcon style={{top:'4px'}} icon={faEllipsisV} onClick={toggleDropdown} size='xl' />
                               </div>
                               </div>
-                              <div className=" bd-highlight">   <div id="myDropdown" className={`dropdown-content ${isOpen ? 'show' : ''}`}>
+                              {/* <div className=" bd-highlight">   <div id="myDropdown" className={`dropdown-content ${isOpen ? 'show' : ''}`}>
                                 <div onClick={handleExportClick} className="" >
                                   <FontAwesomeIcon icon={faFileExport} />  Export
                                 </div>
-                              </div></div>
+                              </div></div> */}
  
                             </div>
                             <div style={{ height: '32px' }}></div>

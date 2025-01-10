@@ -6,7 +6,7 @@ import "../../CustomCss/mainCustom.scss";
 import "../../Assets/Figtree/Figtree-VariableFont_wght.ttf";
 import { Share2 } from 'feather-icons-react';
 import { Bookmark } from 'feather-icons-react';
-import { Calendar } from 'feather-icons-react';
+import { Calendar, Link, Share } from 'feather-icons-react';
 import moment from 'moment';
 import { getNews } from '../../APISearvice/NewsService';
 import { getCurrentUserProfileEmail } from "../../APISearvice/CustomService";
@@ -211,10 +211,8 @@ const CustomNewsWebpartTemplate = ({ _sp, SiteUrl }) => {
                                                         </div>
                                                         {showDropdownId === item.Id && (
                                                             <div className="dropdown-menu dropcss" isMenuOpenshareref={menuRef}>
-                                                                <a className="dropdown-item dropcssItem" onClick={() => sendanEmail(item)}>Share by email</a>
-                                                                <a className="dropdown-item dropcssItem" onClick={() => copyToClipboard(item.Id)}>
-                                                                    Copy Link
-                                                                </a>
+                                                                <a className="dropdown-item dropcssItem" onClick={() => sendanEmail(item)}><Share size={16} />  Share by email</a>
+                                                                <a className="dropdown-item dropcssItem" onClick={() => copyToClipboard(item.Id)}><Link size={14} />  Copy Link</a>
                                                                 <a>{copySuccess && <span className="text-success">{copySuccess}</span>}</a>
                                                             </div>
                                                         )}

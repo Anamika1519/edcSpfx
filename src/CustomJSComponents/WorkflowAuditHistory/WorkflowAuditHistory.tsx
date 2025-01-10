@@ -62,44 +62,61 @@ export const WorkflowAuditHistory = (props: IWorkflowAuditHistoryProps) => {
 
     if (props.ContentItemId && AuditHistoryRows.length == 0 && !IsHistoryData) {
 
-       getAllAPI()
+      getAllAPI()
 
-      }
+    }
 
   })
 
   const getAllAPI = async () => {
-
+    let listname = "";
     if (props.ContentItemId) {
-
+      switch (props.ContentType) {
+        case "Capex Requisition":
+          listname = "announcementId";
+          break;
+        case "NON-ITProjectCharterRequestList":
+          listname = "announcementId";
+          break;
+        case "InterOfficeCommunicationRequestList":
+          listname = "EventId";
+          break;
+        case "ITProjectCharterRequestList":
+          listname = "mediaId";
+          break;
+        case "IT Demand Request":
+          listname = "blogId";
+          break;
+        default:
+      }
       setLoading(true);
 
       sp.web.lists.getByTitle("ARGMyRequest").items
-      .select("*,Requester/Id,Requester/Title,Approver/Id,Approver/Title")
-      .expand("Approver,Requester")
-      .filter('ContentId eq ' + props.ContentItemId + "and ProcessName eq '" + props.ContentType + "'")
-      .orderBy('Created')().then(datarows => {
+        .select("*,Requester/Id,Requester/Title,Approver/Id,Approver/Title")
+        .expand("Approver,Requester")
+        .filter('ContentId eq ' + props.ContentItemId + "and ProcessName eq '" + props.ContentType + "'")
+        .orderBy('Created')().then(datarows => {
 
-        if (datarows.length == 0) {
+          if (datarows.length == 0) {
 
-          setIsHistoryData(true);
+            setIsHistoryData(true);
 
-          setLoading(false);
+            setLoading(false);
 
-        }
+          }
 
-        if (datarows.length > 0) {
+          if (datarows.length > 0) {
 
-          setLoading(false);
+            setLoading(false);
 
-          setIsHistoryData(true);
+            setIsHistoryData(true);
 
-        }
+          }
 
-        setAuditHistoryRows(datarows);
+          setAuditHistoryRows(datarows);
 
 
-      })
+        })
 
     }
 
@@ -111,8 +128,8 @@ export const WorkflowAuditHistory = (props: IWorkflowAuditHistoryProps) => {
 
     <div className="card cardCss mb-0 mt-3">
 
- 
-      <div className="card-body"> 
+
+      <div className="card-body">
 
 
         <div id="cardCollpase4" className="collapse show">

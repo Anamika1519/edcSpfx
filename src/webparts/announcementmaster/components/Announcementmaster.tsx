@@ -794,7 +794,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                 </div>
 
-                                <div className=" bd-highlight">   <div id="myDropdown" className={`dropdown-content ${isOpen ? 'show' : ''}`}>
+                                {/* <div className=" bd-highlight">   <div id="myDropdown" className={`dropdown-content ${isOpen ? 'show' : ''}`}>
 
                                   <div onClick={handleExportClick} className="" >
 
@@ -802,7 +802,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                   </div>
 
-                                </div></div>
+                                </div></div> */}
 
 
                               </div>
@@ -1179,7 +1179,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                   </div>
 
-                                  <div className=" bd-highlight">   <div id="myDropdown" className={`dropdown-content ${isOpenNews ? 'showNews' : ''}`}>
+                                  {/* <div className=" bd-highlight">   <div id="myDropdown" className={`dropdown-content ${isOpenNews ? 'showNews' : ''}`}>
 
                                     <div onClick={handleNewsExportClick} className="" >
 
@@ -1187,7 +1187,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                     </div>
 
-                                  </div></div>
+                                  </div></div> */}
 
 
                                 </div>

@@ -507,11 +507,11 @@ const EntityMastercontext = ({ props }: any) => {
                                 {/* <FontAwesomeIcon icon={faEllipsisV} onClick={toggleDropdownNews} /> */}
                               </div>
                               </div>
-                              <div className=" bd-highlight">   <div id="myDropdown" className={`dropdown-content ${isOpenNews ? 'showNews' : ''}`}>
+                              {/* <div className=" bd-highlight">   <div id="myDropdown" className={`dropdown-content ${isOpenNews ? 'showNews' : ''}`}>
                                 <div onClick={handleExportClick} className="" >
                                   <FontAwesomeIcon icon={faFileExport} />  Export
                                 </div>
-                              </div></div>
+                              </div></div> */}
 
                             </div>
                           </th>

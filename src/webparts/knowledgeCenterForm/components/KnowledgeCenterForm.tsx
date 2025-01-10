@@ -336,7 +336,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
 
       console.log(setMediaById, 'setMediaById');
-      if (setMediaById.length > 0){
+      if (setMediaById.length > 0) {
         setEditID(Number(setMediaById[0].ID))
       }
       if (setMediaById.length > 0) {
@@ -804,13 +804,13 @@ const AddMediaGalaryContext = ({ props }: any) => {
         valid = false;
 
       }
-      else if (ImagepostArr1.length == 0 && ImagepostArr.length == 0) {
+      // else if (ImagepostArr1.length == 0 && ImagepostArr.length == 0) {
 
-        //Swal.fire('Error', 'Category is required!', 'error');
+      //   //Swal.fire('Error', 'Category is required!', 'error');
 
-        valid = false;
+      //   valid = false;
 
-      }
+      // }
 
       setValidSubmit(valid)
 
@@ -1223,16 +1223,16 @@ const AddMediaGalaryContext = ({ props }: any) => {
             //   boolval = await handleClick(editID, "Media", Number(formData.entity))
             // }
             //if (boolval == true) {
-              setLoading(false);
-              Swal.fire('Submitted successfully.', '', 'success');
+            setLoading(false);
+            Swal.fire('Submitted successfully.', '', 'success');
 
             sessionStorage.removeItem("knowledgecenterId")
 
-              setTimeout(() => {
+            setTimeout(() => {
 
-                window.location.href = `${siteUrl}/SitePages/KnowledgeCenterMaster.aspx`;
+              window.location.href = `${siteUrl}/SitePages/KnowledgeCenterMaster.aspx`;
 
-              }, 2000);
+            }, 2000);
 
             //}
 
@@ -1245,168 +1245,168 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
       else {
 
-      Swal.fire({
+        Swal.fire({
 
-        title: 'Do you want to submit this request?',
+          title: 'Do you want to submit this request?',
 
-        showConfirmButton: true,
+          showConfirmButton: true,
 
-        showCancelButton: true,
+          showCancelButton: true,
 
-        confirmButtonText: "Yes ",
+          confirmButtonText: "Yes ",
 
-        cancelButtonText: "No",
+          cancelButtonText: "No",
 
-        icon: 'warning'
-
-      }
-
-      ).then(async (result) => {
-
-        if (result.isConfirmed) {
-
-          //console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
-          setLoading(true);
-          debugger
-
-          let bannerImageArray: any = {};
-
-          let galleryIds: any[] = [];
-
-          let galleryArray: any[] = [];
-
-
-          // Upload Banner Images
-
-          // if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
-
-          //   for (const file of BnnerImagepostArr[0].files) {
-
-          //     //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
-
-          //     bannerImageArray = await uploadFile(file, sp, "Documents", tenantUrl);
-
-          //   }
-
-          // }
-
-          debugger
-
-          // Create Post
-
-          const postPayload = {
-
-            Title: formData.title,
-
-            //EntityMasterId: Number(formData.entity),
-
-            Status: "Submitted",
-
-            AuthorId: currentUser.Id,
-
-            //Image: JSON.stringify(bannerImageArray),
-
-            MediaGalleryCategoryId: formData.Category
-
-          };
-
-          console.log(postPayload);
-
-
-          const postResult = await addItemKnowledge(postPayload, sp);
-
-          const postId = postResult?.data?.ID;
-
-          debugger
-
-          if (!postId) {
-
-            console.error("Post creation failed.");
-
-            return;
-
-          }
-
-
-          // Upload Gallery Images
-
-          if (ImagepostArr.length > 0) {
-
-            for (const file of ImagepostArr[0]?.files) {
-
-              const uploadedGalleryImage = await uploadFileToLibrary(file, sp, "KnowledgeCenterGallery");
-
-
-              galleryIds = galleryIds.concat(uploadedGalleryImage.map((item: { ID: any }) => item.ID));
-
-              galleryArray.push(uploadedGalleryImage);
-
-            }
-
-          }
-
-
-          // Update Post with Gallery and Document Information
-
-          const updatePayload = {
-
-            ...(galleryIds.length > 0 && {
-
-              MediaGalleriesId: galleryIds,
-
-              MediaGalleryJSON: JSON.stringify(flatArray(galleryArray)),
-
-            }),
-
-
-          };
-
-          console.log("updatePayload", postId, postResult?.data?.ID, ImagepostArr, updatePayload)
-          if (Object.keys(updatePayload).length > 0) {
-
-            const updateResult = await updateItemKnowledge(updatePayload, sp, postId);
-
-            console.log("Update Result:h", updateResult);
-
-          }
-
-          // let arr = {
-
-          //   ContentID: postId,
-
-          //   ContentName: "ARGKnowledgeCenter",
-
-          //   Status: "Pending",
-
-          //   //EntityId: Number(formData.entity),
-          //   Title: formData.title,
-          //   SourceName: "KnowledgeCenter",
-          //   ReworkRequestedBy: "Initiator"
-
-
-          // }
-
-          //await AddContentMaster(sp, arr)
-
-          //const boolval = await handleClick(postId, "Media", Number(formData.entity))
-
-          //if (boolval == true) {
-          setLoading(false);
-          Swal.fire('Submitted successfully.', '', 'success');
-
-          // sessionStorage.removeItem("bannerId")
-
-          setTimeout(() => {
-
-            window.location.href = `${siteUrl}/SitePages/KnowledgeCenterMaster.aspx`;
-
-          }, 2000);
-
-          //}
+          icon: 'warning'
 
         }
 
-      })
+        ).then(async (result) => {
+
+          if (result.isConfirmed) {
+
+            //console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
+            setLoading(true);
+            debugger
+
+            let bannerImageArray: any = {};
+
+            let galleryIds: any[] = [];
+
+            let galleryArray: any[] = [];
+
+
+            // Upload Banner Images
+
+            // if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
+
+            //   for (const file of BnnerImagepostArr[0].files) {
+
+            //     //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
+
+            //     bannerImageArray = await uploadFile(file, sp, "Documents", tenantUrl);
+
+            //   }
+
+            // }
+
+            debugger
+
+            // Create Post
+
+            const postPayload = {
+
+              Title: formData.title,
+
+              //EntityMasterId: Number(formData.entity),
+
+              Status: "Submitted",
+
+              AuthorId: currentUser.Id,
+
+              //Image: JSON.stringify(bannerImageArray),
+
+              MediaGalleryCategoryId: formData.Category
+
+            };
+
+            console.log(postPayload);
+
+
+            const postResult = await addItemKnowledge(postPayload, sp);
+
+            const postId = postResult?.data?.ID;
+
+            debugger
+
+            if (!postId) {
+
+              console.error("Post creation failed.");
+
+              return;
+
+            }
+
+
+            // Upload Gallery Images
+
+            if (ImagepostArr.length > 0) {
+
+              for (const file of ImagepostArr[0]?.files) {
+
+                const uploadedGalleryImage = await uploadFileToLibrary(file, sp, "KnowledgeCenterGallery");
+
+
+                galleryIds = galleryIds.concat(uploadedGalleryImage.map((item: { ID: any }) => item.ID));
+
+                galleryArray.push(uploadedGalleryImage);
+
+              }
+
+            }
+
+
+            // Update Post with Gallery and Document Information
+
+            const updatePayload = {
+
+              ...(galleryIds.length > 0 && {
+
+                MediaGalleriesId: galleryIds,
+
+                MediaGalleryJSON: JSON.stringify(flatArray(galleryArray)),
+
+              }),
+
+
+            };
+
+            console.log("updatePayload", postId, postResult?.data?.ID, ImagepostArr, updatePayload)
+            if (Object.keys(updatePayload).length > 0) {
+
+              const updateResult = await updateItemKnowledge(updatePayload, sp, postId);
+
+              console.log("Update Result:h", updateResult);
+
+            }
+
+            // let arr = {
+
+            //   ContentID: postId,
+
+            //   ContentName: "ARGKnowledgeCenter",
+
+            //   Status: "Pending",
+
+            //   //EntityId: Number(formData.entity),
+            //   Title: formData.title,
+            //   SourceName: "KnowledgeCenter",
+            //   ReworkRequestedBy: "Initiator"
+
+
+            // }
+
+            //await AddContentMaster(sp, arr)
+
+            //const boolval = await handleClick(postId, "Media", Number(formData.entity))
+
+            //if (boolval == true) {
+            setLoading(false);
+            Swal.fire('Submitted successfully.', '', 'success');
+
+            // sessionStorage.removeItem("bannerId")
+
+            setTimeout(() => {
+
+              window.location.href = `${siteUrl}/SitePages/KnowledgeCenterMaster.aspx`;
+
+            }, 2000);
+
+            //}
+
+          }
+
+        })
 
 
       }

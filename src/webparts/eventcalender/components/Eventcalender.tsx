@@ -13,6 +13,7 @@ import context from "../../../GlobalContext/context";
 import "../../../Assets/Figtree/Figtree-VariableFont_wght.ttf";
 import FeatherIcon from "feather-icons-react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
+
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "./Eventcalender.scss";
@@ -21,6 +22,7 @@ import HorizontalNavbar from "../../horizontalNavBar/components/HorizontalNavBar
 import CustomBreadcrumb from "../../../CustomJSComponents/CustomBreadcrumb/CustomBreadcrumb";
 import { IEventcalenderProps } from "./IEventcalenderProps";
 import { Bookmark, Share2 } from "react-feather";
+import { Link, Share } from "react-feather";
 import { getCurrentUserProfileEmail } from "../../../APISearvice/CustomService";
 import AvtarComponents from "../../../CustomJSComponents/AvtarComponents/AvtarComponents";
 const EventcalenderContext = ({ props }: any) => {
@@ -563,14 +565,12 @@ const EventcalenderContext = ({ props }: any) => {
                                         className="dropdown-item dropcssItem"
                                         onClick={() => sendanEmail(item)}
                                       >
-                                        Share by email
-                                      </a>
+                                        <Share size={16} /> &nbsp; Share by email</a>
                                       <a
                                         className="dropdown-item dropcssItem"
                                         onClick={() => copyToClipboard(item.Id)}
                                       >
-                                        Copy Link
-                                      </a>
+                                        <Link size={14} /> &nbsp; Share by email</a>
                                       <a>
                                         {copySuccess && <span className="text-success">{copySuccess}</span>}
                                       </a>

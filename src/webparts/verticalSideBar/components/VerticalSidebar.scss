@@ -262,9 +262,9 @@ input[type=text][disabled]{
   width: 66px;
   margin-left: -16px;
 }
-.loadernewadd{color: #1fb0e5;display: block; text-transform: uppercase; text-align:center ; font-size: 16px;gap: 0px;font-weight: 500;justify-content: center;
+.loadernewadd{color: #1fb0e5;display: block; text-transform: uppercase; text-align:center ; font-size: 16px !important;gap: 0px;font-weight: 500;justify-content: center;
   align-items: center;vertical-align: middle;}
-.alignrightl{width: 90px; margin-bottom: 20px; margin-top: 5px;}
+.alignrightl{width: 100px !important; margin-bottom: 0px !important; margin-top: 5px;}
 .alignrightbird{width: 30px;
   margin-top: -2px;}
 .postion8{ width:95%; float: right; margin-top: 92px; }
@@ -273,7 +273,7 @@ input[type=text][disabled]{
 .ipaddw{width: 10px;}
 .footer{background: #d4d4d3;bottom:-70px;padding: 8px 10px;position: relative;text-align: right; width: 100%;}
 .dropcss{padding: 0px;}
-.dropcss a{display: block; text-align: center; font-size: 12px; padding: 10px; }
+.dropcss a{display: block; text-align: left; font-size: 14px; padding: 10px; }
 .text-dark-new{color: #343a40 !important;}
 .newt6 svg{vertical-align: top !important;    margin-top: 1.5px;}
 .btn-close{    width: 25px !important;
@@ -1100,6 +1100,7 @@ margin: 10px 0px !important ;
     padding-bottom:12px;
 }
 
+
 @media(max-width:1920px)
 {
   .inbox-rightbar .card {
@@ -1417,9 +1418,18 @@ margin: 10px 0px !important ;
 .sidebar .menu_items .active .link_name1{
 color: #fff !important;
 }
+
 .sidebar .menu_items .active .link_name1:hover span{
   color: #fff !important;
   }
+
+  .close .menu_content .menu_items .active .link_name1 span{
+    color: #6c757d !important;
+    }
+    
+    .close .menu_content .menu_items .active .link_name1:hover span{
+      color: #1fb0e5 !important;
+      }
 
 .sidebar .menu_items .active{
   background: #1fb0e5 !important; 
@@ -1430,7 +1440,12 @@ color: #fff !important;
 .menu_items .nav_link .submenu_item .link_name1{
   color:#6c757d !important;
 }
-
+.sidebar.close .navlink:focus .submenuactive{
+  color: #6c757d !important;
+  }
+  .sidebar.close .navlink:focus .submenuactive:hover{
+    color: #1fb0e5 !important;
+    }
 .sidebar .menu_items .active .menu_items .link_name1:hover span{color: #1fb0e5 !important;}
 @media(max-width:1280px)
 {
@@ -2006,6 +2021,13 @@ label{color: #6c757d !important;font-size: .875rem !important;}
     font-size: 1rem !important;
    
     font-weight: 500 !important;}
+    .sidebar .close li:focus .menu_items .active .sub-menu div li.test a.link_name1{
+      color: #6c757d !important;
+    }
+    .sidebar .close li:focus .menu_items .active .sub-menu div li.test a.link_name1:hover {
+      color: #1fb0e5 !important;
+    }
+    
  
 .modal .modal-content input:focus,.modal .modal-content select:focus,.modal .modal-content textarea:focus{border: 1px solid #ccc !important; box-shadow: none !important}
 .modal .modal-content .multiSelectContainer input{padding: 9px 10px !important;border: 1px solid #ccc !important;}   

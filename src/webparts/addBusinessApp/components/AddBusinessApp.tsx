@@ -145,7 +145,7 @@ const AddBusinessAppContext = ({ props }: any) => {
 
       "MainComponent": "Settings",
 
-      "MainComponentURl": `${siteUrl}SitePages/Settings.aspx`
+      "MainComponentURl": `${siteUrl}/SitePages/Settings.aspx`
 
     },
 

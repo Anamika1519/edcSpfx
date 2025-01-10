@@ -251,4 +251,10 @@ a:hover
 }
 .rbc-toolbar button{ padding: .375rem 0.3rem;}
 }
+.dropcss a{
+    padding: 9px 15px !important;
+}
+.dropcss a:focus{
+    background-color: #f8f9fa !important;
+}
 .posx svg:hover{color: #1fb0e5 !important;}

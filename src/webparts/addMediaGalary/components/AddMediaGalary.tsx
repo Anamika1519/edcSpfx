@@ -161,7 +161,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
       "MainComponent": "Settings",
 
-      "MainComponentURl": `${siteUrl}SitePages/Settings.aspx`
+      "MainComponentURl": `${siteUrl}/SitePages/Settings.aspx`
 
     },
 
@@ -907,11 +907,11 @@ const AddMediaGalaryContext = ({ props }: any) => {
   const handleCancel = () => {
 
     debugger
-    if(pageValue == "MyRequest"){
+    if (pageValue == "MyRequest") {
       window.location.href = `${siteUrl}/SitePages/MyRequests.aspx`;
-    }else if(pageValue == "MyApproval"){
+    } else if (pageValue == "MyApproval") {
       window.location.href = `${siteUrl}/SitePages/MyApprovals.aspx`;
-    }else{
+    } else {
       window.location.href = `${siteUrl}/SitePages/MediaGalleryMaster.aspx`;
     }
     //window.location.href = `${siteUrl}/SitePages/MediaGalleryMaster.aspx`;
@@ -2352,10 +2352,10 @@ const AddMediaGalaryContext = ({ props }: any) => {
                     <form className='row' >
                       <div className="">
 
-<strong className='font-16 mb-1'>Basic Information</strong>
-<p className='font-14 text-muted mb-3 mt-1'>Specify basic information </p>
+                        <strong className='font-16 mb-1'>Basic Information</strong>
+                        <p className='font-14 text-muted mb-3 mt-1'>Specify basic information </p>
 
-</div>
+                      </div>
 
                       <div className="col-lg-4">
 
@@ -2619,7 +2619,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
                       </div>
 
 
-                     
+
 
                     </form>
                   }
@@ -2686,119 +2686,119 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
                       </div> */}
 
-<table className="mtbalenew nretabl0">
-                                                    <thead>
-                                                      <tr>
-                                                      <th style={{minWidth:'60px', maxWidth:'60px'}} className="newpad">  Select Level</th>
-                                                      <th className="newpad"> Select Approver</th>
-                                                      </tr>
-                                                    </thead>
-                                                    <tbody style={{overflowX:'hidden',overflow:'initial'}}>
-                                                    
-                      {rows.map((row: any) => (
+                      <table className="mtbalenew nretabl0">
+                        <thead>
+                          <tr>
+                            <th style={{ minWidth: '60px', maxWidth: '60px' }} className="newpad">  Select Level</th>
+                            <th className="newpad"> Select Approver</th>
+                          </tr>
+                        </thead>
+                        <tbody style={{ overflowX: 'hidden', overflow: 'initial' }}>
 
-                        <div className="row mb-0 mt-0" key={row.id}>
-                        
-                                                    
-                                                      <tr style={{overflow:'initial'}}>
-                                                      <td style={{minWidth:'60px', maxWidth:'60px',overflow:'initial'}} className="">   
-                                                        <select style={{border:"0px solid #ccc", background:'#fff'}}
+                          {rows.map((row: any) => (
 
-className="form-select removeb"
-
-id={`Level-${row.id}`}
-
-name="Level"
-
-value={row.LevelId}
-disabled={true}
+                            <div className="row mb-0 mt-0" key={row.id}>
 
 
-onChange={(e) => {
+                              <tr style={{ overflow: 'initial' }}>
+                                <td style={{ minWidth: '60px', maxWidth: '60px', overflow: 'initial' }} className="">
+                                  <select style={{ border: "0px solid #ccc", background: '#fff' }}
 
-  const selectedLevel = e.target.value;
+                                    className="form-select removeb"
 
-  setRows((prevRows: any) =>
+                                    id={`Level-${row.id}`}
 
-    prevRows.map((r: any) =>
+                                    name="Level"
 
-      r.id === row.id
-
-        ? { ...r, LevelId: selectedLevel }
-
-        : r
-
-    )
-
-  );
-
-}}
-
->
-
-<option value="">Select</option>
-
-{levels.map((item: any) => (
-
-  <option key={item.Id} value={item.Id}>
-
-    {item.Level}
-
-  </option>
-
-))}
-
-</select>  </td>
-                                                      <td style={{overflow:'initial'}} className=""> 
-                                                      <Multiselect className="removeb" style={{border:"0px solid #ccc", background:'#fff'}}
-
-options={row.approvedUserList}
-
-selectedValues={row.approvedUserListupdate}
-
-onSelect={(selected) => handleUserSelect(selected, row.id)}
-
-onRemove={(selected) => handleUserSelect(selected, row.id)}
-
-displayValue="name"
-disable={true}
-placeholder=''
-hidePlaceholder={true}
-
-/>
+                                    value={row.LevelId}
+                                    disabled={true}
 
 
-                                                      </td>
-                                                      </tr>
-                                                   
-                                                    
+                                    onChange={(e) => {
 
-                          <div className="col-12 col-md-5">
+                                      const selectedLevel = e.target.value;
 
-                            {/* <label htmlFor={`Level-${row.id}`} className="form-label">
+                                      setRows((prevRows: any) =>
+
+                                        prevRows.map((r: any) =>
+
+                                          r.id === row.id
+
+                                            ? { ...r, LevelId: selectedLevel }
+
+                                            : r
+
+                                        )
+
+                                      );
+
+                                    }}
+
+                                  >
+
+                                    <option value="">Select</option>
+
+                                    {levels.map((item: any) => (
+
+                                      <option key={item.Id} value={item.Id}>
+
+                                        {item.Level}
+
+                                      </option>
+
+                                    ))}
+
+                                  </select>  </td>
+                                <td style={{ overflow: 'initial' }} className="">
+                                  <Multiselect className="removeb" style={{ border: "0px solid #ccc", background: '#fff' }}
+
+                                    options={row.approvedUserList}
+
+                                    selectedValues={row.approvedUserListupdate}
+
+                                    onSelect={(selected) => handleUserSelect(selected, row.id)}
+
+                                    onRemove={(selected) => handleUserSelect(selected, row.id)}
+
+                                    displayValue="name"
+                                    disable={true}
+                                    placeholder=''
+                                    hidePlaceholder={true}
+
+                                  />
+
+
+                                </td>
+                              </tr>
+
+
+
+                              <div className="col-12 col-md-5">
+
+                                {/* <label htmlFor={`Level-${row.id}`} className="form-label">
 
                               Select Level
 
                             </label> */}
 
-                         
-
-                          </div>
 
 
-                          <div className="col-12 col-md-5">
+                              </div>
 
-                            {/* <label htmlFor={`approver-${row.id}`} className="form-label">
+
+                              <div className="col-12 col-md-5">
+
+                                {/* <label htmlFor={`approver-${row.id}`} className="form-label">
 
                               Select Approver
 
                             </label> */}
 
-                            
-                          </div>
+
+                              </div>
 
 
-                          {/* <div className="col-12 col-md-2 d-flex align-items-center" style={{ gap: '10px' }}>
+                              {/* <div className="col-12 col-md-2 d-flex align-items-center" style={{ gap: '10px' }}>
 
                             <div className="d-flex align-items-center">
 
@@ -2870,14 +2870,14 @@ hidePlaceholder={true}
 
                           </div> */}
 
-                        </div>
+                            </div>
 
-                      ))}
-                      <tr>
-                        <td style={{height:'30px', background:'#fff', border:'0px solid #ccc'}}></td>
-                        <td style={{height:'30px', background:'#fff', border:'0px solid #ccc'}}> </td>
-                      </tr>
-  </tbody>  </table>
+                          ))}
+                          <tr>
+                            <td style={{ height: '30px', background: '#fff', border: '0px solid #ccc' }}></td>
+                            <td style={{ height: '30px', background: '#fff', border: '0px solid #ccc' }}> </td>
+                          </tr>
+                        </tbody>  </table>
 
                     </div>
 
@@ -2924,53 +2924,53 @@ hidePlaceholder={true}
               <WorkflowAuditHistory ContentItemId={editID} ContentType={CONTENTTYPE_Media} ctx={props.context} />
             }
 
-{!InputDisabled ? (<div className="text-center butncss">
+            {!InputDisabled ? (<div className="text-center butncss">
 
-<div className="btn btn-success waves-effect waves-light m-1" style={{ width:'145px' }} onClick={handleSaveAsDraft}>
+              <div className="btn btn-success waves-effect waves-light m-1" style={{ width: '145px' }} onClick={handleSaveAsDraft}>
 
-  <div className='d-flex' style={{ justifyContent: 'center' }}>
+                <div className='d-flex' style={{ justifyContent: 'center' }}>
 
-    <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem', marginRight:'3px' }} alt="Check" /> Save As Draft
+                  <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem', marginRight: '3px' }} alt="Check" /> Save As Draft
 
-  </div>
+                </div>
 
-</div>
+              </div>
 
-<div className="btn btn-success waves-effect waves-light m-1" style={{ width:'145px' }} onClick={handleFormSubmit}>
+              <div className="btn btn-success waves-effect waves-light m-1" style={{ width: '145px' }} onClick={handleFormSubmit}>
 
-  <div className='d-flex' style={{ justifyContent: 'center' }}>
+                <div className='d-flex' style={{ justifyContent: 'center' }}>
 
-    <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem', marginRight:'3px' }} alt="Check" /> Submit
+                  <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem', marginRight: '3px' }} alt="Check" /> Submit
 
-  </div>
+                </div>
 
-</div>
+              </div>
 
-<div className="btn cancel-btn waves-effect waves-light m-1" style={{ width:'145px' }} onClick={handleCancel}>
+              <div className="btn cancel-btn waves-effect waves-light m-1" style={{ width: '145px' }} onClick={handleCancel}>
 
-  <div className='d-flex' style={{ justifyContent: 'center'}}>
+                <div className='d-flex' style={{ justifyContent: 'center' }}>
 
-    <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem', marginRight:'3px' }}  alt="x" />
+                  <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem', marginRight: '3px' }} alt="x" />
 
-    Cancel
+                  Cancel
 
-  </div>
+                </div>
 
-</div>
+              </div>
 
-</div>) : (modeValue == 'view') && (<div className="text-center butncss">
-<div className="btn cancel-btn waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleCancel}>
+            </div>) : (modeValue == 'view') && (<div className="text-center butncss">
+              <div className="btn cancel-btn waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleCancel}>
 
-  <div className='d-flex' style={{ justifyContent: 'space-around', width: '70px' }}>
+                <div className='d-flex' style={{ justifyContent: 'space-around', width: '70px' }}>
 
-    <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }} className='me-1' alt="x" />
+                  <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }} className='me-1' alt="x" />
 
-    Cancel
+                  Cancel
 
-  </div>
+                </div>
 
-</div>
-</div>)}
+              </div>
+            </div>)}
 
             {/* Modal to display uploaded files */}
 

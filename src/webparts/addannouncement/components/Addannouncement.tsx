@@ -380,10 +380,11 @@ const AddannouncementContext = ({ props }: any) => {
     // else if (overview !== "" && !validateOverview) {
     //   errormsg = "No special character allowed in Overview";
     //   valid = false;
-  } else if ((ImagepostArr.length > 0 && ImagepostArr.length > 5) || ( ImagepostArr1.length > 0 && ImagepostArr1.length > 5)){
-      errormsg = "More than 5 attachments not allowed";
-      valid = false;
-    }
+  } 
+  // else if ((ImagepostArr.length > 0 && ImagepostArr.length > 5) || ( ImagepostArr1.length > 0 && ImagepostArr1.length > 5)){
+  //     errormsg = "More than 5 attachments not allowed";
+  //     valid = false;
+  //   }
     if (fmode == FormSubmissionMode.SUBMIT) {
       if (!title) {
         //Swal.fire('Error', 'Title is required!', 'error');
@@ -403,9 +404,10 @@ const AddannouncementContext = ({ props }: any) => {
       }
       else if (BnnerImagepostArr.length == 0) {
         valid = false;
-      } else if ((ImagepostArr.length == 0 || ImagepostArr.length > 5) && (ImagepostArr1.length > 0 && ImagepostArr1.length > 5)) {
-        valid = false;
-      }
+      } 
+      // else if ((ImagepostArr.length == 0 || ImagepostArr.length > 5) && (ImagepostArr1.length > 0 && ImagepostArr1.length > 5)) {
+      //   valid = false;
+      // }
       setValidSubmit(valid);
 
     }
@@ -1886,7 +1888,7 @@ const AddannouncementContext = ({ props }: any) => {
                           //className="form-control inputcss"
                           className={`form-control  ${(!ValidSubmit) ? "border-on-error" : ""}`}
                           multiple
-                          maxLength={5}
+                          //maxLength={5}
                           onChange={(e) => onFileChange(e, "Gallery", "AnnouncementAndNewsGallary")}
                           // disabled={ApprovalMode}
                           disabled={InputDisabled}

@@ -11,7 +11,7 @@ import "../../verticalSideBar/components/VerticalSidebar.scss";
 import VerticalSideBar from "../../verticalSideBar/components/VerticalSideBar";
 
 import UserContext from "../../../GlobalContext/context";
-
+import { Copy } from 'react-feather';
 import Provider from "../../../GlobalContext/provider";
 
 import { useMediaQuery } from "react-responsive";
@@ -21,7 +21,7 @@ import context from "../../../GlobalContext/context";
 import "../../../Assets/Figtree/Figtree-VariableFont_wght.ttf";
 
 import HorizontalNavbar from "../../horizontalNavBar/components/HorizontalNavBar";
-
+import Link from 'feather-icons-react';
 import { GraphFI, graphfi, SPFx as graphSPFx } from "@pnp/graph";
 import "@pnp/graph/groups";
 import "@pnp/graph/members";
@@ -55,6 +55,7 @@ import { WebPartContext } from "@microsoft/sp-webpart-base";
 import { MSGraphClientV3 } from "@microsoft/sp-http";
 import { toLower } from "lodash";
 import Swal from "sweetalert2";
+import Avatar from "@mui/material/Avatar";
 export interface IUserListResponse {
   value: any[]; // Adjust this type to match the structure of your list items
   "@odata.nextLink"?: string; // Define the nextLink property explicitly
@@ -146,7 +147,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
   const [followerCount, setFollowerCount] = React.useState(0); // State to track follower count
 
   const [unfollowerCount, setUnfollowerCount] = React.useState(0); // State to track unfollower count
-
+  const [copySuccess, setCopySuccess] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const siteUrl = props.siteUrl;
@@ -732,7 +733,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
 
   //#region Breadcrumb
-
+  const IconComponent = Copy;
   const Breadcrumb = [
 
     {
@@ -1054,11 +1055,23 @@ const CorporateDirectoryContext = ({ props }: any) => {
     setIsOpen(!isOpen);
 
   };
-  const handleSearch = async (e:any
-  //   : {
-  //   target: { value: React.SetStateAction<string> };
-  // }
-) => {
+  const copyToClipboard = (e?:any, email?: String) => {
+    e?.preventDefault();
+    const link = `${email}`;
+    navigator.clipboard.writeText(link)
+      .then(() => {
+        setCopySuccess('Email copied!');
+        setTimeout(() => setCopySuccess(''), 2000); // Clear message after 2 seconds
+      })
+      .catch(err => {
+        setCopySuccess('Failed to copy Email');
+      });
+  };
+  const handleSearch = async (e: any
+    //   : {
+    //   target: { value: React.SetStateAction<string> };
+    // }
+  ) => {
     sethandlesearch(true);
     let filteredusers: any[] = [];
     if (activeTab == "listView")
@@ -1101,7 +1114,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
           else usr['companyName'] = 'NA';
           return usr;
         });
-         const initialLoadingStatus: Record<number, boolean> = {};
+        const initialLoadingStatus: Record<number, boolean> = {};
         const initialFollowStatus: Record<number, boolean> = {};
         const initialPinStatus: Record<number, boolean> = {};
         // Function to fetch follow status and post count for each user
@@ -1392,7 +1405,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                     </label>
 
-                    <div className="me-3 position-relative">
+                    <div className="me-0 position-relative">
 
                       <input
 
@@ -1433,7 +1446,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
                     </div>
 
 
-                    <div
+                    {/* <div
 
                       className="btn btn-secondary waves-effect waves-light"
 
@@ -1447,7 +1460,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                       <FontAwesomeIcon icon={faFileExport} /> Export
 
-                    </div>
+                    </div> */}
 
                   </form>
 
@@ -1475,7 +1488,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                         style={{
 
-                          gap: "5px",
+
 
                           display: "flex",
 
@@ -1574,7 +1587,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
                     {loading && usersitem.length == 0 && (
                       <div className="loadernewadd">
                         <div>
-                          <img 
+                          <img
                             src={require("../../../CustomAsset/birdloader.gif")}
                             className="alignrightl"
                             alt="Loading..."
@@ -1583,7 +1596,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
                         <div className="loadnewarg">
                           <span>Loading </span>{" "}
                           <span>
-                            <img 
+                            <img
                               src={require("../assets/argloader.gif")}
                               className="alignrightbird"
                               alt="Loading..."
@@ -1592,149 +1605,152 @@ const CorporateDirectoryContext = ({ props }: any) => {
                         </div>
                       </div>
                     )}
-                   {
+                    {
                       usersitem.length > 0
                       //!loading
                       && (
-                      <div className="row card-view">
-                        {console.log("usersssitem", usersitem, followStatus, pinStatus)}
-                        {/* {usersitem.length == 0 && <div> No users found...</div>} */}
-                        {usersitem.length > 0 && usersitem.map((item) => (
+                        <div className="row card-view">
+                          {console.log("usersssitem", usersitem, followStatus, pinStatus)}
+                          {/* {usersitem.length == 0 && <div> No users found...</div>} */}
+                          {usersitem.length > 0 && usersitem.map((item) => (
 
-                          <div className="col-lg-3 col-md-4" key={item.Title}>
+                            <div className="col-lg-3 col-md-4" key={item.Title}>
 
-                            <div
+                              <div
 
-                              style={{ border: "1px solid #54ade0" }}
+                                style={{ border: "1px solid #54ade0" }}
 
-                              className="text-center card mb-3"
+                                className="text-center card mb-3"
 
-                            >
+                              >
 
-                              <div className="card-body">
+                                <div className="card-body">
 
-                                {/* Card Content */}
+                                  {/* Card Content */}
 
-                                <div className="pt-2 pb-2">
+                                  <div className="pt-2 pb-2">
 
-                                  <a style={{ position: "relative" }}>
+                                    <a style={{ position: "relative" }}>
 
-                                    <img
+                                      <img
 
-                                      src={require("../assets/calling.png")}
+                                        src={require("../assets/calling.png")}
 
-                                      className="alignright"
+                                        className="alignright"
 
-                                      onClick={() =>
+                                        onClick={() =>
 
-                                        window.open(
+                                          window.open(
 
-                                          `https://teams.microsoft.com/l/call/0/0?users=${item.EMail}`,
+                                            `https://teams.microsoft.com/l/call/0/0?users=${item.EMail}`,
 
-                                          "_blank"
+                                            "_blank"
 
-                                        )
+                                          )
 
-                                      }
+                                        }
 
-                                      alt="Call"
+                                        alt="Call"
 
-                                    />
-
-                                    <img
-
-                                      src={
-
-                                        item.Picture != null
-
-                                          ? `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item.EMail}`
-
-                                          : require("../assets/users.jpg")
-
-                                      }
-
-                                      className="rounded-circlecss img-thumbnail
-
+                                      />
+                                      {/* {item.Picture != null ?
+                                        <img
+                                          src={
+                                            //item.Picture != null ? 
+                                            `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item.EMail}`
+                                            //: require("../assets/users.jpg")
+                                          }
+                                          className="rounded-circlecss img-thumbnail
                                   avatar-xl"
+                                          alt="profile-image"
+                                          style={{ cursor: "auto" }}
+                                        />
+                                        :
+                                        item.EMail !== null &&
+                                        <Avatar sx={{ bgcolor: 'primary.main', width: 40, height: 40 }}>
+                                          {`${item.EMail.split('.')[0].charAt(0)}${item.EMail.split('.')[1].charAt(0)}`.toUpperCase()}
+                                        </Avatar>
+                                      } */}
+                                      {item.EMail !== null &&
+                                        <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circlecss img-thumbnail
+                                  avatar-xl">
+                                          {`${item.EMail.split('.')[0].charAt(0)}${item.EMail.split('.')[1].charAt(0)}`.toUpperCase()}
+                                        </Avatar>}
+                                    
 
-                                      alt="profile-image"
+                                   
+                                    </a>
+                                    <p>
 
-                                      style={{ cursor: "auto" }}
+<img style={{ cursor: "pointer" }}
 
-                                    />
+  src={pinStatus[item.ID] ? require("../assets/noun-pin-7368310.png") : require("../assets/unpin.png")}
 
-                                  </a>
+  className="alignrightpin"
 
-                                  <p>
+  onClick={(e) => iconenable ? togglePin(e, item) : ""}
 
-                                    <img style={{ cursor: "pointer" }}
+  //onClick={(!loadingUsers[item.ID]) ? (e) => togglePin(e, item) : undefined}
 
-                                      src={pinStatus[item.ID] ? require("../assets/noun-pin-7368310.png") : require("../assets/unpin.png")}
+  alt="pin"
 
-                                      className="alignrightpin"
-
-                                      onClick={(e) => iconenable ? togglePin(e, item) : ""}
-
-                                      //onClick={(!loadingUsers[item.ID]) ? (e) => togglePin(e, item) : undefined}
-
-                                      alt="pin"
-
-                                    />
-
-
-
-                                  </p>
-
-                                  <span className="mt-2 mb-1"  data-tooltip={item.Title}>
-
-                                    <h4
-                                      //onClick={() => handleUserClick(item.ID, followStatus[item.ID])}
-
-                                      className="text-dark font-16 fw-bold"
-
-                                      style={{
-
-                                        textDecoration: "unset",
-
-                                        fontSize: "20px",
-                                        whiteSpace: 'nowrap',
-                                        overflow:'hidden',
-                                        textOverflow:'ellipsis'
-
-                                      }}
-
-                                    >
+/>
 
 
 
-                                      {truncateText(item.Title && item.Title, 28)}
+</p>
+                                    <span className="mt-2 mb-1" data-tooltip={item.Title}>
+
+                                      <h4
+                                        //onClick={() => handleUserClick(item.ID, followStatus[item.ID])}
+
+                                        className="text-dark font-16 fw-bold"
+
+                                        style={{
+
+                                          textDecoration: "unset",
+
+                                          fontSize: "20px",
+                                          whiteSpace: 'nowrap',
+                                          overflow: 'hidden',
+                                          textOverflow: 'ellipsis'
+
+                                        }}
+
+                                      >
 
 
 
-                                    </h4>
-
-                                  </span>
+                                        {truncateText(item.Title && item.Title, 28)}
 
 
-                                  <p
 
-                                    className="text-muted hovertext"
-
-                                    style={{ fontSize: "14px",height:'30px'}}
-
-                                  >
-
-                                    <span onClick={() =>
-
-                                      openEmailDialog(item.EMail)
-
-                                    } >
-
-                                      {truncateText(item.EMail && item.EMail, 28)}
+                                      </h4>
 
                                     </span>
+<span style={{display:'flex', gap:'5px'}} className="newsvg">  {IconComponent && <IconComponent  size={14} onClick={(e) => copyToClipboard(e, item.EMail)} />}
 
-                                    {/* <span
+
+                                    <span data-tooltip={item.EMail}>
+                                  
+                                      <p className="text-muted hovertext" style={{
+                                        whiteSpace: 'nowrap',
+                                        overflow: 'hidden', fontSize: "14px", height: '30px',
+                                        textOverflow: 'ellipsis',width:'200px'
+                                      }} onClick={() =>
+
+                                        openEmailDialog(item.EMail)
+
+                                      } >
+                                        
+                                        {/* <Link size={14} /> */}
+                                        {/* onClick={(e) => copyToClipboard(e, item.EMail)} */}
+                                        {truncateText(item.EMail && item.EMail, 28)}
+
+                                      </p>
+                                      {copySuccess && <span className="text-success font-12">{copySuccess}</span>}
+
+                                      {/* <span
 
                                       className="pl-2"
 
@@ -1761,264 +1777,269 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                     </span> */}
 
-                                  </p>
-                                  <p className="text-muted"
-                                    style={{ fontSize: "14px", whiteSpace: 'nowrap',
-                                      overflow:'hidden',
-                                      textOverflow:'ellipsis' }}
-
-                                  >
-                                    <span
-
-                                      className="pl-2"
-
-                                      style={{ color: "#1fb0e5" }}
+                                    </span>
+                                    </span>
+                                    <p className="text-muted"
+                                      style={{
+                                        fontSize: "14px", whiteSpace: 'nowrap',
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis'
+                                      }}
 
                                     >
+                                      <span
+
+                                        className="pl-2"
+
+                                        style={{ color: "#1fb0e5" }}
+
+                                      >
 
 
 
-                                      {truncateText(
+                                        {truncateText(
 
-                                        item.Department != null
+                                          item.Department != null
 
-                                          ? item.Department
+                                            ? item.Department
 
-                                          : " NA ",
+                                            : " NA ",
 
-                                        28
+                                          28
 
-                                      )}
+                                        )}
 
 
-                                      {/* </a> */}
+                                        {/* </a> */}
 
-                                    </span>
+                                      </span>
 
-                                  </p>
+                                    </p>
 
-                                  <span data-tooltip={item.companyName} >
- <p  className="text-muted" style={{ fontSize: "11px", whiteSpace: 'nowrap',
-  overflow:'hidden',
-  textOverflow:'ellipsis' }}>
+                                    <span data-tooltip={item.companyName} >
+                                      <p className="text-muted" style={{
+                                        fontSize: "11px", whiteSpace: 'nowrap',
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis'
+                                      }}>
 
-                                      {/* {truncateText(item.WorkPhone != null
+                                        {/* {truncateText(item.WorkPhone != null
 
                                     ? item.WorkPhone
 
                                     : " NA ", 10)} */}
-                                      {
-                                        // truncateText(item.WorkPhone != null
+                                        {
+                                          // truncateText(item.WorkPhone != null
 
-                                        //   ? item.WorkPhone
+                                          //   ? item.WorkPhone
 
-                                        truncateText(item.companyName != null
+                                          truncateText(item.companyName != null
 
-                                          ? item.companyName
+                                            ? item.companyName
 
-                                          : " NA ", 25)}
+                                            : " NA ", 25)}
 
-                                    </p>
+                                      </p>
 
 
-                                  </span>
+                                    </span>
 
-                                  <div
+                                    <div
 
-                                    style={{
+                                      style={{
 
-                                      display: "flex",
+                                        display: "flex",
 
-                                      justifyContent: "center",
+                                        justifyContent: "center",
 
-                                      gap: "0.5rem",
+                                        gap: "0.5rem",
 
-                                    }}
-
-                                  >
-
-                                    <button
-
-                                      type="button"
-
-                                      onClick={() =>
-
-                                        window.open(
-
-                                          `https://teams.microsoft.com/l/chat/0/0?users=${item.EMail}`,
-
-                                          "_blank"
-
-                                        )
-
-                                      }
-
-                                      className="btn btn-primary btn-sm waves-effect waves-light"
+                                      }}
 
                                     >
 
-                                      Message
+                                      <button
 
-                                    </button>
+                                        type="button"
 
+                                        onClick={() =>
 
-                                    <div>
+                                          window.open(
 
-                                      {followStatus[item.ID] ?
+                                            `https://teams.microsoft.com/l/chat/0/0?users=${item.EMail}`,
 
-                                        <button key={item.ID}
+                                            "_blank"
 
-                                          type="button" className="finish"
+                                          )
 
-                                          //onClick={(!loadingUsers[item.ID]) ? (e) => toggleFollow(e, item) : undefined} disabled={loadingUsers[item.ID]}
-                                          onClick={(e) => toggleFollow(e, item)}
+                                        }
 
-                                        >
-                                          Unfollow
+                                        className="btn btn-primary btn-sm waves-effect waves-light"
 
-                                        </button> :
-                                        <button key={item.ID}
+                                      >
 
-                                          type="button" style={{ background: '#efefef' }} className="btn btn-primary1 text-dark btn-sm waves-effect waves-light"
+                                        Message
 
-                                          //onClick={(!loadingUsers[item.ID]) ? (e) => toggleFollow(e, item) : undefined} disabled={loadingUsers[item.ID]}
-                                          onClick={(e) => toggleFollow(e, item)}
+                                      </button>
 
 
-                                        >
-                                          Follow
-                                        </button>
+                                      <div>
 
-                                      }
+                                        {followStatus[item.ID] ?
 
+                                          <button key={item.ID}
+
+                                            type="button" className="finish"
+
+                                            //onClick={(!loadingUsers[item.ID]) ? (e) => toggleFollow(e, item) : undefined} disabled={loadingUsers[item.ID]}
+                                            onClick={(e) => toggleFollow(e, item)}
+
+                                          >
+                                            Unfollow
+
+                                          </button> :
+                                          <button key={item.ID}
+
+                                            type="button" style={{ background: '#efefef' }} className="btn btn-primary1 text-dark btn-sm waves-effect waves-light"
+
+                                            //onClick={(!loadingUsers[item.ID]) ? (e) => toggleFollow(e, item) : undefined} disabled={loadingUsers[item.ID]}
+                                            onClick={(e) => toggleFollow(e, item)}
+
+
+                                          >
+                                            Follow
+                                          </button>
+
+                                        }
+
+
+                                      </div>
 
                                     </div>
+
+                                    <div className="row mt-2">
+
+                                      <div className="col-4">
+
+                                        <div className="mt-3">
+
+                                          <h4
+
+                                            className="fw-bold font-14"
+
+                                            style={{
+
+                                              fontSize: "0.80rem",
+
+                                              color: "#343a40",
+
+                                            }}
+
+                                          >
+
+                                            {item.postCount > 0 ? item.postCount : 0} {/* {item.posts} */}
+
+                                          </h4>
+
+                                          <p className="mb-0 text-muted text-truncate">
+
+                                            Post
+
+                                          </p>
+
+                                        </div>
+
+                                      </div>
+
+                                      <div className="col-4">
+
+                                        <div className="mt-3">
+
+                                          <h4
+
+                                            className="fw-bold font-14"
+
+                                            style={{
+
+                                              fontSize: "0.80rem",
+
+                                              color: "#343a40",
+
+                                            }}
+
+                                          >
+
+                                            {item.followersCount > 0 ? item.followersCount : 0}
+
+                                            {/* {followerCount==0?followerCount:'NA'}  {item.followers} */}
+
+                                          </h4>
+
+                                          <p className="mb-0 text-muted text-truncate">
+
+                                            Followers
+
+                                          </p>
+
+                                        </div>
+
+                                      </div>
+
+                                      <div className="col-4">
+
+                                        <div className="mt-3">
+
+                                          <h4
+
+                                            className="fw-bold font-14"
+
+                                            style={{
+
+                                              fontSize: "0.80rem",
+
+                                              color: "#343a40",
+
+                                            }}
+
+                                          >
+
+
+                                            {item.followingCount > 0 ? item.followingCount : 0}
+
+                                          </h4>
+
+                                          <p className="mb-0 text-muted text-truncate">
+
+                                            Followings
+
+                                          </p>
+
+                                        </div>
+
+                                      </div>
+
+                                    </div>
+
+                                    {/* end row */}
 
                                   </div>
 
-                                  <div className="row mt-2">
-
-                                    <div className="col-4">
-
-                                      <div className="mt-3">
-
-                                        <h4
-
-                                          className="fw-bold font-14"
-
-                                          style={{
-
-                                            fontSize: "0.80rem",
-
-                                            color: "#343a40",
-
-                                          }}
-
-                                        >
-
-                                          {item.postCount > 0 ? item.postCount : 0} {/* {item.posts} */}
-
-                                        </h4>
-
-                                        <p className="mb-0 text-muted text-truncate">
-
-                                          Post
-
-                                        </p>
-
-                                      </div>
-
-                                    </div>
-
-                                    <div className="col-4">
-
-                                      <div className="mt-3">
-
-                                        <h4
-
-                                          className="fw-bold font-14"
-
-                                          style={{
-
-                                            fontSize: "0.80rem",
-
-                                            color: "#343a40",
-
-                                          }}
-
-                                        >
-
-                                          {item.followersCount > 0 ? item.followersCount : 0}
-
-                                          {/* {followerCount==0?followerCount:'NA'}  {item.followers} */}
-
-                                        </h4>
-
-                                        <p className="mb-0 text-muted text-truncate">
-
-                                          Followers
-
-                                        </p>
-
-                                      </div>
-
-                                    </div>
-
-                                    <div className="col-4">
-
-                                      <div className="mt-3">
-
-                                        <h4
-
-                                          className="fw-bold font-14"
-
-                                          style={{
-
-                                            fontSize: "0.80rem",
-
-                                            color: "#343a40",
-
-                                          }}
-
-                                        >
-
-
-                                          {item.followingCount > 0 ? item.followingCount : 0}
-
-                                        </h4>
-
-                                        <p className="mb-0 text-muted text-truncate">
-
-                                          Followings
-
-                                        </p>
-
-                                      </div>
-
-                                    </div>
-
-                                  </div>
-
-                                  {/* end row */}
+                                  {/* end .padding */}
 
                                 </div>
 
-                                {/* end .padding */}
-
                               </div>
 
-                            </div>
+                              {/* end card */}
 
-                            {/* end card */}
+                            </div> // end col
 
-                          </div> // end col
+                          ))}
 
-                        ))}
-
-                         {loading && usersitem.length > 0 && (
+                          {loading && usersitem.length > 0 && (
                             <div className="loadernewadd">
                               <div>
-                                <img style={{ width: '60px' }}
+                                <img
                                   src={require("../../../CustomAsset/birdloader.gif")}
                                   className="alignrightl"
                                   alt="Loading..."
@@ -2036,17 +2057,17 @@ const CorporateDirectoryContext = ({ props }: any) => {
                               </div>
                             </div>
                           )}
-                          {itemsToShow < AllusersInfolist.length && !handlesearch &&(
-                          <div className="col-12 text-center mb-3 mt-3">
-                            <button onClick={loadMore} className="btn btn-primary">
-                              Load More
-                            </button>
-                          </div>
-                        )}
-                      </div>
+                          {itemsToShow < AllusersInfolist.length && !handlesearch && (
+                            <div className="col-12 text-center mb-3 mt-3">
+                              <button onClick={loadMore} className="btn btn-primary">
+                                Load More
+                              </button>
+                            </div>
+                          )}
+                        </div>
 
 
-                    )}
+                      )}
                   </div>
                 )}
 
@@ -2591,7 +2612,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                           {" "}
 
-                                          <img style={{ width: '18px',cursor:'pointer' }}
+                                          <img style={{ width: '18px', cursor: 'pointer' }}
 
                                             src={require("../assets/calling.png")}
 
@@ -2636,11 +2657,11 @@ const CorporateDirectoryContext = ({ props }: any) => {
                                           ? item?.companyName
 
                                           : "NA"}>
-                                       <p>  {item?.companyName != null
+                                          <p>  {item?.companyName != null
 
                                             ? item?.companyName
 
-                                            : "NA"}</p> 
+                                            : "NA"}</p>
 
 
                                         </td>
@@ -2651,7 +2672,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                           : "NA"}>
 
-<p>  {item?.Department != null
+                                          <p>  {item?.Department != null
 
                                             ? item?.Department
 
@@ -2665,7 +2686,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                           : "NA"}>
 
-<p>  {item?.WorkPhone != null
+                                          <p>  {item?.WorkPhone != null
 
                                             ? item?.WorkPhone
 

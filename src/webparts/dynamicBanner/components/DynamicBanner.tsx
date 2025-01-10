@@ -422,11 +422,11 @@ const DynamicBannercontext = ({ props }: any) => {
                                 <FontAwesomeIcon icon={faEllipsisV} onClick={toggleDropdownNews} size='xl' />
                               </div>
                               </div>
-                              <div className=" bd-highlight">   <div id="myDropdown" className={`dropdown-content ${isOpenNews ? 'showNews' : ''}`}>
+                              {/* <div className=" bd-highlight">   <div id="myDropdown" className={`dropdown-content ${isOpenNews ? 'showNews' : ''}`}>
                                 <div onClick={handleExportClick} className="" >
                                   <FontAwesomeIcon icon={faFileExport} />  Export
                                 </div>
-                              </div></div>
+                              </div></div> */}
 
                             </div>
                             <div style={{ height: '32px' }}></div>

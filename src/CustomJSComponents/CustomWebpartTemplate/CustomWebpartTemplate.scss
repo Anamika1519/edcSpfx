@@ -8,6 +8,12 @@
     height: 100%;
     border-radius: 20px;
 }
+.dropcss a{
+    padding: 9px 15px !important;
+}
+.dropcss a:focus{
+    background-color: #f8f9fa !important;
+}
 .posnew {
     padding: 2px 12px !important;
     border-radius: 4px;

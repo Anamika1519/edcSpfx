@@ -400,14 +400,14 @@ const LeaderboardContext = ({ props }: any) => {
                     </div>
 
 
-                    <div
+                    {/* <div
                       className="btn btn-secondary waves-effect waves-light"
                       data-bs-toggle="modal"
                       data-bs-target="#custom-modal"
                       onClick={handleNewsExportClick}
                     >
                       <FontAwesomeIcon icon={faFileExport} /> Export
-                    </div>
+                    </div> */}
                   </form>
                 </div>
               </div>

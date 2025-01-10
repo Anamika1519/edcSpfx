@@ -298,9 +298,9 @@ const HelloWorldContext = ({ props }: any) => {
       else if (BnnerImagepostArr.length == 0) {
         valid = false;
       }
-      else if (EventGalleryArr1.length == 0) {
-        valid = false;
-      }
+      // else if (EventGalleryArr1.length == 0) {
+      //   valid = false;
+      // }
       setValidSubmit(valid)
     }
     console.log("new Date(RegistrationDueDate) > new Date(EventDate)", EventGalleryArr1.length, BnnerImagepostArr.length, valid);

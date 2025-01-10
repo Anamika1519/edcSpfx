@@ -852,6 +852,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
                         onAddReply={(text) => handleAddReply(index, text)}
                         onLike={() => handleLikeToggle(index)} // Pass like handler
                         loadingReply={loadingReply}
+                        EventArray={ArrDetails}
                       />
                     </div>
                   ))}

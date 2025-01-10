@@ -8,6 +8,7 @@
     height: 100%;
     border-radius: 20px;
 }
+
 .newhoverzom{transition: transform .2s;}
 .newhoverzom:hover {
   cursor: pointer;
@@ -95,6 +96,12 @@ a:hover
     font-size: 14px;
     font-weight: 400;
     text-align: center;
+}
+.dropcss a{
+    padding: 9px 15px !important;
+}
+.dropcss a:focus{
+    background-color: #f8f9fa !important;
 }
 @media(max-width:640px){
     .parah{height: 7em !important;}

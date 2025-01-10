@@ -428,8 +428,8 @@ const MyRequestContext = ({ props }: any) => {
             .startsWith(filters.RequestedDate + ""))
         &&
         (filters.Title === "" ||
-          item?.Title != undefined &&
-          item.Title.toLowerCase().includes(filters.Title.toLowerCase()))
+          activeTab == "Intranet" ? item.Title : item.ApprovalTitle != undefined &&
+        (activeTab == "Intranet" ? item.Title : item.ApprovalTitle).toLowerCase().includes(filters.Title.toLowerCase()))
         // (filters.RequestedBy === "" ||
         //   (activeTab == "Automation" ? (item?.Author?.Title?.toLowerCase().includes(
         //     filters.RequestedBy.toLowerCase()
@@ -1171,7 +1171,7 @@ const MyRequestContext = ({ props }: any) => {
                                   </div>
 
                                 </th>
-                                {activeTab == "Intranet" &&
+                               
                                   <th style={{ minWidth: "80px", maxWidth: "80px" }}>
 
                                     <div className="d-flex flex-column bd-highlight ">
@@ -1227,7 +1227,7 @@ const MyRequestContext = ({ props }: any) => {
                                     </div>
 
                                   </th>
-                                }
+                                
                                 <th style={{ minWidth: "120px", maxWidth: "120px" }}>
 
                                   <div className="d-flex flex-column bd-highlight ">
@@ -1521,7 +1521,7 @@ const MyRequestContext = ({ props }: any) => {
                                       {activeTab == "Automation" ? item?.RequestID : item?.SourceName + "_" + item?.ContentID}
 
                                     </td>
-                                    {activeTab == "Intranet" &&
+                                  
                                       <td
 
                                         style={{
@@ -1533,14 +1533,14 @@ const MyRequestContext = ({ props }: any) => {
                                           textTransform: "capitalize",
 
                                         }}
-                                        title={item.Title}
+                                        title=   {activeTab == "Intranet" ? item.Title : item.ApprovalTitle}
                                       >
 
                                         {/* {item.RequestID} */}
-                                        {item.Title}
+                                        {activeTab == "Intranet" ? item.Title : item.ApprovalTitle}
 
                                       </td>
-                                    }
+                                    
                                     <td
 
                                       style={{ minWidth: "120px", maxWidth: "120px", textAlign: 'center' }}
