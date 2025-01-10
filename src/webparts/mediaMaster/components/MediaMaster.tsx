@@ -6,6 +6,12 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "../../../CustomCss/mainCustom.scss";
 import "../../verticalSideBar/components/VerticalSidebar.scss"
 import { DeletemediaAPI, getMedia } from "../../../APISearvice/MediaService";
+import "@pnp/sp/webs";
+import "@pnp/sp/folders";
+import "@pnp/sp/files";
+import "@pnp/sp/sites"
+import "@pnp/sp/presets/all"
+import "@pnp/sp/site-groups";
 import "../components/mediamaster.scss"
 import { getSP } from '../loc/pnpjsConfig';
 import { encryptId } from '../../../APISearvice/CryptoService';
@@ -40,7 +46,42 @@ const MediaMastercontext = ({ props }: any) => {
     SubmittedDate: ''
   });
   const [sortConfig, setSortConfig] = React.useState({ key: '', direction: 'ascending' });
- 
+
+  const [isIntranetAdmin,setIsIntranetAdmin]=React.useState(false);
+  let superA=false;
+  let IntranetSuperAdmin:any[];
+  const currentUserEmailRef = React.useRef('');
+	  React.useEffect(() => {
+    getcurrentuseremail();
+  }, []);
+	const getcurrentuseremail = async()=>{
+      const userdata = await sp.web.currentUser();
+      currentUserEmailRef.current = userdata.Email;
+      getDetailsOfIntranetAdmin();
+
+    }
+   const getDetailsOfIntranetAdmin=async()=>{
+      try {
+          const usersFromDMSIntranetAdmin = await sp.web.siteGroups.getByName('IntranetAdmin').users();
+          IntranetSuperAdmin=usersFromDMSIntranetAdmin;
+          usersFromDMSIntranetAdmin.forEach((user)=>{
+              if(user.Email === currentUserEmailRef.current){
+                superA=true;
+                setIsIntranetAdmin(true);
+                // alert(`current user is intranet super admin ${currentUserEmailRef.current , user.Email }`)
+                // setToggleManagePermission('Yes');
+              }
+          })
+          console.log("usersFromIntranetAdmin",usersFromDMSIntranetAdmin);
+      } catch (error) {
+        console.log("error in getting the details of super admin",error);
+      }
+    }
+
+
+
+
+
   const ApiCall = async () => {
     let mediaArr:any[] = [];
     const userGroups = await sp.web.currentUser.groups();
@@ -231,13 +272,14 @@ const MediaMastercontext = ({ props }: any) => {
  
  
   //#region
-  const Editmedia = (id: any) => {
+  const Editmedia = (id: any , superadminedit:any
+  ) => {
     debugger
     // setUseId(id)
  
     const encryptedId = encryptId(String(id));
     sessionStorage.setItem("mediaId", encryptedId)
-    window.location.href = `${siteUrl}/SitePages/MediaGalleryForm.aspx`;
+    window.location.href = `${siteUrl}/SitePages/MediaGalleryForm.aspx?superadminedit=${superadminedit}`;
   }
   //#endregion
  
@@ -486,7 +528,90 @@ const MediaMastercontext = ({ props }: any) => {
                                     style={{ justifyContent: "center", gap:'3px' }}
                                   >
                                     {/* Conditionally render the edit button based on status */}
-                                    <span>
+                                    {
+                                      isIntranetAdmin ? (
+                                        <div>
+                                      <span>
+                                          {/* <a
+                                            className={`action-icon ${item.Status === "Save as draft"
+                                                ? "text-primary"
+                                                : "text-muted"
+                                              }`
+                                            }
+                                            onClick={
+                                              item.Status === "Save as draft"
+                                                ? () => Editmedia(item.ID)
+                                                :  () => ViewFormReadOnly(item.ID)
+                                            }
+                                            style={{
+                                              cursor:'pointer'
+                                            }}
+                                          >
+                                              <img src={require('../../../CustomAsset/edit.png')}/>
+                                
+                                          </a> */}
+                                          <a
+                                            className={`action-icon`}
+                                            onClick={() => Editmedia(item.ID , "True")}
+                                            style={{
+                                              cursor:'pointer'
+                                            }}
+                                          >
+                                              <img src={require('../../../CustomAsset/edit.png')}/>
+                                          
+                                          </a>
+                                       
+                                        </span>
+                                           <span>
+                                           <a
+                                         className="action-icon text-danger"
+                                         onClick={() => Deletemedia(item.ID)}
+                                       > <img src={require('../../../CustomAsset/del.png')}/>
+                                        
+                                       </a>
+                                     </span>
+                                        </div>
+                                      
+                                      ) : 
+                                      (
+                                        <div>
+                                             <span>
+                                      <a
+                                        className={`action-icon ${item.Status === "Save as draft"
+                                            ? "text-primary"
+                                            : "text-muted"
+                                          }`}
+                                        onClick={
+                                          item.Status === "Save as draft"
+                                            ? () => Editmedia(item.ID , "False")
+                                            :  () => ViewFormReadOnly(item.ID)
+                                        }
+                                        style={{
+ 
+                                          cursor:'pointer'
+                           
+                                           
+                           
+                                        }}
+                                      >
+                                          <img src={require('../../../CustomAsset/edit.png')}/>
+                                      
+                                      </a>
+                                    </span>
+                                    {/* <span>
+                                    {(item.Status === "Save as draft")?(  <a
+                                        className="action-icon text-danger"
+                                        onClick={() => Deletemedia(item.ID)}
+                                      > <img src={require('../../../CustomAsset/del.png')}/>
+                                       
+                                      </a>):(<div></div>)}
+                                    </span> */}
+                                        </div>
+                                      )
+                                    }
+
+                                    {/* previous code */}
+                                    {/* <span>
                                       <a
                                         className={`action-icon ${item.Status === "Save as draft"
                                             ? "text-primary"
@@ -501,16 +626,12 @@ const MediaMastercontext = ({ props }: any) => {
  
                                           cursor:'pointer'
                            
-                                            // item.Status === "Save as draft"
-                           
-                                            //   ? "pointer"
-                           
-                                            //   : "not-allowed",
+                                           
                            
                                         }}
                                       >
                                           <img src={require('../../../CustomAsset/edit.png')}/>
-                                        {/* <FontAwesomeIcon icon={faEdit} /> */}
+                                      
                                       </a>
                                     </span>
                                     <span>
@@ -518,9 +639,9 @@ const MediaMastercontext = ({ props }: any) => {
                                         className="action-icon text-danger"
                                         onClick={() => Deletemedia(item.ID)}
                                       > <img src={require('../../../CustomAsset/del.png')}/>
-                                        {/* <FontAwesomeIcon icon={faTrashAlt} /> */}
+                                       
                                       </a>):(<div></div>)}
-                                    </span>
+                                    </span> */}
                                   </div>
                                 </td>
                               </tr>
