@@ -224,7 +224,8 @@ export const getMediaByID = async (_sp, id) => {
         Image: res.Image,
         MediaGalleriesId: res?.MediaGalleriesId,
         MediaGalleryJSON: res?.MediaGalleryJSON,
-        Category: res?.MediaGalleryCategory?.Id
+        Category: res?.MediaGalleryCategory?.Id,
+        Status: res?.Status
         // other fields as needed
       };
       arr.push(parsedValues)

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import Provider from '../../../GlobalContext/provider';
 
@@ -58,7 +58,9 @@ import { FormSubmissionMode } from '../../../Shared/Interfaces';
 import { WorkflowAuditHistory } from '../../../CustomJSComponents/WorkflowAuditHistory/WorkflowAuditHistory';
 import { CONTENTTYPE_Media, LIST_TITLE_ContentMaster, LIST_TITLE_MediaGallery, LIST_TITLE_MyRequest } from '../../../Shared/Constants';
 let mode = "";
+let hidesavasdraft : any;
 const AddMediaGalaryContext = ({ props }: any) => {
+  
 
   const sp: SPFI = getSP();
 
@@ -134,7 +136,9 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
     entity: "",
 
-    Category: ""
+    Category: "",
+
+    Status : ""
 
   })
 
@@ -178,6 +182,23 @@ const AddMediaGalaryContext = ({ props }: any) => {
   //#endregion
 
   //#region UseEffact
+
+  useEffect(() => { 
+    // alert("useEffect called");
+    const currentUrl = window.location.href;
+    const urlParams = new URLSearchParams(window.location.search);
+    const superadminedit = urlParams.get('superadminedit');
+    console.log("Superadminedit value:", superadminedit);
+    if (superadminedit) {
+      // alert(`super admin edit ${superadminedit}`)
+      console.log("Superadminedit value:", superadminedit);
+      hidesavasdraft = 'true'
+      
+    } else {
+      // alert(`else super admin edit ${superadminedit}`)
+      console.log("Superadminedit parameter not found.");
+    }
+  }, []);
 
   React.useEffect(() => {
 
@@ -352,7 +373,9 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
           BannerImage: setMediaById[0]?.Image != null ? setMediaById[0]?.Image : [],
 
-          Category: setMediaById[0]?.Category
+          Category: setMediaById[0]?.Category,
+
+          Status: setMediaById[0]?.Status
 
         }
 
@@ -1014,10 +1037,11 @@ const AddMediaGalaryContext = ({ props }: any) => {
     if (validateForm(FormSubmissionMode.SUBMIT)) {
 
       if (editForm) {
+        // alert('coming here in if')
 
         Swal.fire({
 
-          title: 'Do you want to submit this request?',
+          title: 'Do you want to submit this request in if?',
 
           showConfirmButton: true,
 
@@ -1032,9 +1056,6 @@ const AddMediaGalaryContext = ({ props }: any) => {
         }
 
         ).then(async (result) => {
-
-          //console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
-
           if (result.isConfirmed) {
             setLoading(true);
             debugger
@@ -1081,14 +1102,23 @@ const AddMediaGalaryContext = ({ props }: any) => {
             if (bannerImageArray != null) {
 
               // Create Post
+                console.log("form of ARG Master List" , formData) ;
+                // if(formData.Status == "Submitted"){ 
 
+                // }else if(formData.Status == "Submitted0"){
+                  
+                // }else if(formData.Status == "Submitted1"){  
+
+                // }else if(formData.Status == "Submitted2"){
+                  
+                // }
               const postPayload = {
 
                 Title: formData.title,
 
                 EntityMasterId: Number(formData.entity),
 
-                Status: "Submitted",
+                Status: formData.Status,
 
                 AuthorId: currentUser.Id,
 
@@ -1221,7 +1251,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
                 EntityMasterId: Number(formData.entity),
 
-                Status: "Submitted",
+                Status: "Submitted01",
 
                 AuthorId: currentUser.Id,
 
@@ -1337,7 +1367,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
                 const updateResult = await updateItem(updatePayload, sp, editID);
 
-                console.log("Update Result:", updateResult);
+                // console.log("Update Result:", updateResult);
 
               }
 
@@ -1370,8 +1400,8 @@ const AddMediaGalaryContext = ({ props }: any) => {
                 let updaterec = { 'Status': 'Pending', 'ReworkRequestedBy': 'Initiator' }
                 if (ApprovalRequestItem.LevelSequence == 1) updaterec.ReworkRequestedBy = "Level 1";
                 await UpdateContentMaster(sp, ctmasteritm[0].Id, updaterec);
-                await sp.web.lists.getByTitle(LIST_TITLE_MyRequest).items.getById(ApprovalRequestItem.Id).update({ 'Status': 'Submitted' });
-                await sp.web.lists.getByTitle(LIST_TITLE_MediaGallery).items.getById(editID).update({ 'Status': 'Submitted' });
+                await sp.web.lists.getByTitle(LIST_TITLE_MyRequest).items.getById(ApprovalRequestItem.Id).update({ 'Status': 'Submitted1' });
+                await sp.web.lists.getByTitle(LIST_TITLE_MediaGallery).items.getById(editID).update({ 'Status': 'Submitted2' });
                 boolval = true;
               }
             }
@@ -1406,10 +1436,10 @@ const AddMediaGalaryContext = ({ props }: any) => {
       }
 
       else {
-
+        // alert('coming here in else')
         Swal.fire({
 
-          title: 'Do you want to submit this request?',
+          title: 'Do you want to submit this request in else?',
 
           showConfirmButton: true,
 
@@ -2925,7 +2955,8 @@ hidePlaceholder={true}
             }
 
 {!InputDisabled ? (<div className="text-center butncss">
-
+ 
+ {}
 <div className="btn btn-success waves-effect waves-light m-1" style={{ width:'145px' }} onClick={handleSaveAsDraft}>
 
   <div className='d-flex' style={{ justifyContent: 'center' }}>
