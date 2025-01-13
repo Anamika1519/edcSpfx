@@ -31,6 +31,7 @@ import { MessageSquare, ThumbsUp } from "react-feather";
 import moment from "moment";
 import { addActivityLeaderboard, getLeaderTop } from "../../../APISearvice/CustomService";
 import { fertchprojectcomments, fetchprojectdataTop } from "../../../APISearvice/ProjectsService";
+import Avatar from "@mui/material/Avatar";
 
 const HelloWorldContext = ({ props }: any) => {
   const sp: SPFI = getSP();
@@ -479,10 +480,10 @@ const HelloWorldContext = ({ props }: any) => {
                                     className="d-block img-fluid"
                                   />
                                   <div className="carousel-caption d-none d-md-block">
-                                    <p style={{width:'100%'}} className="font-18 mb-0 mt-0 ps-4 pe-4 py-0">
+                                    <p style={{ width: '100%' }} className="font-18 mb-0 mt-0 ps-4 pe-4 py-0">
                                       {item.Title}
                                     </p>
-                                    <span style={{width:'100%'}} className="font-14 nwdescrp mb-1 mt-0 ps-4 pe-4 py-0">
+                                    <span style={{ width: '100%' }} className="font-14 nwdescrp mb-1 mt-0 ps-4 pe-4 py-0">
                                       {item.Description}
                                     </span>
                                   </div>
@@ -615,6 +616,7 @@ const HelloWorldContext = ({ props }: any) => {
                           </h4>
 
                           <div className="inbox-widget" style={{ marginTop: '1rem' }}>
+                            {console.log("pinUsersitempinUsersitem",pinUsersitem)}
                             {pinUsersitem.length === 0 ?
                               <div className="align-items-center newiconsvg  text-center mt-22"
                               >
@@ -629,19 +631,38 @@ const HelloWorldContext = ({ props }: any) => {
 
                               </div>
                               : pinUsersitem.map((user, index) => (
+                                
                                 <div
                                   key={index}
                                   className="d-flex border-bottom heit8 align-items-start w-100 justify-content-between mb-1"
                                 >
                                   <div className="col-sm-2">
                                     <a>
-                                      <img
+                                      {/* <img
                                         // src={user.Picture != null ? `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${user.EMail}` : require("../assets/users.jpg")}
                                         src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${user.Pinned.EMail}`}
                                         className="rounded-circle"
                                         width="50"
                                         alt={user.Pinned.Title}
-                                      />
+                                      /> */}
+                                      { user.Pinned.SPSPicturePlaceholderState == 0 ?
+                                        <img
+                                          src={
+
+                                            `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${user.Pinned.EMail}`
+
+                                          }
+                                          className="rounded-circle"
+                                          width="50"
+                                          alt={user.Pinned.Title}
+                                        />
+                                        :
+                                        user.Pinned.EMail !== null &&
+                                        <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circlecss img-thumbnail
+                                  avatar-xl">
+                                          {`${user.Pinned.EMail.split('.')[0].charAt(0)}${user.Pinned.EMail.split('.')[1].charAt(0)}`.toUpperCase()}
+                                        </Avatar>
+                                      }
                                     </a>
                                   </div>
                                   <div className="col-sm-8">
@@ -1074,20 +1095,42 @@ const HelloWorldContext = ({ props }: any) => {
                           </div>
                           : <div className="d-flex align-items-start pt-1 justify-content-between border-radius mb-2">
                             <div className="row mt-0 ipadt">
-                              {leaderboard.length > 0 && leaderboard.slice(0, 3).map((user, index) => (
+                              {leaderboard.length > 0 && leaderboard.slice(0, 3).map((user, index) => {
+                                {console.log("leaderboardleaderboard",leaderboard)}
                                 <div className="row border-bottom heit9"
                                   key={index}
 
                                 >
                                   <div style={{ paddingLeft: "0px" }} className="col-sm-2">
-                                    <img
+                                    {/* <img
                                       className="rounded-circle"
                                       src={
                                         `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${user.AuthorEMail}`
                                       }
                                       width="50"
                                       alt={user.AuthorTitle}
-                                    />
+                                    /> */}
+                                    {user.SPSPicturePlaceholderState == 0 ?
+                                      <img
+                                        src={
+
+                                          `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${user.AuthorEMail}`
+
+                                        }
+                                        className="rounded-circle"
+                                        //alt="profile-image"
+                                        alt={user.AuthorTitle}
+                                        //style={{ cursor: "auto" }}
+                                        width="50"
+                                      />
+                                      :
+                                      user.AuthorEMail !== null &&
+                                      <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circlecss img-thumbnail
+                                  avatar-xl">
+
+                                        {`${user.AuthorEMail.split('.')[0].charAt(0)}${user.AuthorEMail.split('.')[1].charAt(0)}`.toUpperCase()}
+                                      </Avatar>
+                                    }
                                   </div>
 
                                   <div className="col-sm-10 ps-2">
@@ -1166,7 +1209,7 @@ const HelloWorldContext = ({ props }: any) => {
 
 
                                 </div>
-                              ))}
+                              })}
                             </div>
                           </div>
                         }
@@ -1293,10 +1336,35 @@ const HelloWorldContext = ({ props }: any) => {
                                       <div style={{ display: 'flex' }} >
                                         {project?.TeamMembers?.length > 0 && project?.TeamMembers?.map(
                                           (id: any, idx: any) => {
+                                            console.log("project?.TeamMembers 12", project?.TeamMembers)
                                             if (idx < 3) {
                                               return (
                                                 <div style={{ marginLeft: '-12px' }} className="gfg_tooltip">
-                                                  <img
+                                                  {id?.SPSPicturePlaceholderState == 0 ?
+                                                    <img
+                                                      style={{
+                                                        margin:
+                                                          index == 0
+                                                            ? "0 0 0 0"
+                                                            : "0 0 0px -12px",
+                                                      }}
+                                                      src={
+
+                                                        `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`
+
+                                                      }
+                                                      className="rounded-circlecss newminus img-thumbnail avatar-xl "
+                                                      alt="profile-image"
+                                                    />
+                                                    :
+                                                    id?.EMail !== null &&
+                                                    <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circlecss img-thumbnail
+                                  avatar-xl">
+                                                      {`${id?.EMail.split('.')[0].charAt(0)}${id?.EMail.split('.')[1].charAt(0)}`.toUpperCase()}
+                                                    </Avatar>
+                                                  }
+
+                                                  {/* <img
                                                     style={{
                                                       margin:
                                                         index == 0
@@ -1306,7 +1374,7 @@ const HelloWorldContext = ({ props }: any) => {
                                                     src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
                                                     className="rounded-circlecss newminus img-thumbnail avatar-xl "
                                                     alt="profile-image"
-                                                  />
+                                                  /> */}
                                                   <span className="gfg_text">
                                                     {id?.Title}
                                                   </span>
@@ -1352,18 +1420,30 @@ const HelloWorldContext = ({ props }: any) => {
                                         {showDropdownId === project.Id && (
                                           project?.TeamMembers?.length > 0 && project?.TeamMembers?.map(
                                             (id: any, idx: any) => {
+                                              console.log("project?.TeamMembers", project?.TeamMembers)
                                               return (
-                                                <img
-                                                  style={{
-                                                    margin:
-                                                      idx == 0
-                                                        ? "0 0 0 0"
-                                                        : "0 0 0px -12px",
-                                                  }}
-                                                  src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                                                  className="rounded-circlecss newminus img-thumbnail avatar-xl"
-                                                  alt="profile-image"
-                                                />
+                                                <div>
+                                                  {id?.Picture != null && id?.SPSPicturePlaceholderState == 0 ?
+                                                    <img
+                                                      style={{
+                                                        margin:
+                                                          idx == 0
+                                                            ? "0 0 0 0"
+                                                            : "0 0 0px -12px",
+                                                      }}
+                                                      src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+                                                      className="rounded-circlecss newminus img-thumbnail avatar-xl"
+                                                      alt="profile-image"
+                                                    />
+                                                    :
+                                                    id?.EMail !== null &&
+                                                    <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circlecss img-thumbnail
+                              avatar-xl">
+                                                      {`${id?.EMail.split('.')[0].charAt(0)}${id?.EMail.split('.')[1].charAt(0)}`.toUpperCase()}
+                                                    </Avatar>
+                                                  }
+                                                </div>
+
                                               );
                                             }
                                           )

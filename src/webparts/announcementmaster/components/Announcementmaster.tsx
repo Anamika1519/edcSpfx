@@ -52,7 +52,12 @@ import Tooltip from '@mui/material/Tooltip';
 
 import { Button } from '@mui/material';
 
-
+import "@pnp/sp/webs";
+import "@pnp/sp/folders";
+import "@pnp/sp/files";
+import "@pnp/sp/sites"
+import "@pnp/sp/presets/all"
+import "@pnp/sp/site-groups";
 import moment from 'moment';
 
 import HorizontalNavbar from '../../horizontalNavBar/components/HorizontalNavBar';
@@ -102,6 +107,40 @@ const Announcementmastercontext = ({ props }: any) => {
 
 
   const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
+
+
+
+  const [isIntranetAdmin, setIsIntranetAdmin] = React.useState(false);
+  let superA = false;
+  let IntranetSuperAdmin: any[];
+  const currentUserEmailRef = React.useRef('');
+  React.useEffect(() => {
+    getcurrentuseremail();
+  }, []);
+  const getcurrentuseremail = async () => {
+    const userdata = await sp.web.currentUser();
+    currentUserEmailRef.current = userdata.Email;
+    getDetailsOfIntranetAdmin();
+
+  }
+  const getDetailsOfIntranetAdmin = async () => {
+    try {
+      const usersFromDMSIntranetAdmin = await sp.web.siteGroups.getByName('IntranetAdmin').users();
+      IntranetSuperAdmin = usersFromDMSIntranetAdmin;
+      usersFromDMSIntranetAdmin.forEach((user) => {
+        if (user.Email === currentUserEmailRef.current) {
+          superA = true;
+          setIsIntranetAdmin(true);
+          // alert(`current user is intranet super admin ${currentUserEmailRef.current , user.Email }`)
+          // setToggleManagePermission('Yes');
+        }
+      })
+      console.log("usersFromIntranetAdmin", usersFromDMSIntranetAdmin);
+    } catch (error) {
+      console.log("error in getting the details of super admin", error);
+    }
+  }
+
 
 
   const ApiCall = async () => {
@@ -330,12 +369,12 @@ const Announcementmastercontext = ({ props }: any) => {
   console.log("CurrentTabCurrentTab", CurrentTab);
   const totalPages = Math.ceil(filteredAnnouncementData.length / itemsPerPage);
   const totalPagesnews = Math.ceil(filteredNewsData.length / itemsPerPage);
-  const tabclicked = (tab:any) => {
+  const tabclicked = (tab: any) => {
     debugger
 
     setCurrentTabs(tab);
     CurrentTab = !CurrentTab;
-    tabchange =  true;
+    tabchange = true;
     setCurrentPage(1)
   }
   console.log("totalPages", totalPages, CurrentTab);
@@ -390,13 +429,13 @@ const Announcementmastercontext = ({ props }: any) => {
   ];
 
 
-  const EditAnnouncement = (id: any) => {
+  const EditAnnouncement = (id: any, superadminedit: any) => {
 
     const encryptedId = encryptId(String(id));
 
     sessionStorage.setItem("announcementId", encryptedId);
 
-    window.location.href = `${siteUrl}/SitePages/AddAnnouncement.aspx`;
+    window.location.href = `${siteUrl}/SitePages/AddAnnouncement.aspx?superadminedit=${superadminedit}`;
 
   };
 
@@ -581,7 +620,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                     <a href={`${siteUrl}/SitePages/settings.aspx`}>
 
-                      <div className="btn btn-secondary me-1 waves-effect waves-light">
+                      <div style={{ width: '80px' }} className="btn btn-secondary me-1 waves-effect waves-light">
 
                         <FontAwesomeIcon icon={faArrowLeft} className="me-1" />
 
@@ -593,7 +632,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                     <a onClick={() => GotoAdd(`${siteUrl}/SitePages/AddAnnouncement.aspx`)}>
 
-                      <div className="btn btn-primary waves-effect waves-light" style={{ background: '#1fb0e5' }}>
+                      <div className="btn btn-primary waves-effect waves-light" style={{ background: '#1fb0e5', width: '80px' }}>
 
                         <FontAwesomeIcon icon={faPlusCircle} className="me-1" />
 
@@ -618,7 +657,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
               id="uncontrolled-tab-example"
 
-              className="mb-3 mt-4" 
+              className="mb-3 mt-4"
               onSelect={() => tabclicked(CurrentTabs == "Announcement" ? "News" : "Announcement")}
             >
 
@@ -784,11 +823,11 @@ const Announcementmastercontext = ({ props }: any) => {
 
                               </th>
 
-                              <th style={{ textAlign: 'center', minWidth:'80px',maxWidth:'80px', borderBottomRightRadius: '0px', borderTopRightRadius: '0px' }}> <div className="d-flex flex-column bd-highlight pb-2">
+                              <th style={{ textAlign: 'center', minWidth: '80px', maxWidth: '80px', borderBottomRightRadius: '0px', borderTopRightRadius: '0px' }}> <div className="d-flex flex-column bd-highlight pb-2">
 
                                 <div className="d-flex  pb-2" style={{ justifyContent: 'space-evenly' }}>  <span >Action</span> <div className="dropdown">
 
-                                  <FontAwesomeIcon style={{top:'4px'}} icon={faEllipsisV} onClick={toggleDropdown} size='xl' />
+                                  <FontAwesomeIcon style={{ top: '4px' }} icon={faEllipsisV} onClick={toggleDropdown} size='xl' />
 
                                 </div>
 
@@ -847,9 +886,9 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                   <td>{item?.AnnouncementandNewsTypeMaster?.TypeMaster}</td>
 
-                                  <td style={{ minWidth: "100px", maxWidth: "100px", textAlign:'center' }}><div className='btn btn-status'>{item.Status} </div></td>
+                                  <td style={{ minWidth: "100px", maxWidth: "100px", textAlign: 'center' }}><div className='btn btn-status'>{item.Status} </div></td>
 
-                                  <td style={{ minWidth: "100px", maxWidth: "100px",textAlign:'center' }}>
+                                  <td style={{ minWidth: "100px", maxWidth: "100px", textAlign: 'center' }}>
 
 
                                     <div className='btn  btn-light'>
@@ -857,53 +896,106 @@ const Announcementmastercontext = ({ props }: any) => {
                                     </div>
                                   </td>
 
-                                  <td style={{ minWidth: "80px", maxWidth: "80px",textAlign:'center' }} className="ng-binding">
+                                  <td style={{ minWidth: "80px", maxWidth: "80px", textAlign: 'center' }} className="ng-binding">
 
                                     <div className="d-flex pb-0" style={{ justifyContent: "center" }}>
 
                                       {/* Conditionally render the edit button based on status */}
+                                      {
+                                        isIntranetAdmin ? (
+                                          <div>
+                                            <span>
 
-                                      <span>
+                                              <a
 
-                                        <a
+                                                className={`action-icon`}
 
-                                          className={`action-icon ${item.Status === "Save as draft" ? "text-primary" : "text-muted"
+                                                onClick={() => EditAnnouncement(item.ID, 'True')}
 
-                                            }`}
+                                                style={{
 
-                                          onClick={item.Status === "Save as draft" ? () => EditAnnouncement(item.ID) : () => ViewFormReadOnly(item.ID)}
+                                                  cursor: "pointer"
 
-                                          style={{
+                                                }}
 
-                                            cursor: item.Status === "Save as draft" ? "pointer" : "pointer"
+                                              >
 
-                                          }}
+                                                {item?.Status == "Save as draft" ? <FontAwesomeIcon icon={faEdit} fontSize={18} /> :
 
-                                        >
+                                                  <img src={require('../../../CustomAsset/Edit.png')} />
+                                                }
+                                              </a>
 
-                                          {item?.Status == "Save as draft" ? <FontAwesomeIcon icon={faEdit} fontSize={18} /> :
-                                            // <FontAwesomeIcon icon={faEye} fontSize={18} />
-                                            <img src={require('../../../CustomAsset/Eye.png')} />
-                                          }
-                                        </a>
+                                            </span>
 
-                                      </span>
 
-                                      {item.Status === "Save as draft" ? (<span>
 
-                                        <a
+                                            <span>
 
-                                          className="action-icon text-danger"
+                                              <a
 
-                                          onClick={() => DeleteAnnouncement(item.ID)}
+                                                className="action-icon text-danger"
 
-                                        >
-<img src={require('../../../CustomAsset/del.png')} />
-                                          {/* <FontAwesomeIcon icon={faTrashAlt} fontSize={18} /> */}
+                                                onClick={() => DeleteAnnouncement(item.ID)}
 
-                                        </a>
+                                              >
+                                                <img src={require('../../../CustomAsset/del.png')} />
 
-                                      </span>) : (<div></div>)}
+
+                                              </a>
+
+                                            </span>
+                                          </div>
+                                        ) : (
+                                          <div>
+                                            <span>
+
+                                              <a
+
+                                                className={`action-icon ${item.Status === "Save as draft" ? "text-primary" : "text-muted"
+
+                                                  }`}
+
+                                                onClick={item.Status === "Save as draft" ? () => EditAnnouncement(item.ID, "False") : () => ViewFormReadOnly(item.ID)}
+
+                                                style={{
+
+                                                  cursor: item.Status === "Save as draft" ? "pointer" : "pointer"
+
+                                                }}
+
+                                              >
+
+                                                {item?.Status == "Save as draft" ? <FontAwesomeIcon icon={faEdit} fontSize={18} /> :
+                                                  // <FontAwesomeIcon icon={faEye} fontSize={18} />
+                                                  <img src={require('../../../CustomAsset/Eye.png')} />
+                                                }
+                                              </a>
+
+                                            </span>
+
+                                            {item.Status === "Save as draft" ? (
+
+                                              <span>
+
+                                                <a
+
+                                                  className="action-icon text-danger"
+
+                                                  onClick={() => DeleteAnnouncement(item.ID)}
+
+                                                >
+                                                  <img src={require('../../../CustomAsset/del.png')} />
+
+
+                                                </a>
+
+                                              </span>) : (<div></div>)}
+                                          </div>
+                                        )
+                                      }
+
+
 
                                     </div>
 
@@ -1167,13 +1259,13 @@ const Announcementmastercontext = ({ props }: any) => {
 
                               </th>
 
-                              <th style={{ minWidth: '80px', maxWidth: '80px', textAlign:'center' }}>
+                              <th style={{ minWidth: '80px', maxWidth: '80px', textAlign: 'center' }}>
 
                                 <div className="d-flex flex-column bd-highlight pb-2">
 
                                   <div className="d-flex  pb-2" style={{ justifyContent: 'space-evenly' }}>  <span >Action</span> <div className="dropdown">
 
-                                    <FontAwesomeIcon style={{top:'4px'}} icon={faEllipsisV} onClick={toggleDropdownNews} fontSize={18} />
+                                    <FontAwesomeIcon style={{ top: '4px' }} icon={faEllipsisV} onClick={toggleDropdownNews} fontSize={18} />
 
                                   </div>
 
@@ -1261,13 +1353,13 @@ const Announcementmastercontext = ({ props }: any) => {
                                         minWidth: "100px",
 
                                         maxWidth: "100px",
-                                        textAlign:'center'
+                                        textAlign: 'center'
 
                                       }}
 
                                     >
 
-                                  <div className='btn btn-status'>{item.Status} </div>
+                                      <div className='btn btn-status'>{item.Status} </div>
 
                                     </td>
 
@@ -1278,13 +1370,13 @@ const Announcementmastercontext = ({ props }: any) => {
                                         minWidth: "100px",
 
                                         maxWidth: "100px",
-                                        textAlign:'center'
+                                        textAlign: 'center'
 
                                       }}
 
                                     >
 
-<div className='btn  btn-light'>      {moment(item.Created).format("L")} </div>
+                                      <div className='btn  btn-light'>      {moment(item.Created).format("L")} </div>
 
                                     </td>
 
@@ -1316,103 +1408,146 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                         {/* Conditionally render the edit button based on status */}
 
-                                        <span>
+                                        {
+                                          isIntranetAdmin ? (
+                                            <div>
+                                              <span>
 
-                                          <a
+                                                <a
 
-                                            className={`action-icon ${item.Status === "Save as draft"
+                                                  className={`action-icon`}
 
-                                              ? "text-primary"
+                                                  onClick={
+                                                    () =>
+                                                      EditAnnouncement(item.ID, 'True')
 
-                                              : "text-muted"
 
-                                              }`}
 
-                                            onClick={
+                                                  }
 
-                                              item.Status === "Save as draft"
+                                                  style={{
 
-                                                ? () =>
+                                                    cursor:
 
-                                                  EditAnnouncement(item.ID)
 
-                                                : () => ViewFormReadOnly(item.ID)
+                                                      "pointer"
 
-                                            }
 
-                                            style={{
 
-                                              cursor:
+                                                  }}
 
-                                                item.Status === "Save as draft"
+                                                >
+                                                  <img src={require('../../../CustomAsset/edit.png')} />
 
-                                                  ? "pointer"
 
-                                                  : "not-allowed",
+                                                </a>
 
-                                            }}
+                                              </span>
 
-                                          >
-    <img src={require('../../../CustomAsset/edit.png')} />
-                                            {/* <FontAwesomeIcon
+                                              <span>
 
-                                              icon={faEdit}
 
-                                              fontSize={18}
 
-                                            /> */}
+                                                <a
 
-                                          </a>
+                                                  className="action-icon text-danger"
 
-                                        </span>
+                                                  onClick={() =>
 
-                                        <span>
+                                                    DeleteAnnouncement(item.ID)
 
-                                          {/* <a
+                                                  }
 
-                                            className="action-icon text-danger"
+                                                >
 
-                                            onClick={() =>
+                                                  <FontAwesomeIcon
 
-                                              DeleteAnnouncement(item.ID)
+                                                    icon={faTrashAlt}
 
-                                            }
+                                                    fontSize={18}
 
-                                          >
+                                                  />
 
-                                            <FontAwesomeIcon
+                                                </a>
 
-                                              icon={faTrashAlt}
+                                              </span>
+                                            </div>
+                                          ) : (
+                                            <div>
+                                              <span>
 
-                                              fontSize={18}
+                                                <a
 
-                                            />
+                                                  className={`action-icon ${item.Status === "Save as draft"
 
-                                          </a> */}
+                                                    ? "text-primary"
 
-                                          {(item.Status === "Save as draft") ? (<a
+                                                    : "text-muted"
 
-                                            className="action-icon text-danger"
+                                                    }`}
 
-                                            onClick={() =>
+                                                  onClick={
 
-                                              DeleteAnnouncement(item.ID)
+                                                    item.Status === "Save as draft"
 
-                                            }
+                                                      ? () =>
 
-                                          >
+                                                        EditAnnouncement(item.ID, 'False')
 
-                                            <FontAwesomeIcon
+                                                      : () => ViewFormReadOnly(item.ID)
 
-                                              icon={faTrashAlt}
+                                                  }
 
-                                              fontSize={18}
+                                                  style={{
 
-                                            />
+                                                    cursor:
 
-                                          </a>) : (<div></div>)}
+                                                      item.Status === "Save as draft"
 
-                                        </span>
+                                                        ? "pointer"
+
+                                                        : "not-allowed",
+
+                                                  }}
+
+                                                >
+                                                  <img src={require('../../../CustomAsset/edit.png')} />
+
+
+                                                </a>
+
+                                              </span>
+
+                                              <span>
+
+
+
+                                                {(item.Status === "Save as draft") ? (<a
+
+                                                  className="action-icon text-danger"
+
+                                                  onClick={() =>
+
+                                                    DeleteAnnouncement(item.ID)
+
+                                                  }
+
+                                                >
+
+                                                  <FontAwesomeIcon
+
+                                                    icon={faTrashAlt}
+
+                                                    fontSize={18}
+
+                                                  />
+
+                                                </a>) : (<div></div>)}
+
+                                              </span>
+                                            </div>
+                                          )}
+
 
                                       </div>
 

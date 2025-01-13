@@ -181,5 +181,12 @@ div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm)
     font-size: 1rem !important;
     font-weight: 500 !important;}
   .removeb input{background: transparent !important;}
+  .multiSelectContainer input[type=text][disabled]{
+    background: transparent !important;    height: 28px;
+  }
   .removeb .chip img{display: none !important;}
+  .ql-container.ql-snow{
+    height: 110px !important;
+  }
+  .form-control{font-weight: 500 !important;}
   .removeb .chip{background: transparent !important;     color: #212529 !important; font-size: 1rem !important;}

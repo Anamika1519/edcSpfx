@@ -570,7 +570,7 @@ const EventcalenderContext = ({ props }: any) => {
                                         className="dropdown-item dropcssItem"
                                         onClick={() => copyToClipboard(item.Id)}
                                       >
-                                        <Link size={14} /> &nbsp; Share by email</a>
+                                        <Link size={14} /> &nbsp; Copy Link</a>
                                       <a>
                                         {copySuccess && <span className="text-success">{copySuccess}</span>}
                                       </a>

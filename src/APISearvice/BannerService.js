@@ -57,7 +57,8 @@ export const getBannerByID = async (_sp, id) => {
                   URL: res.URL,
                   IsImage:res.IsImage==true?"on":"off",
                   IsVedio:res.IsImage==true?"on":"off",
-                  ID:res.ID
+                  ID:res.ID,
+                  Status:res.Status
                   // other fields as needed
               };
 

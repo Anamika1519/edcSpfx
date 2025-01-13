@@ -18,6 +18,12 @@ import "../../verticalSideBar/components/VerticalSidebar.scss";
 import "../../../CustomJSComponents/CustomTable/CustomTable.scss";
 import "./adddynamicbanner.scss"
 import * as XLSX from 'xlsx';
+import "@pnp/sp/webs";
+import "@pnp/sp/folders";
+import "@pnp/sp/files";
+import "@pnp/sp/sites"
+import "@pnp/sp/presets/all"
+import "@pnp/sp/site-groups";
 import HorizontalNavbar from '../../horizontalNavBar/components/HorizontalNavBar';
 import moment from 'moment';
 const DynamicBannercontext = ({ props }: any) => {
@@ -29,6 +35,43 @@ const DynamicBannercontext = ({ props }: any) => {
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(true);
   const [bannersData, setBannersData] = React.useState([]);
   const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
+
+
+  
+  
+      const [isIntranetAdmin,setIsIntranetAdmin]=React.useState(false);
+      let superA=false;
+      let IntranetSuperAdmin:any[];
+      const currentUserEmailRef = React.useRef('');
+        React.useEffect(() => {
+        getcurrentuseremail();
+      }, []);
+      const getcurrentuseremail = async()=>{
+          const userdata = await sp.web.currentUser();
+          currentUserEmailRef.current = userdata.Email;
+          getDetailsOfIntranetAdmin();
+    
+        }
+       const getDetailsOfIntranetAdmin=async()=>{
+          try {
+              const usersFromDMSIntranetAdmin = await sp.web.siteGroups.getByName('IntranetAdmin').users();
+              IntranetSuperAdmin=usersFromDMSIntranetAdmin;
+              usersFromDMSIntranetAdmin.forEach((user)=>{
+                  if(user.Email === currentUserEmailRef.current){
+                    superA=true;
+                    setIsIntranetAdmin(true);
+                    // alert(`current user is intranet super admin ${currentUserEmailRef.current , user.Email }`)
+                    // setToggleManagePermission('Yes');
+                  }
+              })
+              console.log("usersFromIntranetAdmin",usersFromDMSIntranetAdmin);
+          } catch (error) {
+            console.log("error in getting the details of super admin",error);
+          }
+        }
+
+    
+    
   const ApiCall = async () => {
     let bannersArr: any[] = [];
     const userGroups = await sp.web.currentUser.groups();
@@ -38,7 +81,7 @@ const DynamicBannercontext = ({ props }: any) => {
       bannersArr = await getDynamicBanner(sp, "yes");
     }
     else if (groupTitles.includes("intranetcontentcontributor")) {
-      bannersArr = await getDynamicBanner(sp, "No");
+      bannersArr = await getDynamicBanner(sp, "yes");
     }
 
     setBannersData(bannersArr);
@@ -226,12 +269,19 @@ const DynamicBannercontext = ({ props }: any) => {
 
 
   //#region 
-  const EditBanner = (id: any) => {
+  const EditBanner = (id: any , superadminedit:any) => {
     debugger
     // setUseId(id)
     const encryptedId = encryptId(String(id));
     sessionStorage.setItem("bannerId", encryptedId)
-    window.location.href = `${siteUrl}/SitePages/BannerForm.aspx`;
+    window.location.href = `${siteUrl}/SitePages/BannerForm.aspx?superadminedit=${superadminedit}`;
+  }
+  const ViewFormReadOnly = (id: any) => {
+    // debugger
+    // setUseId(id)
+    const encryptedId = encryptId(String(id));
+    sessionStorage.setItem("bannerId", encryptedId)
+    window.location.href = `${siteUrl}/SitePages/BannerForm.aspx?mode=view`;
   }
   //#endregion
 
@@ -449,14 +499,32 @@ const DynamicBannercontext = ({ props }: any) => {
                                 <td style={{ minWidth: '40px', maxWidth: '40px' }}>  <div className='btn btn-status'> {item.Status} </div> </td>
                                 <td style={{ minWidth: '40px', maxWidth: '40px' }}> <div className='btn btn-light'>{moment(item.Created).format("DD-MMM-YYYY")} </div> </td>
                                 <td style={{ minWidth: '50px', maxWidth: '50px' }} className="ng-binding">
-                                  <div className="d-flex  pb-0" style={{ justifyContent: 'center', gap: '5px' }}>
-                                    <span > <a className="action-icon text-primary" onClick={() => EditBanner(item.ID)}>
-                                      <img src={require('../../../CustomAsset/edit.png')} />
-                                    </a> </span >
-                                    <span>   <a className="action-icon text-danger" onClick={() => DeleteBanner(item.ID)}>
-                                      <img src={require('../../../CustomAsset/del.png')} />
-                                    </a> </span>
-                                  </div>
+                                {
+                                      isIntranetAdmin ? (
+                                        <div className="d-flex  pb-0" style={{ justifyContent: 'center', gap: '5px' }}>
+                                        <span > <a className="action-icon text-primary" onClick={() => EditBanner(item.ID , 'True')}>
+                                          <img src={require('../../../CustomAsset/edit.png')} />
+                                        </a> 
+                                        </span >
+                                        <span>   <a className="action-icon text-danger" onClick={() => DeleteBanner(item.ID)}>
+                                          <img src={require('../../../CustomAsset/del.png')} />
+                                        </a> </span>
+                                      </div>
+                                       ) : (
+                                        <div className="d-flex  pb-0" style={{ justifyContent: 'center', gap: '5px' }}>
+                                        <span > <a className="action-icon text-primary"
+                                        //  onClick={() => EditBanner(item.ID)}
+                                         onClick={() => ViewFormReadOnly(item.ID )}
+                                         >
+                                          <img src={require('../../../CustomAsset/edit.png')} />
+                                        </a> </span >
+                                        {/* <span>   <a className="action-icon text-danger" onClick={() => DeleteBanner(item.ID)}>
+                                          <img src={require('../../../CustomAsset/del.png')} />
+                                        </a>
+                                         </span> */}
+                                      </div>
+                                      ) }
+                               
                                 </td>
                               </tr>
                             )

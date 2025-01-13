@@ -167,7 +167,7 @@ const TableData = () => {
   // Function to manually save changes
   const saveChanges = () => {
     localStorage.setItem('tableData', JSON.stringify(data));
-    alert('Changes saved!');
+    // alert('Changes saved!');
   };
 
   return (

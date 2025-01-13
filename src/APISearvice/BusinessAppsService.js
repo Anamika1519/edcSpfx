@@ -117,7 +117,7 @@ export const fetchARGAutomationdata = async (_sp) => {
   export const getMyApprovalsdata = async (_sp,listName,status , Actingfor) => {
     if(Actingfor != null && Actingfor != undefined && Actingfor != ""){
       let arr = []
-      alert(`acting for ${Actingfor} is not null in Automation and data`)
+      // alert(`acting for ${Actingfor} is not null in Automation and data`)
       await _sp.web.lists.getByTitle(listName).items
       .select("*,Author/ID,Author/Title,Author/EMail,AssignedTo/ID,AssignedTo/Title,AssignedTo/EMail").expand("Author,AssignedTo")
       .filter(`AssignedTo/EMail eq '${Actingfor}' and Status eq '${status}'`)      
@@ -387,7 +387,7 @@ export const fetchARGAutomationdata = async (_sp) => {
 export const getApprovalListsData = async (_sp,status , Actingfor) => {
   let arr = []
   if(!Actingfor){ 
-    alert(`acting for ${Actingfor} is not null in Automation`)
+    // alert(`acting for ${Actingfor} is not null in Automation`)
     await _sp.web.lists.getByTitle("AllApprovalLists").items.orderBy("Created", false).getAll()
     .then(async (res) => {
       console.log("AllApprovallists",res);
@@ -409,7 +409,7 @@ export const getApprovalListsData = async (_sp,status , Actingfor) => {
     });
   return arr;
   }else{
-    alert(`acting for ${Actingfor} is null in Automation`)
+    // alert(`acting for ${Actingfor} is null in Automation`)
     await _sp.web.lists.getByTitle("AllApprovalLists").items.orderBy("Created", false).getAll()
     .then(async (res) => {
       console.log("AllApprovallists",res);

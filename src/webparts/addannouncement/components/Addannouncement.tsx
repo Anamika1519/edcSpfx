@@ -90,7 +90,8 @@ const AddannouncementContext = ({ props }: any) => {
     // announcementThumbnail: null,
     description: "",
     overview: "",
-    FeaturedAnnouncement: false
+    FeaturedAnnouncement: false,
+    Status:"",
   });
   const [richTextValues, setRichTextValues] = React.useState<{ [key: string]: string }>({});
   const [DocumentpostArr, setDocumentpostArr] = React.useState([]);
@@ -262,6 +263,7 @@ const AddannouncementContext = ({ props }: any) => {
           description: setBannerById[0].description,
           overview: setBannerById[0].overview,
           FeaturedAnnouncement: true,
+          Status: setBannerById[0].Status,
           // announcementGallery: setBannerById[0].AnnouncementAndNewsGallaryJSON,
           // announcementThumbnail: setBannerById[0].AnnouncementAndNewsDocsJSON,
         }
@@ -494,7 +496,7 @@ const AddannouncementContext = ({ props }: any) => {
                 CategoryId: Number(formData.category),
                 AnnouncementandNewsTypeMasterId: Number(formData.Type),
                 FeaturedAnnouncement: true,
-                Status: "Submitted",
+                Status: formData.Status,
                 AuthorId: currentUser.Id,
                 AnnouncementandNewsBannerImage: bannerImageArray != "{}" && JSON.stringify(bannerImageArray)
               };
@@ -1689,7 +1691,7 @@ const AddannouncementContext = ({ props }: any) => {
               </div>
             </div>
             <div className="card mt-3" >
-              <div className="card-body pb-5">
+              <div className="card-body">
                 <div className="row mt-2">
                   {Loading ?
                     // <div className="loadercss" role="status">Loading...

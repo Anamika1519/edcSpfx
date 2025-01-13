@@ -137,10 +137,11 @@ export const fetchPinnedUser = async (sp) => {
       console.error("Error fetching current user: ", error);
       return [];
     });
+    //select=Pinned/Title,Pinned/SPSPicturePlaceholderState&$expand=Pinned
   let arr = []
   try {
     const userList = await sp.web.lists.getByTitle("ARGPinned").items
-      .select("*,Pinned/ID,Pinned/Title,Pinned/EMail,Pinned/Department,Pinned/WorkPhone,Pinned/WorkPhone")
+      .select("*,Pinned/ID,Pinned/Title,Pinned/EMail,Pinned/Department,Pinned/WorkPhone,Pinned/WorkPhone,Pinned/SPSPicturePlaceholderState")
       .expand("Pinned")
       //.select("ID", "Title", "EMail", "Department", "JobTitle", "Picture")
       .filter(`PinnedById eq ${currentUser}`)

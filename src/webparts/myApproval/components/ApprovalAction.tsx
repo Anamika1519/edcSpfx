@@ -399,12 +399,12 @@ try {
                       .then(async (items) => {
                           if (items.length > 0) {
                               const itemId = items[0].Id; // Assuming one item per FileUID
-                              alert(`${itemId} item id is 1`)
+                              // alert(`${itemId} item id is 1`)
                               await sp.web.lists.getByTitle("DMSFileApprovalList").items.getById(itemId).update({
                                   Status: "Approved",
                               });
                               console.log("Updated DMSFileApprovalList with Approved status");
-                              alert(`${itemId} Updated DMSFileApprovalList with Approved status`)
+                              // alert(`${itemId} Updated DMSFileApprovalList with Approved status`)
                           }
                       });
                     } catch (error) {
@@ -454,12 +454,12 @@ try {
                           .then(async (items) => {
                               if (items.length > 0) {
                                   const itemId = items[0].Id; // Assuming one item per FileUID
-                                  alert(`${itemId} item id is 2`)
+                                  // alert(`${itemId} item id is 2`)
                                   await sp.web.lists.getByTitle("DMSFileApprovalList").items.getById(itemId).update({
                                       Status: "Approved",
                                   });
                                   console.log("Updated DMSFileApprovalList with Approved status");
-                                  alert(`${itemId} Updated DMSFileApprovalList with Approved status`)
+                                  // alert(`${itemId} Updated DMSFileApprovalList with Approved status`)
                               }
                           });
                         } catch (error) {
@@ -542,8 +542,8 @@ try {
       console.log("Updated data",updateddata)
       if(buttonText === "Rework"){
         setFinalStatus = 'Rework'
-        alert(`this is SiteName ${filterData.FileUID.SiteName}`)
-        alert(`this is Filereqno ${filterData.FileUID.RequestNo}`)
+        // alert(`this is SiteName ${filterData.FileUID.SiteName}`)
+        // alert(`this is Filereqno ${filterData.FileUID.RequestNo}`)
         const updateStatusinMaster = await sp.web.lists.getByTitle(`DMS${filterData.FileUID.SiteName}FileMaster`).items.filter(`RequestNo eq '${filterData.FileUID.RequestNo}'`)()
         console.log(updateStatusinMaster , "updateStatusinMaster")
         for (let item of updateStatusinMaster) { 
@@ -558,7 +558,7 @@ try {
     if (getTaskdata && getTaskdata.length > 0) {
         console.log(getTaskdata, "getTaskdatagetTaskdata");
         for (const item of getTaskdata) {
-          alert(item.ID)
+          // alert(item.ID)
             await sp.web.lists.getByTitle("DMSFileApprovalTaskList").items.getById(item.ID).delete();
         }
     } else {

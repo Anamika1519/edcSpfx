@@ -668,7 +668,7 @@ export const getLeaderTop = async (sp) => {
 
     .getByTitle("ARGLeaderboard")
 
-    .items.select("*,Author/ID,Author/Title,Author/EMail,Author/Department,Created")
+    .items.select("*,Author/ID,Author/Title,Author/EMail,Author/Department,Author/SPSPicturePlaceholderState,Created")
 
     .expand("Author")
 

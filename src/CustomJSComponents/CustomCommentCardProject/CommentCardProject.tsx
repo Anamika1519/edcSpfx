@@ -258,7 +258,7 @@ export const CommentCard: React.FC<{
     const userdata = await sp.web.currentUser();
     // alert(userdata)
     currentUserEmailRef.current = userdata.Email;
-    alert(`ID in card: ${userdata}`)
+    // alert(`ID in card: ${userdata}`)
     // alert(currentUserEmailRef.current)
  
   }
@@ -289,8 +289,8 @@ export const CommentCard: React.FC<{
   }
  
 const CheckCurrentuser = (Author:any)=>{
-  alert(Author)
-  alert(CurrentUserProfile)
+  // alert(Author)
+  // alert(CurrentUserProfile)
   if(Author == CurrentUserProfile){
     
   }

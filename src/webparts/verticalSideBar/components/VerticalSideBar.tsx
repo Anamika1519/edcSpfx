@@ -35,7 +35,7 @@ const VerticalContext = ({ _context }: any) => {
   // const imgLogo = require("../assets/logoImgsm.png");
   const imgBigLogo = require("../assets/logodarkBig.png")
   // const imgLogo = require("../../../Assets/ExtraImage/logosm.png");
-  const imgSMLogo = require("../assets/logoImgsm.png");
+  const imgSMLogo = require("../assets/smallleftlogo.png");
   // const useimg = require("../assets/useimg.png");
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(true);
   const [isDarkMode, setIsDarkMode] = React.useState(false);
@@ -78,7 +78,11 @@ const VerticalContext = ({ _context }: any) => {
     if (localStorage.getItem("NavId") != null && localStorage.getItem("NavId") != undefined && localStorage.getItem("NavId") != "") {
       setuseActive(Number(localStorage.getItem("NavId")))
     }
-    setCurrentUser(await getCurrentUserName(_context))
+    let curretuseris = await _context.web.currentUser().then((res:any) => {
+      setCurrentUser(res.Title)
+      console.log(res, "currentuser");
+    })
+    //setCurrentUser(await getCurrentUserName(_context))
     // if (localStorage.getItem("bigLogo") != null && localStorage.getItem("bigLogo") != undefined && localStorage.getItem("bigLogo") != "" || localStorage.getItem("SmallLogo") != null
     //   && localStorage.getItem("SmallLogo") != undefined && localStorage.getItem("SmallLogo") != "") {
     //   setBigLogo(localStorage.getItem('bigLogo'))
@@ -337,7 +341,7 @@ const VerticalContext = ({ _context }: any) => {
       localStorage.setItem("NavId", ""); // Clear the NavId if no match is found
   }
 } else {
-    alert("No matches found in the URL");
+    //alert("No matches found in the URL");
 }
 
 }

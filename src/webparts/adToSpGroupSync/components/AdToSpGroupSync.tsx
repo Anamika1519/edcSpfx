@@ -175,7 +175,7 @@ export default class AdToSpGroupSync extends React.Component<IAdToSpGroupSyncPro
         nextPage = await nextPage.next();
         allMembers.push(...nextPage.value);
     }
-     alert(`All member of AD ${allMembers.length}`)
+    //  alert(`All member of AD ${allMembers.length}`)
     return allMembers;
 }
    

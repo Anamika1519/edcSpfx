@@ -308,13 +308,14 @@ const MyRequestContext = ({ props }: any) => {
   const ApiCall = async (status: String) => {
 
     let myrequestdata = await getMyRequest(sp, status);
-    let Automationdata1 = await getRequestListsData(sp, status);
+    let Automationdata = await getRequestListsData(sp, status);
     //let Automationdata = Automationdata1.sort((a, b) => b.Created - a.Created);
-    let Automationdata = [...Automationdata1].sort((a, b) => {
-      return a.Created === b.Created ? 0 : a.Created ? -1 : 1;
-    });
+    // let Automationdata = Automationdata1.sort((a, b) => {
+    //   return a.Created === new Date(b.Created) ? 0 : new Date(a.Created) ? -1 : 1;
+    // });
+    // let datsis = Automationdata1.sort((a, b) => new Date(b.Created).getTime() - new Date(a.Created).getTime());
     setAutomationData(Automationdata);
-    console.log(myrequestdata, "myrequestdata");
+    console.log(myrequestdata, "myrequestdata",Automationdata);
     let myrequestdatadms: any = await gteDMSApproval(sp, status)
     console.log(myrequestdatadms, "myrequestdatadms");
     setMyApprovalsData(await getMyRequest(sp, status));
@@ -428,8 +429,13 @@ const MyRequestContext = ({ props }: any) => {
             .startsWith(filters.RequestedDate + ""))
         &&
         (filters.Title === "" ||
-          activeTab == "Intranet" ? item.Title : item.ApprovalTitle != undefined &&
-        (activeTab == "Intranet" ? item.Title : item.ApprovalTitle).toLowerCase().includes(filters.Title.toLowerCase()))
+          (activeTab == "Automation"
+            ? item?.ApprovalTitle?.toLowerCase().includes(
+              filters.Title.toLowerCase()
+            )
+            : item?.Title?.toLowerCase().includes(
+              filters.Title.toLowerCase()
+            )))
         // (filters.RequestedBy === "" ||
         //   (activeTab == "Automation" ? (item?.Author?.Title?.toLowerCase().includes(
         //     filters.RequestedBy.toLowerCase()

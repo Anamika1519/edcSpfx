@@ -116,7 +116,9 @@ export const getRequestListsData = async (_sp, status) => {
         })
 
       }
-
+      AllRequestArr = AllRequestArr.sort((a, b) => {
+        return a.Created === new Date(b.Created) ? 0 : new Date(a.Created) ? -1 : 1;
+      });
       console.log("AllRequestArr", AllRequestArr);
 
       arr = AllRequestArr;
@@ -366,11 +368,11 @@ export const getMyRequest = async (sp, status) => {
 // }
 export const getMyApproval = async (sp, status, actingfor) => {
   try {
-    alert(`Actingfor is ${actingfor}`);
+    // alert(`Actingfor is ${actingfor}`);
     let arr = [];
     
     if (!actingfor) {
-      alert(`Actingfor is null ${actingfor}`);
+      // alert(`Actingfor is null ${actingfor}`);
       const currentUser = await sp.web.currentUser();
       
       arr = await sp.web.lists.getByTitle("ARGMyRequest").items.select("*,Requester/Id,Requester/Title,Approver/Id,Approver/Title", "Approver/EMail")
@@ -381,9 +383,9 @@ export const getMyApproval = async (sp, status, actingfor) => {
         
       console.log(arr, 'arr of intranet if actingfor is null');
     } else {
-      alert(`Actingfor is not null ${actingfor}`);
+      // alert(`Actingfor is not null ${actingfor}`);
       const user = await sp.web.siteUsers.getByEmail(actingfor)();
-      alert(user.Id);
+      // alert(user.Id);
       
       if (user.Id) {
         arr = await sp.web.lists.getByTitle("ARGMyRequest").items.select("*,Requester/Id,Requester/Title,Approver/Id,Approver/Title" ,"Approver/EMail")

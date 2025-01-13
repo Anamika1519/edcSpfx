@@ -41,6 +41,7 @@ const AddDynamicBannerContext = ({ props }: any) => {
   const [BnnerImagepostArr, setBannerImagepostArr]: any = React.useState();
   const inputFile = useRef(null);
   const [ValidSubmit, setValidSubmit] = React.useState(true);
+    const [InputDisabled, setInputDisabled] = React.useState(false);
   const [bannerByIDArr, setBannerByIdArr] = React.useState({
     title: '',
     description: "",
@@ -58,8 +59,24 @@ const AddDynamicBannerContext = ({ props }: any) => {
     BannerImage: "",
     IsVedio: "",
     IsImage: "",
-    URL: ""
+    URL: "",
+    Status:''
   })
+
+     React.useEffect(() => { 
+        // alert("useEffect called");
+        const currentUrl = window.location.href;
+        const urlParams = new URLSearchParams(window.location.search);
+        const modeiseditorview = urlParams.get('mode');
+        console.log("modeiseditorview value:", modeiseditorview);
+        if (modeiseditorview === 'view') {
+          // alert(`${typeof(modeiseditorview)} , ${modeiseditorview}`)
+          setInputDisabled(true);
+        } else {
+
+          console.log("modeiseditorview parameter not found.");
+        }
+      }, []);
 
   const validateForm = async () => {
     const { title, URL, description } = formData;
@@ -180,7 +197,8 @@ const AddDynamicBannerContext = ({ props }: any) => {
           BannerImage: setBannerById[0].BannerImage,
           IsVedio: setBannerById[0].IsVedio,
           IsImage: setBannerById[0].IsImage,
-          URL: setBannerById[0].URL
+          URL: setBannerById[0].URL,
+          Status: setBannerById[0].Status
         }
         let banneimagearr = []
         // banneimagearr = JSON.parse(setBannerById[0].BannerImage)
@@ -349,7 +367,7 @@ const AddDynamicBannerContext = ({ props }: any) => {
                 IsImage: formData.IsImage === "on" ? true : false,
                 // IsVideo: formData.IsVedio === "on"?  true :false,
                 URL: formData.URL,
-                Status: "Submitted",
+                Status: formData.Status,
                 AuthorId: currentUser.Id,
                 BannerImage: JSON.stringify(bannerImageArray),
                 BannerImageJSON: jsonString
@@ -370,7 +388,7 @@ const AddDynamicBannerContext = ({ props }: any) => {
                 IsImage: formData.IsImage === "on" ? true : false,
                 // IsVideo: formData.IsVedio === "on"?  true :false,
                 URL: formData.URL,
-                Status: "Submitted",
+                Status: formData.Status,
                 AuthorId: currentUser.Id,
                 BannerImage: JSON.stringify(bannerImageArray),
                 // BannerImageJSON: jsonString
@@ -509,9 +527,13 @@ const AddDynamicBannerContext = ({ props }: any) => {
                           id="title"
                           name="title"
                           placeholder='Enter Title'
-                          className={`form-control inputcs ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                          className={`form-control ${(!ValidSubmit) ? "border-on-error" : ""}`}
                           value={formData.title}
-                          onChange={(e) => onChange(e.target.name, e.target.value)} />
+                          onChange={(e) => onChange(e.target.name, e.target.value)} 
+                          disabled={InputDisabled}
+
+                          />
+                          
                       </div>
                     </div>
                     <div className="col-lg-6">
@@ -542,9 +564,11 @@ const AddDynamicBannerContext = ({ props }: any) => {
                           ref={inputFile}
                           id="bannerImage"
                           name="bannerImage"
-                          className={`form-control inputcs ${(!ValidSubmit) ? "border-on-error" : ""}`}
-                          onChange={(e) => onFileChange(e, "bannerimg", "Document")} />
-
+                          className={`form-control ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                          onChange={(e) => onFileChange(e, "bannerimg", "Document")} 
+                          disabled={InputDisabled}
+                          />
+                          
                       </div>
                     </div>
                     <div className="col-lg-12">
@@ -556,10 +580,13 @@ const AddDynamicBannerContext = ({ props }: any) => {
                           id="description"
                           name="description"
                           placeholder='Enter description'
-                          className={`form-control inputcs ${(!ValidSubmit) ? "border-on-error" : ""}`}
-                          style={{ height: '50px' }}
+                          className={`form-control  ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                          style={{ height: '100px' }}
                           value={formData.description}
-                          onChange={(e) => onChange(e.target.name, e.target.value)}>
+                          onChange={(e) => onChange(e.target.name, e.target.value)}
+                          disabled={InputDisabled}
+
+                          >
                         </textarea>
                       </div>
                     </div>
@@ -581,18 +608,23 @@ const AddDynamicBannerContext = ({ props }: any) => {
                       </div> */}
                     {/* {BnnerImagepostArr!=undefined&&BnnerImagepostArr.length>0?
                     (<><div>{BnnerImagepostArr[0].fileName}</div><img src={BnnerImagepostArr[0].fileName} /></>):""} */}
-                    <div className="text-center butncss">
-                      <div className="btn btn-success waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleFormSubmit}>
-                        <div className='d-flex' style={{ justifyContent: 'space-around', width: '70px' }}>
+                      <div className="text-center butncss">
+                    { InputDisabled == false && (
+                    
+                                            <div className="btn btn-success waves-effect waves-light m-1" style={{  width: '100px' }} onClick={handleFormSubmit}>
+                        <div className='d-flex' style={{ justifyContent: 'center' }}>
                           <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} alt="Check" /> Submit
                         </div>
                       </div>
-                      <button type="button" className="btn btn-light waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleCancel}>
+                      
+             
+                    ) }
+                      <button type="button" className="btn cancel-btn waves-effect waves-light m-1" style={{ width: '100px' }} onClick={handleCancel}>
                         <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }}
                           className='me-1' alt="x" />
                         Cancel
                       </button>
-                    </div>
+                           </div>
                   </form>
                 </div>
               </div>

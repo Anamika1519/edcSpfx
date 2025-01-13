@@ -40,7 +40,7 @@ export const fetchprojectdataTop = async (_sp) => {
    let userID= ''
    await _sp.web.currentUser().then((res) => {console.log(res);userID = res["Id"];})
 
-  await _sp.web.lists.getByTitle("ARGProject").items.select("*,TeamMembers/ID,TeamMembers/EMail,TeamMembers/Title , AuthorId , ProjectStatus").expand("TeamMembers").filter(`(AuthorId eq '${userID}' or TeamMembers/ID eq '${userID}') and ProjectStatus eq 'Ongoing'`).orderBy("Modified", false).top(3)().then(async(res) => {
+  await _sp.web.lists.getByTitle("ARGProject").items.select("*,TeamMembers/ID,TeamMembers/EMail,TeamMembers/Title,TeamMembers/SPSPicturePlaceholderState , AuthorId , ProjectStatus").expand("TeamMembers").filter(`(AuthorId eq '${userID}' or TeamMembers/ID eq '${userID}') and ProjectStatus eq 'Ongoing'`).orderBy("Modified", false).top(3)().then(async(res) => {
     console.log("checking the data of project---->>>", res);
   
     //res.filter(x=>x.Category?.Category==str)

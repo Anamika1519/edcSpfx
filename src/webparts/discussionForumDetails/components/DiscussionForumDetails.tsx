@@ -623,7 +623,7 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
     const ids = window.location.search;
     const originalString = ids;
     const idNum = originalString.substring(1);
-    alert(idNum)
+    //alert(idNum)
 
     const getdata: any = await sp.web.lists.getByTitle('ARGDiscussionForum').items.getById(parseInt(idNum))()
     console.log(getdata, "get data ")

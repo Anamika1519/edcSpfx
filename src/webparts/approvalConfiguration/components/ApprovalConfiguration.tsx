@@ -98,7 +98,7 @@ export const ApprovalConfigurationcontext = ({ props }: any) => {
     e.preventDefault();
     localStorage.setItem('savedTableData', JSON.stringify(rows));
     localStorage.setItem('savedNumLevels', JSON.stringify(numLevels)); // Save the number of levels
-    alert('Table data and levels saved to localStorage!');
+    // alert('Table data and levels saved to localStorage!');
   };
 
 

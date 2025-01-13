@@ -1041,7 +1041,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
         Swal.fire({
 
-          title: 'Do you want to submit this request in if?',
+          title: 'Do you want to submit this request?',
 
           showConfirmButton: true,
 
@@ -1439,7 +1439,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
         // alert('coming here in else')
         Swal.fire({
 
-          title: 'Do you want to submit this request in else?',
+          title: 'Do you want to submit this request?',
 
           showConfirmButton: true,
 

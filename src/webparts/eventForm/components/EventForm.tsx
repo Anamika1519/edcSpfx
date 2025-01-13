@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { IEventFormProps } from './IEventFormProps';
 import { SPFI } from '@pnp/sp/presets/all';
 import "../../../Assets/Figtree/Figtree-VariableFont_wght.ttf";
@@ -9,6 +9,7 @@ import VerticalSideBar from '../../verticalSideBar/components/VerticalSideBar';
 import UserContext from '../../../GlobalContext/context';
 import Provider from '../../../GlobalContext/provider';
 import { useMediaQuery } from 'react-responsive';
+let hidesavasdraft : string = 'false';
 import context from '../../../GlobalContext/context';
 import CustomBreadcrumb from '../../../CustomJSComponents/CustomBreadcrumb/CustomBreadcrumb';
 import { allowstringonly, getCurrentUser, getEntity } from '../../../APISearvice/CustomService';
@@ -38,6 +39,27 @@ let mode = "";
 const HelloWorldContext = ({ props }: any) => {
   const sp: SPFI = getSP();
   console.log(sp, 'sp');
+
+    useEffect(() => { 
+      // alert("useEffect called");
+      const currentUrl = window.location.href;
+      const urlParams = new URLSearchParams(window.location.search);
+      const superadminedit = urlParams.get('superadminedit');
+      console.log("Superadminedit value:", superadminedit);
+      if (superadminedit) {
+
+        // alert(`super admin edit ${superadminedit}`)
+        console.log("Superadminedit value:", superadminedit);
+        hidesavasdraft = 'true'
+
+        // alert(hidesavasdraft)
+        // alert(`${typeof(hidesavasdraft)} , ${hidesavasdraft}`)
+        
+      } else {
+        // alert(`else super admin edit ${superadminedit}`)
+        console.log("Superadminedit parameter not found.");
+      }
+    }, []);
   // const { useHide }: any = React.useContext(UserContext);
   // const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
   const { useHide }: any = React.useContext(UserContext);
@@ -95,6 +117,7 @@ const HelloWorldContext = ({ props }: any) => {
     EntityId: 0,
     EventAgenda: "",
     Overview: "",
+    Status: "",
   });
   const [richTextValues, setRichTextValues] = React.useState<{ [key: string]: string }>({});
   const [levels, setLevel] = React.useState([]);
@@ -106,7 +129,7 @@ const HelloWorldContext = ({ props }: any) => {
       "MainComponentURl": `${siteUrl}/SitePages/Settings.aspx`
     },
     {
-      "ChildComponent": "Add-Event test",
+      "ChildComponent": "Add-Event",
       "ChildComponentURl": `${siteUrl}/SitePages/EventMaster.aspx`
     }
   ]
@@ -308,7 +331,12 @@ const HelloWorldContext = ({ props }: any) => {
     if (!valid && (EventDate && RegistrationDueDate && new Date(RegistrationDueDate).getTime() > new Date(EventDate).getTime())) {
       Swal.fire('Registration date cannot be later than the event date.');
     } else if (!valid && (EventDate && new Date(EventDate).getTime() < new Date().getTime())) {
-      Swal.fire('Event date cannot be earlier than today.');
+      if(hidesavasdraft === 'true'){
+        valid = true;
+      }else{
+        Swal.fire('Event date cannot be earlier than today.');
+      }
+     
     }
     else if (!valid && (RegistrationDueDate && new Date(RegistrationDueDate).getTime() < new Date().getTime())) {
       Swal.fire('Registration date cannot be earlier than today.');
@@ -378,7 +406,7 @@ const HelloWorldContext = ({ props }: any) => {
               Overview: formData.Overview,
               EventAgenda: formData.EventAgenda,
               EntityId: Number(formData.EntityId),
-              Status: "Submitted",
+              Status: formData.Status,
               RegistrationDueDate: RegistrationDueDate,
               EventDate: eventDate,
               AuthorId: currentUser.Id,
@@ -1000,6 +1028,7 @@ const HelloWorldContext = ({ props }: any) => {
           EntityId: Number(setEventById[0].EntityId),
           RegistrationDueDate: RegistrationDueDate,
           EventDate: eventDate,
+          Status : setEventById[0].Status
 
         }
         const initialContent = getDescription(setEventById[0].description);

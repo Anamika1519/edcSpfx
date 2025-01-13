@@ -419,7 +419,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
         userListSP = await sp.web.lists
           .getByTitle("User Information List")
           .items
-          .select("ID", "Title", "EMail", "Department", "JobTitle", "Picture", "MobilePhone", "WorkPhone", "Name")
+          .select("*", "ID", "Title", "EMail", "Department", "JobTitle", "Picture", "MobilePhone", "WorkPhone", "Name")
           .filter(strfilter)
           .orderBy("Id", false)
           .top(4)
@@ -427,7 +427,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
         let userrr = await sp.web.lists
           .getByTitle("User Information List")
           .items
-          .select("ID", "Title", "EMail", "Department", "JobTitle", "Picture", "MobilePhone", "WorkPhone", "Name")
+          .select("ID", "Title", "*", "EMail", "Department", "JobTitle", "Picture", "MobilePhone", "WorkPhone", "Name")
           .filter(`EMail ne null and ID ne ${currentUser.Id} and ContentType eq 'Person'`)
           .orderBy("Id", false)
           .top(16 - userListSP.length)
@@ -435,7 +435,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
         let userrrall = await sp.web.lists
           .getByTitle("User Information List")
           .items
-          .select("ID", "Title", "EMail", "Department", "JobTitle", "Picture", "MobilePhone", "WorkPhone", "Name")
+          .select("ID", "Title", "*", "EMail", "Department", "JobTitle", "Picture", "MobilePhone", "WorkPhone", "Name")
           .filter(`EMail ne null and ID ne ${currentUser.Id} and ContentType eq 'Person'`)
           .orderBy("Id", false)
           .top(5000)
@@ -592,6 +592,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
       });
 
       // Wait for all user details to be fetched
+      sethandlesearch(false);
       await Promise.all(userDetailsPromises);
       // Update the state with the fetched data
       setFollowStatus(initialFollowStatus);
@@ -672,7 +673,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
       let ListuserListSP = await sp.web.lists
         .getByTitle("User Information List")
         .items
-        .select("ID", "Title", "EMail", "Department", "JobTitle", "Picture", "MobilePhone", "WorkPhone", "Name")
+        .select("ID", "Title", "EMail", "*", "Department", "JobTitle", "Picture", "MobilePhone", "WorkPhone", "Name")
         .filter(`ContentType eq 'Person' and EMail ne null`)
         .orderBy("Id", false)
         .top(4999)
@@ -999,7 +1000,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
     let ListuserListSP = await sp.web.lists
       .getByTitle("User Information List")
       .items
-      .select("ID", "Title", "EMail", "Department", "JobTitle", "Picture", "MobilePhone", "WorkPhone", "Name")
+      .select("ID", "Title", "EMail", "*", "Department", "JobTitle", "Picture", "MobilePhone", "WorkPhone", "Name")
       .filter(`ContentType eq 'Person' and EMail ne null`)
       .orderBy("Id", false)
       .top(4999)
@@ -1055,7 +1056,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
     setIsOpen(!isOpen);
 
   };
-  const copyToClipboard = (e?:any, email?: String) => {
+  const copyToClipboard = (e?: any, email?: String) => {
     e?.preventDefault();
     const link = `${email}`;
     navigator.clipboard.writeText(link)
@@ -1092,7 +1093,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
       let Allusersnew = await sp.web.lists
         .getByTitle("User Information List")
         .items
-        .select("ID", "Title", "EMail", "Department", "JobTitle", "Picture", "MobilePhone", "WorkPhone", "Name")
+        .select("ID", "Title", "EMail", "*", "Department", "JobTitle", "Picture", "MobilePhone", "WorkPhone", "Name")
         .filter(`ContentType eq 'Person' and startswith(Title, '${txtSearch}')`)
         .orderBy("ID", false).top(16)
         ();
@@ -1349,8 +1350,8 @@ const CorporateDirectoryContext = ({ props }: any) => {
     event.preventDefault()
     event.stopImmediatePropagation()
 
-
-    setItemsToShow(itemsToShow + 15);
+    sethandlesearch(true);
+    setItemsToShow(itemsToShow + 16);
     fetchUserInformationList("loadmore") // Increase the number by 8
   };
 
@@ -1632,33 +1633,13 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                     <a style={{ position: "relative" }}>
 
-                                      <img
 
-                                        src={require("../assets/calling.png")}
-
-                                        className="alignright"
-
-                                        onClick={() =>
-
-                                          window.open(
-
-                                            `https://teams.microsoft.com/l/call/0/0?users=${item.EMail}`,
-
-                                            "_blank"
-
-                                          )
-
-                                        }
-
-                                        alt="Call"
-
-                                      />
-                                      {/* {item.Picture != null ?
+                                      {item.Picture != null && item.SPSPicturePlaceholderState == 0 ?
                                         <img
                                           src={
-                                            //item.Picture != null ? 
+
                                             `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item.EMail}`
-                                            //: require("../assets/users.jpg")
+
                                           }
                                           className="rounded-circlecss img-thumbnail
                                   avatar-xl"
@@ -1667,38 +1648,57 @@ const CorporateDirectoryContext = ({ props }: any) => {
                                         />
                                         :
                                         item.EMail !== null &&
-                                        <Avatar sx={{ bgcolor: 'primary.main', width: 40, height: 40 }}>
-                                          {`${item.EMail.split('.')[0].charAt(0)}${item.EMail.split('.')[1].charAt(0)}`.toUpperCase()}
-                                        </Avatar>
-                                      } */}
-                                      {item.EMail !== null &&
                                         <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circlecss img-thumbnail
                                   avatar-xl">
                                           {`${item.EMail.split('.')[0].charAt(0)}${item.EMail.split('.')[1].charAt(0)}`.toUpperCase()}
-                                        </Avatar>}
-                                    
+                                        </Avatar>
+                                      }
 
-                                   
+                                      {/* {item.EMail !== null &&
+                                        <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circlecss img-thumbnail
+                                  avatar-xl">
+                                          {`${item.EMail.split('.')[0].charAt(0)}${item.EMail.split('.')[1].charAt(0)}`.toUpperCase()}
+                                        </Avatar>} */}
+
+
+
                                     </a>
                                     <p>
 
-<img style={{ cursor: "pointer" }}
+                                      <img style={{ cursor: "pointer" }}
 
-  src={pinStatus[item.ID] ? require("../assets/noun-pin-7368310.png") : require("../assets/unpin.png")}
+                                        src={pinStatus[item.ID] ? require("../assets/noun-pin-7368310.png") : require("../assets/unpin.png")}
 
-  className="alignrightpin"
+                                        className="alignrightpin"
 
-  onClick={(e) => iconenable ? togglePin(e, item) : ""}
+                                        onClick={(e) => iconenable ? togglePin(e, item) : ""}
 
-  //onClick={(!loadingUsers[item.ID]) ? (e) => togglePin(e, item) : undefined}
+                                        //onClick={(!loadingUsers[item.ID]) ? (e) => togglePin(e, item) : undefined}
 
-  alt="pin"
+                                        alt="pin"
 
-/>
+                                      />
 
 
 
-</p>
+                                    </p>
+                                    <p> <img src={require("../assets/calling.png")} className="alignright"
+
+                                      onClick={() =>
+
+                                        window.open(
+
+                                          `https://teams.microsoft.com/l/call/0/0?users=${item.EMail}`,
+
+                                          "_blank"
+
+                                        )
+
+                                      }
+
+                                      alt="Call"
+
+                                    /></p>
                                     <span className="mt-2 mb-1" data-tooltip={item.Title}>
 
                                       <h4
@@ -1728,29 +1728,29 @@ const CorporateDirectoryContext = ({ props }: any) => {
                                       </h4>
 
                                     </span>
-<span style={{display:'flex', gap:'5px'}} className="newsvg">  {IconComponent && <IconComponent  size={14} onClick={(e) => copyToClipboard(e, item.EMail)} />}
+                                    <span style={{ display: 'flex', gap: '5px' }} className="newsvg">  {IconComponent && <IconComponent size={14} onClick={(e) => copyToClipboard(e, item.EMail)} />}
 
 
-                                    <span data-tooltip={item.EMail}>
-                                  
-                                      <p className="text-muted hovertext" style={{
-                                        whiteSpace: 'nowrap',
-                                        overflow: 'hidden', fontSize: "14px", height: '30px',
-                                        textOverflow: 'ellipsis',width:'200px'
-                                      }} onClick={() =>
+                                      <span data-tooltip={item.EMail}>
 
-                                        openEmailDialog(item.EMail)
+                                        <p className="text-muted hovertext mb-0 w200" style={{
+                                          whiteSpace: 'nowrap',
+                                          overflow: 'hidden', fontSize: "14px", height: '25px',
+                                          textOverflow: 'ellipsis'
+                                        }} onClick={() =>
 
-                                      } >
-                                        
-                                        {/* <Link size={14} /> */}
-                                        {/* onClick={(e) => copyToClipboard(e, item.EMail)} */}
-                                        {truncateText(item.EMail && item.EMail, 28)}
+                                          openEmailDialog(item.EMail)
 
-                                      </p>
-                                      {copySuccess && <span className="text-success font-12">{copySuccess}</span>}
+                                        } >
 
-                                      {/* <span
+                                          {/* <Link size={14} /> */}
+                                          {/* onClick={(e) => copyToClipboard(e, item.EMail)} */}
+                                          {truncateText(item.EMail && item.EMail, 28)}
+
+                                        </p>
+                                        {copySuccess && <span style={{ float: 'left', width: '130px', borderRadius: '5px', left: '30px', padding: '5px', position: 'absolute', zIndex: '999' }} className="badge bg-success mb-2 font-12">{copySuccess}</span>}
+
+                                        {/* <span
 
                                       className="pl-2"
 
@@ -1777,7 +1777,7 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
                                     </span> */}
 
-                                    </span>
+                                      </span>
                                     </span>
                                     <p className="text-muted"
                                       style={{

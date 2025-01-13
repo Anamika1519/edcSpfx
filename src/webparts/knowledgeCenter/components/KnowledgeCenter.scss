@@ -310,3 +310,7 @@ img, svg {
             height: auto !important;
         }
     }
+
+.mediagallery .modal-dialog{min-width: 80% !important;}
+.mediagallery .modal-body{height: 500px;}
+.mediagallery .modal-header{padding: 0px !important; border: 0px solid #ccc !important;}

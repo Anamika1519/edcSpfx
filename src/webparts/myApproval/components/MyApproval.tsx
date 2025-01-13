@@ -100,7 +100,7 @@ import {
 import DMSMyApprovalAction from "./DMSApprovalAction";
 import { getApprovalListsData } from "../../../APISearvice/BusinessAppsService";
 import DMSMyFolderApprovalAction from "./DMSFolderApprovalAction";
-let actingforuseremail:any
+let actingforuseremail: any
 const MyApprovalContext = ({ props }: any) => {
   const sp: SPFI = getSP();
   const [activeComponent, setActiveComponent] = useState<string>("");
@@ -263,22 +263,22 @@ const MyApprovalContext = ({ props }: any) => {
         "EndDate",
         "Status"
       )
-      .expand("DelegateName", "ActingFor")
-      .filter(`ActingFor/EMail eq '${currentUserEmail}' and Status eq 'Active' and StartDate le '${today}' and EndDate ge '${today}'`)();
+        .expand("DelegateName", "ActingFor")
+        .filter(`ActingFor/EMail eq '${currentUserEmail}' and Status eq 'Active' and StartDate le '${today}' and EndDate ge '${today}'`)();
 
       console.log("delegateListItems myActingfordata", delegateListItems);
 
- // Extract unique ActingFor.Title and EMail values
-const uniqueTitlesAndEmails = [
-  ...new Map(
-    delegateListItems.map((item) => [item.DelegateName?.Title, { title: item.DelegateName?.Title, email: item.DelegateName?.EMail }])
-  ).values(),
-];
+      // Extract unique ActingFor.Title and EMail values
+      const uniqueTitlesAndEmails = [
+        ...new Map(
+          delegateListItems.map((item) => [item.DelegateName?.Title, { title: item.DelegateName?.Title, email: item.DelegateName?.EMail }])
+        ).values(),
+      ];
 
-// Set state with unique titles and emails
-setSetActingForUser(uniqueTitlesAndEmails.map((item, index) => ({ id: index.toString(), name: item.title, email: item.email })));
-console.log("setSetActingForUser", actingForUser);
-console.log("uniqueTitlesAndEmails", uniqueTitlesAndEmails);
+      // Set state with unique titles and emails
+      setSetActingForUser(uniqueTitlesAndEmails.map((item, index) => ({ id: index.toString(), name: item.title, email: item.email })));
+      console.log("setSetActingForUser", actingForUser);
+      console.log("uniqueTitlesAndEmails", uniqueTitlesAndEmails);
 
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -288,53 +288,53 @@ console.log("uniqueTitlesAndEmails", uniqueTitlesAndEmails);
   };
 
 
-const getApprovalmasterTasklist = async (value: any , actingfor:any) => {
-  alert(`Status value is ${value} is acting for ${actingfor} in DMS`)
+  const getApprovalmasterTasklist = async (value: any, actingfor: any) => {
+    // alert(`Status value is ${value} is acting for ${actingfor} in DMS`)
 
     try {
       // Retrieve current user email
-const currentUserEmail = currentUserEmailRef.current;
+      const currentUserEmail = currentUserEmailRef.current;
 
-// Fetch the ARGDelegateList items where the current user is in the ActingFor column
-const today = new Date().toISOString(); // Get today's date in YYYY-MM-DD format
-// console.log("today", today);
+      // Fetch the ARGDelegateList items where the current user is in the ActingFor column
+      const today = new Date().toISOString(); // Get today's date in YYYY-MM-DD format
+      // console.log("today", today);
 
-// const delegateListItems = await sp.web.lists.getByTitle('ARGDelegateList').items.select(
-//   "DelegateName/EMail",
-//   "ActingFor/EMail",
-//   "ActingFor/Title",
-//   "StartDate",
-//   "EndDate",
-//   "Status"
-// )
-// .expand("DelegateName", "ActingFor")
-// .filter(`ActingFor/EMail eq '${currentUserEmail}' and Status eq 'Active' and StartDate le '${today}' and EndDate ge '${today}'`)();
+      // const delegateListItems = await sp.web.lists.getByTitle('ARGDelegateList').items.select(
+      //   "DelegateName/EMail",
+      //   "ActingFor/EMail",
+      //   "ActingFor/Title",
+      //   "StartDate",
+      //   "EndDate",
+      //   "Status"
+      // )
+      // .expand("DelegateName", "ActingFor")
+      // .filter(`ActingFor/EMail eq '${currentUserEmail}' and Status eq 'Active' and StartDate le '${today}' and EndDate ge '${today}'`)();
 
-// console.log("delegateListItems", delegateListItems);
+      // console.log("delegateListItems", delegateListItems);
 
-// const additionalFilters = delegateListItems.map((item:any) => `CurrentUser eq '${item.DelegateName.EMail}'`).join(' or ');
-// const combinedFilters = `CurrentUser eq '${currentUserEmail}'${additionalFilters ? ` or (${additionalFilters})` : ''} and FileUID/Status eq '${value}'`;
+      // const additionalFilters = delegateListItems.map((item:any) => `CurrentUser eq '${item.DelegateName.EMail}'`).join(' or ');
+      // const combinedFilters = `CurrentUser eq '${currentUserEmail}'${additionalFilters ? ` or (${additionalFilters})` : ''} and FileUID/Status eq '${value}'`;
 
-// // Fetch items from DMSFileApprovalTaskList based on the combined filters
-// const items2 = await sp.web.lists.getByTitle('DMSFileApprovalTaskList').items.select(
-//   "Log", "CurrentUser", "Remark", "LogHistory", "FileUID/FileUID",
-//   "FileUID/SiteName", "FileUID/DocumentLibraryName", "FileUID/FileName",
-//   "FileUID/RequestNo", "FileUID/Processname", "FileUID/Status",
-//   "FileUID/FolderPath", "FileUID/RequestedBy", "FileUID/Created",
-//   "FileUID/ApproveAction", "MasterApproval/ApprovalType", "MasterApproval/Level",
-//   "MasterApproval/DocumentLibraryName"
-// )
-// .expand("FileUID", "MasterApproval")
-// .filter(combinedFilters)
-// .orderBy("Created", false)
-// .getAll();
+      // // Fetch items from DMSFileApprovalTaskList based on the combined filters
+      // const items2 = await sp.web.lists.getByTitle('DMSFileApprovalTaskList').items.select(
+      //   "Log", "CurrentUser", "Remark", "LogHistory", "FileUID/FileUID",
+      //   "FileUID/SiteName", "FileUID/DocumentLibraryName", "FileUID/FileName",
+      //   "FileUID/RequestNo", "FileUID/Processname", "FileUID/Status",
+      //   "FileUID/FolderPath", "FileUID/RequestedBy", "FileUID/Created",
+      //   "FileUID/ApproveAction", "MasterApproval/ApprovalType", "MasterApproval/Level",
+      //   "MasterApproval/DocumentLibraryName"
+      // )
+      // .expand("FileUID", "MasterApproval")
+      // .filter(combinedFilters)
+      // .orderBy("Created", false)
+      // .getAll();
 
-// console.log(items2, "DMSFileApprovalTaskList");
+      // console.log(items2, "DMSFileApprovalTaskList");
 
 
 
       let arr = [];
-      if(actingfor === ""){
+      if (actingfor === "") {
         const items = await sp.web.lists.getByTitle('DMSFileApprovalTaskList').items.select(
           "Log", "CurrentUser", "Remark"
           , "LogHistory"
@@ -353,25 +353,25 @@ const today = new Date().toISOString(); // Get today's date in YYYY-MM-DD format
           , "MasterApproval/ApprovalType"
           , "MasterApproval/Level"
           , "MasterApproval/DocumentLibraryName"
-  
+
         )
           .expand("FileUID", "MasterApproval")
-          .filter( `(CurrentUser eq '${currentUserEmailRef.current}') and FileUID/Status eq '${value}'`).orderBy("Created", false).getAll();
+          .filter(`(CurrentUser eq '${currentUserEmailRef.current}') and FileUID/Status eq '${value}'`).orderBy("Created", false).getAll();
         console.log(items, "DMSFileApprovalTaskList");
-           items.map( (item) => {
-                if(item.CurrentUser !== currentUserEmailRef.current ){
-                  arr.push(item)
-                   alert(`Delegate user ${item.CurrentUser} is acting for ${item.FileUID.FileName}`)
-                }
-  
-            });
+        items.map((item) => {
+          if (item.CurrentUser !== currentUserEmailRef.current) {
+            arr.push(item)
+            // alert(`Delegate user ${item.CurrentUser} is acting for ${item.FileUID.FileName}`)
+          }
+
+        });
         const updatedItems = await Promise.all(items.map(async (item) => {
           const requestedbyuserTitle = await getUserTitleByEmail(item?.FileUID?.RequestedBy);
           return { ...item, RequestedByTitle: requestedbyuserTitle };
         }));
         setMylistdata(updatedItems);
       }
-      if(actingfor !== ""){
+      if (actingfor !== "") {
         const items = await sp.web.lists.getByTitle('DMSFileApprovalTaskList').items.select(
           "Log", "CurrentUser", "Remark"
           , "LogHistory"
@@ -390,18 +390,18 @@ const today = new Date().toISOString(); // Get today's date in YYYY-MM-DD format
           , "MasterApproval/ApprovalType"
           , "MasterApproval/Level"
           , "MasterApproval/DocumentLibraryName"
-  
+
         )
           .expand("FileUID", "MasterApproval")
-          .filter( `(CurrentUser eq '${actingfor}') and FileUID/Status eq '${value}'`).orderBy("Created", false).getAll();
+          .filter(`(CurrentUser eq '${actingfor}') and FileUID/Status eq '${value}'`).orderBy("Created", false).getAll();
         console.log(items, "DMSFileApprovalTaskList");
-           items.map( (item) => {
-                if(item.CurrentUser !== currentUserEmailRef.current ){
-                  arr.push(item)
-                   alert(`Delegate user ${item.CurrentUser} is acting for ${item.FileUID.FileName}`)
-                }
-  
-            });
+        items.map((item) => {
+          if (item.CurrentUser !== currentUserEmailRef.current) {
+            arr.push(item)
+            // alert(`Delegate user ${item.CurrentUser} is acting for ${item.FileUID.FileName}`)
+          }
+
+        });
         const updatedItems = await Promise.all(items.map(async (item) => {
           const requestedbyuserTitle = await getUserTitleByEmail(item?.FileUID?.RequestedBy);
           return { ...item, RequestedByTitle: requestedbyuserTitle };
@@ -463,7 +463,7 @@ const today = new Date().toISOString(); // Get today's date in YYYY-MM-DD format
       //  console.log(CombinedItems , "CombinedItems")
       // setMylistdata(CombinedItems);
       // setMylistdata(updatedItems);
-      
+
 
       // return arr = CombinedItems
 
@@ -477,7 +477,7 @@ const today = new Date().toISOString(); // Get today's date in YYYY-MM-DD format
   const getCurrrentuser = async () => {
     const userdata = await sp.web.currentUser();
     currentUserEmailRef.current = userdata.Email;
-    getApprovalmasterTasklist('Pending' , '');
+    getApprovalmasterTasklist('Pending', '');
     myActingfordata()
   };
   React.useEffect(() => {
@@ -505,7 +505,7 @@ const today = new Date().toISOString(); // Get today's date in YYYY-MM-DD format
     // console.log(items, "items");
   };
   const getTaskItemsbyID2 = async (e: any, itemid: any) => {
-    alert("Folder")
+    // alert("Folder")
     // currentItemID = itemid
     currentItemID = itemid
     setActiveComponent('DMS Folder Approval')
@@ -626,9 +626,9 @@ const today = new Date().toISOString(); // Get today's date in YYYY-MM-DD format
     setMyApprovalsDataAll(MyApprovaldata);
     //}
     //else if(activeTab == "Automation"){
-      let Automationdata = [...Automationdata1].sort((a, b) => {
-        return a.Created === b.Created ? 0 : a.Created ? -1 : 1;
-      });
+    let Automationdata = Automationdata1.sort((a, b) => {
+      return a.Created === b.Created ? 0 : a.Created ? -1 : 1;
+    });
     setMyApprovalsDataAutomation(Automationdata);
 
     console.log("Automationdata", Automationdata);
@@ -640,29 +640,29 @@ const today = new Date().toISOString(); // Get today's date in YYYY-MM-DD format
   //   setAnnouncementData(await getDiscussionFilterAll(sp, optionFilter));
 
   // };
-  const handleStatusChange = async (name: string, value: string , actingfor:any) => {
+  const handleStatusChange = async (name: string, value: string, actingfor: any) => {
     actingforuseremail = actingfor
-    alert(`Status value is ${value} is acting for ${actingfor}`)
-     if (actingforuseremail === undefined || actingforuseremail === null || actingforuseremail === "") {
-      alert("acting for is undefined")
-      }
+    // alert(`Status value is ${value} is acting for ${actingfor}`)
+    if (actingforuseremail === undefined || actingforuseremail === null || actingforuseremail === "") {
+      // alert("acting for is undefined")
+    }
 
     if (value === "") {
       // Show all records if no type is selected
       console.log("No status selected");
     } else {
       // Filter records based on the selected type
-      let MyApprovaldata = await getMyApproval(sp, value , actingfor);
-      let Automationdata = await getApprovalListsData(sp, value , actingfor);
+      let MyApprovaldata = await getMyApproval(sp, value, actingfor);
+      let Automationdata = await getApprovalListsData(sp, value, actingfor);
       // let MyDMSAPPROVALDATA:any = await MyDMSAPPROVALDATASTATUS(sp, value)
-      let MyDMSAPPROVALDATA: any = await getApprovalmasterTasklist(value , actingfor)
+      let MyDMSAPPROVALDATA: any = await getApprovalmasterTasklist(value, actingfor)
       console.log("MyDMSAPPROVALDATA", MyDMSAPPROVALDATA)
       setMyApprovalsDataAll(MyApprovaldata);
       setMyApprovalsDataAutomation(Automationdata);
       if (activeTab == "Intranet") {
         setMyApprovalsData(MyApprovaldata);
       } else if (activeTab == "DMS") {
-        alert(value)
+        // alert(value)
         setMyApprovalsData(MyDMSAPPROVALDATA);
       } else if (activeTab == "Automation") {
         setMyApprovalsData(Automationdata);
@@ -708,9 +708,9 @@ const today = new Date().toISOString(); // Get today's date in YYYY-MM-DD format
     const filteredData = data?.filter((item, index) => {
       return (
         (filters.SNo === "" || String(index + 1).includes(filters.SNo)) &&
-        (filters.Title === "" ||
-          (item.Title != undefined &&
-            item.Title.toLowerCase().includes(filters.Title.toLowerCase()))) &&
+        // (filters.Title === "" ||
+        //   (activeTab == "Intranet" ? item.Title != undefined : item.ApprovalTitle != undefined) &&
+        // (activeTab == "Intranet" ? item.Title : item.ApprovalTitle).toLowerCase().includes(filters.Title.toLowerCase()))
         (filters.ProcessName === "" ||
           (item.ProcessName != undefined &&
             item.ProcessName.toLowerCase().includes(
@@ -731,6 +731,14 @@ const today = new Date().toISOString(); // Get today's date in YYYY-MM-DD format
           new Date(item.Created)
             .toLocaleDateString()
             .startsWith(filters.RequestedDate + "")) &&
+            (filters.Title === "" ||
+              (activeTab == "Automation"
+                ? item?.ApprovalTitle?.toLowerCase().includes(
+                  filters.Title.toLowerCase()
+                )
+                : item?.Title?.toLowerCase().includes(
+                  filters.Title.toLowerCase()
+                ))) &&
         (filters.RequestedBy === "" ||
           (activeTab == "Automation"
             ? item?.Author?.Title?.toLowerCase().includes(
@@ -978,10 +986,10 @@ const today = new Date().toISOString(); // Get today's date in YYYY-MM-DD format
       //window.location.href = `${Item.RedirectionLink}`;
     } else if (activeTab == "Intranet") {
       setContentData(await getDataByID(sp, Item?.ContentId, Item?.ContentName));
-    
-      if (Item?.ProcessName !== "Blog"){
+
+      if (Item?.ProcessName !== "Blog") {
         setisActivedata(true);
-      }  
+      }
       if (Item?.ProcessName) {
         switch (Item?.ProcessName) {
           case "Announcement":
@@ -990,7 +998,7 @@ const today = new Date().toISOString(); // Get today's date in YYYY-MM-DD format
               `${siteUrl}/SitePages/AddAnnouncement.aspx` +
               "?requestid=" +
               Item?.Id +
-            "&mode=" + mode + "&page=MyApproval";
+              "&mode=" + mode + "&page=MyApproval";
             break;
           case "News":
             sessionkey = "announcementId";
@@ -998,7 +1006,7 @@ const today = new Date().toISOString(); // Get today's date in YYYY-MM-DD format
               `${siteUrl}/SitePages/AddAnnouncement.aspx` +
               "?requestid=" +
               Item?.Id +
-            "&mode=" + mode + "&page=MyApproval";
+              "&mode=" + mode + "&page=MyApproval";
             break;
           case "Event":
             sessionkey = "EventId";
@@ -1006,7 +1014,7 @@ const today = new Date().toISOString(); // Get today's date in YYYY-MM-DD format
               `${siteUrl}/SitePages/EventMasterForm.aspx` +
               "?requestid=" +
               Item?.Id +
-            "&mode=" + mode + "&page=MyApproval";
+              "&mode=" + mode + "&page=MyApproval";
             break;
           case "Media":
             sessionkey = "mediaId";
@@ -1014,7 +1022,7 @@ const today = new Date().toISOString(); // Get today's date in YYYY-MM-DD format
               `${siteUrl}/SitePages/MediaGalleryForm.aspx` +
               "?requestid=" +
               Item?.Id +
-            "&mode=" + mode + "&page=MyApproval";
+              "&mode=" + mode + "&page=MyApproval";
             break;
           case "Blog":
             sessionkey = "blogId";
@@ -1089,11 +1097,11 @@ const today = new Date().toISOString(); // Get today's date in YYYY-MM-DD format
               </div>
 
               <div className="col-md-4">
-              <div className="row">
-                  <div style={{ textAlign: "right", padding:'0px' }} className="col-md-4 newtexleft">
+                <div className="row">
+                  <div style={{ textAlign: "right", padding: '0px' }} className="col-md-4 newtexleft">
                     <div className="mb-0">
                       <label htmlFor="Status" className="form-label newfil mt-0 mb-0">
-                      <svg fill="#3c3c3c" width="23px" height="36px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" stroke="#b3b3b3"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M12,25l6.67,6.67a1,1,0,0,0,.7.29.91.91,0,0,0,.39-.08,1,1,0,0,0,.61-.92V13.08L31.71,1.71A1,1,0,0,0,31.92.62,1,1,0,0,0,31,0H1A1,1,0,0,0,.08.62,1,1,0,0,0,.29,1.71L11.67,13.08V24.33A1,1,0,0,0,12,25ZM3.41,2H28.59l-10,10a1,1,0,0,0-.3.71V28.59l-4.66-4.67V12.67a1,1,0,0,0-.3-.71Z"></path> </g></svg>
+                        <svg fill="#3c3c3c" width="23px" height="36px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" stroke="#b3b3b3"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M12,25l6.67,6.67a1,1,0,0,0,.7.29.91.91,0,0,0,.39-.08,1,1,0,0,0,.61-.92V13.08L31.71,1.71A1,1,0,0,0,31.92.62,1,1,0,0,0,31,0H1A1,1,0,0,0,.08.62,1,1,0,0,0,.29,1.71L11.67,13.08V24.33A1,1,0,0,0,12,25ZM3.41,2H28.59l-10,10a1,1,0,0,0-.3.71V28.59l-4.66-4.67V12.67a1,1,0,0,0-.3-.71Z"></path> </g></svg>
                       </label>
                     </div>
                   </div>
@@ -1102,7 +1110,7 @@ const today = new Date().toISOString(); // Get today's date in YYYY-MM-DD format
                       id="Type"
                       name="Type"
                       onChange={(e) =>
-                        handleStatusChange(e.target.name,  e.target.value , actingforuseremail)
+                        handleStatusChange(e.target.name, e.target.value, actingforuseremail)
                       }
                       className="form-select"
                     >
@@ -1125,21 +1133,21 @@ const today = new Date().toISOString(); // Get today's date in YYYY-MM-DD format
                   </div>
                   <div className="col-md-8">
                     <select
-        id="Type"
-        name="Type"
-        onChange={(e) => handleStatusChange(e.target.name, 'Pending' , e.target.value)}
-        className="form-select"
-        disabled={loading || actingForUser.length === 0}
-      >
-        <option value="">
-          {loading ? "Loading..." : actingForUser.length === 0 ? "No data" : "Select an option"}
-        </option>
-        {actingForUser.map((item, index) => (
-          <option key={index} value={item.email}>
-            {item.name}
-          </option>
-        ))}
-      </select>
+                      id="Type"
+                      name="Type"
+                      onChange={(e) => handleStatusChange(e.target.name, 'Pending', e.target.value)}
+                      className="form-select"
+                      disabled={loading || actingForUser.length === 0}
+                    >
+                      <option value="">
+                        {loading ? "Loading..." : actingForUser.length === 0 ? "No data" : "Select an option"}
+                      </option>
+                      {actingForUser.map((item, index) => (
+                        <option key={index} value={item.email}>
+                          {item.name}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                 </div>
 
@@ -1220,84 +1228,44 @@ const today = new Date().toISOString(); // Get today's date in YYYY-MM-DD format
                           <div className="table-responsive pt-0">
                             {activeTab === "Intranet" ||
                               activeTab === "Automation" ? (
-                               
-                                <>
-                                                            <table
-                                className="mtbalenew mt-0 table-centered table-nowrap table-borderless mb-0"
-                                style={{ position: "relative" }}
-                              >
-                                <thead>
-                                  <tr>
-                                    <th
-                                      style={{
-                                        borderBottomLeftRadius: "0px",
 
-                                        minWidth: "40px",
+                              <>
+                                <table
+                                  className="mtbalenew mt-0 table-centered table-nowrap table-borderless mb-0"
+                                  style={{ position: "relative" }}
+                                >
+                                  <thead>
+                                    <tr>
+                                      <th
+                                        style={{
+                                          borderBottomLeftRadius: "0px",
 
-                                        maxWidth: "40px",
+                                          minWidth: "40px",
 
-                                        borderTopLeftRadius: "0px",
-                                      }}
-                                    >
-                                      <div
-                                        className="d-flex pb-2"
-                                        style={{ justifyContent: "space-evenly" }}
+                                          maxWidth: "40px",
+
+                                          borderTopLeftRadius: "0px",
+                                        }}
                                       >
-                                        <span>S.No.</span>
-
-                                        <span
-                                          onClick={() => handleSortChange("SNo")}
-                                        >
-                                          <FontAwesomeIcon icon={faSort} />
-                                        </span>
-                                      </div>
-
-                                      <div className="bd-highlight">
-                                        <input
-                                          type="text"
-                                          placeholder="index"
-                                          onChange={(e) =>
-                                            handleFilterChange(e, "SNo")
-                                          }
-                                          onKeyDown={(e) => {
-                                            if (e.key === 'Enter' && !e.shiftKey) {
-                                              e.preventDefault(); // Prevents the new line in textarea
-                                            }
-                                          }}
-                                          className="inputcss"
-                                          style={{ width: "100%" }}
-                                        />
-                                      </div>
-                                    </th>
-
-                                    <th
-                                      style={{
-                                        minWidth: "80px",
-                                        maxWidth: "80px",
-                                      }}
-                                    >
-                                      <div className="d-flex flex-column bd-highlight ">
                                         <div
                                           className="d-flex pb-2"
                                           style={{ justifyContent: "space-evenly" }}
                                         >
-                                          <span>Request ID</span>
+                                          <span>S.No.</span>
 
                                           <span
-                                            onClick={() =>
-                                              handleSortChange("RequestID")
-                                            }
+                                            onClick={() => handleSortChange("SNo")}
                                           >
                                             <FontAwesomeIcon icon={faSort} />
                                           </span>
                                         </div>
 
-                                        <div className=" bd-highlight">
+                                        <div className="bd-highlight">
                                           <input
                                             type="text"
-                                            placeholder="Filter by Request ID"
+                                            placeholder="index"
                                             onChange={(e) =>
-                                              handleFilterChange(e, "RequestID")
+                                              handleFilterChange(e, "SNo")
                                             }
                                             onKeyDown={(e) => {
                                               if (e.key === 'Enter' && !e.shiftKey) {
@@ -1308,36 +1276,36 @@ const today = new Date().toISOString(); // Get today's date in YYYY-MM-DD format
                                             style={{ width: "100%" }}
                                           />
                                         </div>
-                                      </div>
-                                    </th>
-                                    {activeTab == "Intranet" && (
+                                      </th>
+
                                       <th
                                         style={{
-                                          minWidth: "120px",
-                                          maxWidth: "120px",
+                                          minWidth: "80px",
+                                          maxWidth: "80px",
                                         }}
                                       >
                                         <div className="d-flex flex-column bd-highlight ">
                                           <div
-                                            className="d-flex  pb-2"
+                                            className="d-flex pb-2"
                                             style={{ justifyContent: "space-evenly" }}
                                           >
-                                            <span>Title</span>{" "}
+                                            <span>Request ID</span>
+
                                             <span
                                               onClick={() =>
-                                                handleSortChange("Title")
+                                                handleSortChange("RequestID")
                                               }
                                             >
-                                              <FontAwesomeIcon icon={faSort} />{" "}
+                                              <FontAwesomeIcon icon={faSort} />
                                             </span>
                                           </div>
 
                                           <div className=" bd-highlight">
                                             <input
                                               type="text"
-                                              placeholder="Filter by Title"
+                                              placeholder="Filter by Request ID"
                                               onChange={(e) =>
-                                                handleFilterChange(e, "Title")
+                                                handleFilterChange(e, "RequestID")
                                               }
                                               onKeyDown={(e) => {
                                                 if (e.key === 'Enter' && !e.shiftKey) {
@@ -1350,471 +1318,511 @@ const today = new Date().toISOString(); // Get today's date in YYYY-MM-DD format
                                           </div>
                                         </div>
                                       </th>
-                                    )}
-                                    <th
-                                      style={{
-                                        minWidth: "120px",
-                                        maxWidth: "120px",
-                                      }}
-                                    >
-                                      <div className="d-flex flex-column bd-highlight ">
-                                        <div
-                                          className="d-flex  pb-2"
-                                          style={{ justifyContent: "space-evenly" }}
+                                      {/* {activeTab == "Intranet" && ( */}
+                                        <th
+                                          style={{
+                                            minWidth: "120px",
+                                            maxWidth: "120px",
+                                          }}
                                         >
-                                          <span>Process Name</span>{" "}
-                                          <span
-                                            onClick={() =>
-                                              handleSortChange("ProcessName")
-                                            }
+                                          <div className="d-flex flex-column bd-highlight ">
+                                            <div
+                                              className="d-flex  pb-2"
+                                              style={{ justifyContent: "space-evenly" }}
+                                            >
+                                              <span>Title</span>{" "}
+                                              <span
+                                                onClick={() =>
+                                                  handleSortChange("Title")
+                                                }
+                                              >
+                                                <FontAwesomeIcon icon={faSort} />{" "}
+                                              </span>
+                                            </div>
+
+                                            <div className=" bd-highlight">
+                                              <input
+                                                type="text"
+                                                placeholder="Filter by Title"
+                                                onChange={(e) =>
+                                                  handleFilterChange(e, "Title")
+                                                }
+                                                onKeyDown={(e) => {
+                                                  if (e.key === 'Enter' && !e.shiftKey) {
+                                                    e.preventDefault(); // Prevents the new line in textarea
+                                                  }
+                                                }}
+                                                className="inputcss"
+                                                style={{ width: "100%" }}
+                                              />
+                                            </div>
+                                          </div>
+                                        </th>
+                                      {/* )} */}
+                                      <th
+                                        style={{
+                                          minWidth: "120px",
+                                          maxWidth: "120px",
+                                        }}
+                                      >
+                                        <div className="d-flex flex-column bd-highlight ">
+                                          <div
+                                            className="d-flex  pb-2"
+                                            style={{ justifyContent: "space-evenly" }}
                                           >
-                                            <FontAwesomeIcon icon={faSort} />{" "}
-                                          </span>
-                                        </div>
-
-                                        <div className=" bd-highlight">
-                                          <input
-                                            type="text"
-                                            placeholder="Filter by Process Name"
-                                            onChange={(e) =>
-                                              handleFilterChange(e, "ProcessName")
-                                            }
-                                            onKeyDown={(e) => {
-                                              if (e.key === 'Enter' && !e.shiftKey) {
-                                                e.preventDefault(); // Prevents the new line in textarea
+                                            <span>Process Name</span>{" "}
+                                            <span
+                                              onClick={() =>
+                                                handleSortChange("ProcessName")
                                               }
-                                            }}
-                                            className="inputcss"
-                                            style={{ width: "100%" }}
-                                          />
-                                        </div>
-                                      </div>
-                                    </th>
+                                            >
+                                              <FontAwesomeIcon icon={faSort} />{" "}
+                                            </span>
+                                          </div>
 
-                                    <th
-                                      style={{
-                                        minWidth: "100px",
-                                        maxWidth: "100px",
-                                      }}
-                                    >
-                                      <div className="d-flex flex-column bd-highlight ">
-                                        <div
-                                          className="d-flex  pb-2"
-                                          style={{ justifyContent: "space-evenly" }}
-                                        >
-                                          <span>Requested By</span>{" "}
-                                          <span
-                                            onClick={() =>
-                                              handleSortChange("RequestedBy")
-                                            }
+                                          <div className=" bd-highlight">
+                                            <input
+                                              type="text"
+                                              placeholder="Filter by Process Name"
+                                              onChange={(e) =>
+                                                handleFilterChange(e, "ProcessName")
+                                              }
+                                              onKeyDown={(e) => {
+                                                if (e.key === 'Enter' && !e.shiftKey) {
+                                                  e.preventDefault(); // Prevents the new line in textarea
+                                                }
+                                              }}
+                                              className="inputcss"
+                                              style={{ width: "100%" }}
+                                            />
+                                          </div>
+                                        </div>
+                                      </th>
+
+                                      <th
+                                        style={{
+                                          minWidth: "100px",
+                                          maxWidth: "100px",
+                                        }}
+                                      >
+                                        <div className="d-flex flex-column bd-highlight ">
+                                          <div
+                                            className="d-flex  pb-2"
+                                            style={{ justifyContent: "space-evenly" }}
                                           >
-                                            <FontAwesomeIcon icon={faSort} />{" "}
-                                          </span>
-                                        </div>
-
-                                        <div className=" bd-highlight">
-                                          <input
-                                            type="text"
-                                            placeholder="Filter by Requested By"
-                                            onChange={(e) =>
-                                              handleFilterChange(e, "RequestedBy")
-                                            }
-                                            onKeyDown={(e) => {
-                                              if (e.key === 'Enter' && !e.shiftKey) {
-                                                e.preventDefault(); // Prevents the new line in textarea
+                                            <span>Requested By</span>{" "}
+                                            <span
+                                              onClick={() =>
+                                                handleSortChange("RequestedBy")
                                               }
-                                            }}
-                                            className="inputcss"
-                                            style={{ width: "100%" }}
-                                          />
-                                        </div>
-                                      </div>
-                                    </th>
+                                            >
+                                              <FontAwesomeIcon icon={faSort} />{" "}
+                                            </span>
+                                          </div>
 
-                                    <th
-                                      style={{
-                                        minWidth: "80px",
-                                        maxWidth: "80px",
-                                      }}
-                                    >
-                                      <div className="d-flex flex-column bd-highlight ">
-                                        <div
-                                          className="d-flex  pb-2"
-                                          style={{ justifyContent: "space-evenly" }}
-                                        >
-                                          <span>Requested Date</span>{" "}
-                                          {/* <span
+                                          <div className=" bd-highlight">
+                                            <input
+                                              type="text"
+                                              placeholder="Filter by Requested By"
+                                              onChange={(e) =>
+                                                handleFilterChange(e, "RequestedBy")
+                                              }
+                                              onKeyDown={(e) => {
+                                                if (e.key === 'Enter' && !e.shiftKey) {
+                                                  e.preventDefault(); // Prevents the new line in textarea
+                                                }
+                                              }}
+                                              className="inputcss"
+                                              style={{ width: "100%" }}
+                                            />
+                                          </div>
+                                        </div>
+                                      </th>
+
+                                      <th
+                                        style={{
+                                          minWidth: "80px",
+                                          maxWidth: "80px",
+                                        }}
+                                      >
+                                        <div className="d-flex flex-column bd-highlight ">
+                                          <div
+                                            className="d-flex  pb-2"
+                                            style={{ justifyContent: "space-evenly" }}
+                                          >
+                                            <span>Requested Date</span>{" "}
+                                            {/* <span
                                             onClick={() =>
                                               handleSortChange("RequestedDate")
                                             }
                                           >
                                             <FontAwesomeIcon icon={faSort} />{" "}
                                           </span> */}
-                                        </div>
+                                          </div>
 
-                                        <div className=" bd-highlight">
-                                          <input
-                                            type="text"
-                                            placeholder="Filter by Requested Date"
-                                            onChange={(e) =>
-                                              handleFilterChange(
-                                                e,
-                                                "RequestedDate"
-                                              )
-                                            }
-                                            onKeyDown={(e) => {
-                                              if (e.key === 'Enter' && !e.shiftKey) {
-                                                e.preventDefault(); // Prevents the new line in textarea
+                                          <div className=" bd-highlight">
+                                            <input
+                                              type="text"
+                                              placeholder="Filter by Requested Date"
+                                              onChange={(e) =>
+                                                handleFilterChange(
+                                                  e,
+                                                  "RequestedDate"
+                                                )
                                               }
-                                            }}
-                                            className="inputcss"
-                                            style={{ width: "100%" }}
-                                          />
+                                              onKeyDown={(e) => {
+                                                if (e.key === 'Enter' && !e.shiftKey) {
+                                                  e.preventDefault(); // Prevents the new line in textarea
+                                                }
+                                              }}
+                                              className="inputcss"
+                                              style={{ width: "100%" }}
+                                            />
+                                          </div>
                                         </div>
-                                      </div>
-                                    </th>
+                                      </th>
 
-                                    <th
-                                      style={{
-                                        minWidth: "80px",
-                                        maxWidth: "80px",
-                                      }}
-                                    >
-                                      <div className="d-flex flex-column bd-highlight ">
-                                        <div
-                                          className="d-flex  pb-2"
-                                          style={{ justifyContent: "space-evenly" }}
-                                        >
-                                          <span>Status</span>{" "}
-                                          {/* <span
+                                      <th
+                                        style={{
+                                          minWidth: "80px",
+                                          maxWidth: "80px",
+                                        }}
+                                      >
+                                        <div className="d-flex flex-column bd-highlight ">
+                                          <div
+                                            className="d-flex  pb-2"
+                                            style={{ justifyContent: "space-evenly" }}
+                                          >
+                                            <span>Status</span>{" "}
+                                            {/* <span
                                             onClick={() =>
                                               handleSortChange("Status")
                                             }
                                           >
                                             <FontAwesomeIcon icon={faSort} />{" "}
                                           </span> */}
-                                        </div>
+                                          </div>
 
-                                        <div className=" bd-highlight">
-                                          <input
-                                            type="text"
-                                            placeholder="Filter by Status"
-                                            onChange={(e) =>
-                                              handleFilterChange(e, "Status")
-                                            }
-                                            onKeyDown={(e) => {
-                                              if (e.key === 'Enter' && !e.shiftKey) {
-                                                e.preventDefault(); // Prevents the new line in textarea
+                                          <div className=" bd-highlight">
+                                            <input
+                                              type="text"
+                                              placeholder="Filter by Status"
+                                              onChange={(e) =>
+                                                handleFilterChange(e, "Status")
                                               }
-                                            }}
-                                            className="inputcss"
-                                            style={{ width: "100%" }}
-                                          />
+                                              onKeyDown={(e) => {
+                                                if (e.key === 'Enter' && !e.shiftKey) {
+                                                  e.preventDefault(); // Prevents the new line in textarea
+                                                }
+                                              }}
+                                              className="inputcss"
+                                              style={{ width: "100%" }}
+                                            />
+                                          </div>
                                         </div>
-                                      </div>
-                                    </th>
+                                      </th>
 
-                                    <th
-                                      style={{
-                                        minWidth: "50px",
+                                      <th
+                                        style={{
+                                          minWidth: "50px",
 
-                                        maxWidth: "50px",
+                                          maxWidth: "50px",
 
-                                        borderBottomRightRadius: "0px",
+                                          borderBottomRightRadius: "0px",
 
-                                        borderTopRightRadius: "0px",
+                                          borderTopRightRadius: "0px",
 
-                                        textAlign: "center",
+                                          textAlign: "center",
 
-                                        verticalAlign: "top",
-                                      }}
-                                    >
-                                      <div className="d-flex flex-column bd-highlight ">
-                                        <div
-                                          className="d-flex  pb-2"
-                                          style={{ justifyContent: "space-evenly" }}
-                                        >
-                                          <span>Action</span>{" "}
-                                        </div>
-                                      </div>
-                                    </th>
-                                  </tr>
-                                </thead>
-                                {console.log(
-                                  "currentData",
-                                  currentData,
-                                  isActivedata
-                                )}
-                                <tbody>
-                                  {currentData?.length === 0 ? (
-                                    <div
-
-                                      className="no-results card card-body align-items-center  annusvg text-center "
-
-                                      style={{
-
-                                        display: "flex",
-
-                                        justifyContent: "center",
-                                        position: 'relative',
-                                        marginTop: '10px',
-                                        height: '500px'
-
-                                      }}
-
-                                    >
-                                      <svg style={{ top: '0%' }}  xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
-
-                                      <p className="font-14 text-muted text-center">No Approval found </p>
-
-                                    </div>
-                                  ) : (
-                                    currentData?.map(
-                                      (item: any, index: number) => (
-                                        <tr
-                                          key={index}
-                                         
-                                        >
-                                          <td
-                                            style={{
-                                              minWidth: "40px",
-                                              maxWidth: "40px",
-                                            }}
+                                          verticalAlign: "top",
+                                        }}
+                                      >
+                                        <div className="d-flex flex-column bd-highlight ">
+                                          <div
+                                            className="d-flex  pb-2"
+                                            style={{ justifyContent: "space-evenly" }}
                                           >
-                                            <div
-                                              style={{ marginLeft: "0px" }}
-                                              className="indexdesign"
+                                            <span>Action</span>{" "}
+                                          </div>
+                                        </div>
+                                      </th>
+                                    </tr>
+                                  </thead>
+                                  {console.log(
+                                    "currentData",
+                                    currentData,
+                                    isActivedata
+                                  )}
+                                  <tbody>
+                                    {currentData?.length === 0 ? (
+                                      <div
+
+                                        className="no-results card card-body align-items-center  annusvg text-center "
+
+                                        style={{
+
+                                          display: "flex",
+
+                                          justifyContent: "center",
+                                          position: 'relative',
+                                          marginTop: '10px',
+                                          height: '500px'
+
+                                        }}
+
+                                      >
+                                        <svg style={{ top: '0%' }} xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+
+                                        <p className="font-14 text-muted text-center">No Approval found </p>
+
+                                      </div>
+                                    ) : (
+                                      currentData?.map(
+                                        (item: any, index: number) => (
+                                          <tr
+                                            key={index}
+
+                                          >
+                                            <td
+                                              style={{
+                                                minWidth: "40px",
+                                                maxWidth: "40px",
+                                              }}
                                             >
-                                              {" "}
-                                              {startIndex + index + 1}
-                                            </div>{" "}
-                                          </td>
+                                              <div
+                                                style={{ marginLeft: "0px" }}
+                                                className="indexdesign"
+                                              >
+                                                {" "}
+                                                {startIndex + index + 1}
+                                              </div>{" "}
+                                            </td>
 
-                                          <td
-                                            style={{
-                                              minWidth: "80px",
+                                            <td
+                                              style={{
+                                                minWidth: "80px",
 
-                                              maxWidth: "80px",
-                                              textAlign:'center',
+                                                maxWidth: "80px",
+                                                textAlign: 'center',
 
-                                              textTransform: "capitalize",
-                                            }}
-                                            title={item.RequestID}
-                                          >
-                                      {item.RequestID} 
-                                          </td>
-                                          {activeTab == "Intranet" && (
+                                                textTransform: "capitalize",
+                                              }}
+                                              title={item.RequestID}
+                                            >
+                                              {item.RequestID}
+                                            </td>
+                                            {/* {activeTab == "Intranet" && ( */}
+                                              <td
+                                                style={{
+                                                  minWidth: "120px",
+                                                  maxWidth: "120px",
+                                                }}
+                                                title= {activeTab == "Intranet" ? item.Title : item.ApprovalTitle}
+                                              >
+                                                {activeTab == "Intranet" ? item.Title : item.ApprovalTitle}
+                                              </td>
+                                            {/* )} */}
                                             <td
                                               style={{
                                                 minWidth: "120px",
                                                 maxWidth: "120px",
+                                                textAlign: 'center'
                                               }}
-                                              title={item.Title}
                                             >
-                                              {item.Title}
+                                              <span className="badge font-12 bg-info">   {item.ProcessName}</span>
                                             </td>
-                                          )}
-                                          <td
-                                            style={{
-                                              minWidth: "120px",
-                                              maxWidth: "120px",
-                                              textAlign:'center'
-                                            }}
-                                          >
-                                        <span  className="badge font-12 bg-info">   {item.ProcessName}</span> 
-                                          </td>
 
-                                          <td
-                                            style={{
-                                              minWidth: "100px",
-                                              maxWidth: "100px",
-                                            }}
-                                            title={activeTab == "Automation"
-                                              ? item?.Author?.Title
-                                              : item?.Requester?.Title}
-                                          >
-                                            {activeTab == "Automation"
-                                              ? item?.Author?.Title
-                                              : item?.Requester?.Title}
-                                          </td>
+                                            <td
+                                              style={{
+                                                minWidth: "100px",
+                                                maxWidth: "100px",
+                                              }}
+                                              title={activeTab == "Automation"
+                                                ? item?.Author?.Title
+                                                : item?.Requester?.Title}
+                                            >
+                                              {activeTab == "Automation"
+                                                ? item?.Author?.Title
+                                                : item?.Requester?.Title}
+                                            </td>
 
-                                          <td
-                                            style={{
-                                              minWidth: "80px",
-                                              maxWidth: "80px",
-                                              textAlign: 'center'
-                                            }}
-                                          >
-                                            <div className="btn btn-light1">
-                                              {new Date(
-                                                item?.Created
-                                              ).toLocaleDateString()}
-                                            </div>
-                                          </td>
+                                            <td
+                                              style={{
+                                                minWidth: "80px",
+                                                maxWidth: "80px",
+                                                textAlign: 'center'
+                                              }}
+                                            >
+                                              <div className="btn btn-light1">
+                                                {new Date(
+                                                  item?.Created
+                                                ).toLocaleDateString()}
+                                              </div>
+                                            </td>
 
-                                          <td
-                                            style={{
-                                              minWidth: "80px",
-                                              maxWidth: "80px",
-                                              textAlign: 'center'
-                                            }}
-                                          >
-                                            <div className="btn btn-status">
-                                              {item?.Status}
-                                            </div>
-                                          </td>
+                                            <td
+                                              style={{
+                                                minWidth: "80px",
+                                                maxWidth: "80px",
+                                                textAlign: 'center'
+                                              }}
+                                            >
+                                              <div className="btn btn-status">
+                                                {item?.Status}
+                                              </div>
+                                            </td>
 
-                                          <td
-                                            style={{
-                                              minWidth: "50px",
-                                              maxWidth: "50px",
-                                              textAlign:'center'
-                                            }}
-                                            className="fe-eye font-18"
-                                          >
-                                            {item?.Status.toLowerCase() == "approved" || item?.Status.toLowerCase() == "rejected" ?
+                                            <td
+                                              style={{
+                                                minWidth: "50px",
+                                                maxWidth: "50px",
+                                                textAlign: 'center'
+                                              }}
+                                              className="fe-eye font-18"
+                                            >
+                                              {item?.Status.toLowerCase() == "approved" || item?.Status.toLowerCase() == "rejected" ?
 
 
-                                              <Eye onClick={(e) =>
-                                                handleRedirect(e, item, "view")
-                                              }
-
-                                                style={{
-
-                                                  minWidth: "20px",
-
-                                                  maxWidth: "20px",
-
-                                                  
-
-                                                  cursor: "pointer",
-
-                                                }} />
-
-                                              :
-                                              <Edit
-                                                onClick={(e) =>
-                                                  handleRedirect(e, item, "approval")
+                                                <Eye onClick={(e) =>
+                                                  handleRedirect(e, item, "view")
                                                 }
 
-                                                style={{
-                                                  minWidth: "20px",
+                                                  style={{
 
-                                                  maxWidth: "20px",
+                                                    minWidth: "20px",
 
-                                                  marginLeft: "0px",
+                                                    maxWidth: "20px",
 
-                                                  cursor: "pointer",
-                                                }}
-                                              />
-                                            }
-                                          </td>
-                                        </tr>
+
+
+                                                    cursor: "pointer",
+
+                                                  }} />
+
+                                                :
+                                                <Edit
+                                                  onClick={(e) =>
+                                                    handleRedirect(e, item, "approval")
+                                                  }
+
+                                                  style={{
+                                                    minWidth: "20px",
+
+                                                    maxWidth: "20px",
+
+                                                    marginLeft: "0px",
+
+                                                    cursor: "pointer",
+                                                  }}
+                                                />
+                                              }
+                                            </td>
+                                          </tr>
+                                        )
                                       )
-                                    )
-                                  )}
-                                </tbody>
-                              </table>
+                                    )}
+                                  </tbody>
+                                </table>
 
-{currentData?.length > 0 ? (
-  <nav className="pagination-container">
-    <ul className="pagination">
-      {/* <li
+                                {currentData?.length > 0 ? (
+                                  <nav className="pagination-container">
+                                    <ul className="pagination">
+                                      {/* <li
         className={`page-item ${currentPage === 1 ? "disabled" : ""
           }`}
       > */}
-      <li
+                                      <li
 
-        className={`prevPage page-item ${currentGroup === 1 ? "disabled" : ""
-          }`}
-        onClick={() => handleGroupChange("prev")}
-      >
+                                        className={`prevPage page-item ${currentGroup === 1 ? "disabled" : ""
+                                          }`}
+                                        onClick={() => handleGroupChange("prev")}
+                                      >
 
-        <a
-          className="page-link"
-          // onClick={() =>
-          //   handlePageChange(currentPage - 1)
-          // }
-          aria-label="Previous"
-        >
-          «
-        </a>
-      </li>
-      {Array.from(
+                                        <a
+                                          className="page-link"
+                                          // onClick={() =>
+                                          //   handlePageChange(currentPage - 1)
+                                          // }
+                                          aria-label="Previous"
+                                        >
+                                          «
+                                        </a>
+                                      </li>
+                                      {Array.from(
 
-        { length: endPage - startPage + 1 },
+                                        { length: endPage - startPage + 1 },
 
-        (_, num) => {
-          const pageNum = startPage + num;
-          return (
+                                        (_, num) => {
+                                          const pageNum = startPage + num;
+                                          return (
 
-            <li
+                                            <li
 
-              key={pageNum}
+                                              key={pageNum}
 
-              className={`page-item ${currentPage === pageNum ? "active" : ""
+                                              className={`page-item ${currentPage === pageNum ? "active" : ""
 
-                }`}
+                                                }`}
 
-            >
+                                            >
 
-              <a
+                                              <a
 
-                className="page-link"
+                                                className="page-link"
 
-                onClick={() =>
+                                                onClick={() =>
 
-                  handlePageChange(pageNum)
+                                                  handlePageChange(pageNum)
 
-                }
+                                                }
 
-              >
+                                              >
 
-                {pageNum}
+                                                {pageNum}
 
-              </a>
+                                              </a>
 
-            </li>
+                                            </li>
 
-          )
-        }
+                                          )
+                                        }
 
-      )}
+                                      )}
 
-      <li
+                                      <li
 
-        className={`nextPage page-item ${currentGroup === totalGroups ? "disabled" : ""
+                                        className={`nextPage page-item ${currentGroup === totalGroups ? "disabled" : ""
 
-          }`}
-        onClick={() => handleGroupChange("next")}
-      >
+                                          }`}
+                                        onClick={() => handleGroupChange("next")}
+                                      >
 
-        <a
+                                        <a
 
-          className="page-link"
+                                          className="page-link"
 
-          onClick={() =>
+                                          onClick={() =>
 
-            handlePageChange(currentPage + 1)
+                                            handlePageChange(currentPage + 1)
 
-          }
+                                          }
 
-          aria-label="Next"
+                                          aria-label="Next"
 
-        >
+                                        >
 
-          »
+                                          »
 
-        </a>
+                                        </a>
 
-      </li>
-      
-    </ul>
-  </nav>
-) : (
-  <></>
-)} 
-</>
+                                      </li>
+
+                                    </ul>
+                                  </nav>
+                                ) : (
+                                  <></>
+                                )}
+                              </>
                             ) : null}
 
                             {activeTab === "DMS" && (
@@ -2223,15 +2231,15 @@ const today = new Date().toISOString(); // Get today's date in YYYY-MM-DD format
                                             (item: any, index: number) => (
                                               <tr
                                                 key={index}
-                                                
+
                                               >
                                                 <td
                                                   style={{
                                                     minWidth: "40px",
                                                     maxWidth: "40px",
-                                             
-                                                      backgroundColor: item?.CurrentUser !== currentUserEmailRef.current ? "green" : "transparent",
-                                                  
+
+                                                    backgroundColor:  "transparent",
+
                                                   }}
                                                 >
                                                   <div
@@ -2248,14 +2256,14 @@ const today = new Date().toISOString(); // Get today's date in YYYY-MM-DD format
                                                     minWidth: "80px",
 
                                                     maxWidth: "80px",
-                                                    textAlign:'center',
+                                                    textAlign: 'center',
 
                                                     textTransform: "capitalize",
                                                   }}
                                                   title={item?.FileUID?.RequestNo}
                                                 >
-                                                                                    {item?.FileUID?.RequestNo} 
-                                                  
+                                                  {item?.FileUID?.RequestNo}
+
                                                 </td>
                                                 <td
                                                   style={{
@@ -2263,7 +2271,7 @@ const today = new Date().toISOString(); // Get today's date in YYYY-MM-DD format
 
                                                     maxWidth: "120px",
 
-                                             
+
                                                   }}
                                                   title={item?.FileUID?.FileName}
                                                 >
@@ -2273,10 +2281,10 @@ const today = new Date().toISOString(); // Get today's date in YYYY-MM-DD format
                                                   style={{
                                                     minWidth: "120px",
                                                     maxWidth: "120px",
-                                                    textAlign:'center'
+                                                    textAlign: 'center'
                                                   }}
                                                 >
-                                                    <span  className="badge font-12 bg-info">  {item?.FileUID?.Processname} </span>
+                                                  <span className="badge font-12 bg-info">  {item?.FileUID?.Processname} </span>
                                                 </td>
 
                                                 <td
@@ -2290,7 +2298,7 @@ const today = new Date().toISOString(); // Get today's date in YYYY-MM-DD format
 
                                                 <td
                                                   style={{
-                                                    minWidth: "80px",  maxWidth: "80px",
+                                                    minWidth: "80px", maxWidth: "80px",
                                                     // maxWidth: "100px",
                                                     textAlign: 'center'
                                                   }}
@@ -2298,15 +2306,15 @@ const today = new Date().toISOString(); // Get today's date in YYYY-MM-DD format
                                                   <div className="btn btn-light1">
 
                                                     {/* {item?.FileUID?.Created} */}
-                                                    {new Date(item?.FileUID?.Created).toLocaleString('en-US', { 
-month: '2-digit',
-day: '2-digit',
-year: 'numeric',
-// hour: '2-digit',
-// minute: '2-digit',
-// second: '2-digit',
-// hour12: true 
-})}
+                                                    {new Date(item?.FileUID?.Created).toLocaleString('en-US', {
+                                                      month: '2-digit',
+                                                      day: '2-digit',
+                                                      year: 'numeric',
+                                                      // hour: '2-digit',
+                                                      // minute: '2-digit',
+                                                      // second: '2-digit',
+                                                      // hour12: true 
+                                                    })}
                                                   </div>
                                                 </td>
 
@@ -2314,7 +2322,7 @@ year: 'numeric',
                                                   style={{
                                                     minWidth: "80px",
                                                     maxWidth: "80px",
-                                                     textAlign: 'center'
+                                                    textAlign: 'center'
                                                   }}
                                                 >
                                                   <div className="btn btn-status">
@@ -2350,116 +2358,116 @@ year: 'numeric',
                                       </tbody>
                                     </table>
                                     {currentData?.length > 0 ? (
-  <nav className="pagination-container">
-    <ul className="pagination">
-      {/* <li
+                                      <nav className="pagination-container">
+                                        <ul className="pagination">
+                                          {/* <li
         className={`page-item ${currentPage === 1 ? "disabled" : ""
           }`}
       > */}
-      <li
+                                          <li
 
-        className={`prevPage page-item ${currentGroup === 1 ? "disabled" : ""
-          }`}
-        onClick={() => handleGroupChange("prev")}
-      >
+                                            className={`prevPage page-item ${currentGroup === 1 ? "disabled" : ""
+                                              }`}
+                                            onClick={() => handleGroupChange("prev")}
+                                          >
 
-        <a
-          className="page-link"
-          // onClick={() =>
-          //   handlePageChange(currentPage - 1)
-          // }
-          aria-label="Previous"
-        >
-          «
-        </a>
-      </li>
-      {Array.from(
+                                            <a
+                                              className="page-link"
+                                              // onClick={() =>
+                                              //   handlePageChange(currentPage - 1)
+                                              // }
+                                              aria-label="Previous"
+                                            >
+                                              «
+                                            </a>
+                                          </li>
+                                          {Array.from(
 
-        { length: endPage - startPage + 1 },
+                                            { length: endPage - startPage + 1 },
 
-        (_, num) => {
-          const pageNum = startPage + num;
-          return (
+                                            (_, num) => {
+                                              const pageNum = startPage + num;
+                                              return (
 
-            <li
+                                                <li
 
-              key={pageNum}
+                                                  key={pageNum}
 
-              className={`page-item ${currentPage === pageNum ? "active" : ""
+                                                  className={`page-item ${currentPage === pageNum ? "active" : ""
 
-                }`}
+                                                    }`}
 
-            >
+                                                >
 
-              <a
+                                                  <a
 
-                className="page-link"
+                                                    className="page-link"
 
-                onClick={() =>
+                                                    onClick={() =>
 
-                  handlePageChange(pageNum)
+                                                      handlePageChange(pageNum)
 
-                }
+                                                    }
 
-              >
+                                                  >
 
-                {pageNum}
+                                                    {pageNum}
 
-              </a>
+                                                  </a>
 
-            </li>
+                                                </li>
 
-          )
-        }
+                                              )
+                                            }
 
-      )}
+                                          )}
 
-      <li
+                                          <li
 
-        className={`nextPage page-item ${currentGroup === totalGroups ? "disabled" : ""
+                                            className={`nextPage page-item ${currentGroup === totalGroups ? "disabled" : ""
 
-          }`}
-        onClick={() => handleGroupChange("next")}
-      >
+                                              }`}
+                                            onClick={() => handleGroupChange("next")}
+                                          >
 
-        <a
+                                            <a
 
-          className="page-link"
+                                              className="page-link"
 
-          onClick={() =>
+                                              onClick={() =>
 
-            handlePageChange(currentPage + 1)
+                                                handlePageChange(currentPage + 1)
 
-          }
+                                              }
 
-          aria-label="Next"
+                                              aria-label="Next"
 
-        >
+                                            >
 
-          »
+                                              »
 
-        </a>
+                                            </a>
 
-      </li>
-      
-    </ul>
-  </nav>
-) : (
-  <></>
-)}
-                                   
+                                          </li>
+
+                                        </ul>
+                                      </nav>
+                                    ) : (
+                                      <></>
+                                    )}
+
                                   </div>
                                 ) : (
                                   <div>
                                     <DMSMyApprovalAction props={currentItemID} />
-                                       <div className="col-sm-12 text-center">
+                                    <div className="col-sm-12 text-center">
                                       {/* <button style={{ float: 'right' }} type="button" className="btn btn-secondary" onClick={() => setShowNestedDMSTable(false)}> Back </button> */}
-                                      
+
                                       <button type="button" className="btn cancel-btn newp waves-effect waves-light m-3" style={{ fontSize: '0.875rem' }} onClick={() => setShowNestedDMSTable(false)}>
-                                <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }}
-                                    className='me-1' alt="x" />
-                                Cancel
-                            </button>
+                                        <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }}
+                                          className='me-1' alt="x" />
+                                        Cancel
+                                      </button>
                                     </div>
                                   </div>
                                 )}
@@ -2582,7 +2590,7 @@ year: 'numeric',
                } */}
                           </div>
 
-                        
+
                         </div>
                       </div>
                     </div>

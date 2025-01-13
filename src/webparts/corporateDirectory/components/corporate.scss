@@ -69,10 +69,10 @@
 
 .alignright {
     height: 1.8rem;
-    left: 1rem;
+    left: 55%;
     margin-left: auto;
     position: absolute;
-    top: 62px; z-index: 9;
+    top: 85px; z-index: 9;
     transition: transform .2s; /* Animation */
     width: 1.8rem ;cursor: pointer;
     background: #fff;
@@ -152,7 +152,7 @@
     font-weight: bold;
     border-radius: 50%;
 }
-.css-by77gm-MuiAvatar-root{background-color: #9f9f9f !important; font-weight: bold !important; margin: auto !important;}
+.MuiAvatar-root{cursor: auto !important; font-weight: bold !important; margin: auto !important;}
 .alignrightl{width: 100px; margin-bottom: 0px; margin-top: 5px;}
 .product-price-tag {
     display: inline-block;
@@ -197,6 +197,17 @@ img[title="Badges"] {
         max-width: 100%;
     }
 }
+
+@media(max-width:1920px){
+
+}
+@media(max-width:1800px){
+ 
+}
+@media(max-width:1600px){
+   
+}
+
 
 
 /* Add this attribute to the element that needs a tooltip */
@@ -301,14 +312,32 @@ input::-webkit-inner-spin-button {
   .mtbalenew td{overflow: initial !important; text-overflow: initial !important; white-space: initial !important;}
   .mtbalenew td p{overflow: hidden !important; margin-bottom: 0px !important; text-overflow: ellipsis !important;white-space:nowrap !important;}
   #s4-workspace{overflow-y: auto !important;}
+  .w200{width: 200px;}
   @media(max-width:1920px){
     .paddb{min-height: calc(100vh - 165px);}
+    .w200{width: 295px;}
 }
 
 @media(max-width:1600px){
   
   #s4-workspace{overflow-y: auto !important;}
+  .w200{width: 230px;}
 }
+@media(max-width:1400px){
+  
+  
+    .w200{width: 200px;}
+  }
+  @media(max-width:1280px){
+  
+  
+    .w200{width: 180px;}
+  }
+  @media(max-width:1280px){
+  
+  
+    .w200{width: 140px;}
+  }
 .mtbalenew td{padding: 12px 10px !important;}
 .btn-secondary{padding: 8px 15px !important;}
 @media(max-width: 768px)
@@ -375,4 +404,7 @@ input::-webkit-inner-spin-button {
  .mtbalenew td:nth-of-type(6):before { content: "Mobile Phone"; font-weight: 600;}
 
  
+}
+.newsvg [data-tooltip]:before, .newsvg [data-tooltip]:after{
+    left: 50% !important;
 }

@@ -291,6 +291,7 @@ export const getEventByID = async (_sp, id) => {
         Overview: res.Overview,
         EventAgenda: res.EventAgenda,
         EntityId: res?.Entity?.Id,
+        Status: res?.Status,
         RegistrationDueDate: res.RegistrationDueDate,
         EventDate: res.EventDate,
         EventGalleryId: res.EventGalleryId != null ? res.EventGalleryId : "",

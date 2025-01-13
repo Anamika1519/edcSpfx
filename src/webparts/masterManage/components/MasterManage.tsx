@@ -17,7 +17,7 @@ import { getSettingAPI, getSettingAPImanagemaster } from "../../../APISearvice/s
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperclip } from '@fortawesome/free-solid-svg-icons';
 import HorizontalNavbar from '../../horizontalNavBar/components/HorizontalNavBar';
-import styles from "../components/MasterManage.module.scss"
+//import styles from "../components/MasterManage.module.scss"
 import { IMasterManageProps } from './IMasterManageProps';
 import { useEffect, useState } from 'react';
 const endsWith = (str: string, ending: string) => {
@@ -256,7 +256,7 @@ function checkUrlForMembershipGroupId() {
   const pattern = /_layouts\/15\/people\.aspx\?MembershipGroupId=32/;
 
   if (pattern.test(currentUrl)) {
-    alert("Match found: MembershipGroupId=32");
+    //alert("Match found: MembershipGroupId=32");
   }
 }
 

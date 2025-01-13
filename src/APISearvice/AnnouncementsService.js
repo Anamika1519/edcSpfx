@@ -306,7 +306,8 @@ export const getAnncouncementByID = async (_sp, id) => {
         AnnouncementAndNewsGallaryJSON: res.AnnouncementAndNewsGallaryJSON != null ? JSON.parse(res.AnnouncementAndNewsGallaryJSON) : "",
         AnnouncementAndNewsDocsJSON: res.AnnouncementAndNewsDocsJSON != null ? JSON.parse(res.AnnouncementAndNewsDocsJSON) : "",
         AnnouncementAndNewsGallaryId: res.AnnouncementAndNewsGallaryId,
-        AnnouncementsAndNewsDocsId: res.AnnouncementsAndNewsDocsId
+        AnnouncementsAndNewsDocsId: res.AnnouncementsAndNewsDocsId,
+        Status:res.Status
         // other fields as needed
       };
 
