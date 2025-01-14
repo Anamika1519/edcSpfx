@@ -228,11 +228,11 @@ const HelloWorldContext = ({ props }: any) => {
                   <div className="card-body">
                     <div className="row">
                       <div className="col-md-12">
-                        <div className="text-center filter-menu d-flex justify-content-center">
+                        <div className="text-center filter-menu d-flex justify-content-center w-100">
                           {/* Main tabs */}
                           <a
                             style={{ textDecoration: 'unset' }}
-                            className={`filter-menu-item ${activeTab === "all" ? "active" : ""
+                            className={`filter-menu-item mb-0 ${activeTab === "all" ? "active" : ""
                               }`}
                             onClick={() => handleTabClick("all", 0)}
                           >
@@ -243,7 +243,7 @@ const HelloWorldContext = ({ props }: any) => {
                             <a
                               key={category.ID}
                               style={{ textDecoration: 'unset' }}
-                              className={`filter-menu-item ${activeTab ===
+                              className={`filter-menu-item mb-0 ${activeTab ===
                                 (category.CategoryName
                                   ? category.CategoryName.toLowerCase()
                                   : "")

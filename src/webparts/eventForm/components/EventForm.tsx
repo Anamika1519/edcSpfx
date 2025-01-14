@@ -23,7 +23,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperclip } from '@fortawesome/free-solid-svg-icons';
 import "../components/addEventMaster.scss";
 import { uploadFile, uploadFileToLibrary } from '../../../APISearvice/AnnouncementsService';
-import { Modal } from 'react-bootstrap';
+import { Button, Modal } from 'react-bootstrap';
 import { getSP } from '../loc/pnpjsConfig';
 import HorizontalNavbar from '../../horizontalNavBar/components/HorizontalNavBar';
 import { AddContentLevelMaster, AddContentMaster, getApprovalConfiguration, getLevel, UpdateContentMaster } from '../../../APISearvice/ApprovalService';
@@ -39,7 +39,16 @@ let mode = "";
 const HelloWorldContext = ({ props }: any) => {
   const sp: SPFI = getSP();
   console.log(sp, 'sp');
-
+    
+    const [show, setShow] = useState(false);
+    const [modalImageSrc, setModalImageSrc] = useState('');
+  
+    const handleClose = () => setShow(false);
+    const handleShow = (src:any) => {
+      setModalImageSrc(src);
+      setShow(true);
+    };
+  
     useEffect(() => { 
       // alert("useEffect called");
       const currentUrl = window.location.href;
@@ -1191,7 +1200,8 @@ const HelloWorldContext = ({ props }: any) => {
           const arr = {
             files: imageVideoFiles,
             libraryName: libraryName,
-            docLib: docLib
+            docLib: docLib,
+            fileUrl: URL.createObjectURL(imageVideoFiles[0])
           };
           if (libraryName === "Gallery") {
             uloadImageFiles.push(arr);
@@ -1202,7 +1212,8 @@ const HelloWorldContext = ({ props }: any) => {
                   "ID": 0,
                   "Createdby": "",
                   "Modified": "",
-                  "fileUrl": "",
+                  // "fileUrl": URL.createObjectURL(ele),
+                  "fileUrl": '',
                   "fileSize": ele.size,
                   "fileType": ele.type,
                   "fileName": ele.name
@@ -1933,12 +1944,20 @@ const HelloWorldContext = ({ props }: any) => {
                                 <tr key={index}>
                                   <td className='text-center'>{index + 1}</td>
                                   <td>
+                                   
                                     <img
                                       className='imagefe'
                                       src={file.fileType.startsWith('video/') ?
                                         require("../../../Assets/ExtraImage/video.jpg") :
-                                        (file.fileUrl ? file.fileUrl : `${siteUrl}/MediaGallery/${file.fileName}`)}
-                                      alt={'default image'}
+                                        (file.fileUrl ? file.fileUrl : `${file.serverUrl}${file.serverRelativeUrl}`)}
+                                   
+                                        alt={'default image'}
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => handleShow(
+                    file.serverUrl && file.serverRelativeUrl
+                      ? `${siteUrl}/MediaGallery/${file.fileName}`
+                      : file.fileUrl
+                  )}
                                     />
 
                                   </td>
@@ -1959,7 +1978,21 @@ const HelloWorldContext = ({ props }: any) => {
 
               </Modal.Body>
 
-            </Modal>
+              </Modal>
+            <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Image Preview</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <img src={modalImageSrc} alt="Image Preview" style={{ width: '100%' }} />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+        </Modal.Footer>
+              </Modal>
+
           </div>
         </div>
       </div>

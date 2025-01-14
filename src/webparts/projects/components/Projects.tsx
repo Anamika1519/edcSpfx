@@ -114,7 +114,7 @@ const HelloWorldContext = ({ props }: any) => {
   const _sp: SPFI = getSP();
 
   const [Dataproject, setDataproject] = useState<any[]>([]);
-  const [itemsToShow, setItemsToShow] = useState(5); // Initial number of items to show
+  const [itemsToShow, setItemsToShow] = useState(0); // Initial number of items to show
   const [ChoiceValueOne, setChoiceValueOne] = useState<any[]>([]);
   const [DocumentpostArr, setDocumentpostArr] = React.useState([]);
   const [DocumentpostArr1, setDocumentpostArr1] = React.useState([]);
@@ -885,11 +885,11 @@ const HelloWorldContext = ({ props }: any) => {
     console.log("Removed item:", removedItem);
   };
 
-  const loadMore = () => {
-    event.preventDefault()
-    event.stopImmediatePropagation()
-    setItemsToShow(itemsToShow + 5); // Increase the number by 8
-  };
+  // const loadMore = () => {
+  //   event.preventDefault()
+  //   event.stopImmediatePropagation()
+  //   setItemsToShow(itemsToShow + 5); // Increase the number by 8
+  // };
 
 
 
@@ -2082,7 +2082,7 @@ const HelloWorldContext = ({ props }: any) => {
                   </div>) :
                     (Dataproject.length > 0 ? (
                       <div className="row">
-                        {Dataproject.slice(0, itemsToShow).map((project: any, index: any) => {
+                        {Array.isArray(itemsToShow) && itemsToShow.map((project: any, index: any) => {
                           if (project?.AuthorId == userId) {
                             return (
                               <div key={index} className="col-lg-4 col-md-6 mb-0">
@@ -2326,13 +2326,13 @@ const HelloWorldContext = ({ props }: any) => {
                           }
                           return null;
                         })}
-                        {itemsToShow < Dataproject.length && (
+                        {/* {itemsToShow < Dataproject.length && (
                           <div className="col-12 text-center mb-5 mt-3">
                             <button onClick={loadMore} className="btn btn-primary">
                               Load More
                             </button>
                           </div>
-                        )}
+                        )} */}
                       </div>
                     ) :
                       //  (
@@ -2619,13 +2619,13 @@ const HelloWorldContext = ({ props }: any) => {
 
                           return null;
                         })}
-                        {itemsToShow < Dataproject.length && (
+                        {/* {itemsToShow < Dataproject.length && (
                           <div className="col-12 text-center mb-5 mt-3">
                             <button onClick={loadMore} className="btn btn-primary">
                               Load More
                             </button>
                           </div>
-                        )}
+                        )} */}
                       </div>
                     ) :
                       // (
@@ -3150,13 +3150,13 @@ const HelloWorldContext = ({ props }: any) => {
                           // }
                           return null;
                         })}
-                        {itemsToShow < Dataproject?.length && (
+                        {/* {itemsToShow < Dataproject?.length && (
                           <div className="col-12 text-center mb-5 mt-3">
                             <button onClick={loadMore} className="btn btn-primary">
                               Load More
                             </button>
                           </div>
-                        )}
+                        )} */}
                       </div>
                     ) :
                       // (
@@ -3417,13 +3417,13 @@ const HelloWorldContext = ({ props }: any) => {
 
                         return null;
                       })}
-                      {itemsToShow < Dataproject?.length && (
+                      {/* {itemsToShow < Dataproject?.length && (
                         <div className="col-12 text-center mb-5 mt-3">
                           <button onClick={loadMore} className="btn btn-primary">
                             Load More
                           </button>
                         </div>
-                      )}
+                      )} */}
                     </div>
                   ) :
                     // (

@@ -1,5 +1,5 @@
 
-import React from 'react'
+import React, { useState } from 'react'
 
 import Provider from '../../../GlobalContext/provider';
 
@@ -40,7 +40,7 @@ import "../../../CustomCss/mainCustom.scss";
 
 import "../../verticalSideBar/components/VerticalSidebar.scss";
 
-import { Modal } from 'react-bootstrap';
+import { Button, Modal } from 'react-bootstrap';
 
 import "../components/AddKnowledgeCenter.scss";
 
@@ -178,7 +178,17 @@ const AddMediaGalaryContext = ({ props }: any) => {
   ]
 
   //#endregion
-
+  const [show, setShow] = useState(false);
+  const [modalImageSrc, setModalImageSrc] = useState('');
+  const [isVideo, setIsVideo] = useState(false);
+  
+  const handleClose = () => setShow(false);
+  const handleShow = (src: any, isVideo: boolean) => {
+    setModalImageSrc(src);
+    setIsVideo(isVideo);
+    setShow(true);
+  };
+  
   //#region UseEffact
 
   React.useEffect(() => {
@@ -2650,13 +2660,23 @@ const AddMediaGalaryContext = ({ props }: any) => {
                                 <td className='text-center'>{index + 1}</td>
 
                                 <td>
-                                  <img
+                                  {/* <img
                                     className='imagefe'
                                     src={file.fileType.startsWith('video/') ?
                                       require("../../../Assets/ExtraImage/video.jpg") :
                                       (file.fileUrl ? file.fileUrl : `${siteUrl}/MediaGallery/${file.fileName}`)}
                                     alt={'default image'}
-                                  />
+                                  /> */}
+                                   <img
+          className='imagefe'
+          src={file.fileType && file.fileType.startsWith('video/') ? 
+	  require("../../../Assets/ExtraImage/video.jpg") : 
+	  (file.fileUrl ? file.fileUrl : `${siteUrl}/MediaGallery/${file.fileName}`)}
+          alt='default image'
+          style={{ cursor: 'pointer' }}
+          onClick={() => handleShow(file.fileUrl ? file.fileUrl : `${siteUrl}/MediaGallery/${file.fileName}`, file.fileType && file.fileType.startsWith('video/'))}
+        />
+
                                 </td>
 
                                 <td>{file.fileName}</td>
@@ -2685,6 +2705,27 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
               </Modal>
             }
+            
+<Modal show={show} onHide={handleClose}>
+  <Modal.Header closeButton>
+    <Modal.Title>{isVideo ? 'Video Preview' : 'Image Preview'}</Modal.Title>
+  </Modal.Header>
+  <Modal.Body>
+    {isVideo ? (
+      <video controls style={{ width: '100%' }}>
+        <source src={modalImageSrc} type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+    ) : (
+      <img src={modalImageSrc} alt="Image Preview" style={{ width: '100%' }} />
+    )}
+  </Modal.Body>
+  <Modal.Footer>
+    <Button variant="secondary" onClick={handleClose}>
+      Close
+    </Button>
+  </Modal.Footer>
+</Modal>
 
 
             {/* <Modal show={showModal1} onHide={() => setShowModal1(false)} size="lg">

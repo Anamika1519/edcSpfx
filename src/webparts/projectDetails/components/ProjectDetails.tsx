@@ -12,8 +12,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "../../../CustomCss/mainCustom.scss";
 import "../../verticalSideBar/components/VerticalSidebar.scss";
-let INGLOBAL : any
-let currentuseridglobal : any
+let INGLOBAL: any
+let currentuseridglobal: any
 let isProjectCompleted: any
 // import "../components/announcementdetails.scss";
 import Multiselect from "multiselect-react-dropdown";
@@ -36,7 +36,7 @@ import { getSP } from "../loc/pnpjsConfig";
 import { IProjectDetailsProps } from "./IProjectDetailsProps";
 import { getProjectDetailsById } from "../../../APISearvice/BlogService";
 import "./Projects.scss";
-import { Modal, Card ,Dropdown , Button} from "react-bootstrap";
+import { Modal, Card, Dropdown, Button } from "react-bootstrap";
 import FileIcon from "../../../CustomJSComponents/FileIcon";
 import { asAsync } from "@fluentui/react";
 import { parse } from "@fortawesome/fontawesome-svg-core";
@@ -73,8 +73,8 @@ interface Comment {
   UserProfile: string;
 }
 
-let projectname :any = ""
-let filemanager : any = ""
+let projectname: any = ""
+let filemanager: any = ""
 const payload: any = {};
 const ProjectDetailsContext = ({ props }: any) => {
   const sp: SPFI = getSP();
@@ -86,7 +86,7 @@ const ProjectDetailsContext = ({ props }: any) => {
   // const [selectedValue, setSelectedValue] = useState([]);
   const [CurrentUser, setCurrentUser]: any[] = useState([]);
   const [comments, setComments] = useState<Comment[]>([]);
-const [options, setOpions] = useState([]);
+  const [options, setOpions] = useState([]);
 
   const [newComment, setNewComment] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
@@ -125,45 +125,45 @@ const [options, setOpions] = useState([]);
       try {
         // Fetch all site users and filter out groups
         const userList = await sp.web.siteUsers();
-       
+
         // Filter users by checking the PrincipalType (1 represents Users)
         const userOptions = userList
-            .filter(user => user.PrincipalType === 1)
-            .map(user => ({
-                label: user.Title,   // Display name of the user
-                value: user.Id       // Unique user ID
-            }));
-   
+          .filter(user => user.PrincipalType === 1)
+          .map(user => ({
+            label: user.Title,   // Display name of the user
+            value: user.Id       // Unique user ID
+          }));
+
         setUsers(userOptions);  // Set the options for Select and Multiselect
-    } catch (error) {
+      } catch (error) {
         console.error('Error fetching users:', error);
-    }
-    //   try {
-    //     const items = await sp.web.siteUsers()
- 
-    //     console.log(items, 'itemsitemsitems');
- 
-    //     const formattedOptions = items.map((item) => ({
-    //       label: item.Title, // Adjust according to your list schema
-    //       value: item.Id,
-    //     }));
- 
-    //     setOpions(formattedOptions);
-    // } catch (error) {
-    //     console.error('Error fetching options:', error);
-    // }
+      }
+      //   try {
+      //     const items = await sp.web.siteUsers()
+
+      //     console.log(items, 'itemsitemsitems');
+
+      //     const formattedOptions = items.map((item) => ({
+      //       label: item.Title, // Adjust according to your list schema
+      //       value: item.Id,
+      //     }));
+
+      //     setOpions(formattedOptions);
+      // } catch (error) {
+      //     console.error('Error fetching options:', error);
+      // }
     };
 
     fetchUsers();
   }, []);
   // const currentUserEmailRef = useRef('');
-  const getCurrrentuser=async()=>{
+  const getCurrrentuser = async () => {
     const userdata = await sp.web.currentUser();
 
     currentUserEmailRef.current = userdata.Email;
     currentuseridglobal = userdata.Id
 
- 
+
   }
   useEffect(() => {
     getCurrrentuser()
@@ -212,16 +212,16 @@ const [options, setOpions] = useState([]);
   //     //   console.error('Error fetching users:', error);
   //     // }
   //     try {
-       
+
   //       const siteUsers = await sp.web.siteUsers();
- 
+
 
   //       const usersOnly = siteUsers.filter(user => user.PrincipalType === 1);
   //       const formattedOptions = usersOnly.map((item) => ({
   //         name: item.Title,
   //         id: item.Id,
   //     }));
- 
+
   //     setUsers(formattedOptions);
   //       console.log(usersOnly, 'usersOnly');
   //       return usersOnly;
@@ -237,8 +237,8 @@ const [options, setOpions] = useState([]);
   //   const userdata = await sp.web.currentUser();
 
   //   currentUserEmailRef.current = userdata.Email;
- 
- 
+
+
   // }
   // useEffect(() => {
   //   getCurrrentuser()
@@ -249,17 +249,17 @@ const [options, setOpions] = useState([]);
   //   setSelectedValue(selectedList);  // Set the selected users
   // };
   const onSelect = (selectedOptions: any[]) => {
-    console.log(argcurrentgroupuser[0] , "argcurrentgroupuser[0]")
+    console.log(argcurrentgroupuser[0], "argcurrentgroupuser[0]")
     // Ensure existing members are lowercase
     const existingMembers = argcurrentgroupuser[0]?.TeamMembers?.map((member: any) =>
-        member.Title.toLowerCase()
+      member.Title.toLowerCase()
     ) || [];
 
     console.log("Existing Members:", existingMembers);
 
     // Filter selected options to exclude already existing members
     const newSelections = selectedOptions.filter(
-        (option: any) => option?.label && !existingMembers.includes(option.label.toLowerCase())
+      (option: any) => option?.label && !existingMembers.includes(option.label.toLowerCase())
     );
 
     console.log("Selected Options:", selectedOptions);
@@ -267,7 +267,7 @@ const [options, setOpions] = useState([]);
 
     // Check for duplicates
     const duplicates = selectedOptions.filter(
-        (option: any) => option?.label && existingMembers.includes(option.label.toLowerCase())
+      (option: any) => option?.label && existingMembers.includes(option.label.toLowerCase())
     );
 
     console.log("Duplicates:", duplicates);
@@ -279,13 +279,13 @@ const [options, setOpions] = useState([]);
 
     // Update the state with new valid selections
     setSelectedValue(newSelections);
-};
+  };
 
-  
-  
-  
-  
-  const onRemove = (removedItem:any) => {
+
+
+
+
+  const onRemove = (removedItem: any) => {
     setSelectedValue(prev => prev.filter(item => item.value !== removedItem.value));  // Remove the user from the selection
   };
 
@@ -295,10 +295,10 @@ const [options, setOpions] = useState([]);
     // if (savedComments) {
     //   setComments(JSON.parse(savedComments));
     // }
-   
+
     ApiLocalStorageData();
     getApiData()
-ApICallData();
+    ApICallData();
     const showNavbar = (
       toggleId: string,
       navId: string,
@@ -343,8 +343,8 @@ ApICallData();
     linkColor.forEach((l) => l.addEventListener("click", colorLink));
   }, [props]);
   //setInterval(() => {
-   // getApiData()
- // }, 1000)
+  // getApiData()
+  // }, 1000)
   const getApiData = async () => {
     let initialComments: any[] = [];
     const ids = window.location.search;
@@ -358,7 +358,7 @@ ApICallData();
       .getByTitle("ARGProjectComments")
       .items.select("*,ARGProject/Id ,Author/ID,Author/Title,Author/EMail")
       .expand("ARGProject , Author")
-      .filter(`ARGProjectId eq ${Number(idNum)}`).orderBy("Modified" , false )()
+      .filter(`ARGProjectId eq ${Number(idNum)}`).orderBy("Modified", false)()
       .then(async (result: any) => {
         console.log(result, "ARGProjectComments");
 
@@ -449,17 +449,17 @@ ApICallData();
     // setArrDetails(await getProjectDetailsById(sp, Number(idNum)));
     const projectDetails = await getProjectDetailsById(sp, Number(idNum));
 
-// Step 2: Set the global variable with the project name or other details
-setArrDetails(projectDetails); // Assuming this sets the global state or variable
+    // Step 2: Set the global variable with the project name or other details
+    setArrDetails(projectDetails); // Assuming this sets the global state or variable
 
-// Step 3: Use the project name to fetch other details if it's stored in `projectDetails`
-if (projectDetails ) {
-  // Replace `fetchOtherDetailsByProjectName` with your actual function
-  const additionalDetails = await fetchOtherDetailsByProjectName();
+    // Step 3: Use the project name to fetch other details if it's stored in `projectDetails`
+    if (projectDetails) {
+      // Replace `fetchOtherDetailsByProjectName` with your actual function
+      const additionalDetails = await fetchOtherDetailsByProjectName();
 
-  // Do something with the additional details
-  console.log(additionalDetails);
-}
+      // Do something with the additional details
+      console.log(additionalDetails);
+    }
   };
 
   const ApICallData = async () => {
@@ -502,7 +502,7 @@ if (projectDetails ) {
     }
   };
 
-  const openprojectlibrary = ()=>{
+  const openprojectlibrary = () => {
 
 
 
@@ -521,7 +521,7 @@ if (projectDetails ) {
   // };
   // Add a new comment
   const handleAddComment = async () => {
- 
+
     if (newComment.trim() === "") return;
     setLoading(true);
     await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -562,7 +562,7 @@ if (projectDetails ) {
         }
         const nofiArr = await addNotification(notifiedArr, sp)
         console.log(nofiArr, 'nofiArr');
-       
+
         setNewComment("");
         setLoading(false);
       });
@@ -664,86 +664,86 @@ if (projectDetails ) {
     const userLikeIndex = comment.UserLikesJSON.findIndex(
       (like: Like) => like.UserName === CurrentUser.Title
     );
-try{
- 
-    if (userLikeIndex === -1) {
-      // Add a new like
-      await sp.web.lists
-        .getByTitle("ARGProjectUserLikes")
-        .items.add({
-          UserName: CurrentUser.Title,
-          Like: true,
-          ProjectCommentsId: comment.Id,
-          userHasLiked: true,
-        })
-        .then(async (res: any) => {
-          const newLikeJson: Like = {
-            ID: res.data.Id,
-            AuthorId: res.data.AuthorId,
-            UserName: res.data.UserName,
-            like: "yes",
-            Created: res.data.Created,
-            Count: comment.UserLikesJSON.length + 1,
-          };
+    try {
 
-          updatedComments[commentIndex] = {
-            ...comment,
-            UserLikesJSON: [...comment.UserLikesJSON, newLikeJson],
+      if (userLikeIndex === -1) {
+        // Add a new like
+        await sp.web.lists
+          .getByTitle("ARGProjectUserLikes")
+          .items.add({
+            UserName: CurrentUser.Title,
+            Like: true,
+            ProjectCommentsId: comment.Id,
             userHasLiked: true,
-          };
+          })
+          .then(async (res: any) => {
+            const newLikeJson: Like = {
+              ID: res.data.Id,
+              AuthorId: res.data.AuthorId,
+              UserName: res.data.UserName,
+              like: "yes",
+              Created: res.data.Created,
+              Count: comment.UserLikesJSON.length + 1,
+            };
 
-          setComments(updatedComments);
-          let notifiedArr = {
-            ContentId: ArrDetails[0].Id,
-            NotifiedUserId: ArrDetails[0].AuthorId,
-            ContentType0: "Like",
-            ContentName: ArrDetails[0].Title,
-            ActionUserId: CurrentUser.Id,
-            DeatilPage: "ProjectDetails",
-            ReadStatus: false
-          }
-          const nofiArr = await addNotification(notifiedArr, sp)
-          console.log(nofiArr, 'nofiArr');
-        });
-    } else {
-      // Remove the like
-      const userLikeId = comment.UserLikesJSON[userLikeIndex].ID;
+            updatedComments[commentIndex] = {
+              ...comment,
+              UserLikesJSON: [...comment.UserLikesJSON, newLikeJson],
+              userHasLiked: true,
+            };
 
-      await sp.web.lists
-        .getByTitle("ARGProjectUserLikes")
-        .items.getById(userLikeId)
-        .delete()
-        .then(async () => {
-          updatedComments[commentIndex] = {
-            ...comment,
-            UserLikesJSON: comment.UserLikesJSON.filter(
-              (_, idx) => idx !== userLikeIndex
-            ),
-            userHasLiked: false,
-          };
+            setComments(updatedComments);
+            let notifiedArr = {
+              ContentId: ArrDetails[0].Id,
+              NotifiedUserId: ArrDetails[0].AuthorId,
+              ContentType0: "Like",
+              ContentName: ArrDetails[0].Title,
+              ActionUserId: CurrentUser.Id,
+              DeatilPage: "ProjectDetails",
+              ReadStatus: false
+            }
+            const nofiArr = await addNotification(notifiedArr, sp)
+            console.log(nofiArr, 'nofiArr');
+          });
+      } else {
+        // Remove the like
+        const userLikeId = comment.UserLikesJSON[userLikeIndex].ID;
 
-          setComments(updatedComments);
-          let notifiedArr = {
-            ContentId: ArrDetails[0].Id,
-            NotifiedUserId: ArrDetails[0].AuthorId,
-            ContentType0: "UnLike",
-            ContentName: ArrDetails[0].Title,
-            ActionUserId: CurrentUser.Id,
-            DeatilPage: "ProjectDetails",
-            ReadStatus: false
-          }
-          const nofiArr = await addNotification(notifiedArr, sp)
-          console.log(nofiArr, 'nofiArr');
-        });
+        await sp.web.lists
+          .getByTitle("ARGProjectUserLikes")
+          .items.getById(userLikeId)
+          .delete()
+          .then(async () => {
+            updatedComments[commentIndex] = {
+              ...comment,
+              UserLikesJSON: comment.UserLikesJSON.filter(
+                (_, idx) => idx !== userLikeIndex
+              ),
+              userHasLiked: false,
+            };
+
+            setComments(updatedComments);
+            let notifiedArr = {
+              ContentId: ArrDetails[0].Id,
+              NotifiedUserId: ArrDetails[0].AuthorId,
+              ContentType0: "UnLike",
+              ContentName: ArrDetails[0].Title,
+              ActionUserId: CurrentUser.Id,
+              DeatilPage: "ProjectDetails",
+              ReadStatus: false
+            }
+            const nofiArr = await addNotification(notifiedArr, sp)
+            console.log(nofiArr, 'nofiArr');
+          });
+      }
     }
-  }
-  catch (error) {
-    setLoadingLike(false);
-    console.error('Error toggling like:', error);
-  }
-  finally {
-    setLoadingLike(false); // Enable the button after the function completes
-  }
+    catch (error) {
+      setLoadingLike(false);
+      console.error('Error toggling like:', error);
+    }
+    finally {
+      setLoadingLike(false); // Enable the button after the function completes
+    }
   };
 
   const openDocument = async (e: any, documentId: number) => {
@@ -760,56 +760,56 @@ try{
 
     setLoadingReply(true);
     try {
-    if (replyText.trim() === "") return;
-    const updatedComments = [...comments];
+      if (replyText.trim() === "") return;
+      const updatedComments = [...comments];
 
-    const comment = updatedComments[commentIndex];
-    await sp.web.lists
-      .getByTitle("ARGProjectUserComments")
-      .items.add({
-        UserName: CurrentUser.Title, // Replace with actual username
-        Comments: replyText,
-        ARGProjectCommentsId: updatedComments[commentIndex].Id,
-        // EventsCommentsId: updatedComments[commentIndex].Id,
-      })
-      .then(async (ress: any) => {
-        console.log(ress, "ressress");
-        const newReplyJson = {
-          Id: ress.data.Id,
-          AuthorId: ress.data.AuthorId,
-          UserName: ress.data.UserName, // Replace with actual username
-          Comments: ress.data.Comments,
-          Created: ress.data.Created,
-          UserProfile: CurrentUserProfile,
-        };
-        updatedComments[commentIndex].UserCommentsJSON.push(newReplyJson);
-        await sp.web.lists
-          .getByTitle("ARGProjectComments")
-          .items.getById(updatedComments[commentIndex].Id)
-          .update({
-            // UserLikesJSON: JSON.stringify(updatedComments[commentIndex].UserLikesJSON),
-            UserCommentsJSON: JSON.stringify(
-              updatedComments[commentIndex].UserCommentsJSON
-            ),
-            userHasLiked: updatedComments[commentIndex].userHasLiked,
-            CommentsCount: comment.UserCommentsJSON.length + 1,
-          })
-          .then(async (ress: any) => {
-            console.log(ress, "ressress");
-            setComments(updatedComments);
-            let notifiedArr = {
-              ContentId: ArrDetails[0].Id,
-              NotifiedUserId: ArrDetails[0].AuthorId,
-              ContentType0: "Reply",
-              ContentName: ArrDetails[0].Title,
-              ActionUserId: CurrentUser.Id,
-              DeatilPage: "ProjectDetails",
-              ReadStatus: false
-            }
-            const nofiArr = await addNotification(notifiedArr, sp)
-            console.log(nofiArr, 'nofiArr');
-          });
-      });
+      const comment = updatedComments[commentIndex];
+      await sp.web.lists
+        .getByTitle("ARGProjectUserComments")
+        .items.add({
+          UserName: CurrentUser.Title, // Replace with actual username
+          Comments: replyText,
+          ARGProjectCommentsId: updatedComments[commentIndex].Id,
+          // EventsCommentsId: updatedComments[commentIndex].Id,
+        })
+        .then(async (ress: any) => {
+          console.log(ress, "ressress");
+          const newReplyJson = {
+            Id: ress.data.Id,
+            AuthorId: ress.data.AuthorId,
+            UserName: ress.data.UserName, // Replace with actual username
+            Comments: ress.data.Comments,
+            Created: ress.data.Created,
+            UserProfile: CurrentUserProfile,
+          };
+          updatedComments[commentIndex].UserCommentsJSON.push(newReplyJson);
+          await sp.web.lists
+            .getByTitle("ARGProjectComments")
+            .items.getById(updatedComments[commentIndex].Id)
+            .update({
+              // UserLikesJSON: JSON.stringify(updatedComments[commentIndex].UserLikesJSON),
+              UserCommentsJSON: JSON.stringify(
+                updatedComments[commentIndex].UserCommentsJSON
+              ),
+              userHasLiked: updatedComments[commentIndex].userHasLiked,
+              CommentsCount: comment.UserCommentsJSON.length + 1,
+            })
+            .then(async (ress: any) => {
+              console.log(ress, "ressress");
+              setComments(updatedComments);
+              let notifiedArr = {
+                ContentId: ArrDetails[0].Id,
+                NotifiedUserId: ArrDetails[0].AuthorId,
+                ContentType0: "Reply",
+                ContentName: ArrDetails[0].Title,
+                ActionUserId: CurrentUser.Id,
+                DeatilPage: "ProjectDetails",
+                ReadStatus: false
+              }
+              const nofiArr = await addNotification(notifiedArr, sp)
+              console.log(nofiArr, 'nofiArr');
+            });
+        });
     }
     catch (error) {
       setLoadingReply(false);
@@ -832,19 +832,19 @@ try{
   ];
   //#endregion
   console.log(ArrDetails, "console.log(ArrDetails)");
-  const sendanEmail = (item:any) => {
+  const sendanEmail = (item: any) => {
     // window.open("https://outlook.office.com/mail/inbox");
- 
-     const subject ="Project Title-"+ item.ProjectName;
-     const body = 'Here is the link to the Project:'+ `${siteUrl}/SitePages/ProjectDetails.aspx?${item.Id}`;
- 
+
+    const subject = "Project Title-" + item.ProjectName;
+    const body = 'Here is the link to the Project:' + `${siteUrl}/SitePages/ProjectDetails.aspx?${item.Id}`;
+
     //const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
     window.open(office365MailLink, '_blank');
     // Open the link to launch the default mail client (like Outlook)
     //window.location.href = mailtoLink;
-   };
+  };
 
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   // const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -879,14 +879,14 @@ try{
   //     setLoading(false);
   //   }
   // };
-  const [error, setError] = useState<string>('');  
+  const [error, setError] = useState<string>('');
   // Function to remove a file from the selected files array
   // const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
   //   setLoading(true);
   //   const files = Array.from(e.target.files || []);  // Ensure files is an array of type File[]
- 
+
   //   try {
-     
+
   //     const allowedTypes = [
   //       'image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml',
   //       'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
@@ -895,7 +895,7 @@ try{
   //       'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
   //       'text/csv', 'text/tsx'
   //     ];
- 
+
   //     // Filter valid files based on MIME types
   //     const filteredFiles = files.filter(file => allowedTypes.includes(file.type));
   //     console.error('here is my filteredFiles:', filteredFiles);
@@ -904,7 +904,7 @@ try{
   //       setLoading(false);
   //       return;
   //     }
- 
+
   //     setError('');
   //     setSelectedFiles(filteredFiles);
   //   } catch (error) {
@@ -917,9 +917,9 @@ try{
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setLoading(true);
     const files = Array.from(e.target.files || []);  // Ensure files is an array of type File[]
- 
+
     try {
-     
+
       const allowedTypes = [
         'image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml',
         'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
@@ -928,16 +928,16 @@ try{
         'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
         'text/csv', 'text/tsx'
       ];
- 
+
       // Filter valid files based on MIME types
       const filteredFiles = files.filter(file => allowedTypes.includes(file.type));
- 
+
       if (filteredFiles.length === 0) {
         setError("Only PNG, JPG, SVG, DOC, DOCX, PDF, EXCEL, PPT, CSV, and TSX files are allowed.");
         setLoading(false);
         return;
       }
- 
+
       setError('');
       setSelectedFiles(filteredFiles);
     } catch (error) {
@@ -947,122 +947,122 @@ try{
       setLoading(false);
     }
   };
-//   const uploadfileinfolder = async()=>{
-//     console.log("hernter here in ")
-//     console.log(selectedFiles , " Here is my selected files")
-//   for (const file of selectedFiles) {
+  //   const uploadfileinfolder = async()=>{
+  //     console.log("hernter here in ")
+  //     console.log(selectedFiles , " Here is my selected files")
+  //   for (const file of selectedFiles) {
 
-//     try {
-//       console.log(`Uploading file: ${file.name}`);
-//       console.log(`filemanager: ${filemanager}`);
-     
-//       // Reference the folder by server-relative path
-//       const uploadFolder = sp.web.getFolderByServerRelativePath(`${filemanager}`);
-//       console.log(uploadFolder , "uplaodfold")
-//       // Upload the file using addChunked (use appropriate chunk size if needed)
-//       const uploadResult = await uploadFolder.files.addChunked(file.name, file)
-//       if(uploadResult){
-//         await Swal.fire(
-//           'Uploaded!',
-//           'The file has been successfully Uploaded.',
-//           'success'
-//       );
-//       getAllFilesForProject()
-//       setSelectedFiles([])
-//       }
- 
-//       console.log(`Upload successful for file: ${file.name}`);
-//     } catch (error) {
-//       console.error(`Error uploading file: ${file.name}`, error);
-//     }
-//   }
-     
+  //     try {
+  //       console.log(`Uploading file: ${file.name}`);
+  //       console.log(`filemanager: ${filemanager}`);
 
-// }
-const sanitizeFileName = (name:any) => {
-  // Remove invalid characters
-  return name.replace(/[<>:"/\\|?*%#]/g, '_'); // Replace invalid characters with an underscore
-};
-const uploadfileinfolder = async () => {
-  console.log("Entering upload function");
-   if(selectedFiles.length > 0 ){
-    try {
-      for (const file of selectedFiles) {
+  //       // Reference the folder by server-relative path
+  //       const uploadFolder = sp.web.getFolderByServerRelativePath(`${filemanager}`);
+  //       console.log(uploadFolder , "uplaodfold")
+  //       // Upload the file using addChunked (use appropriate chunk size if needed)
+  //       const uploadResult = await uploadFolder.files.addChunked(file.name, file)
+  //       if(uploadResult){
+  //         await Swal.fire(
+  //           'Uploaded!',
+  //           'The file has been successfully Uploaded.',
+  //           'success'
+  //       );
+  //       getAllFilesForProject()
+  //       setSelectedFiles([])
+  //       }
+
+  //       console.log(`Upload successful for file: ${file.name}`);
+  //     } catch (error) {
+  //       console.error(`Error uploading file: ${file.name}`, error);
+  //     }
+  //   }
+
+
+  // }
+  const sanitizeFileName = (name: any) => {
+    // Remove invalid characters
+    return name.replace(/[<>:"/\\|?*%#]/g, '_'); // Replace invalid characters with an underscore
+  };
+  const uploadfileinfolder = async () => {
+    console.log("Entering upload function");
+    if (selectedFiles.length > 0) {
+      try {
+        for (const file of selectedFiles) {
           console.log(`Uploading file: ${file.name}`);
           console.log(`filemanager: ${filemanager}`);
- 
-   
+
+
           const sanitizedFileName = sanitizeFileName(file.name);
           console.log(`Sanitized file name: ${sanitizedFileName}`);
- 
+
           const uploadFolder = sp.web.getFolderByServerRelativePath(filemanager);
           console.log(uploadFolder, "uploadFolder");
- 
-   
+
+
           const uploadResult = await uploadFolder.files.addChunked(sanitizedFileName, file);
- 
+
           if (uploadResult) {
-              console.log(`Upload successful for file: ${file.name}`);
+            console.log(`Upload successful for file: ${file.name}`);
           }
-      }
- 
- 
-      await Swal.fire(
+        }
+
+
+        await Swal.fire(
           'Uploaded!',
           'All files have been successfully uploaded.',
           'success'
+        );
+        getAllFilesForProject();
+        setSelectedFiles([]);
+      } catch (error) {
+        console.error(`Error uploading file`, error);
+      }
+    } else {
+      await Swal.fire(
+        'File Empty!',
+        'Please select Files ',
+        'warning'
       );
-      getAllFilesForProject();
-      setSelectedFiles([]);
-  } catch (error) {
-      console.error(`Error uploading file`, error);
-  }
-   }else{
-    await Swal.fire(
-      'File Empty!',
-      'Please select Files ',
-      'warning'
-  );
-   }
+    }
 
-};
- 
+  };
 
-// const uploadfileinfolder = async () => {
-//   console.log("Entering upload function");
 
-//   for (const file of selectedFiles) {
-//       try {
-//           console.log(`Uploading file: ${file.name}`);
-//           console.log(`filemanager: ${filemanager}`);
+  // const uploadfileinfolder = async () => {
+  //   console.log("Entering upload function");
 
-//           // Sanitize the file name
-//           const sanitizedFileName = sanitizeFileName(file.name);
-//           console.log(`Sanitized file name: ${sanitizedFileName}`);
+  //   for (const file of selectedFiles) {
+  //       try {
+  //           console.log(`Uploading file: ${file.name}`);
+  //           console.log(`filemanager: ${filemanager}`);
 
-//           // Reference the folder by server-relative path
-//           const uploadFolder = sp.web.getFolderByServerRelativePath(filemanager.trim());
-//           console.log(uploadFolder, "uploadFolder");
+  //           // Sanitize the file name
+  //           const sanitizedFileName = sanitizeFileName(file.name);
+  //           console.log(`Sanitized file name: ${sanitizedFileName}`);
 
-//           // Upload the file using addChunked (use appropriate chunk size if needed)
-//           const uploadResult = await uploadFolder.files.addChunked(sanitizedFileName, file);
+  //           // Reference the folder by server-relative path
+  //           const uploadFolder = sp.web.getFolderByServerRelativePath(filemanager.trim());
+  //           console.log(uploadFolder, "uploadFolder");
 
-//           if (uploadResult) {
-//               await Swal.fire(
-//                   'Uploaded!',
-//                   'The file has been successfully uploaded.',
-//                   'success'
-//               );
-//               getAllFilesForProject();
-//               setSelectedFiles([]);
-//           }
+  //           // Upload the file using addChunked (use appropriate chunk size if needed)
+  //           const uploadResult = await uploadFolder.files.addChunked(sanitizedFileName, file);
 
-//           console.log(`Upload successful for file: ${file.name}`);
-//       } catch (error) {
-//           console.error(`Error uploading file: ${file.name}`, error);
-//       }
-//   }
-// };
+  //           if (uploadResult) {
+  //               await Swal.fire(
+  //                   'Uploaded!',
+  //                   'The file has been successfully uploaded.',
+  //                   'success'
+  //               );
+  //               getAllFilesForProject();
+  //               setSelectedFiles([]);
+  //           }
+
+  //           console.log(`Upload successful for file: ${file.name}`);
+  //       } catch (error) {
+  //           console.error(`Error uploading file: ${file.name}`, error);
+  //       }
+  //   }
+  // };
 
 
   const removeFile = (fileName: string) => {
@@ -1071,127 +1071,127 @@ const uploadfileinfolder = async () => {
 
   // Function to upload files to the document library
 
-  const[argcurrentgroupuser, setArgcurrentgroupuser] = useState([])
+  const [argcurrentgroupuser, setArgcurrentgroupuser] = useState([])
 
   const [files, setFiles] = useState([]);
   async function getAllFilesForProject() {
-   
-   
+
+
     console.log(filemanager, "file manager")
     const response = await sp.web.getFolderByServerRelativePath(`${filemanager}`).files();
     console.log(response, "resonse")
     setFiles(response)
-    function isDocumentLibrary(filemanager:any) {
+    function isDocumentLibrary(filemanager: any) {
       // Check if the URL contains more than two parts after "/sites/"
       const parts = filemanager.split('/sites/')[1].split('/');
       return parts.length > 2 && !parts.includes('Forms');
-  }
- 
-  function isSubsite(filemanager:any) {
+    }
+
+    function isSubsite(filemanager: any) {
       // Check if the URL contains exactly two parts after "/sites/"
       const parts = filemanager.split('/sites/')[1].split('/');
       return parts.length === 2;
+    }
+
+    // Example usage
+
+
+    //console.log(isDocumentLibrary(docLibraryUrl)); // true
+    //console.log(isSubsite(docLibraryUrl)); // false
+
+
   }
- 
-  // Example usage
-
- 
-  //console.log(isDocumentLibrary(docLibraryUrl)); // true
-  //console.log(isSubsite(docLibraryUrl)); // false
- 
- 
-  }
 
 
-  async function  fetchOtherDetailsByProjectName() {
+  async function fetchOtherDetailsByProjectName() {
     console.log(projectname, "projectname")
     const ids = window.location.search;
     const originalString = ids;
     const idNum = originalString.substring(1);
     try {
-     
-       
-     
-      const getargmember :IList[] = await sp.web.lists.getByTitle('ARGProject').items.filter(`ProjectName eq '${projectname}'`).select("*,TeamMembers/ID,TeamMembers/EMail,TeamMembers/Title").expand("TeamMembers")();
+
+
+
+      const getargmember: IList[] = await sp.web.lists.getByTitle('ARGProject').items.filter(`ProjectName eq '${projectname}'`).select("*,TeamMembers/ID,TeamMembers/EMail,TeamMembers/Title").expand("TeamMembers")();
       console.log(getargmember, "getargmember")
       const userList = await sp.web.lists.getByTitle("User Information List").items.select("ID", "Title", "EMail", "Department", "JobTitle", "Picture").filter("EMail ne null")();
       console.log(userList, "userlist")
       setArgcurrentgroupuser(getargmember)
     } catch (error) {
-     
+
     }
-    if(projectname){
+    if (projectname) {
       const getargmember = await sp.web.lists.getByTitle('ARGProject')
       console.log(getargmember, "getargmember")
     }
-   
+
   }
-  const handlePreviewFile =  (fileUrl:any) => {
+  const handlePreviewFile = (fileUrl: any) => {
     window.open(fileUrl, '_blank'); // Open the file in a new tab
   };
-  const Handledeletefile = async (fileid:any) => {
+  const Handledeletefile = async (fileid: any) => {
     try {
       const result = await Swal.fire({
-          title: 'Are you sure?',
-          text: "You won't be able to revert this!",
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Yes, delete it!'
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
       });
 
       if (result.isConfirmed) {
-          // Fetch the file using its unique ID
-          const file = await sp.web.getFileById(fileid)();
+        // Fetch the file using its unique ID
+        const file = await sp.web.getFileById(fileid)();
 
-          if (file) {
-              // Delete the file
-              await sp.web.getFileById(fileid).delete();
+        if (file) {
+          // Delete the file
+          await sp.web.getFileById(fileid).delete();
 
-              await Swal.fire(
-                  'Deleted!',
-                  'Your file has been deleted.',
-                  'success'
-              );
+          await Swal.fire(
+            'Deleted!',
+            'Your file has been deleted.',
+            'success'
+          );
 
-              getAllFilesForProject()
-          } else {
-             // alert("File not found.");
-          }
+          getAllFilesForProject()
+        } else {
+          // alert("File not found.");
+        }
       }
-  } catch (error) {
+    } catch (error) {
       console.error("Error deleting file:", error);
       Swal.fire({
-          title: 'Error!',
-          text: 'Failed to delete file. Check the console for details.',
-          icon: 'error',
-          confirmButtonText: 'OK'
+        title: 'Error!',
+        text: 'Failed to delete file. Check the console for details.',
+        icon: 'error',
+        confirmButtonText: 'OK'
       });
-  }
+    }
   };
 
-const [isPopupVisible, setPopupVisible] = useState(false);
-const [toggleuserpopup, Settoggleuserpopup] = useState(false);
-// const [toggleuserpopup, Settoggleuserpopup] = useState(false);
+  const [isPopupVisible, setPopupVisible] = useState(false);
+  const [toggleuserpopup, Settoggleuserpopup] = useState(false);
+  // const [toggleuserpopup, Settoggleuserpopup] = useState(false);
 
 
 
-// this is pop up when folder create click
-const togglePopup  =async () => {
-  const ids = window.location.search;
-const originalString = ids;
-const idNum = originalString.substring(1);
+  // this is pop up when folder create click
+  const togglePopup = async () => {
+    const ids = window.location.search;
+    const originalString = ids;
+    const idNum = originalString.substring(1);
 
 
-  const getdata :any= await sp.web.lists.getByTitle('ARGProject').items.getById(parseInt(idNum))()
-  console.log(getdata , "get data ")
+    const getdata: any = await sp.web.lists.getByTitle('ARGProject').items.getById(parseInt(idNum))()
+    console.log(getdata, "get data ")
 
     if (getdata.FolderInProgress === null || getdata.FolderInProgress === "") {
-   
+
       setPopupVisible(!isPopupVisible);
     } else if (getdata.FolderInProgress === "In Progress") {
-   
+
       Swal.fire({
         title: 'Folder is in progress!',
         text: 'Please wait until the process is complete.',
@@ -1207,24 +1207,24 @@ const idNum = originalString.substring(1);
         confirmButtonText: 'OK',
       });
     }
-};
+  };
 
 
-const togglevalue = (e:any) => {
-  e.preventDefault()
-  Settoggleuserpopup(!toggleuserpopup);
-}
+  const togglevalue = (e: any) => {
+    e.preventDefault()
+    Settoggleuserpopup(!toggleuserpopup);
+  }
 
 
-// const togglevalue = (e:any) => {
-//   e.preventDefault()
-//   Settoggleuserpopup(!toggleuserpopup);
-// }
+  // const togglevalue = (e:any) => {
+  //   e.preventDefault()
+  //   Settoggleuserpopup(!toggleuserpopup);
+  // }
   const [name, setName] = useState('');
   const [Overview, setOverview] = useState('');
 
   // Create folder pop up
-  const UpdateItemAndCreateFolder = async (e:any) => {
+  const UpdateItemAndCreateFolder = async (e: any) => {
     e.preventDefault();
 
 
@@ -1237,24 +1237,24 @@ const togglevalue = (e:any) => {
         confirmButtonText: 'OK',
       });
     } else {
-   
+
       try {
 
         console.log('Form submitted:', { name, Overview });
         const ids = window.location.search;
         const originalString = ids;
         const idNum = originalString.substring(1);
-        console.log(name, "name" , Overview , "overview")
+        console.log(name, "name", Overview, "overview")
         const updatedValues = {
- 
-          ProjectFolderName : name,
+
+          ProjectFolderName: name,
           FolderOverview: Overview,
           FolderInProgress: "In Progress"
         };
-   
-     
-         await sp.web.lists.getByTitle('ARGProject').items.getById(parseInt(idNum)).update(updatedValues);
-   
+
+
+        await sp.web.lists.getByTitle('ARGProject').items.getById(parseInt(idNum)).update(updatedValues);
+
         Swal.fire({
           title: 'Success!',
           text: 'The form was submitted successfully.',
@@ -1274,130 +1274,130 @@ const togglevalue = (e:any) => {
     }
   };
 
- 
+
   const UpdateTeamMember = async (e: any) => {
     e.preventDefault();
-    if(selectedValue.length === 0){
+    if (selectedValue.length === 0) {
       // Swal.fire("Error", "Please select at least one user.", "error");
       return
     }
     try {
-        console.log('Form submitted:', { name, Overview });
-        const ids = window.location.search;
-        const originalString = ids;
-        const idNum = originalString.substring(1);
-        console.log(name, "name", Overview, "overview");
+      console.log('Form submitted:', { name, Overview });
+      const ids = window.location.search;
+      const originalString = ids;
+      const idNum = originalString.substring(1);
+      console.log(name, "name", Overview, "overview");
 
-        // Fetch the current People Picker value (TeamMembers) from the list item
-        const item = await sp.web.lists.getByTitle("ARGProject").items.getById(parseInt(idNum))
-            .select("*, TeamMembers/Id, TeamMembers/EMail, TeamMembers/Title")
-            .expand("TeamMembers")();
-       
-        console.log(item, "here is my item");
+      // Fetch the current People Picker value (TeamMembers) from the list item
+      const item = await sp.web.lists.getByTitle("ARGProject").items.getById(parseInt(idNum))
+        .select("*, TeamMembers/Id, TeamMembers/EMail, TeamMembers/Title")
+        .expand("TeamMembers")();
 
-        // Current People Picker column value (TeamMembers) from the fetched item
-        const existingUsers = (item as any)["TeamMembers"] || [];
-        console.log(existingUsers, "existing users");
+      console.log(item, "here is my item");
 
-        // Format new users for the People Picker column (only LookupId values)
-        const newUsers = selectedValue.map((user: { label: string, value: number }) => ({
-            LookupId: user.value, // Use 'LookupId' for People Picker
-        }));
+      // Current People Picker column value (TeamMembers) from the fetched item
+      const existingUsers = (item as any)["TeamMembers"] || [];
+      console.log(existingUsers, "existing users");
 
-        // Extract the LookupId from existing users to avoid duplication
-        const existingUserLookupIds = existingUsers.map((user: { Id: number }) => user.Id);
+      // Format new users for the People Picker column (only LookupId values)
+      const newUsers = selectedValue.map((user: { label: string, value: number }) => ({
+        LookupId: user.value, // Use 'LookupId' for People Picker
+      }));
 
-        // Combine existing users with new users, ensuring no duplicates based on 'LookupId'
-        const updatedUsers = [
-            ...existingUsers.map((user: { Id: number }) => ({ LookupId: user.Id })), // Use 'Id' for existing users
-            ...newUsers.filter(newUser => !existingUserLookupIds.includes(newUser.LookupId)) // Avoid duplicates by checking LookupId
-        ];
+      // Extract the LookupId from existing users to avoid duplication
+      const existingUserLookupIds = existingUsers.map((user: { Id: number }) => user.Id);
 
-        console.log(updatedUsers, "updatedUsers");
+      // Combine existing users with new users, ensuring no duplicates based on 'LookupId'
+      const updatedUsers = [
+        ...existingUsers.map((user: { Id: number }) => ({ LookupId: user.Id })), // Use 'Id' for existing users
+        ...newUsers.filter(newUser => !existingUserLookupIds.includes(newUser.LookupId)) // Avoid duplicates by checking LookupId
+      ];
 
-        // Prepare updated values for SharePoint item
-        const updatedValues = {
-            TeamMembersId: updatedUsers.map(user => user.LookupId), // Ensure it's an array
-        };
-       
-        // Update the SharePoint item
-        const updatedItem =  await sp.web.lists.getByTitle('ARGProject').items.getById(parseInt(idNum)).update(updatedValues);
-        if(updatedItem){
+      console.log(updatedUsers, "updatedUsers");
 
-          togglevalue(e)
- 
- 
-               // Show success message
+      // Prepare updated values for SharePoint item
+      const updatedValues = {
+        TeamMembersId: updatedUsers.map(user => user.LookupId), // Ensure it's an array
+      };
+
+      // Update the SharePoint item
+      const updatedItem = await sp.web.lists.getByTitle('ARGProject').items.getById(parseInt(idNum)).update(updatedValues);
+      if (updatedItem) {
+
+        togglevalue(e)
+
+
+        // Show success message
         Swal.fire({
           title: 'Success!',
           text: 'Users added successfully.',
           icon: 'success',
           confirmButtonText: 'OK',
-      });
-      ApiLocalStorageData()
-        }
-       
-     
+        });
+        ApiLocalStorageData()
+      }
 
-        // Close popup (toggle visibility)
+
+
+      // Close popup (toggle visibility)
 
     } catch (error) {
-        console.error('Error updating item:', error);
+      console.error('Error updating item:', error);
 
-        // Show error message
-        Swal.fire({
-            title: 'Error!',
-            text: 'Something went wrong. Please try again.',
-            icon: 'error',
-            confirmButtonText: 'OK',
-        });
+      // Show error message
+      Swal.fire({
+        title: 'Error!',
+        text: 'Something went wrong. Please try again.',
+        icon: 'error',
+        confirmButtonText: 'OK',
+      });
     }
-};
+  };
 
 
-  const DeleteFileFromFileMaster =async (fileId:any) =>{
+  const DeleteFileFromFileMaster = async (fileId: any) => {
     try {
-   
+
       const result = await Swal.fire({
-          title: 'Are you sure?',
-          text: 'Do you really want to delete this file? This action cannot be undone.',
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#d33',
-          cancelButtonColor: '#3085d6',
-          confirmButtonText: 'Yes, delete it!',
-          cancelButtonText: 'Cancel',
+        title: 'Are you sure?',
+        text: 'Do you really want to delete this file? This action cannot be undone.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'Cancel',
       });
 
       // Check if user confirmed
       if (result.isConfirmed) {
-          // Delete the file
-          await sp.web.getFileById(fileId).delete();
-         
-         
-          await Swal.fire(
-              'Deleted!',
-              'The file has been deleted successfully.',
-              'success'
-          );
-          getAllFilesForProject()
+        // Delete the file
+        await sp.web.getFileById(fileId).delete();
+
+
+        await Swal.fire(
+          'Deleted!',
+          'The file has been deleted successfully.',
+          'success'
+        );
+        getAllFilesForProject()
       } else {
-          // Optionally handle the cancel action
-          await Swal.fire(
-              'Cancelled',
-              'The file was not deleted.',
-              'info'
-          );
+        // Optionally handle the cancel action
+        await Swal.fire(
+          'Cancelled',
+          'The file was not deleted.',
+          'info'
+        );
       }
-  } catch (error) {
+    } catch (error) {
       console.error('Error deleting file:', error);
- 
+
       await Swal.fire(
-          'Error!',
-          'There was an error deleting the file.',
-          'error'
+        'Error!',
+        'There was an error deleting the file.',
+        'error'
       );
-  }
+    }
   }
   const handleSaveComment = async (id: number, newText: string) => {
     // Logic for saving a comment goes here
@@ -1416,185 +1416,186 @@ const togglevalue = (e:any) => {
     try {
 
       const result = await Swal.fire({
-          title: "Are you sure?",
-          text: "Do you really want to delete this item? This action cannot be undone!",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonColor: "#d33",
-          cancelButtonColor: "#3085d6",
-          confirmButtonText: "Yes, delete it!",
+        title: "Are you sure?",
+        text: "Do you really want to delete this item? This action cannot be undone!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, delete it!",
       });
 
       // If confirmed, proceed to delete
       if (result.isConfirmed) {
-          await sp.web.lists.getByTitle("ARGProjectComments").items.getById(commentId).delete();
-          getApiData();
-   
-          Swal.fire({
-              title: "Deleted!",
-              text: "The item has been successfully deleted.",
-              icon: "success",
-              timer: 1500,
-              showConfirmButton: false,
-          });
+        await sp.web.lists.getByTitle("ARGProjectComments").items.getById(commentId).delete();
+        getApiData();
+
+        Swal.fire({
+          title: "Deleted!",
+          text: "The item has been successfully deleted.",
+          icon: "success",
+          timer: 1500,
+          showConfirmButton: false,
+        });
       }
-  } catch (error) {
-   
+    } catch (error) {
+
       Swal.fire({
-          title: "Error!",
-          text: `There was an issue deleting the item: ${error.message}`,
-          icon: "error",
-          confirmButtonText: "OK",
+        title: "Error!",
+        text: `There was an issue deleting the item: ${error.message}`,
+        icon: "error",
+        confirmButtonText: "OK",
       });
       console.error(`Error deleting item `, error);
+    }
   }
-  }
 
-//   const handleRemoveUser = async (userId: number) => {
-   
-//     try {
-//         const itemId = argcurrentgroupuser[0]?.Id;
-//      
-//         if (!itemId) {
-//      
-//             return;
-//         }
+  //   const handleRemoveUser = async (userId: number) => {
 
-//         if (!userId) {
-//        
-//             return;
-//         }
+  //     try {
+  //         const itemId = argcurrentgroupuser[0]?.Id;
+  //      
+  //         if (!itemId) {
+  //      
+  //             return;
+  //         }
 
-//         // Fetch the item with expanded TeamMembers
-//         const item = await sp.web.lists
-//             .getByTitle("ARGProject")
-//             .items.getById(itemId)
-//             .select("*, TeamMembers/Id, TeamMembers/EMail, TeamMembers/Title")
-//             .expand("TeamMembers")();
+  //         if (!userId) {
+  //        
+  //             return;
+  //         }
 
-//         console.log("Current item:", item);
+  //         // Fetch the item with expanded TeamMembers
+  //         const item = await sp.web.lists
+  //             .getByTitle("ARGProject")
+  //             .items.getById(itemId)
+  //             .select("*, TeamMembers/Id, TeamMembers/EMail, TeamMembers/Title")
+  //             .expand("TeamMembers")();
 
-//         // Existing users in TeamMembers field
-//         const currentUsers = item.TeamMembers || [];
-//         console.log("Current users in TeamMembers:", currentUsers);
+  //         console.log("Current item:", item);
 
-//         // Filter out the user to be removed
-//         const updatedUsers = currentUsers.filter((user: any) => user.Id !== userId);
-//         console.log("Updated users list:", updatedUsers);
+  //         // Existing users in TeamMembers field
+  //         const currentUsers = item.TeamMembers || [];
+  //         console.log("Current users in TeamMembers:", currentUsers);
 
-//         // Prepare the updated array of LookupIds for SharePoint
-//         const updatedValues = {
-//             TeamMembersId: { results: updatedUsers.map((user: any) => user.Id) },
-//         };
+  //         // Filter out the user to be removed
+  //         const updatedUsers = currentUsers.filter((user: any) => user.Id !== userId);
+  //         console.log("Updated users list:", updatedUsers);
 
-//         // Update the SharePoint item
-//         await sp.web.lists
-//             .getByTitle("ARGProject")
-//             .items.getById(itemId)
-//             .update(updatedValues);
+  //         // Prepare the updated array of LookupIds for SharePoint
+  //         const updatedValues = {
+  //             TeamMembersId: { results: updatedUsers.map((user: any) => user.Id) },
+  //         };
 
-//      
-//     } catch (error) {
-//         console.error("Error removing user:", error);
-//      
-//     }
-// };
-const handleRemoveUser = async (userId: number) => {
-  Swal.fire({
-    title: 'Do you want to remove project member?',
-    showConfirmButton: true,
-    showCancelButton: true,
-    confirmButtonText: "Yes",
-    cancelButtonText: "No",
-    icon: 'warning'
-  }
-  ).then(async (result) => {
-    console.log(result)
-    if (result.isConfirmed) {
-      try {
-        const ids = window.location.search;
-        const idNum = ids.substring(1);
+  //         // Update the SharePoint item
+  //         await sp.web.lists
+  //             .getByTitle("ARGProject")
+  //             .items.getById(itemId)
+  //             .update(updatedValues);
 
-        if (!idNum) {
+  //      
+  //     } catch (error) {
+  //         console.error("Error removing user:", error);
+  //      
+  //     }
+  // };
+  const handleRemoveUser = async (userId: number) => {
+    Swal.fire({
+      title: 'Do you want to remove project member?',
+      showConfirmButton: true,
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      cancelButtonText: "No",
+      icon: 'warning'
+    }
+    ).then(async (result) => {
+      console.log(result)
+      if (result.isConfirmed) {
+        try {
+          const ids = window.location.search;
+          const idNum = ids.substring(1);
 
-          return;
+          if (!idNum) {
+
+            return;
+          }
+
+          // Fetch the current People Picker value (TeamMembers) from the list item
+          const item = await sp.web.lists.getByTitle("ARGProject").items.getById(parseInt(idNum))
+            .select("*, TeamMembers/Id, TeamMembers/EMail, TeamMembers/Title")
+            .expand("TeamMembers")();
+
+          console.log(item, "here is my item");
+
+          // Current People Picker column value (TeamMembers) from the fetched item
+          const existingUsers = (item as any)["TeamMembers"] || [];
+          console.log(existingUsers, "existing users");
+
+          // Filter out the user to be removed
+          const updatedUsers = existingUsers.filter((user: { Id: number }) => user.Id !== userId);
+
+          console.log(updatedUsers, "updatedUsers after removal");
+
+          // Prepare updated values for SharePoint item
+          const updatedValues = {
+            TeamMembersId: updatedUsers.map((user: { Id: number }) => user.Id), // Use 'Id' to update TeamMembers
+          };
+
+          console.log(updatedValues, "updatedValues");
+
+          // Update the SharePoint item
+          const updatedItem = await sp.web.lists.getByTitle("ARGProject").items.getById(parseInt(idNum)).update(updatedValues);
+
+          // Show success message
+          Swal.fire({
+            title: "Success!",
+            text: "User removed successfully.",
+            icon: "success",
+            confirmButtonText: "OK",
+          });
+          ApiLocalStorageData()
+        } catch (error) {
+          console.error("Error removing user:", error);
+
+          // Show error message
+          Swal.fire({
+            title: "Error!",
+            text: "Something went wrong. Please try again.",
+            icon: "error",
+            confirmButtonText: "OK",
+          });
         }
-
-        // Fetch the current People Picker value (TeamMembers) from the list item
-        const item = await sp.web.lists.getByTitle("ARGProject").items.getById(parseInt(idNum))
-          .select("*, TeamMembers/Id, TeamMembers/EMail, TeamMembers/Title")
-          .expand("TeamMembers")();
-
-        console.log(item, "here is my item");
-
-        // Current People Picker column value (TeamMembers) from the fetched item
-        const existingUsers = (item as any)["TeamMembers"] || [];
-        console.log(existingUsers, "existing users");
-
-        // Filter out the user to be removed
-        const updatedUsers = existingUsers.filter((user: { Id: number }) => user.Id !== userId);
-
-        console.log(updatedUsers, "updatedUsers after removal");
-
-        // Prepare updated values for SharePoint item
-        const updatedValues = {
-          TeamMembersId: updatedUsers.map((user: { Id: number }) => user.Id), // Use 'Id' to update TeamMembers
-        };
-
-        console.log(updatedValues, "updatedValues");
-
-        // Update the SharePoint item
-        const updatedItem = await sp.web.lists.getByTitle("ARGProject").items.getById(parseInt(idNum)).update(updatedValues);
-
-        // Show success message
-        Swal.fire({
-          title: "Success!",
-          text: "User removed successfully.",
-          icon: "success",
-          confirmButtonText: "OK",
-        });
-        ApiLocalStorageData()
-      } catch (error) {
-        console.error("Error removing user:", error);
-
-        // Show error message
-        Swal.fire({
-          title: "Error!",
-          text: "Something went wrong. Please try again.",
-          icon: "error",
-          confirmButtonText: "OK",
-        });
       }
-    }})
- 
-};
+    })
 
-// useEffect(()=>{
-//   // getAllFilesForProject()
-//   const getFileCount=async()=>{
-//     const response = await sp.web.getFolderByServerRelativePath(`${filemanager}`).files();
-//     console.log(response, "resonse in effect ")
-//     setFiles(response)
-//   }
-//   getFileCount();
- 
-// },[])
+  };
 
-useEffect(()=>{
-  // getAllFilesForProject()
-  const getFileCount=async()=>{
-    const ids = window.location.search;
-    const originalString = ids;
-    const idNum = originalString.substring(1);
-    const data =await getProjectDetailsById(sp, Number(idNum));
-    console.log("resonse in effect  data",data);
-    const response = await sp.web.getFolderByServerRelativePath(`${data[0].ProjectFileManager}`).files();
-    console.log(response, "resonse in effect ")
-    setFiles(response)
-  }
-  getFileCount();
- 
-},[])
+  // useEffect(()=>{
+  //   // getAllFilesForProject()
+  //   const getFileCount=async()=>{
+  //     const response = await sp.web.getFolderByServerRelativePath(`${filemanager}`).files();
+  //     console.log(response, "resonse in effect ")
+  //     setFiles(response)
+  //   }
+  //   getFileCount();
+
+  // },[])
+
+  useEffect(() => {
+    // getAllFilesForProject()
+    const getFileCount = async () => {
+      const ids = window.location.search;
+      const originalString = ids;
+      const idNum = originalString.substring(1);
+      const data = await getProjectDetailsById(sp, Number(idNum));
+      console.log("resonse in effect  data", data);
+      const response = await sp.web.getFolderByServerRelativePath(`${data[0].ProjectFileManager}`).files();
+      console.log(response, "resonse in effect ")
+      setFiles(response)
+    }
+    getFileCount();
+
+  }, [])
 
   return (
     <div id="wrapper" ref={elementRef}>
@@ -1611,172 +1612,172 @@ useEffect(()=>{
           }}
         >
           <div className="container-fluid paddb">
-          {isPopupVisible && (
-        <div className="popup">
-          <div className="popup-content">
-            <button className="close-btn" onClick={togglePopup}>
-              &times; {/* Cross mark */}
-            </button>
-            <h2>Popup Form</h2>
-            <form>
-              <label htmlFor="name">Folder Name:</label>
-              <input  type="text"
-        id="name"
-        name="name"
-        value={name}
-        onChange={(e) => setName(e.target.value)} />
-              <br />
-              <label htmlFor="Overview">Overview:</label>
-              <input  type="email"
-        id="Overview"
-        name="Overview"
-        value={Overview}
-        onChange={(e) => setOverview(e.target.value)} />
-              <br />
-              <button type="submit" onClick={UpdateItemAndCreateFolder}>Submit</button>
-            </form>
-          </div>
-        </div>
-      )}
-          {toggleuserpopup && (
-        <div className="popup">
-          <div className="popup-content">
-            <button className="close-btn" onClick={togglevalue}>
-              &times; {/* Cross mark */}
-            </button>
-            <h2>Add Users</h2>
-            <form>
-              <label htmlFor="name">Select Users </label>
-                {/* React-Select component */}
-                <Select
-    options={users}
-    value={selectedValue}
-    onRemove={onRemove}
-    onChange={(selectedOptions:any) => onSelect(selectedOptions)} // For multi-select, you'll need to handle array of options
-    isMulti 
-/>
+            {isPopupVisible && (
+              <div className="popup">
+                <div className="popup-content">
+                  <button className="close-btn" onClick={togglePopup}>
+                    &times; {/* Cross mark */}
+                  </button>
+                  <h2>Popup Form</h2>
+                  <form>
+                    <label htmlFor="name">Folder Name:</label>
+                    <input type="text"
+                      id="name"
+                      name="name"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)} />
+                    <br />
+                    <label htmlFor="Overview">Overview:</label>
+                    <input type="email"
+                      id="Overview"
+                      name="Overview"
+                      value={Overview}
+                      onChange={(e) => setOverview(e.target.value)} />
+                    <br />
+                    <button type="submit" onClick={UpdateItemAndCreateFolder}>Submit</button>
+                  </form>
+                </div>
+              </div>
+            )}
+            {toggleuserpopup && (
+              <div className="popup">
+                <div className="popup-content">
+                  <button className="close-btn" onClick={togglevalue}>
+                    &times; {/* Cross mark */}
+                  </button>
+                  <h2>Add Users</h2>
+                  <form>
+                    <label htmlFor="name">Select Users </label>
+                    {/* React-Select component */}
+                    <Select
+                      options={users}
+                      value={selectedValue}
+                      onRemove={onRemove}
+                      onChange={(selectedOptions: any) => onSelect(selectedOptions)} // For multi-select, you'll need to handle array of options
+                      isMulti
+                    />
 
 
-              {/* Multiselect component */}
-              {/* <Multiselect
+                    {/* Multiselect component */}
+                    {/* <Multiselect
                 options={users}  // Same options for both Select and Multiselect
                 selectedValues={selectedValue}
                 onSelect={onSelect} // Called when items are selected
                 onRemove={onRemove} // Called when items are removed
                 displayValue="label" // Display name of the user
               /> */}
-              <button type="submit" onClick={UpdateTeamMember}>Submit</button>
-            </form>
-          </div>
-        </div>
-      )}
+                    <button type="submit" onClick={UpdateTeamMember}>Submit</button>
+                  </form>
+                </div>
+              </div>
+            )}
             <div className="row ">
               <div className="col-lg-8 mt-0">
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
               </div>
-         
+
             </div>
             {ArrDetails.length > 0
               ? ArrDetails.map((item: any, index) => {
 
-                console.log(item?.Author?.Email , "email" )
-                console.log(item?.Author?.Title , "email" )
-           
-                if(item.Author.EMail === currentUserEmailRef.current){
-       
+                console.log(item?.Author?.Email, "email")
+                console.log(item?.Author?.Title, "email")
+
+                if (item.Author.EMail === currentUserEmailRef.current) {
+
                 }
-              //   if (item.ProjectStatus === "Completed") {
-              //     var div = document.querySelector('.col-md-6.mobile-w2') as HTMLElement;
-              //     if (div) {
-              //         div.style.pointerEvents = 'none';
-              //         div.style.opacity = '0.5'; // Optional: Makes the div look disabled
-              //     } else {
-              //         console.error("Element not found: .col-md-6.mobile-w2");
-              //     }
-              // }
-             
-              if (item.ProjectStatus === "Completed") {
-                isProjectCompleted = "Completed"
-                const div = document.querySelector('.col-md-6.mobile-w2') as HTMLElement;
-                if (div) {
+                //   if (item.ProjectStatus === "Completed") {
+                //     var div = document.querySelector('.col-md-6.mobile-w2') as HTMLElement;
+                //     if (div) {
+                //         div.style.pointerEvents = 'none';
+                //         div.style.opacity = '0.5'; // Optional: Makes the div look disabled
+                //     } else {
+                //         console.error("Element not found: .col-md-6.mobile-w2");
+                //     }
+                // }
+
+                if (item.ProjectStatus === "Completed") {
+                  isProjectCompleted = "Completed"
+                  const div = document.querySelector('.col-md-6.mobile-w2') as HTMLElement;
+                  if (div) {
                     // Make all input fields and other form elements read-only
                     const formElements = div.querySelectorAll('input, textarea, select, button');
                     formElements.forEach(element => {
-                        if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA' || element.tagName === 'SELECT') {
-                            (element as HTMLInputElement).readOnly = true;
-                        } else if (element.tagName === 'BUTTON') {
-                            (element as HTMLButtonElement).disabled = true;
-                        }
+                      if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA' || element.tagName === 'SELECT') {
+                        (element as HTMLInputElement).readOnly = true;
+                      } else if (element.tagName === 'BUTTON') {
+                        (element as HTMLButtonElement).disabled = true;
+                      }
                     });
-           
+
                     // Optionally, set pointer-events to none to visually indicate disabled state
                     div.style.pointerEvents = 'none';
                     div.style.opacity = '0.5';
-           
+
                     // Optional: Add a message indicating the section is read-only
                     const message = document.createElement('div');
                     // message.innerText = "This section is read-only.";
                     message.style.color = "red";
                     message.style.fontSize = "14px";
                     div.appendChild(message);
-                } else {
+                  } else {
                     console.error("Element not found: .col-md-6.mobile-w2");
+                  }
                 }
-            }
-             
+
                 const ProjectsDocsJSON =
                   item.ProjectsDocsJSON == undefined ||
                     item.ProjectsDocsJSON == null
                     ? ""
                     : JSON.parse(item.ProjectsDocsJSON);
                 console.log(ProjectsDocsJSON);
-                { projectname = item.ProjectName}
-                {filemanager = item.ProjectFileManager}
+                { projectname = item.ProjectName }
+                { filemanager = item.ProjectFileManager }
                 return (
                   <>
                     <div className="row mt-3">
                       <div className="col-md-3 mobile-w1">
-                       
-                      <p className="d-block mt-2 font-28">
-                     
-                        {item.ProjectName}
-                      </p>
-                      <div className="row ">
-                      <p
-                        style={{ lineHeight: "22px", fontSize:'15px', position:'sticky', top:'90px'}}
-                        className="d-block text-dark mt-2"
-                      >
-                        {item.ProjectOverview}
-                      </p>
-                     
-                    </div>
-                      <div style={{ position:'sticky', top:'90px'}}  className="row mt-2">
-                        <div className="col-md-12 col-xl-12">
-                        <div style={{cursor:'pointer'}} className="tabcss sameh mb-2 mt-2 me-1">
 
-                        <button type="button" className="opend"
-                  onClick={(e) => openModal(e)}
-                 
-                >
-                  {/* <FilePlus />  Documents */}
-                  <FilePlus style={{marginTop:'-2px'}} />  Documents <span style={{top:'13px'}} className="likecount1">{files.length}</span> 
-             
-                </button>
+                        <p className="d-block mt-2 font-28">
+
+                          {item.ProjectName}
+                        </p>
+                        <div className="row ">
+                          <p
+                            style={{ lineHeight: "22px", fontSize: '15px', position: 'sticky', top: '90px' }}
+                            className="d-block text-dark mt-2"
+                          >
+                            {item.ProjectOverview}
+                          </p>
+
                         </div>
-                        <div className="tabcss mb-2 mt-2 me-1 newalign"> <span className="pe-2 text-nowrap mb-0 d-inline-block">
+                        <div style={{ position: 'sticky', top: '90px' }} className="row mt-2">
+                          <div className="col-md-12 col-xl-12">
+                            <div style={{ cursor: 'pointer' }} className="tabcss sameh mb-2 mt-2 me-1">
+
+                              <button type="button" className="opend"
+                                onClick={(e) => openModal(e)}
+
+                              >
+                                {/* <FilePlus />  Documents */}
+                                <FilePlus style={{ marginTop: '-2px' }} />  Documents <span style={{ top: '13px' }} className="likecount1">{files.length}</span>
+
+                              </button>
+                            </div>
+                            <div className="tabcss mb-2 mt-2 me-1 newalign"> <span className="pe-2 text-nowrap mb-0 d-inline-block">
                               <Calendar size={14} />{" "}  Start Date:&nbsp;
-                             {moment(item.StartDate).format("DD-MMM-YYYY")}{" "}
-                             
+                              {moment(item.StartDate).format("DD-MMM-YYYY")}{" "}
+
                             </span>  </div>
-                        <div className="tabcss mb-2 mt-2 me-1 newalign"> <span className="pe-2 text-nowrap mb-0 d-inline-block">
+                            <div className="tabcss mb-2 mt-2 me-1 newalign"> <span className="pe-2 text-nowrap mb-0 d-inline-block">
                               <Calendar size={14} />{" "} End Date:&nbsp;
-                             {moment(item.DueDate).format("DD-MMM-YYYY")}{" "}
-                             
+                              {moment(item.DueDate).format("DD-MMM-YYYY")}{" "}
+
                             </span>  </div>
-                            <div style={{cursor:'pointer'}} className="tabcss mb-2 sameh mt-2 me-1 ">
-                            <span className="text-nowrap mb-0 d-inline-block" onClick={() => isProjectCompleted ? "":sendanEmail(item)} >
-                              <Share size={14} /> Share by email
-                            </span>
+                            <div style={{ cursor: 'pointer' }} className="tabcss mb-2 sameh mt-2 me-1 ">
+                              <span className="text-nowrap mb-0 d-inline-block" onClick={() => isProjectCompleted ? "" : sendanEmail(item)} >
+                                <Share size={14} /> Share by email
+                              </span>
                             </div>
                             {/* <div className="tabcss sameh mb-3 mt-2 me-1 "> */}
                             {/* <span
@@ -1790,7 +1791,7 @@ useEffect(()=>{
                                 </span>
                               )}
                             </span> */}
-                             {/* <span
+                            {/* <span
                              {/* <span
                               className="text-nowrap mb-0 d-inline-block"
                               onClick={togglePopup}
@@ -1798,7 +1799,7 @@ useEffect(()=>{
                              Create Folder
                              
                             </span> */}
-                            </div>
+                          </div>
                           {/* <p  style={{
                              
                               margin: "11px",
@@ -1888,38 +1889,38 @@ useEffect(()=>{
                           </p> */}
                         </div>
                       </div>
-                     
 
 
-                   
 
-                    <div className="col-md-6 mobile-w2">
-                      <div className="row mt-2">
-              <div >
-                <div
-                  className="card"
-                  style={{
-                    border: "1px solid #54ade0",
-                    borderRadius: "20px",
-                    boxShadow: "0 3px 20px #1d26260d",
-                  }}
-                >
-                  <div className="p-4">
-                    {/* New comment input */}
-                    <h4 className="mt-0 mb-3 text-dark fw-bold font-16">
-                      Project Insights
-                    </h4>
-                    <div className="mt-3">
-                      <textarea
-                        id="example-textarea"
-                        className="form-control text-dark  mb-0"
-                        value={newComment}
-                        onChange={(e) => setNewComment(e.target.value)}
-                        placeholder="Share your Project Insights here..."
-                        rows={3}
-                        style={{ borderRadius: "unset" }}
-                      />
-                       {/* <ul>
+
+
+                      <div className="col-md-6 mobile-w2">
+                        <div className="row mt-2">
+                          <div >
+                            <div
+                              className="card"
+                              style={{
+                                border: "1px solid #54ade0",
+                                borderRadius: "20px",
+                                boxShadow: "0 3px 20px #1d26260d",
+                              }}
+                            >
+                              <div className="p-4">
+                                {/* New comment input */}
+                                <h4 className="mt-0 mb-3 text-dark fw-bold font-16">
+                                  Project Insights
+                                </h4>
+                                <div className="mt-3">
+                                  <textarea
+                                    id="example-textarea"
+                                    className="form-control text-dark  mb-0"
+                                    value={newComment}
+                                    onChange={(e) => setNewComment(e.target.value)}
+                                    placeholder="Share your Project Insights here..."
+                                    rows={3}
+                                    style={{ borderRadius: "unset" }}
+                                  />
+                                  {/* <ul>
           {selectedFiles.map((file, index) => (
             <li key={index}>
               {file.name}
@@ -1927,9 +1928,9 @@ useEffect(()=>{
             </li>
           ))}
         </ul> */}
-                        
 
-{/* <div>
+
+                                  {/* <div>
 
   <Link style={{ width: "20px", height: "16px" }} onClick={() => handleImageChange} />
 
@@ -1949,257 +1950,258 @@ useEffect(()=>{
 
 </div> */}
 
-  <div className="p-2 bg-light d-flex justify-content-end align-items-center">
+                                  <div className="p-2 bg-light d-flex justify-content-end align-items-center">
 
-                      <button type="button"
-                        className="btn btn-primary primary1 mt-1 mb-1"
-                        onClick={handleAddComment}
-                        disabled={loading} // Disable button when loading
-                      >
-                        <FontAwesomeIcon style={{float:'left',margin:"7px 6px 0px 0px"}} icon={faPaperPlane} /> 
-                        {loading ? "Submitting..." : "Post"}{" "}
-                        {/* Change button text */}
-                      </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="row ">
-              {/* New comment input */}
+                                    <button type="button"
+                                      className="btn btn-primary primary1 mt-1 mb-1"
+                                      onClick={handleAddComment}
+                                      disabled={loading} // Disable button when loading
+                                    >
+                                      <FontAwesomeIcon style={{ float: 'left', margin: "7px 6px 0px 0px" }} icon={faPaperPlane} />
+                                      {loading ? "Submitting..." : "Post"}{" "}
+                                      {/* Change button text */}
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="row ">
+                          {/* New comment input */}
 
-              {comments.map((comment, index) => (
-             
-                <div className="col-xl-12" style={{ marginTop: "1rem" }}>
+                          {comments.map((comment, index) => (
 
-                   {console.log("comment json", comment)}
-                  <CommentCard
-                    key={index}
-                    commentId={index}
-                    username={comment.UserName}
-                    AuthorID={comment.AuthorId}
-                    Commenttext={comment.Comments}
-                    Comments={comments}
-                    Created={comment.Created}
-                    likes={comment.UserLikesJSON}
-                    replies={comment.UserCommentsJSON}
-                    userHasLiked={comment.userHasLiked}
-                    CurrentUserProfile={CurrentUserProfile}
-                    currentuserid = {currentuseridglobal}
-                    loadingLike={loadingLike}
-                    Action="Project"
-                    userProfile={comment?.UserProfile}
-                    onAddReply={(text:any) => handleAddReply(index, text)}
-                    onLike={() => isProjectCompleted ? "" :handleLikeToggle(index)} // Pass like handler
-                    loadingReply={loadingReply}
-                      onSaveComment={(text:any)=>handleSaveComment(comment.Id,text)}
-                      ondeleteComment={()=>handleDeleteComment(comment.Id)}
-                  />
-                </div>
-              ))}
-            </div>
+                            <div className="col-xl-12" style={{ marginTop: "1rem" }}>
+
+                              {console.log("comment json", comment)}
+                              <CommentCard
+                                key={index}
+                                commentId={index}
+                                username={comment.UserName}
+                                AuthorID={comment.AuthorId}
+                                Commenttext={comment.Comments}
+                                Comments={comments}
+                                Created={comment.Created}
+                                likes={comment.UserLikesJSON}
+                                replies={comment.UserCommentsJSON}
+                                userHasLiked={comment.userHasLiked}
+                                CurrentUserProfile={CurrentUserProfile}
+                                currentuserid={currentuseridglobal}
+                                loadingLike={loadingLike}
+                                Action="Project"
+                                userProfile={comment?.UserProfile}
+                                onAddReply={(text: any) => handleAddReply(index, text)}
+                                onLike={() => isProjectCompleted ? "" : handleLikeToggle(index)} // Pass like handler
+                                loadingReply={loadingReply}
+                                onSaveComment={(text: any) => handleSaveComment(comment.Id, text)}
+                                ondeleteComment={() => handleDeleteComment(comment.Id)}
+                                projectArray={ArrDetails}
+                              />
+                            </div>
+                          ))}
+                        </div>
 
                       </div>
 
                       <div className="col-md-3 mobile-w3">
 
-<div className="card mobile-5 mt-2"  style={{ borderRadius: "22px", position:'sticky', top:'90px' }}>
-<div className="card-body pb-3 gheight">
-                          {}
-                          <h4 className="header-title font-16 text-dark fw-bold mb-0"  style={{ fontSize: "20px" }}>Project Owner</h4>
-                         <div className="displcenter">
-                          <img
-          src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item?.Author?.EMail}`}
-          className="rounded-circlecss68 img-thumbnail avatar-xl"
-          alt="profile-image"
-        /></div>
-                          <h1 className="text-muted font-14 mt-1"><p className="text-dark font-16 text-center mb-2"> {item.Author.Title}</p>
-                          {/* <p className="text-muted font-14 text-center mb-1">Cloud Infrastructure Alchemist</p> */}
-                          <p className="text-muted font-12 text-center">{item.Author.EMail} </p>
-                          </h1></div>
-    </div>
+                        <div className="card mobile-5 mt-2" style={{ borderRadius: "22px", position: 'sticky', top: '90px' }}>
+                          <div className="card-body pb-3 gheight">
+                            { }
+                            <h4 className="header-title font-16 text-dark fw-bold mb-0" style={{ fontSize: "20px" }}>Project Owner</h4>
+                            <div className="displcenter">
+                              <img
+                                src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item?.Author?.EMail}`}
+                                className="rounded-circlecss68 img-thumbnail avatar-xl"
+                                alt="profile-image"
+                              /></div>
+                            <h1 className="text-muted font-14 mt-1"><p className="text-dark font-16 text-center mb-2"> {item.Author.Title}</p>
+                              {/* <p className="text-muted font-14 text-center mb-1">Cloud Infrastructure Alchemist</p> */}
+                              <p className="text-muted font-12 text-center">{item.Author.EMail} </p>
+                            </h1></div>
+                        </div>
 
-<div className="card mobile-5 mt-2"  style={{ borderRadius: "22px", position:'sticky', top:'310px' }}>
-  <div className="card-body pb-3 gheight">
-    <h4 className="header-title font-16 text-dark fw-bold mb-3"  style={{ fontSize: "20px" }}>Project Members</h4>
-    {item.Author.EMail === currentUserEmailRef.current && !isProjectCompleted && (
-    <div>
-     <button className="plusiconalign" onClick={(e)=>togglevalue(e)}> <img
+                        <div className="card mobile-5 mt-2" style={{ borderRadius: "22px", position: 'sticky', top: '310px' }}>
+                          <div className="card-body pb-3 gheight">
+                            <h4 className="header-title font-16 text-dark fw-bold mb-3" style={{ fontSize: "20px" }}>Project Members</h4>
+                            {item.Author.EMail === currentUserEmailRef.current && !isProjectCompleted && (
+                              <div>
+                                <button className="plusiconalign" onClick={(e) => togglevalue(e)}> <img
 
-src={require("../assets/plus.png")}
+                                  src={require("../assets/plus.png")}
 
-className="newplusicon" alt="add user" /> </button>
-  <i className="fe-plus-circle"></i>
- 
-    </div>
- 
-)}
-     {/* {argcurrentgroupuser */}
-     {argcurrentgroupuser[0]?.TeamMembers?.length > 0 && argcurrentgroupuser[0]?.TeamMembers?.map(
-  (id: any, idx: any) => {
-    console.log(id, 'id');
-    console.log(id.Id, 'id');
-    // {console.log("argcurrentgroupuser[0]?.TeamMembers",argcurrentgroupuser[0]?.TeamMembers)}
-    if (idx >=0 ) {
-      return (
-        <div className="projectmemeber">
-<img
-          // style={{
-          //   margin:
-          //     index == 0
-          //       ? "0 0 0 0"
-          //       : "0 0 0px -12px",
-          // }}
-          src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-          className="rounded-circlecss6 img-thumbnail avatar-xl"
-          alt="profile-image"
-        />
-        <p className="mb-0">{id?.Title} </p>
-        {item.Author.EMail === currentUserEmailRef.current && (
-        <div>
-        {/* <button onClick={()=>handleRemoveUser(id?.ID)}>Remove</button> */}
+                                  className="newplusicon" alt="add user" /> </button>
+                                <i className="fe-plus-circle"></i>
 
-        <a onClick={()=>handleRemoveUser(id?.ID)} className="action-icon text-danger">
-          <svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="trash-can" className="svg-inline--fa fa-trash-can " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-          <path fill="currentColor" d="M170.5 51.6L151.5 80l145 0-19-28.4c-1.5-2.2-4-3.6-6.7-3.6l-93.7 0c-2.7 0-5.2 1.3-6.7 3.6zm147-26.6L354.2 80 368 80l48 0 8 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-8 0 0 304c0 44.2-35.8 80-80 80l-224 0c-44.2 0-80-35.8-80-80l0-304-8 0c-13.3 0-24-10.7-24-24S10.7 80 24 80l8 0 48 0 13.8 0 36.7-55.1C140.9 9.4 158.4 0 177.1 0l93.7 0c18.7 0 36.2 9.4 46.6 24.9zM80 128l0 304c0 17.7 14.3 32 32 32l224 0c17.7 0 32-14.3 32-32l0-304L80 128zm80 64l0 208c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-208c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0l0 208c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-208c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0l0 208c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-208c0-8.8 7.2-16 16-16s16 7.2 16 16z">
-            </path></svg></a>
-        </div>
+                              </div>
 
-        )
-       
-        }
-     
-        {/* <p className="mb-0">{id?.Title} </p> */}
-       
-        {!isProjectCompleted &&
-              <img
+                            )}
+                            {/* {argcurrentgroupuser */}
+                            {argcurrentgroupuser[0]?.TeamMembers?.length > 0 && argcurrentgroupuser[0]?.TeamMembers?.map(
+                              (id: any, idx: any) => {
+                                console.log(id, 'id');
+                                console.log(id.Id, 'id');
+                                // {console.log("argcurrentgroupuser[0]?.TeamMembers",argcurrentgroupuser[0]?.TeamMembers)}
+                                if (idx >= 0) {
+                                  return (
+                                    <div className="projectmemeber">
+                                      <img
+                                        // style={{
+                                        //   margin:
+                                        //     index == 0
+                                        //       ? "0 0 0 0"
+                                        //       : "0 0 0px -12px",
+                                        // }}
+                                        src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+                                        className="rounded-circlecss6 img-thumbnail avatar-xl"
+                                        alt="profile-image"
+                                      />
+                                      <p className="mb-0">{id?.Title} </p>
+                                      {item.Author.EMail === currentUserEmailRef.current && (
+                                        <div>
+                                          {/* <button onClick={()=>handleRemoveUser(id?.ID)}>Remove</button> */}
 
-src={require("../assets/calling.png")}
+                                          <a onClick={() => handleRemoveUser(id?.ID)} className="action-icon text-danger">
+                                            <svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="trash-can" className="svg-inline--fa fa-trash-can " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                                              <path fill="currentColor" d="M170.5 51.6L151.5 80l145 0-19-28.4c-1.5-2.2-4-3.6-6.7-3.6l-93.7 0c-2.7 0-5.2 1.3-6.7 3.6zm147-26.6L354.2 80 368 80l48 0 8 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-8 0 0 304c0 44.2-35.8 80-80 80l-224 0c-44.2 0-80-35.8-80-80l0-304-8 0c-13.3 0-24-10.7-24-24S10.7 80 24 80l8 0 48 0 13.8 0 36.7-55.1C140.9 9.4 158.4 0 177.1 0l93.7 0c18.7 0 36.2 9.4 46.6 24.9zM80 128l0 304c0 17.7 14.3 32 32 32l224 0c17.7 0 32-14.3 32-32l0-304L80 128zm80 64l0 208c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-208c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0l0 208c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-208c0-8.8 7.2-16 16-16s16 7.2 16 16zm80 0l0 208c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-208c0-8.8 7.2-16 16-16s16 7.2 16 16z">
+                                              </path></svg></a>
+                                        </div>
 
-className="alignright"
+                                      )
 
-onClick={() =>
+                                      }
 
-  window.open(
+                                      {/* <p className="mb-0">{id?.Title} </p> */}
 
-    `https://teams.microsoft.com/l/call/0/0?users=${id.EMail}`,
+                                      {!isProjectCompleted &&
+                                        <img
 
-    "_blank"
+                                          src={require("../assets/calling.png")}
 
-  )
+                                          className="alignright"
 
-}
+                                          onClick={() =>
 
-alt="Call"
+                                            window.open(
 
-/> }
-        </div>
-       
-      );
-    }
-  }
-)}
-     {/* } */}
-   
-    </div>
-   
-    </div>
+                                              `https://teams.microsoft.com/l/call/0/0?users=${id.EMail}`,
 
- 
-</div>
+                                              "_blank"
+
+                                            )
+
+                                          }
+
+                                          alt="Call"
+
+                                        />}
+                                    </div>
+
+                                  );
+                                }
+                              }
+                            )}
+                            {/* } */}
+
+                          </div>
+
+                        </div>
 
 
-                    <div className="row internalmedia filterable-content mt-3">
-                      <Modal show={showModal} onHide={closeModal} className="minw80">
-                        <h3 style={{width:'100%', textAlign:'left',borderBottom:'0px solid #efefef',  padding:'15px', fontSize:'18px'}} className="modal-title">Documents</h3>
-                        <Modal.Header closeButton style={{position:'absolute', display:'flex', gap:'20px', top:'-6px', right:'0px', borderBottom:'0px solid #ccc'}}>
-  <label>
-    <div>
-      <div className="chosefile">
-        <img
-          onClick={isProjectCompleted ? null : (e:any) => handleImageChange(e)}
-          src={require("../assets/cloud-computing.png")}
-          style={{ width: '40px', opacity: isProjectCompleted ? '0.5' : '1', pointerEvents: isProjectCompleted ? 'none' : 'auto' }}
-          alt="Check"
-        />  
-        <span style={{ opacity: isProjectCompleted ? '0.5' : '1' }}>Click To Upload</span>
-      </div>
-      <input
-        type="file"
-        multiple
-        accept="image/*"
-        onChange={handleImageChange}
-        className="fs-6 w-50"
-        aria-rowspan={5}
-        style={{ display: 'none' }}
-        disabled={isProjectCompleted} // Disable the file input if project is completed
-      />
-    </div>
-  </label>
-  <Button variant="success" onClick={() => uploadfileinfolder()} disabled={isProjectCompleted}>
-    Upload File
-  </Button>
-</Modal.Header>
-                        <Modal.Body>
-                        <div className="file-cards row">
-                        <ul className="listnew">
-          {selectedFiles.map((file, index) => (
-            <li key={index}>
-              {file.name}
-              <button onClick={() => removeFile(file.name)} style={{ marginLeft: '10px', color: 'red' }}>❌</button>
-            </li>
-          ))}
-        </ul>
-                         
-          {files.map((file) => (
-            <div className="col-lg-3">
-            <Card key={file.UniqueId} style={{  marginBottom: '10px', height:'82px' }} >
-              <Card.Body>
-                <div className="row">
-                  <div className="col-lg-2 wi8">
-                  <img
-                                  src={require("../assets/file.png")}
-                                  style={{width:'40px'  }}
-                                  alt="Check"
+                      </div>
+
+
+                      <div className="row internalmedia filterable-content mt-3">
+                        <Modal show={showModal} onHide={closeModal} className="minw80">
+                          <h3 style={{ width: '100%', textAlign: 'left', borderBottom: '0px solid #efefef', padding: '15px', fontSize: '18px' }} className="modal-title">Documents</h3>
+                          <Modal.Header closeButton style={{ position: 'absolute', display: 'flex', gap: '20px', top: '-6px', right: '0px', borderBottom: '0px solid #ccc' }}>
+                            <label>
+                              <div>
+                                <div className="chosefile">
+                                  <img
+                                    onClick={isProjectCompleted ? null : (e: any) => handleImageChange(e)}
+                                    src={require("../assets/cloud-computing.png")}
+                                    style={{ width: '40px', opacity: isProjectCompleted ? '0.5' : '1', pointerEvents: isProjectCompleted ? 'none' : 'auto' }}
+                                    alt="Check"
+                                  />
+                                  <span style={{ opacity: isProjectCompleted ? '0.5' : '1' }}>Click To Upload</span>
+                                </div>
+                                <input
+                                  type="file"
+                                  multiple
+                                  accept="image/*"
+                                  onChange={handleImageChange}
+                                  className="fs-6 w-50"
+                                  aria-rowspan={5}
+                                  style={{ display: 'none' }}
+                                  disabled={isProjectCompleted} // Disable the file input if project is completed
                                 />
+                              </div>
+                            </label>
+                            <Button variant="success" onClick={() => uploadfileinfolder()} disabled={isProjectCompleted}>
+                              Upload File
+                            </Button>
+                          </Modal.Header>
+                          <Modal.Body>
+                            <div className="file-cards row">
+                              <ul className="listnew">
+                                {selectedFiles.map((file, index) => (
+                                  <li key={index}>
+                                    {file.name}
+                                    <button onClick={() => removeFile(file.name)} style={{ marginLeft: '10px', color: 'red' }}>❌</button>
+                                  </li>
+                                ))}
+                              </ul>
 
-                  </div>
+                              {files.map((file) => (
+                                <div className="col-lg-3">
+                                  <Card key={file.UniqueId} style={{ marginBottom: '10px', height: '82px' }} >
+                                    <Card.Body>
+                                      <div className="row">
+                                        <div className="col-lg-2 wi8">
+                                          <img
+                                            src={require("../assets/file.png")}
+                                            style={{ width: '40px' }}
+                                            alt="Check"
+                                          />
 
-                  <div style={{paddingLeft:'13px'}} className="col-lg-9 wi81">
-                  <Card.Title className="two-line text-dark font-14 mb-0">{file.Name}</Card.Title>
-                  <Card.Text className="text-muted font-12">{file.Length} bytes</Card.Text>
-                  </div>
-           
-             
-                {/* Three dots dropdown menu */}
-                <div className="col-lg-1 wi82">
-                <Dropdown align="end">
-                  <Dropdown.Toggle variant="link" id={`dropdown-${file.UniqueId}`} size="sm" className="newaligntext">
-                    &#x22EE; {/* Ellipsis icon */}
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu>
-                    <Dropdown.Item onClick={() => handlePreviewFile(file.ServerRelativeUrl)} style={{fontSize:'12px', textAlign:'center'  }}>
-                      Preview
-                    </Dropdown.Item>
-                    <Dropdown.Item
-                    onClick={() => Handledeletefile(file.UniqueId)} disabled={isProjectCompleted}
-                    // onClick={() => Handledeletefile(file.UniqueId)}
-                    style={{fontSize:'12px', textAlign:'center'  }}>
-                      Delete File
-                    </Dropdown.Item>
-                    {/* Add more options if needed */}
-                  </Dropdown.Menu>
-                </Dropdown>
-                </div>
-                </div>
-               
-              </Card.Body>
-            </Card>
-            </div>
-          ))}
-        </div>
-                        </Modal.Body>
+                                        </div>
+
+                                        <div style={{ paddingLeft: '13px' }} className="col-lg-9 wi81">
+                                          <Card.Title className="two-line text-dark font-14 mb-0">{file.Name}</Card.Title>
+                                          <Card.Text className="text-muted font-12">{file.Length} bytes</Card.Text>
+                                        </div>
+
+
+                                        {/* Three dots dropdown menu */}
+                                        <div className="col-lg-1 wi82">
+                                          <Dropdown align="end">
+                                            <Dropdown.Toggle variant="link" id={`dropdown-${file.UniqueId}`} size="sm" className="newaligntext">
+                                              &#x22EE; {/* Ellipsis icon */}
+                                            </Dropdown.Toggle>
+                                            <Dropdown.Menu>
+                                              <Dropdown.Item onClick={() => handlePreviewFile(file.ServerRelativeUrl)} style={{ fontSize: '12px', textAlign: 'center' }}>
+                                                Preview
+                                              </Dropdown.Item>
+                                              <Dropdown.Item
+                                                onClick={() => Handledeletefile(file.UniqueId)} disabled={isProjectCompleted}
+                                                // onClick={() => Handledeletefile(file.UniqueId)}
+                                                style={{ fontSize: '12px', textAlign: 'center' }}>
+                                                Delete File
+                                              </Dropdown.Item>
+                                              {/* Add more options if needed */}
+                                            </Dropdown.Menu>
+                                          </Dropdown>
+                                        </div>
+                                      </div>
+
+                                    </Card.Body>
+                                  </Card>
+                                </div>
+                              ))}
+                            </div>
+                          </Modal.Body>
                           {/* {ProjectsDocsJSON.length > 0 ? (
                             ProjectsDocsJSON.map((res: any) => {
                               return (
@@ -2225,30 +2227,30 @@ alt="Call"
                           ):(null)
 
                           } */}
-                        {/* </Modal.Body>*/}
-                      </Modal>
-                    </div>
-                    <div className="row mt-2">
-                      <p
-                        style={{ lineHeight: "22px" }}
-                        className="d-block text-muted mt-2 mb-0 font-14"
-                      >
-                        <div
-                          dangerouslySetInnerHTML={{
-                            __html: item.Description,
-                          }}
-                        ></div>
-                      </p>
-                    </div>
+                          {/* </Modal.Body>*/}
+                        </Modal>
                       </div>
- 
+                      <div className="row mt-2">
+                        <p
+                          style={{ lineHeight: "22px" }}
+                          className="d-block text-muted mt-2 mb-0 font-14"
+                        >
+                          <div
+                            dangerouslySetInnerHTML={{
+                              __html: item.Description,
+                            }}
+                          ></div>
+                        </p>
+                      </div>
+                    </div>
 
 
 
-                     
-                   
-               
-                 
+
+
+
+
+
                   </>
                 );
               })
@@ -2263,7 +2265,7 @@ alt="Call"
               }
  
             </div> */}
-           
+
           </div>
         </div>
       </div>

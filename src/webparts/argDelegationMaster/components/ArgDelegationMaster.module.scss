@@ -9,6 +9,17 @@
     font-family: $ms-font-family-fallbacks;
   }
 }
+.mtbalenew td{
+.btn-status {
+  background: rgba(0, 135, 81, .2) !important;
+  border: 1px solid #efefef !important;
+  border-radius: 30px !important;
+  color: #008751 !important;
+  font-size: 13px !important;
+  padding: 6px .5rem !important;
+  width: 100px;
+}
+}
 
 .welcome {
   text-align: center;

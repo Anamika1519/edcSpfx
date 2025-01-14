@@ -247,6 +247,7 @@ color: #fff !important;
      border-right: 0px !important;
      overflow: visible !important;
      white-space: nowrap !important;
+     height: 40px;
     
    }
    .mtbalenew td, .mtbalenew th {
@@ -297,12 +298,19 @@ color: #fff !important;
 .mtbalenew tr:nth-child(even):hover {
   background: #ececec !important;
 }
+.paddb{
+  min-height: calc(100vh - 209px);
+}
 .no-results{border: 0px solid #ccc !important; border-radius: 0px !important;}
 .newfil svg{margin-top: 2px;}
 .fe-eye svg:hover{color: #1fb0e5 !important;}
-.pagination-container{margin-bottom: 15px !important;}
+.pagination-container{margin-bottom: 0px !important;}
 .btn-status{
   
     border-radius: 30px !important;
     padding: 6px 0.5rem !important;
+}
+@media(max-width:1920px)
+{
+  .pagination-container{margin-bottom: 15px !important;}
 }

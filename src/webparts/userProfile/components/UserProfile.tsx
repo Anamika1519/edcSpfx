@@ -7,7 +7,8 @@ import { IAddannouncementProps } from "../../addannouncement/components/IAddanno
 import Provider from "../../../GlobalContext/provider";
 import UserContext from "../../../GlobalContext/context";
 import { getSP } from "../loc/pnpjsConfig";
- 
+import Avatar from "@mui/material/Avatar";
+
 interface IUserProfile {
   profileImage: string;
   name: string;
@@ -22,36 +23,36 @@ interface IUserProfile {
   skills: string[];
   socialLinks: { url: string; color: string; icon: string }[];
 }
- 
- 
+
+
 const UserProfileContext = ({ props }: any) => {
   const sp: SPFI = getSP();
   const elementRef = React.useRef<HTMLDivElement>(null);
   const { useHide }: any = React.useContext(UserContext);
   const siteUrl = props.siteUrl;
- 
+
   const [userData, setUserData] = useState(null);
- 
+
   console.log("check the data of userdata--->>>>>>", userData);
- 
+
   const currentStatus = JSON.parse(sessionStorage.getItem("currentStatus"));
- 
+
   useEffect(() => {
     isUserfollow();
   }, [sp]);
- 
-  const isUserfollow =  ()=>{
- 
+
+  const isUserfollow = () => {
+
     const ids = window.location.search;
     const originalString = ids;
     const idNum = originalString.substring(1);
     (Number(idNum))
- 
- 
+
+
     const selectedUserID = idNum;
     if (selectedUserID) {
       const userID = parseInt(selectedUserID, 10);
- 
+
       sp.web.lists
         .getByTitle("User Information List")
         .items.getById(userID)
@@ -62,7 +63,8 @@ const UserProfileContext = ({ props }: any) => {
           "Department",
           "JobTitle",
           "MobilePhone",
-          "Picture"
+          "Picture",
+          "*"
         )()
         .then((data) => {
           // Map the data to your required structure
@@ -85,14 +87,14 @@ const UserProfileContext = ({ props }: any) => {
     }
     sp.web.lists.getByTitle("").items.filter(`FollowedUserID eq ${selectedUserID}`).getAll()
   }
- 
+
   if (!userData) {
     return <div>Loading...</div>;
   }
   // const currentStatus=()=>{
   //   return
   // }
- 
+
   const Breadcrumb = [
     {
       MainComponent: "Home",
@@ -103,7 +105,7 @@ const UserProfileContext = ({ props }: any) => {
       ChildComponentURl: `${siteUrl}/SitePages/CorporateDirectory.aspx`,
     },
   ];
- 
+
   return (
     <div>
       <div>
@@ -133,27 +135,36 @@ const UserProfileContext = ({ props }: any) => {
                       <div className="col-lg-4 mt-3 col-xl-4">
                         <div className="card text-center">
                           <div className="card-body">
-                            <img
-                              src={
-                                userData.profileImage != null
-                                  ? `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${userData.email}`
-                                  : require("../assets/users.jpg")
-                              }
-                              // className="rounded-circlecss"
-                              alt="profile-image"
-                              style={{ cursor: "pointer", borderRadius: "50%" }}
-                            />
+                            {userData.SPSPicturePlaceholderState == 0 ?
+                              <img
+                                src={
+                                  userData.profileImage != null
+                                    ? `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${userData.email}`
+                                    : require("../assets/users.jpg")
+                                }
+                                // className="rounded-circlecss"
+                                alt="profile-image"
+                                style={{ cursor: "pointer", borderRadius: "50%" }}
+                              />
+                              :
+                              userData.email !== null &&
+                              <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circlecss img-thumbnail
+                                  avatar-xl">
+                                {`${userData.email.split('.')[0].charAt(0)}${userData.email.split('.')[1].charAt(0)}`.toUpperCase()}
+                              </Avatar>
+                            }
+
                             <h4 className="mb-0 fw-bold font-16 text-dark">
                               {userData.username}
                             </h4>
                             <p className="text-muted font-14">
                               @{userData.about}
                             </p>
- 
+
                             <button
                               style={{
                                 backgroundColor: "#198754",
-                                marginRight: "3px", color:'#fff'
+                                marginRight: "3px", color: '#fff'
                               }}
                               type="button"
                               className=" waves-effect waves-light font-14"
@@ -167,7 +178,7 @@ const UserProfileContext = ({ props }: any) => {
                             >
                               <i className="fe-send"></i> Message
                             </button>
- 
+
                             <div className="text-start mt-3">
                               <h4 className="font-13 text-uppercase">
                                 About Me :
@@ -209,7 +220,7 @@ const UserProfileContext = ({ props }: any) => {
                               </p>
                               {/* <p className="text-muted mb-1 font-13"><strong>Skills :</strong> <span className="ms-2">{userData.skills.join(', ')}</span></p> */}
                             </div>
- 
+
                             {/* <ul className="social-list list-inline mt-3 mb-0">
                             {userData.socialLinks.map((link: { url: string; color: any; icon: any; }, index: React.Key) => (
                               <li key={index} className="list-inline-item">

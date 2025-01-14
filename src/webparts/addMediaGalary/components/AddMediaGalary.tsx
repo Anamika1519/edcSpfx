@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import Provider from '../../../GlobalContext/provider';
 
@@ -38,7 +38,7 @@ import "../../../CustomCss/mainCustom.scss";
 
 import "../../verticalSideBar/components/VerticalSidebar.scss";
 
-import { Modal } from 'react-bootstrap';
+import { Button, Modal } from 'react-bootstrap';
 
 import "../components/AddMediaGalary.scss";
 
@@ -182,6 +182,18 @@ const AddMediaGalaryContext = ({ props }: any) => {
   //#endregion
 
   //#region UseEffact
+
+  const [show, setShow] = useState(false);
+  const [modalImageSrc, setModalImageSrc] = useState('');
+  const [isVideo, setIsVideo] = useState(false);
+  
+  const handleClose = () => setShow(false);
+  const handleShow = (src: any, isVideo: boolean) => {
+    setModalImageSrc(src);
+    setIsVideo(isVideo);
+    setShow(true);
+  };
+  
 
   useEffect(() => { 
     // alert("useEffect called");
@@ -3051,20 +3063,44 @@ const AddMediaGalaryContext = ({ props }: any) => {
                           <td className='text-center'>{index + 1}</td>
 
                           <td>
-                            <img
+                            {/* <img
                               className='imagefe'
                               src={file.fileType.startsWith('video/') ?
                                 require("../../../Assets/ExtraImage/video.jpg") :
                                 (file.fileUrl ? file.fileUrl : `${siteUrl}/MediaGallery/${file.fileName}`)}
                               alt={'default image'}
-                            />
+                            /> */}
+                                     
+                             {/* <img
+                  className='imagefe'
+                  src={file.fileType.startsWith('video/')
+                    ? require("../../../Assets/ExtraImage/video.jpg")
+                    : (file.fileUrl ? file.fileUrl : `${siteUrl}/MediaGallery/${file.fileName}`)}
+                  alt='default image'
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => handleShow(file.fileType.startsWith('video/')
+                    ? require("../../../Assets/ExtraImage/video.jpg")
+                    : (file.fileUrl ? file.fileUrl : `${siteUrl}/MediaGallery/${file.fileName}`))}
+                /> */}
+
+<img
+          className='imagefe'
+          src={file.fileType && file.fileType.startsWith('video/') ? 
+	  require("../../../Assets/ExtraImage/video.jpg") : 
+	  (file.fileUrl ? file.fileUrl : `${siteUrl}/MediaGallery/${file.fileName}`)}
+          alt='default image'
+          style={{ cursor: 'pointer' }}
+	  onClick={() => handleShow(file.fileUrl ? file.fileUrl : `${siteUrl}/MediaGallery/${file.fileName}`, file.fileType && file.fileType.startsWith('video/'))}
+        />
                           </td>
 
                           <td>{file.fileName}</td>
 
                           <td className='text-right'>{file.fileSize}</td>
                           {modeValue == null &&
-                            <td className='text-center'> <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }}
+                            <td className='text-center'>
+                              
+                               <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }}
 
                               onClick={() => deleteLocalFile(index, ImagepostArr1, "Gallery")} /> </td>
 
@@ -3086,7 +3122,39 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
             </Modal>
 
-
+            {/* <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Image Preview</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <img src={modalImageSrc} alt="Image Preview" style={{ width: '100%' }} />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal> */}
+<Modal show={show} onHide={handleClose}>
+  <Modal.Header closeButton>
+    <Modal.Title>{isVideo ? 'Video Preview' : 'Image Preview'}</Modal.Title>
+  </Modal.Header>
+  <Modal.Body>
+    {isVideo ? (
+      <video controls style={{ width: '100%' }}>
+        <source src={modalImageSrc} type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+    ) : (
+      <img src={modalImageSrc} alt="Image Preview" style={{ width: '100%' }} />
+    )}
+  </Modal.Body>
+  <Modal.Footer>
+    <Button variant="secondary" onClick={handleClose}>
+      Close
+    </Button>
+  </Modal.Footer>
+</Modal>
 
             <Modal show={showModal1} onHide={() => setShowModal1(false)} size="lg">
 
@@ -3136,7 +3204,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
                           <td className='text-center'>{index + 1}</td>
 
                           <td>
-                            <img
+                            {/* <img
                               className="imagefe"
                               src={
                                 file.serverUrl && file.serverRelativeUrl
@@ -3144,7 +3212,37 @@ const AddMediaGalaryContext = ({ props }: any) => {
                                   : file.fileUrl // Fallback to file.fileUrl if other values are missing
                               }
                               alt="Preview"
-                            />
+                            /> */}
+                            {/* <img
+                  className="imagefe"
+                  src={
+                    file.serverUrl && file.serverRelativeUrl
+                      ? `${file.serverUrl}${file.serverRelativeUrl}`
+                      : file.fileUrl // Fallback to file.fileUrl if other values are missing
+                  }
+                  alt="Preview"
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => handleShow(
+                    file.serverUrl && file.serverRelativeUrl
+                      ? `${file.serverUrl}${file.serverRelativeUrl}`
+                      : file.fileUrl
+                  )}
+                /> */}
+                <img
+          className="imagefe"
+          src={
+            file.serverUrl && file.serverRelativeUrl
+              ? `${file.serverUrl}${file.serverRelativeUrl}`
+              : file.fileUrl // Fallback to file.fileUrl if other values are missing
+          }
+          alt="Preview"
+          style={{ cursor: 'pointer' }}
+          onClick={() => handleShow(
+            file.serverUrl && file.serverRelativeUrl
+              ? `${file.serverUrl}${file.serverRelativeUrl}`
+              : file.fileUrl, false
+          )}
+        />
                           </td>
 
                           <td>{file.fileName ? file.fileName : file.name}</td>

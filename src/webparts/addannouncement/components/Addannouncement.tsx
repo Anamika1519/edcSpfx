@@ -22,7 +22,7 @@ import 'react-quill/dist/quill.snow.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperclip } from '@fortawesome/free-solid-svg-icons';
 import "../../../CustomJSComponents/CustomForm/CustomForm.scss";
-import { Modal } from 'react-bootstrap';
+import { Button, Modal } from 'react-bootstrap';
 import { decryptId } from '../../../APISearvice/CryptoService';
 import HorizontalNavbar from '../../horizontalNavBar/components/HorizontalNavBar';
 import { AddContentLevelMaster, AddContentMaster, getApprovalConfiguration, getLevel, UpdateContentMaster } from '../../../APISearvice/ApprovalService';
@@ -33,7 +33,7 @@ import { getUrlParameterValue } from '../../../Shared/Helper';
 import { FormSubmissionMode } from '../../../Shared/Interfaces';
 import { WorkflowAuditHistory } from '../../../CustomJSComponents/WorkflowAuditHistory/WorkflowAuditHistory';
 import { CONTENTTYPE_Announcement, CONTENTTYPE_News, LIST_TITLE_ContentMaster, LIST_TITLE_AnnouncementAndNews, LIST_TITLE_MyRequest } from '../../../Shared/Constants';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 
 interface FormField {
   type: string;
@@ -138,6 +138,16 @@ const AddannouncementContext = ({ props }: any) => {
     }
   ]
   //#endregion
+
+  const [show, setShow] = useState(false);
+  const [modalImageSrc, setModalImageSrc] = useState('');
+
+  const handleClose = () => setShow(false);
+  const handleShow = (src:any) => {
+    setModalImageSrc(src);
+    setShow(true);
+  };
+
 
   //#region UseEffact
   React.useEffect(() => {
@@ -2212,8 +2222,14 @@ const AddannouncementContext = ({ props }: any) => {
                           {ImagepostArr1.map((file: any, index: number) => (
                             <tr key={index}>
                               <td className='text-center'>{index + 1}</td>
-                              <td>  <img className='imagefe' src={`${siteUrl}/AnnouncementAndNewsGallary/${file.fileName}`}
-                              /></td>
+                              <td>  
+                                <img className='imagefe' src={`${siteUrl}/AnnouncementAndNewsGallary/${file.fileName}`}
+                                  style={{ cursor: 'pointer' }}
+                                  onClick={() => handleShow(
+                                    `${siteUrl}/AnnouncementAndNewsGallary/${file.fileName}`
+                                  )}
+                              />
+                              </td>
 
                               <td>{file.fileName}</td>
                               <td className='text-right'>{file.fileSize}</td>
@@ -2263,6 +2279,19 @@ const AddannouncementContext = ({ props }: any) => {
               </Modal.Body>
 
             </Modal>
+            <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Image Preview</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <img src={modalImageSrc} alt="Image Preview" style={{ width: '100%' }} />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
           </div>
         </div>
       </div>

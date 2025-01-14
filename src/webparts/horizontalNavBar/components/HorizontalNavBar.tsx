@@ -191,10 +191,11 @@ const HorizontalNavbar = ({ _context, siteUrl }: any) => {
   const ApiCall = async () => {
     let curretuseris = await _context.web.currentUser().then((res:any) => {
       setCurrentUser(res.Title)
+      setCurrentUserEmail(res.Email)
       console.log(res, "currentuser");
     })
     //setCurrentUser(await getCurrentUserName(_context))
-    setCurrentUserEmail(await getCurrentUserProfileEmail(_context))
+    //setCurrentUserEmail(await getCurrentUserProfileEmail(_context))
 
     setNotificationArray(await getARGNotificationHistory(_context))
     // console.log(settingsData, 'settingsData');

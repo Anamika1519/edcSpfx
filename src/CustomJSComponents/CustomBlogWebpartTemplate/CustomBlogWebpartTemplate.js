@@ -5,7 +5,7 @@ import "../../CustomCss/mainCustom.scss";
 import "../../Assets/Figtree/Figtree-VariableFont_wght.ttf";
 import { Share2 } from 'feather-icons-react';
 import { Bookmark } from 'feather-icons-react';
-import { Calendar } from 'feather-icons-react';
+import { Calendar, Link, Share } from 'feather-icons-react';
 import moment from 'moment';
 import { getCurrentUserProfileEmail } from "../../APISearvice/CustomService";
 import ReactQuill from "react-quill";
@@ -1228,7 +1228,7 @@ const deleteLocalFile = (index, filArray, name) => {
                         <div className="card-body">
                             <div className="d-flex flex-wrap align-items-center justify-content-center">
                                 <ul
-                                    className="navs nav-pillss navtab-bgs"
+                                    className="navs nav-pillss navtab-bgs justify-content-center"
                                     role="tablist"
                                     style={{
                                         
@@ -1851,9 +1851,9 @@ const deleteLocalFile = (index, filArray, name) => {
                                                         </div>
                                                         {showDropdownId === item.Id && (
                                                             <div className="dropdown-menu dropcss" ref={menuRef}>
-                                                                <a className="dropdown-item dropcssItem" onClick={() => sendanEmail(item)}>Share by email</a>
+                                                                <a className="dropdown-item dropcssItem" onClick={() => sendanEmail(item)}> <Share size={16} /> Share by email</a>
                                                                 <a className="dropdown-item dropcssItem" onClick={() => copyToClipboard(item.Id)}>
-                                                                    Copy Link
+                                                                <Link size={14} />  Copy Link
                                                                 </a>
                                                                 <a>{copySuccess && <span className="text-success">{copySuccess}</span>}</a>
                                                             </div>

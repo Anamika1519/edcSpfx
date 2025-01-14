@@ -105,7 +105,8 @@
 		border-bottom: 0px solid #eee; 
 		position: relative;
    
-		padding-left: 37%; 
+		padding-left: 37% !important; 
+    height: 40px;
 	}
   .mtbalenew td, .mtbalenew th {
     max-width: none !important;

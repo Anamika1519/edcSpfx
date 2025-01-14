@@ -3,7 +3,7 @@ import { useState } from "react";
 
 import "../../CustomJSComponents/SocialFeedPost/PostComponent.scss"
 
-import { addActivityLeaderboard, addNotification, getCurrentUserNameId } from "../../APISearvice/CustomService";
+import { addActivityLeaderboard, addNotification, getCurrentUserNameId, getUserProfilePicture, getUserSPSPicturePlaceholderState } from "../../APISearvice/CustomService";
 
 import { Heart, Menu, MessageSquare, MoreHorizontal, MoreVertical, Share, Share2, ThumbsUp } from "react-feather";
 
@@ -16,6 +16,7 @@ import { Carousel, Modal, Spinner } from "react-bootstrap";
 import moment from "moment";
 
 import Swal from "sweetalert2";
+import Avatar from "@mui/material/Avatar";
 
 export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, currentEmail, editload, post }: any) => {
     const [loadingReply, setLoadingReply] = useState<boolean>(false);
@@ -50,7 +51,8 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
     const [showMore, setShowMore] = useState(false);
     const menuRef = useRef(null);
     const [showModal, setShowModal] = useState(false);
-
+    const [CurrentuserPicturePlaceholderState, setCurrentuserPicturePlaceholderState] = useState("");
+    const [CurrenuserProfilepic, SetCurrenuserProfilepic] = useState(null);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
     const [loading, setLoading] = useState(false); // To show loading spinner
@@ -59,7 +61,7 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
     const [displayedCount, setDisplayedCount] = useState();
     useEffect(() => {
         //initializeData();
-        
+
         GetId()
 
         if (typeof (post.SocialFeedImagesJson) == 'string') {
@@ -73,16 +75,19 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
         const initializeData = async () => {
             if (IsCall) {
                 // const userId = await getCurrentUserNameId(sp);
+
                 setAuthorId(CurrentUser.Id);
                 setIsCall(false)
                 fetchInitialLikeData(CurrentUser.Id);
+                SetCurrenuserProfilepic(await getUserProfilePicture(CurrentUser.Id, sp));
+                setCurrentuserPicturePlaceholderState(await getUserSPSPicturePlaceholderState(CurrentUser.Id, sp))
             }
- 
- 
+
+
         };
- 
-        initializeData(); 
-        
+
+        initializeData();
+
         const handleClickOutside = (event: { target: any; }) => {
             if (menuRef.current && !menuRef.current.contains(event.target)) {
                 setIsMenuOpenshare(false);
@@ -269,12 +274,12 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
 
     };
     const handleShowMore = () => {
-       // setDisplayedCount((prevCount) => prevCount + 3); // Show 3 more comments
+        // setDisplayedCount((prevCount) => prevCount + 3); // Show 3 more comments
     };
 
     // Handle "Show Less" button click
     const handleShowLess = () => {
-       // setDisplayedCount(3); // Reset to initial 3 comments
+        // setDisplayedCount(3); // Reset to initial 3 comments
     };
     const fetchPosts = async () => {
 
@@ -481,7 +486,7 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
     };
 
     const handleDeletePost = async (e: any, postId: number) => {
- 
+
         e.preventDefault();
         Swal.fire({
             title: 'Do you want to delete?',
@@ -496,13 +501,13 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
                     // Assuming you are using SharePoint API to delete the post
                     await sp.web.lists.getByTitle('ARGSocialFeed').items.getById(postId).delete();
                     // Remove post from UI
- 
+
                     setPosts(prevPosts => prevPosts.filter(post => post.postId !== postId));
-//chhaya
+                    //chhaya
                     editload && editload()
- 
+
                 } catch (error) {
- 
+
                 }
             }
         }).catch()
@@ -534,14 +539,14 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
 
         // Open the link to launch the default mail client (like Outlook)
         //window.location.href = mailtoLink;
-        
+
     };
 
     const handleToggleImages = () => {
         // setShowMore((prevShowMore) => !prevShowMore);
         setShowModal(true); // Open the modal
         setCurrentImageIndex(0); // Reset the carousel to the first image
-      };
+    };
     const sendanEmailStop = () => {
         setIsMenuOpenshare(false);
     }
@@ -551,6 +556,151 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
 
     console.log(post.userHasLiked, '{liked}');
 
+
+    const handleReportClick = async (commentRepliesObject: any, flag: string) => {
+        console.log("Report Clicked");
+
+        // Create the popup container
+        const popupDiv = document.createElement("div");
+        popupDiv.id = "report-issue";
+        popupDiv.style.position = "fixed";
+        popupDiv.style.top = "50%";
+        popupDiv.style.left = "50%";
+        popupDiv.style.transform = "translate(-50%, -50%)";
+        popupDiv.style.padding = "20px";
+        popupDiv.style.backgroundColor = "#fff";
+        popupDiv.style.boxShadow = "0px 4px 6px rgba(0,0,0,0.1)";
+        popupDiv.style.borderRadius = "8px";
+        popupDiv.style.zIndex = "1000";
+        popupDiv.style.width = "300px";
+
+        // Create a wrapper div inside the popup
+        const wrapperDiv = document.createElement("div");
+        wrapperDiv.className = "report-Issue-Wrapper-Div"
+        wrapperDiv.style.padding = "20px";
+        wrapperDiv.style.display = "flex";
+        wrapperDiv.style.flexDirection = "column";
+        wrapperDiv.style.gap = "10px"; // Adds spacing between child elements
+        popupDiv.appendChild(wrapperDiv);
+
+        // Add a heading
+        const heading = document.createElement("h2");
+        heading.innerText = "Report Reason";
+        heading.style.margin = "0 0 10px 0";
+        // popupDiv.appendChild(heading);
+        wrapperDiv.appendChild(heading);
+
+        // Add a close button
+        const closeButton = document.createElement("button");
+        closeButton.innerText = "x";
+        closeButton.style.position = "absolute";
+        closeButton.style.top = "10px";
+        closeButton.style.right = "10px";
+        closeButton.style.border = "none";
+        closeButton.style.background = "transparent";
+        closeButton.style.fontSize = "16px";
+        closeButton.style.cursor = "pointer";
+        closeButton.style.color = "Black"
+        closeButton.onclick = () => {
+            document.body.removeChild(popupDiv);
+        };
+        // popupDiv.appendChild(closeButton);
+        wrapperDiv.appendChild(closeButton);
+
+        // Add the textarea
+        const textAreaElement = document.createElement("textarea");
+        textAreaElement.placeholder = "Why are you reporting this comment?";
+        textAreaElement.style.width = "100%";
+        textAreaElement.style.height = "80px";
+        textAreaElement.style.padding = "8px";
+        textAreaElement.style.marginBottom = "10px";
+        textAreaElement.style.border = "1px solid #ccc";
+        textAreaElement.style.borderRadius = "4px";
+        // popupDiv.appendChild(textAreaElement);
+        wrapperDiv.appendChild(textAreaElement);
+
+        // Add a submit button
+        const submitButton = document.createElement("button");
+        submitButton.innerText = "Submit";
+        submitButton.style.padding = "8px 16px";
+        submitButton.style.backgroundColor = "#007BFF";
+        submitButton.style.color = "#fff";
+        submitButton.style.border = "none";
+        submitButton.style.borderRadius = "4px";
+        submitButton.style.cursor = "pointer";
+        submitButton.onclick = async () => {
+            const issueValue = textAreaElement.value.trim();
+            if (!issueValue) {
+                Swal.fire("Error", "Please provide a reason for reporting.", "error");
+                return;
+            }
+
+            try {
+                const currentUser = await sp.web.currentUser();
+                // const commentObject = Comments[commentId];
+                console.log("flag", flag);
+                console.log("commentRepliesObject", commentRepliesObject);
+                const payload = {
+                    ReportReason: issueValue,
+                    ProcessName: "Social Feed",
+                    ReportedDate: new Date(),
+                    Status: "Pending",
+                    ListName: flag === "replies" ? "ARGSocialFeedComments" : "ARGSocialFeed",
+                    ReportedContentAddedOn: flag === "replies" ? commentRepliesObject.Created : commentRepliesObject.Created,
+                    ReportedContent: flag === "replies" ? commentRepliesObject.Comments : commentRepliesObject.Contentpost,
+                    ReportedById: currentUser.Id,
+                    ListItemId: flag === "replies" ? commentRepliesObject.Id : post.postId,
+                    ReportedContentAddedById: flag === 'replies' ? commentRepliesObject.AuthorId : commentRepliesObject.AutherId,
+                    Title: post.Contentpost,
+                    Action: "Active"
+                }
+                // const insertData = await sp.web.lists.getByTitle("ReportedIssueList").items.add({
+                //   ReportReason: issueValue,
+                //   ProcessName: "Event",
+                //   ReportedDate: new Date(),
+                //   Status: "Pending",
+                //   ListName: "ARGEventsComments",
+                //   ReportedContentAddedOn: Created,
+                //   ReportedContent:Commenttext,
+                //   ReportedById: currentUser.Id,
+                //   ListItemId: commentObject.Id,
+                //   ReportedContentAddedById: commentObject.AuthorId,
+                //   Title: EventArray[0].EventName,
+                //   Action:"Active"
+                // });
+                const insertData = await sp.web.lists.getByTitle("ReportedIssueList").items.add(payload);
+                console.log("payload", payload)
+                console.log("Items added successfully");
+                document.body.removeChild(popupDiv);
+                Swal.fire("Success", "Reported successfully", "success");
+            } catch (error) {
+                console.log("Error adding the data into the list", error);
+            }
+        };
+        // popupDiv.appendChild(submitButton);
+        wrapperDiv.appendChild(submitButton);
+
+        // Append the popup to the body
+        document.body.appendChild(popupDiv);
+    };
+
+    const [openMenuIndex, setOpenMenuIndex] = useState(null);
+    const menuRef1 = useRef(null);
+    const toggleMenu1 = (index: any) => {
+        setOpenMenuIndex(openMenuIndex === index ? null : index);
+    }
+
+    React.useEffect(() => {
+        const handleClickOutside = (event: any) => {
+            if (menuRef1.current && !menuRef1.current.contains(event.target)) {
+                setOpenMenuIndex(null);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
     return (
         <div className="post p-4">
             <div className="post-header">
@@ -574,20 +724,42 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
                         {(
                             <><>
                             </>
-                            {CurrentUser.Id === post.AutherId && (
-                            <div className="post-actions">
-                                    <div className="menu-toggle" onClick={toggleMenu}>
-                                        <MoreVertical size={20} />
-                                    </div>
-                                    {isMenuOpen && (
-                                        <div className="dropdown-menucsspost" ref={menuRef}>
-                                            <button onClick={(e) => handleEditClick(e)} disabled={post.AutherId != CurrentUser.Id}>Edit</button>
-                                            <button onClick={(e) => handleDeletePost(e, post.postId)} disabled={post.AutherId != CurrentUser.Id}>Delete</button>
+                                {CurrentUser.Id === post.AutherId && (
+                                    <div className="post-actions">
+                                        <div className="menu-toggle" onClick={toggleMenu}>
+                                            <MoreVertical size={20} />
                                         </div>
-                                    )}
-                                </div>
-                            )}
-                                </>
+                                        {isMenuOpen && (
+                                            <div className="dropdown-menucsspost" ref={menuRef}>
+                                                <button onClick={(e) => handleEditClick(e)} disabled={post.AutherId != CurrentUser.Id}>Edit</button>
+                                                <button onClick={(e) => handleDeletePost(e, post.postId)} disabled={post.AutherId != CurrentUser.Id}>Delete</button>
+                                                <button onClick={(e) => handleReportClick(post, "Post")} disabled={post.AutherId != CurrentUser.Id}>Report</button>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                            </>
+                        )}
+                    </div>
+                    <div className="post-content">
+                        {(
+                            <><>
+                            </>
+                                {CurrentUser.Id !== post.AutherId && (
+                                    <div className="post-actions">
+                                        <div className="menu-toggle" onClick={toggleMenu}>
+                                            <MoreVertical size={20} />
+                                        </div>
+                                        {isMenuOpen && (
+                                            <div className="dropdown-menucsspost" ref={menuRef}>
+                                                {/* <button onClick={(e) => handleEditClick(e)} disabled={post.AutherId != CurrentUser.Id}>Edit</button>
+                                            <button onClick={(e) => handleDeletePost(e, post.postId)} disabled={post.AutherId != CurrentUser.Id}>Delete</button> */}
+                                                <button onClick={(e) => handleReportClick(post, "Post")}>Report</button>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                            </>
                         )}
                     </div>
                 </div>
@@ -630,18 +802,18 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
                                 >
                                     {/* Render the image */}
                                     <img
-                      src={imageUrl}
-                      alt={`Social feed ${index}`}
-                      style={{
-                        width: "100%",
-                        height: "auto",
-                        cursor: "pointer",
-                      }}
-                      onClick={() => {
-                        setShowModal(true); // Open the modal
-                        setCurrentImageIndex(index); // Pass the clicked image index
-                      }}
-                    />
+                                        src={imageUrl}
+                                        alt={`Social feed ${index}`}
+                                        style={{
+                                            width: "100%",
+                                            height: "auto",
+                                            cursor: "pointer",
+                                        }}
+                                        onClick={() => {
+                                            setShowModal(true); // Open the modal
+                                            setCurrentImageIndex(index); // Pass the clicked image index
+                                        }}
+                                    />
                                     {/* Show +X overlay if it is the third image and there are more images to show */}
                                     {isThirdImage && (
                                         <div
@@ -696,25 +868,25 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
                 </div> */}
             </div>
             <Modal show={showModal} onHide={() => setShowModal(false)} centered>
-          <Modal.Header closeButton></Modal.Header>
-          <Modal.Body>
-            <Carousel
-              activeIndex={currentImageIndex} // Show the clicked image first
-              onSelect={(selectedIndex) => setCurrentImageIndex(selectedIndex)}
-            >
-              {SocialFeedImagesJson.map((item: any, index: number) => (
-                <Carousel.Item key={index}>
-                  <img
-                    className="d-block w-100"
-                    src={mergeAndRemoveDuplicates(siteUrl, item.fileUrl)} // Use your image URL merge function
-                    alt={`Slide ${index}`}
-                    style={{ height: "auto", objectFit: "contain" }}
-                  />
-                </Carousel.Item>
-              ))}
-            </Carousel>
-          </Modal.Body>
-        </Modal>
+                <Modal.Header closeButton></Modal.Header>
+                <Modal.Body>
+                    <Carousel
+                        activeIndex={currentImageIndex} // Show the clicked image first
+                        onSelect={(selectedIndex) => setCurrentImageIndex(selectedIndex)}
+                    >
+                        {SocialFeedImagesJson.map((item: any, index: number) => (
+                            <Carousel.Item key={index}>
+                                <img
+                                    className="d-block w-100"
+                                    src={mergeAndRemoveDuplicates(siteUrl, item.fileUrl)} // Use your image URL merge function
+                                    alt={`Slide ${index}`}
+                                    style={{ height: "auto", objectFit: "contain" }}
+                                />
+                            </Carousel.Item>
+                        ))}
+                    </Carousel>
+                </Modal.Body>
+            </Modal>
 
             {/* Post Interactions */}
 
@@ -762,6 +934,28 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
                                 {comment.Comments}
                             </p>
                         </div>
+
+                        <div className="post-content">
+                            {(
+                                <><>
+                                </>
+                                    {/* {CurrentUser.Id !== post.AutherId && ( */}
+                                    <div className="post-actions">
+                                        <div className="menu-toggle" onClick={() => toggleMenu1(comment.Id)}>
+                                            <MoreVertical size={20} />
+                                        </div>
+                                        {openMenuIndex === comment.Id && (
+                                            <div className="dropdown-menucsspost" ref={menuRef1}>
+                                                {/* <button onClick={(e) => handleEditClick(e)} disabled={post.AutherId != CurrentUser.Id}>Edit</button>
+                                            <button onClick={(e) => handleDeletePost(e, post.postId)} disabled={post.AutherId != CurrentUser.Id}>Delete</button> */}
+                                                <button onClick={(e) => handleReportClick(comment, "replies")}>Report</button>
+                                            </div>
+                                        )}
+                                    </div>
+                                    {/* )} */}
+                                </>
+                            )}
+                        </div>
                     </div>
                 ))
                 : ""}
@@ -802,7 +996,17 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
             </div> */}
             {/* Add a New Comment */}
             <form onSubmit={(e) => handleAddComment(e)} className="add-comment" style={{ gap: '1rem' }}>
-                <img src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${currentEmail}`} alt="user avatar" className="commentsImg" />
+            {console.log("CurrenuserProfilepicnmpostcompo",CurrenuserProfilepic,CurrentuserPicturePlaceholderState,currentEmail)}
+                {currentEmail !== "" && CurrenuserProfilepic != null && Number(CurrentuserPicturePlaceholderState) == 0 ?
+                    <img src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${currentEmail}`} alt="user avatar" className="commentsImg" />
+                    :
+                    currentEmail !== "" &&
+                    <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circlecss img-thumbnail
+                                  avatar-xl">
+                        {`${currentEmail.split('.')[0].charAt(0)}${currentEmail.split('.')[1].charAt(0)}`.toUpperCase()}
+                    </Avatar>
+                }
+
                 <textarea
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}

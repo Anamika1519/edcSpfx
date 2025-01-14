@@ -997,6 +997,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
                           onLike={() => handleLikeToggle(index)} // Pass like handler
                           loadingReply={loadingReply}
+                          newsArray={ArrDetails}
                         />
 
                       </div>

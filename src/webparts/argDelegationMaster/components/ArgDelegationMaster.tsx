@@ -26,6 +26,7 @@ import { getSP } from '../loc/pnpjsConfig';
 import moment from 'moment';
 import * as XLSX from 'xlsx';
 import type { IArgDelegationMasterProps } from './IArgDelegationMasterProps';
+import "../../../CustomJSComponents/CustomTable/CustomTable.scss";
 
 
 

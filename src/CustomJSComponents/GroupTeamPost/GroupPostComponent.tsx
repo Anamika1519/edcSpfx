@@ -3,7 +3,7 @@ import { useState } from "react";
 
 import "../GroupTeamPost/GroupPostComponent.scss"
 
-import { addActivityLeaderboard, addNotification, getCurrentUserNameId } from "../../APISearvice/CustomService";
+import { addActivityLeaderboard, addNotification, getCurrentUserNameId, getUserProfilePicture, getUserSPSPicturePlaceholderState } from "../../APISearvice/CustomService";
 
 import { Heart, Menu, MessageSquare, MoreHorizontal, MoreVertical, Share, Share2, ThumbsUp } from "react-feather";
 
@@ -17,12 +17,15 @@ import Swal from "sweetalert2";
 
 import SocialFeed, { IGroupAndTeamPosts } from "../../webparts/groupandTeamDetails/components/SocialFeed2";
 import { Carousel, Modal } from "react-bootstrap";
+import Avatar from "@mui/material/Avatar";
 
 export const GroupPostComponent = ({ key, sp, siteUrl, isedit, currentUsername, CurrentUser, currentEmail, fetchPosts, post }: any) => {
     const [loadingReply, setLoadingReply] = useState<boolean>(false);
     const [loadingLike, setLoadingLike] = useState<boolean>(false);
     const [liked, setLiked] = useState(post.userHasLiked);
     const [likesCount, setLikesCount] = useState(post.LikesCount || 0);
+    const [CurrentuserPicturePlaceholderState, setCurrentuserPicturePlaceholderState] = useState("");
+    const [CurrenuserProfilepic, SetCurrenuserProfilepic] = useState(null);
     const [CommentsCount, setCommentsCount] = useState(post.CommentsCount || 0);
     const [posts, setPosts] = useState([post]);
     const [comments, setComments] = useState(post.comments || []);
@@ -76,6 +79,8 @@ export const GroupPostComponent = ({ key, sp, siteUrl, isedit, currentUsername, 
         const userId = await getCurrentUserNameId(sp);
         setAuthorId(userId);
         fetchInitialGroupLikeData(userId);
+        SetCurrenuserProfilepic(await getUserProfilePicture(userId, sp));
+        setCurrentuserPicturePlaceholderState(await getUserSPSPicturePlaceholderState(userId, sp))
     };
 
     const toggleMenu = (e: any) => {
@@ -221,26 +226,26 @@ export const GroupPostComponent = ({ key, sp, siteUrl, isedit, currentUsername, 
     const fetchInitialGroupLikeData = async (userId: number) => {
 
         const postId = post.postId;
-        await sp.web.lists.getByTitle('ARGGroupandTeamUserLikes').items.select("*,Author/Id").expand("Author")
+        await sp.web.lists.getByTitle('ARGGroupandTeamUserLikes').items.select("*,Author/Id,Author/EMail").expand("Author")
             .filter(`GroupandTeamCommentsId eq ${postId} and AuthorId eq ${userId}`)().then(async (ele: any) => {
                 if (ele.length > 0)
                     setLiked(ele[0].userHasLiked);
                 // setLikesCount(ele.length);
             })
 
-        await sp.web.lists.getByTitle('ARGGroupandTeamUserLikes').items.select("*,Author/Id").expand("Author")
+        await sp.web.lists.getByTitle('ARGGroupandTeamUserLikes').items.select("*,Author/Id,Author/EMail").expand("Author")
             .filter(`GroupandTeamCommentsId eq ${postId} and userHasLiked eq 1`)().then(async (ele: any) => {
                 if (ele.length > 0)
                     setLikesCount(ele.length);
             })
 
-        await sp.web.lists.getByTitle('ARGGroupandTeamUserComments').items.select("*,Author/Id").expand("Author")
+        await sp.web.lists.getByTitle('ARGGroupandTeamUserComments').items.select("*,Author/Id,Author/EMail").expand("Author")
             .filter(`GroupandTeamCommentsId eq ${postId}`)().then(async (ele: any) => {
                 if (ele.length > 0)
                     setCommentsCount(ele.length);
             })
 
-        await sp.web.lists.getByTitle('ARGGroupandTeamUserComments').items.select("*,Author/Id,Author/Title").expand("Author")
+        await sp.web.lists.getByTitle('ARGGroupandTeamUserComments').items.select("*,Author/Id,Author/EMail,Author/Title").expand("Author")
             .filter(`GroupandTeamCommentsId eq ${postId}`)().then(async (ele: any) => {
                 if (ele.length > 0)
                     setComments(ele);
@@ -272,7 +277,7 @@ export const GroupPostComponent = ({ key, sp, siteUrl, isedit, currentUsername, 
             // setAuthorId(await getCurrentUserNameId(sp))
             const postId = post.postId;
             debugger
-            await sp.web.lists.getByTitle('ARGGroupandTeamUserLikes').items.select("*,Author/Id").expand("Author").filter(`GroupandTeamCommentsId eq ${postId} and AuthorId eq ${authorId}`).top(1)().then(async (ele: any) => {
+            await sp.web.lists.getByTitle('ARGGroupandTeamUserLikes').items.select("*,Author/Id,Author/EMail").expand("Author").filter(`GroupandTeamCommentsId eq ${postId} and AuthorId eq ${authorId}`).top(1)().then(async (ele: any) => {
                 console.log(ele, 'ele');
                 debugger
                 if (ele.length > 0) {
@@ -366,7 +371,7 @@ export const GroupPostComponent = ({ key, sp, siteUrl, isedit, currentUsername, 
 
                     const commentResponse = await sp.web.lists.getByTitle('ARGGroupandTeamUserComments').items.add(commentsBody);
                     console.log('Comment added:', commentResponse);
-                    await sp.web.lists.getByTitle('ARGGroupandTeamUserComments').items.select("*,Author/Id,Author/Title").expand("Author")
+                    await sp.web.lists.getByTitle('ARGGroupandTeamUserComments').items.select("*,Author/Id,Author/EMail,Author/Title").expand("Author")
                         .filter(`GroupandTeamCommentsId eq ${postId}`)().then(async (ele: any) => {
                             if (ele.length > 0)
                                 await addActivityLeaderboard(sp, "Comments on Post");
@@ -784,7 +789,18 @@ export const GroupPostComponent = ({ key, sp, siteUrl, isedit, currentUsername, 
             </div> */}
             {/* Add a New Comment */}
             <form onSubmit={(e) => handleAddComment(e)} className="add-comment" style={{ gap: '1rem' }}>
-                <img src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${currentEmail}`} alt="user avatar" className="commentsImg" />
+                {console.log("CurrenuserProfilepicnmgrouppst",CurrenuserProfilepic,CurrentuserPicturePlaceholderState,currentEmail)}
+                {currentEmail !== "" && CurrenuserProfilepic != null && Number(CurrentuserPicturePlaceholderState) == 0 ?
+                    <img src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${currentEmail}`} alt="user avatar" className="commentsImg" />
+                    :
+                    currentEmail !== "" &&
+                    <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circlecss img-thumbnail
+                                  avatar-xl">
+                        {`${currentEmail.split('.')[0].charAt(0)}${currentEmail.split('.')[1].charAt(0)}`.toUpperCase()}
+                    </Avatar>
+                }
+
+
                 <textarea
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}

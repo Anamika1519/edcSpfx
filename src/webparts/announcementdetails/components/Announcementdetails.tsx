@@ -11,7 +11,8 @@ import "../components/announcementdetails.scss";
 import Provider from '../../../GlobalContext/provider';
 import HorizontalNavbar from '../../horizontalNavBar/components/HorizontalNavBar';
 // import 'react-comments-section/dist/index.css';
-import { CommentCard } from '../../../CustomJSComponents/CustomCommentCard/CommentCard';
+import { CommentCard } from '../../../CustomJSComponents/CustomCommentCard/CommentCardAnnouncement';
+//import { CommentCard } from '../../../CustomJSComponents/CustomCommentCard/CommentCard';
 import { addNotification, getARGNotificationHistory, getCurrentUser, getCurrentUserProfile, getUserProfilePicture } from '../../../APISearvice/CustomService';
 import { IAnnouncementdetailsProps } from './IAnnouncementdetailsProps';
 import { decryptId } from '../../../APISearvice/CryptoService';
@@ -824,7 +825,7 @@ const AnnouncementdetailsContext = ({ props }: any) => {
                         onLike={() => handleLikeToggle(index)} // Pass like handler
 
                         loadingReply={loadingReply}
-
+                        mainArray={ArrDetails}
                       />
                     </div>
 

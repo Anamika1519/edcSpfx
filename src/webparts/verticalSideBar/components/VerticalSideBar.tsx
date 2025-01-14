@@ -96,7 +96,8 @@ const VerticalContext = ({ _context }: any) => {
       setBigLogo(ImageUrl.serverUrl + ImageUrl.serverRelativeUrl)
       const ImagesmUrl = res[0].SmallLogo == undefined || res[0].SmallLogo == null ? "" : JSON.parse(res[0].SmallLogo);
       console.log(ImagesmUrl.serverUrl + ImagesmUrl.serverRelativeUrl, 'imgBigLogo');
-      setSmallLogo(ImagesmUrl.serverUrl + ImagesmUrl.serverRelativeUrl)
+      //setSmallLogo(ImagesmUrl.serverUrl + ImagesmUrl.serverRelativeUrl)
+      setSmallLogo(imgSMLogo);
       // localStorage.setItem("bigLogo", ImageUrl.serverUrl + ImageUrl.serverRelativeUrl)
       // localStorage.setItem("SmallLogo", ImagesmUrl.serverUrl + ImagesmUrl.serverRelativeUrl)
     });

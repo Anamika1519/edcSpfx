@@ -27,6 +27,7 @@ import { addItem, getDelegateByID,updateItem } from '../../../APISearvice/Delega
 import { decryptId } from '../../../APISearvice/CryptoService';
 import { getUrlParameterValue } from '../../../Shared/Helper';
 
+
 const ArgDelegationContext = ({ props }: any) => {
   const [currentUser, setCurrentUser] = React.useState(null)
   const sp: SPFI = getSP();
@@ -436,7 +437,7 @@ if(Currusers){
                             name="title"
                             placeholder='Enter Title'
                             // className="form-control inputcss"
-                            className={`form-control inputcs ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                            className={`form-control ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
                             value={formData.DelegateName}
                             onChange={(e) => onChange(e.target.name, e.target.value)}
                             disabled={true}
@@ -478,7 +479,7 @@ if(Currusers){
                             options={rows}
                             value={selectedOption}
                             name="rows"
-                            className={`form-control inputcs newse ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                            className={`form-control newse ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
                             onChange={(selectedOption:any) => onSelect(selectedOption)}
                             placeholder="Select"
                           />
@@ -496,7 +497,7 @@ if(Currusers){
                             id="StartDate"
                             name="StartDate"
                             placeholder='Enter Start Date'
-                            className={`form-control inputcs ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                            className={`form-control ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
                             value={formData.StartDate}
                             
                             onChange={(e) => onChange(e.target.name, e.target.value)}
@@ -514,7 +515,7 @@ if(Currusers){
                             id="EndDate"
                             name="EndDate"
                             placeholder='Enter End Date'
-                            className={`form-control inputcs ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                            className={`form-control ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
                             value={formData.EndDate}
                             // value={formData.EventDate}
                             onChange={(e) => onChange(e.target.name, e.target.value)}
@@ -533,7 +534,7 @@ if(Currusers){
                             name="Status"
                             value={formData.Status}
                             onChange={(e) => onChange(e.target.name, e.target.value)}
-                            className={`form-control inputcs ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                            className={`form-control ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
                             disabled={InputDisabled}
                           >
                             <option >Select</option>
@@ -653,7 +654,17 @@ if(Currusers){
                           </div>
                         </div>
                       </div> */}
-                      {
+                    
+                    </form>
+                  }
+                </div>
+              </div>
+             
+            </div>
+            </div>
+            
+
+            {
                         !InputDisabled ?
                           (<div className="text-center" style={{ marginTop: '1.5rem' }}>
                             {/* <div className="btn btn-success waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleSaveAsDraft}>
@@ -661,34 +672,27 @@ if(Currusers){
                                 <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} alt="Check" /> Save As Draft
                               </div>
                             </div> */}
-                            <div className="btn btn-success waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleFormSubmit}>
-                              <div className='d-flex' style={{ justifyContent: 'space-around', width: '70px' }}>
-                                <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} alt="Check" /> Submit
+                            <div className="btn btn-success waves-effect waves-light m-1"  style={{  width: '100px'  }}  onClick={handleFormSubmit}>
+                              <div className='d-flex' style={{ justifyContent: 'center' }}>
+                                <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem', marginRight:'5px' }} alt="Check" /> Submit
                               </div>
                             </div>
-                            <button type="button" className="btn btn-light1 waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleCancel}>
-                              <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }}
+                            <button type="button" className="btn cancel-btn waves-effect waves-light m-1" style={{  width: '100px'  }} onClick={handleCancel}>
+                              <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem', marginRight:'5px' }}
                                 className='me-1' alt="x" />
                               Cancel
                             </button>
                           </div>) :
-                          (modeValue == 'view') && (<div className="text-center" style={{ marginTop: '3rem' }}><button type="button" className="btn btn-light waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleCancel}>
-                            <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }}
+                          (modeValue == 'view') && (<div className="text-center" style={{ width: '100px' }}><button type="button" className="btn cancel-btn waves-effect waves-light m-1"  onClick={handleCancel}>
+                            <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem', marginRight:'5px' }}
                               className='me-1' alt="x" />
                             Cancel
                           </button></div>)
                       }
-                    </form>
-                  }
-                </div>
-              </div>
-            </div>
-            </div>
-
-
           </div>
         </div>
       </div>
+     
     </div>
   )
 }

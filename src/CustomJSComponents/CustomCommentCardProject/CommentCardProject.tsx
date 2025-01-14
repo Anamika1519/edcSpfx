@@ -5,8 +5,9 @@ import React, { useEffect, useRef } from "react";
 import { useState } from "react";
 import { faEdit, faSave } from '@fortawesome/free-solid-svg-icons';
 import { SPFI } from "@pnp/sp/presets/all";
-import { getSP } from "../../webparts/blogDetails/loc/pnpjsConfig";
-import { Heart, MessageSquare, ThumbsUp, User } from "react-feather";
+// import { getSP } from "../../webparts/blogDetails/loc/pnpjsConfig";
+import { getSP } from "../../webparts/projectDetails/loc/pnpjsConfig";
+import { Heart, MessageSquare, ThumbsUp, User ,MoreVertical} from "react-feather";
 import "../CustomCommentCard/Commentscard.scss";
 import "../../CustomCss/mainCustom.scss"
 import moment from "moment";
@@ -226,6 +227,7 @@ export const CommentCard: React.FC<{
   onLike: () => void;
   onSaveComment: (id: number, newText: string) => Promise<void>; // Function to save edited comment
   ondeleteComment: () => void;
+  projectArray:any
 }> = ({
   commentId,
   AuthorID,
@@ -245,7 +247,8 @@ export const CommentCard: React.FC<{
   loadingReply,
   onSaveComment,
   ondeleteComment,
-  userProfile
+  userProfile,
+  projectArray
 }) => {
   const [newReply, setNewReply] = useState('');
   const [loading, setLoading] = useState(false);
@@ -266,6 +269,13 @@ export const CommentCard: React.FC<{
     getCurrrentuser()
 
   }, []);
+   console.log(Comments, 'Comments');
+   console.log(Action, 'Action');
+   const menuRef = useRef(null);
+   const [openMenuIndex, setOpenMenuIndex] = useState(null);
+   const toggleMenu=(index:any)=>{
+      setOpenMenuIndex(openMenuIndex === index ? null : index);
+   }
   const handleAddReply = async (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     e.preventDefault();
     if (newReply.trim() === '') return;
@@ -296,6 +306,145 @@ const CheckCurrentuser = (Author:any)=>{
   }
   setIsEditing(true)
 }
+
+ React.useEffect(() => {
+        const handleClickOutside = (event:any) => {
+          if (menuRef.current && !menuRef.current.contains(event.target)) {
+            setOpenMenuIndex(null);
+          }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+          document.removeEventListener("mousedown", handleClickOutside);
+        };
+  }, []);
+
+  const handleReportClick = async (commentRepliesObject: any,flag:string) => {
+        console.log("Report Clicked");
+      
+        // Create the popup container
+        const popupDiv = document.createElement("div");
+        popupDiv.id = "report-issue";
+        popupDiv.style.position = "fixed";
+        popupDiv.style.top = "50%";
+        popupDiv.style.left = "50%";
+        popupDiv.style.transform = "translate(-50%, -50%)";
+        popupDiv.style.padding = "20px";
+        popupDiv.style.backgroundColor = "#fff";
+        popupDiv.style.boxShadow = "0px 4px 6px rgba(0,0,0,0.1)";
+        popupDiv.style.borderRadius = "8px";
+        popupDiv.style.zIndex = "1000";
+        popupDiv.style.width = "300px";
+    
+        // Create a wrapper div inside the popup
+        const wrapperDiv = document.createElement("div");
+        wrapperDiv.className="report-Issue-Wrapper-Div"
+        wrapperDiv.style.padding = "20px";
+        wrapperDiv.style.display = "flex";
+        wrapperDiv.style.flexDirection = "column";
+        wrapperDiv.style.gap = "10px"; // Adds spacing between child elements
+        popupDiv.appendChild(wrapperDiv);
+      
+        // Add a heading
+        const heading = document.createElement("h2");
+        heading.innerText = "Report Reason";
+        heading.style.margin = "0 0 10px 0";
+        // popupDiv.appendChild(heading);
+        wrapperDiv.appendChild(heading);
+      
+        // Add a close button
+        const closeButton = document.createElement("button");
+        closeButton.innerText = "x";
+        closeButton.style.position = "absolute";
+        closeButton.style.top = "10px";
+        closeButton.style.right = "10px";
+        closeButton.style.border = "none";
+        closeButton.style.background = "transparent";
+        closeButton.style.fontSize = "16px";
+        closeButton.style.cursor = "pointer";
+        closeButton.style.color="Black"
+        closeButton.onclick = () => {
+          document.body.removeChild(popupDiv);
+        };
+        // popupDiv.appendChild(closeButton);
+        wrapperDiv.appendChild(closeButton);
+      
+        // Add the textarea
+        const textAreaElement = document.createElement("textarea");
+        textAreaElement.placeholder = "Why are you reporting this comment?";
+        textAreaElement.style.width = "100%";
+        textAreaElement.style.height = "80px";
+        textAreaElement.style.padding = "8px";
+        textAreaElement.style.marginBottom = "10px";
+        textAreaElement.style.border = "1px solid #ccc";
+        textAreaElement.style.borderRadius = "4px";
+        // popupDiv.appendChild(textAreaElement);
+        wrapperDiv.appendChild(textAreaElement);
+      
+        // Add a submit button
+        const submitButton = document.createElement("button");
+        submitButton.innerText = "Submit";
+        submitButton.style.padding = "8px 16px";
+        submitButton.style.backgroundColor = "#007BFF";
+        submitButton.style.color = "#fff";
+        submitButton.style.border = "none";
+        submitButton.style.borderRadius = "4px";
+        submitButton.style.cursor = "pointer";
+        submitButton.onclick = async () => {
+          const issueValue = textAreaElement.value.trim();
+          if (!issueValue) {
+            Swal.fire("Error", "Please provide a reason for reporting.", "error");
+            return;
+          }
+      
+          try {
+            const currentUser = await sp.web.currentUser();
+            const commentObject = Comments[commentId];
+            console.log("flag",flag);
+            console.log("commentRepliesObject",commentRepliesObject);
+            const payload={
+              ReportReason: issueValue,
+              ProcessName: "Project",
+              ReportedDate: new Date(),
+              Status: "Pending",
+              ListName: flag === "replies" ? "ARGProjectUserComments": "ARGProjectComments",
+              ReportedContentAddedOn: flag === "replies" ? commentRepliesObject.Created : Created,
+              ReportedContent:flag === "replies" ? commentRepliesObject.Comments: Commenttext,
+              ReportedById: currentUser.Id,
+              ListItemId: flag === "replies" ? commentRepliesObject.Id : commentObject.Id,
+              ReportedContentAddedById: flag === 'replies' ? commentRepliesObject.AuthorId: commentObject.AuthorId,
+              Title: projectArray[0].ProjectName,
+              Action:"Active"
+            }
+            // const insertData = await sp.web.lists.getByTitle("ReportedIssueList").items.add({
+            //   ReportReason: issueValue,
+            //   ProcessName: "Event",
+            //   ReportedDate: new Date(),
+            //   Status: "Pending",
+            //   ListName: "ARGEventsComments",
+            //   ReportedContentAddedOn: Created,
+            //   ReportedContent:Commenttext,
+            //   ReportedById: currentUser.Id,
+            //   ListItemId: commentObject.Id,
+            //   ReportedContentAddedById: commentObject.AuthorId,
+            //   Title: EventArray[0].EventName,
+            //   Action:"Active"
+            // });
+            const insertData = await sp.web.lists.getByTitle("ReportedIssueList").items.add(payload);
+            console.log("payload",payload)
+            console.log("Items added successfully");
+            document.body.removeChild(popupDiv);
+            Swal.fire("Success", "Reported successfully", "success");
+          } catch (error) {
+            console.log("Error adding the data into the list", error);
+          }
+        };
+        // popupDiv.appendChild(submitButton);
+        wrapperDiv.appendChild(submitButton);
+      
+        // Append the popup to the body
+        document.body.appendChild(popupDiv);
+      };
   return (
     <div className="card team-fedd p-4" style={{ border: '1px solid #54ade0', borderRadius: '20px', boxShadow: '0 3px 20px #1d26260d' }}>
       <div>
@@ -315,6 +464,27 @@ const CheckCurrentuser = (Author:any)=>{
                 {/* <small>{Created}</small> */}
                 <small> {moment(Created).format("DD-MMM-YYYY")}</small>
               </p>
+              {currentuserid !== AuthorID && 
+                (<div className="post-content">
+                <div className="post-actions">
+                        <div className="menu-toggle" 
+                        onClick={()=>toggleMenu(Comments[commentId].Id)}
+                        >
+                            <MoreVertical size={20} />
+                        </div>
+                        {openMenuIndex === Comments[commentId].Id && (
+                            <div className="dropdown-menucsspost" ref={menuRef}>
+                                <button 
+                                // onClick={(e) => handleEditClick(e)} disabled={post.AutherId != CurrentUser.Id}
+                                onClick={(e) => handleReportClick(Comments[commentId],"MainComment")}
+                                
+                                >Report</button>
+                            </div>
+                        )} 
+              </div>
+                </div>)
+              }
+              
             </div>
             {/* {currentuserid === AuthorID && (
                 <div className="dropdown mt-2 me-2 font-18">
@@ -424,6 +594,15 @@ const CheckCurrentuser = (Author:any)=>{
                       Delete
                     </button>
                   </li>
+                  <li>
+                    <button
+                      type="button"
+                      className="dropdown-item text-danger"
+                      onClick={(e) => handleReportClick(Comments[commentId],"MainComment")}
+                    >
+                      Report
+                    </button>
+                  </li>
                 </ul>
               </div>
             )}
@@ -486,6 +665,42 @@ const CheckCurrentuser = (Author:any)=>{
                       <small> {moment(reply.Created).format("DD-MMM-YYYY")}</small>
                     </p>
                   </div>
+                  {/* Three-dot menu */}
+                                                                <div className="post-actions" style={{ marginLeft: "auto", position: "relative" }}>
+                                                                  <div className="menu-toggle" onClick={() => toggleMenu(reply.Id)}>
+                                                                    <MoreVertical size={20} />
+                                                                  </div>
+                                                                  {openMenuIndex === reply.Id && (
+                                                                    <div
+                                                                      className="dropdown-menucsspost"
+                                                                      ref={menuRef}
+                                                                      style={{
+                                                                        position: "absolute",
+                                                                        top: "30px",
+                                                                        right: "0",
+                                                                        background: "white",
+                                                                        boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                                                                        borderRadius: "4px",
+                                                                        zIndex: 1000,
+                                                                      }}
+                                                                    >
+                                                                      <button
+                                                                        onClick={() => handleReportClick(reply,"replies")}
+                                                                        style={{
+                                                                          background: "none",
+                                                                          border: "none",
+                                                                          padding: "10px",
+                                                                          width: "100%",
+                                                                          textAlign: "left",
+                                                                          cursor: "pointer",
+                                                                          color:"black"
+                                                                        }}
+                                                                      >
+                                                                        Report
+                                                                      </button>
+                                                                    </div>
+                                                                  )}
+                                                                </div>
                 </div>
               ))}
             </div>

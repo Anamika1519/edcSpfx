@@ -30,9 +30,17 @@
 }
 
 .btn-light1 {
-    background-color: #f8f9fa;
-    border-color: #f8f9fa;
-    padding: 7px 12px !important;
+    border: 1px solid #efefef;
+    border-radius: 30px;
+    border-radius: 30px !important;
+    color: #3c3c3c;
+    cursor: auto;
+    font-size: 13px;
+    width: 100px;
+}
+.newse .css-hlgwow div{
+    font-weight: 500;
+    color: #000 !important;
 }
 
 /* Add hover effect to buttons */

@@ -3,12 +3,13 @@ import { faHeart, faThumbsUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useRef } from "react";
 import { useState } from "react";
-import { Heart, MessageSquare, ThumbsUp, User ,MoreVertical} from "react-feather";
+import { Heart, MessageSquare, ThumbsUp, User, MoreVertical } from "react-feather";
 import "../../CustomJSComponents/CustomCommentCard/Commentscard.scss";
-import {getSP} from '../../webparts/discussionForumDetails/loc/pnpjsConfig';
-import { SPFI } from "@pnp/sp/presets/all";
 import "../../CustomCss/mainCustom.scss"
 import moment from "moment";
+// import {getSP} from '../../webparts/blogDetails/loc/pnpjsConfig';
+import {getSP} from '../../webparts/announcementdetails/loc/pnpjsConfig';
+import { SPFI } from "@pnp/sp/presets/all";
 import Swal from "sweetalert2";
 // Define types for reply and comment structures
 interface Reply {
@@ -53,22 +54,22 @@ export const CommentCard: React.FC<{
   CurrentUserProfile: string;
   loadingLike:boolean;
   Action: string;
-  userProfile:string
   onAddReply: (text: string) => void;
   loadingReply:boolean;
   onLike: () => void;
-  discussionArray:any;
-}> = ({ commentId, username, Commenttext, Comments, Created, likes, replies, userHasLiked, CurrentUserProfile,loadingLike, Action, userProfile,onAddReply, onLike ,loadingReply,discussionArray}) => {
+  mainArray:any;
+}> = ({ commentId, username, Commenttext, Comments, Created, likes, replies, userHasLiked, CurrentUserProfile,loadingLike, Action, onAddReply, onLike ,loadingReply ,mainArray}) => {
   const sp: SPFI = getSP();
   const [newReply, setNewReply] = useState('');
   const [loading, setLoading] = useState(false); // Loading state for replies
   console.log(Comments, 'Comments');
-    console.log(Action, 'Action');
-    const menuRef = useRef(null);
-    const [openMenuIndex, setOpenMenuIndex] = useState(null);
-    const toggleMenu=(index:any)=>{
-      setOpenMenuIndex(openMenuIndex === index ? null : index);
-    }
+  console.log(Action, 'Action');
+  const menuRef = useRef(null);
+  const [openMenuIndex, setOpenMenuIndex] = useState(null);
+  const toggleMenu=(index:any)=>{
+    setOpenMenuIndex(openMenuIndex === index ? null : index);
+  }
+
   const handleAddReply = async (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     e.preventDefault()
     if (newReply.trim() === '') return;
@@ -92,20 +93,20 @@ export const CommentCard: React.FC<{
   //     handleAddReply(e);
   //   }
   // };
+   
+   React.useEffect(() => {
+      const handleClickOutside = (event:any) => {
+        if (menuRef.current && !menuRef.current.contains(event.target)) {
+          setOpenMenuIndex(null);
+        }
+      };
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }, []);
 
-  React.useEffect(() => {
-        const handleClickOutside = (event:any) => {
-          if (menuRef.current && !menuRef.current.contains(event.target)) {
-            setOpenMenuIndex(null);
-          }
-        };
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-          document.removeEventListener("mousedown", handleClickOutside);
-        };
-      }, []);
-
-   const handleReportClick = async (commentRepliesObject: any,flag:string) => {
+  const handleReportClick = async (commentRepliesObject: any,flag:string) => {
       console.log("Report Clicked");
     
       // Create the popup container
@@ -182,24 +183,58 @@ export const CommentCard: React.FC<{
           Swal.fire("Error", "Please provide a reason for reporting.", "error");
           return;
         }
-    
+        const currentUser = await sp.web.currentUser();
+        console.log("currentUser",currentUser);
         try {
-          const currentUser = await sp.web.currentUser();
+          
           const commentObject = Comments[commentId];
           console.log("flag",flag);
           console.log("commentRepliesObject",commentRepliesObject);
+          console.log("mainArray",mainArray);
+          let listName="";
+          let reportedContentAddedOn;
+          let reportedContent;
+          let listItemID;
+          let reportedContentAddedBy;
+          let title;
+          let processName;
+          if(Action === "Blog"){
+            processName ="Blog";
+            listName = flag === "replies" ? "ARGBlogUserComments": "ARGBlogComments";
+            reportedContentAddedOn = flag === "replies" ? commentRepliesObject.Created : Created;
+            reportedContent = flag === "replies" ? commentRepliesObject.Comments: Commenttext;
+            listItemID = flag === "replies" ? commentRepliesObject.Id : commentObject.Id;
+            reportedContentAddedBy =flag === 'replies' ? commentRepliesObject.AuthorId: commentObject.AuthorId;
+            title=mainArray[0].Title;
+          }else if(Action === "Announcement"){
+            processName="Announcement"
+            listName = flag === "replies" ? "ARGAnnouncementAndNewsUserComments": "ARGAnnouncementandNewsComments";
+            reportedContentAddedOn = flag === "replies" ? commentRepliesObject.Created : Created;
+            reportedContent = flag === "replies" ? commentRepliesObject.Comments: Commenttext;
+            listItemID = flag === "replies" ? commentRepliesObject.Id : commentObject.Id;
+            reportedContentAddedBy =flag === 'replies' ? commentRepliesObject.AuthorId: commentObject.AuthorId;
+            title=mainArray[0].Title;
+          }else if(Action === "Group"){
+            processName="Group And Teams"
+            listName = flag === "replies" ? "ARGGroupandTeamUserComments": "ARGGroupandTeamComments";
+            reportedContentAddedOn = flag === "replies" ? commentRepliesObject.Created : Created;
+            reportedContent = flag === "replies" ? commentRepliesObject.Comments: Commenttext;
+            listItemID = flag === "replies" ? commentRepliesObject.Id : commentObject.Id;
+            reportedContentAddedBy =flag === 'replies' ? commentRepliesObject.AuthorId: commentObject.AuthorId;
+            title=mainArray[0].GroupName;
+          }
           const payload={
             ReportReason: issueValue,
-            ProcessName: "Discussion",
+            ProcessName: processName,
             ReportedDate: new Date(),
             Status: "Pending",
-            ListName: flag === "replies" ? "ARGDiscussionUserComments": "ARGDiscussionComments",
-            ReportedContentAddedOn: flag === "replies" ? commentRepliesObject.Created : Created,
-            ReportedContent:flag === "replies" ? commentRepliesObject.Comments: Commenttext,
+            ListName: listName,
+            ReportedContentAddedOn: reportedContentAddedOn,
+            ReportedContent:reportedContent,
             ReportedById: currentUser.Id,
-            ListItemId: flag === "replies" ? commentRepliesObject.Id : commentObject.Id,
-            ReportedContentAddedById: flag === 'replies' ? commentRepliesObject.AuthorId: commentObject.AuthorId,
-            Title: discussionArray[0].Topic,
+            ListItemId: listItemID,
+            ReportedContentAddedById: reportedContentAddedBy,
+            Title: title,
             Action:"Active"
           }
           // const insertData = await sp.web.lists.getByTitle("ReportedIssueList").items.add({
@@ -231,16 +266,14 @@ export const CommentCard: React.FC<{
       // Append the popup to the body
       document.body.appendChild(popupDiv);
     };
-
   return (
     <div className="card team-fedd p-4" style={{ border: '1px solid #54ade0', borderRadius: '20px', boxShadow: '0 3px 20px #1d26260d' }}>
-      <div className="" >
+      <div className="">
         <div className="row">
           <div className="d-flex align-items-start">
             <img
-              className="me-2 mt-0 avatar-sm rounded-circle"
-            //   src={Comments[0].UserProfile}
-                src={userProfile}
+              className="me-2 mt-1 avatar-sm rounded-circle"
+              src={Comments[0].UserProfile}
               alt="User"
             />
 
@@ -258,23 +291,23 @@ export const CommentCard: React.FC<{
             </div>
 
             <div className="post-content">
-                                          <div className="post-actions">
-                                                  <div className="menu-toggle" 
-                                                  onClick={()=>toggleMenu(Comments[commentId].Id)}
-                                                  >
-                                                      <MoreVertical size={20} />
-                                                  </div>
-                                                  {openMenuIndex === Comments[commentId].Id && (
-                                                      <div className="dropdown-menucsspost" ref={menuRef}>
-                                                          <button 
-                                                          // onClick={(e) => handleEditClick(e)} disabled={post.AutherId != CurrentUser.Id}
-                                                          onClick={(e) => handleReportClick(Comments[commentId],"MainComment")}
-                                                          
-                                                          >Report</button>
-                                                      </div>
-                                                  )} 
-                                        </div>
-                                    </div>
+                              <div className="post-actions">
+                                      <div className="menu-toggle" 
+                                      onClick={()=>toggleMenu(Comments[commentId].Id)}
+                                      >
+                                          <MoreVertical size={20} />
+                                      </div>
+                                      {openMenuIndex === Comments[commentId].Id && (
+                                          <div className="dropdown-menucsspost" ref={menuRef}>
+                                              <button 
+                                              // onClick={(e) => handleEditClick(e)} disabled={post.AutherId != CurrentUser.Id}
+                                              onClick={(e) => handleReportClick(Comments[commentId],"MainComment")}
+                                              
+                                              >Report</button>
+                                          </div>
+                                      )} 
+                            </div>
+                        </div>
           </div>
 
           <p style={{ whiteSpace: 'pre-wrap'}} className="mt-2 font-16">{Commenttext}</p>
@@ -321,42 +354,42 @@ export const CommentCard: React.FC<{
 
                   </div>
 
-                   {/* Three-dot menu */}
-                                              <div className="post-actions" style={{ marginLeft: "auto", position: "relative" }}>
-                                                <div className="menu-toggle" onClick={() => toggleMenu(reply.Id)}>
-                                                  <MoreVertical size={20} />
-                                                </div>
-                                                {openMenuIndex === reply.Id && (
-                                                  <div
-                                                    className="dropdown-menucsspost"
-                                                    ref={menuRef}
-                                                    style={{
-                                                      position: "absolute",
-                                                      top: "30px",
-                                                      right: "0",
-                                                      background: "white",
-                                                      boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                                                      borderRadius: "4px",
-                                                      zIndex: 1000,
-                                                    }}
-                                                  >
-                                                    <button
-                                                      onClick={() => handleReportClick(reply,"replies")}
-                                                      style={{
-                                                        background: "none",
-                                                        border: "none",
-                                                        padding: "10px",
-                                                        width: "100%",
-                                                        textAlign: "left",
-                                                        cursor: "pointer",
-                                                        color:"black"
-                                                      }}
-                                                    >
-                                                      Report
-                                                    </button>
-                                                  </div>
-                                                )}
-                                              </div>
+                  {/* Three-dot menu */}
+                            <div className="post-actions" style={{ marginLeft: "auto", position: "relative" }}>
+                              <div className="menu-toggle" onClick={() => toggleMenu(reply.Id)}>
+                                <MoreVertical size={20} />
+                              </div>
+                              {openMenuIndex === reply.Id && (
+                                <div
+                                  className="dropdown-menucsspost"
+                                  ref={menuRef}
+                                  style={{
+                                    position: "absolute",
+                                    top: "30px",
+                                    right: "0",
+                                    background: "white",
+                                    boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                                    borderRadius: "4px",
+                                    zIndex: 1000,
+                                  }}
+                                >
+                                  <button
+                                    onClick={() => handleReportClick(reply,"replies")}
+                                    style={{
+                                      background: "none",
+                                      border: "none",
+                                      padding: "10px",
+                                      width: "100%",
+                                      textAlign: "left",
+                                      cursor: "pointer",
+                                      color:"black"
+                                    }}
+                                  >
+                                    Report
+                                  </button>
+                                </div>
+                              )}
+                            </div>
                 </div>
 
               ))}

@@ -1090,22 +1090,48 @@ const MyApprovalContext = ({ props }: any) => {
         >
           <div className="container-fluid paddb">
             <div className="row" style={{ paddingLeft: "0.5rem" }}>
-              <div className="col-lg-8">
+              <div className="col-md-4">
 
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
 
               </div>
 
-              <div className="col-md-4">
+              <div className="col-md-8">
                 <div className="row">
-                  <div style={{ textAlign: "right", padding: '0px' }} className="col-md-4 newtexleft">
+                <div style={{ textAlign: "center" }} className="col-md-3 newtexleft">
+                    <div className="mb-0">
+                      <label htmlFor="Status" className="form-label mt-2">
+  <img src={require('../assets/delegation.png')} 
+   className='me-1' alt="d" />   Acting on behalf of
+                      </label>
+                    </div>
+                  </div>
+                  <div style={{paddingLeft:'0px'}} className="col-md-4">
+                    <select
+                      id="Type"
+                      name="Type"
+                      onChange={(e) => handleStatusChange(e.target.name, 'Pending', e.target.value)}
+                      className="form-select"
+                      disabled={loading || actingForUser.length === 0}
+                    >
+                      <option value="">
+                        {loading ? "Loading..." : actingForUser.length === 0 ? "No Delegation" : "Select an option"}
+                      </option>
+                      {actingForUser.map((item, index) => (
+                        <option key={index} value={item.email}>
+                          {item.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div style={{ textAlign: "center", padding: '0px' }} className="col-md-1 newtexleft ivon">
                     <div className="mb-0">
                       <label htmlFor="Status" className="form-label newfil mt-0 mb-0">
                         <svg fill="#3c3c3c" width="23px" height="36px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" stroke="#b3b3b3"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M12,25l6.67,6.67a1,1,0,0,0,.7.29.91.91,0,0,0,.39-.08,1,1,0,0,0,.61-.92V13.08L31.71,1.71A1,1,0,0,0,31.92.62,1,1,0,0,0,31,0H1A1,1,0,0,0,.08.62,1,1,0,0,0,.29,1.71L11.67,13.08V24.33A1,1,0,0,0,12,25ZM3.41,2H28.59l-10,10a1,1,0,0,0-.3.71V28.59l-4.66-4.67V12.67a1,1,0,0,0-.3-.71Z"></path> </g></svg>
                       </label>
                     </div>
                   </div>
-                  <div className="col-md-8">
+                  <div style={{paddingLeft:'0px'}} className="col-md-4 ivon2">
                     <select
                       id="Type"
                       name="Type"
@@ -1122,34 +1148,9 @@ const MyApprovalContext = ({ props }: any) => {
                       ))}
                     </select>
                   </div>
+                  
                 </div>
-                <div className="row">
-                  <div style={{ textAlign: "right" }} className="col-md-4 newtexleft">
-                    <div className="mb-0">
-                      <label htmlFor="Status" className="form-label mt-2">
-                        Filter By Acting For
-                      </label>
-                    </div>
-                  </div>
-                  <div className="col-md-8">
-                    <select
-                      id="Type"
-                      name="Type"
-                      onChange={(e) => handleStatusChange(e.target.name, 'Pending', e.target.value)}
-                      className="form-select"
-                      disabled={loading || actingForUser.length === 0}
-                    >
-                      <option value="">
-                        {loading ? "Loading..." : actingForUser.length === 0 ? "No data" : "Select an option"}
-                      </option>
-                      {actingForUser.map((item, index) => (
-                        <option key={index} value={item.email}>
-                          {item.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
+              
 
               </div>
             </div>
@@ -1160,7 +1161,7 @@ const MyApprovalContext = ({ props }: any) => {
                   <div className="card-body">
                     <div className="d-flex flex-wrap align-items-center justify-content-center">
                       <ul
-                        className="nav nav-pills navtab-bg float-end"
+                        className="nav nav-pills navtab-bg float-end justify-content-center"
                         role="tablist"
                       >
                         <li className="nav-item" role="presentation">

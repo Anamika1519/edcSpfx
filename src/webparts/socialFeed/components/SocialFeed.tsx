@@ -12,7 +12,7 @@ import "../../../Assets/Figtree/Figtree-VariableFont_wght.ttf";
 import "bootstrap/dist/css/bootstrap.min.css";
 import CustomBreadcrumb from '../../../CustomJSComponents/CustomBreadcrumb/CustomBreadcrumb'
 import { Link, MoreVertical, Plus, PlusCircle, Rss, TrendingUp, User, UserPlus, Users } from 'react-feather'
-import { addActivityLeaderboard, addNotification, getCurrentUser, getCurrentUserName, getCurrentUserNameId, getCurrentUserProfileEmail, getFollow, getFollowing } from '../../../APISearvice/CustomService'
+import { addActivityLeaderboard, addNotification, getCurrentUser, getCurrentUserName, getCurrentUserNameId, getCurrentUserProfileEmail, getFollow, getFollowing, getUserProfilePicture, getUserSPSPicturePlaceholderState } from '../../../APISearvice/CustomService'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons"
 import classNames from 'classnames'
@@ -27,6 +27,7 @@ import { MSGraphClientV3 } from "@microsoft/sp-http";
 import { toLower } from "lodash";
 
 import Swal from 'sweetalert2'
+import Avatar from '@mui/material/Avatar'
 interface Post {
   text: string;
   images: string[];
@@ -77,8 +78,10 @@ const SocialFeedContext = ({ props }: any) => {
   const [loadingLike, setLoadingLike] = useState<boolean>(false);
   const [Currentusercompany, setCurrentusercompany] = useState("");
   const [IsCall, setIsCall] = useState(true);
-  const [CurrentDataAll, setCurrentDataAll] = useState<any>([])
-
+  const [CurrentDataAll, setCurrentDataAll] = useState<any>([]);
+  const [CurrentuserPicturePlaceholderState, setCurrentuserPicturePlaceholderState] = useState("");
+  const [CurrenuserProfilepic, SetCurrenuserProfilepic] = useState(null);
+  
   const menuRef = useRef(null);
   useEffect(() => {
     // Load posts from localStorage when the component mounts
@@ -102,15 +105,22 @@ const SocialFeedContext = ({ props }: any) => {
 
   }, [props]);
   const getAllAPI = async () => {
-    setCurrentEmail(await getCurrentUserProfileEmail(sp))
+    setCurrentEmail(await getCurrentUserProfileEmail(sp));
+   
     setCurrentUser(await getCurrentUser(sp))
 
     // const currentData = filteredEmployeeData.slice(0, 10);
     if (IsCall) {
       const cuurentID = await getCurrentUserNameId(sp);
-      setCurrentID(cuurentID)
+      setCurrentID(cuurentID);
+      //SetCurrenuserProfilepic(await getUserProfilePicture(cuurentID,sp));
+      //setCurrentuserPicturePlaceholderState(await getUserSPSPicturePlaceholderState(cuurentID,sp))
       setIsCall(false)
-    }
+    }debugger
+    const cuurentID2 = await getCurrentUserNameId(sp);
+      
+      SetCurrenuserProfilepic(await getUserProfilePicture(cuurentID2,sp));
+      setCurrentuserPicturePlaceholderState(await getUserSPSPicturePlaceholderState(cuurentID2,sp))
 
     setCurrentUserName(await getCurrentUserName(sp))
     //setblogdata(await fetchBlogdatatop(sp))
@@ -147,7 +157,7 @@ const SocialFeedContext = ({ props }: any) => {
       const userListSP = await sp.web.lists
         .getByTitle("User Information List")
         .items
-        .select("ID", "Title", "EMail", "Department", "JobTitle", "Picture", "MobilePhone", "WorkPhone", "Name")
+        .select("ID", "*", "Title", "EMail", "Department", "JobTitle", "Picture", "MobilePhone", "WorkPhone", "Name")
         // .filter(`EMail ne null and ID ne ${currentUser.Id} and ${finalquery}`) // content tyep eq person
         .filter(strfilter) // content tyep eq person
         ();
@@ -233,7 +243,7 @@ const SocialFeedContext = ({ props }: any) => {
       const followers = await sp.web.lists.getByTitle("ARGFollows").items
         .filter(`FollowedId eq ${currentUser.Id}`)
         .expand("Follower")
-        .select("Follower/Title", "Follower/EMail", "Follower/Department", "Follower/ID")();
+        .select("Follower/Title", "Follower/EMail", "Follower/Department", "Follower/ID", "Follower/SPSPicturePlaceholderState")();
       followers.forEach(element => {
         checkIfFollower(element);
       });
@@ -253,7 +263,7 @@ const SocialFeedContext = ({ props }: any) => {
       const followings = await sp.web.lists.getByTitle("ARGFollows").items
         .filter(`FollowerId eq ${currentUser.Id}`)
         .expand("Followed")
-        .select("Followed/Title", "Followed/EMail", "Followed/Department", "Followed/ID")();
+        .select("Followed/Title", "Followed/EMail", "Followed/Department", "Followed/ID", "Followed/SPSPicturePlaceholderState")();
       followings.forEach(element => {
         checkIfFollowing(element);
       });
@@ -545,11 +555,11 @@ const SocialFeedContext = ({ props }: any) => {
         .filter(`FollowedId eq ${currentUser.Id}`)
         .select("Follower/Title", "Follower/EMail", "Follower/Department", "Follower/ID")
         .expand("Follower")();
-        const followed = await sp.web.lists.getByTitle("ARGFollows").items
+      const followed = await sp.web.lists.getByTitle("ARGFollows").items
         //.filter(`FollowedId eq ${currentUser.Id}`)
         .filter(`FollowerId eq ${currentUser.Id}`)
-                 .select("Follower/Title", "Follower/EMail", "Follower/Department", "Follower/ID", "Followed/Title", "Followed/EMail", "Followed/Department", "Followed/ID")
-          .expand("Follower","Followed")();
+        .select("Follower/Title", "Follower/EMail", "Follower/Department", "Follower/ID", "Followed/Title", "Followed/EMail", "Followed/Department", "Followed/ID")
+        .expand("Follower", "Followed")();
       console.log(followers, 'followers', followed);
 
       followers.forEach(element => {
@@ -683,7 +693,7 @@ const SocialFeedContext = ({ props }: any) => {
                 )
 
                 const updatedPosts = [newPost, ...posts];
-                console.log("updatedPosts",updatedPosts);
+                console.log("updatedPosts", updatedPosts);
 
                 setPosts(updatedPosts[0]);
 
@@ -1099,7 +1109,7 @@ const SocialFeedContext = ({ props }: any) => {
 
           <div className="container-fluid paddb">
 
-            <div className="row" style={{paddingLeft:'0.5rem'}}>
+            <div className="row" style={{ paddingLeft: '0.5rem' }}>
 
               <div className="col-lg-3">
 
@@ -1112,20 +1122,31 @@ const SocialFeedContext = ({ props }: any) => {
             <div className="row mt-3">
 
               <div className="col-md-3 mobile-w1">
-                <div style={{position:'sticky', top:'90px'}} className='psonew1'>
+                <div style={{ position: 'sticky', top: '90px' }} className='psonew1'>
                   <div className="row">
 
                     <div style={{ display: 'flex', gap: '0.1rem' }}>
+                      {console.log(currentEmail,"hjhjhj")}
+                    {console.log("CurrenuserProfilepicnmsocialfeed",CurrenuserProfilepic,CurrentuserPicturePlaceholderState,currentEmail)}
+                      
+                      {currentEmail != "" && CurrenuserProfilepic != null && Number(CurrentuserPicturePlaceholderState) == 0 ?
+                        <img src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${currentEmail}`}
 
-                      <img src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${currentEmail}`}
+                          className="rounded-circlecss img-thumbnail avatar-xl" style={{
 
-                        className="rounded-circlecss img-thumbnail avatar-xl" style={{
+                            borderRadius: '5rem', height: '3rem',
 
-                          borderRadius: '5rem', height: '3rem',
+                            width: '3rem'
 
-                          width: '3rem'
+                          }} />
 
-                        }} />
+                        :
+                        currentEmail !== "" &&
+                        <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circlecss img-thumbnail
+                                  avatar-xl">
+                          {`${currentEmail.split('.')[0].charAt(0)}${currentEmail.split('.')[1].charAt(0)}`.toUpperCase()}
+                        </Avatar>
+                      }
 
                       <span style={{
 
@@ -1189,14 +1210,14 @@ const SocialFeedContext = ({ props }: any) => {
 
                           </span>{" "}
 
-                          Followers <span style={{top:'11px'}} className="likecount1">{followwerLength}</span>  
+                          Followers <span style={{ top: '11px' }} className="likecount1">{followwerLength}</span>
 
                         </div>{" "}
 
                         <div className={`tabcss mb-2 mt-2 me-1 ${activeMainTab === "following" ? "activenew" : ""
 
                           }`} onClick={() => handleTabClick("following")} style={{ cursor: "pointer" }} >
-                          <span><Users /> </span> Following <span style={{top:'11px'}} className="likecount1">{followingLength}</span></div>
+                          <span><Users /> </span> Following <span style={{ top: '11px' }} className="likecount1">{followingLength}</span></div>
 
                       </div>
 
@@ -1314,7 +1335,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                                       <div>
                                         <div className='btn btn-default'>
-                                      <svg  onClick={() => handleImageChange}  xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                                          <svg onClick={() => handleImageChange} xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
                                         </div>
                                         {/* <Link className='hovertext' style={{ width: "20px", height: "16px" }} onClick={() => handleImageChange} /> */}
 
@@ -1363,7 +1384,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                                     <button type="submit" className="btn btn-sm btn-primary primary1 font-121" disabled={Loading}>
 
-                                      <FontAwesomeIcon style={{float:'left',margin:"7px 6px 0px 0px"}} icon={faPaperPlane} /> Post
+                                      <FontAwesomeIcon style={{ float: 'left', margin: "7px 6px 0px 0px" }} icon={faPaperPlane} /> Post
 
                                     </button>
 
@@ -1547,28 +1568,23 @@ const SocialFeedContext = ({ props }: any) => {
                                   alt="Call"
 
                                 />
-
-                                <img
-
-                                  src={
-
-                                    item.Picture != null
-
-                                      ? `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item.EMail}`
-
-                                      : require("../assets//users.jpg")
-
-                                  }
-
-                                  className="img-thumbnail
-
-                                 avatar-xl"
-
-                                  alt="profile-image"
-
-                                  style={{ cursor: "auto", borderRadius: '1000px', width: "6rem", height: '6rem' }}
-
-                                />
+                                {item.Picture != null && item.SPSPicturePlaceholderState == 0 ?
+                                  <img
+                                    src={
+                                      `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item.EMail}`
+                                    }
+                                    className="img-thumbnail
+                                avatar-xl"
+                                    alt="profile-image"
+                                    style={{ cursor: "auto", borderRadius: '1000px', width: "6rem", height: '6rem' }}
+                                  />
+                                  :
+                                 ( item.EMail !== null || item.EMail !== "") &&
+                                  <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circlecss img-thumbnail
+                                  avatar-xl">
+                                    {`${item.EMail.split('.')[0].charAt(0)}${item.EMail.split('.')[1].charAt(0)}`.toUpperCase()}
+                                  </Avatar>
+                                }
 
                               </a>
 
@@ -1583,17 +1599,17 @@ const SocialFeedContext = ({ props }: any) => {
                                     textDecoration: "unset",
 
                                     fontSize: "20px",
-                                    cursor:'auto'
+                                    cursor: 'auto'
 
                                   }}
 
                                 >
 
-                                  
 
-                                    {truncateText(item.Title, 15)}
 
-                                  
+                                  {truncateText(item.Title, 15)}
+
+
 
                                 </span>
 
@@ -1756,28 +1772,23 @@ const SocialFeedContext = ({ props }: any) => {
                                   alt="Call"
 
                                 />
+                                {item.Picture != null && item.SPSPicturePlaceholderState == 0 ?
+                                  <img
+                                    src={
+                                      `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item.EMail}`
+                                    }
+                                    className="rounded-circlecssnew img-thumbnail
+                          avatar-xl"
+                                    alt="profile-image"
+                                  />
+                                  :
+                                  (item.EMail !== null || item.EMail != "") &&
+                                  <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circlecss img-thumbnail
+                                  avatar-xl">
+                                    {`${item.EMail.split('.')[0].charAt(0)}${item.EMail.split('.')[1].charAt(0)}`.toUpperCase()}
+                                  </Avatar>
+                                }
 
-                                <img
-
-                                  src={
-
-                                    item.Picture != null
-
-                                      ? `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item.EMail}`
-
-                                      : require("../assets/users.jpg")
-
-                                  }
-
-                                  className="rounded-circlecssnew img-thumbnail
-
-                                 avatar-xl"
-
-                                  alt="profile-image"
-
-                                  
-
-                                />
 
                               </a>
 
@@ -1792,7 +1803,7 @@ const SocialFeedContext = ({ props }: any) => {
                                     textDecoration: "unset",
 
                                     fontSize: "20px",
-                                    cursor:'auto'
+                                    cursor: 'auto'
 
                                   }}
 
@@ -2034,18 +2045,26 @@ const SocialFeedContext = ({ props }: any) => {
                           <div className="col-sm-2 ">
 
                             <a>
+                              {user.SPSPicturePlaceholderState == 0 ?
+                                <img
 
-                              <img
+                                  src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${user.EMail}`}
 
-                                src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${user.EMail}`}
+                                  className="rounded-circle"
 
-                                className="rounded-circle"
+                                  width="50"
 
-                                width="50"
+                                  alt={user.Title}
 
-                                alt={user.Title}
+                                />
+                                :
+                                (user.EMail !== null || user.EMail !== "") &&
+                                <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circlecss img-thumbnail
+                                  avatar-xl">
+                                  {`${user.EMail.split('.')[0].charAt(0)}${user.EMail.split('.')[1].charAt(0)}`.toUpperCase()}
+                                </Avatar>
+                              }
 
-                              />
 
                             </a>
 

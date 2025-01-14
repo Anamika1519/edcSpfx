@@ -909,7 +909,7 @@ const MyRequestContext = ({ props }: any) => {
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
 
               </div>
-              <div className="col-md-4">
+              <div className="col-md-4 ivon">
                 <div className="row">
                   <div style={{ textAlign: "right", padding: '0px' }} className="col-md-4 newtexleft">
                     <div className="mb-0">
@@ -918,7 +918,7 @@ const MyRequestContext = ({ props }: any) => {
                       </label>
                     </div>
                   </div>
-                  <div className="col-md-8">
+                  <div className="col-md-8 ivon2">
                     <select
                       id="Type"
                       name="Type"
@@ -949,7 +949,7 @@ const MyRequestContext = ({ props }: any) => {
 
                       <ul
 
-                        className="nav nav-pills navtab-bg float-end"
+                        className="nav nav-pills navtab-bg float-end justify-content-center"
 
                         role="tablist"
 

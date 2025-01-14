@@ -782,6 +782,7 @@ const BlogDetailsContext = ({ props }: any) => {
                         onAddReply={(text) => handleAddReply(index, text)}
                         onLike={() => handleLikeToggle(index)} // Pass like handler
                         loadingReply={loadingReply}
+                        mainArray={ArrDetails}
                       />
                     </div>
                   ))}

@@ -1705,6 +1705,7 @@ text-align: center;
   .tabview1,.tabcontentv, .tabv{
       width: 100% !important; 
   }
+ 
   .dropcssUser{display: flex;}
   .manage-master .col-md-3{
     width: 100% !important;
@@ -1735,7 +1736,7 @@ text-align: center;
 }
 .posx{position: absolute;
   right: 0;
-  z-index: 999;
+  z-index: 9;
   top: 260px;}
 .navbar_content svg {
   height: 20px !important;
@@ -1789,6 +1790,7 @@ text-align: center;
       height: 289px !important;
       overflow: hidden;
   } 
+  
   .internalmedia  .gal-box .image-popup {
       height: 260px !important;
   }
@@ -1798,6 +1800,7 @@ text-align: center;
   .gal-box .image-popup {
       height: 240px !important;
   }
+  .breadcrumb{padding-bottom: 15px !important;}
   .filter-menu a{margin-bottom: 10px !important;}
   .upcom1{width: 16%; float: left;}
   .upcom2{width: 82%; float: left;}
@@ -1807,11 +1810,13 @@ text-align: center;
 //     padding: 0;
 //     width: auto !important;
 // }
-.app-menu{top: 76px !important;}
+.app-menu{top: 63px !important;}
  .logo_item{display: none;}
 .item {
   margin: 0rem .4rem 0 8px;
 }
+.ivon{width: 10% !important; float: left;margin-top: 10px !important;}
+.ivon2{width: 90% !important; float: left;margin-top: 10px !important;}
 // .sidebar.close .navlink_icon{margin-left: 10px;}
 .app-menu{width: 210px;}
   .gheight .ps-2,.gheight .ps-3{padding: 0px !important;}
@@ -2029,6 +2034,8 @@ label{color: #6c757d !important;font-size: .875rem !important;}
       color: #1fb0e5 !important;
     }
     
- 
+ .project-box .gfg_tooltip{width: 2rem !important ;}
+ .MuiAvatar-root{cursor: auto !important;background-color: #1fb0e5 !important;}
+ .project-box .gfg_tooltip .MuiAvatar-root{cursor: auto !important;background-color: #1fb0e5 !important; font-size: 12px !important; border: 0px !important;}
 .modal .modal-content input:focus,.modal .modal-content select:focus,.modal .modal-content textarea:focus{border: 1px solid #ccc !important; box-shadow: none !important}
 .modal .modal-content .multiSelectContainer input{padding: 9px 10px !important;border: 1px solid #ccc !important;}   

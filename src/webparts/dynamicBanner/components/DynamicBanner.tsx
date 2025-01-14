@@ -77,13 +77,13 @@ const DynamicBannercontext = ({ props }: any) => {
     const userGroups = await sp.web.currentUser.groups();
     let groupTitles: string[] = userGroups.map((group) => group.Title.toLowerCase());
 
-    if (groupTitles.includes("intranetadmin")) {
-      bannersArr = await getDynamicBanner(sp, "yes");
-    }
-    else if (groupTitles.includes("intranetcontentcontributor")) {
-      bannersArr = await getDynamicBanner(sp, "yes");
-    }
-
+    // if (groupTitles.includes("intranetadmin")) {
+    //   bannersArr = await getDynamicBanner(sp, "yes");
+    // }
+    // else if (groupTitles.includes("intranetcontentcontributor")) {
+    //   bannersArr = await getDynamicBanner(sp, "yes");
+    // }
+    bannersArr = await getDynamicBanner(sp, "Yes");
     setBannersData(bannersArr);
 
   };

@@ -2469,7 +2469,7 @@ width: "105px",
                   <div className="row justify-content-between">
                     <div className="col-md-12">
                       <div className="d-flex flex-wrap align-items-center justify-content-center">
-                        <ul className="nav nav-pills navtab-bg float-end" role="tablist">
+                        <ul className="nav nav-pills navtab-bg float-end justify-content-center" role="tablist">
                           <li className="nav-item" role="presentation">
                             <a onClick={() => handleTabClick("allgroups")}
                               className={`nav-link ${activeTab === "allgroups" ? "active" : ""

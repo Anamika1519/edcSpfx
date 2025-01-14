@@ -1705,6 +1705,7 @@ alt="Check"
                                 onAddReply={(text) => handleAddReply(index, text)}
                                 onLike={() => isClosed ? null:handleLikeToggle(index)} // Pass like handler
                                 loadingReply={loadingReply}
+                                discussionArray={ArrDetails}
                               />
                             </div>
                           ))}

@@ -185,4 +185,6 @@
     text-align: center;
     margin: 2rem 0;
   }
-  
+  @media(max-width:640px){
+    .navcss{padding: 0px 1.5rem !important;}
+  }

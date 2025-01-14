@@ -104,7 +104,7 @@ const AddDynamicBannerContext = ({ props }: any) => {
     else if (!description) {
 
       valid = false;
-    } else if (BnnerImagepostArr.length == 0) {
+    } else if (BnnerImagepostArr == null || BnnerImagepostArr.length == 0) {
 
       valid = false;
     }
@@ -342,7 +342,7 @@ const AddDynamicBannerContext = ({ props }: any) => {
             if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
               for (const file of BnnerImagepostArr[0].files) {
                 //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
-                bannerImageArray = await uploadFile(file, sp, "Documents", tenantUrl);
+                bannerImageArray = await uploadFile(file, sp, "Documents", siteUrl);
               }
             }
             else if (BnnerImagepostArr.length > 0) {
@@ -419,7 +419,7 @@ const AddDynamicBannerContext = ({ props }: any) => {
             if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
               for (const file of BnnerImagepostArr[0].files) {
                 //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
-                bannerImageArray = await uploadFile(file, sp, "Documents", tenantUrl);
+                bannerImageArray = await uploadFile(file, sp, "Documents", siteUrl);
               }
             }
             debugger
@@ -428,6 +428,8 @@ const AddDynamicBannerContext = ({ props }: any) => {
               size: BnnerImagepostArr.size,
               type: BnnerImagepostArr.type
             }
+            console.log("JSON.stringify(bannerImageArray)",bannerImageArray,
+              JSON.stringify(bannerImageArray))
             // let bannerImg =JSON.stringify(BnnerImagepostArr[0])
             const jsonString = JSON.stringify(bannerPost)
             // Create Post
