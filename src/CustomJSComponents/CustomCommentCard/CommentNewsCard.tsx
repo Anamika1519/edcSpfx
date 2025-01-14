@@ -124,7 +124,7 @@ export const CommentNewsCard: React.FC<{
        wrapperDiv.appendChild(heading);
      
        // Add a close button
-       const closeButton = document.createElement("button");
+       const closeButton = document.createElement("span");
        closeButton.innerText = "x";
        closeButton.style.position = "absolute";
        closeButton.style.top = "10px";
@@ -235,7 +235,7 @@ export const CommentNewsCard: React.FC<{
                 {/* </a> */}
               </h5>
               <p className="text-muted font-12 mt-1">
-                <small>{Created}</small>
+                <small>{moment(Created).format("DD-MMM-YYYY")}</small>
               </p>
                <div className="post-content">
                                                         <div className="post-actions">

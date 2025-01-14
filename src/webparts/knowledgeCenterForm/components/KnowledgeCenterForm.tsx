@@ -2706,7 +2706,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
               </Modal>
             }
             
-<Modal show={show} onHide={handleClose}>
+<Modal show={show} onHide={handleClose} className='previewpp'>
   <Modal.Header closeButton>
     <Modal.Title>{isVideo ? 'Video Preview' : 'Image Preview'}</Modal.Title>
   </Modal.Header>
@@ -2721,9 +2721,9 @@ const AddMediaGalaryContext = ({ props }: any) => {
     )}
   </Modal.Body>
   <Modal.Footer>
-    <Button variant="secondary" onClick={handleClose}>
+    {/* <Button variant="secondary" onClick={handleClose}>
       Close
-    </Button>
+    </Button> */}
   </Modal.Footer>
 </Modal>
 

@@ -140,16 +140,21 @@ export const CommentCard: React.FC<{
       wrapperDiv.appendChild(heading);
    
       // Add a close button
-      const closeButton = document.createElement("button");
+      const closeButton = document.createElement("span");
       closeButton.innerText = "x";
       closeButton.style.position = "absolute";
-      closeButton.style.top = "10px";
+      closeButton.style.top = "20px";
       closeButton.style.right = "10px";
-      closeButton.style.border = "none";
-      closeButton.style.background = "transparent";
-      closeButton.style.fontSize = "16px";
-      closeButton.style.cursor = "pointer";
-      closeButton.style.color="Black"
+      closeButton.style.lineHeight = "28px";
+      closeButton.style.textAlign = "center";
+      closeButton.style.border = "1px solid #ccc";
+    closeButton.style.width = "32px";
+    closeButton.style.height = "32px";
+    closeButton.style.background = "transparent";
+    closeButton.style.fontSize = "22px";
+    closeButton.style.borderRadius = "1000px";
+    closeButton.style.cursor = "pointer";
+      closeButton.style.color="#3c3c3c"
       closeButton.onclick = () => {
         document.body.removeChild(popupDiv);
       };

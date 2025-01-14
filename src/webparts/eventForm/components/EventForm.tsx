@@ -1979,18 +1979,18 @@ const HelloWorldContext = ({ props }: any) => {
               </Modal.Body>
 
               </Modal>
-            <Modal show={show} onHide={handleClose}>
+            <Modal show={show} onHide={handleClose} className='previewpp'>
         <Modal.Header closeButton>
           <Modal.Title>Image Preview</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <img src={modalImageSrc} alt="Image Preview" style={{ width: '100%' }} />
         </Modal.Body>
-        <Modal.Footer>
+        {/* <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-        </Modal.Footer>
+        </Modal.Footer> */}
               </Modal>
 
           </div>

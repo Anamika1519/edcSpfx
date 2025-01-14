@@ -62,6 +62,33 @@ table .no-results{position: absolute;
 }
 .sub-menu .test{padding: 0px 10px !important;    height: 30px;
   line-height: 10px;}
+  .previewpp  .modal-dialog {
+    transform: none;
+    min-width: 80%;
+}
+#report-issue{min-width: 100% !important;
+  background-color: rgb(0, 0, 0, 0.8) !important;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px;
+  border-radius: 8px;
+ 
+  width: 100% !important;
+  z-index: 9900 !important;
+  height: 100% !important;
+}
+#report-issue span{    top: 12px !important;
+  right: 14px !important;}
+#report-issue h2{    font-size: 1.25rem !important;    border-bottom: 1px solid #ccc;
+  padding-bottom: 15px;}
+#report-issue button{width: 100px; margin: auto; background: #1fb0e5 !important;}
+#report-issue .report-Issue-Wrapper-Div{padding: 15px !important;
+  background: #fff;
+  min-width: 600px !important;
+  width: 600px;
+  position: relative;
+  margin: auto;
+  border-radius: 6px;}
+.previewpp .modal-body{height: 500px; overflow: hidden;}
+.previewpp .modal-body img,.previewpp .modal-body video{width: 100% !important; height: 100% !important; object-fit: cover !important;}
 .add-comment textarea{
   border: 1px solid #007bff;
   border-radius: 30px !important;

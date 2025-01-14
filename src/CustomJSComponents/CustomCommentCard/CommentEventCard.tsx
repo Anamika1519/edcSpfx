@@ -135,15 +135,21 @@ export const CommentEventCard: React.FC<{
     wrapperDiv.appendChild(heading);
   
     // Add a close button
-    const closeButton = document.createElement("button");
+    const closeButton = document.createElement("span");
     closeButton.innerText = "x";
     closeButton.style.position = "absolute";
-    closeButton.style.top = "10px";
+    closeButton.style.top = "20px";
     closeButton.style.right = "10px";
-    closeButton.style.border = "none";
-    closeButton.style.background = "transparent";
-    closeButton.style.fontSize = "16px";
-    closeButton.style.cursor = "pointer";
+    closeButton.style.lineHeight = "28px";
+    closeButton.style.textAlign = "center";
+    closeButton.style.border = "1px solid #ccc";
+  closeButton.style.width = "32px";
+  closeButton.style.height = "32px";
+  closeButton.style.background = "transparent";
+  closeButton.style.fontSize = "22px";
+  closeButton.style.borderRadius = "1000px";
+  closeButton.style.cursor = "pointer";
+    closeButton.style.color="#3c3c3c"
     closeButton.style.color="Black"
     closeButton.onclick = () => {
       document.body.removeChild(popupDiv);
@@ -247,7 +253,7 @@ export const CommentEventCard: React.FC<{
                 {/* </a> */}
               </h5>
               <p className="text-muted font-12 mt-0">
-                <small>{Created}</small>
+                <small>{moment(Created).format("DD-MMM-YYYY")}</small>
               </p>
             </div>
 
@@ -310,7 +316,7 @@ export const CommentEventCard: React.FC<{
                     <h6 className="font-14 fw600">{reply.UserName}</h6>
                     <p className="mb-0 para-width  text-muted ng-binding"  style={{wordBreak:'break-all'}}>{reply.Comments}</p>
                     <p className="text-muted font-12 mt-0">
-                      <small>{moment(reply.Created).format("DD-MMM-YYYY HH:mm")}</small>
+                      <small>{moment(reply.Created).format("DD-MMM-YYYY")}</small>
                     </p>
 
                   </div>

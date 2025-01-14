@@ -591,7 +591,7 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
         wrapperDiv.appendChild(heading);
 
         // Add a close button
-        const closeButton = document.createElement("button");
+        const closeButton = document.createElement("span");
         closeButton.innerText = "x";
         closeButton.style.position = "absolute";
         closeButton.style.top = "10px";

@@ -2195,7 +2195,7 @@ const AddannouncementContext = ({ props }: any) => {
                           {DocumentpostArr1.map((file: any, index: number) => (
                             <tr key={index}>
                               <td className='text-center'>{index + 1}</td>
-                              <td>{file.fileName.replace("/sites/Alrostmanispfx2", "")}</td>
+                              <td>{file.fileName.replace("/sites/IntranetUAT", "")}</td>
                               <td className='text-right'>{file.fileSize}</td>
                               <td className='text-center'> <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, DocumentpostArr1, "docs")} /> </td>
                             </tr>
@@ -2279,18 +2279,18 @@ const AddannouncementContext = ({ props }: any) => {
               </Modal.Body>
 
             </Modal>
-            <Modal show={show} onHide={handleClose}>
+            <Modal show={show} onHide={handleClose} className='previewpp'>
         <Modal.Header closeButton>
           <Modal.Title>Image Preview</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <img src={modalImageSrc} alt="Image Preview" style={{ width: '100%' }} />
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
+        {/* <Modal.Footer>
+         <Button variant="secondary" onClick={handleClose}>
             Close
-          </Button>
-        </Modal.Footer>
+          </Button> 
+        </Modal.Footer> */}
       </Modal>
           </div>
         </div>

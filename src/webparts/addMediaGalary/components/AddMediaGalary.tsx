@@ -14,7 +14,7 @@ import UserContext from '../../../GlobalContext/context';
 
 import { getCurrentUser, getEntity } from '../../../APISearvice/CustomService';
 
-import { addItem, ARGMediaGalleryCategory, getMediaByID, getUrl, updateItem, uploadFile, uploadFileToLibrary } from '../../../APISearvice/MediaService';
+import { addItem, ARGMediaGalleryCategory, getMediaByID, getUrl, updateItem, uploadAllFiles, uploadFile, uploadFileToLibrary } from '../../../APISearvice/MediaService';
 
 import { decryptId } from '../../../APISearvice/CryptoService';
 
@@ -1044,581 +1044,720 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
   //#region  Submit Form
 
-  const handleFormSubmit = async () => {
+  // const handleFormSubmit = async () => {
 
-    if (validateForm(FormSubmissionMode.SUBMIT)) {
+  //   if (validateForm(FormSubmissionMode.SUBMIT)) {
 
-      if (editForm) {
-        // alert('coming here in if')
+  //     if (editForm) {
+  //       // alert('coming here in if')
 
-        Swal.fire({
+  //       Swal.fire({
 
-          title: 'Do you want to submit this request?',
+  //         title: 'Do you want to submit this request?',
 
-          showConfirmButton: true,
+  //         showConfirmButton: true,
 
-          showCancelButton: true,
+  //         showCancelButton: true,
 
-          confirmButtonText: "Save",
+  //         confirmButtonText: "Save",
 
-          cancelButtonText: "Cancel",
+  //         cancelButtonText: "Cancel",
 
-          icon: 'warning'
+  //         icon: 'warning'
 
-        }
+  //       }
 
-        ).then(async (result) => {
-          if (result.isConfirmed) {
-            setLoading(true);
-            debugger
+  //       ).then(async (result) => {
+  //         if (result.isConfirmed) {
+  //           setLoading(true);
+  //           debugger
 
-            let bannerImageArray: any = {};
+  //           let bannerImageArray: any = {};
 
-            let galleryIds: any[] = [];
+  //           let galleryIds: any[] = [];
 
-            let documentIds: any[] = [];
+  //           let documentIds: any[] = [];
 
-            let galleryArray: any[] = [];
+  //           let galleryArray: any[] = [];
 
-            let documentArray: any[] = [];
-
-
-            // formData.FeaturedAnnouncement === "on"?  true :false;
+  //           let documentArray: any[] = [];
 
 
-            // Upload Banner Images
+  //           // formData.FeaturedAnnouncement === "on"?  true :false;
 
-            if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
 
-              for (const file of BnnerImagepostArr[0].files) {
+  //           // Upload Banner Images
 
-                //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
+  //           if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
 
-                bannerImageArray = await uploadFile(file, sp, "Documents", tenantUrl);
+  //             for (const file of BnnerImagepostArr[0].files) {
 
-              }
+  //               //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
 
-            }
-            else if (BnnerImagepostArr.length > 0) {
-              bannerImageArray = BnnerImagepostArr[0];
-            }
+  //               bannerImageArray = await uploadFile(file, sp, "Documents", tenantUrl);
 
-            else {
+  //             }
 
-              bannerImageArray = null
+  //           }
+  //           else if (BnnerImagepostArr.length > 0) {
+  //             bannerImageArray = BnnerImagepostArr[0];
+  //           }
 
-            }
+  //           else {
 
-            debugger
+  //             bannerImageArray = null
 
-            if (bannerImageArray != null) {
+  //           }
 
-              // Create Post
-                console.log("form of ARG Master List" , formData) ;
-                // if(formData.Status == "Submitted"){ 
+  //           debugger
 
-                // }else if(formData.Status == "Submitted0"){
+  //           if (bannerImageArray != null) {
+
+  //             // Create Post
+  //               console.log("form of ARG Master List" , formData) ;
+  //               // if(formData.Status == "Submitted"){ 
+
+  //               // }else if(formData.Status == "Submitted0"){
                   
-                // }else if(formData.Status == "Submitted1"){  
+  //               // }else if(formData.Status == "Submitted1"){  
 
-                // }else if(formData.Status == "Submitted2"){
+  //               // }else if(formData.Status == "Submitted2"){
                   
-                // }
-              const postPayload = {
+  //               // }
+  //             const postPayload = {
 
-                Title: formData.title,
+  //               Title: formData.title,
 
-                EntityMasterId: Number(formData.entity),
+  //               EntityMasterId: Number(formData.entity),
 
-                Status: formData.Status,
+  //               Status: formData.Status,
 
-                AuthorId: currentUser.Id,
+  //               AuthorId: currentUser.Id,
 
-                Image: bannerImageArray != "{}" && JSON.stringify(bannerImageArray),
+  //               Image: bannerImageArray != "{}" && JSON.stringify(bannerImageArray),
 
-                MediaGalleryCategoryId: formData.Category
+  //               MediaGalleryCategoryId: formData.Category
 
-              };
+  //             };
 
-              console.log(postPayload);
+  //             console.log(postPayload);
 
 
-              const postResult = await updateItem(postPayload, sp, editID);
+  //             const postResult = await updateItem(postPayload, sp, editID);
 
-              const postId = postResult?.data?.ID;
+  //             const postId = postResult?.data?.ID;
 
-              debugger
+  //             debugger
 
-              // if (!postId) {
+  //             // if (!postId) {
 
-              //   console.error("Post creation failed.");
+  //             //   console.error("Post creation failed.");
 
-              //   return;
+  //             //   return;
 
-              // }
+  //             // }
 
 
-              // Upload Gallery Images
+  //             // Upload Gallery Images
 
-              // Upload Gallery Images
+  //             // Upload Gallery Images
 
-              if (ImagepostArr[0]?.files?.length > 0) {
+  //             if (ImagepostArr[0]?.files?.length > 0) {
 
-                for (const file of ImagepostArr[0].files) {
+  //               for (const file of ImagepostArr[0].files) {
 
 
-                  const uploadedGalleryImage = await uploadFileToLibrary(file, sp, "MediaGallery");
+  //                 const uploadedGalleryImage = await uploadAllFiles(file, sp, "MediaGallery");
 
 
-                  galleryIds = galleryIds.concat(uploadedGalleryImage.map((item: { ID: any }) => item.ID));
+  //                 galleryIds = galleryIds.concat(uploadedGalleryImage.map((item: { ID: any }) => item.ID));
 
-                  if (ImagepostArr1.length > 0) {
+  //                 if (ImagepostArr1.length > 0) {
 
 
-                    ImagepostArr1.push(uploadedGalleryImage[0])
+  //                   ImagepostArr1.push(uploadedGalleryImage[0])
 
-                    const updatedData = ImagepostArr1.filter(item => item.ID !== 0);
+  //                   const updatedData = ImagepostArr1.filter(item => item.ID !== 0);
 
-                    console.log(updatedData, 'updatedData');
+  //                   console.log(updatedData, 'updatedData');
 
-                    galleryArray = updatedData;
+  //                   galleryArray = updatedData;
 
-                    //galleryArray.push(ImagepostArr1);
+  //                   //galleryArray.push(ImagepostArr1);
 
 
-                    ImagepostIdsArr.push(galleryIds[0]) //galleryIds.push(ImagepostIdsArr)
+  //                   ImagepostIdsArr.push(galleryIds[0]) //galleryIds.push(ImagepostIdsArr)
 
-                    galleryIds = ImagepostIdsArr
+  //                   galleryIds = ImagepostIdsArr
 
-                  }
+  //                 }
 
-                  else {
+  //                 else {
 
-                    galleryArray.push(uploadedGalleryImage);
+  //                   galleryArray.push(uploadedGalleryImage);
 
-                  }
+  //                 }
 
-                }
+  //               }
 
-              }
+  //             }
 
-              else {
+  //             else {
 
-                galleryIds = ImagepostIdsArr
+  //               galleryIds = ImagepostIdsArr
 
-                galleryArray = ImagepostArr1;
+  //               galleryArray = ImagepostArr1;
 
-              }
+  //             }
 
 
-              let ars = galleryArray.filter(x => x.ID == 0)
+  //             let ars = galleryArray.filter(x => x.ID == 0)
 
-              if (ars.length > 0) {
+  //             if (ars.length > 0) {
 
-                for (let i = 0; i < ars.length; i++) {
+  //               for (let i = 0; i < ars.length; i++) {
 
-                  galleryArray.slice(i, 1)
+  //                 galleryArray.slice(i, 1)
 
-                }
+  //               }
 
-              }
+  //             }
 
 
-              console.log(galleryIds, 'galleryIds');
+  //             console.log(galleryIds, 'galleryIds');
 
-              // Update Post with Gallery and Document Information
+  //             // Update Post with Gallery and Document Information
 
-              const updatePayload = {
+  //             const updatePayload = {
 
-                ...(galleryIds.length > 0 && {
+  //               ...(galleryIds.length > 0 && {
 
-                  MediaGalleriesId: galleryIds,
+  //                 MediaGalleriesId: galleryIds,
 
-                  MediaGalleryJSON: JSON.stringify(flatArray(galleryArray)),
+  //                 MediaGalleryJSON: JSON.stringify(flatArray(galleryArray)),
 
-                }),
+  //               }),
 
 
-              };
+  //             };
 
 
-              if (Object.keys(updatePayload).length > 0) {
+  //             if (Object.keys(updatePayload).length > 0) {
 
-                const updateResult = await updateItem(updatePayload, sp, editID);
+  //               const updateResult = await updateItem(updatePayload, sp, editID);
 
-                console.log("Update Result:", updateResult);
+  //               console.log("Update Result:", updateResult);
 
-              }
+  //             }
 
 
-            }
+  //           }
 
-            else {
+  //           else {
 
-              // Create Post
+  //             // Create Post
 
-              const postPayload = {
+  //             const postPayload = {
 
-                Title: formData.title,
+  //               Title: formData.title,
 
-                EntityMasterId: Number(formData.entity),
+  //               EntityMasterId: Number(formData.entity),
 
-                Status: "Submitted01",
+  //               Status: "Submitted01",
 
-                AuthorId: currentUser.Id,
+  //               AuthorId: currentUser.Id,
 
-                MediaGalleryCategoryId: formData.Category
+  //               MediaGalleryCategoryId: formData.Category
 
-              };
+  //             };
 
-              console.log(postPayload);
+  //             console.log(postPayload);
 
 
-              const postResult = await updateItem(postPayload, sp, editID);
+  //             const postResult = await updateItem(postPayload, sp, editID);
 
-              const postId = postResult?.data?.ID;
+  //             const postId = postResult?.data?.ID;
 
-              debugger
+  //             debugger
 
-              // if (!postId) {
+  //             // if (!postId) {
 
-              //   console.error("Post creation failed.");
+  //             //   console.error("Post creation failed.");
 
-              //   return;
+  //             //   return;
 
-              // }
+  //             // }
 
 
-              // Upload Gallery Images
+  //             // Upload Gallery Images
 
-              // Upload Gallery Images
+  //             // Upload Gallery Images
 
-              if (ImagepostArr[0]?.files?.length > 0) {
+  //             if (ImagepostArr[0]?.files?.length > 0) {
 
-                for (const file of ImagepostArr[0].files) {
+  //               for (const file of ImagepostArr[0].files) {
 
 
-                  const uploadedGalleryImage = await uploadFileToLibrary(file, sp, "MediaGallery");
+  //                 const uploadedGalleryImage = await uploadAllFiles(file, sp, "MediaGallery");
 
 
-                  galleryIds = galleryIds.concat(uploadedGalleryImage.map((item: { ID: any }) => item.ID));
+  //                 galleryIds = galleryIds.concat(uploadedGalleryImage.map((item: { ID: any }) => item.ID));
 
-                  if (ImagepostArr1.length > 0) {
+  //                 if (ImagepostArr1.length > 0) {
 
 
-                    ImagepostArr1.push(uploadedGalleryImage[0])
+  //                   ImagepostArr1.push(uploadedGalleryImage[0])
 
-                    const updatedData = ImagepostArr1.filter(item => item.ID !== 0);
+  //                   const updatedData = ImagepostArr1.filter(item => item.ID !== 0);
 
-                    console.log(updatedData, 'updatedData');
+  //                   console.log(updatedData, 'updatedData');
 
-                    galleryArray = updatedData;
+  //                   galleryArray = updatedData;
 
-                    // documentArray.push(documentArray);
+  //                   // documentArray.push(documentArray);
 
 
-                    ImagepostIdsArr.push(galleryIds[0]) //galleryIds.push(ImagepostIdsArr)
+  //                   ImagepostIdsArr.push(galleryIds[0]) //galleryIds.push(ImagepostIdsArr)
 
-                    galleryIds = ImagepostIdsArr
+  //                   galleryIds = ImagepostIdsArr
 
-                  }
+  //                 }
 
-                  else {
+  //                 else {
 
-                    galleryArray.push(uploadedGalleryImage);
+  //                   galleryArray.push(uploadedGalleryImage);
 
-                  }
+  //                 }
 
-                }
+  //               }
 
-              }
+  //             }
 
-              else {
+  //             else {
 
-                galleryIds = ImagepostIdsArr
+  //               galleryIds = ImagepostIdsArr
 
-                galleryArray = ImagepostArr1;
+  //               galleryArray = ImagepostArr1;
 
-              }
+  //             }
 
 
 
-              let ars = galleryArray.filter(x => x.ID == 0)
+  //             let ars = galleryArray.filter(x => x.ID == 0)
 
-              if (ars.length > 0) {
+  //             if (ars.length > 0) {
 
-                for (let i = 0; i < ars.length; i++) {
+  //               for (let i = 0; i < ars.length; i++) {
 
-                  galleryArray.slice(i, 1)
+  //                 galleryArray.slice(i, 1)
 
-                }
+  //               }
 
-              }
+  //             }
 
 
-              console.log(galleryIds, 'galleryIds');
+  //             console.log(galleryIds, 'galleryIds');
 
-              // Update Post with Gallery and Document Information
+  //             // Update Post with Gallery and Document Information
 
-              const updatePayload = {
+  //             const updatePayload = {
 
-                ...(galleryIds.length > 0 && {
+  //               ...(galleryIds.length > 0 && {
 
-                  MediaGalleriesId: galleryIds,
+  //                 MediaGalleriesId: galleryIds,
 
 
-                  MediaGalleryJSON: JSON.stringify(flatArray(galleryArray)),
+  //                 MediaGalleryJSON: JSON.stringify(flatArray(galleryArray)),
 
-                }),
+  //               }),
 
 
-              };
+  //             };
 
 
-              if (Object.keys(updatePayload).length > 0) {
+  //             if (Object.keys(updatePayload).length > 0) {
 
-                const updateResult = await updateItem(updatePayload, sp, editID);
+  //               const updateResult = await updateItem(updatePayload, sp, editID);
 
-                // console.log("Update Result:", updateResult);
+  //               // console.log("Update Result:", updateResult);
 
-              }
+  //             }
 
-            }
+  //           }
 
-            let arr = {
+  //           let arr = {
 
-              ContentID: editID,
+  //             ContentID: editID,
 
-              ContentName: "ARGMediaGallery",
+  //             ContentName: "ARGMediaGallery",
 
-              Status: "Pending",
+  //             Status: "Pending",
 
-              EntityId: Number(formData.entity),
-              Title: formData.title,
-              SourceName: "Media",
-              ReworkRequestedBy: "Initiator"
+  //             EntityId: Number(formData.entity),
+  //             Title: formData.title,
+  //             SourceName: "Media",
+  //             ReworkRequestedBy: "Initiator"
 
 
-            }
+  //           }
 
-            // await AddContentMaster(sp, arr)
+  //           // await AddContentMaster(sp, arr)
 
-            // const boolval = await handleClick(editID, "Media", Number(formData.entity))
+  //           // const boolval = await handleClick(editID, "Media", Number(formData.entity))
 
-            let boolval = false;
-            if (ApprovalRequestItem && ApprovalRequestItem.IsRework && ApprovalRequestItem.IsRework == 'Yes') {
-              const ctmasteritm = await sp.web.lists.getByTitle(LIST_TITLE_ContentMaster).items.filter('ContentID eq ' + ApprovalRequestItem.ContentId + " and SourceName eq '" + CONTENTTYPE_Media + "'")();
-              if (ctmasteritm && ctmasteritm.length > 0) {
-                let updaterec = { 'Status': 'Pending', 'ReworkRequestedBy': 'Initiator' }
-                if (ApprovalRequestItem.LevelSequence == 1) updaterec.ReworkRequestedBy = "Level 1";
-                await UpdateContentMaster(sp, ctmasteritm[0].Id, updaterec);
-                await sp.web.lists.getByTitle(LIST_TITLE_MyRequest).items.getById(ApprovalRequestItem.Id).update({ 'Status': 'Submitted1' });
-                await sp.web.lists.getByTitle(LIST_TITLE_MediaGallery).items.getById(editID).update({ 'Status': 'Submitted2' });
-                boolval = true;
-              }
-            }
-            else {
+  //           let boolval = false;
+  //           if (ApprovalRequestItem && ApprovalRequestItem.IsRework && ApprovalRequestItem.IsRework == 'Yes') {
+  //             const ctmasteritm = await sp.web.lists.getByTitle(LIST_TITLE_ContentMaster).items.filter('ContentID eq ' + ApprovalRequestItem.ContentId + " and SourceName eq '" + CONTENTTYPE_Media + "'")();
+  //             if (ctmasteritm && ctmasteritm.length > 0) {
+  //               let updaterec = { 'Status': 'Pending', 'ReworkRequestedBy': 'Initiator' }
+  //               if (ApprovalRequestItem.LevelSequence == 1) updaterec.ReworkRequestedBy = "Level 1";
+  //               await UpdateContentMaster(sp, ctmasteritm[0].Id, updaterec);
+  //               await sp.web.lists.getByTitle(LIST_TITLE_MyRequest).items.getById(ApprovalRequestItem.Id).update({ 'Status': 'Submitted1' });
+  //               await sp.web.lists.getByTitle(LIST_TITLE_MediaGallery).items.getById(editID).update({ 'Status': 'Submitted2' });
+  //               boolval = true;
+  //             }
+  //           }
+  //           else {
 
-              console.log(" form edit content master");
-              debugger
-              await AddContentMaster(sp, arr)
-              console.log(" form edit content master - added content master");
+  //             console.log(" form edit content master");
+  //             debugger
+  //             await AddContentMaster(sp, arr)
+  //             console.log(" form edit content master - added content master");
 
-              boolval = await handleClick(editID, "Media", Number(formData.entity))
-            }
-            if (boolval == true) {
-              setLoading(false);
-              Swal.fire('Submitted successfully.', '', 'success');
+  //             boolval = await handleClick(editID, "Media", Number(formData.entity))
+  //           }
+  //           if (boolval == true) {
+  //             setLoading(false);
+  //             Swal.fire('Submitted successfully.', '', 'success');
 
-              sessionStorage.removeItem("mediaId")
+  //             sessionStorage.removeItem("mediaId")
 
-              setTimeout(() => {
+  //             setTimeout(() => {
 
-                window.location.href = `${siteUrl}/SitePages/MediaGalleryMaster.aspx`;
+  //               window.location.href = `${siteUrl}/SitePages/MediaGalleryMaster.aspx`;
 
-              }, 2000);
+  //             }, 2000);
 
-            }
+  //           }
 
-          }
+  //         }
 
 
-        })
+  //       })
+
+  //     }
+
+  //     else {
+  //       // alert('coming here in else')
+  //       Swal.fire({
+
+  //         title: 'Do you want to submit this request?',
+
+  //         showConfirmButton: true,
+
+  //         showCancelButton: true,
+
+  //         confirmButtonText: "Yes ",
+
+  //         cancelButtonText: "No",
+
+  //         icon: 'warning'
+
+  //       }
+
+  //       ).then(async (result) => {
+
+  //         if (result.isConfirmed) {
+
+  //           //console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
+  //           setLoading(true);
+  //           debugger
+
+  //           let bannerImageArray: any = {};
+
+  //           let galleryIds: any[] = [];
+
+  //           let galleryArray: any[] = [];
+
+
+  //           // Upload Banner Images
+
+  //           if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
+
+  //             for (const file of BnnerImagepostArr[0].files) {
+
+  //               //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
+
+  //               bannerImageArray = await uploadFile(file, sp, "Documents", tenantUrl);
+
+  //             }
+
+  //           }
+
+  //           debugger
+
+  //           // Create Post
+
+  //           const postPayload = {
+
+  //             Title: formData.title,
+
+  //             EntityMasterId: Number(formData.entity),
+
+  //             Status: "Submitted",
+
+  //             AuthorId: currentUser.Id,
+
+  //             Image: JSON.stringify(bannerImageArray),
+
+  //             MediaGalleryCategoryId: formData.Category
+
+  //           };
+
+  //           console.log(postPayload);
+
+
+  //           const postResult = await addItem(postPayload, sp);
+
+  //           const postId = postResult?.data?.ID;
+
+  //           debugger
+
+  //           if (!postId) {
+
+  //             console.error("Post creation failed.");
+
+  //             return;
+
+  //           }
+
+
+  //           // Upload Gallery Images
+
+  //           if (ImagepostArr.length > 0) {
+
+  //             for (const file of ImagepostArr[0]?.files) {
+
+  //               const uploadedGalleryImage = await uploadAllFiles(file, sp, "MediaGallery");
+
+
+  //               galleryIds = galleryIds.concat(uploadedGalleryImage.map((item: { ID: any }) => item.ID));
+
+  //               galleryArray.push(uploadedGalleryImage);
+
+  //             }
+
+  //           }
+
+
+  //           // Update Post with Gallery and Document Information
+
+  //           const updatePayload = {
+
+  //             ...(galleryIds.length > 0 && {
+
+  //               MediaGalleriesId: galleryIds,
+
+  //               MediaGalleryJSON: JSON.stringify(flatArray(galleryArray)),
+
+  //             }),
+
+
+  //           };
+
+
+  //           if (Object.keys(updatePayload).length > 0) {
+
+  //             const updateResult = await updateItem(updatePayload, sp, postId);
+
+  //             console.log("Update Result:", updateResult);
+
+  //           }
+
+  //           let arr = {
+
+  //             ContentID: postId,
+
+  //             ContentName: "ARGMediaGallery",
+
+  //             Status: "Pending",
+
+  //             EntityId: Number(formData.entity),
+  //             Title: formData.title,
+  //             SourceName: "Media",
+  //             ReworkRequestedBy: "Initiator"
+
+
+  //           }
+
+  //           await AddContentMaster(sp, arr)
+
+  //           const boolval = await handleClick(postId, "Media", Number(formData.entity))
+
+  //           if (boolval == true) {
+  //             setLoading(false);
+  //             Swal.fire('Submitted successfully.', '', 'success');
+
+  //             // sessionStorage.removeItem("bannerId")
+
+  //             setTimeout(() => {
+
+  //               window.location.href = `${siteUrl}/SitePages/MediaGalleryMaster.aspx`;
+
+  //             }, 2000);
+
+  //           }
+
+  //         }
+
+  //       })
+
+
+  //     }
+  //     fetchAudithistory();
+  //   }
+
+
+  // }
+// const handleFormSubmit = async () => {
+//   if (!validateForm(FormSubmissionMode.SUBMIT)) return;
+
+//   try {
+//     setLoading(true);
+//     let bannerImageArray = null;
+//     let galleryArray = [];
+
+//     if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
+//       bannerImageArray = await uploadAllFiles(BnnerImagepostArr[0].files, sp, "Documents");
+//     }
+
+//     const postPayload = {
+//       Title: formData.title,
+//       EntityMasterId: Number(formData.entity),
+//       Status: "Submitted",
+//       AuthorId: currentUser.Id,
+//       Image: JSON.stringify(bannerImageArray),
+//       MediaGalleryCategoryId: formData.Category,
+//     };
+
+//     const postResult = await addItem(postPayload, sp);
+//     const postId = postResult?.data?.ID;
+
+//     if (!postId) {
+//       throw new Error("Failed to create item.");
+//     }
+
+//     if (ImagepostArr[0]?.files?.length > 0) {
+//       galleryArray = await uploadAllFiles(ImagepostArr[0].files, sp, "MediaGallery");
+//     }
+
+//     const updatePayload = {
+//       ...(galleryArray.length > 0 && {
+//         MediaGalleriesId: galleryArray.map(item => item.ID),
+//         MediaGalleryJSON: JSON.stringify(flatArray(galleryArray)),
+//       }),
+//     };
+
+//     if (Object.keys(updatePayload).length > 0) {
+//       await updateItem(updatePayload, sp, postId);
+//     }
+
+//     Swal.fire('Submitted successfully.', '', 'success');
+//     window.location.href = `${siteUrl}/SitePages/MediaGalleryMaster.aspx`;
+//   } catch (error) {
+//     console.error("Error during form submission:", error);
+//     Swal.fire('Error', error.message, 'error');
+//   } finally {
+//     setLoading(false);
+//   }
+// };
+const handleFormSubmit = async () => {
+  if (!validateForm(FormSubmissionMode.SUBMIT)) return;
+
+  try {
+    setLoading(true);
+
+    let bannerImageArray = null;
+    let galleryArray = [];
+    let existingGalleryJSON = [];
+    let existingGalleryIds = [];
+
+    // Upload new banner images if any
+    // if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
+    //   bannerImageArray = await uploadAllFiles(BnnerImagepostArr[0].files, sp, "Documents");
+    // }
+    if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
+
+      for (const file of BnnerImagepostArr[0].files) {
+
+        //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
+
+        bannerImageArray = await uploadFile(file, sp, "Documents", tenantUrl);
 
       }
 
-      else {
-        // alert('coming here in else')
-        Swal.fire({
-
-          title: 'Do you want to submit this request?',
-
-          showConfirmButton: true,
-
-          showCancelButton: true,
-
-          confirmButtonText: "Yes ",
-
-          cancelButtonText: "No",
-
-          icon: 'warning'
-
-        }
-
-        ).then(async (result) => {
-
-          if (result.isConfirmed) {
-
-            //console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
-            setLoading(true);
-            debugger
-
-            let bannerImageArray: any = {};
-
-            let galleryIds: any[] = [];
-
-            let galleryArray: any[] = [];
-
-
-            // Upload Banner Images
-
-            if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
-
-              for (const file of BnnerImagepostArr[0].files) {
-
-                //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
-
-                bannerImageArray = await uploadFile(file, sp, "Documents", tenantUrl);
-
-              }
-
-            }
-
-            debugger
-
-            // Create Post
-
-            const postPayload = {
-
-              Title: formData.title,
-
-              EntityMasterId: Number(formData.entity),
-
-              Status: "Submitted",
-
-              AuthorId: currentUser.Id,
-
-              Image: JSON.stringify(bannerImageArray),
-
-              MediaGalleryCategoryId: formData.Category
-
-            };
-
-            console.log(postPayload);
-
-
-            const postResult = await addItem(postPayload, sp);
-
-            const postId = postResult?.data?.ID;
-
-            debugger
-
-            if (!postId) {
-
-              console.error("Post creation failed.");
-
-              return;
-
-            }
-
-
-            // Upload Gallery Images
-
-            if (ImagepostArr.length > 0) {
-
-              for (const file of ImagepostArr[0]?.files) {
-
-                const uploadedGalleryImage = await uploadFileToLibrary(file, sp, "MediaGallery");
-
-
-                galleryIds = galleryIds.concat(uploadedGalleryImage.map((item: { ID: any }) => item.ID));
-
-                galleryArray.push(uploadedGalleryImage);
-
-              }
-
-            }
-
-
-            // Update Post with Gallery and Document Information
-
-            const updatePayload = {
-
-              ...(galleryIds.length > 0 && {
-
-                MediaGalleriesId: galleryIds,
-
-                MediaGalleryJSON: JSON.stringify(flatArray(galleryArray)),
-
-              }),
-
-
-            };
-
-
-            if (Object.keys(updatePayload).length > 0) {
-
-              const updateResult = await updateItem(updatePayload, sp, postId);
-
-              console.log("Update Result:", updateResult);
-
-            }
-
-            let arr = {
-
-              ContentID: postId,
-
-              ContentName: "ARGMediaGallery",
-
-              Status: "Pending",
-
-              EntityId: Number(formData.entity),
-              Title: formData.title,
-              SourceName: "Media",
-              ReworkRequestedBy: "Initiator"
-
-
-            }
-
-            await AddContentMaster(sp, arr)
-
-            const boolval = await handleClick(postId, "Media", Number(formData.entity))
-
-            if (boolval == true) {
-              setLoading(false);
-              Swal.fire('Submitted successfully.', '', 'success');
-
-              // sessionStorage.removeItem("bannerId")
-
-              setTimeout(() => {
-
-                window.location.href = `${siteUrl}/SitePages/MediaGalleryMaster.aspx`;
-
-              }, 2000);
-
-            }
-
-          }
-
-        })
-
-
+    }
+    // Check if updating an existing item
+    if (editForm) {
+      // Fetch existing item data to merge
+      const existingItem = await sp.web.lists.getByTitle('ARGMediaGallery').items.getById(editID)();
+      if (existingItem.MediaGalleryJSON) {
+        existingGalleryJSON = JSON.parse(existingItem.MediaGalleryJSON);
+        existingGalleryIds = existingGalleryJSON.map((item:any) => item.ID);
       }
-      fetchAudithistory();
     }
 
+    // Upload new gallery images if any
+    if (ImagepostArr[0]?.files?.length > 0) {
+      const newGalleryArray = await uploadAllFiles(ImagepostArr[0].files, sp, "MediaGallery");
+      galleryArray = [...existingGalleryJSON, ...newGalleryArray];
+    } else {
+      // Retain existing gallery data if no new files are uploaded
+      galleryArray = existingGalleryJSON;
+    }
 
+    // Prepare payloads
+    const postPayload = {
+      Title: formData.title,
+      EntityMasterId: Number(formData.entity),
+      Status: "Submitted",
+      AuthorId: currentUser.Id,
+      Image: JSON.stringify(bannerImageArray),
+      MediaGalleryCategoryId: formData.Category,
+    };
+
+    const updatePayload = {
+      ...(galleryArray.length > 0 && {
+        MediaGalleriesId: galleryArray.map((item:any) => item.ID),
+        MediaGalleryJSON: JSON.stringify(flatArray(galleryArray)),
+      }),
+    };
+
+    // Create or update item
+    if (editForm) {
+      await updateItem({ ...postPayload, ...updatePayload }, sp, editID);
+    } else {
+      const postResult = await addItem(postPayload, sp);
+      const postId = postResult?.data?.ID;
+
+      if (!postId) {
+        throw new Error("Failed to create item.");
+      }
+
+      if (Object.keys(updatePayload).length > 0) {
+        await updateItem(updatePayload, sp, postId);
+      }
+    }
+
+    Swal.fire('Submitted successfully.', '', 'success');
+    window.location.href = `${siteUrl}/SitePages/MediaGalleryMaster.aspx`;
+  } catch (error) {
+    console.error("Error during form submission:", error);
+    Swal.fire('Error', error.message, 'error');
+  } finally {
+    setLoading(false);
   }
+};
 
   //#endregion
 
@@ -1738,7 +1877,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
                 for (const file of ImagepostArr[0].files) {
 
 
-                  const uploadedGalleryImage = await uploadFileToLibrary(file, sp, "MediaGallery");
+                  const uploadedGalleryImage = await uploadAllFiles(file, sp, "MediaGallery");
 
 
                   galleryIds = galleryIds.concat(uploadedGalleryImage.map((item: { ID: any }) => item.ID));
@@ -1894,7 +2033,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
                 for (const file of ImagepostArr[0].files) {
 
 
-                  const uploadedGalleryImage = await uploadFileToLibrary(file, sp, "MediaGallery");
+                  const uploadedGalleryImage = await uploadAllFiles(file, sp, "MediaGallery");
 
 
                   galleryIds = galleryIds.concat(uploadedGalleryImage.map((item: { ID: any }) => item.ID));
@@ -2095,7 +2234,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
               for (const file of ImagepostArr[0]?.files) {
 
-                const uploadedGalleryImage = await uploadFileToLibrary(file, sp, "MediaGallery");
+                const uploadedGalleryImage = await uploadAllFiles(file, sp, "MediaGallery");
 
 
                 galleryIds = galleryIds.concat(uploadedGalleryImage.map((item: { ID: any }) => item.ID));
@@ -3135,7 +3274,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
           </Button>
         </Modal.Footer>
       </Modal> */}
-<Modal show={show} onHide={handleClose}>
+<Modal show={show} onHide={handleClose} className='previewpp'>
   <Modal.Header closeButton>
     <Modal.Title>{isVideo ? 'Video Preview' : 'Image Preview'}</Modal.Title>
   </Modal.Header>
@@ -3231,23 +3370,23 @@ const AddMediaGalaryContext = ({ props }: any) => {
                 <img
           className="imagefe"
           src={
-            file.serverUrl && file.serverRelativeUrl
-              ? `${file.serverUrl}${file.serverRelativeUrl}`
-              : file.fileUrl // Fallback to file.fileUrl if other values are missing
+            file?.serverUrl && file?.serverRelativeUrl
+              ? `${file?.serverUrl}${file?.serverRelativeUrl}`
+              : file?.fileUrl // Fallback to file.fileUrl if other values are missing
           }
           alt="Preview"
           style={{ cursor: 'pointer' }}
           onClick={() => handleShow(
-            file.serverUrl && file.serverRelativeUrl
-              ? `${file.serverUrl}${file.serverRelativeUrl}`
-              : file.fileUrl, false
+            file?.serverUrl && file?.serverRelativeUrl
+              ? `${file?.serverUrl}${file?.serverRelativeUrl}`
+              : file?.fileUrl, false
           )}
         />
                           </td>
 
-                          <td>{file.fileName ? file.fileName : file.name}</td>
+                          <td>{file?.fileName ? file?.fileName : file?.name}</td>
 
-                          <td className='text-right'>{file.fileSize}</td>
+                          <td className='text-right'>{file?.fileSize}</td>
                           {modeValue == null &&
                             <td className='text-center'> <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }}
 
