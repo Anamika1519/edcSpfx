@@ -105,9 +105,9 @@ export const CommentCard: React.FC<{
         };
       }, []);
 
-   const handleReportClick = async (commentRepliesObject: any,flag:string) => {
+   const handleReportClick = async (e:any,commentRepliesObject: any,flag:string) => {
       console.log("Report Clicked");
-    
+      e.preventDefault()
       // Create the popup container
       const popupDiv = document.createElement("div");
       popupDiv.id = "report-issue";
@@ -268,7 +268,7 @@ export const CommentCard: React.FC<{
                                                       <div className="dropdown-menucsspost" ref={menuRef}>
                                                           <button 
                                                           // onClick={(e) => handleEditClick(e)} disabled={post.AutherId != CurrentUser.Id}
-                                                          onClick={(e) => handleReportClick(Comments[commentId],"MainComment")}
+                                                          onClick={(e) => handleReportClick(e,Comments[commentId],"MainComment")}
                                                           
                                                           >Report</button>
                                                       </div>
@@ -341,7 +341,7 @@ export const CommentCard: React.FC<{
                                                     }}
                                                   >
                                                     <button
-                                                      onClick={() => handleReportClick(reply,"replies")}
+                                                      onClick={(e) => handleReportClick(e,reply,"replies")}
                                                       style={{
                                                         background: "none",
                                                         border: "none",

@@ -375,7 +375,8 @@ export const getAllBlogsnonselected = async (_sp, Idnum, categoryId) => {
   let str = "Announcements"
   await _sp.web.lists.getByTitle("ARGBlogs").items
     .select("*,BlogCategory/ID,BlogCategory/CategoryName").expand("BlogCategory")
-    .filter(`ID ne ${Idnum} `)
+    //.filter(`ID ne ${Idnum} `)
+    .filter(`ID ne ${Idnum} and Status eq'Approved'`)
     //and BlogCategoryId eq '${categoryId}'
     .top(3)
     .orderBy("Created", false)

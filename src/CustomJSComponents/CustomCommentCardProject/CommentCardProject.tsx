@@ -319,9 +319,9 @@ const CheckCurrentuser = (Author:any)=>{
         };
   }, []);
 
-  const handleReportClick = async (commentRepliesObject: any,flag:string) => {
+  const handleReportClick = async (e:any,commentRepliesObject: any,flag:string) => {
         console.log("Report Clicked");
-      
+        e.preventDefault()
         // Create the popup container
         const popupDiv = document.createElement("div");
         popupDiv.id = "report-issue";
@@ -476,7 +476,7 @@ const CheckCurrentuser = (Author:any)=>{
                             <div className="dropdown-menucsspost" ref={menuRef}>
                                 <button 
                                 // onClick={(e) => handleEditClick(e)} disabled={post.AutherId != CurrentUser.Id}
-                                onClick={(e) => handleReportClick(Comments[commentId],"MainComment")}
+                                onClick={(e) => handleReportClick(e,Comments[commentId],"MainComment")}
                                 
                                 >Report</button>
                             </div>
@@ -598,7 +598,7 @@ const CheckCurrentuser = (Author:any)=>{
                     <button
                       type="button"
                       className="dropdown-item text-danger"
-                      onClick={(e) => handleReportClick(Comments[commentId],"MainComment")}
+                      onClick={(e) => handleReportClick(e,Comments[commentId],"MainComment")}
                     >
                       Report
                     </button>
@@ -685,7 +685,7 @@ const CheckCurrentuser = (Author:any)=>{
                                                                       }}
                                                                     >
                                                                       <button
-                                                                        onClick={() => handleReportClick(reply,"replies")}
+                                                                        onClick={(e) => handleReportClick(e,reply,"replies")}
                                                                         style={{
                                                                           background: "none",
                                                                           border: "none",

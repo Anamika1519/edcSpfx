@@ -557,9 +557,9 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
     console.log(post.userHasLiked, '{liked}');
 
 
-    const handleReportClick = async (commentRepliesObject: any, flag: string) => {
+    const handleReportClick = async (e:any,commentRepliesObject: any, flag: string) => {
         console.log("Report Clicked");
-
+        e.preventDefault()
         // Create the popup container
         const popupDiv = document.createElement("div");
         popupDiv.id = "report-issue";
@@ -733,7 +733,7 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
                                             <div className="dropdown-menucsspost" ref={menuRef}>
                                                 <button onClick={(e) => handleEditClick(e)} disabled={post.AutherId != CurrentUser.Id}>Edit</button>
                                                 <button onClick={(e) => handleDeletePost(e, post.postId)} disabled={post.AutherId != CurrentUser.Id}>Delete</button>
-                                                <button onClick={(e) => handleReportClick(post, "Post")} disabled={post.AutherId != CurrentUser.Id}>Report</button>
+                                                <button onClick={(e) => handleReportClick(e,post, "Post")} disabled={post.AutherId != CurrentUser.Id}>Report</button>
                                             </div>
                                         )}
                                     </div>
@@ -754,7 +754,7 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
                                             <div className="dropdown-menucsspost" ref={menuRef}>
                                                 {/* <button onClick={(e) => handleEditClick(e)} disabled={post.AutherId != CurrentUser.Id}>Edit</button>
                                             <button onClick={(e) => handleDeletePost(e, post.postId)} disabled={post.AutherId != CurrentUser.Id}>Delete</button> */}
-                                                <button onClick={(e) => handleReportClick(post, "Post")}>Report</button>
+                                                <button onClick={(e) => handleReportClick(e,post, "Post")}>Report</button>
                                             </div>
                                         )}
                                     </div>
@@ -948,7 +948,7 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
                                             <div className="dropdown-menucsspost" ref={menuRef1}>
                                                 {/* <button onClick={(e) => handleEditClick(e)} disabled={post.AutherId != CurrentUser.Id}>Edit</button>
                                             <button onClick={(e) => handleDeletePost(e, post.postId)} disabled={post.AutherId != CurrentUser.Id}>Delete</button> */}
-                                                <button onClick={(e) => handleReportClick(comment, "replies")}>Report</button>
+                                                <button onClick={(e) => handleReportClick(e,comment, "replies")}>Report</button>
                                             </div>
                                         )}
                                     </div>
@@ -1001,7 +1001,7 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
                     <img src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${currentEmail}`} alt="user avatar" className="commentsImg" />
                     :
                     currentEmail !== "" &&
-                    <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circlecss img-thumbnail
+                    <Avatar sx={{ bgcolor: 'primary.main' }} className="commentsImg img-thumbnail
                                   avatar-xl">
                         {`${currentEmail.split('.')[0].charAt(0)}${currentEmail.split('.')[1].charAt(0)}`.toUpperCase()}
                     </Avatar>

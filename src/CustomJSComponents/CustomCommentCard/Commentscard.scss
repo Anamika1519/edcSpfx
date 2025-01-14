@@ -11,6 +11,11 @@
     float: left;
     background: #f3f7fa;
 }
+.dropdown-menucsspost{
+  position: absolute;
+  right: 29px;
+}
+
 // .commentheight{max-height: 129px; overflow-x: hidden; overflow-y: auto;}
 .btn:first-child:active {
     border: none;
@@ -30,4 +35,13 @@
 }
 .w-100 textarea::placeholder{
   color: #000;
+}
+.dropdown-menucsspost button{
+  background: transparent !important;
+  color: #3c3c3c ;
+  padding: 5px 10px ;
+  text-align: left;
+}
+.dropdown-menucsspost button:hover{
+  color:#1fb0e5;
 }

@@ -431,6 +431,9 @@ button[type="submit"]:hover {
   padding: 5px 16px !important;
   text-transform: capitalize;
 }
+.ht{
+  height: 38px; padding: 6px 10px !important;
+}
 @media(max-width:640px){
   .modal-dialog .modal-header{position: relative !important;}
   .chosefile{    padding: 5px 10px;}

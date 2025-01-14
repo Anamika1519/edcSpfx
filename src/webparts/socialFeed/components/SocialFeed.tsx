@@ -1142,7 +1142,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                         :
                         currentEmail !== "" &&
-                        <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circlecss img-thumbnail
+                        <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circlecss1av img-thumbnail
                                   avatar-xl">
                           {`${currentEmail.split('.')[0].charAt(0)}${currentEmail.split('.')[1].charAt(0)}`.toUpperCase()}
                         </Avatar>
@@ -1382,7 +1382,7 @@ const SocialFeedContext = ({ props }: any) => {
                                       )}
                                     </div>
 
-                                    <button type="submit" className="btn btn-sm btn-primary primary1 font-121" disabled={Loading}>
+                                    <button type="button" className="btn btn-sm btn-primary primary1 font-121" disabled={Loading}>
 
                                       <FontAwesomeIcon style={{ float: 'left', margin: "7px 6px 0px 0px" }} icon={faPaperPlane} /> Post
 

@@ -369,7 +369,7 @@ const BlogsContext = ({ props }: any) => {
                   file,
                   sp,
                   "Documents",
-                  "https://alrostamanigroupae.sharepoint.com"
+                  "https://OfficeIndia.sharepoint.com"
                 );
               }
             } else {
@@ -516,7 +516,7 @@ const BlogsContext = ({ props }: any) => {
                     file,
                     sp,
                     "Documents",
-                    "https://alrostamanigroupae.sharepoint.com"
+                    "https://OfficeIndia.sharepoint.com"
                   );
                 }
               } else {
@@ -686,7 +686,7 @@ const BlogsContext = ({ props }: any) => {
                   file,
                   sp,
                   "Documents",
-                  "https://alrostamanigroupae.sharepoint.com"
+                  "https://OfficeIndia.sharepoint.com"
                 );
               }
             }

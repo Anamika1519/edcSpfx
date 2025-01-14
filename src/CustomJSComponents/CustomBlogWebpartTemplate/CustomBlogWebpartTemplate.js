@@ -479,7 +479,7 @@ const deleteLocalFile = (index, filArray, name) => {
         setImagepostArr1(selectedData[0].BlogGalleryJSON)
         setImagepostArr(selectedData[0].BlogGalleryJSON)
         setDocumentpostArr1(selectedData[0].BlogDocsJSON)
-        if (selectedData[0].BannerImage.length > 0) {
+        if (selectedData[0].BannerImage.length > 0 && selectedData[0].BannerImage != null) {
             banneimagearr = selectedData[0].BannerImage
             // //console.log(banneimagearr, 'banneimagearr');
             setBannerImagepostArr(banneimagearr);
@@ -693,7 +693,7 @@ const deleteLocalFile = (index, filArray, name) => {
                                     file,
                                     _sp,
                                     "Documents",
-                                    "https://alrostamanigroupae.sharepoint.com"
+                                    "https://OfficeIndia.sharepoint.com"
                                 );
                             }
                         } else {
@@ -883,7 +883,7 @@ const deleteLocalFile = (index, filArray, name) => {
                                 file,
                                 _sp,
                                 "Documents",
-                                "https://alrostamanigroupae.sharepoint.com"
+                                "https://OfficeIndia.sharepoint.com"
                             );
                         }
                     }
@@ -1300,7 +1300,7 @@ const deleteLocalFile = (index, filArray, name) => {
                             let listID = SiteUrl.toLowerCase().includes('alrostmani') ? listIDAl : '1e0eead0-ed78-4b4d-92dc-4cd058deac82';
 
                             let img1 = imageData && imageData.fileName ? `${SiteUrl}/_api/v2.1/sites('${siteId}')/lists('${listID}')/items('${item.ID}')/attachments('${imageData.fileName}')/thumbnails/0/c400x400/content?prefer=noredirect%2Cclosestavailablesize` : ""
-                            let img = imageData && imageData.serverRelativeUrl ? `https://alrostamanigroupae.sharepoint.com${imageData.serverRelativeUrl}` : img1
+                            let img = imageData && imageData.serverRelativeUrl ? `https://OfficeIndia.sharepoint.com${imageData.serverRelativeUrl}` : img1
                             const imageUrl = imageData
                                 ? img
                                 : require("../../webparts/businessApps/assets/userimg.png");
@@ -1921,7 +1921,7 @@ const deleteLocalFile = (index, filArray, name) => {
                           {DocumentpostArr1.map((file, index) => (
                             <tr key={index}>
                               <td className='text-center'>{index + 1}</td>
-                              <td>{file.fileName.replace("/sites/IntranetUAT", "")}</td>
+                              <td>{file.fileName.replace("/sites/Alrostmanispfx2", "")}</td>
                               <td className='text-right'>{file.fileSize}</td>
                               <td className='text-center'> <img src={require("../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, DocumentpostArr1, "docs")} /> </td>
                             </tr>
@@ -2027,7 +2027,7 @@ const deleteLocalFile = (index, filArray, name) => {
                           {DocumentpostArr1.map((file, index) => (
                             <tr key={index}>
                               <td style={{minWidth:'40px',maxWidth:'40px'}} className='text-center'>{index + 1}</td>
-                              <td style={{minWidth:'100px',maxWidth:'100px'}}>{file.fileName.replace("/sites/IntranetUAT", "")}</td>
+                              <td style={{minWidth:'100px',maxWidth:'100px'}}>{file.fileName.replace("/sites/Alrostmanispfx2", "")}</td>
                               <td style={{minWidth:'40px',maxWidth:'40px'}} className='text-right'>{file.fileSize}</td>
                               <td style={{minWidth:'40px',maxWidth:'40px'}} className='text-center'> <img style={{cursor:'pointer'}} src={require("../../CustomAsset/del.png")}  onClick={() => deleteLocalFile(index, DocumentpostArr1, "docs")} /> </td>
                             </tr>
@@ -2070,7 +2070,7 @@ const deleteLocalFile = (index, filArray, name) => {
                         </tbody>
                       </table></>
                   )}
-                {BnnerImagepostArr.length > 0 && showBannerModal &&
+                {showBannerModal &&
                   (
                     <>
                       <table className="mtbalenew" style={{ fontSize: '0.75rem' }}>
@@ -2084,12 +2084,12 @@ const deleteLocalFile = (index, filArray, name) => {
                           </tr>
                         </thead>
                         <tbody>
-                          {BnnerImagepostArr[0].files.map((file, index) => (
+                        {BnnerImagepostArr[0] != null && BnnerImagepostArr.map((file, index) => (
                             <tr key={index}>
                               <td style={{minWidth:'40px',maxWidth:'40px'}} className='text-center'>{index + 1}</td>
-                             <td style={{minWidth:'50px',maxWidth:'50px',textAlign:'center'}} >  <img style={{width:'40px',height:'40px', borderRadius:'1000px'}} src={BnnerImagepostArr[0].fileUrl?BnnerImagepostArr[0].fileUrl:`${siteUrl}/${file.name}`} /></td>
-                              <td>{file.name}</td>
-                             
+                             <td style={{minWidth:'50px',maxWidth:'50px',textAlign:'center'}} >  <img style={{width:'40px',height:'40px', borderRadius:'1000px'}} src={BnnerImagepostArr[0].fileUrl?BnnerImagepostArr[0].fileUrl:`${file.serverUrl}${file.serverRelativeUrl}`} /></td>
+                              {/* <td>{file.name}</td> */}
+                              <td>{file.name?file.name:file.fileName?file.fileName:""}</td>
                               <td style={{minWidth:'40px',maxWidth:'40px'}} className='text-right'>{file.name?file.name:file.fileName?file.fileName:""}</td>
                               <td style={{minWidth:'40px',maxWidth:'40px'}} className='text-center'> <img style={{cursor:'pointer'}} src={require("../../CustomAsset/del.png")}  onClick={() => deleteLocalFile(index, BnnerImagepostArr, "bannerimg")} /> </td>
                             </tr>
@@ -2105,7 +2105,7 @@ const deleteLocalFile = (index, filArray, name) => {
 
  
  
-  <Modal show={showModal} onHide={() => setShowModal(false)} size='lg' className="newm" >
+  {/* <Modal show={showModal} onHide={() => setShowModal(false)} size='lg' className="newm" >
               <Modal.Header closeButton>
                 {DocumentpostArr1.length > 0 && showDocTable && <Modal.Title>Documents</Modal.Title>}
                 {ImagepostArr1.length > 0 && showImgModal && <Modal.Title>Gallery Images/Videos</Modal.Title>}
@@ -2129,7 +2129,7 @@ const deleteLocalFile = (index, filArray, name) => {
                           {DocumentpostArr1.map((file, index) => (
                             <tr key={index}>
                               <td style={{minWidth:'40px',maxWidth:'40px'}} className='text-center'>{index + 1}</td>
-                              <td>{file.fileName.replace("/sites/IntranetUAT", "")}</td>
+                              <td>{file.fileName.replace("/sites/Alrostmanispfx2", "")}</td>
                               <td style={{minWidth:'40px',maxWidth:'40px'}} className='text-right'>{file.fileSize}</td>
                               <td style={{minWidth:'40px',maxWidth:'40px'}}className='text-center'> <img src={require("../../CustomAsset/del.png")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, DocumentpostArr1, "docs")} /> </td>
                             </tr>
@@ -2200,7 +2200,7 @@ const deleteLocalFile = (index, filArray, name) => {
  
               </Modal.Body>
  
-            </Modal>
+            </Modal> */}
  
 
             {/* modal css ends */}

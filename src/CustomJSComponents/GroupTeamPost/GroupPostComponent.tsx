@@ -794,7 +794,7 @@ export const GroupPostComponent = ({ key, sp, siteUrl, isedit, currentUsername, 
                     <img src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${currentEmail}`} alt="user avatar" className="commentsImg" />
                     :
                     currentEmail !== "" &&
-                    <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circlecss img-thumbnail
+                    <Avatar sx={{ bgcolor: 'primary.main' }} className="commentsImg img-thumbnail
                                   avatar-xl">
                         {`${currentEmail.split('.')[0].charAt(0)}${currentEmail.split('.')[1].charAt(0)}`.toUpperCase()}
                     </Avatar>

@@ -49,6 +49,7 @@ const ArgDelegationContext = ({ props }: any) => {
     const [editID, setEditID] = React.useState(null);
   const [formData, setFormData] = React.useState({
     DelegateName: "",
+    DelegateEMail: "",
     DelegateNameID:"",
     StartDate: "",
     EndDate: "",
@@ -96,6 +97,8 @@ const ArgDelegationContext = ({ props }: any) => {
     const options = users.map(item => ({
       value: item.Id,
       label: item.Title,
+      UserName :item.Title,
+      UserEmail :item.Email
     }));
 
     setRows(options);
@@ -103,6 +106,7 @@ if(Currusers){
   const formobj = {
     DelegateName: Currusers.Title,
     DelegateNameID:Currusers.Id,
+    DelegateEMail:Currusers.EMail,
     StartDate: "",
     EndDate: "",
     Status: "",
@@ -156,7 +160,7 @@ if(Currusers){
               EndDate: endDate,
               Status: setDelegateById[0].Status,
               DelegateNameID: setDelegateById[0].DelegateName?.ID,
-
+              DelegateEMail:setDelegateById[0].DelegateName?.EMail,
               DelegateName: setDelegateById[0].DelegateName.Title,
               ActingFor: setDelegateById[0].ActingFor
 
@@ -221,15 +225,26 @@ if(Currusers){
                 //Swal.fire('Error', 'Entity is required!', 'error');
                 valid = false;
               }
+              else if (StartDate > EndDate) {
+                valid = false;
+                Swal.fire('Please enter a valid start and end date');
+                return;
+              }
              
               setValidSubmit(valid);
         
             }
-             if (!valid && fmode == FormSubmissionMode.SUBMIT)
-                  Swal.fire('Please fill all the mandatory fields.');
-                // else if (!valid && fmode == FormSubmissionMode.DRAFT) {
-                //   Swal.fire('Please fill the mandatory fields for draft - Title and Type');
-                // }
+             if (!valid && fmode == FormSubmissionMode.SUBMIT){
+              if (StartDate > EndDate) {
+               
+                Swal.fire('Please enter a valid start and end date');
+               
+              }
+              else{
+                Swal.fire('Please fill all the mandatory fields.');
+              }
+            }
+             
             return valid;
       }
 
@@ -308,6 +323,8 @@ if(Currusers){
     
                 const postResult = await addItem(postPayload, sp);
                 const postId = postResult?.data?.ID;
+                openEmailDialog(formData,postPayload);
+                // sendEmailUsingSMTP(formData,postPayload);
               //   debugger
               //   if (!postId) {
               //     console.error("Post creation failed.");
@@ -337,6 +354,40 @@ if(Currusers){
         window.location.href = `${siteUrl}/SitePages/DelegateMaster.aspx`;
       }
 
+   
+      const openEmailDialog = (obj: any, postPayload: any) => {
+        const subject = "Acting as Delegate on behalf of VDepartment Manager | Approvals & Assignments";
+        // You can start the delegation session by clicking <a href="${siteUrl}/SitePages/MyApprovals.aspx" target="_blank">here</a>.
+        const body = `
+        Dear ${selectedOption.UserName},
+       
+        You have been opted to act as a delegate on behalf of ${formData.DelegateName} from ${formData.StartDate} to ${formData.EndDate}.
+       
+        Important Note: After opting to act as a delegate or giving up the delegation, you are requested to wait for 20 minutes to receive or give up the full authorization of ${formData.DelegateName}.
+       
+        Disclaimer: Upon receiving this notification, you are considered entitled to take the delegation/handover unless you report or revert with your objection immediately on this delegation/handover to ${formData.DelegateName}.
+       
+        (This is an auto-generated email. Please do not reply to this email.)
+       
+        Thanks and regards,
+        ARG Team
+        `;
+       
+        const encodedBody = encodeURIComponent(body);
+       
+   
+   
+        // Encode the entire URL only once
+        const outlook365Url = `https://outlook.office.com/mail/deeplink/compose?to=${encodeURIComponent(selectedOption.UserEmail)}&subject=${encodeURIComponent(subject)}&body=${encodedBody}`;
+   
+        // Open the email in a new tab
+        window.open(outlook365Url, "_blank");
+    };
+   
+     
+    // const openEmailDialog = async (obj: any, postPayload: any) => {
+    //   const toEmails =selectedOption?.UserEmail; // Replace with recipient emails
+    //    const subject = "Acting as Delegate on behalf of VDepartment Manager | Approvals & Assignments";
 
   //#region onChange
     const onChange = async (name: string, value: string) => {

@@ -65,11 +65,11 @@ table .no-results{position: absolute;
 .add-comment textarea{
   border: 1px solid #007bff;
   border-radius: 30px !important;
-  height: 42px !important; resize: none;
+  height: 38px !important; resize: none;    padding: 8px 10px !important;
   overflow-y: auto;
 }
 .add-comment textarea::placeholder{
-  color: #000 !important; font-size: 14px; font-weight: 400;
+  color: #000 !important; font-size: 1rem; font-weight: 500;
 }
 .row{
   --bs-gutter-x: 0.8rem;
@@ -1734,6 +1734,10 @@ text-align: center;
 .sidebar-openBa {
   column-gap: 5px;
 }
+#myDropdownBell{
+  left:-120px !important;
+  right: auto !important;
+}
 .posx{position: absolute;
   right: 0;
   z-index: 9;
@@ -2015,6 +2019,15 @@ label{color: #6c757d !important;font-size: .875rem !important;}
     border-radius: 7px;
     font-size: 1rem !important;
 }
+.dropdown-menucsspost button{
+  background: transparent !important;
+  color: #3c3c3c;
+  padding: 5px 10px ;
+  text-align: left;
+}
+.dropdown-menucsspost button:hover{
+  color:#1fb0e5 !important;
+}
   .cancel-btn:hover,.btn-success:hover{background: #008751 !important; border-color: #008751 !important; }
   .modal .modal-content label{color: #6c757d !important;font-size: .875rem !important;}
 .modal .modal-content input,.modal .modal-content select,.modal .modal-content textarea{border: 1px solid #ccc !important;color: #212529 !important;font-size: 1rem !important;border: 1px solid #ccc !important;
@@ -2035,7 +2048,7 @@ label{color: #6c757d !important;font-size: .875rem !important;}
     }
     
  .project-box .gfg_tooltip{width: 2rem !important ;}
- .MuiAvatar-root{cursor: auto !important;background-color: #1fb0e5 !important;}
+ .MuiAvatar-root{cursor: auto !important;background-color: #1fb0e5 !important;font-weight: 600;}
  .project-box .gfg_tooltip .MuiAvatar-root{cursor: auto !important;background-color: #1fb0e5 !important; font-size: 12px !important; border: 0px !important;}
 .modal .modal-content input:focus,.modal .modal-content select:focus,.modal .modal-content textarea:focus{border: 1px solid #ccc !important; box-shadow: none !important}
 .modal .modal-content .multiSelectContainer input{padding: 9px 10px !important;border: 1px solid #ccc !important;}   
