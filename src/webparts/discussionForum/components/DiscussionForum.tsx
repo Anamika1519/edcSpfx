@@ -54,7 +54,7 @@ import Multiselect from "multiselect-react-dropdown";
 import { MSGraphClientV3 } from "@microsoft/sp-http";
 import { WebPartContext } from "@microsoft/sp-webpart-base";
 import context from "react-bootstrap/esm/AccordionContext";
-
+import Avatar from "@mui/material/Avatar";
 
 const DiscussionForumContext = ({ props }: any) => {
   const sp: SPFI = getSP();
@@ -2083,11 +2083,28 @@ const DiscussionForumContext = ({ props }: any) => {
                                 {item?.GroupType}
                               </td>
                               <td style={{ minWidth: "110px", maxWidth: "110px" }}>
-                                <img
+                                {/* <img
                                   src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item?.Author?.EMail}`}
                                   className="rounded-circlenu img-thumbnail avatar-xl"
                                   alt="profile-image"
-                                />
+                                /> */}
+                                { item.Author?.SPSPicturePlaceholderState == 0 ?
+                                        <img
+                                          src={
+
+                                            `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item?.Author?.EMail}`
+
+                                          }
+                                          className="rounded-circle"
+                                          width="50"
+                                          alt={item.Author.Title}
+                                        />
+                                        :
+                                        item?.Author?.EMail !== null &&
+                                        <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle avatar-xl">
+                                          {`${item?.Author?.EMail.split('.')[0].charAt(0)}${item?.Author?.EMail.split('.')[1].charAt(0)}`.toUpperCase()}
+                                        </Avatar>
+                                      }
                                 {item?.Author?.Title}
                                 {/* <div
                                   style={{

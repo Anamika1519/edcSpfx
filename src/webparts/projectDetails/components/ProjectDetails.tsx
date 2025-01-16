@@ -835,11 +835,16 @@ const ProjectDetailsContext = ({ props }: any) => {
   const sendanEmail = (item: any) => {
     // window.open("https://outlook.office.com/mail/inbox");
 
-    const subject = "Project Title-" + item.ProjectName;
-    const body = 'Here is the link to the Project:' + `${siteUrl}/SitePages/ProjectDetails.aspx?${item.Id}`;
+    //const subject = "Project Title-" + item.ProjectName;
+    //const body = 'Here is the link to the Project:' + `${siteUrl}/SitePages/ProjectDetails.aspx?${item.Id}`;
 
     //const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    //const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    const subject = "Thought You’d Find This Interesting!";
+    const body = 'Hi,' +
+        'I came across something that might interest you: ' +
+        `<a href="${siteUrl}/SitePages/ProjectDetails.aspx?${item.Id}"></a>`
+    const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${subject}&body=${body}`;
 
     window.open(office365MailLink, '_blank');
     // Open the link to launch the default mail client (like Outlook)

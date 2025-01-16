@@ -1043,7 +1043,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
 
   //#region  Submit Form
-
+  //  old code of chhaya for media gallery
   // const handleFormSubmit = async () => {
 
   //   if (validateForm(FormSubmissionMode.SUBMIT)) {
@@ -1824,6 +1824,8 @@ const handleFormSubmit = async () => {
 
       }
       await AddContentMaster(sp, arr)
+      const  boolval = await handleClick(postId, "Media", Number(formData.entity))
+      alert(`boolval ${boolval}`)
     }
 
     Swal.fire('Submitted successfully.', '', 'success');

@@ -1152,14 +1152,21 @@ const deleteLocalFile = (index, filArray, name) => {
     const sendanEmail = (item) => {
         // window.open("https://outlook.office.com/mail/inbox");
 
-        const subject = "Blog Title -" + item.Title;
-        const body = 'Here is the link to the Blog:' + `${SiteUrl}/SitePages/BlogDetails.aspx?${item.Id}`;
+        // const subject = "Blog Title -" + item.Title;
+        // const body = 'Here is the link to the Blog:' + `${SiteUrl}/SitePages/BlogDetails.aspx?${item.Id}`;
+        const subject = "Thought You’d Find This Interesting!";
+        const body = 'Hi,' +
+            'I came across something that might interest you: ' +
+            `<a href="${siteUrl}/SitePages/BlogDetails.aspx?${item.Id}"></a>`
+        'Let me know what you think!';
 
+        // window.open(`https://outlook.office365.com/mail/deeplink/compose?body= Here is the group link: "${siteUrl}/SitePages/GroupandTeamDetails.aspx?${idNum}"`);
+        const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${subject}&body=${body}`;
         //const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
         // Open the link to launch the default mail client (like Outlook)
         //window.location.href = mailtoLink;
-        const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        //const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
         window.open(office365MailLink, '_blank');
     };

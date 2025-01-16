@@ -636,15 +636,20 @@ const AnnouncementdetailsContext = ({ props }: any) => {
   const sendanEmail = (item: any) => {
     // window.open("https://outlook.office.com/mail/inbox");
 
-    const subject = "Announcement Title-" + item.Title;
-    const body = 'Here is the link to the announcement:' + `${siteUrl}/SitePages/AnnouncementDetails.aspx?${item.Id}`;
+    //const subject = "Announcement Title-" + item.Title;
+    //const body = 'Here is the link to the announcement:' + `${siteUrl}/SitePages/AnnouncementDetails.aspx?${item.Id}`;
 
     //const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
     // Open the link to launch the default mail client (like Outlook)
     //window.location.href = mailtoLink;
 
-    const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    //const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    const subject = "Thought You’d Find This Interesting!";
+    const body = 'Hi,' +
+        'I came across something that might interest you: ' +
+        `<a href="${siteUrl}/SitePages/AnnouncementDetails.aspx?${item.Id}"></a>`
+    const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${subject}&body=${body}`;
 
     window.open(office365MailLink, '_blank');
   };

@@ -80,14 +80,22 @@ const CustomNewsWebpartTemplate = ({ _sp, SiteUrl }) => {
     const sendanEmail = (item) => {
         // window.open("https://outlook.office.com/mail/inbox");
 
-        const subject = "News Title-" + item.Title;
-        const body = 'Here is the link to the event:' + `${SiteUrl}/SitePages/NewsDetails.aspx?${item.Id}`;
+        // const subject = "News Title-" + item.Title;
+        // const body = 'Here is the link to the event:' + `${SiteUrl}/SitePages/NewsDetails.aspx?${item.Id}`;
 
         //const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
         // Open the link to launch the default mail client (like Outlook)
         // window.location.href = mailtoLink;
-        const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        //const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        const subject = "Thought You’d Find This Interesting!";
+        const body = 'Hi,' +
+            'I came across something that might interest you: ' +
+            `<a href="${siteUrl}/SitePages/NewsDetails.aspx?${item.Id}"></a>`
+        'Let me know what you think!';
+
+        // window.open(`https://outlook.office365.com/mail/deeplink/compose?body= Here is the group link: "${siteUrl}/SitePages/GroupandTeamDetails.aspx?${idNum}"`);
+        const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${subject}&body=${body}`;
 
         window.open(office365MailLink, '_blank');
     };
@@ -98,7 +106,7 @@ const CustomNewsWebpartTemplate = ({ _sp, SiteUrl }) => {
     };
     return (
         <>
-           
+
 
             <div className="row mt-5" >
                 {NewsData.length > 0 ?
@@ -150,18 +158,18 @@ const CustomNewsWebpartTemplate = ({ _sp, SiteUrl }) => {
                                     </div>
 
                                 </div></>)
-                    }) : 
+                    }) :
                     <div className='row mt-2'>
-                    <div style={{ height: '300px' }} className="card card-body align-items-center  annusvg text-center"
-                    >
-    
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
-    
-                        <p className="font-14 text-muted text-center">No News Available </p>
-    
+                        <div style={{ height: '300px' }} className="card card-body align-items-center  annusvg text-center"
+                        >
+
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
+
+                            <p className="font-14 text-muted text-center">No News Available </p>
+
+                        </div>
                     </div>
-                </div>
-                    }
+                }
             </div>
             <div className="tab-content mt-4">
 
@@ -197,7 +205,7 @@ const CustomNewsWebpartTemplate = ({ _sp, SiteUrl }) => {
                                                 <div className="w-100">
                                                     <a >  <h4 onClick={() => gotoNewsDetails(item)} className="hovertext mt-1 mb-1 font-16 fw-bold ng-binding" style={{ color: '#343a40', fontSize: '16px' }}> {truncateText(item.Title, 80)}
                                                     </h4> </a>
-                                                    <p style={{ color: '#6b6b6b', fontSize: '15px', cursor:'auto', height: '4rem' }} className="mb-2  ng-binding parah heauu">
+                                                    <p style={{ color: '#6b6b6b', fontSize: '15px', cursor: 'auto', height: '4rem' }} className="mb-2  ng-binding parah heauu">
                                                         {truncateText(item.Overview, 250)}</p>
                                                     <div className="readmore" onClick={() => gotoNewsDetails(item)} style={{ cursor: 'pointer' }}>Read more..</div>
                                                 </div>

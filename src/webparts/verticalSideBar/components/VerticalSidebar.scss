@@ -1078,8 +1078,8 @@ span.navlink:hover {
 .rounded-circle
 {
   border-radius: 50% !important;
-    height: 32px;
-    width: 32px;
+    height: 32px !important; font-size: 14px !important; line-height: 28px !important;
+    width: 32px !important;
 }
 
 .cssAdds

@@ -19,7 +19,7 @@ import SocialFeed, { IGroupAndTeamPosts } from "../../webparts/groupandTeamDetai
 import { Carousel, Modal } from "react-bootstrap";
 import Avatar from "@mui/material/Avatar";
 
-export const GroupPostComponent = ({ key, sp, siteUrl, isedit, currentUsername, CurrentUser, currentEmail, fetchPosts, post ,groupsArray}: any) => {
+export const GroupPostComponent = ({ key, sp, siteUrl, isedit, currentUsername, CurrentUser, currentEmail, fetchPosts, post, groupsArray }: any) => {
     const [loadingReply, setLoadingReply] = useState<boolean>(false);
     const [loadingLike, setLoadingLike] = useState<boolean>(false);
     const [liked, setLiked] = useState(post.userHasLiked);
@@ -463,11 +463,16 @@ export const GroupPostComponent = ({ key, sp, siteUrl, isedit, currentUsername, 
         const ids = window.location.search;
         const originalString = ids;
         const idNum = originalString.substring(1);
-        const subject = "Group Details";
-        const body = 'Here is the link to the event:' + `${siteUrl}/SitePages/GroupandTeamDetails.aspx?${idNum}`;
+        //const subject = "Group Details";
+        //const body = 'Here is the link to the event:' + `${siteUrl}/SitePages/GroupandTeamDetails.aspx?${idNum}`;
 
         // window.open(`https://outlook.office365.com/mail/deeplink/compose?body= Here is the group link: "${siteUrl}/SitePages/GroupandTeamDetails.aspx?${idNum}"`);
-        const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        //const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        const subject = "Thought You’d Find This Interesting!";
+        const body = 'Hi,' +
+            'I came across something that might interest you: ' +
+            `<a href="${siteUrl}/SitePages/GroupandTeamDetails.aspx?${idNum}"></a>`
+        const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${subject}&body=${body}`;
 
         window.open(office365MailLink, '_blank');
     };
@@ -496,22 +501,22 @@ export const GroupPostComponent = ({ key, sp, siteUrl, isedit, currentUsername, 
 
     console.log(post, '{liked}');
 
-    const handleReportClick = async (e:any,commentRepliesObject: any, flag: string) => {
-            console.log("Report Clicked");
-            e.preventDefault()
-            try {
+    const handleReportClick = async (e: any, commentRepliesObject: any, flag: string) => {
+        console.log("Report Clicked");
+        e.preventDefault()
+        try {
 
             const currentUser = await sp.web.currentUser();
-            const reportListName=flag === "replies" ? "ARGGroupandTeamUserComments" : "ARGGroupandTeamComments";
-            const reportedListItemId=flag === "replies" ? commentRepliesObject.Id : post.postId;
-            const eventReportData=await sp.web.lists.getByTitle("ReportedIssueList").items.select("*").filter(`ProcessName eq 'Groups And Teams' and ReportedById eq ${currentUser.Id} and ListName eq '${reportListName}' and ListItemId eq ${reportedListItemId}`)();
-            console.log("eventReportData",eventReportData);
-                                                    
-            if (eventReportData.length >0 ) {
+            const reportListName = flag === "replies" ? "ARGGroupandTeamUserComments" : "ARGGroupandTeamComments";
+            const reportedListItemId = flag === "replies" ? commentRepliesObject.Id : post.postId;
+            const eventReportData = await sp.web.lists.getByTitle("ReportedIssueList").items.select("*").filter(`ProcessName eq 'Groups And Teams' and ReportedById eq ${currentUser.Id} and ListName eq '${reportListName}' and ListItemId eq ${reportedListItemId}`)();
+            console.log("eventReportData", eventReportData);
+
+            if (eventReportData.length > 0) {
                 Swal.fire("Already Reported", "You have already reported this content.", "info");
                 return;
-            } 
-                // Create the popup container
+            }
+            // Create the popup container
             const popupDiv = document.createElement("div");
             popupDiv.id = "report-issue";
             popupDiv.style.position = "fixed";
@@ -524,7 +529,7 @@ export const GroupPostComponent = ({ key, sp, siteUrl, isedit, currentUsername, 
             popupDiv.style.borderRadius = "8px";
             popupDiv.style.zIndex = "1000";
             popupDiv.style.width = "300px";
-    
+
             // Create a wrapper div inside the popup
             const wrapperDiv = document.createElement("div");
             wrapperDiv.className = "report-Issue-Wrapper-Div"
@@ -533,14 +538,14 @@ export const GroupPostComponent = ({ key, sp, siteUrl, isedit, currentUsername, 
             wrapperDiv.style.flexDirection = "column";
             wrapperDiv.style.gap = "10px"; // Adds spacing between child elements
             popupDiv.appendChild(wrapperDiv);
-    
+
             // Add a heading
             const heading = document.createElement("h2");
             heading.innerText = "Report Reason";
             heading.style.margin = "0 0 10px 0";
             // popupDiv.appendChild(heading);
             wrapperDiv.appendChild(heading);
-    
+
             // Add a close button
             const closeButton = document.createElement("span");
             closeButton.innerText = "x";
@@ -557,7 +562,7 @@ export const GroupPostComponent = ({ key, sp, siteUrl, isedit, currentUsername, 
             };
             // popupDiv.appendChild(closeButton);
             wrapperDiv.appendChild(closeButton);
-    
+
             // Add the textarea
             const textAreaElement = document.createElement("textarea");
             textAreaElement.placeholder = "Why are you reporting this comment?";
@@ -569,7 +574,7 @@ export const GroupPostComponent = ({ key, sp, siteUrl, isedit, currentUsername, 
             textAreaElement.style.borderRadius = "4px";
             // popupDiv.appendChild(textAreaElement);
             wrapperDiv.appendChild(textAreaElement);
-    
+
             // Add a submit button
             const submitButton = document.createElement("button");
             submitButton.innerText = "Submit";
@@ -585,13 +590,13 @@ export const GroupPostComponent = ({ key, sp, siteUrl, isedit, currentUsername, 
                     Swal.fire("Error", "Please provide a reason for reporting.", "error");
                     return;
                 }
-    
+
                 try {
                     // const currentUser = await sp.web.currentUser();
                     // const commentObject = Comments[commentId];
                     console.log("flag", flag);
                     console.log("commentRepliesObject", commentRepliesObject);
-                    console.log(groupsArray,"groupsArray");
+                    console.log(groupsArray, "groupsArray");
                     const payload = {
                         ReportReason: issueValue,
                         ProcessName: "Groups And Teams",
@@ -605,10 +610,10 @@ export const GroupPostComponent = ({ key, sp, siteUrl, isedit, currentUsername, 
                         ReportedContentAddedById: flag === 'replies' ? commentRepliesObject.AuthorId : commentRepliesObject.AuthorId,
                         Title: groupsArray[0].GroupName,
                         Action: "Active",
-                        MainListColumnName:flag === "replies" ? "UserCommentsJSON" :"",
-                        MainListName:flag === "replies" ? "ARGGroupandTeamComments" :"",
-                        MainListItemId:flag === "replies" ? post.postId:0,
-                        MainListStatus:flag === "replies" ? "Available":"NA",
+                        MainListColumnName: flag === "replies" ? "UserCommentsJSON" : "",
+                        MainListName: flag === "replies" ? "ARGGroupandTeamComments" : "",
+                        MainListItemId: flag === "replies" ? post.postId : 0,
+                        MainListStatus: flag === "replies" ? "Available" : "NA",
                     }
                     // const insertData = await sp.web.lists.getByTitle("ReportedIssueList").items.add({
                     //   ReportReason: issueValue,
@@ -635,31 +640,31 @@ export const GroupPostComponent = ({ key, sp, siteUrl, isedit, currentUsername, 
             };
             // popupDiv.appendChild(submitButton);
             wrapperDiv.appendChild(submitButton);
-    
+
             // Append the popup to the body
             document.body.appendChild(popupDiv);
-            } catch (error) {
-                console.log("Error adding the data into the list", error);
+        } catch (error) {
+            console.log("Error adding the data into the list", error);
+        }
+    };
+
+    const [openMenuIndex, setOpenMenuIndex] = useState(null);
+    const menuRef1 = useRef(null);
+    const toggleMenu1 = (index: any) => {
+        setOpenMenuIndex(openMenuIndex === index ? null : index);
+    }
+
+    React.useEffect(() => {
+        const handleClickOutside = (event: any) => {
+            if (menuRef1.current && !menuRef1.current.contains(event.target)) {
+                setOpenMenuIndex(null);
             }
         };
-    
-        const [openMenuIndex, setOpenMenuIndex] = useState(null);
-        const menuRef1 = useRef(null);
-        const toggleMenu1 = (index: any) => {
-            setOpenMenuIndex(openMenuIndex === index ? null : index);
-        }
-    
-        React.useEffect(() => {
-            const handleClickOutside = (event: any) => {
-                if (menuRef1.current && !menuRef1.current.contains(event.target)) {
-                    setOpenMenuIndex(null);
-                }
-            };
-            document.addEventListener("mousedown", handleClickOutside);
-            return () => {
-                document.removeEventListener("mousedown", handleClickOutside);
-            };
-        }, []);
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
 
     return (
         <div className="post p-4">
@@ -701,26 +706,26 @@ export const GroupPostComponent = ({ key, sp, siteUrl, isedit, currentUsername, 
                         )}
                     </div>
                     <div className="post-content">
-                                            {(
-                                                <><>
-                                                </>
-                                                    {/* {CurrentUser.Id !== post.AutherId && ( */}
-                                                        <div className="post-actions">
-                                                            <div className="menu-toggle" onClick={toggleMenu}>
-                                                                <MoreVertical size={20} />
-                                                            </div>
-                                                            {isMenuOpen && (
-                                                                <div className="dropdown-menucsspost" ref={menuRef}>
-                                                                    {/* <button onClick={(e) => handleEditClick(e)} disabled={post.AutherId != CurrentUser.Id}>Edit</button>
+                        {(
+                            <><>
+                            </>
+                                {/* {CurrentUser.Id !== post.AutherId && ( */}
+                                <div className="post-actions">
+                                    <div className="menu-toggle" onClick={toggleMenu}>
+                                        <MoreVertical size={20} />
+                                    </div>
+                                    {isMenuOpen && (
+                                        <div className="dropdown-menucsspost" ref={menuRef}>
+                                            {/* <button onClick={(e) => handleEditClick(e)} disabled={post.AutherId != CurrentUser.Id}>Edit</button>
                                                                 <button onClick={(e) => handleDeletePost(e, post.postId)} disabled={post.AutherId != CurrentUser.Id}>Delete</button> */}
-                                                                    <button onClick={(e) => handleReportClick(e,post, "Post")}>Report</button>
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                    {/* )} */}
-                                                </>
-                                            )}
+                                            <button onClick={(e) => handleReportClick(e, post, "Post")}>Report</button>
                                         </div>
+                                    )}
+                                </div>
+                                {/* )} */}
+                            </>
+                        )}
+                    </div>
                 </div>
             </div>
 
@@ -961,26 +966,26 @@ export const GroupPostComponent = ({ key, sp, siteUrl, isedit, currentUsername, 
                         </p>
                     </div>
                     <div className="post-content">
-                                                {(
-                                                    <><>
-                                                    </>
-                                                        {/* {CurrentUser.Id !== post.AutherId && ( */}
-                                                        <div className="post-actions">
-                                                            <div className="menu-toggle" onClick={() => toggleMenu1(comment.Id)}>
-                                                                <MoreVertical size={20} />
-                                                            </div>
-                                                            {openMenuIndex === comment.Id && (
-                                                                <div className="dropdown-menucsspost" ref={menuRef1}>
-                                                                    {/* <button onClick={(e) => handleEditClick(e)} disabled={post.AutherId != CurrentUser.Id}>Edit</button>
+                        {(
+                            <><>
+                            </>
+                                {/* {CurrentUser.Id !== post.AutherId && ( */}
+                                <div className="post-actions">
+                                    <div className="menu-toggle" onClick={() => toggleMenu1(comment.Id)}>
+                                        <MoreVertical size={20} />
+                                    </div>
+                                    {openMenuIndex === comment.Id && (
+                                        <div className="dropdown-menucsspost" ref={menuRef1}>
+                                            {/* <button onClick={(e) => handleEditClick(e)} disabled={post.AutherId != CurrentUser.Id}>Edit</button>
                                                                 <button onClick={(e) => handleDeletePost(e, post.postId)} disabled={post.AutherId != CurrentUser.Id}>Delete</button> */}
-                                                                    <button onClick={(e) => handleReportClick(e,comment, "replies")}>Report</button>
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                        {/* )} */}
-                                                    </>
-                                                )}
-                                            </div>
+                                            <button onClick={(e) => handleReportClick(e, comment, "replies")}>Report</button>
+                                        </div>
+                                    )}
+                                </div>
+                                {/* )} */}
+                            </>
+                        )}
+                    </div>
                 </div>
             )) : ""}
             {/* <div className="post-comments">
@@ -997,7 +1002,7 @@ export const GroupPostComponent = ({ key, sp, siteUrl, isedit, currentUsername, 
             </div> */}
             {/* Add a New Comment */}
             <form onSubmit={(e) => handleAddComment(e)} className="add-comment" style={{ gap: '1rem' }}>
-                {console.log("CurrenuserProfilepicnmgrouppst",CurrenuserProfilepic,CurrentuserPicturePlaceholderState,currentEmail)}
+                {console.log("CurrenuserProfilepicnmgrouppst", CurrenuserProfilepic, CurrentuserPicturePlaceholderState, currentEmail)}
                 {currentEmail !== "" && CurrenuserProfilepic != null && Number(CurrentuserPicturePlaceholderState) == 0 ?
                     <img src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${currentEmail}`} alt="user avatar" className="commentsImg" />
                     :

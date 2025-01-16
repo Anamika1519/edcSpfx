@@ -409,7 +409,7 @@ export const getGroupTeamDetailsById = async (_sp, idNum) => {
  
     .getByTitle("ARGGroupandTeam")
  
-    .items.getById(idNum).select("*,InviteMemebers/Id,InviteMemebers/Title,InviteMemebers/EMail,GroupFollowers/Id,GroupFollowers/Title,GroupFollowers/EMail,Author/Title,,Author/SPSPicturePlaceholderState,Author/ID,Author/EMail,GroupType")
+    .items.getById(idNum).select("*,InviteMemebers/Id,InviteMemebers/Title,InviteMemebers/EMail,GroupFollowers/Id,GroupFollowers/Title,Author/Title,Author/SPSPicturePlaceholderState,Author/ID,Author/EMail,GroupType")
  
     .expand("Author,InviteMemebers,GroupFollowers")()
  

@@ -25,6 +25,7 @@ import { Bookmark, Share2 } from "react-feather";
 import { Link, Share } from "react-feather";
 import { getCurrentUserProfileEmail } from "../../../APISearvice/CustomService";
 import AvtarComponents from "../../../CustomJSComponents/AvtarComponents/AvtarComponents";
+import Avatar from "@mui/material/Avatar";
 const EventcalenderContext = ({ props }: any) => {
   const sp: SPFI = getSP();
   console.log(sp, "sp");
@@ -63,7 +64,8 @@ const EventcalenderContext = ({ props }: any) => {
     image: '',
     Overview: '',
     Attendees: [],
-    eventLink: ''
+    eventLink: '',
+    SPSPicturePlaceholderState: null
   }); // Initialize with a blank object
   console.log(eventDetails);
 
@@ -189,7 +191,9 @@ const EventcalenderContext = ({ props }: any) => {
         image: img1.serverRelativeUrl,
         Overview: event.Overview,
         Attendees: event.Attendees,
-        eventLink: `${SiteUrl}/SitePages/EventDetailsCalendar.aspx?${event.Id}`
+        eventLink: `${SiteUrl}/SitePages/EventDetailsCalendar.aspx?${event.Id}`,
+        SPSPicturePlaceholderState: event.SPSPicturePlaceholderState
+
       });
       // console.log(event.image);
     }
@@ -208,15 +212,20 @@ const EventcalenderContext = ({ props }: any) => {
   const sendanEmail = (item: any) => {
     // window.open("https://outlook.office.com/mail/inbox");
 
-    const subject = "Event Title-" + item.EventName;
-    const body = 'Here is the link to the event:' + `${siteUrl}/SitePages/EventDetailsCalendar.aspx?${item.Id}`;
+    // const subject = "Event Title-" + item.EventName;
+    // const body = 'Here is the link to the event:' + `${siteUrl}/SitePages/EventDetailsCalendar.aspx?${item.Id}`;
 
     // const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
     // Open the link to launch the default mail client (like Outlook)
     // window.location.href = mailtoLink;
 
-    const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    //const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    const subject = "Thought You’d Find This Interesting!";
+    const body = 'Hi,' +
+      'I came across something that might interest you: ' +
+      `<a href="${siteUrl}/SitePages/EventDetailsCalendar.aspx?${item.Id}"></a>`
+    const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${subject}&body=${body}`;
 
     window.open(office365MailLink, '_blank');
   };
@@ -445,25 +454,25 @@ const EventcalenderContext = ({ props }: any) => {
                                 </div>
                               </div>
 
-                             
-                                <div
-                                  className="w-100"
-                                  onClick={() => gotoNewsDetails(item)}
-                                >
+
+                              <div
+                                className="w-100"
+                                onClick={() => gotoNewsDetails(item)}
+                              >
                                 <a href={item.link} style={{ cursor: "pointer" }} className="hovertext">   <h4
-                                    className="mt-0 mb-1 font-16 hovertext fw-bold text-dark-new"
-                                    style={{ fontSize: "16px" }}
-                                  >
-                                    {truncateText(item.EventName, 90)}
-                                  </h4> </a></div>
-                                  <p
-                                    style={{ color: "#6b6b6b", fontSize: '15px' }}
-                                    className="mb-2  text-muted"
-                                  >
-                                    {truncateText(item.Overview, 200)}
-                                  </p>
-                                
-                              
+                                  className="mt-0 mb-1 font-16 hovertext fw-bold text-dark-new"
+                                  style={{ fontSize: "16px" }}
+                                >
+                                  {truncateText(item.EventName, 90)}
+                                </h4> </a></div>
+                              <p
+                                style={{ color: "#6b6b6b", fontSize: '15px' }}
+                                className="mb-2  text-muted"
+                              >
+                                {truncateText(item.Overview, 200)}
+                              </p>
+
+
 
                               <div className="row">
                                 <div className="col-sm-6">
@@ -515,8 +524,28 @@ const EventcalenderContext = ({ props }: any) => {
 
                                             return (
                                               <>
-                                                {item1.EMail ? <span style={{ margin: index == 0 ? '0 0 0 0' : '0 0 0px -12px' }}><img src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item1.EMail}`} className="attendeesImg" /> </span> :
-                                                  <span> <AvtarComponents Name={item1.Title} /> </span>
+                                                {item1.EMail ? <span style={{ margin: index == 0 ? '0 0 0 0' : '0 0 0px -12px' }}>
+                                                  {/* <img src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item1.EMail}`} className="attendeesImg" />  */}
+                                                  {item1.SPSPicturePlaceholderState == 0 ?
+                                                    <img
+                                                      src={
+
+                                                        `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item1.EMail}`
+
+                                                      }
+                                                      className="rounded-circle"
+                                                      width="50"
+                                                      alt={item1.Title}
+                                                    />
+                                                    :
+                                                    item1.EMail !== null &&
+                                                    <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle avatar-xl">
+                                                      {`${item1.EMail.split('.')[0].charAt(0)}${item1.EMail.split('.')[1].charAt(0)}`.toUpperCase()}
+                                                    </Avatar>
+                                                  }
+                                                </span> :
+                                                  // <span> <AvtarComponents Name={item1.Title} /> </span>
+                                                  ""
                                                 }
                                               </>
                                             )
@@ -526,7 +555,9 @@ const EventcalenderContext = ({ props }: any) => {
                                           // alt={attendee.name}
                                           />
                                         }
-                                        Registered
+                                        {item?.Attendees != undefined && item?.Attendees.length > 0 &&
+                                          "Registered"
+                                        }
                                       </span>
                                     </div>
                                   </div>
@@ -673,11 +704,29 @@ const EventcalenderContext = ({ props }: any) => {
                                                   <React.Fragment key={index}>
                                                     {item1.EMail ? (
                                                       <span style={{ margin: index === 0 ? '0' : '0 0 0px -12px' }} className="">
-                                                        <img
+                                                        {/* <img
                                                           src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item1.EMail}`}
                                                           className="attendeesImg"
                                                           alt={item1.EMail}
-                                                        />
+                                                        /> */}
+
+                                                        {item1.SPSPicturePlaceholderState == 0 ?
+                                                          <img
+                                                            src={
+
+                                                              `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item1.EMail}`
+
+                                                            }
+                                                            className="rounded-circle"
+                                                            width="50"
+                                                            alt={item1.Title}
+                                                          />
+                                                          :
+                                                          item1.EMail !== null &&
+                                                          <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle avatar-xl">
+                                                            {`${item1.EMail.split('.')[0].charAt(0)}${item1.EMail.split('.')[1].charAt(0)}`.toUpperCase()}
+                                                          </Avatar>
+                                                        }
                                                       </span>
                                                     ) : (
                                                       <span>

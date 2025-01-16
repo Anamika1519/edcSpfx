@@ -9,6 +9,7 @@ import {
   getCurrentUserProfile,
   getCurrentUserProfileEmail,
   getCurrentUserProfileEmailForPeople,
+  getuserprofilepic,
 } from "../../../APISearvice/CustomService";
 import { CommentEventCard } from "../../../CustomJSComponents/CustomCommentCard/CommentEventCard";
 import "../../../Assets/Figtree/Figtree-VariableFont_wght.ttf";
@@ -30,10 +31,13 @@ import { forEach } from "lodash";
 import { Modal } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import Avatar from "@mui/material/Avatar";
 interface Reply {
   Id: number;
   AuthorId: number;
   UserName: string;
+  UserEmail: string;
+  SPSPicturePlaceholderState:string;
   Comments: string;
   Created: string;
   UserProfile: string;
@@ -71,6 +75,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [ArrDetails, setArrDetails]: any[] = useState([]);
   const [CurrentUserProfile, setCurrentUserProfile]: any[] = useState("");
+  const [SPSPicturePlaceholderState, setSPSPicturePlaceholderState]= useState(null);
   const [copySuccess, setCopySuccess] = useState('');
   const [EventId, setId] = useState(0)
   const { useHide }: any = React.useContext(UserContext);
@@ -188,7 +193,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
         for (var i = 0; i < initialComments.length; i++) {
           await sp.web.lists
             .getByTitle("ARGEventsUserLikes")
-            .items.filter(`EventsCommentsId eq ${Number(initialComments[i].Id)}`).select("ID,AuthorId,UserName,Like,Created")()
+            .items.filter(`EventsCommentsId eq ${Number(initialComments[i].Id)}`).select("ID,AuthorId,UserName,Like,Created,Author/EMail,Author/SPSPicturePlaceholderState").expand("Author")()
             .then((result1: any) => {
               console.log(result1, "ARGEventsUserLikes");
               likeArray = []
@@ -196,6 +201,8 @@ const EventdetailscalenderContext = ({ props }: any) => {
                 arrLike = {
                   "ID": result1[j].Id,
                   "AuthorId": result1[j].AuthorId,
+                  "AuthorEmail": result1[j]?.Author?.EMail,
+                  "SPSPicturePlaceholderState":result1[j].Author.SPSPicturePlaceholderState,
                   "UserName": result1[j].UserName,
                   "Like": result1[j].Like,
                   "Created": result1[j].Created
@@ -207,6 +214,8 @@ const EventdetailscalenderContext = ({ props }: any) => {
                 Id: initialComments[i].Id,
                 UserName: initialComments[i].UserName,
                 AuthorId: initialComments[i].AuthorId,
+                AuthorEmail: initialComments[i]?.Author?.EMail,
+                SPSPicturePlaceholderState : initialComments[i].Author.SPSPicturePlaceholderState,
                 Comments: initialComments[i].Comments,
                 Created: initialComments[i].Created, // Formatting the created date
                 UserLikesJSON: result1.length > 0 ? likeArray : []
@@ -265,6 +274,12 @@ const EventdetailscalenderContext = ({ props }: any) => {
 
     setCurrentUser(await getCurrentUser(sp, siteUrl));
     setCurrentUserProfile(await getCurrentUserProfile(sp, siteUrl));
+    const profileemail = await getCurrentUserProfileEmail(sp);
+    setSPSPicturePlaceholderState( await getuserprofilepic(sp,profileemail));
+    // var user = await getCurrentUser(sp, siteUrl);
+    // var profile = await sp.profiles.getPropertiesFor(`i:0#.f|membership|${user.Email}`);
+
+    // setSPSPicturePlaceholderState( profile.UserProfileProperties?profile.UserProfileProperties[profile.UserProfileProperties.findIndex((obj: { Key: string; })=>obj.Key === "SPS-PicturePlaceholderState")].Value:"1"  )
 
 
   };
@@ -451,10 +466,14 @@ const EventdetailscalenderContext = ({ props }: any) => {
         })
         .then(async (ress: any) => {
           console.log(ress, "ressress");
+  
+         var SPSPicturePlaceholderState =await getuserprofilepic(sp,CurrentUser.Email);
           const newReplyJson = {
             Id: ress.data.Id,
             AuthorId: ress.data.AuthorId,
             UserName: ress.data.UserName, // Replace with actual username
+            UserEmail :CurrentUser.Email,
+            SPSPicturePlaceholderState : SPSPicturePlaceholderState,
             Comments: ress.data.Comments,
             Created: ress.data.Created,
             UserProfile: CurrentUserProfile,
@@ -510,15 +529,20 @@ const EventdetailscalenderContext = ({ props }: any) => {
   const sendanEmail = (item: any) => {
     // window.open("https://outlook.office.com/mail/inbox");
 
-    const subject = "Event Title-" + item.EventName;
-    const body = 'Here is the link to the event:' + `${siteUrl}/SitePages/EventDetailsCalendar.aspx?${item.Id}`;
+    // const subject = "Event Title-" + item.EventName;
+    // const body = 'Here is the link to the event:' + `${siteUrl}/SitePages/EventDetailsCalendar.aspx?${item.Id}`;
 
     //const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
     // Open the link to launch the default mail client (like Outlook)
     //window.location.href = mailtoLink;
 
-    const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    //const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    const subject = "Thought You’d Find This Interesting!";
+    const body = 'Hi,' +
+        'I came across something that might interest you: ' +
+        `<a href="${siteUrl}/SitePages/EventDetailsCalendar.aspx?${item.Id}"></a>`
+    const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${subject}&body=${body}`;
 
     window.open(office365MailLink, '_blank');
   };
@@ -701,7 +725,27 @@ const EventdetailscalenderContext = ({ props }: any) => {
                                       if (index < 3) {
                                         return (
                                           <>
-                                            {item1.EMail ? <span style={{ margin: index == 0 ? '0 0 0 0' : '0 0 0px -12px' }}>&nbsp; | &nbsp;&nbsp;&nbsp;<img src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item1.EMail}`} className="attendeesImg" /> </span> :
+                                            {item1.EMail ? <span style={{ margin: index == 0 ? '0 0 0 0' : '0 0 0px -12px' }}>&nbsp; | &nbsp;&nbsp;&nbsp;
+                                              {/* <img src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item1.EMail}`} className="attendeesImg" />  */}
+
+                                              {Number(item1.SPSPicturePlaceholderState) == 0 ?
+                                                          <img
+                                                            src={
+
+                                                              `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item1.EMail}`
+
+                                                            }
+                                                            className="attendeesImg"
+                                                            alt={item1.Title}
+                                                          />
+                                                          :
+                                                          item1.EMail !== null &&
+                                                          <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle floatr avatar-xl">
+                                                            {`${item1.EMail.split('.')[0].charAt(0)}${item1.EMail.split('.')[1].charAt(0)}`.toUpperCase()}
+                                                          </Avatar>
+                                                        }
+                                              
+                                              </span> :
                                               <span> <AvtarComponents Name={item1.Title} /> </span>
                                             }
                                           </>
@@ -731,7 +775,24 @@ const EventdetailscalenderContext = ({ props }: any) => {
                                               // index > 2 &&
                                               <ul>
                                                 <p>
-                                                  <img style={{ borderRadius: '50%', height: '50px', width: '50px' }} src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item1.EMail}`} />
+                                                  {/* <img style={{ borderRadius: '50%', height: '50px', width: '50px' }} src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item1.EMail}`} /> */}
+                                                  {item1.SPSPicturePlaceholderState == 0 ?
+                                                          <img
+                                                          style={{ borderRadius: '50%', height: '50px', width: '50px' }}
+                                                            src={
+
+                                                              `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item1.EMail}`
+
+                                                            }
+                                                            
+                                                            alt={item1.Title}
+                                                          />
+                                                          :
+                                                          item1.EMail !== null &&
+                                                          <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle avatar-xl">
+                                                            {`${item1.EMail.split('.')[0].charAt(0)}${item1.EMail.split('.')[1].charAt(0)}`.toUpperCase()}
+                                                          </Avatar>
+                                                        }
                                                   <span>{item1.Title}</span>
                                                 </p>
                                               </ul>
@@ -853,6 +914,10 @@ const EventdetailscalenderContext = ({ props }: any) => {
                         onLike={() => handleLikeToggle(index)} // Pass like handler
                         loadingReply={loadingReply}
                         EventArray={ArrDetails}
+                        siteUrl = {siteUrl}
+                        CurrentUserEmail = {CurrentUser.Email}
+                        CurrSPSPicturePlaceholderState ={SPSPicturePlaceholderState}
+
                       />
                     </div>
                   ))}

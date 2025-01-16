@@ -47,7 +47,7 @@ import moment from 'moment'
 import { fetchMediaGallerydata } from '../../../APISearvice/MediaDetailsServies'
 import { GroupPostComponent } from '../../../CustomJSComponents/GroupTeamPost/GroupPostComponent'
 import Swal from 'sweetalert2'
-import { colors } from '@mui/material'
+import { Avatar, colors } from '@mui/material'
 
 export interface IGroupAndTeamPosts {
   Id: any;
@@ -68,7 +68,7 @@ export interface IGroupAndTeamPosts {
   GroupTeamComments: { Id: any; Comments: any; };
   GroupTeamsImages: { Id: any; }
   GroupTeamLikes: { Id: any; }
-  Author: { Id: any; Title: any; }
+  Author: { Id: any; Title: any;EMail?:any }
 }
 
 
@@ -1867,11 +1867,20 @@ const SocialFeedContext = ({ props }: any) => {
 
                     } */}
                     <div className="displcenter">
-                      <img
-                        src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${ArrDetails[0]?.Author.EMail}`}
-                        className="rounded-circlecss6 img-thumbnail avatar-xl"
-                        alt="profile-image"
-                      /></div>
+                    {ArrDetails != null && ArrDetails.length > 0 && (ArrDetails[0]?.Author?.Title !== "" || ArrDetails[0]?.Author?.Title !== null) && ArrDetails[0].Author?.SPSPicturePlaceholderState == 0 ?
+                        <img
+                          src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${ArrDetails[0]?.Author.EMail}`}
+                          className="rounded-circlecss6 img-thumbnail avatar-xl"
+                          alt="profile-image"
+                        />
+                        :
+                        ArrDetails[0]?.Author?.Title !== "" &&
+                        <Avatar sx={{ bgcolor: 'primary.main' }} className="commentsImg img-thumbnail
+                                  avatar-xl">
+                            {`${ArrDetails[0]?.Author?.Title.split(' ')[0]?.charAt(0)}${ArrDetails[0]?.Author?.Title.split(' ')[1]?.charAt(0)}`.toUpperCase()}
+                        </Avatar>
+                      }
+                      </div>
 
                     <h1 className='text-muted font-14 mt-3'>
                       <p className='text-dark font-16 text-center mb-2'> {ArrDetails[0]?.Author.Title}</p>

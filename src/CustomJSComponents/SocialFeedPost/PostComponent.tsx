@@ -531,9 +531,14 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
     const sendanEmail = (item: any) => {
 
         // window.open("https://outlook.office365.com/mail/deeplink/compose?subject=Share%20Info&body=");
-        const subject = "Post Title -" + item.Contentpost;
-        const body = 'Here is the link to the Post:' + `${siteUrl}/SitePages/SocialFeed.aspx`;
-        const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        //const subject = "Post Title -" + item.Contentpost;
+        //const body = 'Here is the link to the Post:' + `${siteUrl}/SitePages/SocialFeed.aspx`;
+        //const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        const subject = "Thought You’d Find This Interesting!";
+        const body = 'Hi,' +
+            'I came across something that might interest you: ' +
+            `<a href="${siteUrl}/SitePages/SocialFeed.aspx"></a>`
+        const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${subject}&body=${body}`;
 
         window.open(office365MailLink, '_blank');
         //const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;

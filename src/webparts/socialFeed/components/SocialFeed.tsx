@@ -1579,7 +1579,7 @@ const SocialFeedContext = ({ props }: any) => {
                                   alt="Call"
 
                                 />
-                                {item.Picture != null && item.SPSPicturePlaceholderState == 0 ?
+                                { item.SPSPicturePlaceholderState == 0 ?
                                   <img
                                     src={
                                       `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item.EMail}`
@@ -1783,7 +1783,7 @@ const SocialFeedContext = ({ props }: any) => {
                                   alt="Call"
 
                                 />
-                                {item.Picture != null && item.SPSPicturePlaceholderState == 0 ?
+                                { item.SPSPicturePlaceholderState == 0 ?
                                   <img
                                     src={
                                       `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item.EMail}`
