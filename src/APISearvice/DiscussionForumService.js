@@ -19,7 +19,7 @@ export const getDiscussionForum = async (_sp) => {
     //   if (!currentUser) return arr; // Return empty array if user fetch failed
 
     await _sp.web.lists.getByTitle("ARGDiscussionForum")
-        .items.select("*,DiscussionForumCategory/Id,DiscussionForumCategory/CategoryName,Author/ID,Author/Title,Author/EMail,InviteMemebers/Id,InviteMemebers/Title,InviteMemebers/EMail,GroupType")
+        .items.select("*,DiscussionForumCategory/Id,DiscussionForumCategory/CategoryName,Author/ID,Author/Title,Author/EMail,InviteMemebers/Id,InviteMemebers/Title,InviteMemebers/EMail,GroupType,Author/SPSPicturePlaceholderState")
         .expand("DiscussionForumCategory,Author,InviteMemebers").orderBy("Created", false).getAll()
         .then((res) => {
             console.log("--discussion", res);
@@ -246,7 +246,7 @@ export const getDiscussionForumByID = async (_sp, id) => {
 export const getDiscussionForumDetailsById = async (_sp, idNum) => {
     let arr = []
     let arr1 = []
-    await _sp.web.lists.getByTitle("ARGDiscussionForum").items.getById(idNum).select("*,DiscussionForumCategory/ID,DiscussionForumCategory/CategoryName,Entity/ID,Entity/Entity,InviteMemebers/Id,InviteMemebers/Title,InviteMemebers/EMail,GroupType,Author/ID,Author/Title,Author/EMail,ARGDiscussionStatus").expand("Entity,DiscussionForumCategory,InviteMemebers,Author")()
+    await _sp.web.lists.getByTitle("ARGDiscussionForum").items.getById(idNum).select("*,DiscussionForumCategory/ID,DiscussionForumCategory/CategoryName,Entity/ID,Entity/Entity,InviteMemebers/Id,InviteMemebers/Title,InviteMemebers/EMail,GroupType,Author/ID,Author/Title,Author/EMail,Author/SPSPicturePlaceholderState,ARGDiscussionStatus").expand("Entity,DiscussionForumCategory,InviteMemebers,Author")()
         .then((res) => {
             // await _sp.web.lists.getByTitle("ARGDiscussionForum").items.getById(idNum)
             //     .select("*,DiscussionForumCategory/ID,DiscussionForumCategory/CategoryName,Entity/ID,Entity/Entity,InviteMemebers/Id,InviteMemebers/Title,InviteMemebers/EMail,GroupType ,Author/ID,Author/Title,Author/EMail ").expand("Entity,DiscussionForumCategory,InviteMemebers , Author")()

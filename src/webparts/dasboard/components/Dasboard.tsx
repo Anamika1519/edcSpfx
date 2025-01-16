@@ -659,7 +659,7 @@ const HelloWorldContext = ({ props }: any) => {
                                         :
                                         user.Pinned.EMail !== null &&
                                         <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle avatar-xl">
-                                          {`${user.Pinned.EMail.split('.')[0].charAt(0)}${user.Pinned.EMail.split('.')[1].charAt(0)}`.toUpperCase()}
+                                          {`${user.Pinned.EMail.split('.')[0]?.charAt(0)}${user.Pinned.EMail.split('.')[1]?.charAt(0)}`.toUpperCase()}
                                         </Avatar>
                                       }
                                     </a>
@@ -1127,7 +1127,7 @@ const HelloWorldContext = ({ props }: any) => {
                                       <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circlecss img-thumbnail
                                   avatar-xl">
 
-                                        {`${user.AuthorEMail.split('.')[0].charAt(0)}${user.AuthorEMail.split('.')[1].charAt(0)}`.toUpperCase()}
+                                        {`${user.AuthorEMail.split('.')[0]?.charAt(0)}${user.AuthorEMail.split('.')[1]?.charAt(0)}`.toUpperCase()}
                                       </Avatar>
                                     }
                                   </div>
@@ -1359,7 +1359,7 @@ const HelloWorldContext = ({ props }: any) => {
                                                     id?.EMail !== null &&
                                                     <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circlecss img-thumbnail
                                   avatar-xl">
-                                                      {`${id?.EMail.split('.')[0].charAt(0)}${id?.EMail.split('.')[1].charAt(0)}`.toUpperCase()}
+                                                      {`${id?.EMail.split('.')[0]?.charAt(0)}${id?.EMail.split('.')[1]?.charAt(0)}`.toUpperCase()}
                                                     </Avatar>
                                                   }
 
@@ -1438,7 +1438,7 @@ const HelloWorldContext = ({ props }: any) => {
                                                     id?.EMail !== null &&
                                                     <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circlecss img-thumbnail
                               avatar-xl">
-                                                      {`${id?.EMail.split('.')[0].charAt(0)}${id?.EMail.split('.')[1].charAt(0)}`.toUpperCase()}
+                                                      {`${id?.EMail.split('.')[0]?.charAt(0)}${id?.EMail.split('.')[1]?.charAt(0)}`.toUpperCase()}
                                                     </Avatar>
                                                   }
                                                 </div>

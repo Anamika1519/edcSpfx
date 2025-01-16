@@ -93,7 +93,18 @@ export const CommentNewsCard: React.FC<{
     const handleReportClick = async (e:any,commentRepliesObject: any,flag:string) => {
        console.log("Report Clicked");
        e.preventDefault()
-       // Create the popup container
+       try {
+
+         const currentUser = await sp.web.currentUser();
+              const reportListName=flag === "replies" ? "ARGAnnouncementAndNewsUserComments": "ARGAnnouncementandNewsComments";
+              const eventReportData=await sp.web.lists.getByTitle("ReportedIssueList").items.select("*").filter(`ProcessName eq 'News' and ReportedById eq ${currentUser.Id} and ListName eq '${reportListName}' and ListItemId eq ${commentRepliesObject.Id}`)();
+              console.log("eventReportData",eventReportData);
+        
+            if (eventReportData.length >0 ) {
+              Swal.fire("Already Reported", "You have already reported this content.", "info");
+              return;
+            }
+           // Create the popup container
        const popupDiv = document.createElement("div");
        popupDiv.id = "report-issue";
        popupDiv.style.position = "fixed";
@@ -185,7 +196,11 @@ export const CommentNewsCard: React.FC<{
              ListItemId: flag === "replies" ? commentRepliesObject.Id : commentObject.Id,
              ReportedContentAddedById: flag === 'replies' ? commentRepliesObject.AuthorId: commentObject.AuthorId,
              Title: newsArray[0].Title,
-             Action:"Active"
+             Action:"Active",
+             MainListColumnName:flag === "replies" ? "UserCommentsJSON" :"",
+              MainListName:flag === "replies" ? "ARGAnnouncementandNewsComments" :"",
+              MainListItemId:flag === "replies" ? commentObject.Id:0,
+              MainListStatus:flag === "replies" ? "Available":"NA",
            }
            // const insertData = await sp.web.lists.getByTitle("ReportedIssueList").items.add({
            //   ReportReason: issueValue,
@@ -215,6 +230,10 @@ export const CommentNewsCard: React.FC<{
      
        // Append the popup to the body
        document.body.appendChild(popupDiv);
+       } catch (error) {
+        console.log("Error in report popup",error);
+       }
+      
      };
   return (
     <div className="card team-fedd p-4" style={{ border: '1px solid #54ade0', borderRadius: '20px', boxShadow: '0 3px 20px #1d26260d' }}>

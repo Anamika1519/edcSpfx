@@ -10,6 +10,7 @@ import "./NotificationDetails.scss";
 import { getSP } from "../loc/pnpjsConfig";
 import { getlastSevenDaysARGNotificationHistory, getOlderARGNotificationHistory, getTodayARGNotificationHistory } from "../../../APISearvice/CustomService";
 import moment from "moment";
+import Avatar from "@mui/material/Avatar";
 type NotificationType = "new" | "previous" | "old";
 const NotificationDetailsContext = ({ props }: any) => {
   const sp: SPFI = getSP();
@@ -179,10 +180,27 @@ const NotificationDetailsContext = ({ props }: any) => {
                                   <div className="inbox-item" key={notification.Id} style={{ justifyContent: 'space-between' }}>
                                     <div style={{ display: 'flex' }}>
                                       <div className="inbox-item-img">
-                                      <img
+                                      {/* <img
                                         src={
                                         `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${notification.EMail}`  
-                                        } />
+                                        } /> */}
+                                         { notification.SPSPicturePlaceholderState == 0 ?
+                                        <img
+                                          src={
+
+                                            `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${notification?.EMail}`
+
+                                          }
+                                          className="rounded-circle"
+                                          width="50"
+                                          alt={notification.Author.Title}
+                                        />
+                                        :
+                                        notification?.EMail !== null &&
+                                        <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle avatar-xl">
+                                          {`${notification?.EMail.split('.')[0]?.charAt(0)}${notification?.EMail.split('.')[1]?.charAt(0)}`.toUpperCase()}
+                                        </Avatar>
+                                      }
                                       </div>
                                       <div className="inbox-item-details">
                                         <p className="inbox-item-author mb-1"><span className="me-4"> {notification?.ActionUser?.Title} </span>  <span className="text-info font-12">
@@ -224,10 +242,27 @@ const NotificationDetailsContext = ({ props }: any) => {
                                   <div className="inbox-item" key={notification.Id} style={{ justifyContent: 'space-between' }}>
                                     <div style={{ display: 'flex' }}>
                                       <div className="inbox-item-img">
-                                      <img
+                                      {/* <img
                                         src={
                                         `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${notification.EMail}`  
-                                        } />
+                                        } /> */}
+                                         { notification.SPSPicturePlaceholderState == 0 ?
+                                        <img
+                                          src={
+
+                                            `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${notification?.EMail}`
+
+                                          }
+                                          className="rounded-circle"
+                                          width="50"
+                                          alt={notification.Author.Title}
+                                        />
+                                        :
+                                        notification?.EMail !== null &&
+                                        <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle avatar-xl">
+                                          {`${notification?.EMail.split('.')[0]?.charAt(0)}${notification?.EMail.split('.')[1]?.charAt(0)}`.toUpperCase()}
+                                        </Avatar>
+                                      }
                                       </div>
                                       <div className="inbox-item-details">
                                         <p className="inbox-item-author mb-1"><span className="me-4">{notification?.ActionUser?.Title}</span>  <span style={{fontWeight:'400'}} className="text-info font-12">
@@ -268,10 +303,27 @@ const NotificationDetailsContext = ({ props }: any) => {
                                   <div style={{ display: 'flex' }}>
                                     <div className="inbox-item-img">
                                     
-                                      <img
+                                      {/* <img
                                         src={
                                         `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${notification.EMail}`  
-                                        } />
+                                        } /> */}
+                                         { notification.SPSPicturePlaceholderState == 0 ?
+                                        <img
+                                          src={
+
+                                            `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${notification?.EMail}`
+
+                                          }
+                                          className="rounded-circle"
+                                          width="50"
+                                          alt={notification.Author.Title}
+                                        />
+                                        :
+                                        notification?.EMail !== null &&
+                                        <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle avatar-xl">
+                                          {`${notification?.EMail.split('.')[0]?.charAt(0)}${notification?.EMail.split('.')[1]?.charAt(0)}`.toUpperCase()}
+                                        </Avatar>
+                                      }
                                     </div>
                                     <div className="inbox-item-details">
                                       <p className="inbox-item-author mb-1"> <span className="me-4"> {notification?.ActionUser?.Title} </span>  <span  className="text-info font-12">

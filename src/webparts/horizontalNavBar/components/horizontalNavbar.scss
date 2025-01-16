@@ -43,6 +43,9 @@
   top: 0px !important;
   width: 100% !important;
 }
+.alifnsearch1{
+  border-bottom: 1px solid #ddd;
+}
 .dropdown #myDropdown{  padding:0px 0px 0px 0px !important;  min-width: 130px !important;}
 .dropdown #myDropdown .dropdown-content a {
   color: #707070 !important;
@@ -194,6 +197,7 @@ span.badge.bg-danger.noti-icon-badge {
   height: var(--ct-topbar-height);
   cursor: pointer;
 }
+.newuserin{font-size: 14px !important; line-height: 40px !important;}
 @media(max-width:640px){
   .newalinc{align-items: baseline;}
 }
@@ -202,3 +206,5 @@ span.badge.bg-danger.noti-icon-badge {
 }
 .newdrop a{background: #fff;font-size: 14px; text-align: center; padding: 9px 16px !important; color: #707070 !important;}
 .newdrop a:hover{ color: #1fb0e5 !important;}
+.alignrightbird{width: 30px;
+  margin-top: -2px;}

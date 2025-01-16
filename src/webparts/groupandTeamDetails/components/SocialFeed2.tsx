@@ -143,7 +143,7 @@ const SocialFeedContext = ({ props }: any) => {
 
 
       // alert(GroupName)
-      const getargmember = await sp.web.lists.getByTitle('ARGGroupandTeam').items.filter(`GroupName eq '${GroupName}'`).select("*,InviteMemebers/ID,InviteMemebers/Title , Author/ID,Author/Title").expand("InviteMemebers ,Author")();
+      const getargmember = await sp.web.lists.getByTitle('ARGGroupandTeam').items.filter(`GroupName eq '${GroupName}'`).select("*,InviteMemebers/ID,InviteMemebers/Title ,Author/ID,Author/Title").expand("InviteMemebers ,Author")();
       console.log(getargmember, "getargmember")
 
       setArgcurrentgroupuser(getargmember)
@@ -231,7 +231,7 @@ const SocialFeedContext = ({ props }: any) => {
     debugger;
     const getgroup1 = await sp.web.lists
       .getByTitle("ARGGroupandTeam")
-      .items.getById(idNum2).select("*,GroupFollowers/Id,GroupFollowers/Title,InviteMemebers/Id,InviteMemebers/Title,GroupType , Author/ID,Author/Title").expand("InviteMemebers , GroupFollowers , Author")()
+      .items.getById(idNum2).select("*,GroupFollowers/Id,GroupFollowers/Title,InviteMemebers/Id,InviteMemebers/Title,GroupType,Author/ID,Author/Title").expand("InviteMemebers , GroupFollowers , Author")()
       .then((res) => {
         // arr=res;
         GroupName = res.GroupName
@@ -1112,6 +1112,7 @@ const SocialFeedContext = ({ props }: any) => {
                                 Created: post.Created,
                                 Contentpost: post.Contentpost,
                                 Author: post.Author.EMail,
+                                AuthorId:post.Author.Id,
                                 SocialFeedImagesJson: post.GroupTeamImagesJson,
                                 userAvatar: post.userAvatar,
                                 likecount: post.likecount,
@@ -1120,6 +1121,7 @@ const SocialFeedContext = ({ props }: any) => {
                                 postId: post.Id,
                                 SocialFeedUserLikesJson: post.SocialFeedUserLikesJson,
                               }}
+                            groupsArray={ArrDetails}
                             />
                           ))
                         ) : (
@@ -1145,6 +1147,7 @@ const SocialFeedContext = ({ props }: any) => {
                               post={{
                                 userName: post.userName,
                                 Author:post.Author.EMail,
+                                AuthorId:post.Author.Id,
                                 Created: post.Created,
                                 Contentpost: post.Contentpost,
                                 SocialFeedImagesJson: post.GroupTeamImagesJson,
@@ -1155,6 +1158,7 @@ const SocialFeedContext = ({ props }: any) => {
                                 postId: post.Id,
                                 SocialFeedUserLikesJson: post.SocialFeedUserLikesJson
                               }}
+                              groupsArray={ArrDetails}
                             />
                           )
                         }

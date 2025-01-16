@@ -108,7 +108,17 @@ export const CommentCard: React.FC<{
    const handleReportClick = async (e:any,commentRepliesObject: any,flag:string) => {
       console.log("Report Clicked");
       e.preventDefault()
-      // Create the popup container
+      try {
+        const currentUser = await sp.web.currentUser();
+        const reportListName=flag === "replies" ? "ARGDiscussionUserComments": "ARGDiscussionComments";
+        const eventReportData=await sp.web.lists.getByTitle("ReportedIssueList").items.select("*").filter(`ProcessName eq 'Discussion' and ReportedById eq ${currentUser.Id} and ListName eq '${reportListName}' and ListItemId eq ${commentRepliesObject.Id}`)();
+        console.log("eventReportData",eventReportData);
+              
+        if (eventReportData.length >0 ) {
+            Swal.fire("Already Reported", "You have already reported this content.", "info");
+            return;
+        }          
+        // Create the popup container
       const popupDiv = document.createElement("div");
       popupDiv.id = "report-issue";
       popupDiv.style.position = "fixed";
@@ -184,7 +194,7 @@ export const CommentCard: React.FC<{
         }
     
         try {
-          const currentUser = await sp.web.currentUser();
+          // const currentUser = await sp.web.currentUser();
           const commentObject = Comments[commentId];
           console.log("flag",flag);
           console.log("commentRepliesObject",commentRepliesObject);
@@ -200,7 +210,11 @@ export const CommentCard: React.FC<{
             ListItemId: flag === "replies" ? commentRepliesObject.Id : commentObject.Id,
             ReportedContentAddedById: flag === 'replies' ? commentRepliesObject.AuthorId: commentObject.AuthorId,
             Title: discussionArray[0].Topic,
-            Action:"Active"
+            Action:"Active",
+            MainListColumnName:flag === "replies" ? "UserCommentsJSON" :"",
+            MainListName:flag === "replies" ? "ARGDiscussionComments" :"",
+            MainListItemId:flag === "replies" ? commentObject.Id:0,
+            MainListStatus:flag === "replies" ? "Available":"NA",
           }
           // const insertData = await sp.web.lists.getByTitle("ReportedIssueList").items.add({
           //   ReportReason: issueValue,
@@ -230,6 +244,10 @@ export const CommentCard: React.FC<{
     
       // Append the popup to the body
       document.body.appendChild(popupDiv);
+      } catch (error) {
+        console.log("Error in report popup",error);
+      }
+      
     };
 
   return (

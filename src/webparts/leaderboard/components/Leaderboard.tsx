@@ -28,6 +28,7 @@ import { getLeaderTop } from "../../../APISearvice/CustomService";
 import { MSGraphClientV3 } from '@microsoft/sp-http-msgraph';
 import { WebPartContext } from "@microsoft/sp-webpart-base";
 import { toLower } from "lodash";
+import Avatar from "@mui/material/Avatar";
 const LeaderboardContext = ({ props }: any) => {
   const sp: SPFI = getSP();
   console.log(sp, "sp");
@@ -49,15 +50,15 @@ const LeaderboardContext = ({ props }: any) => {
   //const [leaderboard, setLeaderboard] = useState([]);
   type UserEntityData = {
     companyName: string;
-    mail:string;
+    mail: string;
   };
-  
+
   const [filters, setFilters] = React.useState({
     AuthorTitle: "",
     AuthorEMail: "",
     AuthorId: "",
     AuthorDepartment: "",
-     companyName:""
+    companyName: ""
   });
 
   const [isFollowing, setIsFollowing] = useState(false);
@@ -116,16 +117,16 @@ const LeaderboardContext = ({ props }: any) => {
     try {
       // Fetch the leaderboard
       const leaderboard = await getLeaderTop(sp);
-     // setLeaderboard(leaderboard);
-    // setUsersArr(userList);
+      // setLeaderboard(leaderboard);
+      // setUsersArr(userList);
       // Fetch all user entities
       const allUserEntities = await GetEntity(sp);
-  
+
       if (!allUserEntities) {
         console.error("Failed to fetch user entities");
         return;
       }
-  
+
       // Map user list with fetched user entities
       const userList = leaderboard.map((usr) => {
         const matchedUser = allUserEntities.find((user: UserEntityData) =>
@@ -133,7 +134,7 @@ const LeaderboardContext = ({ props }: any) => {
           usr.AuthorEMail && // Adjust this property to match actual structure
           user.mail.toLowerCase() === usr.AuthorEMail.toLowerCase()
         );
-  
+
         return {
           ...usr,
           companyName: matchedUser ? matchedUser.companyName : "NA",
@@ -145,8 +146,8 @@ const LeaderboardContext = ({ props }: any) => {
       console.error("Error fetching user information:", error);
     }
   };
-  
-  
+
+
 
   const GetEntity = async (_sp: SPFI): Promise<UserEntityData[] | null> => {
     try {
@@ -157,24 +158,24 @@ const LeaderboardContext = ({ props }: any) => {
         .version("v1.0")
         .select("displayName,mail,jobTitle,mobilePhone,companyName,userPrincipalName")
         .get();
-  
+
       console.log("Fetched User Entities: ", userEntities.value);
-  
+
       // Ensure you return the array of users (userEntities.value)
       return userEntities.value.map((user: any) => ({
-        
+
         mail: user.mail || null,
-        
+
         companyName: user.companyName || null,
-    
+
       }));
     } catch (error) {
       console.error("Error fetching user entities:", error);
       return null;
     }
   };
-  
-  
+
+
 
 
   const [activeTab, setActiveTab] = useState<
@@ -232,18 +233,18 @@ const LeaderboardContext = ({ props }: any) => {
           item?.AuthorTitle.toLowerCase().includes(filters.AuthorTitle.toLowerCase())) &&
         (filters.AuthorEMail === "" ||
           item?.AuthorEMail.toLowerCase().includes(filters.AuthorEMail.toLowerCase())) &&
-          (filters.AuthorDepartment === '' || 
-            item?.AuthorDepartment && item?.AuthorDepartment.toLowerCase().includes(filters.AuthorDepartment.toLowerCase())) &&
-          // (filters.Department === '' || item?.Department.toLowerCase().includes(filters.Department.toLowerCase()))
+        (filters.AuthorDepartment === '' ||
+          item?.AuthorDepartment && item?.AuthorDepartment.toLowerCase().includes(filters.AuthorDepartment.toLowerCase())) &&
+        // (filters.Department === '' || item?.Department.toLowerCase().includes(filters.Department.toLowerCase()))
 
-         /*  (filters.Name === "" ||
+        /*  (filters.Name === "" ||
 
-            item?.Title.toLowerCase().includes(filters.Name.toLowerCase())) &&
+           item?.Title.toLowerCase().includes(filters.Name.toLowerCase())) &&
 
-        (filters.companyName === '' || ((item?.companyName) ? item?.companyName.toLowerCase().includes(filters.companyName.toLowerCase()) : false)) */
-        (filters.companyName === '' || 
-          ((item?.companyName) && item?.companyName.toLowerCase().includes(filters.companyName.toLowerCase()))) 
-  
+       (filters.companyName === '' || ((item?.companyName) ? item?.companyName.toLowerCase().includes(filters.companyName.toLowerCase()) : false)) */
+        (filters.companyName === '' ||
+          ((item?.companyName) && item?.companyName.toLowerCase().includes(filters.companyName.toLowerCase())))
+
       );
     });
 
@@ -292,11 +293,11 @@ const LeaderboardContext = ({ props }: any) => {
 
   const handleNewsExportClick = () => {
     const exportData = leaderboard.map((item, index) => ({
-      Name: item.AuthorTitle,     
+      Name: item.AuthorTitle,
       Email: item.AuthorEMail,
       TotalPoints: item.TotalPoints,
       Ratting: item.Ratting,
-      CompanyName:  item?.companyName != null ? item?.companyName : "NA",
+      CompanyName: item?.companyName != null ? item?.companyName : "NA",
       Department: item?.AuthorDepartment != null ? item?.AuthorDepartment : "NA",
     }));
 
@@ -314,22 +315,22 @@ const LeaderboardContext = ({ props }: any) => {
     setIsOpen(!isOpen);
   };
   const handleSearch: React.ChangeEventHandler = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if(activeTab == "listView")
-        setActiveTab("cardView");
+    if (activeTab == "listView")
+      setActiveTab("cardView");
     let txtSearch = (document.getElementById('searchInput') as HTMLInputElement).value;
-    if(txtSearch.length >1){
-   
-    const filteredusers = leaderboard.filter((user: any) =>      
-      user.AuthorTitle.toLowerCase().includes(txtSearch.toLowerCase())
-    );
-   // let arr =[];
-   // arr=filteredusers;
-        setUsersArr(filteredusers);
+    if (txtSearch.length > 1) {
+
+      const filteredusers = leaderboard.filter((user: any) =>
+        user.AuthorTitle.toLowerCase().includes(txtSearch.toLowerCase())
+      );
+      // let arr =[];
+      // arr=filteredusers;
+      setUsersArr(filteredusers);
     }
 
     else {
       fetchUserInformationList();
-    }   
+    }
   }
   const fetchCurrentUserEntity = async () => {
     try {
@@ -481,7 +482,7 @@ const LeaderboardContext = ({ props }: any) => {
                             <div className="pt-2 pb-2">
                               <a style={{ position: "relative" }}>
 
-                                <img
+                                {/* <img
                                   src={
 
                                     `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item.AuthorEMail}`
@@ -491,7 +492,26 @@ const LeaderboardContext = ({ props }: any) => {
                                   avatar-xl"
                                   alt="profile-image"
                                   style={{ cursor: "pointer" }}
-                                />
+                                /> */}
+
+                                {item.SPSPicturePlaceholderState == 0 ?
+                                  <img
+                                    src={
+
+                                      `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item.AuthorEMail}`
+
+                                    }
+                                    className="rounded-circlecss img-thumbnail
+                                  avatar-xl"
+                                    alt="profile-image"
+                                    style={{ cursor: "pointer" }}
+                                  />
+                                  :
+                                  item.AuthorEMail !== null &&
+                                  <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle avatar-xl">
+                                    {`${item.AuthorEMail.split('.')[0]?.charAt(0)}${item.AuthorEMail.split('.')[1]?.charAt(0)}`.toUpperCase()}
+                                  </Avatar>
+                                }
                               </a>
                               <h4 className="mt-2 mb-1">
                                 <a
@@ -593,8 +613,8 @@ const LeaderboardContext = ({ props }: any) => {
                             >
                               <thead>
                                 <tr>
-                                  <th style={{ verticalAlign: 'top', minWidth:'50px',maxWidth:'50px' }}>S.No</th> {/* Header for Sr. No */}
-                                  <th style={{ minWidth:'110px',maxWidth:'110px'}}>
+                                  <th style={{ verticalAlign: 'top', minWidth: '50px', maxWidth: '50px' }}>S.No</th> {/* Header for Sr. No */}
+                                  <th style={{ minWidth: '110px', maxWidth: '110px' }}>
                                     <div className="d-flex flex-column bd-highlight ">
                                       <div className="d-flex pb-2" style={{ justifyContent: "space-evenly" }}>
                                         <span>Name</span>
@@ -618,7 +638,7 @@ const LeaderboardContext = ({ props }: any) => {
                                       </div>
                                     </div>
                                   </th>
-                                  <th style={{ verticalAlign: 'top', minWidth:'50px',maxWidth:'50px' }}>Points</th>
+                                  <th style={{ verticalAlign: 'top', minWidth: '50px', maxWidth: '50px' }}>Points</th>
 
                                   {/* <th>
                                     <div className="d-flex flex-column bd-highlight ">
@@ -639,7 +659,7 @@ const LeaderboardContext = ({ props }: any) => {
                                       </div>
                                     </div>
                                   </th> */}
-                                  <th style={{ minWidth:'110px',maxWidth:'110px'}}>
+                                  <th style={{ minWidth: '110px', maxWidth: '110px' }}>
                                     <div className="d-flex flex-column bd-highlight ">
                                       <div className="d-flex pb-2" style={{ justifyContent: "space-evenly" }}>
                                         <span>Email</span>
@@ -663,7 +683,7 @@ const LeaderboardContext = ({ props }: any) => {
                                       </div>
                                     </div>
                                   </th>
-                                  <th style={{ minWidth:'110px',maxWidth:'110px'}}>
+                                  <th style={{ minWidth: '110px', maxWidth: '110px' }}>
                                     <div className="d-flex flex-column bd-highlight ">
                                       <div className="d-flex pb-2" style={{ justifyContent: "space-evenly" }}>
                                         <span>Department</span>
@@ -687,7 +707,7 @@ const LeaderboardContext = ({ props }: any) => {
                                       </div>
                                     </div>
                                   </th>
-                                  <th style={{ minWidth:'110px',maxWidth:'110px'}}>
+                                  <th style={{ minWidth: '110px', maxWidth: '110px' }}>
                                     <div className="d-flex flex-column bd-highlight ">
                                       <div className="d-flex pb-2" style={{ justifyContent: "space-evenly" }}>
                                         <span>Entity</span>
@@ -734,23 +754,23 @@ const LeaderboardContext = ({ props }: any) => {
                                           maxWidth: "50px",
                                         }}
                                       >
-                                     <div style={{marginLeft:'15px'}} className="indexdesign">{index + 1} </div>
-                                        
-                                         {/* Serial number starts from 1 */}
+                                        <div style={{ marginLeft: '15px' }} className="indexdesign">{index + 1} </div>
+
+                                        {/* Serial number starts from 1 */}
                                       </td>
-                                      <td style={{ minWidth:'110px',maxWidth:'110px'}}>{item.AuthorTitle}</td>
+                                      <td style={{ minWidth: '110px', maxWidth: '110px' }}>{item.AuthorTitle}</td>
                                       {/* Points column with formatting */}
-                                      <td style={{ verticalAlign: 'top',minWidth:'50px',maxWidth:'50px', textAlign:'center'}}>
+                                      <td style={{ verticalAlign: 'top', minWidth: '50px', maxWidth: '50px', textAlign: 'center' }}>
                                         {item.TotalPoints < 1000 ?
                                           item.TotalPoints :
                                           (item.TotalPoints / 1000).toFixed(1).replace(/\.0$/, '') + 'K'}
                                       </td>
                                       {/* <td>{item.Id}</td> */}
-                                      <td style={{ minWidth:'110px',maxWidth:'110px'}}>{item.AuthorEMail}</td>
-                                      <td style={{ minWidth:'110px',maxWidth:'110px'}}>
+                                      <td style={{ minWidth: '110px', maxWidth: '110px' }}>{item.AuthorEMail}</td>
+                                      <td style={{ minWidth: '110px', maxWidth: '110px' }}>
                                         {item?.AuthorDepartment != null ? item?.AuthorDepartment : "NA"}
                                       </td>
-                                      <td style={{ minWidth:'110px',maxWidth:'110px',textAlign:'left'}}>
+                                      <td style={{ minWidth: '110px', maxWidth: '110px', textAlign: 'left' }}>
                                         {item?.companyName != null
 
                                           ? item?.companyName

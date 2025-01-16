@@ -8,12 +8,13 @@ import { SPFI } from '@pnp/sp';
 import { getSP } from '../loc/pnpjsConfig';
 import { useRef, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
-import { addActivityLeaderboard, getARGNotificationHistory, getCurrentUserName, getCurrentUserProfileEmail, UpdateNotification, updateNotifications } from '../../../APISearvice/CustomService';
+import { addActivityLeaderboard, getARGNotificationHistory, getCurrentUserName, getCurrentUserProfileEmail, getuserprofilepic, getUserProfilePicture, UpdateNotification, updateNotifications } from '../../../APISearvice/CustomService';
 import "../../../CustomCss/mainCustom.scss"
 import moment from 'moment';
 import NotificationList from '../../../CustomJSComponents/CustomForm/NotificationList';
 import { result } from 'lodash';
 import { ListTitleTiSearchCategoryMapping } from './IHorizontalNavBarProps';
+import Avatar from '@mui/material/Avatar';
 
 
 interface ListFieldsMapping {
@@ -76,8 +77,11 @@ const HorizontalNavbar = ({ _context, siteUrl }: any) => {
   const menuRef = useRef(null);
   const notref = useRef(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [CurrentuserPicturePlaceholderState, setCurrentuserPicturePlaceholderState] = useState("");
+  const [CurrenuserProfilepic, SetCurrenuserProfilepic] = useState(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   let showdropdown: boolean = false;
-  
+
   function groupByFn(array: any, keyGetter: any) {
     return array.reduce((result: any, currentItem: any) => {
       const key = keyGetter(currentItem);
@@ -189,9 +193,11 @@ const HorizontalNavbar = ({ _context, siteUrl }: any) => {
 
 
   const ApiCall = async () => {
-    let curretuseris = await _context.web.currentUser().then((res:any) => {
+    let curretuseris = await _context.web.currentUser().then(async (res: any) => {
       setCurrentUser(res.Title)
-      setCurrentUserEmail(res.Email)
+      setCurrentUserEmail(res.Email);
+      SetCurrenuserProfilepic(await getUserProfilePicture(res.Id, _context));
+      setCurrentuserPicturePlaceholderState(await getuserprofilepic(_context, res.Email))
       console.log(res, "currentuser");
     })
     //setCurrentUser(await getCurrentUserName(_context))
@@ -291,7 +297,7 @@ const HorizontalNavbar = ({ _context, siteUrl }: any) => {
     }, 2000);
 
   };
-  
+
   const OnClearall = async (replyText: any) => {
     console.log("replaytext", replyText);
     let res: any[] = [];
@@ -391,7 +397,7 @@ const HorizontalNavbar = ({ _context, siteUrl }: any) => {
                   {loading && (
                     <div className="loadernewadd">
                       <div>
-                        <img style={{ width: '60px' }}
+                        <img
                           src={require("../../../CustomAsset/birdloader.gif")}
                           className="alignrightl"
                           alt="Loading..."
@@ -400,9 +406,9 @@ const HorizontalNavbar = ({ _context, siteUrl }: any) => {
                       <div className="loadnewarg">
                         <span>Loading </span>{" "}
                         <span>
-                          <img style={{ width: '35px' }}
+                          <img style={{ width: '30px' }}
                             src={require("../../../CustomAsset/argloader.gif")}
-                            className="alignrightl"
+                            className="alignrightbird"
                             alt="Loading..."
                           />
                         </span>
@@ -412,7 +418,7 @@ const HorizontalNavbar = ({ _context, siteUrl }: any) => {
                 </div>
                 {!loading && (
                   <div className={'scrollbar'} id={searchResults.length > 0 ? 'style-6' : ''}>
-                    {searchResults.length > 0 && <span className='alifnsearch' style={{ padding: '0.85rem' }}>Found {searchResults.length} results</span>}
+                    {searchResults.length > 0 && <span className='alifnsearch' style={{ padding: '0.5rem', position: 'relative', float: 'right', fontWeight: '500', width: '100%', textAlign: 'right', color: '#6b6b6b', fontSize: '14px' }}>Found {searchResults.length} results</span>}
                     {console.log("grped searchResults dropfown", groupedSearchResults)}
                     {searchResults.length > 0 ? (
 
@@ -420,12 +426,12 @@ const HorizontalNavbar = ({ _context, siteUrl }: any) => {
                       Object.keys(groupedSearchResults).map((grpreskey: any, grpind: number) => (
 
                         <div>
-                          <div className='alifnsearch1' key={grpind}>{ListTitleTiSearchCategoryMapping[grpreskey]}({groupedSearchResults[grpreskey].length})</div>
+                          <div className='alifnsearch1' key={grpind}><span style={{ width: '28px', height: '28px', borderRadius: '1000px', lineHeight: '21px' }} className='me-1 badge bg-info'>{groupedSearchResults[grpreskey].length}</span> <span>{ListTitleTiSearchCategoryMapping[grpreskey]} </span>  </div>
                           {
                             groupedSearchResults[grpreskey].map((result: any, index: any) => (
                               <div key={index} className="search-result-item">
-                                <a onClick={() => handleSearchClick(result)} style={{ padding: '0.85rem' }}>
-                                  <h4 className='eclipcsss text-dark' style={{ fontSize: '16px' }}>{result.Title || result.ProjectName || result.EventName || result.Contentpost}</h4>
+                                <a onClick={() => handleSearchClick(result)} style={{ padding: '0.5rem 0.85rem' }}>
+                                  <h4 className='eclipcsss text-dark' style={{ fontSize: '16px', fontWeight: '600', marginBottom: '0px' }}>{result.Title || result.ProjectName || result.EventName || result.Contentpost}</h4>
                                   {/* {result.Description && <p dangerouslySetInnerHTML={{ __html: result.Description }}></p>} */}
                                   {result.Overview && <p className='eclipcsss text-muted' style={{ fontSize: '14px' }}>{result.Overview}</p>}
                                   {result.EventAgenda && <p className='eclipcsss text-muted' style={{ fontSize: '14px' }}>{result.EventAgenda}</p>}
@@ -440,7 +446,7 @@ const HorizontalNavbar = ({ _context, siteUrl }: any) => {
                       ))
 
                     ) : (
-                      "No records found"
+                      <div className='text-dark p-3 text-center font-16 fw-bold'> No records found </div>
                     )}
                     <div className="force-overflow"></div>
                   </div>
@@ -480,17 +486,42 @@ const HorizontalNavbar = ({ _context, siteUrl }: any) => {
           <div className="dropdown">
             <div className='d-flex newalinc' onClick={toggleDropdown} style={{ gap: '2px', cursor: 'pointer' }}>
               <div >
-
-                <img src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${currentUserEmail}`}
+                {currentUserEmail !== "" && CurrenuserProfilepic != null && Number(CurrentuserPicturePlaceholderState) == 0 ?
+                  <img src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${currentUserEmail}`}
+                    className="rounded-circlecss img-thumbnail desktoView 
+                                  avatar-xl"
+                    alt="profile-image"
+                  />
+                  :
+                  (currentUserEmail !== null || currentUserEmail !== "") &&
+                  <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circlecss newuserin img-thumbnail
+                                  avatar-xl">
+                    {`${currentUserEmail.split('.')[0]?.charAt(0)}${currentUserEmail.split('.')[1]?.charAt(0)}`.toUpperCase()}
+                  </Avatar>
+                }
+                {/* <img src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${currentUserEmail}`}
                   className="rounded-circlecss img-thumbnail desktoView 
                                   avatar-xl"
                   alt="profile-image"
-                />
-                <img src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${currentUserEmail}`}
+                /> */}
+                {/* {currentUserEmail !== "" && CurrenuserProfilepic != null && Number(CurrentuserPicturePlaceholderState) == 0 ?
+                  <img src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${currentUserEmail}`}
+                    className="rounded-circlecss img-thumbnail searchcssmobile 
+                                  avatar-xl"
+                    alt="profile-image"
+                    style={{ cursor: "pointer" }} />
+                  :
+                  (currentUserEmail !== null || currentUserEmail !== "") &&
+                  <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circlecss img-thumbnail
+                                  avatar-xl">
+                    {`${currentUserEmail.split('.')[0]?.charAt(0)}${currentUserEmail.split('.')[1]?.charAt(0)}`.toUpperCase()}
+                  </Avatar>
+                } */}
+                {/* <img src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${currentUserEmail}`}
                   className="rounded-circlecss img-thumbnail searchcssmobile 
                                   avatar-xl"
                   alt="profile-image"
-                  style={{ cursor: "pointer" }} />
+                  style={{ cursor: "pointer" }} /> */}
 
               </div>
               <div className='dropcssUser desktoView'>

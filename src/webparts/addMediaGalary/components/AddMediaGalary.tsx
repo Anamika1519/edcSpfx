@@ -14,7 +14,7 @@ import UserContext from '../../../GlobalContext/context';
 
 import { getCurrentUser, getEntity } from '../../../APISearvice/CustomService';
 
-import { addItem, ARGMediaGalleryCategory, getMediaByID, getUrl, updateItem, uploadAllFiles, uploadFile, uploadFileToLibrary } from '../../../APISearvice/MediaService';
+import { addItem, ARGMediaGalleryCategory, getMediaByID, getUrl, updateItem, uploadFile, uploadFileToLibrary , uploadAllFiles } from '../../../APISearvice/MediaService';
 
 import { decryptId } from '../../../APISearvice/CryptoService';
 
@@ -1619,58 +1619,96 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
 
   // }
-// const handleFormSubmit = async () => {
-//   if (!validateForm(FormSubmissionMode.SUBMIT)) return;
 
-//   try {
-//     setLoading(true);
-//     let bannerImageArray = null;
-//     let galleryArray = [];
 
-//     if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
-//       bannerImageArray = await uploadAllFiles(BnnerImagepostArr[0].files, sp, "Documents");
-//     }
-
-//     const postPayload = {
-//       Title: formData.title,
-//       EntityMasterId: Number(formData.entity),
-//       Status: "Submitted",
-//       AuthorId: currentUser.Id,
-//       Image: JSON.stringify(bannerImageArray),
-//       MediaGalleryCategoryId: formData.Category,
-//     };
-
-//     const postResult = await addItem(postPayload, sp);
-//     const postId = postResult?.data?.ID;
-
-//     if (!postId) {
-//       throw new Error("Failed to create item.");
-//     }
-
-//     if (ImagepostArr[0]?.files?.length > 0) {
-//       galleryArray = await uploadAllFiles(ImagepostArr[0].files, sp, "MediaGallery");
-//     }
-
-//     const updatePayload = {
-//       ...(galleryArray.length > 0 && {
-//         MediaGalleriesId: galleryArray.map(item => item.ID),
-//         MediaGalleryJSON: JSON.stringify(flatArray(galleryArray)),
-//       }),
-//     };
-
-//     if (Object.keys(updatePayload).length > 0) {
-//       await updateItem(updatePayload, sp, postId);
-//     }
-
-//     Swal.fire('Submitted successfully.', '', 'success');
-//     window.location.href = `${siteUrl}/SitePages/MediaGalleryMaster.aspx`;
-//   } catch (error) {
-//     console.error("Error during form submission:", error);
-//     Swal.fire('Error', error.message, 'error');
-//   } finally {
-//     setLoading(false);
-//   }
-// };
+  //  old code of mine for media gallery to add and update 
+  // const handleFormSubmit = async () => {
+  //   if (!validateForm(FormSubmissionMode.SUBMIT)) return;
+  
+  //   try {
+  //     setLoading(true);
+  
+  //     let bannerImageArray = null;
+  //     let galleryArray = [];
+  //     let existingGalleryJSON = [];
+  //     let existingGalleryIds = [];
+  
+  //     // Upload new banner images if any
+  //     // if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
+  //     //   bannerImageArray = await uploadAllFiles(BnnerImagepostArr[0].files, sp, "Documents");
+  //     // }
+  //     if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
+  
+  //       for (const file of BnnerImagepostArr[0].files) {
+  
+  //         //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
+  
+  //         bannerImageArray = await uploadFile(file, sp, "Documents", tenantUrl);
+  
+  //       }
+  
+  //     }
+  //     // Check if updating an existing item
+  //     if (editForm) {
+  //       // Fetch existing item data to merge
+  //       const existingItem = await sp.web.lists.getByTitle('ARGMediaGallery').items.getById(editID)();
+  //       if (existingItem.MediaGalleryJSON) {
+  //         existingGalleryJSON = JSON.parse(existingItem.MediaGalleryJSON);
+  //         existingGalleryIds = existingGalleryJSON.map((item:any) => item.ID);
+  //       }
+  //     }
+  
+  //     // Upload new gallery images if any
+  //     if (ImagepostArr[0]?.files?.length > 0) {
+  //       const newGalleryArray = await uploadAllFiles(ImagepostArr[0].files, sp, "MediaGallery");
+  //       galleryArray = [...existingGalleryJSON, ...newGalleryArray];
+  //     } else {
+  //       // Retain existing gallery data if no new files are uploaded
+  //       galleryArray = existingGalleryJSON;
+  //     }
+  
+  //     // Prepare payloads
+  //     const postPayload = {
+  //       Title: formData.title,
+  //       EntityMasterId: Number(formData.entity),
+  //       Status: "Submitted",
+  //       AuthorId: currentUser.Id,
+  //       Image: JSON.stringify(bannerImageArray),
+  //       MediaGalleryCategoryId: formData.Category,
+  //     };
+  
+  //     const updatePayload = {
+  //       ...(galleryArray.length > 0 && {
+  //         MediaGalleriesId: galleryArray.map((item:any) => item.ID),
+  //         MediaGalleryJSON: JSON.stringify(flatArray(galleryArray)),
+  //       }),
+  //     };
+  
+  //     // Create or update item
+  //     if (editForm) {
+  //       await updateItem({ ...postPayload, ...updatePayload }, sp, editID);
+  //     } else {
+  //       const postResult = await addItem(postPayload, sp);
+  //       const postId = postResult?.data?.ID;
+  
+  //       if (!postId) {
+  //         throw new Error("Failed to create item.");
+  //       }
+  
+  //       if (Object.keys(updatePayload).length > 0) {
+  //         await updateItem(updatePayload, sp, postId);
+  //       }
+  //     }
+  
+  //     Swal.fire('Submitted successfully.', '', 'success');
+  //     window.location.href = `${siteUrl}/SitePages/MediaGalleryMaster.aspx`;
+  //   } catch (error) {
+  //     console.error("Error during form submission:", error);
+  //     Swal.fire('Error', error.message, 'error');
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 const handleFormSubmit = async () => {
   if (!validateForm(FormSubmissionMode.SUBMIT)) return;
 
@@ -1715,7 +1753,11 @@ const handleFormSubmit = async () => {
       // Retain existing gallery data if no new files are uploaded
       galleryArray = existingGalleryJSON;
     }
-
+    
+    //  if(editForm == false){
+    //    alert(`editForm:${editForm}`)
+    //    let status = "Submitted"
+    //  }
     // Prepare payloads
     const postPayload = {
       Title: formData.title,
@@ -1735,6 +1777,22 @@ const handleFormSubmit = async () => {
 
     // Create or update item
     if (editForm) {
+      let existingItem :any;
+      if (!existingItem) {
+        existingItem = await sp.web.lists.getByTitle('ARGMediaGallery').items.getById(editID)();
+        // alert(`existingItem:${JSON.stringify(existingItem)}`)
+      }
+    
+      const postPayload = {
+        Title: formData.title,
+        EntityMasterId: Number(formData.entity),
+        //  Status: "Submitted",
+         Status: formData.Status,
+        AuthorId: currentUser.Id,
+        // Image: JSON.stringify(bannerImageArray),
+        Image: JSON.stringify(bannerImageArray || JSON.parse(existingItem.Image)),
+        MediaGalleryCategoryId: formData.Category,
+      };
       await updateItem({ ...postPayload, ...updatePayload }, sp, editID);
     } else {
       const postResult = await addItem(postPayload, sp);
@@ -1747,6 +1805,25 @@ const handleFormSubmit = async () => {
       if (Object.keys(updatePayload).length > 0) {
         await updateItem(updatePayload, sp, postId);
       }
+
+      // here i have added 
+      let arr = {
+
+        ContentID: postId,
+        // ContentID: editID,
+
+        ContentName: "ARGMediaGallery",
+
+        Status: "Pending",
+
+        EntityId: Number(formData.entity),
+        Title: formData.title,
+        SourceName: "Media",
+        ReworkRequestedBy: "Initiator"
+
+
+      }
+      await AddContentMaster(sp, arr)
     }
 
     Swal.fire('Submitted successfully.', '', 'success');
@@ -3288,11 +3365,11 @@ const handleFormSubmit = async () => {
       <img src={modalImageSrc} alt="Image Preview" style={{ width: '100%' }} />
     )}
   </Modal.Body>
-  <Modal.Footer>
+  {/* <Modal.Footer>
     <Button variant="secondary" onClick={handleClose}>
       Close
     </Button>
-  </Modal.Footer>
+  </Modal.Footer> */}
 </Modal>
 
             <Modal show={showModal1} onHide={() => setShowModal1(false)} size="lg">

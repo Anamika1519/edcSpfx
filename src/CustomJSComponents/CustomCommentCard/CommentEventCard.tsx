@@ -104,7 +104,17 @@ export const CommentEventCard: React.FC<{
   const handleReportClick = async (e:any,commentRepliesObject: any,flag:string) => {
     console.log("Report Clicked");
     e.preventDefault()
-    // Create the popup container
+    try {
+      const currentUser = await sp.web.currentUser();
+      const reportListName=flag === "replies" ? "ARGEventsUserComments": "ARGEventsComments";
+      const eventReportData=await sp.web.lists.getByTitle("ReportedIssueList").items.select("*").filter(`ProcessName eq 'Event' and ReportedById eq ${currentUser.Id} and ListName eq '${reportListName}' and ListItemId eq ${commentRepliesObject.Id}`)();
+      console.log("eventReportData",eventReportData);
+
+    if (eventReportData.length >0 ) {
+      Swal.fire("Already Reported", "You have already reported this content.", "info");
+      return;
+    }
+      // Create the popup container
     const popupDiv = document.createElement("div");
     popupDiv.id = "report-issue";
     popupDiv.style.position = "fixed";
@@ -186,7 +196,7 @@ export const CommentEventCard: React.FC<{
       }
   
       try {
-        const currentUser = await sp.web.currentUser();
+        // const currentUser = await sp.web.currentUser();
         const commentObject = Comments[commentId];
         console.log("flag",flag);
         console.log("commentRepliesObject",commentRepliesObject);
@@ -202,7 +212,11 @@ export const CommentEventCard: React.FC<{
           ListItemId: flag === "replies" ? commentRepliesObject.Id : commentObject.Id,
           ReportedContentAddedById: flag === 'replies' ? commentRepliesObject.AuthorId: commentObject.AuthorId,
           Title: EventArray[0].EventName,
-          Action:"Active"
+          Action:"Active",
+          MainListColumnName:flag === "replies" ? "UserCommentsJSON" :"",
+          MainListName:flag === "replies" ? "ARGEventsComments" :"",
+          MainListItemId:flag === "replies" ? commentObject.Id:0,
+          MainListStatus:flag === "replies" ? "Available":"NA",
         }
         // const insertData = await sp.web.lists.getByTitle("ReportedIssueList").items.add({
         //   ReportReason: issueValue,
@@ -232,6 +246,10 @@ export const CommentEventCard: React.FC<{
   
     // Append the popup to the body
     document.body.appendChild(popupDiv);
+    } catch (error) {
+      console.log("Error in report popup",error);
+    }
+    
   };
   
   return (
@@ -260,11 +278,11 @@ export const CommentEventCard: React.FC<{
             <div className="post-content">
                   <div className="post-actions">
                           <div className="menu-toggle"
-                          onClick={()=>toggleMenu(Comments[commentId].Id)}
+                          onClick={()=>toggleMenu(`Comment-${Comments[commentId].Id}`)}
                           >
                               <MoreVertical size={20} />
                           </div>
-                          {openMenuIndex === Comments[commentId].Id && (
+                          {openMenuIndex === `Comment-${Comments[commentId].Id}` && (
                               <div className="dropdown-menucsspost" ref={menuRef}>
                                   <button
                                   // onClick={(e) => handleEditClick(e)} disabled={post.AutherId != CurrentUser.Id}
@@ -323,10 +341,10 @@ export const CommentEventCard: React.FC<{
 
                    {/* Three-dot menu */}
           <div className="post-actions" style={{ marginLeft: "auto", position: "relative" }}>
-            <div className="menu-toggle" onClick={() => toggleMenu(reply.Id)}>
+            <div className="menu-toggle" onClick={() => toggleMenu(`Reply-${reply.Id}`)}>
               <MoreVertical size={20} />
             </div>
-            {openMenuIndex === reply.Id && (
+            {openMenuIndex === `Reply-${reply.Id}` && (
               <div
                 className="dropdown-menucsspost"
                 ref={menuRef}

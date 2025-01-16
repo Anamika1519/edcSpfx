@@ -3,7 +3,7 @@ import { useState } from "react";
 
 import "../../CustomJSComponents/SocialFeedPost/PostComponent.scss"
 
-import { addActivityLeaderboard, addNotification, getCurrentUserNameId, getUserProfilePicture, getUserSPSPicturePlaceholderState } from "../../APISearvice/CustomService";
+import { addActivityLeaderboard, addNotification, getCurrentUserNameId, getuserprofilepic, getUserProfilePicture, getUserSPSPicturePlaceholderState } from "../../APISearvice/CustomService";
 
 import { Heart, Menu, MessageSquare, MoreHorizontal, MoreVertical, Share, Share2, ThumbsUp } from "react-feather";
 
@@ -80,7 +80,8 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
                 setIsCall(false)
                 fetchInitialLikeData(CurrentUser.Id);
                 SetCurrenuserProfilepic(await getUserProfilePicture(CurrentUser.Id, sp));
-                setCurrentuserPicturePlaceholderState(await getUserSPSPicturePlaceholderState(CurrentUser.Id, sp))
+                setCurrentuserPicturePlaceholderState(await getuserprofilepic(sp, currentEmail))
+                // setCurrentuserPicturePlaceholderState(await getUserSPSPicturePlaceholderState(CurrentUser.Id, sp))
             }
 
 
@@ -219,7 +220,7 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
 
 
 
-        await sp.web.lists.getByTitle('ARGSocialFeedComments').items.select("*,Author/Id").expand("Author")
+        await sp.web.lists.getByTitle('ARGSocialFeedComments').items.select("*,Author/Id,Author/SPSPicturePlaceholderState").expand("Author")
 
             .filter(`ARGSocialFeedId eq ${postId}`)().then(async (ele: any) => {
 
@@ -229,7 +230,7 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
 
             })
 
-        await sp.web.lists.getByTitle('ARGSocialFeedComments').items.select("*,Author/Id,Author/Title").expand("Author")
+        await sp.web.lists.getByTitle('ARGSocialFeedComments').items.select("*,Author/Id,Author/Title,Author/EMail,Author/SPSPicturePlaceholderState").expand("Author")
 
             .filter(`ARGSocialFeedId eq ${postId}`)().then(async (ele: any) => {
 
@@ -557,10 +558,22 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
     console.log(post.userHasLiked, '{liked}');
 
 
-    const handleReportClick = async (e:any,commentRepliesObject: any, flag: string) => {
+    const handleReportClick = async (e: any, commentRepliesObject: any, flag: string) => {
         console.log("Report Clicked");
         e.preventDefault()
-        // Create the popup container
+        try {
+
+            const currentUser = await sp.web.currentUser();
+            const reportListName=flag === "replies" ? "ARGSocialFeedComments" : "ARGSocialFeed";
+            const reportedListItemId=flag === "replies" ? commentRepliesObject.Id : post.postId;
+            const eventReportData=await sp.web.lists.getByTitle("ReportedIssueList").items.select("*").filter(`ProcessName eq 'Social Feed' and ReportedById eq ${currentUser.Id} and ListName eq '${reportListName}' and ListItemId eq ${reportedListItemId}`)();
+            console.log("eventReportData",eventReportData);
+                                    
+            if (eventReportData.length >0 ) {
+                Swal.fire("Already Reported", "You have already reported this content.", "info");
+                return;
+            } 
+            // Create the popup container
         const popupDiv = document.createElement("div");
         popupDiv.id = "report-issue";
         popupDiv.style.position = "fixed";
@@ -636,7 +649,7 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
             }
 
             try {
-                const currentUser = await sp.web.currentUser();
+                // const currentUser = await sp.web.currentUser();
                 // const commentObject = Comments[commentId];
                 console.log("flag", flag);
                 console.log("commentRepliesObject", commentRepliesObject);
@@ -652,7 +665,11 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
                     ListItemId: flag === "replies" ? commentRepliesObject.Id : post.postId,
                     ReportedContentAddedById: flag === 'replies' ? commentRepliesObject.AuthorId : commentRepliesObject.AutherId,
                     Title: post.Contentpost,
-                    Action: "Active"
+                    Action: "Active",
+                    MainListColumnName: "",
+                    MainListName: "",
+                    MainListItemId: 0,
+                    MainListStatus: "NA",
                 }
                 // const insertData = await sp.web.lists.getByTitle("ReportedIssueList").items.add({
                 //   ReportReason: issueValue,
@@ -682,6 +699,10 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
 
         // Append the popup to the body
         document.body.appendChild(popupDiv);
+        } catch (error) {
+            console.log("Error in report popup",error);
+        }
+        
     };
 
     const [openMenuIndex, setOpenMenuIndex] = useState(null);
@@ -706,7 +727,23 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
             <div className="post-header">
                 <div className="d-flex align-items-center" style={{ width: '100%' }}>
                     <div className="flex-shrink-0">
-                        <img src={post.userAvatar} alt="user avatar" className="avatar" />
+                        {/* <img src={post.userAvatar} alt="user avatar" className="avatar" /> */}
+
+                        {post.SPSPicturePlaceholderState == 0 ?
+                            <img
+                                src={
+                                    `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${post.AuthorEmail}`
+                                }
+                                alt="user avatar" className="avatar"
+
+                            />
+                            :
+                            (post.AuthorEmail !== null || post.AuthorEmail !== "") &&
+                            <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circlecss img-thumbnail
+                                  avatar-xl">
+                                {`${post.AuthorEmail.split('.')[0]?.charAt(0)}${post.AuthorEmail.split('.')[1]?.charAt(0)}`.toUpperCase()}
+                            </Avatar>
+                        }
                     </div>
                     <div className="flex-grow-1 ">
                         <p className="pt-2 mb-1" style={{ marginBottom: 'unset' }}>
@@ -733,7 +770,7 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
                                             <div className="dropdown-menucsspost" ref={menuRef}>
                                                 <button onClick={(e) => handleEditClick(e)} disabled={post.AutherId != CurrentUser.Id}>Edit</button>
                                                 <button onClick={(e) => handleDeletePost(e, post.postId)} disabled={post.AutherId != CurrentUser.Id}>Delete</button>
-                                                <button onClick={(e) => handleReportClick(e,post, "Post")} disabled={post.AutherId != CurrentUser.Id}>Report</button>
+                                                <button onClick={(e) => handleReportClick(e, post, "Post")} disabled={post.AutherId != CurrentUser.Id}>Report</button>
                                             </div>
                                         )}
                                     </div>
@@ -754,7 +791,7 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
                                             <div className="dropdown-menucsspost" ref={menuRef}>
                                                 {/* <button onClick={(e) => handleEditClick(e)} disabled={post.AutherId != CurrentUser.Id}>Edit</button>
                                             <button onClick={(e) => handleDeletePost(e, post.postId)} disabled={post.AutherId != CurrentUser.Id}>Delete</button> */}
-                                                <button onClick={(e) => handleReportClick(e,post, "Post")}>Report</button>
+                                                <button onClick={(e) => handleReportClick(e, post, "Post")}>Report</button>
                                             </div>
                                         )}
                                     </div>
@@ -915,11 +952,28 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
                 ? comments.slice(0, displayedCount).map((comment: any, index: React.Key) => (
                     <div key={index} className="d-flex align-items-start commentss">
                         <div className="flex-shrink-0">
-                            <img
+                            {/* <img
                                 src={comment.UserImage}
                                 alt="user avatar"
                                 className="commentsImg"
-                            />
+                            /> */}
+
+                            {comment?.Author?.SPSPicturePlaceholderState == 0 ?
+                                <img
+                                    src={
+                                        `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${comment?.Author.EMail}`
+                                    }
+                                    className="commentsImg"
+                                    alt="profile-image"
+                                    style={{ cursor: "auto", borderRadius: '1000px', width: "6rem", height: '6rem' }}
+                                />
+                                :
+                                (comment?.Author.EMail !== null || comment?.Author.EMail !== "") &&
+                                <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circlecss img-thumbnail
+                                  avatar-xl">
+                                    {`${comment?.Author.EMail.split('.')[0]?.charAt(0)}${comment?.Author.EMail.split('.')[1]?.charAt(0)}`.toUpperCase()}
+                                </Avatar>
+                            }
                         </div>
                         <div className="flex-grow-1 ms-2">
                             <p className="mb-1 fw-bold">{comment?.Author?.Title}</p>
@@ -948,7 +1002,7 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
                                             <div className="dropdown-menucsspost" ref={menuRef1}>
                                                 {/* <button onClick={(e) => handleEditClick(e)} disabled={post.AutherId != CurrentUser.Id}>Edit</button>
                                             <button onClick={(e) => handleDeletePost(e, post.postId)} disabled={post.AutherId != CurrentUser.Id}>Delete</button> */}
-                                                <button onClick={(e) => handleReportClick(e,comment, "replies")}>Report</button>
+                                                <button onClick={(e) => handleReportClick(e, comment, "replies")}>Report</button>
                                             </div>
                                         )}
                                     </div>
@@ -996,14 +1050,14 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
             </div> */}
             {/* Add a New Comment */}
             <form onSubmit={(e) => handleAddComment(e)} className="add-comment" style={{ gap: '1rem' }}>
-            {console.log("CurrenuserProfilepicnmpostcompo",CurrenuserProfilepic,CurrentuserPicturePlaceholderState,currentEmail)}
+                {console.log("CurrenuserProfilepicnmpostcompo", CurrenuserProfilepic, CurrentuserPicturePlaceholderState, currentEmail)}
                 {currentEmail !== "" && CurrenuserProfilepic != null && Number(CurrentuserPicturePlaceholderState) == 0 ?
                     <img src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${currentEmail}`} alt="user avatar" className="commentsImg" />
                     :
                     currentEmail !== "" &&
                     <Avatar sx={{ bgcolor: 'primary.main' }} className="commentsImg img-thumbnail
                                   avatar-xl">
-                        {`${currentEmail.split('.')[0].charAt(0)}${currentEmail.split('.')[1].charAt(0)}`.toUpperCase()}
+                        {`${currentEmail.split('.')[0]?.charAt(0)}${currentEmail.split('.')[1]?.charAt(0)}`.toUpperCase()}
                     </Avatar>
                 }
 

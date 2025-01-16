@@ -730,7 +730,7 @@ const BlogDetailsContext = ({ props }: any) => {
                         }}
                       >
 
-                        <div className="card-body" style={{ padding: "1rem 0.9rem" }}>
+                        <div className="p-4">
                           {/* New comment input */}
                           <h4 className="mt-0 mb-3 text-dark fw-bold font-16">
                             Comments
@@ -790,18 +790,8 @@ const BlogDetailsContext = ({ props }: any) => {
 
 
               </div>
-              {pageValue !== "" &&
-                <div className="col-lg-4">
-                  <div className="text-center butncss">
-                    <button type="button" className="btn cancel-btn waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleCancel}>
-                      <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }}
-                        className='me-1' alt="x" />
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              }
-              <div className="col-lg-4">
+             
+              <div className="col-lg-4 widthnew">
                 <div style={{ position: 'sticky', top: '90px' }} className="card  postion8">
                   <div className="card-body">
                     <h4 className="header-title text-dark  fw-bold mb-0">
@@ -827,6 +817,18 @@ const BlogDetailsContext = ({ props }: any) => {
 
 
               </div>
+
+              {pageValue !== "" &&
+                <div className="col-lg-4">
+                  <div className="text-left butncss">
+                    <button type="button" className="btn cancel-btn waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleCancel}>
+                      <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }}
+                        className='me-1' alt="x" />
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              }
 
               {/* ******* changes */}
               {/* {showAppRemark == true &&<div><div>

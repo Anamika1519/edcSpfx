@@ -19,7 +19,7 @@ import SocialFeed, { IGroupAndTeamPosts } from "../../webparts/groupandTeamDetai
 import { Carousel, Modal } from "react-bootstrap";
 import Avatar from "@mui/material/Avatar";
 
-export const GroupPostComponent = ({ key, sp, siteUrl, isedit, currentUsername, CurrentUser, currentEmail, fetchPosts, post }: any) => {
+export const GroupPostComponent = ({ key, sp, siteUrl, isedit, currentUsername, CurrentUser, currentEmail, fetchPosts, post ,groupsArray}: any) => {
     const [loadingReply, setLoadingReply] = useState<boolean>(false);
     const [loadingLike, setLoadingLike] = useState<boolean>(false);
     const [liked, setLiked] = useState(post.userHasLiked);
@@ -55,6 +55,7 @@ export const GroupPostComponent = ({ key, sp, siteUrl, isedit, currentUsername, 
         const handleClickOutside = (event: { target: any; }) => {
             if (menuRef.current && !menuRef.current.contains(event.target)) {
                 setIsMenuOpenshare(false);
+                setIsMenuOpen(false);
             }
         };
 
@@ -495,6 +496,171 @@ export const GroupPostComponent = ({ key, sp, siteUrl, isedit, currentUsername, 
 
     console.log(post, '{liked}');
 
+    const handleReportClick = async (e:any,commentRepliesObject: any, flag: string) => {
+            console.log("Report Clicked");
+            e.preventDefault()
+            try {
+
+            const currentUser = await sp.web.currentUser();
+            const reportListName=flag === "replies" ? "ARGGroupandTeamUserComments" : "ARGGroupandTeamComments";
+            const reportedListItemId=flag === "replies" ? commentRepliesObject.Id : post.postId;
+            const eventReportData=await sp.web.lists.getByTitle("ReportedIssueList").items.select("*").filter(`ProcessName eq 'Groups And Teams' and ReportedById eq ${currentUser.Id} and ListName eq '${reportListName}' and ListItemId eq ${reportedListItemId}`)();
+            console.log("eventReportData",eventReportData);
+                                                    
+            if (eventReportData.length >0 ) {
+                Swal.fire("Already Reported", "You have already reported this content.", "info");
+                return;
+            } 
+                // Create the popup container
+            const popupDiv = document.createElement("div");
+            popupDiv.id = "report-issue";
+            popupDiv.style.position = "fixed";
+            popupDiv.style.top = "50%";
+            popupDiv.style.left = "50%";
+            popupDiv.style.transform = "translate(-50%, -50%)";
+            popupDiv.style.padding = "20px";
+            popupDiv.style.backgroundColor = "#fff";
+            popupDiv.style.boxShadow = "0px 4px 6px rgba(0,0,0,0.1)";
+            popupDiv.style.borderRadius = "8px";
+            popupDiv.style.zIndex = "1000";
+            popupDiv.style.width = "300px";
+    
+            // Create a wrapper div inside the popup
+            const wrapperDiv = document.createElement("div");
+            wrapperDiv.className = "report-Issue-Wrapper-Div"
+            wrapperDiv.style.padding = "20px";
+            wrapperDiv.style.display = "flex";
+            wrapperDiv.style.flexDirection = "column";
+            wrapperDiv.style.gap = "10px"; // Adds spacing between child elements
+            popupDiv.appendChild(wrapperDiv);
+    
+            // Add a heading
+            const heading = document.createElement("h2");
+            heading.innerText = "Report Reason";
+            heading.style.margin = "0 0 10px 0";
+            // popupDiv.appendChild(heading);
+            wrapperDiv.appendChild(heading);
+    
+            // Add a close button
+            const closeButton = document.createElement("span");
+            closeButton.innerText = "x";
+            closeButton.style.position = "absolute";
+            closeButton.style.top = "10px";
+            closeButton.style.right = "10px";
+            closeButton.style.border = "none";
+            closeButton.style.background = "transparent";
+            closeButton.style.fontSize = "16px";
+            closeButton.style.cursor = "pointer";
+            closeButton.style.color = "Black"
+            closeButton.onclick = () => {
+                document.body.removeChild(popupDiv);
+            };
+            // popupDiv.appendChild(closeButton);
+            wrapperDiv.appendChild(closeButton);
+    
+            // Add the textarea
+            const textAreaElement = document.createElement("textarea");
+            textAreaElement.placeholder = "Why are you reporting this comment?";
+            textAreaElement.style.width = "100%";
+            textAreaElement.style.height = "80px";
+            textAreaElement.style.padding = "8px";
+            textAreaElement.style.marginBottom = "10px";
+            textAreaElement.style.border = "1px solid #ccc";
+            textAreaElement.style.borderRadius = "4px";
+            // popupDiv.appendChild(textAreaElement);
+            wrapperDiv.appendChild(textAreaElement);
+    
+            // Add a submit button
+            const submitButton = document.createElement("button");
+            submitButton.innerText = "Submit";
+            submitButton.style.padding = "8px 16px";
+            submitButton.style.backgroundColor = "#007BFF";
+            submitButton.style.color = "#fff";
+            submitButton.style.border = "none";
+            submitButton.style.borderRadius = "4px";
+            submitButton.style.cursor = "pointer";
+            submitButton.onclick = async () => {
+                const issueValue = textAreaElement.value.trim();
+                if (!issueValue) {
+                    Swal.fire("Error", "Please provide a reason for reporting.", "error");
+                    return;
+                }
+    
+                try {
+                    // const currentUser = await sp.web.currentUser();
+                    // const commentObject = Comments[commentId];
+                    console.log("flag", flag);
+                    console.log("commentRepliesObject", commentRepliesObject);
+                    console.log(groupsArray,"groupsArray");
+                    const payload = {
+                        ReportReason: issueValue,
+                        ProcessName: "Groups And Teams",
+                        ReportedDate: new Date(),
+                        Status: "Pending",
+                        ListName: flag === "replies" ? "ARGGroupandTeamUserComments" : "ARGGroupandTeamComments",
+                        ReportedContentAddedOn: flag === "replies" ? commentRepliesObject.Created : commentRepliesObject.Created,
+                        ReportedContent: flag === "replies" ? commentRepliesObject.Comments : commentRepliesObject.Contentpost,
+                        ReportedById: currentUser.Id,
+                        ListItemId: flag === "replies" ? commentRepliesObject.Id : post.postId,
+                        ReportedContentAddedById: flag === 'replies' ? commentRepliesObject.AuthorId : commentRepliesObject.AuthorId,
+                        Title: groupsArray[0].GroupName,
+                        Action: "Active",
+                        MainListColumnName:flag === "replies" ? "UserCommentsJSON" :"",
+                        MainListName:flag === "replies" ? "ARGGroupandTeamComments" :"",
+                        MainListItemId:flag === "replies" ? post.postId:0,
+                        MainListStatus:flag === "replies" ? "Available":"NA",
+                    }
+                    // const insertData = await sp.web.lists.getByTitle("ReportedIssueList").items.add({
+                    //   ReportReason: issueValue,
+                    //   ProcessName: "Event",
+                    //   ReportedDate: new Date(),
+                    //   Status: "Pending",
+                    //   ListName: "ARGEventsComments",
+                    //   ReportedContentAddedOn: Created,
+                    //   ReportedContent:Commenttext,
+                    //   ReportedById: currentUser.Id,
+                    //   ListItemId: commentObject.Id,
+                    //   ReportedContentAddedById: commentObject.AuthorId,
+                    //   Title: EventArray[0].EventName,
+                    //   Action:"Active"
+                    // });
+                    const insertData = await sp.web.lists.getByTitle("ReportedIssueList").items.add(payload);
+                    console.log("payload", payload)
+                    console.log("Items added successfully");
+                    document.body.removeChild(popupDiv);
+                    Swal.fire("Success", "Reported successfully", "success");
+                } catch (error) {
+                    console.log("Error adding the data into the list", error);
+                }
+            };
+            // popupDiv.appendChild(submitButton);
+            wrapperDiv.appendChild(submitButton);
+    
+            // Append the popup to the body
+            document.body.appendChild(popupDiv);
+            } catch (error) {
+                console.log("Error adding the data into the list", error);
+            }
+        };
+    
+        const [openMenuIndex, setOpenMenuIndex] = useState(null);
+        const menuRef1 = useRef(null);
+        const toggleMenu1 = (index: any) => {
+            setOpenMenuIndex(openMenuIndex === index ? null : index);
+        }
+    
+        React.useEffect(() => {
+            const handleClickOutside = (event: any) => {
+                if (menuRef1.current && !menuRef1.current.contains(event.target)) {
+                    setOpenMenuIndex(null);
+                }
+            };
+            document.addEventListener("mousedown", handleClickOutside);
+            return () => {
+                document.removeEventListener("mousedown", handleClickOutside);
+            };
+        }, []);
+
     return (
         <div className="post p-4">
             <div className="post-header">
@@ -534,6 +700,27 @@ export const GroupPostComponent = ({ key, sp, siteUrl, isedit, currentUsername, 
                             </>
                         )}
                     </div>
+                    <div className="post-content">
+                                            {(
+                                                <><>
+                                                </>
+                                                    {/* {CurrentUser.Id !== post.AutherId && ( */}
+                                                        <div className="post-actions">
+                                                            <div className="menu-toggle" onClick={toggleMenu}>
+                                                                <MoreVertical size={20} />
+                                                            </div>
+                                                            {isMenuOpen && (
+                                                                <div className="dropdown-menucsspost" ref={menuRef}>
+                                                                    {/* <button onClick={(e) => handleEditClick(e)} disabled={post.AutherId != CurrentUser.Id}>Edit</button>
+                                                                <button onClick={(e) => handleDeletePost(e, post.postId)} disabled={post.AutherId != CurrentUser.Id}>Delete</button> */}
+                                                                    <button onClick={(e) => handleReportClick(e,post, "Post")}>Report</button>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    {/* )} */}
+                                                </>
+                                            )}
+                                        </div>
                 </div>
             </div>
 
@@ -773,6 +960,27 @@ export const GroupPostComponent = ({ key, sp, siteUrl, isedit, currentUsername, 
                             {comment.Comments}
                         </p>
                     </div>
+                    <div className="post-content">
+                                                {(
+                                                    <><>
+                                                    </>
+                                                        {/* {CurrentUser.Id !== post.AutherId && ( */}
+                                                        <div className="post-actions">
+                                                            <div className="menu-toggle" onClick={() => toggleMenu1(comment.Id)}>
+                                                                <MoreVertical size={20} />
+                                                            </div>
+                                                            {openMenuIndex === comment.Id && (
+                                                                <div className="dropdown-menucsspost" ref={menuRef1}>
+                                                                    {/* <button onClick={(e) => handleEditClick(e)} disabled={post.AutherId != CurrentUser.Id}>Edit</button>
+                                                                <button onClick={(e) => handleDeletePost(e, post.postId)} disabled={post.AutherId != CurrentUser.Id}>Delete</button> */}
+                                                                    <button onClick={(e) => handleReportClick(e,comment, "replies")}>Report</button>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                        {/* )} */}
+                                                    </>
+                                                )}
+                                            </div>
                 </div>
             )) : ""}
             {/* <div className="post-comments">
@@ -796,7 +1004,7 @@ export const GroupPostComponent = ({ key, sp, siteUrl, isedit, currentUsername, 
                     currentEmail !== "" &&
                     <Avatar sx={{ bgcolor: 'primary.main' }} className="commentsImg img-thumbnail
                                   avatar-xl">
-                        {`${currentEmail.split('.')[0].charAt(0)}${currentEmail.split('.')[1].charAt(0)}`.toUpperCase()}
+                        {`${currentEmail.split('.')[0]?.charAt(0)}${currentEmail.split('.')[1]?.charAt(0)}`.toUpperCase()}
                     </Avatar>
                 }
 
