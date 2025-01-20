@@ -55,7 +55,7 @@
   position: relative;
 }
 .rounded-circlecss6{    width: 40px;
-  height: 40px;
+  height: 40px; font-size: 14px !important; line-height: 30px !important;
   border-radius: 1000px;}
   .alignright{    position: absolute;
     right: 20px; width:21px;
@@ -114,7 +114,7 @@ gap: 15px;
 align-items: center;}
 textarea{border: none;}
 textarea:focus{outline: none;}
-.ht{padding: 9px;}
+.ht{padding: 6px 10px;}
 .open-popup-btn {
   padding: 10px 20px;
   background-color: #007bff;

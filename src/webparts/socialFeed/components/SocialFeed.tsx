@@ -1153,7 +1153,7 @@ const SocialFeedContext = ({ props }: any) => {
                         currentEmail !== "" &&
                         <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circlecss1av img-thumbnail
                                   avatar-xl">
-                          {`${currentEmail.split('.')[0]?.charAt(0)}${currentEmail.split('.')[1]?.charAt(0)}`.toUpperCase()}
+                          {`${currentEmail?.split('.')[0]?.charAt(0)}${currentEmail?.split('.')[1]?.charAt(0)}`.toUpperCase()}
                         </Avatar>
                       }
 
@@ -1593,7 +1593,7 @@ const SocialFeedContext = ({ props }: any) => {
                                  ( item.EMail !== null || item.EMail !== "") &&
                                   <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circlecss img-thumbnail
                                   avatar-xl">
-                                    {`${item.EMail.split('.')[0]?.charAt(0)}${item.EMail.split('.')[1]?.charAt(0)}`.toUpperCase()}
+                                    {`${item.EMail?.split('.')[0]?.charAt(0)}${item.EMail?.split('.')[1]?.charAt(0)}`.toUpperCase()}
                                   </Avatar>
                                 }
 
@@ -1796,7 +1796,7 @@ const SocialFeedContext = ({ props }: any) => {
                                   (item.EMail !== null || item.EMail != "") &&
                                   <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circlecss img-thumbnail
                                   avatar-xl">
-                                    {`${item.EMail.split('.')[0]?.charAt(0)}${item.EMail.split('.')[1]?.charAt(0)}`.toUpperCase()}
+                                    {`${item.EMail?.split('.')[0]?.charAt(0)}${item.EMail?.split('.')[1]?.charAt(0)}`.toUpperCase()}
                                   </Avatar>
                                 }
 
@@ -2072,7 +2072,7 @@ const SocialFeedContext = ({ props }: any) => {
                                 (user.EMail !== null || user.EMail !== "") &&
                                 <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circlecss img-thumbnail
                                   avatar-xl">
-                                  {`${user.EMail.split('.')[0]?.charAt(0)}${user.EMail.split('.')[1]?.charAt(0)}`.toUpperCase()}
+                                  {`${user.EMail?.split('.')[0]?.charAt(0)}${user.EMail?.split('.')[1]?.charAt(0)}`.toUpperCase()}
                                 </Avatar>
                               }
 

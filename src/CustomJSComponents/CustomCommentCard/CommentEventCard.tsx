@@ -282,8 +282,8 @@ export const CommentEventCard: React.FC<{
               />
               :
               Comments[commentId].UserName !== null &&
-              <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle avatar-xl">
-                  {`${Comments[commentId].UserName.split(" ")[0].charAt(0)}${Comments[commentId].UserName.split(" ")[1].charAt(0)}`.toUpperCase()}
+              <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle me-2 mt-0 avatar-xl fontl">
+                  {`${Comments[commentId].UserName?.split(" ")[0].charAt(0)}${Comments[commentId].UserName?.split(" ")[1].charAt(0)}`.toUpperCase()}
               </Avatar>
             }
 
@@ -366,8 +366,8 @@ export const CommentEventCard: React.FC<{
                       />
                       :
                       reply.UserEmail !== null && reply.UserEmail !== undefined &&
-                      <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle avatar-xl">
-                        {`${reply.UserEmail.split('.')[0].charAt(0)}${reply.UserEmail.split('.')[1].charAt(0)}`.toUpperCase()}
+                      <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle avatar-xl fontl">
+                        {`${reply.UserEmail?.split('.')[0].charAt(0)}${reply.UserEmail?.split('.')[1].charAt(0)}`.toUpperCase()}
                       </Avatar>
                     }
                   </div>
@@ -440,8 +440,8 @@ export const CommentEventCard: React.FC<{
                       />
                       :
                       CurrentUserEmail !== null &&
-                      <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle avatar-xl">
-                        {`${CurrentUserEmail.split('.')[0].charAt(0)}${CurrentUserEmail.split('.')[1].charAt(0)}`.toUpperCase()}
+                      <Avatar sx={{ bgcolor: 'primary.main' }} className="w30 rounded-circle avatar-xl fontl">
+                        {`${CurrentUserEmail?.split('.')[0].charAt(0)}${CurrentUserEmail?.split('.')[1].charAt(0)}`.toUpperCase()}
                       </Avatar>
                     }
                   </div>

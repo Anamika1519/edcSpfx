@@ -854,9 +854,9 @@ const CorporateDirectoryContext = ({ props }: any) => {
 
         // Sort by other keys
 
-        const aValue = a['EMail'] ? (a['EMail'].split('@')[0]).toLowerCase() : "";
+        const aValue = a['EMail'] ? (a['EMail']?.split('@')[0]).toLowerCase() : "";
 
-        const bValue = b['EMail'] ? (b['EMail'].split('@')[0]).toLowerCase() : "";
+        const bValue = b['EMail'] ? (b['EMail']?.split('@')[0]).toLowerCase() : "";
 
 
         if (aValue < bValue) {
@@ -1650,14 +1650,14 @@ const CorporateDirectoryContext = ({ props }: any) => {
                                         item.EMail !== null &&
                                         <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circlecss img-thumbnail
                                   avatar-xl">
-                                          {`${item.EMail.split('.')[0]?.charAt(0)}${item.EMail.split('.')[1]?.charAt(0)}`.toUpperCase()}
+                                          {`${item.EMail?.split('.')[0]?.charAt(0)}${item.EMail?.split('.')[1]?.charAt(0)}`.toUpperCase()}
                                         </Avatar>
                                       }
 
                                       {/* {item.EMail !== null &&
                                         <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circlecss img-thumbnail
                                   avatar-xl">
-                                          {`${item.EMail.split('.')[0]?.charAt(0)}${item.EMail.split('.')[1]?.charAt(0)}`.toUpperCase()}
+                                          {`${item.EMail?.split('.')[0]?.charAt(0)}${item.EMail?.split('.')[1]?.charAt(0)}`.toUpperCase()}
                                         </Avatar>} */}
 
 

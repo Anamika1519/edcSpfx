@@ -2095,17 +2095,17 @@ const DiscussionForumContext = ({ props }: any) => {
                                             `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item?.Author?.EMail}`
 
                                           }
-                                          className="rounded-circle"
+                                          className="rounded-circle floatleft"
                                           width="50"
                                           alt={item.Author.Title}
                                         />
                                         :
                                         item?.Author?.EMail !== null &&
-                                        <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle avatar-xl">
-                                          {`${item?.Author?.EMail.split('.')[0].charAt(0)}${item?.Author?.EMail.split('.')[1].charAt(0)}`.toUpperCase()}
+                                        <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle floatleft avatar-xl">
+                                          {`${item?.Author?.EMail?.split('.')[0].charAt(0)}${item?.Author?.EMail?.split('.')[1].charAt(0)}`.toUpperCase()}
                                         </Avatar>
                                       }
-                                {item?.Author?.Title}
+                               <span className="fontclssnew"> {item?.Author?.Title}</span>
                                 {/* <div
                                   style={{
                                   

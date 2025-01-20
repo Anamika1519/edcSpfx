@@ -96,7 +96,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
   const [Loading, setLoading] = React.useState(false);
   const [modeValue, setmode] = React.useState("");
   const siteUrl = props.siteUrl;
-  const tenantUrl = props.siteUrl.split("/sites/")[0];
+  const tenantUrl = props.siteUrl?.split("/sites/")[0];
   console.log(siteUrl);
 
 

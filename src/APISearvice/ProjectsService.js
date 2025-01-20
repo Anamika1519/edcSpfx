@@ -18,7 +18,7 @@ export const fetchprojectdata = async (_sp) => {
         var profile = await _sp.profiles.getPropertiesFor(`i:0#.f|membership|${user.Email}`);
         res[i].TeamMembers[j].EMail = user.Email;
 
-        res[i].TeamMembers[j].SPSPicturePlaceholderState = profile.UserProfilePropertie?profile.UserProfileProperties[profile.UserProfileProperties.findIndex(obj=>obj.Key === "SPS-PicturePlaceholderState")].Value:"1";
+        res[i].TeamMembers[j].SPSPicturePlaceholderState = profile.UserProfileProperties?profile.UserProfileProperties[profile.UserProfileProperties.findIndex(obj=>obj.Key === "SPS-PicturePlaceholderState")].Value:"1";
 
       }
     }
@@ -49,7 +49,7 @@ export const fetchprojectdataTop = async (_sp) => {
    let userID= ''
    await _sp.web.currentUser().then((res) => {console.log(res);userID = res["Id"];})
 
-  await _sp.web.lists.getByTitle("ARGProject").items.select("*,TeamMembers/ID,TeamMembers/EMail,TeamMembers/Title , AuthorId , ProjectStatus").expand("TeamMembers").filter(`(AuthorId eq '${userID}' or TeamMembers/ID eq '${userID}') and ProjectStatus eq 'Ongoing'`).orderBy("Modified", false).top(3)().then(async(res) => {
+  await _sp.web.lists.getByTitle("ARGProject").items.select("*,TeamMembers/ID,TeamMembers/Title, AuthorId , ProjectStatus").expand("TeamMembers").filter(`(AuthorId eq '${userID}' or TeamMembers/ID eq '${userID}') and ProjectStatus eq 'Ongoing'`).orderBy("Modified", false).top(3)().then(async(res) => {
     console.log("checking the data of project---->>>", res);
   
     //res.filter(x=>x.Category?.Category==str)
@@ -91,7 +91,7 @@ export const fertchprojectcomments = async (_sp) => {
       ARGProjectComment.CommentsCount = ARGProjectComment.length
      
   })
-  await _sp.web.lists.getByTitle("ARGProject").items.select("*,TeamMembers/ID,TeamMembers/EMail,TeamMembers/Title").expand("TeamMembers").orderBy("Modified", false).top(3)().then((res) => {
+  await _sp.web.lists.getByTitle("ARGProject").items.select("*,TeamMembers/ID,TeamMembers/Title").expand("TeamMembers").orderBy("Modified", false).top(3)().then((res) => {
     console.log("checking the data of project---->>>", res);
 
     //res.filter(x=>x.Category?.Category==str)

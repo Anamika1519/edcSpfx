@@ -18,6 +18,8 @@ import {
   addNotification,
   getCurrentUser,
   getCurrentUserProfile,
+  getCurrentUserProfileEmail,
+  getuserprofilepic,
   getUserProfilePicture,
 } from "../../../APISearvice/CustomService";
 // import { IAnnouncementdetailsProps } from './IAnnouncementdetailsProps';
@@ -37,10 +39,15 @@ import "@pnp/sp/files"; // Required for getFileById
 import "@pnp/sp/webs";  // Ensures sp.web is available
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import Avatar from "@mui/material/Avatar";
 interface Reply {
   Id: number;
   AuthorId: number;
   UserName: string;
+
+  UserEmail: string;
+  SPSPicturePlaceholderState:string;
+
   Comments: string;
   Created: string;
   UserProfile: string;
@@ -76,6 +83,7 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
   const siteUrl = props.siteUrl;
   const elementRef = React.useRef<HTMLDivElement>(null);
   const [CurrentUser, setCurrentUser]: any[] = useState([]);
+  const [SPSPicturePlaceholderState, setSPSPicturePlaceholderState]= useState(null)
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
@@ -157,8 +165,8 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
     const idNum = originalString.substring(1);
     sp.web.lists
       .getByTitle("ARGDiscussionComments")
-      .items.select("*,DiscussionForum/Id")
-      .expand("DiscussionForum")
+      .items.select("*,DiscussionForum/Id,Author/ID,Author/Title,Author/EMail,Author/SPSPicturePlaceholderState")
+      .expand("DiscussionForum,Author")
       .filter(`DiscussionForumId eq ${Number(idNum)}`).orderBy("Modified" , false )()
       .then(async (result: any) => {
         console.log(result, "ARGDiscussionComments");
@@ -186,6 +194,11 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
                 Id: initialComments[i].Id,
                 UserName: initialComments[i].UserName,
                 AuthorId: initialComments[i].AuthorId,
+
+                AuthorEmail: initialComments[i].Author.EMail,
+                SPSPicturePlaceholderState : initialComments[i].Author.SPSPicturePlaceholderState,
+
+
                 Comments: initialComments[i].Comments,
                 Created: initialComments[i].Created, // Formatting the created date
                 UserLikesJSON: result1.length > 0 ? likeArray : []
@@ -211,6 +224,8 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
     debugger;
     setCurrentUser(await getCurrentUser(sp, siteUrl));
     setCurrentUserProfile(await getCurrentUserProfile(sp, siteUrl));
+     const profileemail = await getCurrentUserProfileEmail(sp);
+        setSPSPicturePlaceholderState( await getuserprofilepic(sp,profileemail));
 
   };
 
@@ -436,6 +451,8 @@ const DiscussionForumDetailsContext = ({ props }: any) => {
             Id: ress.data.Id,
             AuthorId: ress.data.AuthorId,
             UserName: ress.data.UserName, // Replace with actual username
+            UserEmail :CurrentUser.Email,
+            SPSPicturePlaceholderState : SPSPicturePlaceholderState,
             Comments: ress.data.Comments,
             Created: ress.data.Created,
             UserProfile: CurrentUserProfile,
@@ -1349,17 +1366,30 @@ alt="Check"
                                   {item?.InviteMemebers?.map((member: any, idx: any) => (
                                     <div className="projectmemeber">
                                       <div className="itemalign">
-                                        <img
-                                          // style={{
-                                          //   margin:
-                                          //     index == 0
-                                          //       ? "0 0 0 0"
-                                          //       : "0 0 0px -12px",
-                                          // }}
+                                        {/* <img
+                                          
                                           src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${member?.EMail}`}
                                           className="rounded-circlenu img-thumbnail avatar-xl"
                                           alt="profile-image"
-                                        />
+                                        /> */}
+
+                                        { Number(member.SPSPicturePlaceholderState) == 0  ?
+                                          <img
+                                            src={
+
+                                              `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${member?.EMail}`
+
+                                            }
+                                            className="rounded-circle"
+                                            width="50"
+                                            alt={member.Title}
+                                          />
+                                          :
+                                          member.EMail !== null && member.EMail !== undefined && member.EMail !== "" &&
+                                          <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle avatar-xl">
+                                            {`${member.EMail?.split('.')[0].charAt(0)}${member.EMail?.split('.')[1].charAt(0)}`.toUpperCase()}
+                                          </Avatar>
+                                        }
                                         <p className='mb-0'>{member?.Title} </p>
                                       </div>
                                       {/* {item.Author.EMail === currentUserEmailRef.current && (
@@ -1461,12 +1491,30 @@ alt="Check"
                                         (id: any, idx: any) => {
                                           return (
                                             <div className="m-1 border-bottom pb-2">
-                                              <img
+                                              {/* <img
                                                 style={{}}
                                                 src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
                                                 className="rounded-circlecss img-thumbnail avatar-xl"
                                                 alt="profile-image"
-                                              />{" "}
+                                              /> */}
+                                              { id.SPSPicturePlaceholderState == 0 ?
+                                        <img
+                                          src={
+
+                                            `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`
+
+                                          }
+                                          className="rounded-circle"
+                                          width="50"
+                                          alt={id.Title}
+                                        />
+                                        :
+                                        id.EMail !== null &&
+                                        <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle avatar-xl">
+                                          {`${id.EMail?.split('.')[0].charAt(0)}${id.EMail?.split('.')[1].charAt(0)}`.toUpperCase()}
+                                        </Avatar>
+                                      }
+                                              {" "}
                                               {id?.EMail}
                                             </div>
                                           );
@@ -1710,6 +1758,9 @@ alt="Check"
                                 onLike={() => isClosed ? null:handleLikeToggle(index)} // Pass like handler
                                 loadingReply={loadingReply}
                                 discussionArray={ArrDetails}
+                                CurrentUserEmail = {CurrentUser.Email}
+                                CurrSPSPicturePlaceholderState ={SPSPicturePlaceholderState}
+                                siteUrl = {siteUrl}
                               />
                             </div>
                           ))}
@@ -1721,11 +1772,31 @@ alt="Check"
                           <div className="card-body pb-3 gheight">
                             <h4 className="header-title font-16 text-dark fw-bold mb-0" style={{ fontSize: "20px" }}>Discussion Owner</h4>
                             <div className="displcenter">
-                              <img 
+                              {/* <img 
                                 src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item?.Author?.EMail}`}
                                 className="rounded-circlecss68 img-thumbnail avatar-xl"
                                 alt="profile-image"
-                              /></div>
+                              /> */}
+
+                                   { item?.Author?.SPSPicturePlaceholderState == 0 ?
+                                        <img
+                                          src={
+
+                                            `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item?.Author?.EMail}`
+
+                                          }
+                                          className="rounded-circle"
+                                          width="50"
+                                          alt={item?.Author?.Title}
+                                        />
+                                        :
+                                        item?.Author?.EMail !== null &&
+                                        <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle avatar-xl">
+                                          {`${item?.Author?.EMail?.split('.')[0].charAt(0)}${item?.Author?.EMail?.split('.')[1].charAt(0)}`.toUpperCase()}
+                                        </Avatar>
+                                      }
+                              
+                              </div>
                             <h1 className="text-muted font-14 mt-3"><p className="text-dark font-16 text-center mb-2">{item.Author.Title}</p>
                               <p className="text-muted font-14 text-center mb-1">{item.Title}</p>
                               <p className="text-muted font-12 text-center">{item.Author.EMail}</p>

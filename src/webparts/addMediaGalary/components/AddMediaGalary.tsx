@@ -59,6 +59,8 @@ import { WorkflowAuditHistory } from '../../../CustomJSComponents/WorkflowAuditH
 import { CONTENTTYPE_Media, LIST_TITLE_ContentMaster, LIST_TITLE_MediaGallery, LIST_TITLE_MyRequest } from '../../../Shared/Constants';
 let mode = "";
 let hidesavasdraft : any;
+let newfileupload:any
+let newfilepreview:any
 const AddMediaGalaryContext = ({ props }: any) => {
   
 
@@ -96,7 +98,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
   const [Loading, setLoading] = React.useState(false);
   const [modeValue, setmode] = React.useState("");
   const siteUrl = props.siteUrl;
-  const tenantUrl = props.siteUrl.split("/sites/")[0];
+  const tenantUrl = props.siteUrl?.split("/sites/")[0];
   console.log(siteUrl);
 
 
@@ -220,6 +222,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
     mode = getUrlParameterValue('mode');
     setmode(mode);
     if (mode && mode == 'approval') {
+      //alert(`mode is ${mode}`)
       setApprovalMode(true);
       let requestid = getUrlParameterValue('requestid');
       setInputDisabled(true);
@@ -373,10 +376,10 @@ const AddMediaGalaryContext = ({ props }: any) => {
       if (setMediaById.length > 0) {
 
         debugger
-
+        
         setEditForm(true)
 
-
+        // alert(`editform : ${editForm}`)
         let arr = {
 
           title: setMediaById[0].Title,
@@ -664,7 +667,10 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
   // };
   const onFileChange = async (event: React.ChangeEvent<HTMLInputElement>, libraryName: string, docLib: string) => {
-
+    if(libraryName === 'bannerimg'){
+      newfileupload = true
+      //alert(`banner img `)
+    }
     debugger;
 
 
@@ -710,7 +716,10 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
 
         if (imageVideoFiles.length > 0) {
-
+          const preview = URL.createObjectURL(imageVideoFiles[0]); // Generate preview URL
+          //alert(`preview ${preview}`)
+          newfilepreview = preview
+          setPreviewUrl(preview);  
           var arr = {};
 
 
@@ -722,7 +731,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
               docLib: docLib,
 
-
+              fileUrl: URL.createObjectURL(imageVideoFiles[0])
             };
 
             uloadImageFiles.push(arr);
@@ -883,41 +892,87 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
   // };
 
-  const deleteLocalFile = (index: number, filArray: any[], name: string) => {
-
-    // Remove the file at the specified index
-
-    if (name == "Gallery") {
-
-      filArray.splice(index, 1);
-
-      // Update the state based on the title
-
-      setImagepostArr1([...filArray]);
-
-      filArray[0].files.length > 0 ? "" : setShowModal(false);
-
-      clearFileInput(name);
-
+  const deleteLocalFile = async (index: number, ImagepostArr: any[], columnName: string) => {
+    try {
+      // Extract the file information from the array
+      const fileToDelete = ImagepostArr[index];
+  
+      if (!fileToDelete || !fileToDelete.fileUrl) {
+        throw new Error("File URL not found");
+      }
+  
+      // Delete the file from SharePoint document library
+      const fileUrl = fileToDelete.fileUrl;
+      console.log(fileUrl , "fileUrl")
+      debugger  
+      const removeimage = await sp.web.getFileByServerRelativePath(fileUrl).recycle(); // Sends the file to the recycle bin
+       console.log(removeimage , "removeimage")
+       debugger
+      // Remove the file from the MediaGalleryJSON column
+      const list = sp.web.lists.getByTitle("ARGMediaGallery");
+      const item = await list.items.getById(editID).select("MediaGalleryJSON")();
+      debugger
+      console.log("items of MediaGalleryJSON" , item)
+      const mediaGalleryJSON = item.MediaGalleryJSON ? JSON.parse(item.MediaGalleryJSON) : [];
+  
+      // Filter out the deleted file from the JSON array
+      const updatedGalleryJSON = mediaGalleryJSON.filter((image: any) => image.ID !== fileToDelete.ID);
+      console.log(updatedGalleryJSON , "updatedGalleryJSON")
+      debugger
+      // Update the item in SharePoint
+      await list.items.getById(editID).update({
+        MediaGalleryJSON: JSON.stringify(updatedGalleryJSON),
+      });
+  
+      // Remove the file from the local array and update the state
+      const updatedArray = [...ImagepostArr];
+      updatedArray.splice(index, 1);
+      setImagepostArr(updatedArray);
+  
+      Swal.fire("Deleted successfully", "", "success");
+    } catch (error) {
+      console.error("Error deleting file:", error);
+      Swal.fire("Error", error.message, "error");
     }
-    else {
-      filArray.splice(index, 1);
-
-      // Update the state based on the title
-
-      setBannerImagepostArr([...filArray]);
-
-      filArray[0].files.length > 0 ? "" : setShowModal1(false);
-
-      clearFileInput(name);
-    }
-
-
-
-
-    // Clear the file input
-
   };
+  
+
+  // const deleteLocalFile = async (index: number, filArray: any[], name: string) => {
+
+  
+  //   // Remove the file at the specified index
+
+  //   if (name == "Gallery") {
+
+  //     filArray.splice(index, 1);
+
+  //     // Update the state based on the title
+
+  //     setImagepostArr1([...filArray]);
+
+  //     filArray[0].files.length > 0 ? "" : setShowModal(false);
+
+  //     clearFileInput(name);
+
+  //   }
+  //   else {
+  //     filArray.splice(index, 1);
+
+  //     // Update the state based on the title
+
+  //     setBannerImagepostArr([...filArray]);
+
+  //     filArray[0].files.length > 0 ? "" : setShowModal1(false);
+
+  //     clearFileInput(name);
+  //   }
+
+
+
+
+  //   // Clear the file input
+
+  // };
 
   //#endregion
 
@@ -1762,7 +1817,8 @@ const handleFormSubmit = async () => {
     const postPayload = {
       Title: formData.title,
       EntityMasterId: Number(formData.entity),
-      Status: "Submitted",
+       Status: "Submitted",
+   
       AuthorId: currentUser.Id,
       Image: JSON.stringify(bannerImageArray),
       MediaGalleryCategoryId: formData.Category,
@@ -1782,7 +1838,20 @@ const handleFormSubmit = async () => {
         existingItem = await sp.web.lists.getByTitle('ARGMediaGallery').items.getById(editID)();
         // alert(`existingItem:${JSON.stringify(existingItem)}`)
       }
-    
+       
+      if(formData.Status == "Save as draft"){
+        const postPayload = {
+          Title: formData.title,
+          EntityMasterId: Number(formData.entity),
+          //  Status: "Submitted",x
+           Status: "Submitted",
+          AuthorId: currentUser.Id,
+          // Image: JSON.stringify(bannerImageArray),
+          Image: JSON.stringify(bannerImageArray || JSON.parse(existingItem.Image)),
+          MediaGalleryCategoryId: formData.Category,
+      }
+      await updateItem({ ...postPayload, ...updatePayload }, sp, editID);
+    }else{
       const postPayload = {
         Title: formData.title,
         EntityMasterId: Number(formData.entity),
@@ -1794,6 +1863,8 @@ const handleFormSubmit = async () => {
         MediaGalleryCategoryId: formData.Category,
       };
       await updateItem({ ...postPayload, ...updatePayload }, sp, editID);
+    }
+      
     } else {
       const postResult = await addItem(postPayload, sp);
       const postId = postResult?.data?.ID;
@@ -1801,7 +1872,7 @@ const handleFormSubmit = async () => {
       if (!postId) {
         throw new Error("Failed to create item.");
       }
-
+   
       if (Object.keys(updatePayload).length > 0) {
         await updateItem(updatePayload, sp, postId);
       }
@@ -1825,7 +1896,7 @@ const handleFormSubmit = async () => {
       }
       await AddContentMaster(sp, arr)
       const  boolval = await handleClick(postId, "Media", Number(formData.entity))
-      alert(`boolval ${boolval}`)
+      //alert(`boolval ${boolval}`)
     }
 
     Swal.fire('Submitted successfully.', '', 'success');
@@ -1836,6 +1907,38 @@ const handleFormSubmit = async () => {
   } finally {
     setLoading(false);
   }
+};
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null); // To store the file preview URL
+const [isModalOpen, setIsModalOpen] = useState<boolean>(false);   // To manage modal visibility
+
+  const handlePreviewClick = (fileObj:any) => {
+    if(newfileupload === true){
+     console.log(newfilepreview , "here is newfilepreview")
+   //alert(`new file ${newfilepreview}`)
+
+       setPreviewUrl(newfilepreview); // Set the preview URL
+       setIsModalOpen(true);   // Open the modal
+   } else {
+     console.log(fileObj , "here is fileObj")
+     //alert(`here is fileObj${fileObj}`)
+     //alert(`${fileObj.serverUrl} ${fileObj.serverRelativeUrl}`)
+     //alert(`fileObj:${fileObj} + fileObj.serverRelativeUrl ${fileObj.serverRelativeUrl}`)
+     if (fileObj && fileObj.serverUrl && fileObj.serverRelativeUrl) {
+       const fileUrl = `${fileObj.serverUrl.trim()}${fileObj.serverRelativeUrl.trim()}`;
+       // Combine serverUrl and serverRelativeUrl
+         setPreviewUrl(fileUrl); // Set the preview URL
+         setIsModalOpen(true);   // Open the modal
+     } else {
+         //alert("Invalid file object. Cannot generate preview URL.");
+     }
+   }
+    
+  
+};
+
+const closeModal = () => {
+  setPreviewUrl(null);
+  setIsModalOpen(false);
 };
 
   //#endregion
@@ -2758,7 +2861,7 @@ const handleFormSubmit = async () => {
 
                                 BnnerImagepostArr.length > 0 &&
 
-                                (<a onClick={() => setShowModalFunc(true, "Image")} style={{ fontSize: '0.875rem' }}>
+                                (<a onClick={() => handlePreviewClick(BnnerImagepostArr[0])} style={{ fontSize: '0.875rem' }} >
 
                                   <FontAwesomeIcon icon={faPaperclip} /> 1 file Attached
 
@@ -3265,9 +3368,9 @@ const handleFormSubmit = async () => {
                         <th>File Name</th>
 
                         <th>File Size</th>
-                        {modeValue == null &&
+                        {/* {modeValue == null && */}
                           <th className='text-center'>Action</th>
-                        }
+                        {/* } */}
                       </tr>
 
                     </thead>
@@ -3281,26 +3384,7 @@ const handleFormSubmit = async () => {
                           <td className='text-center'>{index + 1}</td>
 
                           <td>
-                            {/* <img
-                              className='imagefe'
-                              src={file.fileType.startsWith('video/') ?
-                                require("../../../Assets/ExtraImage/video.jpg") :
-                                (file.fileUrl ? file.fileUrl : `${siteUrl}/MediaGallery/${file.fileName}`)}
-                              alt={'default image'}
-                            /> */}
-                                     
-                             {/* <img
-                  className='imagefe'
-                  src={file.fileType.startsWith('video/')
-                    ? require("../../../Assets/ExtraImage/video.jpg")
-                    : (file.fileUrl ? file.fileUrl : `${siteUrl}/MediaGallery/${file.fileName}`)}
-                  alt='default image'
-                  style={{ cursor: 'pointer' }}
-                  onClick={() => handleShow(file.fileType.startsWith('video/')
-                    ? require("../../../Assets/ExtraImage/video.jpg")
-                    : (file.fileUrl ? file.fileUrl : `${siteUrl}/MediaGallery/${file.fileName}`))}
-                /> */}
-
+                            
 <img
           className='imagefe'
           src={file.fileType && file.fileType.startsWith('video/') ? 
@@ -3315,14 +3399,14 @@ const handleFormSubmit = async () => {
                           <td>{file.fileName}</td>
 
                           <td className='text-right'>{file.fileSize}</td>
-                          {modeValue == null &&
+                        
                             <td className='text-center'>
                               
                                <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }}
 
                               onClick={() => deleteLocalFile(index, ImagepostArr1, "Gallery")} /> </td>
 
-                          }
+                      
                         </tr>
 
                       ))}
@@ -3353,7 +3437,7 @@ const handleFormSubmit = async () => {
           </Button>
         </Modal.Footer>
       </Modal> */}
-<Modal show={show} onHide={handleClose} className='previewpp'>
+<Modal show={show} onHide={handleClose}>
   <Modal.Header closeButton>
     <Modal.Title>{isVideo ? 'Video Preview' : 'Image Preview'}</Modal.Title>
   </Modal.Header>
@@ -3367,11 +3451,11 @@ const handleFormSubmit = async () => {
       <img src={modalImageSrc} alt="Image Preview" style={{ width: '100%' }} />
     )}
   </Modal.Body>
-  {/* <Modal.Footer>
+  <Modal.Footer>
     <Button variant="secondary" onClick={handleClose}>
       Close
     </Button>
-  </Modal.Footer> */}
+  </Modal.Footer>
 </Modal>
 
             <Modal show={showModal1} onHide={() => setShowModal1(false)} size="lg">
@@ -3406,9 +3490,9 @@ const handleFormSubmit = async () => {
                         <th>File Name</th>
 
                         <th>File Size</th>
-                        {modeValue == null &&
+                        {/* {modeValue == null || modeValue == 'approval' && */}
                           <th className='text-center'>Action</th>
-                        }
+                        {/* } */}
                       </tr>
 
                     </thead>
@@ -3488,7 +3572,19 @@ const handleFormSubmit = async () => {
               </Modal.Body>
 
             </Modal>
-
+      <Modal show={isModalOpen} onHide={closeModal}>
+              <Modal.Header closeButton>
+                <Modal.Title>Image Preview</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <img src={previewUrl} alt="Image Preview" style={{ width: '100%' }} />
+              </Modal.Body>
+              <Modal.Footer>
+                <Button variant="secondary" onClick={closeModal}>
+                  Close
+                </Button>
+              </Modal.Footer>
+                    </Modal>
           </div>
 
         </div>

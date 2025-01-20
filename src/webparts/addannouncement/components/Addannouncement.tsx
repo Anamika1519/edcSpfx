@@ -34,7 +34,8 @@ import { FormSubmissionMode } from '../../../Shared/Interfaces';
 import { WorkflowAuditHistory } from '../../../CustomJSComponents/WorkflowAuditHistory/WorkflowAuditHistory';
 import { CONTENTTYPE_Announcement, CONTENTTYPE_News, LIST_TITLE_ContentMaster, LIST_TITLE_AnnouncementAndNews, LIST_TITLE_MyRequest } from '../../../Shared/Constants';
 import { useRef, useState } from 'react';
-
+let newfileupload:any
+let newfilepreview:any
 interface FormField {
   type: string;
   name: string;
@@ -68,7 +69,7 @@ const AddannouncementContext = ({ props }: any) => {
   const [showImgModal, setShowImgTable] = React.useState(false);
   const [showBannerModal, setShowBannerTable] = React.useState(false);
   const siteUrl = props.siteUrl;
-  const tenantUrl = props.siteUrl.split("/sites/")[0];
+  const tenantUrl = props.siteUrl?.split("/sites/")[0];
   const [editID, setEditID] = React.useState(null);
   const [selectedUsers, setSelectedUsers] = React.useState<any[]>([]);
   const [errorsForUserSelection, setErrorsForUserSelection] = React.useState<{
@@ -900,6 +901,40 @@ const AddannouncementContext = ({ props }: any) => {
     }
 
   }
+
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null); // To store the file preview URL
+const [isModalOpen, setIsModalOpen] = useState<boolean>(false);   // To manage modal visibility
+
+  const handlePreviewClick = (fileObj:any) => {
+    if(newfileupload === true){
+     console.log(newfilepreview , "here is newfilepreview")
+   //alert(`new file ${newfilepreview}`)
+
+       setPreviewUrl(newfilepreview); // Set the preview URL
+       setIsModalOpen(true);   // Open the modal
+   } else {
+     console.log(fileObj , "here is fileObj")
+     //alert(`here is fileObj${fileObj}`)
+     //alert(`${fileObj.serverUrl} ${fileObj.serverRelativeUrl}`)
+     //alert(`fileObj:${fileObj} + fileObj.serverRelativeUrl ${fileObj.serverRelativeUrl}`)
+     if (fileObj && fileObj.serverUrl && fileObj.serverRelativeUrl) {
+       const fileUrl = `${fileObj.serverUrl.trim()}${fileObj.serverRelativeUrl.trim()}`;
+       // Combine serverUrl and serverRelativeUrl
+         setPreviewUrl(fileUrl); // Set the preview URL
+         setIsModalOpen(true);   // Open the modal
+     } else {
+         //alert("Invalid file object. Cannot generate preview URL.");
+     }
+   }
+    
+  
+};
+
+const closeModal = () => {
+  setPreviewUrl(null);
+  setIsModalOpen(false);
+};
+
   //#endregion
 
   // start save as draft
@@ -1314,6 +1349,11 @@ const AddannouncementContext = ({ props }: any) => {
   };
   //#region onFileChange
   const onFileChange = async (event: React.ChangeEvent<HTMLInputElement>, libraryName: string, docLib: string) => {
+
+    if(libraryName === 'bannerimg'){
+      newfileupload = true
+      //alert(`banner img `)
+    }
     debugger;
     event.preventDefault();
     let uloadDocsFiles: any[] = [];
@@ -1399,10 +1439,15 @@ const AddannouncementContext = ({ props }: any) => {
         );
 
         if (imageVideoFiles.length > 0) {
+          const preview = URL.createObjectURL(imageVideoFiles[0]); // Generate preview URL
+          //alert(`preview ${preview}`)
+          newfilepreview = preview
+          setPreviewUrl(preview);  
           const arr = {
             files: imageVideoFiles,
             libraryName: libraryName,
-            docLib: docLib
+            docLib: docLib,
+            fileUrl: URL.createObjectURL(imageVideoFiles[0])
           };
           if (libraryName === "Gallery") {
             uloadImageFiles.push(arr);
@@ -1839,7 +1884,7 @@ const AddannouncementContext = ({ props }: any) => {
                             <div>
                               {BnnerImagepostArr[0] != false && BnnerImagepostArr.length > 0 &&
                                 BnnerImagepostArr != undefined ? BnnerImagepostArr.length == 1 &&
-                              (<a style={{ fontSize: '0.875rem' }}>
+                              (<a style={{ fontSize: '0.875rem' }} onClick={() => handlePreviewClick(BnnerImagepostArr[0])}>
                                 <FontAwesomeIcon icon={faPaperclip} />1 file Attached
                               </a>) : ""
                                 // || BnnerImagepostArr.length > 0 && BnnerImagepostArr[0].files.length > 1 &&
@@ -2279,19 +2324,32 @@ const AddannouncementContext = ({ props }: any) => {
               </Modal.Body>
 
             </Modal>
-            <Modal show={show} onHide={handleClose} className='previewpp'>
+            <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Image Preview</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <img src={modalImageSrc} alt="Image Preview" style={{ width: '100%' }} />
         </Modal.Body>
-        {/* <Modal.Footer>
-         <Button variant="secondary" onClick={handleClose}>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
             Close
-          </Button> 
-        </Modal.Footer> */}
+          </Button>
+        </Modal.Footer>
       </Modal>
+             <Modal show={isModalOpen} onHide={closeModal}>
+              <Modal.Header closeButton>
+                <Modal.Title>Image Preview</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <img src={previewUrl} alt="Image Preview" style={{ width: '100%' }} />
+              </Modal.Body>
+              <Modal.Footer>
+                <Button variant="secondary" onClick={closeModal}>
+                  Close
+                </Button>
+              </Modal.Footer>
+                    </Modal>
           </div>
         </div>
       </div>

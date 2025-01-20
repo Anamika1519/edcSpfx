@@ -75,13 +75,31 @@ export const getMedia = async (_sp, isSuperAdmin) => {
 // new G
 
 
+// export const uploadAllFiles = async (files, sp, docLib) => {
+//   alert(`file ${files}`)
+//   console.log(files , "files")
+//   const uploadPromises = files.map(file =>
+//     uploadFileToLibrary(file, sp, docLib)
+//   );
+
+//   const uploadResults = await Promise.all(uploadPromises);
+//   return uploadResults.flat(); // Flatten if uploadFileToLibrary returns an array.
+// };
 export const uploadAllFiles = async (files, sp, docLib) => {
-  const uploadPromises = files.map(file =>
+  // Ensure files is an array
+  const filesArray = Array.isArray(files) ? files : [files];
+   console.log(filesArray , "filesArray")
+   debugger
+  //alert(`Files: ${JSON.stringify(filesArray)}`);
+  console.log(filesArray, "Files Array");
+
+  // Proceed with mapping only if filesArray is valid
+  const uploadPromises = filesArray.map(file =>
     uploadFileToLibrary(file, sp, docLib)
   );
 
   const uploadResults = await Promise.all(uploadPromises);
-  return uploadResults.flat(); // Flatten if uploadFileToLibrary returns an array.
+  return uploadResults.flat(); // Flatten the results if each upload returns an array
 };
 
 export const uploadFileToLibrary = async (file, sp, docLib) => {

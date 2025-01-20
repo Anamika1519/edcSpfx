@@ -3,7 +3,7 @@ import { useState } from "react";
 
 import "../GroupTeamPost/GroupPostComponent.scss"
 
-import { addActivityLeaderboard, addNotification, getCurrentUserNameId, getUserProfilePicture, getUserSPSPicturePlaceholderState } from "../../APISearvice/CustomService";
+import { addActivityLeaderboard, addNotification, getCurrentUserNameId, getCurrentUserProfileEmail, getuserprofilepic, getUserProfilePicture, getUserSPSPicturePlaceholderState } from "../../APISearvice/CustomService";
 
 import { Heart, Menu, MessageSquare, MoreHorizontal, MoreVertical, Share, Share2, ThumbsUp } from "react-feather";
 
@@ -19,12 +19,12 @@ import SocialFeed, { IGroupAndTeamPosts } from "../../webparts/groupandTeamDetai
 import { Carousel, Modal } from "react-bootstrap";
 import Avatar from "@mui/material/Avatar";
 
-export const GroupPostComponent = ({ key, sp, siteUrl, isedit, currentUsername, CurrentUser, currentEmail, fetchPosts, post, groupsArray }: any) => {
+export const GroupPostComponent = ({ key, sp, siteUrl, isedit, currentUsername, CurrentUser, currentEmail, fetchPosts, post,groupsArray,SPSPicturePlaceholderState }: any) => {
     const [loadingReply, setLoadingReply] = useState<boolean>(false);
     const [loadingLike, setLoadingLike] = useState<boolean>(false);
     const [liked, setLiked] = useState(post.userHasLiked);
     const [likesCount, setLikesCount] = useState(post.LikesCount || 0);
-    const [CurrentuserPicturePlaceholderState, setCurrentuserPicturePlaceholderState] = useState("");
+    const [CurrentuserPicturePlaceholderState, setCurrentuserPicturePlaceholderState] = useState(null);
     const [CurrenuserProfilepic, SetCurrenuserProfilepic] = useState(null);
     const [CommentsCount, setCommentsCount] = useState(post.CommentsCount || 0);
     const [posts, setPosts] = useState([post]);
@@ -81,7 +81,9 @@ export const GroupPostComponent = ({ key, sp, siteUrl, isedit, currentUsername, 
         setAuthorId(userId);
         fetchInitialGroupLikeData(userId);
         SetCurrenuserProfilepic(await getUserProfilePicture(userId, sp));
-        setCurrentuserPicturePlaceholderState(await getUserSPSPicturePlaceholderState(userId, sp))
+        const profileemail = await getCurrentUserProfileEmail(sp);
+        setCurrentuserPicturePlaceholderState( await getuserprofilepic(sp,profileemail));
+        // setCurrentuserPicturePlaceholderState(await getUserSPSPicturePlaceholderState(userId, sp))
     };
 
     const toggleMenu = (e: any) => {
@@ -121,7 +123,7 @@ export const GroupPostComponent = ({ key, sp, siteUrl, isedit, currentUsername, 
 
         try {
             sp.web.lists.getByTitle("ARGGroupandTeamComments")
-                .items.select("*,GroupTeamComments/Id,GroupTeamComments/Comments,GroupTeamsImages/Id,GroupTeamLikes/Id,Author/Id,Author/Title,Author/EMail")
+                .items.select("*,GroupTeamComments/Id,GroupTeamComments/Comments,GroupTeamsImages/Id,GroupTeamLikes/Id,Author/Id,Author/Title,Author/EMail,Author/SPSPicturePlaceholderState")
                 .expand("GroupTeamComments,GroupTeamsImages,GroupTeamLikes,Author")
                 .orderBy("Created", false)
                 .filter(`GroupandTeamId eq ${idNum}`)().then((results: IGroupAndTeamPosts[]) => {
@@ -246,7 +248,7 @@ export const GroupPostComponent = ({ key, sp, siteUrl, isedit, currentUsername, 
                     setCommentsCount(ele.length);
             })
 
-        await sp.web.lists.getByTitle('ARGGroupandTeamUserComments').items.select("*,Author/Id,Author/EMail,Author/Title").expand("Author")
+        await sp.web.lists.getByTitle('ARGGroupandTeamUserComments').items.select("*,Author/Id,Author/EMail,Author/Title,Author/SPSPicturePlaceholderState").expand("Author")
             .filter(`GroupandTeamCommentsId eq ${postId}`)().then(async (ele: any) => {
                 if (ele.length > 0)
                     setComments(ele);
@@ -372,7 +374,7 @@ export const GroupPostComponent = ({ key, sp, siteUrl, isedit, currentUsername, 
 
                     const commentResponse = await sp.web.lists.getByTitle('ARGGroupandTeamUserComments').items.add(commentsBody);
                     console.log('Comment added:', commentResponse);
-                    await sp.web.lists.getByTitle('ARGGroupandTeamUserComments').items.select("*,Author/Id,Author/EMail,Author/Title").expand("Author")
+                    await sp.web.lists.getByTitle('ARGGroupandTeamUserComments').items.select("*,Author/Id,Author/EMail,Author/Title,Author/SPSPicturePlaceholderState").expand("Author")
                         .filter(`GroupandTeamCommentsId eq ${postId}`)().then(async (ele: any) => {
                             if (ele.length > 0)
                                 await addActivityLeaderboard(sp, "Comments on Post");
@@ -671,7 +673,24 @@ export const GroupPostComponent = ({ key, sp, siteUrl, isedit, currentUsername, 
             <div className="post-header">
                 <div className="d-flex align-items-center" style={{ width: '100%' }}>
                     <div className="flex-shrink-0">
-                        <img src={post.userAvatar} alt="user avatar" className="avatar" />
+                        {/* <img src={post.userAvatar} alt="user avatar" className="avatar" /> */}
+                        {Number(post.AuthorDetails.SPSPicturePlaceholderState) == 0 ?
+                            <img
+
+                                src={
+
+                                    `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${post.AuthorDetails.EMail}`
+
+                                }
+                                className="me-2 mt-0 avatar-sm rounded-circle"
+                                alt="User"
+                            />
+                            :
+                            post.AuthorDetails.EMail !== null && post.AuthorDetails.EMail !== "" &&
+                            <Avatar sx={{ bgcolor: 'primary.main' }} className="me-2 mt-0 avatar-sm rounded-circle font-14">
+                                {`${post.AuthorDetails.EMail?.split('.')[0].charAt(0)}${post.AuthorDetails.EMail?.split('.')[1].charAt(0)}`.toUpperCase()}
+                            </Avatar>
+                        }
                     </div>
                     <div className="flex-grow-1 ">
                         <p className="pt-2 mb-1" style={{ marginBottom: 'unset' }}>
@@ -951,7 +970,24 @@ export const GroupPostComponent = ({ key, sp, siteUrl, isedit, currentUsername, 
             {comments.length > 0 ? comments.map((comment: any, index: React.Key) => (
                 <div className="d-flex align-items-start commentss">
                     <div className="flex-shrink-0">
-                        <img src={comment.UserProfile} alt="user avatar" className="commentsImg" />
+                        {/* <img src={comment.UserProfile} alt="user avatar" className="commentsImg" /> */}
+                        {comment.Author && Number(comment.Author?.SPSPicturePlaceholderState) == 0 ?
+                            <img
+
+                                src={
+
+                                    `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${comment.Author.EMail}`
+
+                                }
+                                className="me-2 mt-0 avatar-sm rounded-circle"
+                                alt="User"
+                            />
+                            :
+                            comment.Author && comment.Author?.EMail !== null && comment.Author?.EMail !== "" &&
+                            <Avatar sx={{ bgcolor: 'primary.main' }} className="me-2 mt-0 avatar-sm rounded-circle">
+                                {`${comment.Author?.EMail?.split('.')[0].charAt(0)}${comment.Author?.EMail?.split('.')[1].charAt(0)}`.toUpperCase()}
+                            </Avatar>
+                        }
                     </div>
                     <div className="flex-grow-1 ms-2">
                         <p className="mb-1 fw-bold">
@@ -1002,14 +1038,14 @@ export const GroupPostComponent = ({ key, sp, siteUrl, isedit, currentUsername, 
             </div> */}
             {/* Add a New Comment */}
             <form onSubmit={(e) => handleAddComment(e)} className="add-comment" style={{ gap: '1rem' }}>
-                {console.log("CurrenuserProfilepicnmgrouppst", CurrenuserProfilepic, CurrentuserPicturePlaceholderState, currentEmail)}
-                {currentEmail !== "" && CurrenuserProfilepic != null && Number(CurrentuserPicturePlaceholderState) == 0 ?
+                {console.log("CurrenuserProfilepicnmgrouppst",CurrenuserProfilepic,CurrentuserPicturePlaceholderState,currentEmail)}
+                {currentEmail !== "" &&SPSPicturePlaceholderState !=null && SPSPicturePlaceholderState !=""&& Number(SPSPicturePlaceholderState) == 0 ?
                     <img src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${currentEmail}`} alt="user avatar" className="commentsImg" />
                     :
-                    currentEmail !== "" &&
-                    <Avatar sx={{ bgcolor: 'primary.main' }} className="commentsImg img-thumbnail
+                    currentEmail !== "" &&currentEmail !== null &&currentEmail !== undefined &&
+                    <Avatar sx={{ bgcolor: 'primary.main' }} className="commentsImg font-15 img-thumbnail
                                   avatar-xl">
-                        {`${currentEmail.split('.')[0]?.charAt(0)}${currentEmail.split('.')[1]?.charAt(0)}`.toUpperCase()}
+                        {`${currentEmail?.split('.')[0]?.charAt(0)}${currentEmail?.split('.')[1]?.charAt(0)}`.toUpperCase()}
                     </Avatar>
                 }
 

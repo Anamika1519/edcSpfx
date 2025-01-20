@@ -10,11 +10,14 @@ import moment from "moment";
 import { getSP } from '../../webparts/newsDetails/loc/pnpjsConfig';
 import { SPFI } from '@pnp/sp/presets/all';
 import Swal from "sweetalert2";
+import Avatar from "@mui/material/Avatar";
 // Define types for reply and comment structures
 interface Reply {
   Id: number;
   AuthorId: number,
   UserName: string;
+  UserEmail: string;
+  SPSPicturePlaceholderState:string;
   Comments: string;
   Created: string;
   UserProfile: string;
@@ -55,8 +58,11 @@ export const CommentNewsCard: React.FC<{
   onAddReply: (text: string) => void;
   onLike: () => void;
   loadingReply:boolean;
-  newsArray:any
-}> = ({ commentId, username, Commenttext, Comments, Created, likes, replies, userHasLiked, CurrentUserProfile,loadingLike, onAddReply, onLike,loadingReply ,newsArray}) => {
+  newsArray:any;
+  CurrentUserEmail :String;
+  CurrSPSPicturePlaceholderState :string;
+  siteUrl:string;
+}> = ({ commentId, username, Commenttext, Comments, Created, likes, replies, userHasLiked, CurrentUserProfile,loadingLike, onAddReply, onLike,loadingReply ,newsArray, CurrentUserEmail,  CurrSPSPicturePlaceholderState,  siteUrl}) => {
   const sp: SPFI = getSP();
   const [newReply, setNewReply] = useState('');
   const [loading, setLoading] = useState(false); // Loading state for replies
@@ -240,12 +246,30 @@ export const CommentNewsCard: React.FC<{
       <div className="nose">
         <div className="row">
           <div className="d-flex align-items-start">
-            <img
+            {/* <img
               className="me-2 mt-0 avatar-sm rounded-circle"
               src={Comments[0].UserProfile}
               alt="User"
-            />
- 
+            /> */}
+
+            {Number(Comments[commentId].SPSPicturePlaceholderState) == 0 ?
+              <img
+
+                src={
+
+                  `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${Comments[commentId].AuthorEmail}`
+
+                }
+                className="me-2 mt-0 avatar-sm rounded-circle"
+                alt="User"
+              />
+              :
+              Comments[commentId].AuthorEmail !== null && Comments[commentId].AuthorEmail !== "" && Comments[commentId].AuthorEmail !== undefined &&
+              <Avatar sx={{ bgcolor: 'primary.main' }} className="me-2 mt-0 avatar-sm rounded-circle">
+                {`${Comments[commentId].AuthorEmail?.split('.')[0].charAt(0)}${Comments[commentId].AuthorEmail?.split('.')[1].charAt(0)}`.toUpperCase()}
+              </Avatar>
+            }
+
             {/* <User /> */}
             <div className="w-100 mt-0">
               <h5 className="mt-0 font-16 fw600 mb-0 text-dark fw-bold">
@@ -306,11 +330,29 @@ export const CommentNewsCard: React.FC<{
               {replies.map((reply, index) => (
                 <div key={index} className="UserReplycss p-2 d-flex " style={{ width: '100%', display: 'flex' }}>
                   <div>
-                    <img
+                    {/* <img
                       className="me-2 mt-0 avatar-sm rounded-circle"
                       src={reply.UserProfile}
                       alt="User"
-                    />
+                    /> */}
+
+                    {Number(reply.SPSPicturePlaceholderState) == 0 ?
+                      <img
+
+                        src={
+
+                          `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${reply.UserEmail}`
+
+                        }
+                        className="me-2 mt-0 avatar-sm rounded-circle"
+                        alt="User"
+                      />
+                      :
+                      reply.UserEmail !== null && reply.UserEmail !== undefined && reply.UserEmail !== "" &&
+                      <Avatar sx={{ bgcolor: 'primary.main' }} className="me-2 mt-0 avatar-sm rounded-circle">
+                        {`${reply.UserEmail?.split('.')[0].charAt(0)}${reply.UserEmail?.split('.')[1].charAt(0)}`.toUpperCase()}
+                      </Avatar>
+                    }
                   </div>
                   <div className="w-100 mt-0">
                     <h6 className="font-14 fw600">{reply.UserName}</h6>
@@ -368,7 +410,24 @@ export const CommentNewsCard: React.FC<{
                 <div className="d-flex align-items-start">
                   <div className="al nice me-2">
  
-                    <img src={CurrentUserProfile} className="w30 avatar-sm rounded-circle" alt="user" />
+                    {/* <img src={CurrentUserProfile} className="w30 avatar-sm rounded-circle" alt="user" /> */}
+
+                    {Number(CurrSPSPicturePlaceholderState) == 0 ?
+                      <img
+
+                        src={
+
+                          `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${CurrentUserEmail}`
+
+                        }
+                        className="w30 avatar-sm rounded-circle" alt="user"
+                      />
+                      :
+                      CurrentUserEmail !== null && CurrentUserEmail !== "" &&
+                      <Avatar sx={{ bgcolor: 'primary.main' }} className="w30 avatar-sm rounded-circle">
+                        {`${CurrentUserEmail?.split('.')[0].charAt(0)}${CurrentUserEmail?.split('.')[1].charAt(0)}`.toUpperCase()}
+                      </Avatar>
+                    }
                   </div>
                   {/* <input
                     type="text"

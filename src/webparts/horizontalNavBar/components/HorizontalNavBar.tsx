@@ -496,7 +496,7 @@ const HorizontalNavbar = ({ _context, siteUrl }: any) => {
                   (currentUserEmail !== null || currentUserEmail !== "") &&
                   <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circlecss newuserin img-thumbnail
                                   avatar-xl">
-                    {`${currentUserEmail.split('.')[0]?.charAt(0)}${currentUserEmail.split('.')[1]?.charAt(0)}`.toUpperCase()}
+                    {`${currentUserEmail?.split('.')[0]?.charAt(0)}${currentUserEmail?.split('.')[1]?.charAt(0)}`.toUpperCase()}
                   </Avatar>
                 }
                 {/* <img src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${currentUserEmail}`}
@@ -514,7 +514,7 @@ const HorizontalNavbar = ({ _context, siteUrl }: any) => {
                   (currentUserEmail !== null || currentUserEmail !== "") &&
                   <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circlecss img-thumbnail
                                   avatar-xl">
-                    {`${currentUserEmail.split('.')[0]?.charAt(0)}${currentUserEmail.split('.')[1]?.charAt(0)}`.toUpperCase()}
+                    {`${currentUserEmail?.split('.')[0]?.charAt(0)}${currentUserEmail?.split('.')[1]?.charAt(0)}`.toUpperCase()}
                   </Avatar>
                 } */}
                 {/* <img src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${currentUserEmail}`}

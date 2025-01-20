@@ -15,7 +15,9 @@ import {
   addActivityLeaderboard,
   addNotification,
   getCurrentUser,
-  getCurrentUserProfile
+  getCurrentUserProfile,
+  getCurrentUserProfileEmail,
+  getuserprofilepic
 } from "../../../APISearvice/CustomService";
 import { Calendar, Link, Share } from "react-feather";
 import moment from "moment";
@@ -37,6 +39,10 @@ interface Reply {
   Id: number;
   AuthorId: number;
   UserName: string;
+
+  UserEmail: string;
+  SPSPicturePlaceholderState:string;
+
   Comments: string;
   Created: string;
   UserProfile: string;
@@ -67,6 +73,7 @@ const BlogDetailsContext = ({ props }: any) => {
   const siteUrl = props.siteUrl;
   const elementRef = React.useRef<HTMLDivElement>(null);
   const [CurrentUser, setCurrentUser]: any[] = useState([]);
+   const [SPSPicturePlaceholderState, setSPSPicturePlaceholderState]= useState(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
@@ -193,8 +200,8 @@ const BlogDetailsContext = ({ props }: any) => {
     let likeArray: any[] = []
     sp.web.lists
       .getByTitle("ARGBlogComments")
-      .items.select("*,ARGBlogs/Id")
-      .expand("ARGBlogs")
+      .items.select("*,ARGBlogs/Id,Author/ID,Author/Title,Author/EMail,Author/SPSPicturePlaceholderState")
+      .expand("ARGBlogs,Author")
       .filter(`ARGBlogsId eq ${Number(idNum)}`)()
       .then(async (result: any) => {
         console.log(result, "ARGBlogComments");
@@ -222,6 +229,8 @@ const BlogDetailsContext = ({ props }: any) => {
                 Id: initialComments[i].Id,
                 UserName: initialComments[i].UserName,
                 AuthorId: initialComments[i].AuthorId,
+                AuthorEmail: initialComments[i].Author.EMail,
+                SPSPicturePlaceholderState : initialComments[i].Author.SPSPicturePlaceholderState,
                 Comments: initialComments[i].Comments,
                 Created: initialComments[i].Created,  // Formatting the created date
                 UserLikesJSON: result1.length > 0 ? likeArray : []
@@ -247,6 +256,9 @@ const BlogDetailsContext = ({ props }: any) => {
     debugger;
     setCurrentUser(await getCurrentUser(sp, siteUrl));
     setCurrentUserProfile(await getCurrentUserProfile(sp, siteUrl));
+
+    const profileemail = await getCurrentUserProfileEmail(sp);
+    setSPSPicturePlaceholderState( await getuserprofilepic(sp,profileemail));
   };
 
   const copyToClipboard = (Id: number) => {
@@ -467,6 +479,11 @@ const BlogDetailsContext = ({ props }: any) => {
             Id: ress.data.Id,
             AuthorId: ress.data.AuthorId,
             UserName: ress.data.UserName, // Replace with actual username
+
+            UserEmail :CurrentUser.Email,
+            SPSPicturePlaceholderState : SPSPicturePlaceholderState,
+
+
             Comments: ress.data.Comments,
             Created: ress.data.Created,
             UserProfile: CurrentUserProfile,
@@ -788,6 +805,9 @@ const BlogDetailsContext = ({ props }: any) => {
                         onLike={() => handleLikeToggle(index)} // Pass like handler
                         loadingReply={loadingReply}
                         mainArray={ArrDetails}
+                        CurrentUserEmail = {CurrentUser.Email}
+                        CurrSPSPicturePlaceholderState ={SPSPicturePlaceholderState}
+                        siteUrl = {siteUrl}
                       />
                     </div>
                   ))}

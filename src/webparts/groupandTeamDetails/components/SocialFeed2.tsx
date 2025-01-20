@@ -33,7 +33,7 @@ import "../../../Assets/Figtree/Figtree-VariableFont_wght.ttf";
 import "bootstrap/dist/css/bootstrap.min.css";
 import CustomBreadcrumb from '../../../CustomJSComponents/CustomBreadcrumb/CustomBreadcrumb'
 import { Link, Plus, PlusCircle, Rss, TrendingUp, User, UserPlus, Users } from 'react-feather'
-import { getCurrentUser, getCurrentUserName, getCurrentUserNameId, getCurrentUserProfileEmail } from '../../../APISearvice/CustomService'
+import { getCurrentUser, getCurrentUserName, getCurrentUserNameId, getCurrentUserProfileEmail, getuserprofilepic } from '../../../APISearvice/CustomService'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons"
 import classNames from 'classnames'
@@ -47,7 +47,8 @@ import moment from 'moment'
 import { fetchMediaGallerydata } from '../../../APISearvice/MediaDetailsServies'
 import { GroupPostComponent } from '../../../CustomJSComponents/GroupTeamPost/GroupPostComponent'
 import Swal from 'sweetalert2'
-import { Avatar, colors } from '@mui/material'
+import { colors } from '@mui/material'
+import Avatar from "@mui/material/Avatar";
 
 export interface IGroupAndTeamPosts {
   Id: any;
@@ -103,6 +104,7 @@ const SocialFeedContext = ({ props }: any) => {
   const [currentId, setCurrentID] = useState<any>(0)
   const [filterCriteria, setFilterCriteria] = useState<string | null>(null);
   const [currentUsername, setCurrentUserName] = useState("")
+   const [SPSPicturePlaceholderState, setSPSPicturePlaceholderState]= useState(null);
   const [currentUserId, setCurrentUserId] = useState(0)
   const [UploadedFile, setUploadFile] = useState([])
   const [ImageIds, setImageIds] = useState([])
@@ -231,32 +233,47 @@ const SocialFeedContext = ({ props }: any) => {
     debugger;
     const getgroup1 = await sp.web.lists
       .getByTitle("ARGGroupandTeam")
-      .items.getById(idNum2).select("*,GroupFollowers/Id,GroupFollowers/Title,InviteMemebers/Id,InviteMemebers/Title,GroupType,Author/ID,Author/Title").expand("InviteMemebers , GroupFollowers , Author")()
-      .then((res) => {
+      .items.getById(idNum2).select("*,GroupFollowers/Id,GroupFollowers/Title,InviteMemebers/Id,InviteMemebers/Title,GroupType , Author/ID,Author/Title").expand("InviteMemebers , GroupFollowers , Author")()
+      //.then(async (res) => {
         // arr=res;
-        GroupName = res.GroupName
-        GroupDescription = res.GroupDescription
-        console.log(res, ":response")
+        GroupName = getgroup1.GroupName
+        GroupDescription = getgroup1.GroupDescription
+        console.log(getgroup1, ":response")
         // debugger
-        console.log("res------", res)
+        
         let arrr: any[] = [];
-        arrr.push(res)
+        if(getgroup1?.GroupFollowersId !== null){
+          for (var j = 0; j < getgroup1.GroupFollowers.length; j++) {
+            //console.log("hjhj",getgroup1.GroupFollowers[j].ID)
+            var user = await sp.web.getUserById(getgroup1.GroupFollowersId[j])();
+            console.log("userrrrrrr",user,getgroup1.GroupFollowersId[j])
+            if (user) {
+            var profile = await sp.profiles.getPropertiesFor(`i:0#.f|membership|${user.Email}`);
+            getgroup1.GroupFollowers[j].EMail = user.Email;
+        
+            getgroup1.GroupFollowers[j].SPSPicturePlaceholderState = profile.UserProfileProperties?profile.UserProfileProperties[profile.UserProfileProperties.findIndex((obj: { Key: string })=>obj.Key === "SPS-PicturePlaceholderState")].Value:"1";
+            }  
+          }
+        }
+       
+        
+        arrr.push(getgroup1)
         setArrDetails(arrr)
         debugger
 
         userList.forEach(function (element, index, array) {
           // Code to execute for each element
-          if (element.Id == res.GroupFollowersId) {
+          if (element.Id == getgroup1.GroupFollowersId) {
             resfiltergroup.push(element);
           }
           setGroupMembersArr(resfiltergroup);
         });
         // const resgroup=groupmembers.filter(x=>x.Id.includes(res.GroupFollowersId));
 
-      })
-      .catch((error) => {
-        console.log("Error fetching data: ", error);
-      });
+      //})
+      // .catch((error) => {
+      //   console.log("Error fetching data: ", error);
+      // });
    
   }
 
@@ -272,17 +289,17 @@ const SocialFeedContext = ({ props }: any) => {
     setgetAllgroup(getAllgroups)
     setCurrentUserId(currentUser);
     let currentGroup = await getGroupTeamDetailsById(sp, Number(idNum));
-    userjobtitle = await getownerjobtitle(currentGroup[0].Author.EMail);
+    userjobtitle = await getownerjobtitle(currentGroup[0]?.Author?.EMail);
     setArrDetails(currentGroup);
     console.log(currentGroup, "currentGroup", userjobtitle);
-    if (currentGroup[0].GroupType === "Selected Members" &&
+    if (currentGroup[0]?.GroupType === "Selected Members" &&
       currentGroup[0]?.InviteMemebers?.some((invitee: any) => invitee.Id === currentUser) || currentGroup[0].Author.ID === currentUser) {
       setIsEdit(true);
-    } else if (currentGroup[0].GroupType === "All" && currentGroup[0]?.GroupFollowers &&
+    } else if (currentGroup[0]?.GroupType === "All" && currentGroup[0]?.GroupFollowers &&
       currentGroup[0]?.GroupFollowers?.some((invitee: any) => invitee.Id === currentUser) || currentGroup[0].Author.ID === currentUser) {
       setIsEdit(true);
     }
-    else if (currentGroup[0].GroupType === "All" && currentGroup[0]?.GroupFollowers.length == 0 &&
+    else if (currentGroup[0]?.GroupType === "All" && currentGroup[0]?.GroupFollowers.length == 0 &&
       currentGroup[0].Author.ID === currentUser) {
       setIsEdit(true);
     }
@@ -296,6 +313,8 @@ const SocialFeedContext = ({ props }: any) => {
     setblogdata(await fetchBlogdatatop(sp))
     setUsersArr(await fetchUserInformationList(sp))
     setDiscussion(await getDiscussion(sp))
+     const profileemail = await getCurrentUserProfileEmail(sp);
+    setSPSPicturePlaceholderState( await getuserprofilepic(sp,profileemail));
     fetchPosts();
 
 
@@ -459,7 +478,7 @@ const SocialFeedContext = ({ props }: any) => {
 
     try {
       sp.web.lists.getByTitle("ARGGroupandTeamComments")
-        .items.select("*,GroupTeamComments/Id,GroupTeamComments/Comments,GroupTeamsImages/Id,GroupTeamLikes/Id,Author/Id,Author/Title")
+        .items.select("*,GroupTeamComments/Id,GroupTeamComments/Comments,GroupTeamsImages/Id,GroupTeamLikes/Id,Author/Id,Author/Title,Author/EMail,Author/SPSPicturePlaceholderState")
         .expand("GroupTeamComments,GroupTeamsImages,GroupTeamLikes,Author")
         .orderBy("Created", false)
         .filter(`GroupandTeamId eq ${idNum}`)().then((results: IGroupAndTeamPosts[]) => {
@@ -499,7 +518,7 @@ const SocialFeedContext = ({ props }: any) => {
     try {
       const cuurentID = await getCurrentUserNameId(sp);
       await sp.web.lists.getByTitle("ARGGroupandTeamComments")
-        .items.select("*,GroupTeamComments/Id,GroupTeamComments/Comments,GroupTeamsImages/Id,GroupTeamLikes/Id,Author/Id,Author/Title")
+        .items.select("*,GroupTeamComments/Id,GroupTeamComments/Comments,GroupTeamsImages/Id,GroupTeamLikes/Id,Author/Id,Author/Title,Author/EMail,Author/SPSPicturePlaceholderState")
         .expand("GroupTeamComments,GroupTeamsImages,GroupTeamLikes,Author")
         .orderBy("Created", false)
         .filter(`GroupandTeamId eq ${idNum} and AuthorId eq ${cuurentID}`)().then((results: any) => {
@@ -803,17 +822,35 @@ const SocialFeedContext = ({ props }: any) => {
 
                               </h4>
 
-                              {console.log("ArrDetails[0]ArrDetails[0]", ArrDetails[0])}
+                              {/* {console.log("ArrDetails[0]ArrDetails[0]", ArrDetails[0])} */}
                               {ArrDetails[0]?.GroupType === "All" &&
                                 ArrDetails[0]?.GroupFollowers?.length > 0 && ArrDetails[0].GroupFollowers.map((follower: any, idx: any) => (
 
                                   <div className="projectmemeber" key={idx}>
                                     <div className="itemalign">
-                                      <img
+                                      {/* <img
                                         src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${follower?.EMail}`}
                                         className="rounded-circlenu img-thumbnail avatar-xl"
                                         alt="profile-image"
-                                      />
+                                      /> */}
+
+                                      {follower?.SPSPicturePlaceholderState == 0 ?
+                                        <img
+                                          src={
+
+                                            `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${follower?.EMail}`
+
+                                          }
+                                          className="rounded-circle"
+                                          width="50"
+                                          alt={follower?.Title}
+                                        />
+                                        :
+                                        follower?.EMail !== null &&
+                                        <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle font-14 avatar-xl">
+                                          {`${follower?.EMail?.split('.')[0].charAt(0)}${follower?.EMail?.split('.')[1].charAt(0)}`.toUpperCase()}
+                                        </Avatar>
+                                      }
                                       <p>
                                         {follower?.Title}
                                         <img
@@ -833,17 +870,29 @@ const SocialFeedContext = ({ props }: any) => {
                                 ArrDetails[0]?.InviteMemebers.map((member: any, idx: any) => (
                                   <div className="projectmemeber">
                                     <div className="itemalign">
-                                      <img
-                                        // style={{
-                                        //   margin:
-                                        //     index == 0
-                                        //       ? "0 0 0 0"
-                                        //       : "0 0 0px -12px",
-                                        // }}
+                                      {/* <img
+                                        
                                         src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${member?.EMail}`}
                                         className="rounded-circlenu img-thumbnail avatar-xl"
                                         alt="profile-image"
-                                      />
+                                      /> */}
+                                      {member?.SPSPicturePlaceholderState == 0 ?
+                                        <img
+                                          src={
+
+                                            `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${member?.EMail}`
+
+                                          }
+                                          className="rounded-circle"
+                                          width="50"
+                                          alt={member?.Title}
+                                        />
+                                        :
+                                        member?.EMail !== null &&
+                                        <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle font-14 avatar-xl">
+                                          {`${member?.EMail?.split('.')[0].charAt(0)}${member?.EMail?.split('.')[1].charAt(0)}`.toUpperCase()}
+                                        </Avatar>
+                                      }
                                       <p className='mb-0'>{member?.Title} </p>
                                     </div>
                                     {/* {item.Author.EMail === currentUserEmailRef.current && (
@@ -1106,11 +1155,13 @@ const SocialFeedContext = ({ props }: any) => {
                               currentUserName={currentUsername}
                               currentUser={currentUserId}
                               currentEmail={currentEmail}
+                              SPSPicturePlaceholderState ={SPSPicturePlaceholderState}
                               editload={fetchPosts}
                               post={{
                                 userName: post.userName,
                                 Created: post.Created,
                                 Contentpost: post.Contentpost,
+                                AuthorDetails:post.Author,
                                 Author: post.Author.EMail,
                                 AuthorId:post.Author.Id,
                                 SocialFeedImagesJson: post.GroupTeamImagesJson,
@@ -1143,9 +1194,11 @@ const SocialFeedContext = ({ props }: any) => {
                               currentUserName={currentUsername}
                               currentUser={currentUserId}
                               currentEmail={currentEmail}
+                              SPSPicturePlaceholderState ={SPSPicturePlaceholderState}
                               editload={fetchPosts}
                               post={{
                                 userName: post.userName,
+                                AuthorDetails:post.Author,
                                 Author:post.Author.EMail,
                                 AuthorId:post.Author.Id,
                                 Created: post.Created,
@@ -1216,9 +1269,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                                 />
 
-                                <img
-
-                                  src={
+                                {/* <img  src={
 
                                     item.Picture != null
 
@@ -1236,7 +1287,25 @@ const SocialFeedContext = ({ props }: any) => {
 
                                   style={{ cursor: "pointer" }}
 
-                                />
+                                /> */}
+
+                                 {item?.SPSPicturePlaceholderState == 0 ?
+                                        <img
+                                          src={
+
+                                            `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item?.EMail}`
+
+                                          }
+                                          className="rounded-circle"
+                                          width="50"
+                                          alt={item?.Title}
+                                        />
+                                        :
+                                        item?.EMail !== null &&
+                                        <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle avatar-xl">
+                                          {`${item?.EMail?.split('.')[0].charAt(0)}${item?.EMail?.split('.')[1].charAt(0)}`.toUpperCase()}
+                                        </Avatar>
+                                      }
 
                               </a>
 
@@ -1529,7 +1598,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                                 />
 
-                                <img
+                                {/* <img
 
                                   src={
 
@@ -1549,7 +1618,24 @@ const SocialFeedContext = ({ props }: any) => {
 
                                   style={{ cursor: "pointer" }}
 
-                                />
+                                /> */}
+                                {item?.SPSPicturePlaceholderState == 0 ?
+                                        <img
+                                          src={
+
+                                            `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item?.EMail}`
+
+                                          }
+                                          className="rounded-circle"
+                                          width="50"
+                                          alt={item?.Title}
+                                        />
+                                        :
+                                        item?.EMail !== null &&
+                                        <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle avatar-xl">
+                                          {`${item?.EMail?.split('.')[0].charAt(0)}${item?.EMail?.split('.')[1].charAt(0)}`.toUpperCase()}
+                                        </Avatar>
+                                      }
 
                               </a>
 
@@ -1867,19 +1953,28 @@ const SocialFeedContext = ({ props }: any) => {
 
                     } */}
                     <div className="displcenter">
-                    {ArrDetails != null && ArrDetails.length > 0 && (ArrDetails[0]?.Author?.Title !== "" || ArrDetails[0]?.Author?.Title !== null) && ArrDetails[0].Author?.SPSPicturePlaceholderState == 0 ?
-                        <img
-                          src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${ArrDetails[0]?.Author.EMail}`}
-                          className="rounded-circlecss6 img-thumbnail avatar-xl"
-                          alt="profile-image"
-                        />
-                        :
-                        ArrDetails[0]?.Author?.Title !== "" &&
-                        <Avatar sx={{ bgcolor: 'primary.main' }} className="commentsImg img-thumbnail
-                                  avatar-xl">
-                            {`${ArrDetails[0]?.Author?.Title.split(' ')[0]?.charAt(0)}${ArrDetails[0]?.Author?.Title.split(' ')[1]?.charAt(0)}`.toUpperCase()}
-                        </Avatar>
-                      }
+                      {/* <img
+                        src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${ArrDetails[0]?.Author.EMail}`}
+                        className="rounded-circlecss6 img-thumbnail avatar-xl"
+                        alt="profile-image"
+                      /> */}
+                      {ArrDetails[0]?.Author.SPSPicturePlaceholderState == 0 ?
+                                        <img
+                                          src={
+
+                                            `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${ArrDetails[0]?.Author.EMail}`
+
+                                          }
+                                          className="rounded-circle"
+                                          width="50"
+                                          alt={ArrDetails[0]?.Author.Title}
+                                        />
+                                        :
+                                        ArrDetails[0]?.Author.EMail !== null &&ArrDetails[0]?.Author.EMail !== undefined &&ArrDetails[0]?.Author.EMail !== "" &&
+                                        <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle avatar-xl">
+                                          {`${ArrDetails[0]?.Author.EMail?.split('.')[0].charAt(0)}${ArrDetails[0]?.Author.EMail?.split('.')[1].charAt(0)}`.toUpperCase()}
+                                        </Avatar>
+                                      }
                       </div>
 
                     <h1 className='text-muted font-14 mt-3'>
@@ -2037,7 +2132,7 @@ const SocialFeedContext = ({ props }: any) => {
 
                         >
 
-                          {groupItem.GroupName} ({groupItem.GroupType})
+                          {groupItem.GroupName} ({groupItem?.GroupType})
 
                         </h4>
 

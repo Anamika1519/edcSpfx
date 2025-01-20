@@ -27,7 +27,7 @@ import { Button, Modal } from 'react-bootstrap';
 import { getSP } from '../loc/pnpjsConfig';
 import HorizontalNavbar from '../../horizontalNavBar/components/HorizontalNavBar';
 import { AddContentLevelMaster, AddContentMaster, getApprovalConfiguration, getLevel, UpdateContentMaster } from '../../../APISearvice/ApprovalService';
-import { Delete, PlusCircle } from 'react-feather';
+import { AlignRight, Delete, PlusCircle } from 'react-feather';
 import Multiselect from 'multiselect-react-dropdown';
 import { WorkflowAction } from '../../../CustomJSComponents/WorkflowAction/WorkflowAction';
 import { getUrlParameterValue } from '../../../Shared/Helper';
@@ -36,6 +36,8 @@ import { WorkflowAuditHistory } from '../../../CustomJSComponents/WorkflowAuditH
 import { CONTENTTYPE_Event, LIST_TITLE_ContentMaster, LIST_TITLE_EventMaster, LIST_TITLE_MyRequest } from '../../../Shared/Constants';
 import moment from 'moment';
 let mode = "";
+let newfileupload:any
+let newfilepreview:any
 const HelloWorldContext = ({ props }: any) => {
   const sp: SPFI = getSP();
   console.log(sp, 'sp');
@@ -80,8 +82,8 @@ const HelloWorldContext = ({ props }: any) => {
   const [isDarkMode, setIsDarkMode] = React.useState(false);
   const [pageValue, setpage] = React.useState("");
   const siteUrl = props.siteUrl;
-  const videositeurl = props.siteUrl.split("/sites")[0];
-  const tenantUrl = props.siteUrl.split("/sites/")[0];
+  const videositeurl = props.siteUrl?.split("/sites")[0];
+  const tenantUrl = props.siteUrl?.split("/sites/")[0];
   const [currentUser, setCurrentUser] = React.useState(null)
   const [EnityData, setEnityData] = React.useState([])
   const [editForm, setEditForm] = React.useState(false);
@@ -407,8 +409,8 @@ const HelloWorldContext = ({ props }: any) => {
             else {
               bannerImageArray = null
             }
-            const eventDate = new Date(formData.EventDate).toISOString().split("T")[0];
-            const RegistrationDueDate = new Date(formData.RegistrationDueDate).toISOString().split("T")[0];
+            const eventDate = new Date(formData.EventDate).toISOString()?.split("T")[0];
+            const RegistrationDueDate = new Date(formData.RegistrationDueDate).toISOString()?.split("T")[0];
             // update Post
             const postPayload = {
               EventName: formData.EventName,
@@ -599,8 +601,8 @@ const HelloWorldContext = ({ props }: any) => {
               }
             }
             //debugger
-            const eventDate = new Date(formData.EventDate).toISOString().split("T")[0];
-            const RegistrationDueDate = new Date(formData.RegistrationDueDate).toISOString().split("T")[0];
+            const eventDate = new Date(formData.EventDate).toISOString()?.split("T")[0];
+            const RegistrationDueDate = new Date(formData.RegistrationDueDate).toISOString()?.split("T")[0];
             // Create Post
             const postPayload = {
               EventName: formData.EventName,
@@ -726,8 +728,8 @@ const HelloWorldContext = ({ props }: any) => {
             else {
               bannerImageArray = null
             }
-            const eventDate = new Date(formData.EventDate).toISOString().split("T")[0];
-            const RegistrationDueDate = new Date(formData.RegistrationDueDate).toISOString().split("T")[0];
+            const eventDate = new Date(formData.EventDate).toISOString()?.split("T")[0];
+            const RegistrationDueDate = new Date(formData.RegistrationDueDate).toISOString()?.split("T")[0];
             // update Post
             const postPayload = {
               EventName: formData.EventName,
@@ -891,8 +893,8 @@ const HelloWorldContext = ({ props }: any) => {
               }
             }
             //debugger
-            const eventDate = new Date(formData.EventDate).toISOString().split("T")[0];
-            const RegistrationDueDate = new Date(formData.RegistrationDueDate).toISOString().split("T")[0];
+            const eventDate = new Date(formData.EventDate).toISOString()?.split("T")[0];
+            const RegistrationDueDate = new Date(formData.RegistrationDueDate).toISOString()?.split("T")[0];
             // Create Post
             const postPayload = {
               EventName: formData.EventName,
@@ -1025,8 +1027,8 @@ const HelloWorldContext = ({ props }: any) => {
         setEditID(Number(setEventById[0].ID))
         setEditForm(true)
         // setCategoryData(await getCategory(sp, Number(setBannerById[0]?.TypeMaster))) // Category
-        const eventDate = new Date(setEventById[0].EventDate).toISOString().split("T")[0];
-        const RegistrationDueDate = new Date(setEventById[0].RegistrationDueDate).toISOString().split("T")[0];
+        const eventDate = new Date(setEventById[0].EventDate).toISOString()?.split("T")[0];
+        const RegistrationDueDate = new Date(setEventById[0].RegistrationDueDate).toISOString()?.split("T")[0];
 
         //  setSelectedDate(eventDate);
         //  setSelectedRegistrationDueDate(RegistrationDueDate);
@@ -1113,9 +1115,20 @@ const HelloWorldContext = ({ props }: any) => {
       inputFilegal.current.type = "file";
     }
   };
+
+  // musaib changes 
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null); // To store the file preview URL
+const [isModalOpen, setIsModalOpen] = useState<boolean>(false);   // To manage modal visibility
+
   //#region onFileChange
   const onFileChange = async (event: React.ChangeEvent<HTMLInputElement>, libraryName: string, docLib: string) => {
     //debugger;
+    if(libraryName === 'bannerimg'){
+      newfileupload = true
+      //alert(`banner img `)
+    }
+
+    //alert(`new file upload ${newfileupload}` )
     event.preventDefault();
     let uloadDocsFiles: any[] = [];
     let uloadDocsFiles1: any[] = [];
@@ -1195,12 +1208,16 @@ const HelloWorldContext = ({ props }: any) => {
             (file.type.startsWith('image/') || file.type.startsWith('video/'))
             : file.type.startsWith('image/')
         );
-
         if (imageVideoFiles.length > 0) {
+          const preview = URL.createObjectURL(imageVideoFiles[0]); // Generate preview URL
+          //alert(`preview ${preview}`)
+          newfilepreview = preview
+          setPreviewUrl(preview);                                // Update state with preview URL
           const arr = {
             files: imageVideoFiles,
             libraryName: libraryName,
             docLib: docLib,
+            // fileUrl: preview
             fileUrl: URL.createObjectURL(imageVideoFiles[0])
           };
           if (libraryName === "Gallery") {
@@ -1212,8 +1229,8 @@ const HelloWorldContext = ({ props }: any) => {
                   "ID": 0,
                   "Createdby": "",
                   "Modified": "",
-                  // "fileUrl": URL.createObjectURL(ele),
-                  "fileUrl": '',
+                  "fileUrl": URL.createObjectURL(ele),
+                  // "fileUrl": '',
                   "fileSize": ele.size,
                   "fileType": ele.type,
                   "fileName": ele.name
@@ -1256,6 +1273,68 @@ const HelloWorldContext = ({ props }: any) => {
       }
     }
   };
+
+  const handlePreviewClick = (fileObj:any) => {
+     if(newfileupload === true){
+      console.log(newfilepreview , "here is newfilepreview")
+    //alert(`new file ${newfilepreview}`)
+
+        setPreviewUrl(newfilepreview); // Set the preview URL
+        setIsModalOpen(true);   // Open the modal
+    } else {
+      console.log(fileObj , "here is fileObj")
+      //alert(`here is fileObj${fileObj}`)
+      //alert(`${fileObj.serverUrl} ${fileObj.serverRelativeUrl}`)
+      //alert(`fileObj:${fileObj} + fileObj.serverRelativeUrl ${fileObj.serverRelativeUrl}`)
+      if (fileObj && fileObj.serverUrl && fileObj.serverRelativeUrl) {
+        const fileUrl = `${fileObj.serverUrl.trim()}${fileObj.serverRelativeUrl.trim()}`;
+        // Combine serverUrl and serverRelativeUrl
+          setPreviewUrl(fileUrl); // Set the preview URL
+          setIsModalOpen(true);   // Open the modal
+      } else {
+          //alert("Invalid file object. Cannot generate preview URL.");
+      }
+    }
+     
+   
+};
+
+
+const closeModal = () => {
+    setPreviewUrl(null);
+    setIsModalOpen(false);
+};
+
+  // const onFileChange = async (
+  //   event: React.ChangeEvent<HTMLInputElement>,
+  //   libraryName: string,
+  //   docLib: string
+  // ) => {
+  //   event.preventDefault();
+  
+  //   if (event.target.files && event.target.files.length > 0) {
+  //     const files = Array.from(event.target.files);
+  
+  //     if (libraryName === "bannerimg") {
+  //       const imageFiles = files.filter(file => file.type.startsWith("image/"));
+  
+  //       if (imageFiles.length > 0) {
+  //         const preview = URL.createObjectURL(imageFiles[0]); // Generate preview URL
+  //         setPreviewUrl(preview);                            // Update preview URL state
+  //         const arr = {
+  //           files: imageFiles,
+  //           libraryName: libraryName,
+  //           docLib: docLib,
+  //           fileUrl: preview,
+  //         };
+  //         setBannerImagepostArr([arr]);
+  //       } else {
+  //         Swal.fire("Only images can be uploaded");
+  //       }
+  //     }
+  //   }
+  // };
+  
   //#endregion
 
   //#region OpenModal
@@ -1535,7 +1614,7 @@ const HelloWorldContext = ({ props }: any) => {
 
                                 {BnnerImagepostArr[0] != false && BnnerImagepostArr.length > 0 &&
                                   BnnerImagepostArr != undefined ? BnnerImagepostArr.length == 1 &&
-                                (<a style={{ fontSize: '0.875rem' }}>
+                                (<a style={{ fontSize: '0.875rem' }} onClick={() => handlePreviewClick(BnnerImagepostArr[0])} >
                                   <FontAwesomeIcon icon={faPaperclip} />1 file Attached
                                 </a>) : ""
                                   // || BnnerImagepostArr.length > 0 && BnnerImagepostArr[0].files.length > 1 &&
@@ -1979,19 +2058,42 @@ const HelloWorldContext = ({ props }: any) => {
               </Modal.Body>
 
               </Modal>
-            <Modal show={show} onHide={handleClose} className='previewpp'>
+            <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Image Preview</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <img src={modalImageSrc} alt="Image Preview" style={{ width: '100%' }} />
         </Modal.Body>
-        {/* <Modal.Footer>
+        <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-        </Modal.Footer> */}
+        </Modal.Footer>
               </Modal>
+            <Modal show={isModalOpen} onHide={closeModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Image Preview</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <img src={previewUrl} alt="Image Preview" style={{ width: '100%' }} />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={closeModal}>
+            Close
+          </Button>
+        </Modal.Footer>
+              </Modal>
+              {/* {isModalOpen && (
+    <div className="modal-overlay">
+        <div className="modal-content">
+            <button className="close-btn" onClick={closeModal}>Close</button>
+            {previewUrl && (
+                <img src={previewUrl} alt="Preview" style={{ width: '100%', maxHeight: '500px' }} />
+            )}
+        </div>
+    </div>
+)} */}
 
           </div>
         </div>

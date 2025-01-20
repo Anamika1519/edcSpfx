@@ -540,7 +540,7 @@ const EventcalenderContext = ({ props }: any) => {
                                                     :
                                                     item1.EMail !== null &&
                                                     <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle avatar-xl">
-                                                      {`${item1.EMail.split('.')[0].charAt(0)}${item1.EMail.split('.')[1].charAt(0)}`.toUpperCase()}
+                                                      {`${item1.EMail?.split('.')[0].charAt(0)}${item1.EMail?.split('.')[1].charAt(0)}`.toUpperCase()}
                                                     </Avatar>
                                                   }
                                                 </span> :
@@ -549,11 +549,13 @@ const EventcalenderContext = ({ props }: any) => {
                                                 }
                                               </>
                                             )
-                                          }) : <img
-                                            src={require("../../../Assets/ExtraImage/userimg.png")}
-                                            className="rounded-circle avatar-xs"
-                                          // alt={attendee.name}
-                                          />
+                                          }) : 
+                                          // <img
+                                          //   src={require("../../../Assets/ExtraImage/userimg.png")}
+                                          //   className="rounded-circle avatar-xs"
+                                          // // alt={attendee.name}
+                                          // />
+                                          ""
                                         }
                                         {item?.Attendees != undefined && item?.Attendees.length > 0 &&
                                           "Registered"
@@ -724,15 +726,18 @@ const EventcalenderContext = ({ props }: any) => {
                                                           :
                                                           item1.EMail !== null &&
                                                           <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle avatar-xl">
-                                                            {`${item1.EMail.split('.')[0].charAt(0)}${item1.EMail.split('.')[1].charAt(0)}`.toUpperCase()}
+                                                            {`${item1.EMail?.split('.')[0].charAt(0)}${item1.EMail?.split('.')[1].charAt(0)}`.toUpperCase()}
                                                           </Avatar>
                                                         }
                                                       </span>
-                                                    ) : (
-                                                      <span>
-                                                        <AvtarComponents Name={item1.Title} />
-                                                      </span>
-                                                    )}
+                                                    ) : 
+                                                    // (
+                                                    //   // <span>
+                                                    //   //   <AvtarComponents Name={item1.Title} />
+                                                    //   // </span>
+                                                    // )
+                                                    ""
+                                                    }
                                                     <span className="font-12 text-muted">&nbsp;Attending</span>
                                                   </React.Fragment>
                                                 ))

@@ -16,7 +16,7 @@ const AvtarComponents: React.FC<{ Name: string }> = ({ Name }) => {
   };
 
   // Split the name into first and last name
-  const nameParts = Name.trim().split(' ');
+  const nameParts = Name.trim()?.split(' ');
   const firstName = nameParts[0];
   const lastName = nameParts.length > 1 ? nameParts[nameParts.length - 1] : ''; // Handle single names
   

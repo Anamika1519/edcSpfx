@@ -67,7 +67,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
   const sp: SPFI = getSP();
   console.log(sp, "sp");
   const siteUrl = props.siteUrl;
-  const videositeurl = props.siteUrl.split("/sites")[0];
+  const videositeurl = props.siteUrl?.split("/sites")[0];
   const elementRef = React.useRef<HTMLDivElement>(null);
   const [CurrentUser, setCurrentUser]: any[] = useState([]);
   const [comments, setComments] = useState<Comment[]>([]);
@@ -741,7 +741,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
                                                           :
                                                           item1.EMail !== null &&
                                                           <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle floatr avatar-xl">
-                                                            {`${item1.EMail.split('.')[0].charAt(0)}${item1.EMail.split('.')[1].charAt(0)}`.toUpperCase()}
+                                                            {`${item1.EMail?.split('.')[0].charAt(0)}${item1.EMail?.split('.')[1].charAt(0)}`.toUpperCase()}
                                                           </Avatar>
                                                         }
                                               
@@ -790,7 +790,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
                                                           :
                                                           item1.EMail !== null &&
                                                           <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle avatar-xl">
-                                                            {`${item1.EMail.split('.')[0].charAt(0)}${item1.EMail.split('.')[1].charAt(0)}`.toUpperCase()}
+                                                            {`${item1.EMail?.split('.')[0].charAt(0)}${item1.EMail?.split('.')[1].charAt(0)}`.toUpperCase()}
                                                           </Avatar>
                                                         }
                                                   <span>{item1.Title}</span>

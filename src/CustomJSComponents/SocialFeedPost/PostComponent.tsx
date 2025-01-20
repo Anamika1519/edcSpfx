@@ -746,7 +746,7 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
                             (post.AuthorEmail !== null || post.AuthorEmail !== "") &&
                             <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circlecss img-thumbnail
                                   avatar-xl">
-                                {`${post.AuthorEmail.split('.')[0]?.charAt(0)}${post.AuthorEmail.split('.')[1]?.charAt(0)}`.toUpperCase()}
+                                {`${post.AuthorEmail?.split('.')[0]?.charAt(0)}${post.AuthorEmail?.split('.')[1]?.charAt(0)}`.toUpperCase()}
                             </Avatar>
                         }
                     </div>
@@ -976,7 +976,7 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
                                 (comment?.Author.EMail !== null || comment?.Author.EMail !== "") &&
                                 <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circlecss img-thumbnail
                                   avatar-xl">
-                                    {`${comment?.Author.EMail.split('.')[0]?.charAt(0)}${comment?.Author.EMail.split('.')[1]?.charAt(0)}`.toUpperCase()}
+                                    {`${comment?.Author.EMail?.split('.')[0]?.charAt(0)}${comment?.Author.EMail?.split('.')[1]?.charAt(0)}`.toUpperCase()}
                                 </Avatar>
                             }
                         </div>
@@ -1062,7 +1062,7 @@ export const PostComponent = ({ key, sp, siteUrl, currentUsername, CurrentUser, 
                     currentEmail !== "" &&
                     <Avatar sx={{ bgcolor: 'primary.main' }} className="commentsImg img-thumbnail
                                   avatar-xl">
-                        {`${currentEmail.split('.')[0]?.charAt(0)}${currentEmail.split('.')[1]?.charAt(0)}`.toUpperCase()}
+                        {`${currentEmail?.split('.')[0]?.charAt(0)}${currentEmail?.split('.')[1]?.charAt(0)}`.toUpperCase()}
                     </Avatar>
                 }
 

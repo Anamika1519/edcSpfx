@@ -509,7 +509,7 @@ const LeaderboardContext = ({ props }: any) => {
                                   :
                                   item.AuthorEMail !== null &&
                                   <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle avatar-xl">
-                                    {`${item.AuthorEMail.split('.')[0]?.charAt(0)}${item.AuthorEMail.split('.')[1]?.charAt(0)}`.toUpperCase()}
+                                    {`${item.AuthorEMail?.split('.')[0]?.charAt(0)}${item.AuthorEMail?.split('.')[1]?.charAt(0)}`.toUpperCase()}
                                   </Avatar>
                                 }
                               </a>

@@ -37,7 +37,7 @@ const AddDynamicBannerContext = ({ props }: any) => {
   const [editID, setEditID] = React.useState(null);
   const { setHide }: any = context;
   const siteUrl = props.siteUrl;
-  const tenantUrl = props.siteUrl.split("/sites/")[0];
+  const tenantUrl = props.siteUrl?.split("/sites/")[0];
   const [BnnerImagepostArr, setBannerImagepostArr]: any = React.useState();
   const inputFile = useRef(null);
   const [Loading, setLoading] = React.useState(false);

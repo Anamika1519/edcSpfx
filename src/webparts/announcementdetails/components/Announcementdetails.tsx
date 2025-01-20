@@ -13,7 +13,7 @@ import HorizontalNavbar from '../../horizontalNavBar/components/HorizontalNavBar
 // import 'react-comments-section/dist/index.css';
 import { CommentCard } from '../../../CustomJSComponents/CustomCommentCard/CommentCardAnnouncement';
 //import { CommentCard } from '../../../CustomJSComponents/CustomCommentCard/CommentCard';
-import { addNotification, getARGNotificationHistory, getCurrentUser, getCurrentUserProfile, getUserProfilePicture } from '../../../APISearvice/CustomService';
+import { addNotification, getARGNotificationHistory, getCurrentUser, getCurrentUserProfile, getCurrentUserProfileEmail, getuserprofilepic, getUserProfilePicture } from '../../../APISearvice/CustomService';
 import { IAnnouncementdetailsProps } from './IAnnouncementdetailsProps';
 import { decryptId } from '../../../APISearvice/CryptoService';
 import { getAllAnnouncementnonselected, getAnnouncementDetailsById, TimeFormat } from '../../../APISearvice/AnnouncementsService';
@@ -28,6 +28,10 @@ interface Reply {
   Id: number;
   AuthorId: number,
   UserName: string;
+
+  UserEmail: string;
+  SPSPicturePlaceholderState:string;
+
   Comments: string;
   Created: string;
   UserProfile: string;
@@ -45,6 +49,8 @@ interface Like {
 interface Comment {
   Id: number
   UserName: string;
+  AuthorEmail: string,
+  SPSPicturePlaceholderState:string; 
   AuthorId: number,
   Comments: string;
   Created: string;
@@ -57,7 +63,7 @@ const AnnouncementdetailsContext = ({ props }: any) => {
   const sp: SPFI = getSP();
   console.log(sp, "sp");
   const siteUrl = props.siteUrl;
-  const videositeurl = props.siteUrl.split("/sites")[0];
+  const videositeurl = props.siteUrl?.split("/sites")[0];
   const elementRef = React.useRef<HTMLDivElement>(null);
   const [CurrentUser, setCurrentUser]: any[] = useState([]);
   const [comments, setComments] = useState<Comment[]>([]);
@@ -66,7 +72,7 @@ const AnnouncementdetailsContext = ({ props }: any) => {
   const [loadingLike, setLoadingLike] = useState<boolean>(false);
   const [loadingReply, setLoadingReply] = useState<boolean>(false);
   const [ArrtopAnnouncements, setArrtopAnnouncements]: any[] = useState([]);
-
+  const [SPSPicturePlaceholderState, setSPSPicturePlaceholderState]= useState(null);
   const [ArrDetails, setArrDetails] = useState([])
   const [CurrentUserProfile, setCurrentUserProfile]: any[] = useState("")
   const [copySuccess, setCopySuccess] = useState('');
@@ -142,7 +148,9 @@ const AnnouncementdetailsContext = ({ props }: any) => {
     console.log(ARGNotificationHistory);
 
     setCurrentUser(await getCurrentUser(sp, siteUrl))
-    setCurrentUserProfile(await getCurrentUserProfile(sp, siteUrl))
+    setCurrentUserProfile(await getCurrentUserProfile(sp, siteUrl));
+    const profileemail = await getCurrentUserProfileEmail(sp);
+     setSPSPicturePlaceholderState( await getuserprofilepic(sp,profileemail));
     getApiData()
   }
   const getvideo = (ele: any) => {
@@ -158,7 +166,7 @@ const AnnouncementdetailsContext = ({ props }: any) => {
     const ids = window.location.search;
     const originalString = ids;
     const idNum = originalString.substring(1);
-    sp.web.lists.getByTitle("ARGAnnouncementandNewsComments").items.select("*,AnnouncementAndNews/Id").expand("AnnouncementAndNews").filter(`AnnouncementAndNewsId eq ${Number(idNum)}`)().then(async (result: any) => {
+    sp.web.lists.getByTitle("ARGAnnouncementandNewsComments").items.select("*,AnnouncementAndNews/Id,Author/ID,Author/Title,Author/EMail,Author/SPSPicturePlaceholderState").expand("AnnouncementAndNews,Author").filter(`AnnouncementAndNewsId eq ${Number(idNum)}`)().then(async (result: any) => {
       initialComments = result;
       for (var i = 0; i < initialComments.length; i++) {
         await sp.web.lists
@@ -181,6 +189,8 @@ const AnnouncementdetailsContext = ({ props }: any) => {
               Id: initialComments[i].Id,
               UserName: initialComments[i].UserName,
               AuthorId: initialComments[i].AuthorId,
+              AuthorEmail: initialComments[i].Author.EMail,
+                SPSPicturePlaceholderState : initialComments[i].Author.SPSPicturePlaceholderState,
               Comments: initialComments[i].Comments,
               Created: initialComments[i].Created,  // Formatting the created date
               UserLikesJSON: result1.length > 0 ? likeArray : []
@@ -244,6 +254,8 @@ const AnnouncementdetailsContext = ({ props }: any) => {
         Id: ress.data.Id,
         UserName: ress.data.UserName,
         AuthorId: ress.data.AuthorId,
+        AuthorEmail: CurrentUser.Email,
+        SPSPicturePlaceholderState : SPSPicturePlaceholderState,
         Comments: ress.data.Comments,
         Created: ress.data.Created,
         UserLikesJSON: [],
@@ -552,6 +564,8 @@ const AnnouncementdetailsContext = ({ props }: any) => {
           Id: ress.data.Id,
           AuthorId: ress.data.AuthorId,
           UserName: ress.data.UserName, // Replace with actual username
+          UserEmail :CurrentUser.Email,
+            SPSPicturePlaceholderState : SPSPicturePlaceholderState,
           Comments: ress.data.Comments,
           Created: ress.data.Created,
           UserProfile: CurrentUserProfile
@@ -831,6 +845,10 @@ const AnnouncementdetailsContext = ({ props }: any) => {
 
                         loadingReply={loadingReply}
                         mainArray={ArrDetails}
+
+                        CurrentUserEmail = {CurrentUser.Email}
+                         CurrSPSPicturePlaceholderState ={SPSPicturePlaceholderState}
+                        siteUrl = {siteUrl}
                       />
                     </div>
 

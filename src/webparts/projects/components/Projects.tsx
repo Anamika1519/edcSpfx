@@ -53,7 +53,7 @@ import {
   getCurrentUserNameId,
   getUserProfilePicture,
 } from "../../../APISearvice/CustomService";
-import { Avatar } from "@mui/material";
+import Avatar from "@mui/material/Avatar";
 const HelloWorldContext = ({ props }: any) => {
   const sp: SPFI = getSP();
   console.log(sp, "sp");
@@ -1527,24 +1527,33 @@ const HelloWorldContext = ({ props }: any) => {
                                             if (idx < 3) {
                                               return (
                                                 <div style={{ width: '40px', marginLeft: '-7px' }} className="gfg_tooltip">
-                                                  {id.SPSPicturePlaceholderState == 0  ?
+                                                  {/* <img
+                                                    style={{
+                                                      margin:
+                                                        index == 0
+                                                          ? "0 0 0 0"
+                                                          : "0 0 0px -12px",
+                                                      float: "left"
+                                                    }}
+                                                    src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+                                                    className="circlecssnew img-thumbnail avatar-xl"
+                                                    alt="profile-image"
+                                                  /> */}
+                                                  {id?.SPSPicturePlaceholderState == 0 ?
                                                     <img
-                                                      style={{
-                                                        margin:
-                                                          index == 0
-                                                            ? "0 0 0 0"
-                                                            : "0 0 0px -12px",
-                                                        float: "left"
-                                                      }}
-                                                      src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                                                      className="circlecssnew img-thumbnail avatar-xl"
-                                                      alt="profile-image"
+                                                      src={
+
+                                                        `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`
+
+                                                      }
+                                                      className="rounded-circle"
+                                                      width="50"
+                                                      alt={id.Title}
                                                     />
                                                     :
-                                                    id.EMail !== "" &&
-                                                    <Avatar sx={{ bgcolor: 'primary.main' }} className="commentsImg img-thumbnail
-                                  avatar-xl">
-                                                        {`${id.EMail.split('.')[0]?.charAt(0)}${id.EMail.split('.')[1]?.charAt(0)}`.toUpperCase()}
+                                                    id?.EMail !== null &&
+                                                    <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle avatar-xl">
+                                                      {`${id?.EMail?.split('.')[0].charAt(0)}${id?.EMail?.split('.')[1].charAt(0)}`.toUpperCase()}
                                                     </Avatar>
                                                   }
                                                
@@ -1761,26 +1770,35 @@ const HelloWorldContext = ({ props }: any) => {
                                             if (idx < 3) {
                                               return (
                                                 <div style={{ width: '40px', marginLeft: '-7px' }} className="gfg_tooltip">
-                                                  {id.SPSPicturePlaceholderState == 0 ?
-                                                    <img
-                                                      style={{
-                                                        margin:
-                                                          index == 0
-                                                            ? "0 0 0 0"
-                                                            : "0 0 0px -12px",
-                                                        float: "left"
-                                                      }}
-                                                      src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                                                      className="circlecssnew img-thumbnail avatar-xl"
-                                                      alt="profile-image"
-                                                    />
-                                                    :
-                                                    id.EMail !== "" &&
-                                                    <Avatar sx={{ bgcolor: 'primary.main' }} className="commentsImg img-thumbnail
-                                  avatar-xl">
-                                                      {`${id.EMail.split('.')[0]?.charAt(0)}${id.EMail.split('.')[1]?.charAt(0)}`.toUpperCase()}
-                                                    </Avatar>
-                                                  }
+                                                  {/* <img
+                                                    style={{
+                                                      margin:
+                                                        index == 0
+                                                          ? "0 0 0 0"
+                                                          : "0 0 0px -12px",
+                                                      float: "left"
+                                                    }}
+                                                    src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+                                                    className="circlecssnew img-thumbnail avatar-xl"
+                                                    alt="profile-image"
+                                                  /> */}
+                                                   { id.SPSPicturePlaceholderState == 0 ?
+                                        <img
+                                          src={
+
+                                            `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id.EMail}`
+
+                                          }
+                                          className="rounded-circle"
+                                          width="50"
+                                          alt={id.Title}
+                                        />
+                                        :
+                                        id.EMail !== null &&
+                                        <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle avatar-xl">
+                                          {`${id.EMail?.split('.')[0].charAt(0)}${id.EMail?.split('.')[1].charAt(0)}`.toUpperCase()}
+                                        </Avatar>
+                                      }
                                                   <span className="gfg_text">
                                                     {id?.Title}
                                                   </span>
@@ -1985,26 +2003,35 @@ const HelloWorldContext = ({ props }: any) => {
                                             if (idx < 3) {
                                               return (
                                                 <div style={{ width: '40px', marginLeft: '-7px' }} className="gfg_tooltip">
-                                                  {id.SPSPicturePlaceholderState == 0 ?
-                                                    <img
-                                                      style={{
-                                                        margin:
-                                                          index == 0
-                                                            ? "0 0 0 0"
-                                                            : "0 0 0px -12px",
-                                                        float: "left"
-                                                      }}
-                                                      src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                                                      className="circlecssnew img-thumbnail avatar-xl"
-                                                      alt="profile-image"
-                                                    />
-                                                    :
-                                                    id.EMail !== "" &&
-                                                    <Avatar sx={{ bgcolor: 'primary.main' }} className="commentsImg img-thumbnail
-                                  avatar-xl">
-                                                      {`${id.EMail.split('.')[0]?.charAt(0)}${id.EMail.split('.')[1]?.charAt(0)}`.toUpperCase()}
-                                                    </Avatar>
-                                                  }
+                                                  {/* <img
+                                                    style={{
+                                                      margin:
+                                                        index == 0
+                                                          ? "0 0 0 0"
+                                                          : "0 0 0px -12px",
+                                                      float: "left"
+                                                    }}
+                                                    src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+                                                    className="circlecssnew img-thumbnail avatar-xl"
+                                                    alt="profile-image"
+                                                  /> */}
+                                                   { id.SPSPicturePlaceholderState == 0 ?
+                                        <img
+                                          src={
+
+                                            `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id.EMail}`
+
+                                          }
+                                          className="rounded-circle"
+                                          width="50"
+                                          alt={id.Title}
+                                        />
+                                        :
+                                        id.EMail !== null &&
+                                        <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle avatar-xl">
+                                          {`${id.EMail?.split('.')[0].charAt(0)}${id.EMail?.split('.')[1].charAt(0)}`.toUpperCase()}
+                                        </Avatar>
+                                      }
                                                   <span className="gfg_text">
                                                     {id?.Title}
                                                   </span>
@@ -2240,26 +2267,35 @@ const HelloWorldContext = ({ props }: any) => {
                                             if (idx < 3) {
                                               return (
                                                 <div style={{ width: '40px', marginLeft: '-7px' }} className="gfg_tooltip">
-                                                  {id.SPSPicturePlaceholderState == 0 ?
-                                                    <img
-                                                      style={{
-                                                        margin:
-                                                          index == 0
-                                                            ? "0 0 0 0"
-                                                            : "0 0 0px -12px",
-                                                        float: "left"
-                                                      }}
-                                                      src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                                                      className="circlecssnew img-thumbnail avatar-xl"
-                                                      alt="profile-image"
-                                                    />
-                                                    :
-                                                    id.EMail !== "" &&
-                                                    <Avatar sx={{ bgcolor: 'primary.main' }} className="commentsImg img-thumbnail
-                                  avatar-xl">
-                                                      {`${id.EMail.split('.')[0]?.charAt(0)}${id.EMail.split('.')[1]?.charAt(0)}`.toUpperCase()}
-                                                    </Avatar>
-                                                  }
+                                                  {/* <img
+                                                    style={{
+                                                      margin:
+                                                        index == 0
+                                                          ? "0 0 0 0"
+                                                          : "0 0 0px -12px",
+                                                      float: "left"
+                                                    }}
+                                                    src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+                                                    className="circlecssnew img-thumbnail avatar-xl"
+                                                    alt="profile-image"
+                                                  /> */}
+                                                   { id.SPSPicturePlaceholderState == 0 ?
+                                        <img
+                                          src={
+
+                                            `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id.EMail}`
+
+                                          }
+                                          className="rounded-circle"
+                                          width="50"
+                                          alt={id.Title}
+                                        />
+                                        :
+                                        id.EMail !== null &&
+                                        <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle avatar-xl">
+                                          {`${id.EMail?.split('.')[0].charAt(0)}${id.EMail?.split('.')[1].charAt(0)}`.toUpperCase()}
+                                        </Avatar>
+                                      }
                                                   <span className="gfg_text">
                                                     {id?.Title}
                                                   </span>
@@ -2545,26 +2581,35 @@ const HelloWorldContext = ({ props }: any) => {
                                             if (idx < 3) {
                                               return (
                                                 <div style={{ width: '40px', marginLeft: '-7px' }} className="gfg_tooltip">
-                                                  {id.SPSPicturePlaceholderState == 0 ?
-                                                    <img
-                                                      style={{
-                                                        margin:
-                                                          index == 0
-                                                            ? "0 0 0 0"
-                                                            : "0 0 0px -12px",
-                                                        float: "left"
-                                                      }}
-                                                      src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                                                      className="circlecssnew img-thumbnail avatar-xl"
-                                                      alt="profile-image"
-                                                    />
-                                                    :
-                                                    id.EMail !== "" &&
-                                                    <Avatar sx={{ bgcolor: 'primary.main' }} className="commentsImg img-thumbnail
-                                  avatar-xl">
-                                                      {`${id.EMail.split('.')[0]?.charAt(0)}${id.EMail.split('.')[1]?.charAt(0)}`.toUpperCase()}
-                                                    </Avatar>
-                                                  }
+                                                  {/* <img
+                                                    style={{
+                                                      margin:
+                                                        index == 0
+                                                          ? "0 0 0 0"
+                                                          : "0 0 0px -12px",
+                                                      float: "left"
+                                                    }}
+                                                    src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+                                                    className="rounded-circlecss img-thumbnail avatar-xl"
+                                                    alt="profile-image"
+                                                  /> */}
+                                                   { id.SPSPicturePlaceholderState == 0 ?
+                                        <img
+                                          src={
+
+                                            `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id.EMail}`
+
+                                          }
+                                          className="rounded-circle"
+                                          width="50"
+                                          alt={id.Title}
+                                        />
+                                        :
+                                        id.EMail !== null &&
+                                        <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle avatar-xl">
+                                          {`${id.EMail?.split('.')[0].charAt(0)}${id.EMail?.split('.')[1].charAt(0)}`.toUpperCase()}
+                                        </Avatar>
+                                      }
                                                   <span className="gfg_text">
                                                     {id?.Title}
                                                   </span>
@@ -2847,24 +2892,33 @@ const HelloWorldContext = ({ props }: any) => {
                                               if (idx < 3) {
                                                 return (
                                                   <div style={{ width: '40px', marginLeft: '-7px' }} className="gfg_tooltip">
+                                                    {/* <img
+                                                      style={{
+                                                        margin:
+                                                          index == 0
+                                                            ? "0 0 0 0"
+                                                            : "0 0 0px -12px",
+                                                        float: "left"
+                                                      }}
+                                                      src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+                                                      className="rounded-circlecss img-thumbnail avatar-xl"
+                                                      alt="profile-image"
+                                                    /> */}
                                                     {id.SPSPicturePlaceholderState == 0 ?
                                                       <img
-                                                        style={{
-                                                          margin:
-                                                            index == 0
-                                                              ? "0 0 0 0"
-                                                              : "0 0 0px -12px",
-                                                          float: "left"
-                                                        }}
-                                                        src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                                                        className="circlecssnew img-thumbnail avatar-xl"
-                                                        alt="profile-image"
+                                                        src={
+
+                                                          `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id.EMail}`
+
+                                                        }
+                                                        className="rounded-circle"
+                                                        width="50"
+                                                        alt={id.Title}
                                                       />
                                                       :
-                                                      id.EMail !== "" &&
-                                                      <Avatar sx={{ bgcolor: 'primary.main' }} className="commentsImg img-thumbnail
-                                  avatar-xl">
-                                                        {`${id.EMail.split('.')[0]?.charAt(0)}${id.EMail.split('.')[1]?.charAt(0)}`.toUpperCase()}
+                                                      id.EMail !== null &&
+                                                      <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle avatar-xl">
+                                                        {`${id.EMail?.split('.')[0].charAt(0)}${id.EMail?.split('.')[1].charAt(0)}`.toUpperCase()}
                                                       </Avatar>
                                                     }
                                                     <span className="gfg_text">
@@ -3358,26 +3412,35 @@ const HelloWorldContext = ({ props }: any) => {
                                           if (idx < 3) {
                                             return (
                                               <div style={{ width: '40px', marginLeft: '-7px' }} className="gfg_tooltip">
-                                                {id.SPSPicturePlaceholderState == 0 ?
-                                                  <img
-                                                    style={{
-                                                      margin:
-                                                        index == 0
-                                                          ? "0 0 0 0"
-                                                          : "0 0 0px -12px",
-                                                      float: "left"
-                                                    }}
-                                                    src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
-                                                    className="circlecssnew img-thumbnail avatar-xl"
-                                                    alt="profile-image"
-                                                  />
-                                                  :
-                                                  id.EMail !== "" &&
-                                                  <Avatar sx={{ bgcolor: 'primary.main' }} className="commentsImg img-thumbnail
-                                  avatar-xl">
-                                                    {`${id.EMail.split('.')[0]?.charAt(0)}${id.EMail.split('.')[1]?.charAt(0)}`.toUpperCase()}
-                                                  </Avatar>
-                                                }
+                                                {/* <img
+                                                  style={{
+                                                    margin:
+                                                      index == 0
+                                                        ? "0 0 0 0"
+                                                        : "0 0 0px -12px",
+                                                    float: "left"
+                                                  }}
+                                                  src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
+                                                  className="rounded-circlecss img-thumbnail avatar-xl"
+                                                  alt="profile-image"
+                                                /> */}
+                                                 { id.SPSPicturePlaceholderState == 0 ?
+                                        <img
+                                          src={
+
+                                            `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id.EMail}`
+
+                                          }
+                                          className="rounded-circle"
+                                          width="50"
+                                          alt={id.Title}
+                                        />
+                                        :
+                                        id.EMail !== null &&
+                                        <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle avatar-xl">
+                                          {`${id.EMail?.split('.')[0].charAt(0)}${id.EMail?.split('.')[1].charAt(0)}`.toUpperCase()}
+                                        </Avatar>
+                                      }
                                                 <span className="gfg_text">
                                                   {id?.Title}
                                                 </span>

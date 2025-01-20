@@ -198,7 +198,7 @@ const NotificationDetailsContext = ({ props }: any) => {
                                         :
                                         notification?.EMail !== null &&
                                         <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle avatar-xl">
-                                          {`${notification?.EMail.split('.')[0]?.charAt(0)}${notification?.EMail.split('.')[1]?.charAt(0)}`.toUpperCase()}
+                                          {`${notification?.EMail?.split('.')[0]?.charAt(0)}${notification?.EMail?.split('.')[1]?.charAt(0)}`.toUpperCase()}
                                         </Avatar>
                                       }
                                       </div>
@@ -260,7 +260,7 @@ const NotificationDetailsContext = ({ props }: any) => {
                                         :
                                         notification?.EMail !== null &&
                                         <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle avatar-xl">
-                                          {`${notification?.EMail.split('.')[0]?.charAt(0)}${notification?.EMail.split('.')[1]?.charAt(0)}`.toUpperCase()}
+                                          {`${notification?.EMail?.split('.')[0]?.charAt(0)}${notification?.EMail?.split('.')[1]?.charAt(0)}`.toUpperCase()}
                                         </Avatar>
                                       }
                                       </div>
@@ -321,7 +321,7 @@ const NotificationDetailsContext = ({ props }: any) => {
                                         :
                                         notification?.EMail !== null &&
                                         <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle avatar-xl">
-                                          {`${notification?.EMail.split('.')[0]?.charAt(0)}${notification?.EMail.split('.')[1]?.charAt(0)}`.toUpperCase()}
+                                          {`${notification?.EMail?.split('.')[0]?.charAt(0)}${notification?.EMail?.split('.')[1]?.charAt(0)}`.toUpperCase()}
                                         </Avatar>
                                       }
                                     </div>

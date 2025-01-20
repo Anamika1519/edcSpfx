@@ -79,7 +79,7 @@ const UserProfileContext = ({ props }: any) => {
             // location: data.Location,
             // education: data.Education,
             // certification: data.Certification,
-            // skills: data.Skills.split(','),
+            // skills: data.Skills?.split(','),
             // socialLinks: JSON.parse(data.SocialLinks || '[]')
           });
         })
@@ -150,7 +150,7 @@ const UserProfileContext = ({ props }: any) => {
                               userData.email !== null &&
                               <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circlecss img-thumbnail
                                   avatar-xl">
-                                {`${userData.email.split('.')[0]?.charAt(0)}${userData.email.split('.')[1]?.charAt(0)}`.toUpperCase()}
+                                {`${userData.email?.split('.')[0]?.charAt(0)}${userData.email?.split('.')[1]?.charAt(0)}`.toUpperCase()}
                               </Avatar>
                             }
 

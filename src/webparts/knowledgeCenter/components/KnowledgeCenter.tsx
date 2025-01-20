@@ -166,7 +166,7 @@ const HelloWorldContext = ({ props }: any) => {
   const overflowCategories = mediagallerycategory.slice(5);
 
   const siteUrl = props.siteUrl;
-  const videositeurl = props.siteUrl.split("/sites")[0];
+  const videositeurl = props.siteUrl?.split("/sites")[0];
   const GotoNextPage = (item: any) => {
     // console.log("item-->>>>",item)
     const encryptedId = encryptId(String(item.ID));
