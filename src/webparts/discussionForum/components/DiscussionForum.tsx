@@ -518,7 +518,12 @@ const DiscussionForumContext = ({ props }: any) => {
   }, [useHide]);
 
 
+  const truncateText = (text: string, maxLength: number) => {
+    if (text != null) {
+      return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
 
+    }
+  };
   const UserGet = async () => {
     const users = await sp.web.siteUsers();
     console.log(users, 'users')
@@ -2105,7 +2110,7 @@ const DiscussionForumContext = ({ props }: any) => {
                                           {`${item?.Author?.EMail?.split('.')[0].charAt(0)}${item?.Author?.EMail?.split('.')[1].charAt(0)}`.toUpperCase()}
                                         </Avatar>
                                       }
-                               <span className="fontclssnew"> {item?.Author?.Title}</span>
+                               <span className="fontclssnew"> {truncateText(item?.Author?.Title, 80)} </span>
                                 {/* <div
                                   style={{
                                   

@@ -668,12 +668,12 @@ const MyApprovalContext = ({ props }: any) => {
         setMyApprovalsData(Automationdata);
         console.log("Automationdata", Automationdata);
       }
-      else if (activeTab == "Automation") {
-        setMyApprovalsData(null);
-        setMyApprovalsData(MyDMSAPPROVALDATA);
-        setMyApprovalsData(Mylistdata);
-        console.log("Automationdata", Automationdata);
-      }
+      // else if (activeTab == "Automation") {
+      //   setMyApprovalsData(null);
+      //   setMyApprovalsData(MyDMSAPPROVALDATA);
+      //   setMyApprovalsData(Mylistdata);
+      //   console.log("Automationdata", Automationdata);
+      // }
     }
   };
   const handleFilterChange = (
