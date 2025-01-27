@@ -1579,7 +1579,7 @@ const closeModal = () => {
                       <div className="col-lg-4">
                         <div className="mb-3">
                           <label htmlFor="EntityId" className="form-label">
-                            Entity <span className="text-danger">*</span>
+                            Department <span className="text-danger">*</span>
                           </label>
                           <select
                             className={`form-control ${(!ValidSubmit) ? "border-on-error" : ""}`}

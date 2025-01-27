@@ -695,11 +695,7 @@ const BlogDetailsContext = ({ props }: any) => {
                                       title="Screenshot-1"
                                     >
                                       <img
-<<<<<<< HEAD
                                         src={`https://officeindia.sharepoint.com${res.fileUrl}`}
-=======
-                                        src={`https://alrostamanigroupae.sharepoint.com${res.fileUrl}`}
->>>>>>> c29a133774f0b44995c1a43744c9ec2d240513e5
                                         className="img-fluid imgcssscustom"
                                         alt="work-thumbnail"
                                         data-themekey="#"

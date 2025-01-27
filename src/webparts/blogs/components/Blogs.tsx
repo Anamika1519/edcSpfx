@@ -541,11 +541,7 @@ const BlogsContext = ({ props }: any) => {
                   file,
                   sp,
                   "Documents",
-<<<<<<< HEAD
                   "https://officeindia.sharepoint.com"
-=======
-                  "https://alrostamanigroupae.sharepoint.com"
->>>>>>> c29a133774f0b44995c1a43744c9ec2d240513e5
                 );
               }
             }
@@ -709,11 +705,7 @@ const BlogsContext = ({ props }: any) => {
               file,
               sp,
               "Documents",
-<<<<<<< HEAD
               "https://officeindia.sharepoint.com"
-=======
-              "https://alrostamanigroupae.sharepoint.com"
->>>>>>> c29a133774f0b44995c1a43744c9ec2d240513e5
             );
           }
         }
@@ -1724,11 +1716,7 @@ const deleteLocalFile = (index: number, filArray: any[], name: string) => {
                           {DocumentpostArr1.map((file: any, index: number) => (
                             <tr key={index}>
                               <td style={{minWidth:'40px',maxWidth:'40px'}} className='text-center'>{index + 1}</td>
-<<<<<<< HEAD
                               <td style={{minWidth:'100px',maxWidth:'100px'}}>{file.fileName.replace("/sites/edcspfx", "")}</td>
-=======
-                              <td style={{minWidth:'100px',maxWidth:'100px'}}>{file.fileName.replace("/sites/IntranetUAT", "")}</td>
->>>>>>> c29a133774f0b44995c1a43744c9ec2d240513e5
                               <td style={{minWidth:'40px',maxWidth:'40px'}} className='text-right'>{file.fileSize}</td>
                               <td style={{minWidth:'40px',maxWidth:'40px'}} className='text-center'> <img style={{cursor:'pointer'}} src={require("../../../CustomAsset/del.png")}  onClick={() => deleteLocalFile(index, DocumentpostArr1, "docs")} /> </td>
                             </tr>

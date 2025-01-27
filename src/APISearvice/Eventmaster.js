@@ -195,11 +195,7 @@ const handleFileChange = async (event) => {
   const file = event.target.files[0];
   if (file) {
     try {
-<<<<<<< HEAD
       const folderUrl = `/sites/edcspfx/${docLib}`; // Replace with your folder URL
-=======
-      const folderUrl = `/sites/IntranetUAT/${docLib}`; // Replace with your folder URL
->>>>>>> c29a133774f0b44995c1a43744c9ec2d240513e5
       const fileName = file.name;
 
       const fileBlob = new Blob([file], { type: file.type });

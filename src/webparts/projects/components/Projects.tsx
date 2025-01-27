@@ -294,11 +294,7 @@ const HelloWorldContext = ({ props }: any) => {
   const handleCancel = () => {
     debugger;
     window.location.href =
-<<<<<<< HEAD
       "https://officeindia.sharepoint.com/sites/edcspfx/SitePages/Project.aspx";
-=======
-      "https://alrostamanigroupae.sharepoint.com/sites/IntranetUAT/SitePages/Project.aspx";
->>>>>>> c29a133774f0b44995c1a43744c9ec2d240513e5
   };
 
   const saveProjectData = async (formData: {
@@ -361,11 +357,7 @@ const HelloWorldContext = ({ props }: any) => {
         // // Budget: formData.Budget,
         ProjectOverview: formData.ProjectOverview,
         TeamMembersId: selectedIds,
-<<<<<<< HEAD
         ProjectFileManager: `/sites/edcspfx/ARGProjectsFiles/${formData.ProjectName}`,
-=======
-        ProjectFileManager: `/sites/IntranetUAT/ARGProjectsFiles/${formData.ProjectName}`,
->>>>>>> c29a133774f0b44995c1a43744c9ec2d240513e5
         ProjectStatus: "Ongoing",
         ProjectFolderName: formData.ProjectName,
         FolderInProgress: 'In Progress'

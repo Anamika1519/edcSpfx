@@ -336,11 +336,7 @@ const AddDynamicBannerContext = ({ props }: any) => {
   //           //   for (const file of BnnerImagepostArr) {
   //           //     if (!file.serverRelativeUrl) {
   //           //       // const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
-<<<<<<< HEAD
   //           //       bannerImageArray = await uploadFile(file, sp, "Documents", "https://officeindia.sharepoint.com");
-=======
-  //           //       bannerImageArray = await uploadFile(file, sp, "Documents", "https://alrostamanigroupae.sharepoint.com");
->>>>>>> c29a133774f0b44995c1a43744c9ec2d240513e5
   //           //     }
 
   //           //   }
@@ -419,11 +415,7 @@ const AddDynamicBannerContext = ({ props }: any) => {
   //           // if (BnnerImagepostArr.length > 0) {
   //           //   for (const file of BnnerImagepostArr) {
   //           //     // const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
-<<<<<<< HEAD
   //           //     bannerImageArray = await uploadFile(file, sp, "Documents", "https://officeindia.sharepoint.com");
-=======
-  //           //     bannerImageArray = await uploadFile(file, sp, "Documents", "https://alrostamanigroupae.sharepoint.com");
->>>>>>> c29a133774f0b44995c1a43744c9ec2d240513e5
   //           //   }
   //           // }
   //           if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
