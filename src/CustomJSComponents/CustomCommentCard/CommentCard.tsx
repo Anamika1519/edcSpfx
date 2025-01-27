@@ -11,11 +11,14 @@ import moment from "moment";
 import {getSP} from '../../webparts/blogDetails/loc/pnpjsConfig';
 import { SPFI } from "@pnp/sp/presets/all";
 import Swal from "sweetalert2";
+import Avatar from "@mui/material/Avatar";
 // Define types for reply and comment structures
 interface Reply {
   Id: number;
   AuthorId: number,
   UserName: string;
+  UserEmail: string;
+  SPSPicturePlaceholderState:string;
   Comments: string;
   Created: string;
   UserProfile: string;
@@ -58,7 +61,10 @@ export const CommentCard: React.FC<{
   loadingReply:boolean;
   onLike: () => void;
   mainArray:any;
-}> = ({ commentId, username, Commenttext, Comments, Created, likes, replies, userHasLiked, CurrentUserProfile,loadingLike, Action, onAddReply, onLike ,loadingReply ,mainArray}) => {
+  CurrentUserEmail:string;
+  CurrSPSPicturePlaceholderState:string;
+  siteUrl:string;
+}> = ({ commentId, username, Commenttext, Comments, Created, likes, replies, userHasLiked, CurrentUserProfile,loadingLike, Action, onAddReply, onLike ,loadingReply ,mainArray,CurrentUserEmail,CurrSPSPicturePlaceholderState,siteUrl}) => {
   const sp: SPFI = getSP();
   const [newReply, setNewReply] = useState('');
   const [loading, setLoading] = useState(false); // Loading state for replies
@@ -109,7 +115,17 @@ export const CommentCard: React.FC<{
   const handleReportClick = async (e:any,commentRepliesObject: any,flag:string) => {
       console.log("Report Clicked");
       e.preventDefault()
-      // Create the popup container
+      try {
+           const currentUser = await sp.web.currentUser();
+                const reportListName=flag === "replies" ? "ARGBlogUserComments": "ARGBlogComments";
+                const eventReportData=await sp.web.lists.getByTitle("ReportedIssueList").items.select("*").filter(`ProcessName eq 'Blog' and ReportedById eq ${currentUser.Id} and ListName eq '${reportListName}' and ListItemId eq ${commentRepliesObject.Id}`)();
+                console.log("eventReportData",eventReportData);
+                      
+                if (eventReportData.length >0 ) {
+                    Swal.fire("Already Reported", "You have already reported this content.", "info");
+                    return;
+                } 
+        // Create the popup container
       const popupDiv = document.createElement("div");
       popupDiv.id = "report-issue";
       popupDiv.style.position = "fixed";
@@ -140,16 +156,21 @@ export const CommentCard: React.FC<{
       wrapperDiv.appendChild(heading);
    
       // Add a close button
-      const closeButton = document.createElement("button");
+      const closeButton = document.createElement("span");
       closeButton.innerText = "x";
       closeButton.style.position = "absolute";
-      closeButton.style.top = "10px";
+      closeButton.style.top = "20px";
       closeButton.style.right = "10px";
-      closeButton.style.border = "none";
-      closeButton.style.background = "transparent";
-      closeButton.style.fontSize = "16px";
-      closeButton.style.cursor = "pointer";
-      closeButton.style.color="Black"
+      closeButton.style.lineHeight = "28px";
+      closeButton.style.textAlign = "center";
+      closeButton.style.border = "1px solid #ccc";
+    closeButton.style.width = "32px";
+    closeButton.style.height = "32px";
+    closeButton.style.background = "transparent";
+    closeButton.style.fontSize = "22px";
+    closeButton.style.borderRadius = "1000px";
+    closeButton.style.cursor = "pointer";
+      closeButton.style.color="#3c3c3c"
       closeButton.onclick = () => {
         document.body.removeChild(popupDiv);
       };
@@ -183,7 +204,7 @@ export const CommentCard: React.FC<{
           Swal.fire("Error", "Please provide a reason for reporting.", "error");
           return;
         }
-        const currentUser = await sp.web.currentUser();
+        // const currentUser = await sp.web.currentUser();
         console.log("currentUser",currentUser);
         try {
          
@@ -235,7 +256,11 @@ export const CommentCard: React.FC<{
             ListItemId: listItemID,
             ReportedContentAddedById: reportedContentAddedBy,
             Title: title,
-            Action:"Active"
+            Action:"Active",
+            MainListColumnName:flag === "replies" ? "UserCommentsJSON" :"",
+            MainListName:flag === "replies" ? "ARGBlogComments" :"",
+            MainListItemId:flag === "replies" ? commentObject.Id:0,
+            MainListStatus:flag === "replies" ? "Available":"NA",
           }
           // const insertData = await sp.web.lists.getByTitle("ReportedIssueList").items.add({
           //   ReportReason: issueValue,
@@ -265,17 +290,38 @@ export const CommentCard: React.FC<{
    
       // Append the popup to the body
       document.body.appendChild(popupDiv);
+      } catch (error) {
+        console.log("Error in report popup",error);
+      }
+      
     };
   return (
     <div className="card team-fedd p-4" style={{ border: '1px solid #54ade0', borderRadius: '20px', boxShadow: '0 3px 20px #1d26260d' }}>
       <div className="">
         <div className="row">
           <div className="d-flex align-items-start">
-            <img
+            {/* <img
               className="me-2 mt-1 avatar-sm rounded-circle"
               src={Comments[0].UserProfile}
               alt="User"
-            />
+            /> */}
+            {Number(Comments[commentId].SPSPicturePlaceholderState) == 0 ?
+              <img
+                
+                src={
+
+                  `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${Comments[commentId].AuthorEmail}`
+
+                }
+                className="me-2 mt-0 avatar-sm rounded-circle"
+                alt="User"
+              />
+              :
+              Comments[commentId].AuthorEmail !== null &&Comments[commentId].AuthorEmail !== "" &&
+              <Avatar sx={{ bgcolor: 'primary.main' }} className="me-2 mt-0 rounded-circle avatar-xl fontl">
+                {`${Comments[commentId].AuthorEmail?.split('.')[0].charAt(0)}${Comments[commentId].AuthorEmail?.split('.')[1].charAt(0)}`.toUpperCase()}
+              </Avatar>
+            }
 
             {/* <User /> */}
             <div className="w-100 mt-0">
@@ -339,11 +385,28 @@ export const CommentCard: React.FC<{
               {replies.map((reply, index) => (
                 <div key={index} className="UserReplycss p-2 d-flex " style={{ width: '100%', display: 'flex' }}>
                   <div>
-                    <img
+                    {/* <img
                       className="me-2 mt-0 avatar-sm rounded-circle"
                       src={reply.UserProfile}
                       alt="User"
-                    />
+                    /> */}
+                    {Number(reply.SPSPicturePlaceholderState) == 0 ?
+                      <img
+
+                        src={
+
+                          `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${reply.UserEmail}`
+
+                        }
+                        className="me-2 mt-0 avatar-sm rounded-circle"
+                        alt="User"
+                      />
+                      :
+                      reply.UserEmail !== null && reply.UserEmail !== undefined &&reply.UserEmail !== "" &&
+                      <Avatar sx={{ bgcolor: 'primary.main' }} className="me-2 mt-0 rounded-circle avatar-xl fontl">
+                        {`${reply.UserEmail?.split('.')[0].charAt(0)}${reply.UserEmail?.split('.')[1].charAt(0)}`.toUpperCase()}
+                      </Avatar>
+                    }
                   </div>
                   <div className="w-100 mt-0">
                     <h6 className="font-16 fw600">{reply.UserName}</h6>
@@ -401,7 +464,23 @@ export const CommentCard: React.FC<{
                 <div className="d-flex align-items-start">
                   <div className="al nice me-2">
 
-                    <img src={CurrentUserProfile} className="w30 avatar-sm rounded-circle" alt="user" />
+                    {/* <img src={CurrentUserProfile} className="w30 avatar-sm rounded-circle" alt="user" /> */}
+                    {Number(CurrSPSPicturePlaceholderState) == 0 ?
+                      <img
+
+                        src={
+
+                          `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${CurrentUserEmail}`
+
+                        }
+                        className="w30 avatar-sm rounded-circle" alt="user"
+                      />
+                      :
+                      CurrentUserEmail !== null && CurrentUserEmail !== "" &&
+                      <Avatar sx={{ bgcolor: 'primary.main' }} className="w30 rounded-circle avatar-xl fontl">
+                        {`${CurrentUserEmail?.split('.')[0].charAt(0)}${CurrentUserEmail?.split('.')[1].charAt(0)}`.toUpperCase()}
+                      </Avatar>
+                    }
                   </div>
                   <textarea
                     className="form-control ht form-control-sm"

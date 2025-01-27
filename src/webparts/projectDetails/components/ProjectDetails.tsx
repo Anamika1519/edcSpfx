@@ -25,6 +25,8 @@ import {
   addNotification,
   getCurrentUser,
   getCurrentUserProfile,
+  getCurrentUserProfileEmail,
+  getuserprofilepic,
 } from "../../../APISearvice/CustomService";
 import { Calendar, FilePlus, Link, Share } from "react-feather";
 import moment from "moment";
@@ -42,12 +44,15 @@ import { asAsync } from "@fluentui/react";
 import { parse } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import Avatar from "@mui/material/Avatar";
 
 // Define types for reply and comment structures
 interface Reply {
   Id: number;
   AuthorId: number;
   UserName: string;
+  UserEmail: string;
+  SPSPicturePlaceholderState:string;
   Comments: string;
   Created: string;
   UserProfile: string;
@@ -65,6 +70,8 @@ interface Comment {
   Id: number;
   UserName: string;
   AuthorId: number;
+  AuthorEmail: string,
+  SPSPicturePlaceholderState:string; 
   Comments: string;
   Created: string;
   UserLikesJSON: Like[];
@@ -87,7 +94,7 @@ const ProjectDetailsContext = ({ props }: any) => {
   const [CurrentUser, setCurrentUser]: any[] = useState([]);
   const [comments, setComments] = useState<Comment[]>([]);
   const [options, setOpions] = useState([]);
-
+  const [SPSPicturePlaceholderState, setSPSPicturePlaceholderState]= useState(null);
   const [newComment, setNewComment] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [ArrDetails, setArrDetails] = useState([]);
@@ -356,7 +363,7 @@ const ProjectDetailsContext = ({ props }: any) => {
     let likeArray: any[] = [];
     sp.web.lists
       .getByTitle("ARGProjectComments")
-      .items.select("*,ARGProject/Id ,Author/ID,Author/Title,Author/EMail")
+      .items.select("*,ARGProject/Id ,Author/ID,Author/Title,Author/EMail,Author/SPSPicturePlaceholderState")
       .expand("ARGProject , Author")
       .filter(`ARGProjectId eq ${Number(idNum)}`).orderBy("Modified", false)()
       .then(async (result: any) => {
@@ -385,6 +392,8 @@ const ProjectDetailsContext = ({ props }: any) => {
                 Id: initialComments[i].Id,
                 UserName: initialComments[i].UserName,
                 AuthorId: initialComments[i].AuthorId,
+                AuthorEmail: initialComments[i].Author.EMail,
+                SPSPicturePlaceholderState : initialComments[i].Author.SPSPicturePlaceholderState,
                 Comments: initialComments[i].Comments,
                 Created: initialComments[i].Created, // Formatting the created date
                 UserLikesJSON: result1.length > 0 ? likeArray : []
@@ -467,6 +476,8 @@ const ProjectDetailsContext = ({ props }: any) => {
 
     setCurrentUser(await getCurrentUser(sp, siteUrl));
     setCurrentUserProfile(await getCurrentUserProfile(sp, siteUrl));
+    const profileemail = await getCurrentUserProfileEmail(sp);
+    setSPSPicturePlaceholderState( await getuserprofilepic(sp,profileemail));
     console.log(CurrentUserProfile, "CurrentUserProfile");
   };
 
@@ -542,6 +553,8 @@ const ProjectDetailsContext = ({ props }: any) => {
         const newCommentData1: Comment = {
           Id: ress.data.Id,
           UserName: ress.data.UserName,
+          AuthorEmail: CurrentUser.Email,
+          SPSPicturePlaceholderState : SPSPicturePlaceholderState,
           AuthorId: ress.data.AuthorId,
           Comments: ress.data.Comments,
           Created: ress.data.Created,
@@ -550,7 +563,7 @@ const ProjectDetailsContext = ({ props }: any) => {
           userHasLiked: false, // Initialize as false
           UserProfile: ress.data.UserProfile,
         };
-        setComments((prevComments) => [...prevComments, newCommentData1]);
+        setComments((prevComments) => [newCommentData1,...prevComments]);
         let notifiedArr = {
           ContentId: ArrDetails[0].Id,
           NotifiedUserId: ArrDetails[0].AuthorId,
@@ -774,10 +787,13 @@ const ProjectDetailsContext = ({ props }: any) => {
         })
         .then(async (ress: any) => {
           console.log(ress, "ressress");
+          var SPSPicturePlaceholderState =await getuserprofilepic(sp,CurrentUser.Email);
           const newReplyJson = {
             Id: ress.data.Id,
             AuthorId: ress.data.AuthorId,
             UserName: ress.data.UserName, // Replace with actual username
+            UserEmail :CurrentUser.Email,
+            SPSPicturePlaceholderState : SPSPicturePlaceholderState,
             Comments: ress.data.Comments,
             Created: ress.data.Created,
             UserProfile: CurrentUserProfile,
@@ -835,11 +851,16 @@ const ProjectDetailsContext = ({ props }: any) => {
   const sendanEmail = (item: any) => {
     // window.open("https://outlook.office.com/mail/inbox");
 
-    const subject = "Project Title-" + item.ProjectName;
-    const body = 'Here is the link to the Project:' + `${siteUrl}/SitePages/ProjectDetails.aspx?${item.Id}`;
+    //const subject = "Project Title-" + item.ProjectName;
+    //const body = 'Here is the link to the Project:' + `${siteUrl}/SitePages/ProjectDetails.aspx?${item.Id}`;
 
     //const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    //const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    const subject = "Thought You’d Find This Interesting!";
+    const body = 'Hi,' +
+        'I came across something that might interest you: ' +
+        `<a href="${siteUrl}/SitePages/ProjectDetails.aspx?${item.Id}"></a>`
+    const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${subject}&body=${body}`;
 
     window.open(office365MailLink, '_blank');
     // Open the link to launch the default mail client (like Outlook)
@@ -1083,13 +1104,13 @@ const ProjectDetailsContext = ({ props }: any) => {
     setFiles(response)
     function isDocumentLibrary(filemanager: any) {
       // Check if the URL contains more than two parts after "/sites/"
-      const parts = filemanager.split('/sites/')[1].split('/');
+      const parts = filemanager?.split('/sites/')[1]?.split('/');
       return parts.length > 2 && !parts.includes('Forms');
     }
 
     function isSubsite(filemanager: any) {
       // Check if the URL contains exactly two parts after "/sites/"
-      const parts = filemanager.split('/sites/')[1].split('/');
+      const parts = filemanager?.split('/sites/')[1]?.split('/');
       return parts.length === 2;
     }
 
@@ -1111,11 +1132,21 @@ const ProjectDetailsContext = ({ props }: any) => {
     try {
 
 
+       const getargmember = await sp.web.lists.getByTitle('ARGProject').items.filter(`ProjectName eq '${projectname}'`).select("*,TeamMembers/ID,TeamMembers/Title").expand("TeamMembers")();
 
-      const getargmember: IList[] = await sp.web.lists.getByTitle('ARGProject').items.filter(`ProjectName eq '${projectname}'`).select("*,TeamMembers/ID,TeamMembers/EMail,TeamMembers/Title").expand("TeamMembers")();
-      console.log(getargmember, "getargmember")
+      // const getargmember: IList[] = await sp.web.lists.getByTitle('ARGProject').items.filter(`ProjectName eq '${projectname}'`).select("*,TeamMembers/ID,TeamMembers/Title").expand("TeamMembers")();
+      console.log(getargmember, "getargmember");
+      // var getargmemberTeam = getargmember;
       const userList = await sp.web.lists.getByTitle("User Information List").items.select("ID", "Title", "EMail", "Department", "JobTitle", "Picture").filter("EMail ne null")();
       console.log(userList, "userlist")
+      for (var j = 0; j < getargmember[0].TeamMembers.length; j++) {
+        var user = await sp.web.getUserById(getargmember[0].TeamMembers[j].ID)();
+        var profile = await sp.profiles.getPropertiesFor(`i:0#.f|membership|${user.Email}`);
+        getargmember[0].TeamMembers[j].EMail = user.Email;
+
+        getargmember[0].TeamMembers[j].SPSPicturePlaceholderState = profile.UserProfilePropertie?profile.UserProfileProperties[profile.UserProfileProperties.findIndex((obj: { Key: string; })=>obj.Key === "SPS-PicturePlaceholderState")].Value:"1";
+
+      }
       setArgcurrentgroupuser(getargmember)
     } catch (error) {
 
@@ -1997,6 +2028,9 @@ const ProjectDetailsContext = ({ props }: any) => {
                                 onSaveComment={(text: any) => handleSaveComment(comment.Id, text)}
                                 ondeleteComment={() => handleDeleteComment(comment.Id)}
                                 projectArray={ArrDetails}
+                                CurrentUserEmail = {currentUserEmailRef.current}
+                                CurrSPSPicturePlaceholderState ={SPSPicturePlaceholderState}
+                                siteUrl = {siteUrl}
                               />
                             </div>
                           ))}
@@ -2008,14 +2042,33 @@ const ProjectDetailsContext = ({ props }: any) => {
 
                         <div className="card mobile-5 mt-2" style={{ borderRadius: "22px", position: 'sticky', top: '90px' }}>
                           <div className="card-body pb-3 gheight">
-                            { }
+                            
                             <h4 className="header-title font-16 text-dark fw-bold mb-0" style={{ fontSize: "20px" }}>Project Owner</h4>
                             <div className="displcenter">
-                              <img
+                              {/* <img
                                 src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item?.Author?.EMail}`}
                                 className="rounded-circlecss68 img-thumbnail avatar-xl"
                                 alt="profile-image"
-                              /></div>
+                              /> */}
+
+                              {item.Author?.SPSPicturePlaceholderState == 0 ?
+                                <img
+                                  src={
+
+                                    `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item?.Author?.EMail}`
+
+                                  }
+                                  className="rounded-circle"
+                                  width="50"
+                                  alt={item.Author.Title}
+                                />
+                                :
+                                item?.Author?.EMail !== null &&item?.Author?.EMail !== "" &&
+                                <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle avatar-xl">
+                                  {`${item?.Author?.EMail?.split('.')[0].charAt(0)}${item?.Author?.EMail?.split('.')[1].charAt(0)}`.toUpperCase()}
+                                </Avatar>
+                              }
+                             </div>
                             <h1 className="text-muted font-14 mt-1"><p className="text-dark font-16 text-center mb-2"> {item.Author.Title}</p>
                               {/* <p className="text-muted font-14 text-center mb-1">Cloud Infrastructure Alchemist</p> */}
                               <p className="text-muted font-12 text-center">{item.Author.EMail} </p>
@@ -2037,26 +2090,39 @@ const ProjectDetailsContext = ({ props }: any) => {
                               </div>
 
                             )}
-                            {/* {argcurrentgroupuser */}
+                            {console.log("ghghbg",argcurrentgroupuser[0]?.TeamMembers?.length > 0 && argcurrentgroupuser[0]?.TeamMembers)}
                             {argcurrentgroupuser[0]?.TeamMembers?.length > 0 && argcurrentgroupuser[0]?.TeamMembers?.map(
                               (id: any, idx: any) => {
                                 console.log(id, 'id');
                                 console.log(id.Id, 'id');
-                                // {console.log("argcurrentgroupuser[0]?.TeamMembers",argcurrentgroupuser[0]?.TeamMembers)}
+                                 {console.log("argcurrentgroupuser[0]?.TeamMembers",argcurrentgroupuser[0]?.TeamMembers)}
                                 if (idx >= 0) {
                                   return (
                                     <div className="projectmemeber">
-                                      <img
-                                        // style={{
-                                        //   margin:
-                                        //     index == 0
-                                        //       ? "0 0 0 0"
-                                        //       : "0 0 0px -12px",
-                                        // }}
+                                      {/* <img
+                                       
                                         src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id?.EMail}`}
                                         className="rounded-circlecss6 img-thumbnail avatar-xl"
                                         alt="profile-image"
-                                      />
+                                      /> */}
+                                       { Number(id.SPSPicturePlaceholderState) == 0 ?
+                                        <img
+                                          src={
+
+                                            `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${id.EMail}`
+
+                                          }
+                                          className="rounded-circle"
+                                          width="50"
+                                          alt={id.Title}
+                                        />
+                                        :
+                                        id.EMail !== null &&id.EMail !== "" &&
+                                        <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle avatar-xl">
+                                          {`${id.EMail?.split('.')[0].charAt(0)}${id.EMail?.split('.')[1].charAt(0)}`.toUpperCase()}
+                                        </Avatar>
+                                      }
+                                     
                                       <p className="mb-0">{id?.Title} </p>
                                       {item.Author.EMail === currentUserEmailRef.current && (
                                         <div>

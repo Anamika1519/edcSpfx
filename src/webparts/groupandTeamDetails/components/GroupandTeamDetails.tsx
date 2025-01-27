@@ -34,6 +34,8 @@ import {
   addNotification,
   getCurrentUser,
   getCurrentUserProfile,
+  getCurrentUserProfileEmail,
+  getuserprofilepic,
   getUserProfilePicture,
 } from "../../../APISearvice/CustomService";
  
@@ -53,6 +55,7 @@ import { getGroupTeamDetailsById } from "../../../APISearvice/GroupTeamService";
 import AvtarComponents from "../../../CustomJSComponents/AvtarComponents/AvtarComponents";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import Avatar from "@mui/material/Avatar";
  
 // Define types for reply and comment structures
  
@@ -62,7 +65,8 @@ interface Reply {
   AuthorId: number;
  
   UserName: string;
- 
+  UserEmail: string;
+  SPSPicturePlaceholderState:string;
   Comments: string;
  
   Created: string;
@@ -118,7 +122,7 @@ const GroupandTeamDetailsContext = ({ props }: any) => {
   const [comments, setComments] = useState<Comment[]>([]);
  
   const [newComment, setNewComment] = useState<string>("");
- 
+ const [SPSPicturePlaceholderState, setSPSPicturePlaceholderState]= useState(null);
   const [loading, setLoading] = useState<boolean>(false);
  
   const [ArrDetails, setArrDetails] = useState([]);
@@ -205,9 +209,9 @@ ApICallData();
  
       .getByTitle("ARGGroupandTeamComments")
  
-      .items.select("*,GroupandTeam/Id")
+      .items.select("*,GroupandTeam/Id,Author/ID,Author/Title,Author/EMail,Author/SPSPicturePlaceholderState")
  
-      .expand("GroupandTeam")
+      .expand("GroupandTeam,Author")
       .filter(`GroupandTeamId eq ${Number(idNum)}`)
       .orderBy("Created", false)()
       .then(async (result: any) => {
@@ -240,6 +244,10 @@ ApICallData();
                 Id: initialComments[i].Id,
                 UserName: initialComments[i].UserName,
                 AuthorId: initialComments[i].AuthorId,
+                AuthorEmail: initialComments[i].Author.EMail,
+                SPSPicturePlaceholderState : initialComments[i].Author.SPSPicturePlaceholderState,
+                // AuthorEmail: "",
+                // SPSPicturePlaceholderState : "",
                 Comments: initialComments[i].Comments,
                 Created: initialComments[i].Created, // Formatting the created date
                 UserLikesJSON: result1.length>0?likeArray:[], // Default to empty array if null
@@ -339,6 +347,9 @@ ApICallData();
     setCurrentUser(await getCurrentUser(sp, siteUrl));
  
     setCurrentUserProfile(await getCurrentUserProfile(sp, siteUrl));
+
+    const profileemail = await getCurrentUserProfileEmail(sp);
+    setSPSPicturePlaceholderState( await getuserprofilepic(sp,profileemail));
     
   };
 
@@ -678,13 +689,15 @@ try{
  
       .then(async (ress: any) => {
         console.log(ress, "ressress");
- 
+      //  var SPSPicturePlaceholderState =await getuserprofilepic(sp,CurrentUser.Email);
         const newReplyJson = {
           Id: ress.data.Id,
  
           AuthorId: ress.data.AuthorId,
  
           UserName: ress.data.UserName, // Replace with actual username
+          UserEmail :CurrentUser.Email,
+          SPSPicturePlaceholderState : SPSPicturePlaceholderState,
  
           Comments: ress.data.Comments,
  
@@ -768,14 +781,19 @@ try{
   const sendanEmail = (item:any) => {
     // window.open("https://outlook.office.com/mail/inbox");
   
-     const subject ="Group Title-"+ item.GroupName;
-     const body = 'Here is the link to the group:'+ `${siteUrl}/SitePages/GroupandTeamDetails.aspx?${item.Id}`;
+    //  const subject ="Group Title-"+ item.GroupName;
+    //  const body = 'Here is the link to the group:'+ `${siteUrl}/SitePages/GroupandTeamDetails.aspx?${item.Id}`;
   
    // const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   
     // Open the link to launch the default mail client (like Outlook)
     //window.location.href = mailtoLink;
-    const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    //const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    const subject = "Thought You’d Find This Interesting!";
+    const body = 'Hi,' +
+        'I came across something that might interest you: ' +
+        `<a href="${siteUrl}/SitePages/GroupandTeamDetails.aspx?${item.Id}"></a>`
+    const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${subject}&body=${body}`;
 
     window.open(office365MailLink, '_blank');
    };
@@ -868,10 +886,28 @@ try{
                                               }}
                                               data-tooltip={item.Title}
                                             >
-                                              <img
+                                              {/* <img
                                                 src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item1.EMail}`}
                                                 className="attendeesImg"
-                                              />{" "}
+                                              /> */}
+                                               {/* {item1.SPSPicturePlaceholderState == 0 ?
+                                                          <img
+                                                            src={
+
+                                                              `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item1.EMail}`
+
+                                                            }
+                                                            className="rounded-circle"
+                                                            width="50"
+                                                            alt={item1.Title}
+                                                          />
+                                                          :
+                                                          item1.EMail !== null &&item1.EMail !== "" &&
+                                                          <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle avatar-xl">
+                                                            {`${item1.EMail?.split('.')[0].charAt(0)}${item1.EMail?.split('.')[1].charAt(0)}`.toUpperCase()}
+                                                          </Avatar>
+                                                        } */}
+                                              {" "}
                                               <span
                                                 data-tooltip={item.Title}
                                               ></span>
@@ -1053,6 +1089,9 @@ try{
                     onLike={() => handleLikeToggle(index)} // Pass like handler
                     loadingReply={loadingReply}
                     mainArray={ArrDetails}
+                    CurrentUserEmail = {CurrentUser.Email}
+                    CurrSPSPicturePlaceholderState ={SPSPicturePlaceholderState}
+                    siteUrl = {siteUrl}
                   />
                 </div>
               ))}

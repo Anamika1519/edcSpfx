@@ -15,7 +15,9 @@ import {
   addActivityLeaderboard,
   addNotification,
   getCurrentUser,
-  getCurrentUserProfile
+  getCurrentUserProfile,
+  getCurrentUserProfileEmail,
+  getuserprofilepic
 } from "../../../APISearvice/CustomService";
 import { Calendar, Link, Share } from "react-feather";
 import moment from "moment";
@@ -37,6 +39,10 @@ interface Reply {
   Id: number;
   AuthorId: number;
   UserName: string;
+
+  UserEmail: string;
+  SPSPicturePlaceholderState:string;
+
   Comments: string;
   Created: string;
   UserProfile: string;
@@ -67,6 +73,7 @@ const BlogDetailsContext = ({ props }: any) => {
   const siteUrl = props.siteUrl;
   const elementRef = React.useRef<HTMLDivElement>(null);
   const [CurrentUser, setCurrentUser]: any[] = useState([]);
+   const [SPSPicturePlaceholderState, setSPSPicturePlaceholderState]= useState(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
@@ -193,8 +200,8 @@ const BlogDetailsContext = ({ props }: any) => {
     let likeArray: any[] = []
     sp.web.lists
       .getByTitle("ARGBlogComments")
-      .items.select("*,ARGBlogs/Id")
-      .expand("ARGBlogs")
+      .items.select("*,ARGBlogs/Id,Author/ID,Author/Title,Author/EMail,Author/SPSPicturePlaceholderState")
+      .expand("ARGBlogs,Author")
       .filter(`ARGBlogsId eq ${Number(idNum)}`)()
       .then(async (result: any) => {
         console.log(result, "ARGBlogComments");
@@ -222,6 +229,8 @@ const BlogDetailsContext = ({ props }: any) => {
                 Id: initialComments[i].Id,
                 UserName: initialComments[i].UserName,
                 AuthorId: initialComments[i].AuthorId,
+                AuthorEmail: initialComments[i].Author.EMail,
+                SPSPicturePlaceholderState : initialComments[i].Author.SPSPicturePlaceholderState,
                 Comments: initialComments[i].Comments,
                 Created: initialComments[i].Created,  // Formatting the created date
                 UserLikesJSON: result1.length > 0 ? likeArray : []
@@ -247,6 +256,9 @@ const BlogDetailsContext = ({ props }: any) => {
     debugger;
     setCurrentUser(await getCurrentUser(sp, siteUrl));
     setCurrentUserProfile(await getCurrentUserProfile(sp, siteUrl));
+
+    const profileemail = await getCurrentUserProfileEmail(sp);
+    setSPSPicturePlaceholderState( await getuserprofilepic(sp,profileemail));
   };
 
   const copyToClipboard = (Id: number) => {
@@ -467,6 +479,11 @@ const BlogDetailsContext = ({ props }: any) => {
             Id: ress.data.Id,
             AuthorId: ress.data.AuthorId,
             UserName: ress.data.UserName, // Replace with actual username
+
+            UserEmail :CurrentUser.Email,
+            SPSPicturePlaceholderState : SPSPicturePlaceholderState,
+
+
             Comments: ress.data.Comments,
             Created: ress.data.Created,
             UserProfile: CurrentUserProfile,
@@ -525,15 +542,20 @@ const BlogDetailsContext = ({ props }: any) => {
   const sendanEmail = (item: any) => {
     // window.open("https://outlook.office.com/mail/inbox");
 
-    const subject = "Blog Title-" + item.Title;
-    const body = 'Here is the link to the Blog:' + `${siteUrl}/SitePages/BlogDetails.aspx?${item.Id}`;
+    //const subject = "Blog Title-" + item.Title;
+    //const body = 'Here is the link to the Blog:' + `${siteUrl}/SitePages/BlogDetails.aspx?${item.Id}`;
 
     //const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
     // Open the link to launch the default mail client (like Outlook)
     // window.location.href = mailtoLink;
 
-    const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    //const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    const subject = "Thought You’d Find This Interesting!";
+    const body = 'Hi,' +
+        'I came across something that might interest you: ' +
+        `<a href="${siteUrl}/SitePages/BlogDetails.aspx?${item.Id}"></a>`
+    const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${subject}&body=${body}`;
 
     window.open(office365MailLink, '_blank');
   };
@@ -673,7 +695,7 @@ const BlogDetailsContext = ({ props }: any) => {
                                       title="Screenshot-1"
                                     >
                                       <img
-                                        src={`https://OfficeIndia.sharepoint.com${res.fileUrl}`}
+                                        src={`https://officeindia.sharepoint.com${res.fileUrl}`}
                                         className="img-fluid imgcssscustom"
                                         alt="work-thumbnail"
                                         data-themekey="#"
@@ -730,7 +752,7 @@ const BlogDetailsContext = ({ props }: any) => {
                         }}
                       >
 
-                        <div className="card-body" style={{ padding: "1rem 0.9rem" }}>
+                        <div className="p-4">
                           {/* New comment input */}
                           <h4 className="mt-0 mb-3 text-dark fw-bold font-16">
                             Comments
@@ -783,6 +805,9 @@ const BlogDetailsContext = ({ props }: any) => {
                         onLike={() => handleLikeToggle(index)} // Pass like handler
                         loadingReply={loadingReply}
                         mainArray={ArrDetails}
+                        CurrentUserEmail = {CurrentUser.Email}
+                        CurrSPSPicturePlaceholderState ={SPSPicturePlaceholderState}
+                        siteUrl = {siteUrl}
                       />
                     </div>
                   ))}
@@ -790,18 +815,8 @@ const BlogDetailsContext = ({ props }: any) => {
 
 
               </div>
-              {pageValue !== "" &&
-                <div className="col-lg-4">
-                  <div className="text-center butncss">
-                    <button type="button" className="btn cancel-btn waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleCancel}>
-                      <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }}
-                        className='me-1' alt="x" />
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              }
-              <div className="col-lg-4">
+             
+              <div className="col-lg-4 widthnew">
                 <div style={{ position: 'sticky', top: '90px' }} className="card  postion8">
                   <div className="card-body">
                     <h4 className="header-title text-dark  fw-bold mb-0">
@@ -827,6 +842,18 @@ const BlogDetailsContext = ({ props }: any) => {
 
 
               </div>
+
+              {pageValue !== "" &&
+                <div className="col-lg-4">
+                  <div className="text-left butncss">
+                    <button type="button" className="btn cancel-btn waves-effect waves-light m-1" style={{ fontSize: '0.875rem' }} onClick={handleCancel}>
+                      <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }}
+                        className='me-1' alt="x" />
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              }
 
               {/* ******* changes */}
               {/* {showAppRemark == true &&<div><div>

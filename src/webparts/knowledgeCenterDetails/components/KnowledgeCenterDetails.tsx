@@ -116,7 +116,7 @@ const HelloWorldContext = ({ props }: any) => {
     }
   };
   const siteUrl = props.siteUrl;
-  const videositeurl = props.siteUrl.split("/sites")[0];
+  const videositeurl = props.siteUrl?.split("/sites")[0];
   const Breadcrumb = [
     {
       "MainComponent": "Home",

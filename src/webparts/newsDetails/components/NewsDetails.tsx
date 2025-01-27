@@ -6,7 +6,7 @@ import { getSP } from '../loc/pnpjsConfig';
 
 import { SPFI } from '@pnp/sp/presets/all';
 
-import { getCurrentUser, getCurrentUserProfile } from '../../../APISearvice/CustomService';
+import { getCurrentUser, getCurrentUserProfile, getCurrentUserProfileEmail, getuserprofilepic } from '../../../APISearvice/CustomService';
 
 import VerticalSideBar from '../../verticalSideBar/components/VerticalSideBar';
 
@@ -46,6 +46,10 @@ interface Reply {
 
   UserName: string;
 
+  UserEmail: string;
+  SPSPicturePlaceholderState:string;
+
+
   Comments: string;
 
   Created: string;
@@ -79,6 +83,9 @@ interface Comment {
   Id: number
 
   UserName: string;
+
+  AuthorEmail: string,
+  SPSPicturePlaceholderState:string; 
 
   AuthorId: number,
 
@@ -114,11 +121,11 @@ const NewsdetailsContext = ({ props }: any) => {
   const [loading, setLoading] = useState<boolean>(false);
 
   const [ArrDetails, setArrDetails]: any[] = useState([])
-
+ const [SPSPicturePlaceholderState, setSPSPicturePlaceholderState]= useState(null);
   const [CurrentUserProfile, setCurrentUserProfile]: any[] = useState("")
 
   const siteUrl = props.siteUrl;
-  const videositeurl = props.siteUrl.split("/sites")[0];
+  const videositeurl = props.siteUrl?.split("/sites")[0];
   const [copySuccess, setCopySuccess] = useState('');
 
   const [NewsId, setId] = useState(0)
@@ -285,7 +292,7 @@ const NewsdetailsContext = ({ props }: any) => {
     let likeArray: any[] = []
     const idNum = originalString.substring(1);
     sp.web.lists.getByTitle("ARGAnnouncementandNewsComments").items
-      .select("*,AnnouncementAndNews/Id").expand("AnnouncementAndNews")
+      .select("*,AnnouncementAndNews/Id ,Author/ID,Author/Title,Author/EMail,Author/SPSPicturePlaceholderState").expand("AnnouncementAndNews,Author")
       .filter(`AnnouncementAndNewsId eq ${Number(idNum)}`).orderBy("Created", false)()
       .then(async (result: any) => {
 
@@ -316,6 +323,8 @@ const NewsdetailsContext = ({ props }: any) => {
                 Id: initialComments[i].Id,
                 UserName: initialComments[i].UserName,
                 AuthorId: initialComments[i].AuthorId,
+                AuthorEmail: initialComments[i].Author.EMail,
+                SPSPicturePlaceholderState : initialComments[i].Author.SPSPicturePlaceholderState,
                 Comments: initialComments[i].Comments,
                 Created: initialComments[i].Created, // Formatting the created date
                 UserLikesJSON: result1.length > 0 ? likeArray : []
@@ -385,6 +394,9 @@ const NewsdetailsContext = ({ props }: any) => {
     setCurrentUser(await getCurrentUser(sp, siteUrl))
 
     setCurrentUserProfile(await getCurrentUserProfile(sp, siteUrl))
+
+     const profileemail = await getCurrentUserProfileEmail(sp);
+      setSPSPicturePlaceholderState( await getuserprofilepic(sp,profileemail));
 
 
 
@@ -473,6 +485,9 @@ const NewsdetailsContext = ({ props }: any) => {
 
         AuthorId: ress.data.AuthorId,
 
+        AuthorEmail: CurrentUser.Email,
+        SPSPicturePlaceholderState : SPSPicturePlaceholderState,
+
         Comments: ress.data.Comments,
 
         Created:ress.data.Created,
@@ -487,7 +502,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
       };
 
-      setComments((prevComments) => [...prevComments, newCommentData1]);
+      setComments((prevComments) => [newCommentData1,...prevComments]);
 
       setNewComment('');
 
@@ -624,6 +639,9 @@ const NewsdetailsContext = ({ props }: any) => {
 
           UserName: ress.data.UserName, // Replace with actual username
 
+          UserEmail :CurrentUser.Email,
+          SPSPicturePlaceholderState : SPSPicturePlaceholderState,
+
           Comments: ress.data.Comments,
 
           Created: ress.data.Created,
@@ -690,15 +708,20 @@ const NewsdetailsContext = ({ props }: any) => {
   const sendanEmail = (item: any) => {
     // window.open("https://outlook.office.com/mail/inbox");
 
-    const subject = "News Title-" + item.Title;
-    const body = 'Here is the link to the news:' + `${siteUrl}/SitePages/NewsDetails.aspx?${item.Id}`;
+    //const subject = "News Title-" + item.Title;
+    //const body = 'Here is the link to the news:' + `${siteUrl}/SitePages/NewsDetails.aspx?${item.Id}`;
 
     // const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
     // Open the link to launch the default mail client (like Outlook)
     //window.location.href = mailtoLink;
 
-    const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    //const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    const subject = "Thought You’d Find This Interesting!";
+    const body = 'Hi,' +
+        'I came across something that might interest you: ' +
+        `<a href="${siteUrl}/SitePages/NewsDetails.aspx?${item.Id}"></a>`
+    const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${subject}&body=${body}`;
 
     window.open(office365MailLink, '_blank');
   };
@@ -998,6 +1021,10 @@ const NewsdetailsContext = ({ props }: any) => {
                           onLike={() => handleLikeToggle(index)} // Pass like handler
                           loadingReply={loadingReply}
                           newsArray={ArrDetails}
+
+                          CurrentUserEmail = {CurrentUser.Email}
+                         CurrSPSPicturePlaceholderState ={SPSPicturePlaceholderState}
+                        siteUrl = {siteUrl}
                         />
 
                       </div>

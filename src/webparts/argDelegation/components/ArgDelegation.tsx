@@ -36,7 +36,7 @@ const ArgDelegationContext = ({ props }: any) => {
   const { useHide }: any = React.useContext(UserContext);
   const elementRef = React.useRef<HTMLDivElement>(null);
   
-  // const tenantUrl = props.siteUrl.split("/sites/")[0];
+  // const tenantUrl = props.siteUrl?.split("/sites/")[0];
   const [Loading, setLoading] = React.useState(false);
   const [ValidDraft, setValidDraft] = React.useState(true);
   const [ValidSubmit, setValidSubmit] = React.useState(true);
@@ -150,8 +150,8 @@ if(Currusers){
             debugger
             setEditForm(true)
             // setCategoryData(await getCategory(sp, Number(setBannerById[0]?.TypeMaster))) // Category
-            const startDate = setDelegateById[0].StartDate ?new Date(setDelegateById[0].StartDate).toISOString().split("T")[0]:"";
-            const endDate =setDelegateById[0].EndDate? new Date(setDelegateById[0].EndDate).toISOString().split("T")[0]:"";
+            const startDate = setDelegateById[0].StartDate ?new Date(setDelegateById[0].StartDate).toISOString()?.split("T")[0]:"";
+            const endDate =setDelegateById[0].EndDate? new Date(setDelegateById[0].EndDate).toISOString()?.split("T")[0]:"";
 
 
             let arr = {

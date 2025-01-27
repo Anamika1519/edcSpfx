@@ -693,7 +693,7 @@ const deleteLocalFile = (index, filArray, name) => {
                                     file,
                                     _sp,
                                     "Documents",
-                                    "https://OfficeIndia.sharepoint.com"
+                                    "https://officeindia.sharepoint.com"
                                 );
                             }
                         } else {
@@ -883,7 +883,7 @@ const deleteLocalFile = (index, filArray, name) => {
                                 file,
                                 _sp,
                                 "Documents",
-                                "https://OfficeIndia.sharepoint.com"
+                                "https://officeindia.sharepoint.com"
                             );
                         }
                     }
@@ -1152,14 +1152,21 @@ const deleteLocalFile = (index, filArray, name) => {
     const sendanEmail = (item) => {
         // window.open("https://outlook.office.com/mail/inbox");
 
-        const subject = "Blog Title -" + item.Title;
-        const body = 'Here is the link to the Blog:' + `${SiteUrl}/SitePages/BlogDetails.aspx?${item.Id}`;
+        // const subject = "Blog Title -" + item.Title;
+        // const body = 'Here is the link to the Blog:' + `${SiteUrl}/SitePages/BlogDetails.aspx?${item.Id}`;
+        const subject = "Thought You’d Find This Interesting!";
+        const body = 'Hi,' +
+            'I came across something that might interest you: ' +
+            `<a href="${siteUrl}/SitePages/BlogDetails.aspx?${item.Id}"></a>`
+        'Let me know what you think!';
 
+        // window.open(`https://outlook.office365.com/mail/deeplink/compose?body= Here is the group link: "${siteUrl}/SitePages/GroupandTeamDetails.aspx?${idNum}"`);
+        const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${subject}&body=${body}`;
         //const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
         // Open the link to launch the default mail client (like Outlook)
         //window.location.href = mailtoLink;
-        const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        //const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
         window.open(office365MailLink, '_blank');
     };
@@ -1300,7 +1307,7 @@ const deleteLocalFile = (index, filArray, name) => {
                             let listID = SiteUrl.toLowerCase().includes('alrostmani') ? listIDAl : '1e0eead0-ed78-4b4d-92dc-4cd058deac82';
 
                             let img1 = imageData && imageData.fileName ? `${SiteUrl}/_api/v2.1/sites('${siteId}')/lists('${listID}')/items('${item.ID}')/attachments('${imageData.fileName}')/thumbnails/0/c400x400/content?prefer=noredirect%2Cclosestavailablesize` : ""
-                            let img = imageData && imageData.serverRelativeUrl ? `https://OfficeIndia.sharepoint.com${imageData.serverRelativeUrl}` : img1
+                            let img = imageData && imageData.serverRelativeUrl ? `https://officeindia.sharepoint.com${imageData.serverRelativeUrl}` : img1
                             const imageUrl = imageData
                                 ? img
                                 : require("../../webparts/businessApps/assets/userimg.png");
@@ -1921,7 +1928,7 @@ const deleteLocalFile = (index, filArray, name) => {
                           {DocumentpostArr1.map((file, index) => (
                             <tr key={index}>
                               <td className='text-center'>{index + 1}</td>
-                              <td>{file.fileName.replace("/sites/Alrostmanispfx2", "")}</td>
+                              <td>{file.fileName.replace("/sites/edcspfx", "")}</td>
                               <td className='text-right'>{file.fileSize}</td>
                               <td className='text-center'> <img src={require("../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, DocumentpostArr1, "docs")} /> </td>
                             </tr>
@@ -2027,7 +2034,7 @@ const deleteLocalFile = (index, filArray, name) => {
                           {DocumentpostArr1.map((file, index) => (
                             <tr key={index}>
                               <td style={{minWidth:'40px',maxWidth:'40px'}} className='text-center'>{index + 1}</td>
-                              <td style={{minWidth:'100px',maxWidth:'100px'}}>{file.fileName.replace("/sites/Alrostmanispfx2", "")}</td>
+                              <td style={{minWidth:'100px',maxWidth:'100px'}}>{file.fileName.replace("/sites/edcspfx", "")}</td>
                               <td style={{minWidth:'40px',maxWidth:'40px'}} className='text-right'>{file.fileSize}</td>
                               <td style={{minWidth:'40px',maxWidth:'40px'}} className='text-center'> <img style={{cursor:'pointer'}} src={require("../../CustomAsset/del.png")}  onClick={() => deleteLocalFile(index, DocumentpostArr1, "docs")} /> </td>
                             </tr>
@@ -2129,7 +2136,7 @@ const deleteLocalFile = (index, filArray, name) => {
                           {DocumentpostArr1.map((file, index) => (
                             <tr key={index}>
                               <td style={{minWidth:'40px',maxWidth:'40px'}} className='text-center'>{index + 1}</td>
-                              <td>{file.fileName.replace("/sites/Alrostmanispfx2", "")}</td>
+                              <td>{file.fileName.replace("/sites/edcspfx", "")}</td>
                               <td style={{minWidth:'40px',maxWidth:'40px'}} className='text-right'>{file.fileSize}</td>
                               <td style={{minWidth:'40px',maxWidth:'40px'}}className='text-center'> <img src={require("../../CustomAsset/del.png")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, DocumentpostArr1, "docs")} /> </td>
                             </tr>

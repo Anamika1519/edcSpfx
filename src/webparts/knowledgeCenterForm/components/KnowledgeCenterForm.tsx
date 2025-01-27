@@ -96,7 +96,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
   const [Loading, setLoading] = React.useState(false);
   const [modeValue, setmode] = React.useState("");
   const siteUrl = props.siteUrl;
-  const tenantUrl = props.siteUrl.split("/sites/")[0];
+  const tenantUrl = props.siteUrl?.split("/sites/")[0];
   console.log(siteUrl);
 
 
@@ -2706,7 +2706,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
               </Modal>
             }
             
-<Modal show={show} onHide={handleClose}>
+<Modal show={show} onHide={handleClose} className='previewpp'>
   <Modal.Header closeButton>
     <Modal.Title>{isVideo ? 'Video Preview' : 'Image Preview'}</Modal.Title>
   </Modal.Header>
@@ -2721,9 +2721,9 @@ const AddMediaGalaryContext = ({ props }: any) => {
     )}
   </Modal.Body>
   <Modal.Footer>
-    <Button variant="secondary" onClick={handleClose}>
+    {/* <Button variant="secondary" onClick={handleClose}>
       Close
-    </Button>
+    </Button> */}
   </Modal.Footer>
 </Modal>
 

@@ -1089,7 +1089,7 @@ export const getTodayARGNotificationHistory = async (sp) => {
 
           .items
 
-          .select("*,NotifiedUser/Id,NotifiedUser/Title,ActionUser/Id,ActionUser/Title,ActionUser/EMail")
+          .select("*,NotifiedUser/Id,NotifiedUser/Title,ActionUser/Id,ActionUser/Title,ActionUser/EMail,NotifiedUser/SPSPicturePlaceholderState")
 
           .expand("NotifiedUser,ActionUser")
 
@@ -1151,7 +1151,7 @@ export const getlastSevenDaysARGNotificationHistory = async (sp) => {
 
           .items
 
-          .select("*,NotifiedUser/Id,NotifiedUser/Title,ActionUser/Id,ActionUser/Title,ActionUser/EMail")
+          .select("*,NotifiedUser/Id,NotifiedUser/Title,ActionUser/Id,ActionUser/Title,ActionUser/EMail,ActionUser/SPSPicturePlaceholderState")
 
           .expand("NotifiedUser,ActionUser")
 
@@ -1208,7 +1208,7 @@ export const getOlderARGNotificationHistory = async (sp) => {
 
           .items
 
-          .select("*,NotifiedUser/Id,NotifiedUser/Title,ActionUser/Id,ActionUser/Title,ActionUser/EMail")
+          .select("*,NotifiedUser/Id,NotifiedUser/Title,ActionUser/Id,ActionUser/Title,ActionUser/EMail,ActionUser/SPSPicturePlaceholderState")
 
           .expand("NotifiedUser,ActionUser")
 
@@ -1419,7 +1419,7 @@ export async function getUserSPSPicturePlaceholderState(authorId, sp) {
   }
 
 }
-export const getuserprofilepic = async(sp,userEmail,userID) =>{
+export const getuserprofilepic = async(sp,userEmail) =>{
  
   try {
     // Fetch user profile properties using PnPjs
@@ -1443,7 +1443,8 @@ export const getuserprofilepic = async(sp,userEmail,userID) =>{
     // profile.UserProfileProperties.results.find(
     //   (prop) => prop.Key === "PictureUrl"
     // );
-    return IsProfilepic;
+    // return profile.UserProfileProperties[75].SPS-PicturePlaceholderState;
+   return profile.UserProfileProperties[profile.UserProfileProperties.findIndex(obj=>obj.Key === "SPS-PicturePlaceholderState")].Value;
   } catch (error) {
     console.error("Error retrieving user profile:", error);
   }

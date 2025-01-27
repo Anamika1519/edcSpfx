@@ -14,7 +14,7 @@ import UserContext from '../../../GlobalContext/context';
 
 import { getCurrentUser, getEntity } from '../../../APISearvice/CustomService';
 
-import { addItem, ARGMediaGalleryCategory, getMediaByID, getUrl, updateItem, uploadFile, uploadFileToLibrary } from '../../../APISearvice/MediaService';
+import { addItem, ARGMediaGalleryCategory, getMediaByID, getUrl, updateItem, uploadFile, uploadFileToLibrary , uploadAllFiles } from '../../../APISearvice/MediaService';
 
 import { decryptId } from '../../../APISearvice/CryptoService';
 
@@ -59,6 +59,8 @@ import { WorkflowAuditHistory } from '../../../CustomJSComponents/WorkflowAuditH
 import { CONTENTTYPE_Media, LIST_TITLE_ContentMaster, LIST_TITLE_MediaGallery, LIST_TITLE_MyRequest } from '../../../Shared/Constants';
 let mode = "";
 let hidesavasdraft : any;
+let newfileupload:any
+let newfilepreview:any
 const AddMediaGalaryContext = ({ props }: any) => {
   
 
@@ -96,7 +98,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
   const [Loading, setLoading] = React.useState(false);
   const [modeValue, setmode] = React.useState("");
   const siteUrl = props.siteUrl;
-  const tenantUrl = props.siteUrl.split("/sites/")[0];
+  const tenantUrl = props.siteUrl?.split("/sites/")[0];
   console.log(siteUrl);
 
 
@@ -220,6 +222,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
     mode = getUrlParameterValue('mode');
     setmode(mode);
     if (mode && mode == 'approval') {
+      //alert(`mode is ${mode}`)
       setApprovalMode(true);
       let requestid = getUrlParameterValue('requestid');
       setInputDisabled(true);
@@ -373,10 +376,10 @@ const AddMediaGalaryContext = ({ props }: any) => {
       if (setMediaById.length > 0) {
 
         debugger
-
+        
         setEditForm(true)
 
-
+        // alert(`editform : ${editForm}`)
         let arr = {
 
           title: setMediaById[0].Title,
@@ -664,7 +667,10 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
   // };
   const onFileChange = async (event: React.ChangeEvent<HTMLInputElement>, libraryName: string, docLib: string) => {
-
+    if(libraryName === 'bannerimg'){
+      newfileupload = true
+      //alert(`banner img `)
+    }
     debugger;
 
 
@@ -710,7 +716,10 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
 
         if (imageVideoFiles.length > 0) {
-
+          const preview = URL.createObjectURL(imageVideoFiles[0]); // Generate preview URL
+          //alert(`preview ${preview}`)
+          newfilepreview = preview
+          setPreviewUrl(preview);  
           var arr = {};
 
 
@@ -722,7 +731,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
               docLib: docLib,
 
-
+              fileUrl: URL.createObjectURL(imageVideoFiles[0])
             };
 
             uloadImageFiles.push(arr);
@@ -883,41 +892,87 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
   // };
 
-  const deleteLocalFile = (index: number, filArray: any[], name: string) => {
-
-    // Remove the file at the specified index
-
-    if (name == "Gallery") {
-
-      filArray.splice(index, 1);
-
-      // Update the state based on the title
-
-      setImagepostArr1([...filArray]);
-
-      filArray[0].files.length > 0 ? "" : setShowModal(false);
-
-      clearFileInput(name);
-
+  const deleteLocalFile = async (index: number, ImagepostArr: any[], columnName: string) => {
+    try {
+      // Extract the file information from the array
+      const fileToDelete = ImagepostArr[index];
+  
+      if (!fileToDelete || !fileToDelete.fileUrl) {
+        throw new Error("File URL not found");
+      }
+  
+      // Delete the file from SharePoint document library
+      const fileUrl = fileToDelete.fileUrl;
+      console.log(fileUrl , "fileUrl")
+      debugger  
+      const removeimage = await sp.web.getFileByServerRelativePath(fileUrl).recycle(); // Sends the file to the recycle bin
+       console.log(removeimage , "removeimage")
+       debugger
+      // Remove the file from the MediaGalleryJSON column
+      const list = sp.web.lists.getByTitle("ARGMediaGallery");
+      const item = await list.items.getById(editID).select("MediaGalleryJSON")();
+      debugger
+      console.log("items of MediaGalleryJSON" , item)
+      const mediaGalleryJSON = item.MediaGalleryJSON ? JSON.parse(item.MediaGalleryJSON) : [];
+  
+      // Filter out the deleted file from the JSON array
+      const updatedGalleryJSON = mediaGalleryJSON.filter((image: any) => image.ID !== fileToDelete.ID);
+      console.log(updatedGalleryJSON , "updatedGalleryJSON")
+      debugger
+      // Update the item in SharePoint
+      await list.items.getById(editID).update({
+        MediaGalleryJSON: JSON.stringify(updatedGalleryJSON),
+      });
+  
+      // Remove the file from the local array and update the state
+      const updatedArray = [...ImagepostArr];
+      updatedArray.splice(index, 1);
+      setImagepostArr(updatedArray);
+  
+      Swal.fire("Deleted successfully", "", "success");
+    } catch (error) {
+      console.error("Error deleting file:", error);
+      Swal.fire("Error", error.message, "error");
     }
-    else {
-      filArray.splice(index, 1);
-
-      // Update the state based on the title
-
-      setBannerImagepostArr([...filArray]);
-
-      filArray[0].files.length > 0 ? "" : setShowModal1(false);
-
-      clearFileInput(name);
-    }
-
-
-
-
-    // Clear the file input
-
   };
+  
+
+  // const deleteLocalFile = async (index: number, filArray: any[], name: string) => {
+
+  
+  //   // Remove the file at the specified index
+
+  //   if (name == "Gallery") {
+
+  //     filArray.splice(index, 1);
+
+  //     // Update the state based on the title
+
+  //     setImagepostArr1([...filArray]);
+
+  //     filArray[0].files.length > 0 ? "" : setShowModal(false);
+
+  //     clearFileInput(name);
+
+  //   }
+  //   else {
+  //     filArray.splice(index, 1);
+
+  //     // Update the state based on the title
+
+  //     setBannerImagepostArr([...filArray]);
+
+  //     filArray[0].files.length > 0 ? "" : setShowModal1(false);
+
+  //     clearFileInput(name);
+  //   }
+
+
+
+
+  //   // Clear the file input
+
+  // };
 
   //#endregion
 
@@ -1043,582 +1098,848 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
 
   //#region  Submit Form
+  //  old code of chhaya for media gallery
+  // const handleFormSubmit = async () => {
 
-  const handleFormSubmit = async () => {
+  //   if (validateForm(FormSubmissionMode.SUBMIT)) {
 
-    if (validateForm(FormSubmissionMode.SUBMIT)) {
+  //     if (editForm) {
+  //       // alert('coming here in if')
 
-      if (editForm) {
-        // alert('coming here in if')
+  //       Swal.fire({
 
-        Swal.fire({
+  //         title: 'Do you want to submit this request?',
 
-          title: 'Do you want to submit this request?',
+  //         showConfirmButton: true,
 
-          showConfirmButton: true,
+  //         showCancelButton: true,
 
-          showCancelButton: true,
+  //         confirmButtonText: "Save",
 
-          confirmButtonText: "Save",
+  //         cancelButtonText: "Cancel",
 
-          cancelButtonText: "Cancel",
+  //         icon: 'warning'
 
-          icon: 'warning'
+  //       }
 
-        }
+  //       ).then(async (result) => {
+  //         if (result.isConfirmed) {
+  //           setLoading(true);
+  //           debugger
 
-        ).then(async (result) => {
-          if (result.isConfirmed) {
-            setLoading(true);
-            debugger
+  //           let bannerImageArray: any = {};
 
-            let bannerImageArray: any = {};
+  //           let galleryIds: any[] = [];
 
-            let galleryIds: any[] = [];
+  //           let documentIds: any[] = [];
 
-            let documentIds: any[] = [];
+  //           let galleryArray: any[] = [];
 
-            let galleryArray: any[] = [];
-
-            let documentArray: any[] = [];
-
-
-            // formData.FeaturedAnnouncement === "on"?  true :false;
+  //           let documentArray: any[] = [];
 
 
-            // Upload Banner Images
+  //           // formData.FeaturedAnnouncement === "on"?  true :false;
 
-            if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
 
-              for (const file of BnnerImagepostArr[0].files) {
+  //           // Upload Banner Images
 
-                //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
+  //           if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
 
-                bannerImageArray = await uploadFile(file, sp, "Documents", tenantUrl);
+  //             for (const file of BnnerImagepostArr[0].files) {
 
-              }
+  //               //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
 
-            }
-            else if (BnnerImagepostArr.length > 0) {
-              bannerImageArray = BnnerImagepostArr[0];
-            }
+  //               bannerImageArray = await uploadFile(file, sp, "Documents", tenantUrl);
 
-            else {
+  //             }
 
-              bannerImageArray = null
+  //           }
+  //           else if (BnnerImagepostArr.length > 0) {
+  //             bannerImageArray = BnnerImagepostArr[0];
+  //           }
 
-            }
+  //           else {
 
-            debugger
+  //             bannerImageArray = null
 
-            if (bannerImageArray != null) {
+  //           }
 
-              // Create Post
-                console.log("form of ARG Master List" , formData) ;
-                // if(formData.Status == "Submitted"){ 
+  //           debugger
 
-                // }else if(formData.Status == "Submitted0"){
+  //           if (bannerImageArray != null) {
+
+  //             // Create Post
+  //               console.log("form of ARG Master List" , formData) ;
+  //               // if(formData.Status == "Submitted"){ 
+
+  //               // }else if(formData.Status == "Submitted0"){
                   
-                // }else if(formData.Status == "Submitted1"){  
+  //               // }else if(formData.Status == "Submitted1"){  
 
-                // }else if(formData.Status == "Submitted2"){
+  //               // }else if(formData.Status == "Submitted2"){
                   
-                // }
-              const postPayload = {
+  //               // }
+  //             const postPayload = {
 
-                Title: formData.title,
+  //               Title: formData.title,
 
-                EntityMasterId: Number(formData.entity),
+  //               EntityMasterId: Number(formData.entity),
 
-                Status: formData.Status,
+  //               Status: formData.Status,
 
-                AuthorId: currentUser.Id,
+  //               AuthorId: currentUser.Id,
 
-                Image: bannerImageArray != "{}" && JSON.stringify(bannerImageArray),
+  //               Image: bannerImageArray != "{}" && JSON.stringify(bannerImageArray),
 
-                MediaGalleryCategoryId: formData.Category
+  //               MediaGalleryCategoryId: formData.Category
 
-              };
+  //             };
 
-              console.log(postPayload);
+  //             console.log(postPayload);
 
 
-              const postResult = await updateItem(postPayload, sp, editID);
+  //             const postResult = await updateItem(postPayload, sp, editID);
 
-              const postId = postResult?.data?.ID;
+  //             const postId = postResult?.data?.ID;
 
-              debugger
+  //             debugger
 
-              // if (!postId) {
+  //             // if (!postId) {
 
-              //   console.error("Post creation failed.");
+  //             //   console.error("Post creation failed.");
 
-              //   return;
+  //             //   return;
 
-              // }
+  //             // }
 
 
-              // Upload Gallery Images
+  //             // Upload Gallery Images
 
-              // Upload Gallery Images
+  //             // Upload Gallery Images
 
-              if (ImagepostArr[0]?.files?.length > 0) {
+  //             if (ImagepostArr[0]?.files?.length > 0) {
 
-                for (const file of ImagepostArr[0].files) {
+  //               for (const file of ImagepostArr[0].files) {
 
 
-                  const uploadedGalleryImage = await uploadFileToLibrary(file, sp, "MediaGallery");
+  //                 const uploadedGalleryImage = await uploadAllFiles(file, sp, "MediaGallery");
 
 
-                  galleryIds = galleryIds.concat(uploadedGalleryImage.map((item: { ID: any }) => item.ID));
+  //                 galleryIds = galleryIds.concat(uploadedGalleryImage.map((item: { ID: any }) => item.ID));
 
-                  if (ImagepostArr1.length > 0) {
+  //                 if (ImagepostArr1.length > 0) {
 
 
-                    ImagepostArr1.push(uploadedGalleryImage[0])
+  //                   ImagepostArr1.push(uploadedGalleryImage[0])
 
-                    const updatedData = ImagepostArr1.filter(item => item.ID !== 0);
+  //                   const updatedData = ImagepostArr1.filter(item => item.ID !== 0);
 
-                    console.log(updatedData, 'updatedData');
+  //                   console.log(updatedData, 'updatedData');
 
-                    galleryArray = updatedData;
+  //                   galleryArray = updatedData;
 
-                    //galleryArray.push(ImagepostArr1);
+  //                   //galleryArray.push(ImagepostArr1);
 
 
-                    ImagepostIdsArr.push(galleryIds[0]) //galleryIds.push(ImagepostIdsArr)
+  //                   ImagepostIdsArr.push(galleryIds[0]) //galleryIds.push(ImagepostIdsArr)
 
-                    galleryIds = ImagepostIdsArr
+  //                   galleryIds = ImagepostIdsArr
 
-                  }
+  //                 }
 
-                  else {
+  //                 else {
 
-                    galleryArray.push(uploadedGalleryImage);
+  //                   galleryArray.push(uploadedGalleryImage);
 
-                  }
+  //                 }
 
-                }
+  //               }
 
-              }
+  //             }
 
-              else {
+  //             else {
 
-                galleryIds = ImagepostIdsArr
+  //               galleryIds = ImagepostIdsArr
 
-                galleryArray = ImagepostArr1;
+  //               galleryArray = ImagepostArr1;
 
-              }
+  //             }
 
 
-              let ars = galleryArray.filter(x => x.ID == 0)
+  //             let ars = galleryArray.filter(x => x.ID == 0)
 
-              if (ars.length > 0) {
+  //             if (ars.length > 0) {
 
-                for (let i = 0; i < ars.length; i++) {
+  //               for (let i = 0; i < ars.length; i++) {
 
-                  galleryArray.slice(i, 1)
+  //                 galleryArray.slice(i, 1)
 
-                }
+  //               }
 
-              }
+  //             }
 
 
-              console.log(galleryIds, 'galleryIds');
+  //             console.log(galleryIds, 'galleryIds');
 
-              // Update Post with Gallery and Document Information
+  //             // Update Post with Gallery and Document Information
 
-              const updatePayload = {
+  //             const updatePayload = {
 
-                ...(galleryIds.length > 0 && {
+  //               ...(galleryIds.length > 0 && {
 
-                  MediaGalleriesId: galleryIds,
+  //                 MediaGalleriesId: galleryIds,
 
-                  MediaGalleryJSON: JSON.stringify(flatArray(galleryArray)),
+  //                 MediaGalleryJSON: JSON.stringify(flatArray(galleryArray)),
 
-                }),
+  //               }),
 
 
-              };
+  //             };
 
 
-              if (Object.keys(updatePayload).length > 0) {
+  //             if (Object.keys(updatePayload).length > 0) {
 
-                const updateResult = await updateItem(updatePayload, sp, editID);
+  //               const updateResult = await updateItem(updatePayload, sp, editID);
 
-                console.log("Update Result:", updateResult);
+  //               console.log("Update Result:", updateResult);
 
-              }
+  //             }
 
 
-            }
+  //           }
 
-            else {
+  //           else {
 
-              // Create Post
+  //             // Create Post
 
-              const postPayload = {
+  //             const postPayload = {
 
-                Title: formData.title,
+  //               Title: formData.title,
 
-                EntityMasterId: Number(formData.entity),
+  //               EntityMasterId: Number(formData.entity),
 
-                Status: "Submitted01",
+  //               Status: "Submitted01",
 
-                AuthorId: currentUser.Id,
+  //               AuthorId: currentUser.Id,
 
-                MediaGalleryCategoryId: formData.Category
+  //               MediaGalleryCategoryId: formData.Category
 
-              };
+  //             };
 
-              console.log(postPayload);
+  //             console.log(postPayload);
 
 
-              const postResult = await updateItem(postPayload, sp, editID);
+  //             const postResult = await updateItem(postPayload, sp, editID);
 
-              const postId = postResult?.data?.ID;
+  //             const postId = postResult?.data?.ID;
 
-              debugger
+  //             debugger
 
-              // if (!postId) {
+  //             // if (!postId) {
 
-              //   console.error("Post creation failed.");
+  //             //   console.error("Post creation failed.");
 
-              //   return;
+  //             //   return;
 
-              // }
+  //             // }
 
 
-              // Upload Gallery Images
+  //             // Upload Gallery Images
 
-              // Upload Gallery Images
+  //             // Upload Gallery Images
 
-              if (ImagepostArr[0]?.files?.length > 0) {
+  //             if (ImagepostArr[0]?.files?.length > 0) {
 
-                for (const file of ImagepostArr[0].files) {
+  //               for (const file of ImagepostArr[0].files) {
 
 
-                  const uploadedGalleryImage = await uploadFileToLibrary(file, sp, "MediaGallery");
+  //                 const uploadedGalleryImage = await uploadAllFiles(file, sp, "MediaGallery");
 
 
-                  galleryIds = galleryIds.concat(uploadedGalleryImage.map((item: { ID: any }) => item.ID));
+  //                 galleryIds = galleryIds.concat(uploadedGalleryImage.map((item: { ID: any }) => item.ID));
 
-                  if (ImagepostArr1.length > 0) {
+  //                 if (ImagepostArr1.length > 0) {
 
 
-                    ImagepostArr1.push(uploadedGalleryImage[0])
+  //                   ImagepostArr1.push(uploadedGalleryImage[0])
 
-                    const updatedData = ImagepostArr1.filter(item => item.ID !== 0);
+  //                   const updatedData = ImagepostArr1.filter(item => item.ID !== 0);
 
-                    console.log(updatedData, 'updatedData');
+  //                   console.log(updatedData, 'updatedData');
 
-                    galleryArray = updatedData;
+  //                   galleryArray = updatedData;
 
-                    // documentArray.push(documentArray);
+  //                   // documentArray.push(documentArray);
 
 
-                    ImagepostIdsArr.push(galleryIds[0]) //galleryIds.push(ImagepostIdsArr)
+  //                   ImagepostIdsArr.push(galleryIds[0]) //galleryIds.push(ImagepostIdsArr)
 
-                    galleryIds = ImagepostIdsArr
+  //                   galleryIds = ImagepostIdsArr
 
-                  }
+  //                 }
 
-                  else {
+  //                 else {
 
-                    galleryArray.push(uploadedGalleryImage);
+  //                   galleryArray.push(uploadedGalleryImage);
 
-                  }
+  //                 }
 
-                }
+  //               }
 
-              }
+  //             }
 
-              else {
+  //             else {
 
-                galleryIds = ImagepostIdsArr
+  //               galleryIds = ImagepostIdsArr
 
-                galleryArray = ImagepostArr1;
+  //               galleryArray = ImagepostArr1;
 
-              }
+  //             }
 
 
 
-              let ars = galleryArray.filter(x => x.ID == 0)
+  //             let ars = galleryArray.filter(x => x.ID == 0)
 
-              if (ars.length > 0) {
+  //             if (ars.length > 0) {
 
-                for (let i = 0; i < ars.length; i++) {
+  //               for (let i = 0; i < ars.length; i++) {
 
-                  galleryArray.slice(i, 1)
+  //                 galleryArray.slice(i, 1)
 
-                }
+  //               }
 
-              }
+  //             }
 
 
-              console.log(galleryIds, 'galleryIds');
+  //             console.log(galleryIds, 'galleryIds');
 
-              // Update Post with Gallery and Document Information
+  //             // Update Post with Gallery and Document Information
 
-              const updatePayload = {
+  //             const updatePayload = {
 
-                ...(galleryIds.length > 0 && {
+  //               ...(galleryIds.length > 0 && {
 
-                  MediaGalleriesId: galleryIds,
+  //                 MediaGalleriesId: galleryIds,
 
 
-                  MediaGalleryJSON: JSON.stringify(flatArray(galleryArray)),
+  //                 MediaGalleryJSON: JSON.stringify(flatArray(galleryArray)),
 
-                }),
+  //               }),
 
 
-              };
+  //             };
 
 
-              if (Object.keys(updatePayload).length > 0) {
+  //             if (Object.keys(updatePayload).length > 0) {
 
-                const updateResult = await updateItem(updatePayload, sp, editID);
+  //               const updateResult = await updateItem(updatePayload, sp, editID);
 
-                // console.log("Update Result:", updateResult);
+  //               // console.log("Update Result:", updateResult);
 
-              }
+  //             }
 
-            }
+  //           }
 
-            let arr = {
+  //           let arr = {
 
-              ContentID: editID,
+  //             ContentID: editID,
 
-              ContentName: "ARGMediaGallery",
+  //             ContentName: "ARGMediaGallery",
 
-              Status: "Pending",
+  //             Status: "Pending",
 
-              EntityId: Number(formData.entity),
-              Title: formData.title,
-              SourceName: "Media",
-              ReworkRequestedBy: "Initiator"
+  //             EntityId: Number(formData.entity),
+  //             Title: formData.title,
+  //             SourceName: "Media",
+  //             ReworkRequestedBy: "Initiator"
 
 
-            }
+  //           }
 
-            // await AddContentMaster(sp, arr)
+  //           // await AddContentMaster(sp, arr)
 
-            // const boolval = await handleClick(editID, "Media", Number(formData.entity))
+  //           // const boolval = await handleClick(editID, "Media", Number(formData.entity))
 
-            let boolval = false;
-            if (ApprovalRequestItem && ApprovalRequestItem.IsRework && ApprovalRequestItem.IsRework == 'Yes') {
-              const ctmasteritm = await sp.web.lists.getByTitle(LIST_TITLE_ContentMaster).items.filter('ContentID eq ' + ApprovalRequestItem.ContentId + " and SourceName eq '" + CONTENTTYPE_Media + "'")();
-              if (ctmasteritm && ctmasteritm.length > 0) {
-                let updaterec = { 'Status': 'Pending', 'ReworkRequestedBy': 'Initiator' }
-                if (ApprovalRequestItem.LevelSequence == 1) updaterec.ReworkRequestedBy = "Level 1";
-                await UpdateContentMaster(sp, ctmasteritm[0].Id, updaterec);
-                await sp.web.lists.getByTitle(LIST_TITLE_MyRequest).items.getById(ApprovalRequestItem.Id).update({ 'Status': 'Submitted1' });
-                await sp.web.lists.getByTitle(LIST_TITLE_MediaGallery).items.getById(editID).update({ 'Status': 'Submitted2' });
-                boolval = true;
-              }
-            }
-            else {
+  //           let boolval = false;
+  //           if (ApprovalRequestItem && ApprovalRequestItem.IsRework && ApprovalRequestItem.IsRework == 'Yes') {
+  //             const ctmasteritm = await sp.web.lists.getByTitle(LIST_TITLE_ContentMaster).items.filter('ContentID eq ' + ApprovalRequestItem.ContentId + " and SourceName eq '" + CONTENTTYPE_Media + "'")();
+  //             if (ctmasteritm && ctmasteritm.length > 0) {
+  //               let updaterec = { 'Status': 'Pending', 'ReworkRequestedBy': 'Initiator' }
+  //               if (ApprovalRequestItem.LevelSequence == 1) updaterec.ReworkRequestedBy = "Level 1";
+  //               await UpdateContentMaster(sp, ctmasteritm[0].Id, updaterec);
+  //               await sp.web.lists.getByTitle(LIST_TITLE_MyRequest).items.getById(ApprovalRequestItem.Id).update({ 'Status': 'Submitted1' });
+  //               await sp.web.lists.getByTitle(LIST_TITLE_MediaGallery).items.getById(editID).update({ 'Status': 'Submitted2' });
+  //               boolval = true;
+  //             }
+  //           }
+  //           else {
 
-              console.log(" form edit content master");
-              debugger
-              await AddContentMaster(sp, arr)
-              console.log(" form edit content master - added content master");
+  //             console.log(" form edit content master");
+  //             debugger
+  //             await AddContentMaster(sp, arr)
+  //             console.log(" form edit content master - added content master");
 
-              boolval = await handleClick(editID, "Media", Number(formData.entity))
-            }
-            if (boolval == true) {
-              setLoading(false);
-              Swal.fire('Submitted successfully.', '', 'success');
+  //             boolval = await handleClick(editID, "Media", Number(formData.entity))
+  //           }
+  //           if (boolval == true) {
+  //             setLoading(false);
+  //             Swal.fire('Submitted successfully.', '', 'success');
 
-              sessionStorage.removeItem("mediaId")
+  //             sessionStorage.removeItem("mediaId")
 
-              setTimeout(() => {
+  //             setTimeout(() => {
 
-                window.location.href = `${siteUrl}/SitePages/MediaGalleryMaster.aspx`;
+  //               window.location.href = `${siteUrl}/SitePages/MediaGalleryMaster.aspx`;
 
-              }, 2000);
+  //             }, 2000);
 
-            }
+  //           }
 
-          }
+  //         }
 
 
-        })
+  //       })
+
+  //     }
+
+  //     else {
+  //       // alert('coming here in else')
+  //       Swal.fire({
+
+  //         title: 'Do you want to submit this request?',
+
+  //         showConfirmButton: true,
+
+  //         showCancelButton: true,
+
+  //         confirmButtonText: "Yes ",
+
+  //         cancelButtonText: "No",
+
+  //         icon: 'warning'
+
+  //       }
+
+  //       ).then(async (result) => {
+
+  //         if (result.isConfirmed) {
+
+  //           //console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
+  //           setLoading(true);
+  //           debugger
+
+  //           let bannerImageArray: any = {};
+
+  //           let galleryIds: any[] = [];
+
+  //           let galleryArray: any[] = [];
+
+
+  //           // Upload Banner Images
+
+  //           if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
+
+  //             for (const file of BnnerImagepostArr[0].files) {
+
+  //               //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
+
+  //               bannerImageArray = await uploadFile(file, sp, "Documents", tenantUrl);
+
+  //             }
+
+  //           }
+
+  //           debugger
+
+  //           // Create Post
+
+  //           const postPayload = {
+
+  //             Title: formData.title,
+
+  //             EntityMasterId: Number(formData.entity),
+
+  //             Status: "Submitted",
+
+  //             AuthorId: currentUser.Id,
+
+  //             Image: JSON.stringify(bannerImageArray),
+
+  //             MediaGalleryCategoryId: formData.Category
+
+  //           };
+
+  //           console.log(postPayload);
+
+
+  //           const postResult = await addItem(postPayload, sp);
+
+  //           const postId = postResult?.data?.ID;
+
+  //           debugger
+
+  //           if (!postId) {
+
+  //             console.error("Post creation failed.");
+
+  //             return;
+
+  //           }
+
+
+  //           // Upload Gallery Images
+
+  //           if (ImagepostArr.length > 0) {
+
+  //             for (const file of ImagepostArr[0]?.files) {
+
+  //               const uploadedGalleryImage = await uploadAllFiles(file, sp, "MediaGallery");
+
+
+  //               galleryIds = galleryIds.concat(uploadedGalleryImage.map((item: { ID: any }) => item.ID));
+
+  //               galleryArray.push(uploadedGalleryImage);
+
+  //             }
+
+  //           }
+
+
+  //           // Update Post with Gallery and Document Information
+
+  //           const updatePayload = {
+
+  //             ...(galleryIds.length > 0 && {
+
+  //               MediaGalleriesId: galleryIds,
+
+  //               MediaGalleryJSON: JSON.stringify(flatArray(galleryArray)),
+
+  //             }),
+
+
+  //           };
+
+
+  //           if (Object.keys(updatePayload).length > 0) {
+
+  //             const updateResult = await updateItem(updatePayload, sp, postId);
+
+  //             console.log("Update Result:", updateResult);
+
+  //           }
+
+  //           let arr = {
+
+  //             ContentID: postId,
+
+  //             ContentName: "ARGMediaGallery",
+
+  //             Status: "Pending",
+
+  //             EntityId: Number(formData.entity),
+  //             Title: formData.title,
+  //             SourceName: "Media",
+  //             ReworkRequestedBy: "Initiator"
+
+
+  //           }
+
+  //           await AddContentMaster(sp, arr)
+
+  //           const boolval = await handleClick(postId, "Media", Number(formData.entity))
+
+  //           if (boolval == true) {
+  //             setLoading(false);
+  //             Swal.fire('Submitted successfully.', '', 'success');
+
+  //             // sessionStorage.removeItem("bannerId")
+
+  //             setTimeout(() => {
+
+  //               window.location.href = `${siteUrl}/SitePages/MediaGalleryMaster.aspx`;
+
+  //             }, 2000);
+
+  //           }
+
+  //         }
+
+  //       })
+
+
+  //     }
+  //     fetchAudithistory();
+  //   }
+
+
+  // }
+
+
+  //  old code of mine for media gallery to add and update 
+  // const handleFormSubmit = async () => {
+  //   if (!validateForm(FormSubmissionMode.SUBMIT)) return;
+  
+  //   try {
+  //     setLoading(true);
+  
+  //     let bannerImageArray = null;
+  //     let galleryArray = [];
+  //     let existingGalleryJSON = [];
+  //     let existingGalleryIds = [];
+  
+  //     // Upload new banner images if any
+  //     // if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
+  //     //   bannerImageArray = await uploadAllFiles(BnnerImagepostArr[0].files, sp, "Documents");
+  //     // }
+  //     if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
+  
+  //       for (const file of BnnerImagepostArr[0].files) {
+  
+  //         //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
+  
+  //         bannerImageArray = await uploadFile(file, sp, "Documents", tenantUrl);
+  
+  //       }
+  
+  //     }
+  //     // Check if updating an existing item
+  //     if (editForm) {
+  //       // Fetch existing item data to merge
+  //       const existingItem = await sp.web.lists.getByTitle('ARGMediaGallery').items.getById(editID)();
+  //       if (existingItem.MediaGalleryJSON) {
+  //         existingGalleryJSON = JSON.parse(existingItem.MediaGalleryJSON);
+  //         existingGalleryIds = existingGalleryJSON.map((item:any) => item.ID);
+  //       }
+  //     }
+  
+  //     // Upload new gallery images if any
+  //     if (ImagepostArr[0]?.files?.length > 0) {
+  //       const newGalleryArray = await uploadAllFiles(ImagepostArr[0].files, sp, "MediaGallery");
+  //       galleryArray = [...existingGalleryJSON, ...newGalleryArray];
+  //     } else {
+  //       // Retain existing gallery data if no new files are uploaded
+  //       galleryArray = existingGalleryJSON;
+  //     }
+  
+  //     // Prepare payloads
+  //     const postPayload = {
+  //       Title: formData.title,
+  //       EntityMasterId: Number(formData.entity),
+  //       Status: "Submitted",
+  //       AuthorId: currentUser.Id,
+  //       Image: JSON.stringify(bannerImageArray),
+  //       MediaGalleryCategoryId: formData.Category,
+  //     };
+  
+  //     const updatePayload = {
+  //       ...(galleryArray.length > 0 && {
+  //         MediaGalleriesId: galleryArray.map((item:any) => item.ID),
+  //         MediaGalleryJSON: JSON.stringify(flatArray(galleryArray)),
+  //       }),
+  //     };
+  
+  //     // Create or update item
+  //     if (editForm) {
+  //       await updateItem({ ...postPayload, ...updatePayload }, sp, editID);
+  //     } else {
+  //       const postResult = await addItem(postPayload, sp);
+  //       const postId = postResult?.data?.ID;
+  
+  //       if (!postId) {
+  //         throw new Error("Failed to create item.");
+  //       }
+  
+  //       if (Object.keys(updatePayload).length > 0) {
+  //         await updateItem(updatePayload, sp, postId);
+  //       }
+  //     }
+  
+  //     Swal.fire('Submitted successfully.', '', 'success');
+  //     window.location.href = `${siteUrl}/SitePages/MediaGalleryMaster.aspx`;
+  //   } catch (error) {
+  //     console.error("Error during form submission:", error);
+  //     Swal.fire('Error', error.message, 'error');
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+const handleFormSubmit = async () => {
+  if (!validateForm(FormSubmissionMode.SUBMIT)) return;
+
+  try {
+    setLoading(true);
+
+    let bannerImageArray = null;
+    let galleryArray = [];
+    let existingGalleryJSON = [];
+    let existingGalleryIds = [];
+
+    // Upload new banner images if any
+    // if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
+    //   bannerImageArray = await uploadAllFiles(BnnerImagepostArr[0].files, sp, "Documents");
+    // }
+    if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
+
+      for (const file of BnnerImagepostArr[0].files) {
+
+        //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
+
+        bannerImageArray = await uploadFile(file, sp, "Documents", tenantUrl);
 
       }
 
-      else {
-        // alert('coming here in else')
-        Swal.fire({
-
-          title: 'Do you want to submit this request?',
-
-          showConfirmButton: true,
-
-          showCancelButton: true,
-
-          confirmButtonText: "Yes ",
-
-          cancelButtonText: "No",
-
-          icon: 'warning'
-
-        }
-
-        ).then(async (result) => {
-
-          if (result.isConfirmed) {
-
-            //console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
-            setLoading(true);
-            debugger
-
-            let bannerImageArray: any = {};
-
-            let galleryIds: any[] = [];
-
-            let galleryArray: any[] = [];
-
-
-            // Upload Banner Images
-
-            if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
-
-              for (const file of BnnerImagepostArr[0].files) {
-
-                //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
-
-                bannerImageArray = await uploadFile(file, sp, "Documents", tenantUrl);
-
-              }
-
-            }
-
-            debugger
-
-            // Create Post
-
-            const postPayload = {
-
-              Title: formData.title,
-
-              EntityMasterId: Number(formData.entity),
-
-              Status: "Submitted",
-
-              AuthorId: currentUser.Id,
-
-              Image: JSON.stringify(bannerImageArray),
-
-              MediaGalleryCategoryId: formData.Category
-
-            };
-
-            console.log(postPayload);
-
-
-            const postResult = await addItem(postPayload, sp);
-
-            const postId = postResult?.data?.ID;
-
-            debugger
-
-            if (!postId) {
-
-              console.error("Post creation failed.");
-
-              return;
-
-            }
-
-
-            // Upload Gallery Images
-
-            if (ImagepostArr.length > 0) {
-
-              for (const file of ImagepostArr[0]?.files) {
-
-                const uploadedGalleryImage = await uploadFileToLibrary(file, sp, "MediaGallery");
-
-
-                galleryIds = galleryIds.concat(uploadedGalleryImage.map((item: { ID: any }) => item.ID));
-
-                galleryArray.push(uploadedGalleryImage);
-
-              }
-
-            }
-
-
-            // Update Post with Gallery and Document Information
-
-            const updatePayload = {
-
-              ...(galleryIds.length > 0 && {
-
-                MediaGalleriesId: galleryIds,
-
-                MediaGalleryJSON: JSON.stringify(flatArray(galleryArray)),
-
-              }),
-
-
-            };
-
-
-            if (Object.keys(updatePayload).length > 0) {
-
-              const updateResult = await updateItem(updatePayload, sp, postId);
-
-              console.log("Update Result:", updateResult);
-
-            }
-
-            let arr = {
-
-              ContentID: postId,
-
-              ContentName: "ARGMediaGallery",
-
-              Status: "Pending",
-
-              EntityId: Number(formData.entity),
-              Title: formData.title,
-              SourceName: "Media",
-              ReworkRequestedBy: "Initiator"
-
-
-            }
-
-            await AddContentMaster(sp, arr)
-
-            const boolval = await handleClick(postId, "Media", Number(formData.entity))
-
-            if (boolval == true) {
-              setLoading(false);
-              Swal.fire('Submitted successfully.', '', 'success');
-
-              // sessionStorage.removeItem("bannerId")
-
-              setTimeout(() => {
-
-                window.location.href = `${siteUrl}/SitePages/MediaGalleryMaster.aspx`;
-
-              }, 2000);
-
-            }
-
-          }
-
-        })
-
-
+    }
+    // Check if updating an existing item
+    if (editForm) {
+      // Fetch existing item data to merge
+      const existingItem = await sp.web.lists.getByTitle('ARGMediaGallery').items.getById(editID)();
+      if (existingItem.MediaGalleryJSON) {
+        existingGalleryJSON = JSON.parse(existingItem.MediaGalleryJSON);
+        existingGalleryIds = existingGalleryJSON.map((item:any) => item.ID);
       }
-      fetchAudithistory();
     }
 
+    // Upload new gallery images if any
+    if (ImagepostArr[0]?.files?.length > 0) {
+      const newGalleryArray = await uploadAllFiles(ImagepostArr[0].files, sp, "MediaGallery");
+      galleryArray = [...existingGalleryJSON, ...newGalleryArray];
+    } else {
+      // Retain existing gallery data if no new files are uploaded
+      galleryArray = existingGalleryJSON;
+    }
+    
+    //  if(editForm == false){
+    //    alert(`editForm:${editForm}`)
+    //    let status = "Submitted"
+    //  }
+    // Prepare payloads
+    const postPayload = {
+      Title: formData.title,
+      EntityMasterId: Number(formData.entity),
+       Status: "Submitted",
+   
+      AuthorId: currentUser.Id,
+      Image: JSON.stringify(bannerImageArray),
+      MediaGalleryCategoryId: formData.Category,
+    };
 
+    const updatePayload = {
+      ...(galleryArray.length > 0 && {
+        MediaGalleriesId: galleryArray.map((item:any) => item.ID),
+        MediaGalleryJSON: JSON.stringify(flatArray(galleryArray)),
+      }),
+    };
+
+    // Create or update item
+    if (editForm) {
+      let existingItem :any;
+      if (!existingItem) {
+        existingItem = await sp.web.lists.getByTitle('ARGMediaGallery').items.getById(editID)();
+        // alert(`existingItem:${JSON.stringify(existingItem)}`)
+      }
+       
+      if(formData.Status == "Save as draft"){
+        const postPayload = {
+          Title: formData.title,
+          EntityMasterId: Number(formData.entity),
+          //  Status: "Submitted",x
+           Status: "Submitted",
+          AuthorId: currentUser.Id,
+          // Image: JSON.stringify(bannerImageArray),
+          Image: JSON.stringify(bannerImageArray || JSON.parse(existingItem.Image)),
+          MediaGalleryCategoryId: formData.Category,
+      }
+      await updateItem({ ...postPayload, ...updatePayload }, sp, editID);
+    }else{
+      const postPayload = {
+        Title: formData.title,
+        EntityMasterId: Number(formData.entity),
+        //  Status: "Submitted",
+         Status: formData.Status,
+        AuthorId: currentUser.Id,
+        // Image: JSON.stringify(bannerImageArray),
+        Image: JSON.stringify(bannerImageArray || JSON.parse(existingItem.Image)),
+        MediaGalleryCategoryId: formData.Category,
+      };
+      await updateItem({ ...postPayload, ...updatePayload }, sp, editID);
+    }
+      
+    } else {
+      const postResult = await addItem(postPayload, sp);
+      const postId = postResult?.data?.ID;
+
+      if (!postId) {
+        throw new Error("Failed to create item.");
+      }
+   
+      if (Object.keys(updatePayload).length > 0) {
+        await updateItem(updatePayload, sp, postId);
+      }
+
+      // here i have added 
+      let arr = {
+
+        ContentID: postId,
+        // ContentID: editID,
+
+        ContentName: "ARGMediaGallery",
+
+        Status: "Pending",
+
+        EntityId: Number(formData.entity),
+        Title: formData.title,
+        SourceName: "Media",
+        ReworkRequestedBy: "Initiator"
+
+
+      }
+      await AddContentMaster(sp, arr)
+      const  boolval = await handleClick(postId, "Media", Number(formData.entity))
+      //alert(`boolval ${boolval}`)
+    }
+
+    Swal.fire('Submitted successfully.', '', 'success');
+    window.location.href = `${siteUrl}/SitePages/MediaGalleryMaster.aspx`;
+  } catch (error) {
+    console.error("Error during form submission:", error);
+    Swal.fire('Error', error.message, 'error');
+  } finally {
+    setLoading(false);
   }
+};
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null); // To store the file preview URL
+const [isModalOpen, setIsModalOpen] = useState<boolean>(false);   // To manage modal visibility
+
+  const handlePreviewClick = (fileObj:any) => {
+    if(newfileupload === true){
+     console.log(newfilepreview , "here is newfilepreview")
+   //alert(`new file ${newfilepreview}`)
+
+       setPreviewUrl(newfilepreview); // Set the preview URL
+       setIsModalOpen(true);   // Open the modal
+   } else {
+     console.log(fileObj , "here is fileObj")
+     //alert(`here is fileObj${fileObj}`)
+     //alert(`${fileObj.serverUrl} ${fileObj.serverRelativeUrl}`)
+     //alert(`fileObj:${fileObj} + fileObj.serverRelativeUrl ${fileObj.serverRelativeUrl}`)
+     if (fileObj && fileObj.serverUrl && fileObj.serverRelativeUrl) {
+       const fileUrl = `${fileObj.serverUrl.trim()}${fileObj.serverRelativeUrl.trim()}`;
+       // Combine serverUrl and serverRelativeUrl
+         setPreviewUrl(fileUrl); // Set the preview URL
+         setIsModalOpen(true);   // Open the modal
+     } else {
+         //alert("Invalid file object. Cannot generate preview URL.");
+     }
+   }
+    
+  
+};
+
+const closeModal = () => {
+  setPreviewUrl(null);
+  setIsModalOpen(false);
+};
 
   //#endregion
 
@@ -1738,7 +2059,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
                 for (const file of ImagepostArr[0].files) {
 
 
-                  const uploadedGalleryImage = await uploadFileToLibrary(file, sp, "MediaGallery");
+                  const uploadedGalleryImage = await uploadAllFiles(file, sp, "MediaGallery");
 
 
                   galleryIds = galleryIds.concat(uploadedGalleryImage.map((item: { ID: any }) => item.ID));
@@ -1894,7 +2215,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
                 for (const file of ImagepostArr[0].files) {
 
 
-                  const uploadedGalleryImage = await uploadFileToLibrary(file, sp, "MediaGallery");
+                  const uploadedGalleryImage = await uploadAllFiles(file, sp, "MediaGallery");
 
 
                   galleryIds = galleryIds.concat(uploadedGalleryImage.map((item: { ID: any }) => item.ID));
@@ -2095,7 +2416,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
               for (const file of ImagepostArr[0]?.files) {
 
-                const uploadedGalleryImage = await uploadFileToLibrary(file, sp, "MediaGallery");
+                const uploadedGalleryImage = await uploadAllFiles(file, sp, "MediaGallery");
 
 
                 galleryIds = galleryIds.concat(uploadedGalleryImage.map((item: { ID: any }) => item.ID));
@@ -2540,7 +2861,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
 
                                 BnnerImagepostArr.length > 0 &&
 
-                                (<a onClick={() => setShowModalFunc(true, "Image")} style={{ fontSize: '0.875rem' }}>
+                                (<a onClick={() => handlePreviewClick(BnnerImagepostArr[0])} style={{ fontSize: '0.875rem' }} >
 
                                   <FontAwesomeIcon icon={faPaperclip} /> 1 file Attached
 
@@ -3047,9 +3368,9 @@ const AddMediaGalaryContext = ({ props }: any) => {
                         <th>File Name</th>
 
                         <th>File Size</th>
-                        {modeValue == null &&
+                        {/* {modeValue == null && */}
                           <th className='text-center'>Action</th>
-                        }
+                        {/* } */}
                       </tr>
 
                     </thead>
@@ -3063,26 +3384,7 @@ const AddMediaGalaryContext = ({ props }: any) => {
                           <td className='text-center'>{index + 1}</td>
 
                           <td>
-                            {/* <img
-                              className='imagefe'
-                              src={file.fileType.startsWith('video/') ?
-                                require("../../../Assets/ExtraImage/video.jpg") :
-                                (file.fileUrl ? file.fileUrl : `${siteUrl}/MediaGallery/${file.fileName}`)}
-                              alt={'default image'}
-                            /> */}
-                                     
-                             {/* <img
-                  className='imagefe'
-                  src={file.fileType.startsWith('video/')
-                    ? require("../../../Assets/ExtraImage/video.jpg")
-                    : (file.fileUrl ? file.fileUrl : `${siteUrl}/MediaGallery/${file.fileName}`)}
-                  alt='default image'
-                  style={{ cursor: 'pointer' }}
-                  onClick={() => handleShow(file.fileType.startsWith('video/')
-                    ? require("../../../Assets/ExtraImage/video.jpg")
-                    : (file.fileUrl ? file.fileUrl : `${siteUrl}/MediaGallery/${file.fileName}`))}
-                /> */}
-
+                            
 <img
           className='imagefe'
           src={file.fileType && file.fileType.startsWith('video/') ? 
@@ -3097,14 +3399,14 @@ const AddMediaGalaryContext = ({ props }: any) => {
                           <td>{file.fileName}</td>
 
                           <td className='text-right'>{file.fileSize}</td>
-                          {modeValue == null &&
+                        
                             <td className='text-center'>
                               
                                <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }}
 
                               onClick={() => deleteLocalFile(index, ImagepostArr1, "Gallery")} /> </td>
 
-                          }
+                      
                         </tr>
 
                       ))}
@@ -3188,9 +3490,9 @@ const AddMediaGalaryContext = ({ props }: any) => {
                         <th>File Name</th>
 
                         <th>File Size</th>
-                        {modeValue == null &&
+                        {/* {modeValue == null || modeValue == 'approval' && */}
                           <th className='text-center'>Action</th>
-                        }
+                        {/* } */}
                       </tr>
 
                     </thead>
@@ -3231,23 +3533,23 @@ const AddMediaGalaryContext = ({ props }: any) => {
                 <img
           className="imagefe"
           src={
-            file.serverUrl && file.serverRelativeUrl
-              ? `${file.serverUrl}${file.serverRelativeUrl}`
-              : file.fileUrl // Fallback to file.fileUrl if other values are missing
+            file?.serverUrl && file?.serverRelativeUrl
+              ? `${file?.serverUrl}${file?.serverRelativeUrl}`
+              : file?.fileUrl // Fallback to file.fileUrl if other values are missing
           }
           alt="Preview"
           style={{ cursor: 'pointer' }}
           onClick={() => handleShow(
-            file.serverUrl && file.serverRelativeUrl
-              ? `${file.serverUrl}${file.serverRelativeUrl}`
-              : file.fileUrl, false
+            file?.serverUrl && file?.serverRelativeUrl
+              ? `${file?.serverUrl}${file?.serverRelativeUrl}`
+              : file?.fileUrl, false
           )}
         />
                           </td>
 
-                          <td>{file.fileName ? file.fileName : file.name}</td>
+                          <td>{file?.fileName ? file?.fileName : file?.name}</td>
 
-                          <td className='text-right'>{file.fileSize}</td>
+                          <td className='text-right'>{file?.fileSize}</td>
                           {modeValue == null &&
                             <td className='text-center'> <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }}
 
@@ -3270,7 +3572,19 @@ const AddMediaGalaryContext = ({ props }: any) => {
               </Modal.Body>
 
             </Modal>
-
+      <Modal show={isModalOpen} onHide={closeModal}>
+              <Modal.Header closeButton>
+                <Modal.Title>Image Preview</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <img src={previewUrl} alt="Image Preview" style={{ width: '100%' }} />
+              </Modal.Body>
+              <Modal.Footer>
+                <Button variant="secondary" onClick={closeModal}>
+                  Close
+                </Button>
+              </Modal.Footer>
+                    </Modal>
           </div>
 
         </div>

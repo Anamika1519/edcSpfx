@@ -19,7 +19,7 @@ export const getDiscussionForum = async (_sp) => {
     //   if (!currentUser) return arr; // Return empty array if user fetch failed
 
     await _sp.web.lists.getByTitle("ARGDiscussionForum")
-        .items.select("*,DiscussionForumCategory/Id,DiscussionForumCategory/CategoryName,Author/ID,Author/Title,Author/EMail,InviteMemebers/Id,InviteMemebers/Title,InviteMemebers/EMail,GroupType")
+        .items.select("*,DiscussionForumCategory/Id,DiscussionForumCategory/CategoryName,Author/ID,Author/Title,Author/EMail,InviteMemebers/Id,InviteMemebers/Title,InviteMemebers/EMail,GroupType,Author/SPSPicturePlaceholderState")
         .expand("DiscussionForumCategory,Author,InviteMemebers").orderBy("Created", false).getAll()
         .then((res) => {
             console.log("--discussion", res);
@@ -61,8 +61,8 @@ export const get7DaysDiscussionForum = async (_sp) => {
     lastWeek.setDate(today.getDate() - 7);
 
     // Format dates in 'yyyy-MM-dd' format for the filter
-    const todayStr = today.toISOString().split('T')[0]; // 'yyyy-MM-dd'
-    const lastWeekStr = lastWeek.toISOString().split('T')[0]; // 'yyyy-MM-dd'
+    const todayStr = today.toISOString()?.split('T')[0]; // 'yyyy-MM-dd'
+    const lastWeekStr = lastWeek.toISOString()?.split('T')[0]; // 'yyyy-MM-dd'
 
     // Fetch all discussion forum data created within the last 7 days (without filtering by current user in InviteMemebersId)
     await _sp.web.lists.getByTitle("ARGDiscussionForum")
@@ -109,8 +109,8 @@ export const getOldDiscussionForum = async (_sp) => {
     lastWeek.setDate(today.getDate() - 7);
 
     // Format dates in 'yyyy-MM-dd' format for the filter
-    const todayStr = today.toISOString().split('T')[0]; // 'yyyy-MM-dd'
-    const lastWeekStr = lastWeek.toISOString().split('T')[0]; // 'yyyy-MM-dd'
+    const todayStr = today.toISOString()?.split('T')[0]; // 'yyyy-MM-dd'
+    const lastWeekStr = lastWeek.toISOString()?.split('T')[0]; // 'yyyy-MM-dd'
     let variableBool = false;
     // Fetch all discussion forum data created within the last 7 days (without filtering by current user in InviteMemebersId)
     await _sp.web.lists.getByTitle("ARGDiscussionForum")
@@ -246,12 +246,23 @@ export const getDiscussionForumByID = async (_sp, id) => {
 export const getDiscussionForumDetailsById = async (_sp, idNum) => {
     let arr = []
     let arr1 = []
-    await _sp.web.lists.getByTitle("ARGDiscussionForum").items.getById(idNum).select("*,DiscussionForumCategory/ID,DiscussionForumCategory/CategoryName,Entity/ID,Entity/Entity,InviteMemebers/Id,InviteMemebers/Title,InviteMemebers/EMail,GroupType,Author/ID,Author/Title,Author/EMail,ARGDiscussionStatus").expand("Entity,DiscussionForumCategory,InviteMemebers,Author")()
-        .then((res) => {
+    await _sp.web.lists.getByTitle("ARGDiscussionForum").items.getById(idNum).select("*,DiscussionForumCategory/ID,DiscussionForumCategory/CategoryName,Entity/ID,Entity/Entity,InviteMemebers/Id,InviteMemebers/Title,GroupType,Author/ID,Author/Title,Author/EMail,Author/SPSPicturePlaceholderState,ARGDiscussionStatus").expand("Entity,DiscussionForumCategory,InviteMemebers,Author")()
+        .then(async (res) => {
             // await _sp.web.lists.getByTitle("ARGDiscussionForum").items.getById(idNum)
             //     .select("*,DiscussionForumCategory/ID,DiscussionForumCategory/CategoryName,Entity/ID,Entity/Entity,InviteMemebers/Id,InviteMemebers/Title,InviteMemebers/EMail,GroupType ,Author/ID,Author/Title,Author/EMail ").expand("Entity,DiscussionForumCategory,InviteMemebers , Author")()
             //     .then((res) => {
             // arr=res;
+            if(res.InviteMemebers){
+                for (var j = 0; j < res.InviteMemebers.length; j++) {
+                  var user = await _sp.web.getUserById(res.InviteMemebers[j].Id)();
+                  var profile = await _sp.profiles.getPropertiesFor(`i:0#.f|membership|${user.Email}`);
+                  res.InviteMemebers[j].EMail = user.Email;
+              
+                  res.InviteMemebers[j].SPSPicturePlaceholderState = profile.UserProfileProperties?profile.UserProfileProperties[profile.UserProfileProperties.findIndex(obj=>obj.Key === "SPS-PicturePlaceholderState")].Value:"1";
+              
+                }
+              
+               }
             console.log(res, 'hhhjhjh');
 
             arr1.push(res)

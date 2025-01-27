@@ -45,8 +45,10 @@ a:hover
 {
   top: 2rem!important;
 }
+#s4-workspace{overflow-y: auto !important;}
 @media(max-width:1920px){
     .paddb{min-height: calc(100vh - 163px);}
+    .paddb{padding-bottom: 50px;}
 }
 @media(max-width:1440px)
 {

@@ -400,7 +400,7 @@ export const getGroupTeamByID = async (_sp, id) => {
 };
 
 export const getGroupTeamDetailsById = async (_sp, idNum) => {
- 
+ debugger
   let arr = [];
  
   let arr1 = [];
@@ -409,15 +409,43 @@ export const getGroupTeamDetailsById = async (_sp, idNum) => {
  
     .getByTitle("ARGGroupandTeam")
  
-    .items.getById(idNum).select("*,InviteMemebers/Id,InviteMemebers/Title,InviteMemebers/EMail,GroupFollowers/Id,GroupFollowers/Title,GroupFollowers/EMail,Author/Title,Author/ID,Author/EMail,GroupType")
+    .items.getById(idNum).select("*,InviteMemebers/Id,InviteMemebers/Title,GroupFollowers/Id,GroupFollowers/Title,Author/Title,Author/SPSPicturePlaceholderState,Author/ID,Author/EMail,GroupType")
  
     .expand("Author,InviteMemebers,GroupFollowers")()
  
-    .then((res) => {
- 
+    .then(async (res) => {
+      console.log("resresreresresr",res)
       // arr=res;
- 
-      console.log("res------",res)
+ if(res.InviteMemebersId !== null){
+  for (var j = 0; j < res.InviteMemebers.length; j++) {
+    console.log("res.InviteMemebers[j]",res.InviteMemebers[j])
+    var user = await _sp.web.getUserById(res.InviteMemebers[j].Id)();
+    console.log("uuuuuuuuu",user);
+    if (user) {
+    var profile = await _sp.profiles.getPropertiesFor(`i:0#.f|membership|${user.Email}`);
+    res.InviteMemebers[j].EMail = user.Email;
+
+    res.InviteMemebers[j].SPSPicturePlaceholderState = profile.UserProfileProperties?profile.UserProfileProperties[profile.UserProfileProperties.findIndex(obj=>obj.Key === "SPS-PicturePlaceholderState")].Value:"1";
+    }
+  }
+
+ }
+ if(res.GroupFollowersId !== null){
+  for (var j = 0; j < res.GroupFollowers.length; j++) {
+    console.log("res.GroupFollowers[j]",res.GroupFollowers[j])
+    var user = await _sp.web.getUserById(res.GroupFollowers[j].Id)();
+    console.log("uuuuuuuuugro",user)
+    if (user) {
+    var profile = await _sp.profiles.getPropertiesFor(`i:0#.f|membership|${user.EMail}`);
+    res.GroupFollowers[j].EMail = user.Email;
+
+    res.GroupFollowers[j].SPSPicturePlaceholderState = profile.UserProfileProperties?profile.UserProfileProperties[profile.UserProfileProperties.findIndex(obj=>obj.Key === "SPS-PicturePlaceholderState")].Value:"1";
+    }
+  }
+
+ }
+       console.log("res---56---",res)
+     
  
       arr1.push(res);
  

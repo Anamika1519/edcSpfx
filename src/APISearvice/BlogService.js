@@ -503,7 +503,7 @@ export const getProjectDetailsById = async (_sp, idNum) => {
   let arr = []
   let arr1 = []
   //,TeamMembers/EMail
-  await _sp.web.lists.getByTitle("ARGProject").items.getById(idNum).select("*, ProjectStatus , TeamMembers/Id,TeamMembers/Title, Author/ID,Author/Title,Author/EMail").expand("TeamMembers ,Author")()
+  await _sp.web.lists.getByTitle("ARGProject").items.getById(idNum).select("*, ProjectStatus , TeamMembers/Id,TeamMembers/Title, Author/ID,Author/Title,Author/EMail,Author/SPSPicturePlaceholderState").expand("TeamMembers ,Author")()
 
     .then((res) => {
       console.log("check the data for project id--->>", res)

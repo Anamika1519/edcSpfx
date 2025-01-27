@@ -290,7 +290,8 @@ const MyApprovalContext = ({ props }: any) => {
 
   const getApprovalmasterTasklist = async (value: any, actingfor: any) => {
     // alert(`Status value is ${value} is acting for ${actingfor} in DMS`)
-
+    debugger
+    console.log("ghjghjgjh", value, actingfor)
     try {
       // Retrieve current user email
       const currentUserEmail = currentUserEmailRef.current;
@@ -357,7 +358,7 @@ const MyApprovalContext = ({ props }: any) => {
         )
           .expand("FileUID", "MasterApproval")
           .filter(`(CurrentUser eq '${currentUserEmailRef.current}') and FileUID/Status eq '${value}'`).orderBy("Created", false).getAll();
-        console.log(items, "DMSFileApprovalTaskList");
+        console.log(items, "DMSFileApprovalTaskList", value, currentUserEmailRef.current);
         items.map((item) => {
           if (item.CurrentUser !== currentUserEmailRef.current) {
             arr.push(item)
@@ -477,6 +478,7 @@ const MyApprovalContext = ({ props }: any) => {
   const getCurrrentuser = async () => {
     const userdata = await sp.web.currentUser();
     currentUserEmailRef.current = userdata.Email;
+    console.log("currentUserEmailRefhhg", currentUserEmailRef)
     getApprovalmasterTasklist('Pending', '');
     myActingfordata()
   };
@@ -668,12 +670,12 @@ const MyApprovalContext = ({ props }: any) => {
         setMyApprovalsData(Automationdata);
         console.log("Automationdata", Automationdata);
       }
-      else if (activeTab == "Automation") {
-        setMyApprovalsData(null);
-        setMyApprovalsData(MyDMSAPPROVALDATA);
-        setMyApprovalsData(Mylistdata);
-        console.log("Automationdata", Automationdata);
-      }
+      // else if (activeTab == "Automation") {
+      //   setMyApprovalsData(null);
+      //   setMyApprovalsData(MyDMSAPPROVALDATA);
+      //   setMyApprovalsData(Mylistdata);
+      //   console.log("Automationdata", Automationdata);
+      // }
     }
   };
   const handleFilterChange = (
@@ -731,14 +733,14 @@ const MyApprovalContext = ({ props }: any) => {
           new Date(item.Created)
             .toLocaleDateString()
             .startsWith(filters.RequestedDate + "")) &&
-            (filters.Title === "" ||
-              (activeTab == "Automation"
-                ? item?.ApprovalTitle?.toLowerCase().includes(
-                  filters.Title.toLowerCase()
-                )
-                : item?.Title?.toLowerCase().includes(
-                  filters.Title.toLowerCase()
-                ))) &&
+        (filters.Title === "" ||
+          (activeTab == "Automation"
+            ? item?.ApprovalTitle?.toLowerCase().includes(
+              filters.Title.toLowerCase()
+            )
+            : item?.Title?.toLowerCase().includes(
+              filters.Title.toLowerCase()
+            ))) &&
         (filters.RequestedBy === "" ||
           (activeTab == "Automation"
             ? item?.Author?.Title?.toLowerCase().includes(
@@ -1098,15 +1100,15 @@ const MyApprovalContext = ({ props }: any) => {
 
               <div className="col-md-8">
                 <div className="row">
-                <div style={{ textAlign: "center" }} className="col-md-3 newtexleft">
+                  <div style={{ textAlign: "center" }} className="col-md-3 newtexleft">
                     <div className="mb-0">
                       <label htmlFor="Status" className="form-label mt-2">
-  <img src={require('../assets/delegation.png')} 
-   className='me-1' alt="d" />   Acting on behalf of
+                        <img src={require('../assets/delegation.png')}
+                          className='me-1' alt="d" />   Acting on behalf of
                       </label>
                     </div>
                   </div>
-                  <div style={{paddingLeft:'0px'}} className="col-md-4">
+                  <div style={{ paddingLeft: '0px' }} className="col-md-4">
                     <select
                       id="Type"
                       name="Type"
@@ -1131,7 +1133,7 @@ const MyApprovalContext = ({ props }: any) => {
                       </label>
                     </div>
                   </div>
-                  <div style={{paddingLeft:'0px'}} className="col-md-4 ivon2">
+                  <div style={{ paddingLeft: '0px' }} className="col-md-4 ivon2">
                     <select
                       id="Type"
                       name="Type"
@@ -1148,9 +1150,9 @@ const MyApprovalContext = ({ props }: any) => {
                       ))}
                     </select>
                   </div>
-                  
+
                 </div>
-              
+
 
               </div>
             </div>
@@ -1320,45 +1322,45 @@ const MyApprovalContext = ({ props }: any) => {
                                         </div>
                                       </th>
                                       {/* {activeTab == "Intranet" && ( */}
-                                        <th
-                                          style={{
-                                            minWidth: "120px",
-                                            maxWidth: "120px",
-                                          }}
-                                        >
-                                          <div className="d-flex flex-column bd-highlight ">
-                                            <div
-                                              className="d-flex  pb-2"
-                                              style={{ justifyContent: "space-evenly" }}
+                                      <th
+                                        style={{
+                                          minWidth: "120px",
+                                          maxWidth: "120px",
+                                        }}
+                                      >
+                                        <div className="d-flex flex-column bd-highlight ">
+                                          <div
+                                            className="d-flex  pb-2"
+                                            style={{ justifyContent: "space-evenly" }}
+                                          >
+                                            <span>Title</span>{" "}
+                                            <span
+                                              onClick={() =>
+                                                handleSortChange("Title")
+                                              }
                                             >
-                                              <span>Title</span>{" "}
-                                              <span
-                                                onClick={() =>
-                                                  handleSortChange("Title")
-                                                }
-                                              >
-                                                <FontAwesomeIcon icon={faSort} />{" "}
-                                              </span>
-                                            </div>
-
-                                            <div className=" bd-highlight">
-                                              <input
-                                                type="text"
-                                                placeholder="Filter by Title"
-                                                onChange={(e) =>
-                                                  handleFilterChange(e, "Title")
-                                                }
-                                                onKeyDown={(e) => {
-                                                  if (e.key === 'Enter' && !e.shiftKey) {
-                                                    e.preventDefault(); // Prevents the new line in textarea
-                                                  }
-                                                }}
-                                                className="inputcss"
-                                                style={{ width: "100%" }}
-                                              />
-                                            </div>
+                                              <FontAwesomeIcon icon={faSort} />{" "}
+                                            </span>
                                           </div>
-                                        </th>
+
+                                          <div className=" bd-highlight">
+                                            <input
+                                              type="text"
+                                              placeholder="Filter by Title"
+                                              onChange={(e) =>
+                                                handleFilterChange(e, "Title")
+                                              }
+                                              onKeyDown={(e) => {
+                                                if (e.key === 'Enter' && !e.shiftKey) {
+                                                  e.preventDefault(); // Prevents the new line in textarea
+                                                }
+                                              }}
+                                              className="inputcss"
+                                              style={{ width: "100%" }}
+                                            />
+                                          </div>
+                                        </div>
+                                      </th>
                                       {/* )} */}
                                       <th
                                         style={{
@@ -1613,15 +1615,15 @@ const MyApprovalContext = ({ props }: any) => {
                                               {item.RequestID}
                                             </td>
                                             {/* {activeTab == "Intranet" && ( */}
-                                              <td
-                                                style={{
-                                                  minWidth: "120px",
-                                                  maxWidth: "120px",
-                                                }}
-                                                title= {activeTab == "Intranet" ? item.Title : item.ApprovalTitle}
-                                              >
-                                                {activeTab == "Intranet" ? item.Title : item.ApprovalTitle}
-                                              </td>
+                                            <td
+                                              style={{
+                                                minWidth: "120px",
+                                                maxWidth: "120px",
+                                              }}
+                                              title={activeTab == "Intranet" ? item.Title : item.ApprovalTitle}
+                                            >
+                                              {activeTab == "Intranet" ? item.Title : item.ApprovalTitle}
+                                            </td>
                                             {/* )} */}
                                             <td
                                               style={{
@@ -2239,7 +2241,7 @@ const MyApprovalContext = ({ props }: any) => {
                                                     minWidth: "40px",
                                                     maxWidth: "40px",
 
-                                                    backgroundColor:  "transparent",
+                                                    backgroundColor: "transparent",
 
                                                   }}
                                                 >

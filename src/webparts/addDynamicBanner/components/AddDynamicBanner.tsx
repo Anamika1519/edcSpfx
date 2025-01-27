@@ -37,11 +37,12 @@ const AddDynamicBannerContext = ({ props }: any) => {
   const [editID, setEditID] = React.useState(null);
   const { setHide }: any = context;
   const siteUrl = props.siteUrl;
-  const tenantUrl = props.siteUrl.split("/sites/")[0];
+  const tenantUrl = props.siteUrl?.split("/sites/")[0];
   const [BnnerImagepostArr, setBannerImagepostArr]: any = React.useState();
   const inputFile = useRef(null);
+  const [Loading, setLoading] = React.useState(false);
   const [ValidSubmit, setValidSubmit] = React.useState(true);
-    const [InputDisabled, setInputDisabled] = React.useState(false);
+  const [InputDisabled, setInputDisabled] = React.useState(false);
   const [bannerByIDArr, setBannerByIdArr] = React.useState({
     title: '',
     description: "",
@@ -60,23 +61,23 @@ const AddDynamicBannerContext = ({ props }: any) => {
     IsVedio: "",
     IsImage: "",
     URL: "",
-    Status:''
+    Status: ''
   })
 
-     React.useEffect(() => { 
-        // alert("useEffect called");
-        const currentUrl = window.location.href;
-        const urlParams = new URLSearchParams(window.location.search);
-        const modeiseditorview = urlParams.get('mode');
-        console.log("modeiseditorview value:", modeiseditorview);
-        if (modeiseditorview === 'view') {
-          // alert(`${typeof(modeiseditorview)} , ${modeiseditorview}`)
-          setInputDisabled(true);
-        } else {
+  React.useEffect(() => {
+    // alert("useEffect called");
+    const currentUrl = window.location.href;
+    const urlParams = new URLSearchParams(window.location.search);
+    const modeiseditorview = urlParams.get('mode');
+    console.log("modeiseditorview value:", modeiseditorview);
+    if (modeiseditorview === 'view') {
+      // alert(`${typeof(modeiseditorview)} , ${modeiseditorview}`)
+      setInputDisabled(true);
+    } else {
 
-          console.log("modeiseditorview parameter not found.");
-        }
-      }, []);
+      console.log("modeiseditorview parameter not found.");
+    }
+  }, []);
 
   const validateForm = async () => {
     const { title, URL, description } = formData;
@@ -231,7 +232,7 @@ const AddDynamicBannerContext = ({ props }: any) => {
     if (event.target.files && event.target.files.length > 0) {
       const files = Array.from(event.target.files);
 
-      if (libraryName === "Gallery" || libraryName === "bannerimg") {
+      if (libraryName === "bannerimg") {
         const imageVideoFiles = files.filter(file =>
           file.type.startsWith('image/')
           //|| file.type.startsWith('video/')
@@ -245,7 +246,8 @@ const AddDynamicBannerContext = ({ props }: any) => {
             libraryName: libraryName,
             docLib: docLib
           };
-
+          uloadBannerImageFiles.push(arr);
+          //setBannerImagepostArr(uloadBannerImageFiles);
           // console.log(imageVideoFiles, 'imageVideoFiles');
           //  if(BnnerImagepostArr.length>0)
           //  {
@@ -267,12 +269,12 @@ const AddDynamicBannerContext = ({ props }: any) => {
           //   uloadBannerImageFiles.push(imageVideoFiles[0]);
           //   setBannerImagepostArr(uloadBannerImageFiles);
           //  }
-          uloadBannerImageFiles.push(imageVideoFiles[0]);
+          //uloadBannerImageFiles.push(imageVideoFiles[0]);
           setBannerImagepostArr(uloadBannerImageFiles);
 
         } else {
           handleReset();
-          setBannerImagepostArr(arrr);
+          //setBannerImagepostArr(arrr);
           Swal.fire("Only image can be uploaded")
         }
       }
@@ -304,168 +306,252 @@ const AddDynamicBannerContext = ({ props }: any) => {
   }
   // Handle form submission
   //#region  Submit Form
+  // const handleFormSubmit = async () => {
+
+  //   if (await validateForm()) {
+  //     Swal.fire({
+  //       title: 'Do you want to submit',
+  //       showConfirmButton: true,
+  //       showCancelButton: true,
+  //       confirmButtonText: "Yes",
+  //       cancelButtonText: "No",
+  //       icon: 'warning'
+  //     }
+  //     ).then(async (result) => {
+  //       //console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
+  //       if (result.isConfirmed) {
+  //         // Swal.fire("Saved!", "", "success");
+
+  //         let bannerImageArray: any = [];
+  //         let galleryIds: any[] = [];
+  //         let documentIds: any[] = [];
+  //         let galleryArray: any[] = [];
+  //         let documentArray: any[] = [];
+
+  //         // formData.FeaturedAnnouncement === "on"?  true :false;
+
+  //         if (editID) {
+  //           // Upload Banner Images
+  //           // if (BnnerImagepostArr.length > 0) {
+  //           //   for (const file of BnnerImagepostArr) {
+  //           //     if (!file.serverRelativeUrl) {
+  //           //       // const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
+  //           //       bannerImageArray = await uploadFile(file, sp, "Documents", "https://officeindia.sharepoint.com");
+  //           //     }
+
+  //           //   }
+  //           // }
+  //           if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
+  //             for (const file of BnnerImagepostArr[0].files) {
+  //               //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
+  //               bannerImageArray = await uploadFile(file, sp, "Documents", siteUrl);
+  //             }
+  //           }
+  //           else if (BnnerImagepostArr.length > 0) {
+  //             bannerImageArray = BnnerImagepostArr[0];
+  //           }
+  //           else {
+  //             bannerImageArray = null
+  //           }
+  //           debugger
+  //           let bannerPost = {}
+  //           if (BnnerImagepostArr.serverRelativeUrl != undefined && BnnerImagepostArr.serverRelativeUrl != null) {
+  //             let bannerPost = {
+  //               filename: BnnerImagepostArr.fileName,
+  //               size: BnnerImagepostArr.size,
+  //               type: BnnerImagepostArr.type
+  //             }
+  //             const jsonString = JSON.stringify(bannerPost)
+  //             // Create Post
+  //             const postPayload = {
+  //               Title: formData.title,
+  //               Description: formData.description,
+  //               IsImage: formData.IsImage === "on" ? true : false,
+  //               // IsVideo: formData.IsVedio === "on"?  true :false,
+  //               URL: formData.URL,
+  //               Status: formData.Status,
+  //               AuthorId: currentUser.Id,
+  //               BannerImage: JSON.stringify(bannerImageArray),
+  //               BannerImageJSON: jsonString
+  //             };
+  //             console.log(postPayload);
+  //             const postResult = await updateItem(postPayload, sp, editID);
+  //             const postId = postResult?.data?.ID;
+
+  //             if (postResult != null) {
+  //               sessionStorage.removeItem("bannerId")
+  //               window.location.href = `${siteUrl}/SitePages/BannerMaster.aspx`;
+  //             }
+  //           }
+  //           else {
+  //             const postPayload = {
+  //               Title: formData.title,
+  //               Description: formData.description,
+  //               IsImage: formData.IsImage === "on" ? true : false,
+  //               // IsVideo: formData.IsVedio === "on"?  true :false,
+  //               URL: formData.URL,
+  //               Status: formData.Status,
+  //               AuthorId: currentUser.Id,
+  //               BannerImage: JSON.stringify(bannerImageArray),
+  //               // BannerImageJSON: jsonString
+  //             };
+  //             console.log(postPayload);
+  //             const postResult = await updateItem(postPayload, sp, editID);
+  //             const postId = postResult?.data?.ID;
+  //             if (postResult != null) {
+  //               sessionStorage.removeItem("bannerId")
+  //               setTimeout(() => {
+
+  //                 window.location.href = `${siteUrl}/SitePages/BannerMaster.aspx`;
+  //               }, 2000);
+
+  //             }
+  //           }
+  //           // let bannerImg =JSON.stringify(BnnerImagepostArr[0])
+
+  //         }
+  //         else {
+  //           // Upload Banner Images
+  //           // if (BnnerImagepostArr.length > 0) {
+  //           //   for (const file of BnnerImagepostArr) {
+  //           //     // const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
+  //           //     bannerImageArray = await uploadFile(file, sp, "Documents", "https://officeindia.sharepoint.com");
+  //           //   }
+  //           // }
+  //           if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
+  //             for (const file of BnnerImagepostArr[0].files) {
+  //               //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
+  //               bannerImageArray = await uploadFile(file, sp, "Documents", siteUrl);
+  //             }
+  //           }
+  //           debugger
+  //           let bannerPost = {
+  //             filename: BnnerImagepostArr.name,
+  //             size: BnnerImagepostArr.size,
+  //             type: BnnerImagepostArr.type
+  //           }
+  //           console.log("JSON.stringify(bannerImageArray)", bannerImageArray,
+  //             JSON.stringify(bannerImageArray))
+  //           // let bannerImg =JSON.stringify(BnnerImagepostArr[0])
+  //           const jsonString = JSON.stringify(bannerPost)
+  //           // Create Post
+  //           const postPayload = {
+  //             Title: formData.title,
+  //             Description: formData.description,
+  //             IsImage: formData.IsImage === "on" ? true : false,
+  //             // IsVideo: formData.IsVedio === "on"?  true :false,
+  //             URL: formData.URL,
+  //             Status: "Submitted",
+  //             AuthorId: currentUser.Id,
+  //             BannerImage: JSON.stringify(bannerImageArray),
+  //             BannerImageJSON: jsonString
+  //           };
+  //           console.log(postPayload);
+  //           const postResult = await addItem(postPayload, sp);
+  //           const postId = postResult?.data?.ID;
+  //           if (postResult != null) {
+  //             sessionStorage.removeItem("bannerId")
+  //             setTimeout(() => {
+  //               window.location.href = `${siteUrl}/SitePages/BannerMaster.aspx`;
+  //             }, 2000);
+
+  //           }
+  //         }
+  //       } else if (result.isDenied) {
+  //         Swal.fire("Changes are not saved", "", "info");
+  //       }
+  //       // if(postResult?.data?.ID)
+  //     }).catch(error => {
+  //       Swal.fire("Changes are not saved", "", "info");
+  //     }
+  //     )
+  //   }
+  // }
   const handleFormSubmit = async () => {
+    if (!validateForm()) return;
+debugger
+    try {
+      setLoading(true);
 
-    if (await validateForm()) {
-      Swal.fire({
-        title: 'Do you want to submit',
-        showConfirmButton: true,
-        showCancelButton: true,
-        confirmButtonText: "Yes",
-        cancelButtonText: "No",
-        icon: 'warning'
-      }
-      ).then(async (result) => {
-        //console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
-        if (result.isConfirmed) {
-          // Swal.fire("Saved!", "", "success");
+      let bannerImageArray = null;
+      //let galleryArray = [];
+      let existingGalleryJSON = [];
+      let existingGalleryIds = [];
 
-          let bannerImageArray: any = [];
-          let galleryIds: any[] = [];
-          let documentIds: any[] = [];
-          let galleryArray: any[] = [];
-          let documentArray: any[] = [];
+      // Upload new banner images if any
+      // if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
+      //   bannerImageArray = await uploadAllFiles(BnnerImagepostArr[0].files, sp, "Documents");
+      // }
+      if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
 
-          // formData.FeaturedAnnouncement === "on"?  true :false;
+        for (const file of BnnerImagepostArr[0].files) {
 
-          if (editID) {
-            // Upload Banner Images
-            // if (BnnerImagepostArr.length > 0) {
-            //   for (const file of BnnerImagepostArr) {
-            //     if (!file.serverRelativeUrl) {
-            //       // const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
-            //       bannerImageArray = await uploadFile(file, sp, "Documents", "https://OfficeIndia.sharepoint.com");
-            //     }
+          //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
 
-            //   }
-            // }
-            if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
-              for (const file of BnnerImagepostArr[0].files) {
-                //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
-                bannerImageArray = await uploadFile(file, sp, "Documents", siteUrl);
-              }
-            }
-            else if (BnnerImagepostArr.length > 0) {
-              bannerImageArray = BnnerImagepostArr[0];
-            }
-            else {
-              bannerImageArray = null
-            }
-            debugger
-            let bannerPost = {}
-            if (BnnerImagepostArr.serverRelativeUrl != undefined && BnnerImagepostArr.serverRelativeUrl != null) {
-              let bannerPost = {
-                filename: BnnerImagepostArr.fileName,
-                size: BnnerImagepostArr.size,
-                type: BnnerImagepostArr.type
-              }
-              const jsonString = JSON.stringify(bannerPost)
-              // Create Post
-              const postPayload = {
-                Title: formData.title,
-                Description: formData.description,
-                IsImage: formData.IsImage === "on" ? true : false,
-                // IsVideo: formData.IsVedio === "on"?  true :false,
-                URL: formData.URL,
-                Status: formData.Status,
-                AuthorId: currentUser.Id,
-                BannerImage: JSON.stringify(bannerImageArray),
-                BannerImageJSON: jsonString
-              };
-              console.log(postPayload);
-              const postResult = await updateItem(postPayload, sp, editID);
-              const postId = postResult?.data?.ID;
+          bannerImageArray = await uploadFile(file, sp, "Documents", tenantUrl);
 
-              if (postResult != null) {
-                sessionStorage.removeItem("bannerId")
-                window.location.href = `${siteUrl}/SitePages/BannerMaster.aspx`;
-              }
-            }
-            else {
-              const postPayload = {
-                Title: formData.title,
-                Description: formData.description,
-                IsImage: formData.IsImage === "on" ? true : false,
-                // IsVideo: formData.IsVedio === "on"?  true :false,
-                URL: formData.URL,
-                Status: formData.Status,
-                AuthorId: currentUser.Id,
-                BannerImage: JSON.stringify(bannerImageArray),
-                // BannerImageJSON: jsonString
-              };
-              console.log(postPayload);
-              const postResult = await updateItem(postPayload, sp, editID);
-              const postId = postResult?.data?.ID;
-              if (postResult != null) {
-                sessionStorage.removeItem("bannerId")
-                setTimeout(() => {
-
-                  window.location.href = `${siteUrl}/SitePages/BannerMaster.aspx`;
-                }, 2000);
-
-              }
-            }
-            // let bannerImg =JSON.stringify(BnnerImagepostArr[0])
-
-          }
-          else {
-            // Upload Banner Images
-            // if (BnnerImagepostArr.length > 0) {
-            //   for (const file of BnnerImagepostArr) {
-            //     // const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
-            //     bannerImageArray = await uploadFile(file, sp, "Documents", "https://OfficeIndia.sharepoint.com");
-            //   }
-            // }
-            if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
-              for (const file of BnnerImagepostArr[0].files) {
-                //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
-                bannerImageArray = await uploadFile(file, sp, "Documents", siteUrl);
-              }
-            }
-            debugger
-            let bannerPost = {
-              filename: BnnerImagepostArr.name,
-              size: BnnerImagepostArr.size,
-              type: BnnerImagepostArr.type
-            }
-            console.log("JSON.stringify(bannerImageArray)",bannerImageArray,
-              JSON.stringify(bannerImageArray))
-            // let bannerImg =JSON.stringify(BnnerImagepostArr[0])
-            const jsonString = JSON.stringify(bannerPost)
-            // Create Post
-            const postPayload = {
-              Title: formData.title,
-              Description: formData.description,
-              IsImage: formData.IsImage === "on" ? true : false,
-              // IsVideo: formData.IsVedio === "on"?  true :false,
-              URL: formData.URL,
-              Status: "Submitted",
-              AuthorId: currentUser.Id,
-              BannerImage: JSON.stringify(bannerImageArray),
-              BannerImageJSON: jsonString
-            };
-            console.log(postPayload);
-            const postResult = await addItem(postPayload, sp);
-            const postId = postResult?.data?.ID;
-            if (postResult != null) {
-              sessionStorage.removeItem("bannerId")
-              setTimeout(() => {
-                window.location.href = `${siteUrl}/SitePages/BannerMaster.aspx`;
-              }, 2000);
-
-            }
-          }
-        } else if (result.isDenied) {
-          Swal.fire("Changes are not saved", "", "info");
         }
-        // if(postResult?.data?.ID)
-      }).catch(error => {
-        Swal.fire("Changes are not saved", "", "info");
-      }
-      )
-    }
-  }
 
+      }
+      let bannerPost = {
+        filename: BnnerImagepostArr.name,
+        size: BnnerImagepostArr.size,
+        type: BnnerImagepostArr.type
+      }
+      console.log("JSON.stringify(bannerImageArray)", bannerImageArray,
+        JSON.stringify(bannerImageArray))
+      const jsonString = JSON.stringify(bannerPost)
+      const postPayload = {
+        Title: formData.title,
+        Description: formData.description,
+        IsImage: formData.IsImage === "on" ? true : false,
+        // IsVideo: formData.IsVedio === "on"?  true :false,
+        URL: formData.URL,
+        Status: formData.Status,
+        AuthorId: currentUser.Id,
+        BannerImage: bannerImageArray != "{}" && JSON.stringify(bannerImageArray),
+        BannerImageJSON: jsonString
+      };
+
+
+
+      // Create or update item
+      if (editForm) {
+        console.log(postPayload);
+        const postResult = await updateItem(postPayload, sp, editID);
+        const postId = postResult?.data?.ID;
+
+        if (postResult != null) {
+          sessionStorage.removeItem("bannerId")
+          window.location.href = `${siteUrl}/SitePages/BannerMaster.aspx`;
+        }
+      } else {
+        console.log(postPayload);
+        const postResult = await addItem(postPayload, sp);
+        const postId = postResult?.data?.ID;
+        if (postResult != null) {
+          sessionStorage.removeItem("bannerId")
+          setTimeout(() => {
+            window.location.href = `${siteUrl}/SitePages/BannerMaster.aspx`;
+          }, 2000);
+
+        }
+        if (!postId) {
+          throw new Error("Failed to create item.");
+        }
+
+    
+      }
+
+      // Swal.fire('Submitted successfully.', '', 'success');
+      // window.location.href = `${siteUrl}/SitePages/MediaGalleryMaster.aspx`;
+    } catch (error) {
+      console.error("Error during form submission:", error);
+      Swal.fire('Error', error.message, 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
   //#endregion
   console.log(bannerByIDArr, 'bannerByID');
 
@@ -518,81 +604,101 @@ const AddDynamicBannerContext = ({ props }: any) => {
             <div className="card mt-3">
               <div className="card-body">
                 <div className="row mt-2">
-                  <form className='row' >
-                    <div className="col-lg-6">
-                      <div className="mb-3">
-                        <label htmlFor="title" className="form-label">
-                          Title <span className="text-danger">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          id="title"
-                          name="title"
-                          placeholder='Enter Title'
-                          className={`form-control ${(!ValidSubmit) ? "border-on-error" : ""}`}
-                          value={formData.title}
-                          onChange={(e) => onChange(e.target.name, e.target.value)} 
-                          disabled={InputDisabled}
+                  {Loading ?
+                    <div style={{ minHeight: '100vh', marginTop: '100px' }} className="loadernewadd mt-10">
+                      <div>
+                        <img
+                          src={require("../../../CustomAsset/birdloader.gif")}
+                          className="alignrightl"
+                          alt="Loading..."
+                        />
+                      </div>
+                      <span>Loading </span>{" "}
+                      <span>
+                        <img
+                          src={require("../../../CustomAsset/argloader.gif")}
+                          className="alignrightl"
+                          alt="Loading..."
+                        />
+                      </span>
+                    </div>
+
+                    :
+                    <form className='row' >
+                      <div className="col-lg-6">
+                        <div className="mb-3">
+                          <label htmlFor="title" className="form-label">
+                            Title <span className="text-danger">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            id="title"
+                            name="title"
+                            placeholder='Enter Title'
+                            className={`form-control ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                            value={formData.title}
+                            onChange={(e) => onChange(e.target.name, e.target.value)}
+                            disabled={InputDisabled}
 
                           />
-                          
-                      </div>
-                    </div>
-                    <div className="col-lg-6">
-                      <div className="mb-3">
-                        <div className='d-flex justify-content-between'>
-                          <div>
-                            <label htmlFor="bannerImage" className="form-label">
-                              Banner Image <span className="text-danger">*</span>
-                            </label>
-                          </div>
-                          <div>
-                            {BnnerImagepostArr != undefined && BnnerImagepostArr.length > 0 ?
-                              (<><a style={{ fontSize: '0.875rem' }}>
-                                <FontAwesomeIcon icon={faPaperclip} /> 1 file Attached {BnnerImagepostArr[0]?.fieldName}
-                              </a>
-                                {/* <img src={`${BnnerImagepostArr[0]?.serverUrl + BnnerImagepostArr[0]?.serverRelativeUrl}`} /> */}
-                              </>
-                              ) : ""
 
-
-                            }
-                            {/* {BnnerImagepostArr!=undefined&& BnnerImagepostArr.length>0&&
-                           (<img src={`${BnnerImagepostArr[0].serverUrl +BnnerImagepostArr[0].serverRelativeUrl}`} />)}  */}
-                          </div>
                         </div>
-                        <input
-                          type="file"
-                          ref={inputFile}
-                          id="bannerImage"
-                          name="bannerImage"
-                          className={`form-control ${(!ValidSubmit) ? "border-on-error" : ""}`}
-                          onChange={(e) => onFileChange(e, "bannerimg", "Document")} 
-                          disabled={InputDisabled}
-                          />
-                          
                       </div>
-                    </div>
-                    <div className="col-lg-12">
-                      <div className="mb-3">
-                        <label htmlFor="description" className="form-label">
-                          Description <span className="text-danger">*</span>
-                        </label>
-                        <textarea
-                          id="description"
-                          name="description"
-                          placeholder='Enter description'
-                          className={`form-control  ${(!ValidSubmit) ? "border-on-error" : ""}`}
-                          style={{ height: '100px' }}
-                          value={formData.description}
-                          onChange={(e) => onChange(e.target.name, e.target.value)}
-                          disabled={InputDisabled}
+                      <div className="col-lg-6">
+                        <div className="mb-3">
+                          <div className='d-flex justify-content-between'>
+                            <div>
+                              <label htmlFor="bannerImage" className="form-label">
+                                Banner Image <span className="text-danger">*</span>
+                              </label>
+                            </div>
+                            <div>
+                              {BnnerImagepostArr != undefined && BnnerImagepostArr.length > 0 ?
+                                (<><a style={{ fontSize: '0.875rem' }}>
+                                  <FontAwesomeIcon icon={faPaperclip} /> 1 file Attached {BnnerImagepostArr[0]?.fieldName}
+                                </a>
+                                  {/* <img src={`${BnnerImagepostArr[0]?.serverUrl + BnnerImagepostArr[0]?.serverRelativeUrl}`} /> */}
+                                </>
+                                ) : ""
+
+
+                              }
+                              {/* {BnnerImagepostArr!=undefined&& BnnerImagepostArr.length>0&&
+                           (<img src={`${BnnerImagepostArr[0].serverUrl +BnnerImagepostArr[0].serverRelativeUrl}`} />)}  */}
+                            </div>
+                          </div>
+                          <input
+                            type="file"
+                            ref={inputFile}
+                            id="bannerImage"
+                            name="bannerImage"
+                            className={`form-control ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                            onChange={(e) => onFileChange(e, "bannerimg", "Document")}
+                            disabled={InputDisabled}
+                          />
+
+                        </div>
+                      </div>
+                      <div className="col-lg-12">
+                        <div className="mb-3">
+                          <label htmlFor="description" className="form-label">
+                            Description <span className="text-danger">*</span>
+                          </label>
+                          <textarea
+                            id="description"
+                            name="description"
+                            placeholder='Enter description'
+                            className={`form-control  ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                            style={{ height: '100px' }}
+                            value={formData.description}
+                            onChange={(e) => onChange(e.target.name, e.target.value)}
+                            disabled={InputDisabled}
 
                           >
-                        </textarea>
+                          </textarea>
+                        </div>
                       </div>
-                    </div>
-                    {/* <div className="col-lg-6">
+                      {/* <div className="col-lg-6">
                         <div className="mb-3">
                           <label htmlFor="url" className="form-label">
                             URL <span className="text-danger">*</span>
@@ -608,26 +714,27 @@ const AddDynamicBannerContext = ({ props }: any) => {
                           </textarea>
                         </div>
                       </div> */}
-                    {/* {BnnerImagepostArr!=undefined&&BnnerImagepostArr.length>0?
+                      {/* {BnnerImagepostArr!=undefined&&BnnerImagepostArr.length>0?
                     (<><div>{BnnerImagepostArr[0].fileName}</div><img src={BnnerImagepostArr[0].fileName} /></>):""} */}
                       <div className="text-center butncss">
-                    { InputDisabled == false && (
-                    
-                                            <div className="btn btn-success waves-effect waves-light m-1" style={{  width: '100px' }} onClick={handleFormSubmit}>
-                        <div className='d-flex' style={{ justifyContent: 'center' }}>
-                          <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} alt="Check" /> Submit
-                        </div>
+                        {InputDisabled == false && (
+
+                          <div className="btn btn-success waves-effect waves-light m-1" style={{ width: '100px' }} onClick={handleFormSubmit}>
+                            <div className='d-flex' style={{ justifyContent: 'center' }}>
+                              <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} alt="Check" /> Submit
+                            </div>
+                          </div>
+
+
+                        )}
+                        <button type="button" className="btn cancel-btn waves-effect waves-light m-1" style={{ width: '100px' }} onClick={handleCancel}>
+                          <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }}
+                            className='me-1' alt="x" />
+                          Cancel
+                        </button>
                       </div>
-                      
-             
-                    ) }
-                      <button type="button" className="btn cancel-btn waves-effect waves-light m-1" style={{ width: '100px' }} onClick={handleCancel}>
-                        <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }}
-                          className='me-1' alt="x" />
-                        Cancel
-                      </button>
-                           </div>
-                  </form>
+                    </form>
+                  }
                 </div>
               </div>
             </div>

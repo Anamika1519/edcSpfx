@@ -34,24 +34,83 @@ export const getMedia = async (_sp, isSuperAdmin) => {
   return arr;
 }
 
+// export const uploadFileToLibrary = async (file, sp, docLib) => {
+//   debugger
+//   let arrFIleData = [];
+//   let fileSize = 0
+//   try {
+//     const result = await sp.web.lists.getByTitle(docLib).rootFolder.files.addChunked(file.name, file,
+
+//       // const result = await sp.web.lists.getByTitle(docLib).rootFolder.files.addChunked(
+//       // file.name,
+//       // file,
+//       (progress, data) => {
+//         console.log(progress, data);
+//         fileSize = progress.fileSize
+//       },
+//       true
+//     );
+
+//     const item = await sp.web.getFileByServerRelativePath(result.data.ServerRelativeUrl).getItem("*", "ID", "AuthorId", "Modified")
+//     console.log(item.Id, 'itemitem');
+//     let arr = {
+//       ID: item.Id,
+//       Createdby: item.AuthorId,
+//       Modified: item.Modified,
+//       fileUrl: result.data.ServerRelativeUrl,
+//       fileSize: fileSize,
+//       fileType: file.type,
+//       fileName: file.name,
+//     }
+//     arrFIleData.push(arr)
+//     console.log(arrFIleData);
+
+//     return arrFIleData;
+//   } catch (error) {
+//     console.log("Error uploading file:", error);
+//     return null; // Or handle error differently
+//   }
+// };
+
+// new G
+
+
+// export const uploadAllFiles = async (files, sp, docLib) => {
+//   alert(`file ${files}`)
+//   console.log(files , "files")
+//   const uploadPromises = files.map(file =>
+//     uploadFileToLibrary(file, sp, docLib)
+//   );
+
+//   const uploadResults = await Promise.all(uploadPromises);
+//   return uploadResults.flat(); // Flatten if uploadFileToLibrary returns an array.
+// };
+export const uploadAllFiles = async (files, sp, docLib) => {
+  // Ensure files is an array
+  const filesArray = Array.isArray(files) ? files : [files];
+   console.log(filesArray , "filesArray")
+   debugger
+  //alert(`Files: ${JSON.stringify(filesArray)}`);
+  console.log(filesArray, "Files Array");
+
+  // Proceed with mapping only if filesArray is valid
+  const uploadPromises = filesArray.map(file =>
+    uploadFileToLibrary(file, sp, docLib)
+  );
+
+  const uploadResults = await Promise.all(uploadPromises);
+  return uploadResults.flat(); // Flatten the results if each upload returns an array
+};
+
 export const uploadFileToLibrary = async (file, sp, docLib) => {
-  debugger
   let arrFIleData = [];
-  let fileSize = 0
+  let fileSize = 0;
   try {
-    const result = await sp.web.lists.getByTitle(docLib).rootFolder.files.addChunked(file.name, file,
-
-      // const result = await sp.web.lists.getByTitle(docLib).rootFolder.files.addChunked(
-      // file.name,
-      // file,
-      (progress, data) => {
-        console.log(progress, data);
-        fileSize = progress.fileSize
-      },
-      true
-    );
-
-    const item = await sp.web.getFileByServerRelativePath(result.data.ServerRelativeUrl).getItem("*", "ID", "AuthorId", "Modified")
+    const result = await sp.web.lists.getByTitle(docLib).rootFolder.files.addChunked(file.name, file, (progress, data) => {
+      console.log(progress, data);
+      fileSize = progress.fileSize;
+    }, true);
+    const item = await sp.web.getFileByServerRelativePath(result.data.ServerRelativeUrl).getItem("*", "ID", "AuthorId", "Modified");
     console.log(item.Id, 'itemitem');
     let arr = {
       ID: item.Id,
@@ -62,16 +121,14 @@ export const uploadFileToLibrary = async (file, sp, docLib) => {
       fileType: file.type,
       fileName: file.name,
     }
-    arrFIleData.push(arr)
-    console.log(arrFIleData);
-
+    arrFIleData.push(arr);
+    console.log(arrFIleData , 'arrFIleData');
     return arrFIleData;
   } catch (error) {
     console.log("Error uploading file:", error);
-    return null; // Or handle error differently
+    return null;
   }
 };
-
 export const uploadFile = async (file, sp, docLib, siteUrl) => {
   let arr = {};
   debugger
@@ -137,7 +194,7 @@ const handleFileChange = async (event) => {
   const file = event.target.files[0];
   if (file) {
     try {
-      const folderUrl = `/sites/Alrostmanispfx2/${docLib}`; // Replace with your folder URL
+      const folderUrl = `/sites/edcspfx/${docLib}`; // Replace with your folder URL
       const fileName = file.name;
 
       const fileBlob = new Blob([file], { type: file.type });
@@ -169,7 +226,7 @@ export const addItem = async (itemData, _sp) => {
   let resultArr = []
   try {
     const newItem = await _sp.web.lists.getByTitle('ARGMediaGallery').items.add(itemData);
-    console.log('Item added successfully:', newItem);
+    console.log('Item added successfully in add item:', newItem);
     // Swal.fire('Item added successfully', '', 'success');
 
     resultArr = newItem

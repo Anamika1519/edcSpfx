@@ -551,7 +551,7 @@ try {
           await sp.web.lists.getByTitle(`DMS${filterData.FileUID.SiteName}FileMaster`).items.getById(item.ID).update({ Status: 'Rework' }); 
         }
         debugger
-        const getTaskdata = await sp.web.lists.getByTitle("DMSFileApprovalTaskList").items.filter(`FileUID/FileUID eq '${filterData.FileUID.FileUID}' and Log eq null`) 
+        const getTaskdata = await sp.web.lists.getByTitle("DMSFileApprovalTaskList").items.filter(`FileUID/FileUID eq '${filterData.FileUID.FileUID}' and LogHistory eq null`) 
         .select("*", "FileUID/FileUID", "MasterApproval/ApprovalType", "CurrentUser", "Log") 
         .expand("FileUID", "MasterApproval")();
        

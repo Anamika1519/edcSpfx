@@ -26,38 +26,6 @@
         }
       ]
     },
-    "mediagallery-web-part": {
-      "components": [
-        {
-          "entrypoint": "./lib/webparts/mediagallery/MediagalleryWebPart.js",
-          "manifest": "./src/webparts/mediagallery/MediagalleryWebPart.manifest.json"
-        }
-      ]
-    },
-    "argannouncement-web-part": {
-      "components": [
-        {
-          "entrypoint": "./lib/webparts/argannouncement/ArgannouncementWebPart.js",
-          "manifest": "./src/webparts/argannouncement/ArgannouncementWebPart.manifest.json"
-        }
-      ]
-    },
-    "announcementmaster-web-part": {
-      "components": [
-        {
-          "entrypoint": "./lib/webparts/announcementmaster/AnnouncementmasterWebPart.js",
-          "manifest": "./src/webparts/announcementmaster/AnnouncementmasterWebPart.manifest.json"
-        }
-      ]
-    },
-    "addannouncement-web-part": {
-      "components": [
-        {
-          "entrypoint": "./lib/webparts/addannouncement/AddannouncementWebPart.js",
-          "manifest": "./src/webparts/addannouncement/AddannouncementWebPart.manifest.json"
-        }
-      ]
-    },
     "mastersettings-web-part": {
       "components": [
         {
@@ -82,43 +50,11 @@
         }
       ]
     },
-    "media-master-web-part": {
-      "components": [
-        {
-          "entrypoint": "./lib/webparts/mediaMaster/MediaMasterWebPart.js",
-          "manifest": "./src/webparts/mediaMaster/MediaMasterWebPart.manifest.json"
-        }
-      ]
-    },
-    "add-media-galary-web-part": {
-      "components": [
-        {
-          "entrypoint": "./lib/webparts/addMediaGalary/AddMediaGalaryWebPart.js",
-          "manifest": "./src/webparts/addMediaGalary/AddMediaGalaryWebPart.manifest.json"
-        }
-      ]
-    },
     "dasboard-web-part": {
       "components": [
         {
           "entrypoint": "./lib/webparts/dasboard/DasboardWebPart.js",
           "manifest": "./src/webparts/dasboard/DasboardWebPart.manifest.json"
-        }
-      ]
-    },
-    "corporate-directory-web-part": {
-      "components": [
-        {
-          "entrypoint": "./lib/webparts/corporateDirectory/CorporateDirectoryWebPart.js",
-          "manifest": "./src/webparts/corporateDirectory/CorporateDirectoryWebPart.manifest.json"
-        }
-      ]
-    },
-    "leaderboard-web-part": {
-      "components": [
-        {
-          "entrypoint": "./lib/webparts/leaderboard/LeaderboardWebPart.js",
-          "manifest": "./src/webparts/leaderboard/LeaderboardWebPart.manifest.json"
         }
       ]
     },
@@ -138,22 +74,6 @@
         }
       ]
     },
-    "announcementdetails-web-part": {
-      "components": [
-        {
-          "entrypoint": "./lib/webparts/announcementdetails/AnnouncementdetailsWebPart.js",
-          "manifest": "./src/webparts/announcementdetails/AnnouncementdetailsWebPart.manifest.json"
-        }
-      ]
-    },
-    "mediagallerydetails-web-part": {
-      "components": [
-        {
-          "entrypoint": "./lib/webparts/mediagallerydetails/MediagallerydetailsWebPart.js",
-          "manifest": "./src/webparts/mediagallerydetails/MediagallerydetailsWebPart.manifest.json"
-        }
-      ]
-    },
     "eventcalender-web-part": {
       "components": [
         {
@@ -167,14 +87,6 @@
         {
           "entrypoint": "./lib/webparts/eventdetailscalender/EventdetailscalenderWebPart.js",
           "manifest": "./src/webparts/eventdetailscalender/EventdetailscalenderWebPart.manifest.json"
-        }
-      ]
-    },
-    "dashboard-test-web-part": {
-      "components": [
-        {
-          "entrypoint": "./lib/webparts/dashboardTest/DashboardTestWebPart.js",
-          "manifest": "./src/webparts/dashboardTest/DashboardTestWebPart.manifest.json"
         }
       ]
     },
@@ -202,99 +114,11 @@
         }
       ]
     },
-    "discussion-forum-web-part": {
-      "components": [
-        {
-          "entrypoint": "./lib/webparts/discussionForum/DiscussionForumWebPart.js",
-          "manifest": "./src/webparts/discussionForum/DiscussionForumWebPart.manifest.json"
-        }
-      ]
-    },
-    "discussion-forum-details-web-part": {
-      "components": [
-        {
-          "entrypoint": "./lib/webparts/discussionForumDetails/DiscussionForumDetailsWebPart.js",
-          "manifest": "./src/webparts/discussionForumDetails/DiscussionForumDetailsWebPart.manifest.json"
-        }
-      ]
-    },
-    "blogs-web-part": {
-      "components": [
-        {
-          "entrypoint": "./lib/webparts/blogs/BlogsWebPart.js",
-          "manifest": "./src/webparts/blogs/BlogsWebPart.manifest.json"
-        }
-      ]
-    },
-    "blog-master-web-part": {
-      "components": [
-        {
-          "entrypoint": "./lib/webparts/blogMaster/BlogMasterWebPart.js",
-          "manifest": "./src/webparts/blogMaster/BlogMasterWebPart.manifest.json"
-        }
-      ]
-    },
-    "blog-details-web-part": {
-      "components": [
-        {
-          "entrypoint": "./lib/webparts/blogDetails/BlogDetailsWebPart.js",
-          "manifest": "./src/webparts/blogDetails/BlogDetailsWebPart.manifest.json"
-        }
-      ]
-    },
-    "social-feed-web-part": {
-      "components": [
-        {
-          "entrypoint": "./lib/webparts/socialFeed/SocialFeedWebPart.js",
-          "manifest": "./src/webparts/socialFeed/SocialFeedWebPart.manifest.json"
-        }
-      ]
-    },
-    "groupand-team-web-part": {
-      "components": [
-        {
-          "entrypoint": "./lib/webparts/groupandTeam/GroupandTeamWebPart.js",
-          "manifest": "./src/webparts/groupandTeam/GroupandTeamWebPart.manifest.json"
-        }
-      ]
-    },
-    "groupand-team-details-web-part": {
-      "components": [
-        {
-          "entrypoint": "./lib/webparts/groupandTeamDetails/GroupandTeamDetailsWebPart.js",
-          "manifest": "./src/webparts/groupandTeamDetails/GroupandTeamDetailsWebPart.manifest.json"
-        }
-      ]
-    },
     "approval-configuration-web-part": {
       "components": [
         {
           "entrypoint": "./lib/webparts/approvalConfiguration/ApprovalConfigurationWebPart.js",
           "manifest": "./src/webparts/approvalConfiguration/ApprovalConfigurationWebPart.manifest.json"
-        }
-      ]
-    },
-    "projects-web-part": {
-      "components": [
-        {
-          "entrypoint": "./lib/webparts/projects/ProjectsWebPart.js",
-          "manifest": "./src/webparts/projects/ProjectsWebPart.manifest.json"
-        }
-      ]
-    },
-    "project-details-web-part": {
-      "components": [
-        {
-          "entrypoint": "./lib/webparts/projectDetails/ProjectDetailsWebPart.js",
-          "manifest": "./src/webparts/projectDetails/ProjectDetailsWebPart.manifest.json"
-        }
-      ]
-    },
-    "followand-followers-web-part": {
-      "components": [
-        {
-          "entrypoint": "./lib/webparts/followandFollowers/FollowandFollowersWebPart.js",
-          "manifest": "./src/webparts/followandFollowers/FollowandFollowersWebPart.manifest.json"
         }
       ]
     },
@@ -314,14 +138,6 @@
         }
       ]
     },
-    "business-apps-web-part": {
-      "components": [
-        {
-          "entrypoint": "./lib/webparts/businessApps/BusinessAppsWebPart.js",
-          "manifest": "./src/webparts/businessApps/BusinessAppsWebPart.manifest.json"
-        }
-      ]
-    },
     "dms-web-part": {
       "components": [
         {
@@ -338,51 +154,11 @@
         }
       ]
     },
-    "notification-details-web-part": {
-      "components": [
-        {
-          "entrypoint": "./lib/webparts/notificationDetails/NotificationDetailsWebPart.js",
-          "manifest": "./src/webparts/notificationDetails/NotificationDetailsWebPart.manifest.json"
-        }
-      ]
-    },
     "user-profile-web-part": {
       "components": [
         {
           "entrypoint": "./lib/webparts/userProfile/UserProfileWebPart.js",
           "manifest": "./src/webparts/userProfile/UserProfileWebPart.manifest.json"
-        }
-      ]
-    },
-    "commingsoon-web-part": {
-      "components": [
-        {
-          "entrypoint": "./lib/webparts/commingsoon/CommingsoonWebPart.js",
-          "manifest": "./src/webparts/commingsoon/CommingsoonWebPart.manifest.json"
-        }
-      ]
-    },
-    "business-app-master-web-part": {
-      "components": [
-        {
-          "entrypoint": "./lib/webparts/businessAppMaster/BusinessAppMasterWebPart.js",
-          "manifest": "./src/webparts/businessAppMaster/BusinessAppMasterWebPart.manifest.json"
-        }
-      ]
-    },
-    "ad-to-sp-group-sync-web-part": {
-      "components": [
-        {
-          "entrypoint": "./lib/webparts/adToSpGroupSync/AdToSpGroupSyncWebPart.js",
-          "manifest": "./src/webparts/adToSpGroupSync/AdToSpGroupSyncWebPart.manifest.json"
-        }
-      ]
-    },
-    "add-business-app-web-part": {
-      "components": [
-        {
-          "entrypoint": "./lib/webparts/addBusinessApp/AddBusinessAppWebPart.js",
-          "manifest": "./src/webparts/addBusinessApp/AddBusinessAppWebPart.manifest.json"
         }
       ]
     },
@@ -402,59 +178,19 @@
         }
       ]
     },
-    "notification-master-web-part": {
+    "quick-link-form-web-part": {
       "components": [
         {
-          "entrypoint": "./lib/webparts/notificationMaster/NotificationMasterWebPart.js",
-          "manifest": "./src/webparts/notificationMaster/NotificationMasterWebPart.manifest.json"
+          "entrypoint": "./lib/webparts/quickLinkForm/QuickLinkFormWebPart.js",
+          "manifest": "./src/webparts/quickLinkForm/QuickLinkFormWebPart.manifest.json"
         }
       ]
     },
-    "arg-delegation-web-part": {
+    "quick-links-master-web-part": {
       "components": [
         {
-          "entrypoint": "./lib/webparts/argDelegation/ArgDelegationWebPart.js",
-          "manifest": "./src/webparts/argDelegation/ArgDelegationWebPart.manifest.json"
-        }
-      ]
-    },
-    "arg-delegation-master-web-part": {
-      "components": [
-        {
-          "entrypoint": "./lib/webparts/argDelegationMaster/ArgDelegationMasterWebPart.js",
-          "manifest": "./src/webparts/argDelegationMaster/ArgDelegationMasterWebPart.manifest.json"
-        }
-      ]
-    },
-    "knowledge-center-web-part": {
-      "components": [
-        {
-          "entrypoint": "./lib/webparts/knowledgeCenter/KnowledgeCenterWebPart.js",
-          "manifest": "./src/webparts/knowledgeCenter/KnowledgeCenterWebPart.manifest.json"
-        }
-      ]
-    },
-    "knowledge-center-details-web-part": {
-      "components": [
-        {
-          "entrypoint": "./lib/webparts/knowledgeCenterDetails/KnowledgeCenterDetailsWebPart.js",
-          "manifest": "./src/webparts/knowledgeCenterDetails/KnowledgeCenterDetailsWebPart.manifest.json"
-        }
-      ]
-    },
-    "knowledge-center-form-web-part": {
-      "components": [
-        {
-          "entrypoint": "./lib/webparts/knowledgeCenterForm/KnowledgeCenterFormWebPart.js",
-          "manifest": "./src/webparts/knowledgeCenterForm/KnowledgeCenterFormWebPart.manifest.json"
-        }
-      ]
-    },
-    "knowledge-center-master-web-part": {
-      "components": [
-        {
-          "entrypoint": "./lib/webparts/knowledgeCenterMaster/KnowledgeCenterMasterWebPart.js",
-          "manifest": "./src/webparts/knowledgeCenterMaster/KnowledgeCenterMasterWebPart.manifest.json"
+          "entrypoint": "./lib/webparts/quickLinksMaster/QuickLinksMasterWebPart.js",
+          "manifest": "./src/webparts/quickLinksMaster/QuickLinksMasterWebPart.manifest.json"
         }
       ]
     }
@@ -473,60 +209,27 @@
     "MainlayoutWebPartStrings": "lib/webparts/mainlayout/loc/{locale}.js",
     "HorizontalNavBarWebPartStrings": "lib/webparts/horizontalNavBar/loc/{locale}.js",
     "VerticalSideBarWebPartStrings": "lib/webparts/verticalSideBar/loc/{locale}.js",
-    "MediagalleryWebPartStrings": "lib/webparts/mediagallery/loc/{locale}.js",
-    "ArgannouncementWebPartStrings": "lib/webparts/argannouncement/loc/{locale}.js",
-    "AnnouncementmasterWebPartStrings": "lib/webparts/announcementmaster/loc/{locale}.js",
-    "AddannouncementWebPartStrings": "lib/webparts/addannouncement/loc/{locale}.js",
     "MastersettingsWebPartStrings": "lib/webparts/mastersettings/loc/{locale}.js",
     "ControlStrings": "node_modules/@pnp/spfx-controls-react/lib/loc/{locale}.js",
     "DynamicBannerWebPartStrings": "lib/webparts/dynamicBanner/loc/{locale}.js",
     "AddDynamicBannerWebPartStrings": "lib/webparts/addDynamicBanner/loc/{locale}.js",
-    "MediaMasterWebPartStrings": "lib/webparts/mediaMaster/loc/{locale}.js",
-    "AddMediaGalaryWebPartStrings": "lib/webparts/addMediaGalary/loc/{locale}.js",
     "DasboardWebPartStrings": "lib/webparts/dasboard/loc/{locale}.js",
-    "CorporateDirectoryWebPartStrings": "lib/webparts/corporateDirectory/loc/{locale}.js",
-    "LeaderboardWebPartStrings": "lib/webparts/leaderboard/loc/{locale}.js",
     "ApprovalMasterWebPartStrings": "lib/webparts/approvalMaster/loc/{locale}.js",
     "EventMasterWebPartStrings": "lib/webparts/eventMaster/loc/{locale}.js",
-    "AnnouncementdetailsWebPartStrings": "lib/webparts/announcementdetails/loc/{locale}.js",
-    "MediagallerydetailsWebPartStrings": "lib/webparts/mediagallerydetails/loc/{locale}.js",
     "EventcalenderWebPartStrings": "lib/webparts/eventcalender/loc/{locale}.js",
     "EventdetailscalenderWebPartStrings": "lib/webparts/eventdetailscalender/loc/{locale}.js",
-    "DashboardTestWebPartStrings": "lib/webparts/dashboardTest/loc/{locale}.js",
     "NewsWebPartStrings": "lib/webparts/news/loc/{locale}.js",
     "NewsDetailsWebPartStrings": "lib/webparts/newsDetails/loc/{locale}.js",
     "EventFormWebPartStrings": "lib/webparts/eventForm/loc/{locale}.js",
-    "DiscussionForumWebPartStrings": "lib/webparts/discussionForum/loc/{locale}.js",
-    "DiscussionForumDetailsWebPartStrings": "lib/webparts/discussionForumDetails/loc/{locale}.js",
-    "BlogsWebPartStrings": "lib/webparts/blogs/loc/{locale}.js",
-    "BlogMasterWebPartStrings": "lib/webparts/blogMaster/loc/{locale}.js",
-    "BlogDetailsWebPartStrings": "lib/webparts/blogDetails/loc/{locale}.js",
-    "SocialFeedWebPartStrings": "lib/webparts/socialFeed/loc/{locale}.js",
-    "GroupandTeamWebPartStrings": "lib/webparts/groupandTeam/loc/{locale}.js",
-    "GroupandTeamDetailsWebPartStrings": "lib/webparts/groupandTeamDetails/loc/{locale}.js",
     "ApprovalConfigurationWebPartStrings": "lib/webparts/approvalConfiguration/loc/{locale}.js",
-    "ProjectsWebPartStrings": "lib/webparts/projects/loc/{locale}.js",
-    "ProjectDetailsWebPartStrings": "lib/webparts/projectDetails/loc/{locale}.js",
-    "FollowandFollowersWebPartStrings": "lib/webparts/followandFollowers/loc/{locale}.js",
     "MyRequestWebPartStrings": "lib/webparts/myRequest/loc/{locale}.js",
     "MyApprovalWebPartStrings": "lib/webparts/myApproval/loc/{locale}.js",
-    "BusinessAppsWebPartStrings": "lib/webparts/businessApps/loc/{locale}.js",
     "DmsWebPartStrings": "lib/webparts/dms/loc/{locale}.js",
     "DmsAdminWebPartStrings": "lib/webparts/dmsAdmin/loc/{locale}.js",
-    "NotificationDetailsWebPartStrings": "lib/webparts/notificationDetails/loc/{locale}.js",
     "UserProfileWebPartStrings": "lib/webparts/userProfile/loc/{locale}.js",
-    "CommingsoonWebPartStrings": "lib/webparts/commingsoon/loc/{locale}.js",
-    "BusinessAppMasterWebPartStrings": "lib/webparts/businessAppMaster/loc/{locale}.js",
-    "AdToSpGroupSyncWebPartStrings": "lib/webparts/adToSpGroupSync/loc/{locale}.js",
-    "AddBusinessAppWebPartStrings": "lib/webparts/addBusinessApp/loc/{locale}.js",
     "ManageMasterMWebPartStrings": "lib/webparts/manageMasterM/loc/{locale}.js",
     "MasterManageWebPartStrings": "lib/webparts/masterManage/loc/{locale}.js",
-    "NotificationMasterWebPartStrings": "lib/webparts/notificationMaster/loc/{locale}.js",
-    "ArgDelegationWebPartStrings": "lib/webparts/argDelegation/loc/{locale}.js",
-    "ArgDelegationMasterWebPartStrings": "lib/webparts/argDelegationMaster/loc/{locale}.js",
-    "KnowledgeCenterWebPartStrings": "lib/webparts/knowledgeCenter/loc/{locale}.js",
-    "KnowledgeCenterDetailsWebPartStrings": "lib/webparts/knowledgeCenterDetails/loc/{locale}.js",
-    "KnowledgeCenterFormWebPartStrings": "lib/webparts/knowledgeCenterForm/loc/{locale}.js",
-    "KnowledgeCenterMasterWebPartStrings": "lib/webparts/knowledgeCenterMaster/loc/{locale}.js"
+    "QuickLinkFormWebPartStrings": "lib/webparts/quickLinkForm/loc/{locale}.js",
+    "QuickLinksMasterWebPartStrings": "lib/webparts/quickLinksMaster/loc/{locale}.js"
   }
 }

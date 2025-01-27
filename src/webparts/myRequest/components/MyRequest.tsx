@@ -886,7 +886,7 @@ const MyRequestContext = ({ props }: any) => {
 
       <div className="content-page">
 
-        <HorizontalNavbar />
+      <HorizontalNavbar _context={sp} siteUrl={siteUrl} />
 
         <div
 

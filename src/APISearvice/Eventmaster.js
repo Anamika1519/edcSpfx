@@ -195,7 +195,7 @@ const handleFileChange = async (event) => {
   const file = event.target.files[0];
   if (file) {
     try {
-      const folderUrl = `/sites/Alrostmanispfx2/${docLib}`; // Replace with your folder URL
+      const folderUrl = `/sites/edcspfx/${docLib}`; // Replace with your folder URL
       const fileName = file.name;
 
       const fileBlob = new Blob([file], { type: file.type });
@@ -316,8 +316,18 @@ export const getARGEventMasterDetailsById = async (_sp, idNum) => {
   let arr = []
   let arr1 = []
 
-  await _sp.web.lists.getByTitle("ARGEventMaster").items.getById(idNum).select("*,Attendees/Id,Attendees/Title,Attendees/EMail").expand("Attendees")()
-    .then((res) => {
+  await _sp.web.lists.getByTitle("ARGEventMaster").items.getById(idNum).select("*,Attendees/Id,Attendees/Title").expand("Attendees")()
+    .then(async(res) => {
+      // for (var i = 0; i < res.length; i++) {
+      for (var j = 0; j < res.Attendees.length; j++) {
+        var user = await _sp.web.getUserById(res.Attendees[j].Id)();
+        var profile = await _sp.profiles.getPropertiesFor(`i:0#.f|membership|${user.Email}`);
+        res.Attendees[j].EMail = user.Email;
+
+        res.Attendees[j].SPSPicturePlaceholderState = profile.UserProfileProperties?profile.UserProfileProperties[profile.UserProfileProperties.findIndex(obj=>obj.Key === "SPS-PicturePlaceholderState")].Value:"1";
+
+      }
+    // }
       // arr=res;
       console.log(res, 'resresres');
 

@@ -5,13 +5,22 @@ export const fetchprojectdata = async (_sp) => {
   debugger
   let arr = []
 //,TeamMembers/EMail
-  await _sp.web.lists.getByTitle("ARGProject").items.select("*,TeamMembers/ID,TeamMembers/Title, Author/ID,Author/Title,Author/EMail ").expand("TeamMembers , Author").getAll().then(async (res) => {
+  await _sp.web.lists.getByTitle("ARGProject").items.select("*,TeamMembers/ID,TeamMembers/Title,Author/ID,Author/Title,Author/EMail,Author/SPSPicturePlaceholderState").expand("TeamMembers , Author").getAll().then(async (res) => {
     console.log("checking the data of project---->>>", res);
     for (var i = 0; i < res.length; i++) {
      const ARGProjectComment= await _sp.web.lists.getByTitle("ARGProjectComments").items.filter(`ARGProjectId eq ${res[i].Id}`)();
      console.log(ARGProjectComment,'ARGProjectComment');
      
       res[i].CommentsCount = ARGProjectComment.length
+      
+      for (var j = 0; j < res[i].TeamMembers.length; j++) {
+        var user = await _sp.web.getUserById(res[i].TeamMembers[j].ID)();
+        var profile = await _sp.profiles.getPropertiesFor(`i:0#.f|membership|${user.Email}`);
+        res[i].TeamMembers[j].EMail = user.Email;
+
+        res[i].TeamMembers[j].SPSPicturePlaceholderState = profile.UserProfileProperties?profile.UserProfileProperties[profile.UserProfileProperties.findIndex(obj=>obj.Key === "SPS-PicturePlaceholderState")].Value:"1";
+
+      }
     }
     for (var i = 0; i < res.length; i++) {
 
@@ -40,7 +49,7 @@ export const fetchprojectdataTop = async (_sp) => {
    let userID= ''
    await _sp.web.currentUser().then((res) => {console.log(res);userID = res["Id"];})
 
-  await _sp.web.lists.getByTitle("ARGProject").items.select("*,TeamMembers/ID,TeamMembers/EMail,TeamMembers/Title,TeamMembers/SPSPicturePlaceholderState , AuthorId , ProjectStatus").expand("TeamMembers").filter(`(AuthorId eq '${userID}' or TeamMembers/ID eq '${userID}') and ProjectStatus eq 'Ongoing'`).orderBy("Modified", false).top(3)().then(async(res) => {
+  await _sp.web.lists.getByTitle("ARGProject").items.select("*,TeamMembers/ID,TeamMembers/Title,Author/EMail, AuthorId , ProjectStatus").expand(",Author,TeamMembers").filter(`(AuthorId eq '${userID}' or TeamMembers/ID eq '${userID}') and ProjectStatus eq 'Ongoing'`).orderBy("Modified", false).top(3)().then(async(res) => {
     console.log("checking the data of project---->>>", res);
   
     //res.filter(x=>x.Category?.Category==str)
@@ -82,7 +91,7 @@ export const fertchprojectcomments = async (_sp) => {
       ARGProjectComment.CommentsCount = ARGProjectComment.length
      
   })
-  await _sp.web.lists.getByTitle("ARGProject").items.select("*,TeamMembers/ID,TeamMembers/EMail,TeamMembers/Title").expand("TeamMembers").orderBy("Modified", false).top(3)().then((res) => {
+  await _sp.web.lists.getByTitle("ARGProject").items.select("*,TeamMembers/ID,TeamMembers/Title").expand("TeamMembers").orderBy("Modified", false).top(3)().then((res) => {
     console.log("checking the data of project---->>>", res);
 
     //res.filter(x=>x.Category?.Category==str)

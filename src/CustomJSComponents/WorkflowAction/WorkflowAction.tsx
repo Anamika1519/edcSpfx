@@ -122,7 +122,7 @@ export const WorkflowAction=(props: IWorkflowActionProps) => {
 
                               <label htmlFor="example-textarea" className="form-label text-dark font-14">Remarks:</label>
 
-                              <textarea className="form-control" id="example-textarea" rows={5} name="Remark" value={formData.Remark}
+                              <textarea style={{height:'80px'}} className="form-control" id="example-textarea" rows={5} name="Remark" value={formData.Remark}
 
                                 onChange={(e) => onChange(e.target.name, e.target.value)}></textarea>
 
@@ -174,7 +174,7 @@ export const WorkflowAction=(props: IWorkflowActionProps) => {
 
                               </a>):(<div></div>)}
 
-                              {!props.DisableCancel?(<button type="button" className="btn btn-light waves-effect waves-light m-1" onClick={(e) => handleCancel()}>
+                              {!props.DisableCancel?(<button type="button" className="btn cancel-btn waves-effect waves-light m-1" onClick={(e) => handleCancel()}>
 
                                 <i className="fe-x me-1"></i> Cancel
 

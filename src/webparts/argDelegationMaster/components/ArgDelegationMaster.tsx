@@ -449,9 +449,9 @@ const ArgDelegationMasterContext = ({ props }: any) => {
                                   <td style={{ minWidth: '120px', maxWidth: '120px' }}>{item.DelegateName.Title}</td>
                                   <td style={{ minWidth: '120px', maxWidth: '120px' }}>{item.ActingFor.Title}</td>
                                  
-                                  <td style={{ minWidth: '80px', maxWidth: '80px' }}> {moment(item.StartDate).format("DD-MMM-YYYY")}</td>
-                                  <td style={{ minWidth: '80px', maxWidth: '80px' }}> {moment(item.EndDate).format("DD-MMM-YYYY")}</td>
-                                  <td style={{ minWidth: '80px', maxWidth: '80px' }}>  <div className='btn btn-status'> {item.Status} </div> </td>
+                                  <td style={{ minWidth: '80px', maxWidth: '80px',textAlign:'center' }}><div className='btn btn-light newlight'> {moment(item.StartDate).format("DD-MMM-YYYY")} </div> </td>
+                                  <td style={{ minWidth: '80px', maxWidth: '80px',textAlign:'center' }}><div className='btn btn-light newlight'> {moment(item.EndDate).format("DD-MMM-YYYY")} </div> </td>
+                                  <td style={{ minWidth: '80px', maxWidth: '80px',textAlign:'center' }}>  <div className='btn btn-status newlight'> {item.Status} </div> </td>
                                   <td style={{ minWidth: '80px', maxWidth: '80px' }} className="ng-binding">
                                     <div className="d-flex  pb-0" style={{ justifyContent: 'center', gap: '5px' }}>
                                       <span > <a className="action-icon text-primary" onClick={() => EditDelegate(item.ID)}>

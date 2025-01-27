@@ -221,7 +221,7 @@ const GroupandTeamcontext = ({ props }: any) => {
   const [IsinvideHide, setIsinvideHide] = React.useState(false);
 
 
-  const tenantUrl = props.siteUrl.split("/sites/")[0];
+  const tenantUrl = props.siteUrl?.split("/sites/")[0];
   const [Url, setBaseUrl] = React.useState("");
 
   const [richTextValues, setRichTextValues] = React.useState<{

@@ -12,7 +12,7 @@ import "../../../Assets/Figtree/Figtree-VariableFont_wght.ttf";
 import "bootstrap/dist/css/bootstrap.min.css";
 import CustomBreadcrumb from '../../../CustomJSComponents/CustomBreadcrumb/CustomBreadcrumb'
 import { Link, MoreVertical, Plus, PlusCircle, Rss, TrendingUp, User, UserPlus, Users } from 'react-feather'
-import { addActivityLeaderboard, addNotification, getCurrentUser, getCurrentUserName, getCurrentUserNameId, getCurrentUserProfileEmail, getFollow, getFollowing, getUserProfilePicture, getUserSPSPicturePlaceholderState } from '../../../APISearvice/CustomService'
+import { addActivityLeaderboard, addNotification, getCurrentUser, getCurrentUserName, getCurrentUserNameId, getCurrentUserProfileEmail, getFollow, getFollowing, getuserprofilepic, getUserProfilePicture, getUserSPSPicturePlaceholderState } from '../../../APISearvice/CustomService'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons"
 import classNames from 'classnames'
@@ -79,7 +79,7 @@ const SocialFeedContext = ({ props }: any) => {
   const [Currentusercompany, setCurrentusercompany] = useState("");
   const [IsCall, setIsCall] = useState(true);
   const [CurrentDataAll, setCurrentDataAll] = useState<any>([]);
-  const [CurrentuserPicturePlaceholderState, setCurrentuserPicturePlaceholderState] = useState("");
+  const [CurrentuserPicturePlaceholderState, setCurrentuserPicturePlaceholderState] = useState(null);
   const [CurrenuserProfilepic, SetCurrenuserProfilepic] = useState(null);
   
   const menuRef = useRef(null);
@@ -106,6 +106,7 @@ const SocialFeedContext = ({ props }: any) => {
   }, [props]);
   const getAllAPI = async () => {
     setCurrentEmail(await getCurrentUserProfileEmail(sp));
+    var emailCurr = await getCurrentUserProfileEmail(sp);
    
     setCurrentUser(await getCurrentUser(sp))
 
@@ -120,7 +121,8 @@ const SocialFeedContext = ({ props }: any) => {
     const cuurentID2 = await getCurrentUserNameId(sp);
       
       SetCurrenuserProfilepic(await getUserProfilePicture(cuurentID2,sp));
-      setCurrentuserPicturePlaceholderState(await getUserSPSPicturePlaceholderState(cuurentID2,sp))
+      setCurrentuserPicturePlaceholderState(await getuserprofilepic(sp,emailCurr));
+      // setCurrentuserPicturePlaceholderState(await getUserSPSPicturePlaceholderState(cuunrentID2,sp))
 
     setCurrentUserName(await getCurrentUserName(sp))
     //setblogdata(await fetchBlogdatatop(sp))
@@ -553,12 +555,12 @@ const SocialFeedContext = ({ props }: any) => {
       const followers = await sp.web.lists.getByTitle("ARGFollows").items
         //.filter(`FollowedId eq ${currentUser.Id}`)
         .filter(`FollowedId eq ${currentUser.Id}`)
-        .select("Follower/Title", "Follower/EMail", "Follower/Department", "Follower/ID")
+        .select("Follower/Title", "Follower/EMail", "Follower/Department", "Follower/ID,Follower/SPSPicturePlaceholderState")
         .expand("Follower")();
       const followed = await sp.web.lists.getByTitle("ARGFollows").items
         //.filter(`FollowedId eq ${currentUser.Id}`)
         .filter(`FollowerId eq ${currentUser.Id}`)
-        .select("Follower/Title", "Follower/EMail", "Follower/Department", "Follower/ID", "Followed/Title", "Followed/EMail", "Followed/Department", "Followed/ID")
+        .select("Follower/Title", "Follower/EMail", "Follower/Department", "Follower/ID", "Followed/Title", "Followed/EMail", "Followed/Department", "Followed/ID,Followed/SPSPicturePlaceholderState")
         .expand("Follower", "Followed")();
       console.log(followers, 'followers', followed);
 
@@ -579,7 +581,7 @@ const SocialFeedContext = ({ props }: any) => {
 
               .getByTitle("ARGSocialFeed") // SharePoint list name
 
-              .items.select("*,SocialFeedImages/Id,SocialFeedUserLikes/Id,Author/Id,Author/Title")
+              .items.select("*,SocialFeedImages/Id,SocialFeedUserLikes/Id,Author/Id,Author/EMail,Author/Title,Author/SPSPicturePlaceholderState")
 
               .expand("SocialFeedImages,SocialFeedUserLikes,Author").filter(filterQuery).orderBy("Created", false)().then((item: any) => {
 
@@ -590,7 +592,7 @@ const SocialFeedContext = ({ props }: any) => {
                   item.map((ele: any) => {
 
                     let newPosts = {
-
+                      SPSPicturePlaceholderState : ele.Author.SPSPicturePlaceholderState,
                       Contentpost: ele.Contentpost,
 
                       SocialFeedImagesJson: ele.SocialFeedImagesJson,
@@ -598,7 +600,7 @@ const SocialFeedContext = ({ props }: any) => {
                       Created: ele.Created,
                       AutherId: ele.Author?.Id,
                       userName: ele.Author?.Title,
-
+                      AuthorEmail : ele.Author?.EMail,
                       userAvatar: ele.userAvatar,
 
                       likecount: 0,
@@ -650,7 +652,7 @@ const SocialFeedContext = ({ props }: any) => {
 
             .getByTitle("ARGSocialFeed") // SharePoint list name
 
-            .items.select("*,SocialFeedImages/Id,SocialFeedUserLikes/Id,Author/Id,Author/Title")
+            .items.select("*,SocialFeedImages/Id,SocialFeedUserLikes/Id,Author/Id,Author/EMail,Author/Title,Author/SPSPicturePlaceholderState")
 
             .expand("SocialFeedImages,SocialFeedUserLikes,Author").filter(`AuthorId eq ${currentUser.Id}`).orderBy("Created", false)().then((item: any) => {
 
@@ -662,12 +664,16 @@ const SocialFeedContext = ({ props }: any) => {
 
                   let newPosts = {
 
+
+                    SPSPicturePlaceholderState : ele.Author.SPSPicturePlaceholderState,
+
                     Contentpost: ele.Contentpost,
 
                     SocialFeedImagesJson: ele.SocialFeedImagesJson,
 
                     Created: ele.Created,
                     AutherId: ele.Author?.Id,
+                    AuthorEmail :ele.Author?.EMail,
                     userName: ele.Author?.Title,
 
                     userAvatar: ele.userAvatar,
@@ -734,7 +740,7 @@ const SocialFeedContext = ({ props }: any) => {
       const followers = await sp.web.lists.getByTitle("ARGFollows").items
         .filter(`FollowedId eq ${cuurentID}`)
         .expand("Follower")
-        .select("Follower/Title", "Follower/EMail", "Follower/Department", "Follower/ID")();
+        .select("Follower/Title", "Follower/EMail", "Follower/Department", "Follower/ID","Follower/SPSPicturePlaceholderState")();
       console.log(followers, 'followers');
 
       followers.forEach(element => {
@@ -753,7 +759,7 @@ const SocialFeedContext = ({ props }: any) => {
 
             await sp.web.lists
               .getByTitle("ARGSocialFeed") // SharePoint list name
-              .items.select("*,SocialFeedComments/Id,SocialFeedComments/Comments,SocialFeedImages/Id,SocialFeedUserLikes/Id,Author/Id,Author/Title")
+              .items.select("*,SocialFeedComments/Id,SocialFeedComments/Comments,SocialFeedImages/Id,SocialFeedUserLikes/Id,Author/Id,Author/Title,Author/SPSPicturePlaceholderState")
               .expand("SocialFeedComments,SocialFeedImages,SocialFeedUserLikes,Author")
               .filter(`AuthorId eq ${cuurentID}`).orderBy("Created", false)().then((item: any) => {
                 console.log(item, 'ihhhpostsME');
@@ -761,6 +767,7 @@ const SocialFeedContext = ({ props }: any) => {
                 if (item.length > 0) {
                   item.map((ele: any) => {
                     let newPosts = {
+                      SPSPicturePlaceholderState : ele.Author.SPSPicturePlaceholderState,
                       Contentpost: ele.Contentpost,
                       SocialFeedImagesJson: ele.SocialFeedImagesJson,
                       Created: ele.Created,
@@ -805,17 +812,19 @@ const SocialFeedContext = ({ props }: any) => {
 
           await sp.web.lists
             .getByTitle("ARGSocialFeed") // SharePoint list name
-            .items.select("*,SocialFeedComments/Id,SocialFeedComments/Comments,SocialFeedImages/Id,SocialFeedUserLikes/Id,Author/Id,Author/Title")
+            .items.select("*,SocialFeedComments/Id,SocialFeedComments/Comments,SocialFeedImages/Id,SocialFeedUserLikes/Id,Author/Id,Author/Title,Author/SPSPicturePlaceholderState")
             .expand("SocialFeedComments,SocialFeedImages,SocialFeedUserLikes,Author").filter(`AuthorId eq ${cuurentID}`).orderBy("Created", false)().then((item: any) => {
               console.log(item, 'ihhhpostsME');
 
               if (item.length > 0) {
                 item.map((ele: any) => {
                   let newPosts = {
+                    SPSPicturePlaceholderState : ele.Author.SPSPicturePlaceholderState,
                     Contentpost: ele.Contentpost,
                     SocialFeedImagesJson: ele.SocialFeedImagesJson,
                     Created: ele.Created,
                     AutherId: ele.Author?.Id,
+                    AuthorEmail :ele.Author?.EMail,
                     userName: ele.Author?.Title,
                     userAvatar: ele.userAvatar,
                     likecount: 0,
@@ -1129,7 +1138,7 @@ const SocialFeedContext = ({ props }: any) => {
                       {console.log(currentEmail,"hjhjhj")}
                     {console.log("CurrenuserProfilepicnmsocialfeed",CurrenuserProfilepic,CurrentuserPicturePlaceholderState,currentEmail)}
                       
-                      {currentEmail != "" && CurrenuserProfilepic != null && Number(CurrentuserPicturePlaceholderState) == 0 ?
+                      {CurrentuserPicturePlaceholderState != null && currentEmail != "" && CurrenuserProfilepic != null && CurrenuserProfilepic != undefined && CurrentuserPicturePlaceholderState != null && Number(CurrentuserPicturePlaceholderState) == 0 ?
                         <img src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${currentEmail}`}
 
                           className="rounded-circlecss img-thumbnail avatar-xl" style={{
@@ -1144,7 +1153,7 @@ const SocialFeedContext = ({ props }: any) => {
                         currentEmail !== "" &&
                         <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circlecss1av img-thumbnail
                                   avatar-xl">
-                          {`${currentEmail.split('.')[0].charAt(0)}${currentEmail.split('.')[1].charAt(0)}`.toUpperCase()}
+                          {`${currentEmail?.split('.')[0]?.charAt(0)}${currentEmail?.split('.')[1]?.charAt(0)}`.toUpperCase()}
                         </Avatar>
                       }
 
@@ -1475,6 +1484,8 @@ const SocialFeedContext = ({ props }: any) => {
                                   comments: post?.comments != null ? post.comments : [],
                                   postId: post.Id,
                                   AutherId: post.AutherId,
+                                  AuthorEmail :post.AuthorEmail,
+                                  SPSPicturePlaceholderState : post.SPSPicturePlaceholderState,
                                   SocialFeedUserLikesJson: post.SocialFeedUserLikesJson,
                                 }}
                               />
@@ -1568,7 +1579,7 @@ const SocialFeedContext = ({ props }: any) => {
                                   alt="Call"
 
                                 />
-                                {item.Picture != null && item.SPSPicturePlaceholderState == 0 ?
+                                { item.SPSPicturePlaceholderState == 0 ?
                                   <img
                                     src={
                                       `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item.EMail}`
@@ -1582,7 +1593,7 @@ const SocialFeedContext = ({ props }: any) => {
                                  ( item.EMail !== null || item.EMail !== "") &&
                                   <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circlecss img-thumbnail
                                   avatar-xl">
-                                    {`${item.EMail.split('.')[0].charAt(0)}${item.EMail.split('.')[1].charAt(0)}`.toUpperCase()}
+                                    {`${item.EMail?.split('.')[0]?.charAt(0)}${item.EMail?.split('.')[1]?.charAt(0)}`.toUpperCase()}
                                   </Avatar>
                                 }
 
@@ -1772,7 +1783,7 @@ const SocialFeedContext = ({ props }: any) => {
                                   alt="Call"
 
                                 />
-                                {item.Picture != null && item.SPSPicturePlaceholderState == 0 ?
+                                { item.SPSPicturePlaceholderState == 0 ?
                                   <img
                                     src={
                                       `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item.EMail}`
@@ -1785,7 +1796,7 @@ const SocialFeedContext = ({ props }: any) => {
                                   (item.EMail !== null || item.EMail != "") &&
                                   <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circlecss img-thumbnail
                                   avatar-xl">
-                                    {`${item.EMail.split('.')[0].charAt(0)}${item.EMail.split('.')[1].charAt(0)}`.toUpperCase()}
+                                    {`${item.EMail?.split('.')[0]?.charAt(0)}${item.EMail?.split('.')[1]?.charAt(0)}`.toUpperCase()}
                                   </Avatar>
                                 }
 
@@ -2061,7 +2072,7 @@ const SocialFeedContext = ({ props }: any) => {
                                 (user.EMail !== null || user.EMail !== "") &&
                                 <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circlecss img-thumbnail
                                   avatar-xl">
-                                  {`${user.EMail.split('.')[0].charAt(0)}${user.EMail.split('.')[1].charAt(0)}`.toUpperCase()}
+                                  {`${user.EMail?.split('.')[0]?.charAt(0)}${user.EMail?.split('.')[1]?.charAt(0)}`.toUpperCase()}
                                 </Avatar>
                               }
 

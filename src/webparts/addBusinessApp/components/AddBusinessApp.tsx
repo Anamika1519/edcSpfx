@@ -714,7 +714,7 @@ const AddBusinessAppContext = ({ props }: any) => {
 
                 //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
 
-                bannerImageArray = await uploadFile(file, sp, "Documents", "https://OfficeIndia.sharepoint.com");
+                bannerImageArray = await uploadFile(file, sp, "Documents", "https://officeindia.sharepoint.com");
 
               }
 
@@ -1073,7 +1073,7 @@ const AddBusinessAppContext = ({ props }: any) => {
 
                 //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
 
-                bannerImageArray = await uploadFile(file, sp, "Documents", "https://OfficeIndia.sharepoint.com");
+                bannerImageArray = await uploadFile(file, sp, "Documents", "https://officeindia.sharepoint.com");
 
               }
 
@@ -1260,7 +1260,7 @@ const AddBusinessAppContext = ({ props }: any) => {
 
                 //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
 
-                bannerImageArray = await uploadFile(file, sp, "Documents", "https://OfficeIndia.sharepoint.com");
+                bannerImageArray = await uploadFile(file, sp, "Documents", "https://officeindia.sharepoint.com");
 
               }
 
@@ -1595,7 +1595,7 @@ const AddBusinessAppContext = ({ props }: any) => {
 
                 //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
 
-                bannerImageArray = await uploadFile(file, sp, "Documents", "https://OfficeIndia.sharepoint.com");
+                bannerImageArray = await uploadFile(file, sp, "Documents", "https://officeindia.sharepoint.com");
 
               }
 

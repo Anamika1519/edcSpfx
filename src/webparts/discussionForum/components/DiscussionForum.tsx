@@ -54,7 +54,7 @@ import Multiselect from "multiselect-react-dropdown";
 import { MSGraphClientV3 } from "@microsoft/sp-http";
 import { WebPartContext } from "@microsoft/sp-webpart-base";
 import context from "react-bootstrap/esm/AccordionContext";
-
+import Avatar from "@mui/material/Avatar";
 
 const DiscussionForumContext = ({ props }: any) => {
   const sp: SPFI = getSP();
@@ -518,7 +518,12 @@ const DiscussionForumContext = ({ props }: any) => {
   }, [useHide]);
 
 
+  const truncateText = (text: string, maxLength: number) => {
+    if (text != null) {
+      return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
 
+    }
+  };
   const UserGet = async () => {
     const users = await sp.web.siteUsers();
     console.log(users, 'users')
@@ -830,7 +835,7 @@ const DiscussionForumContext = ({ props }: any) => {
                   file,
                   sp,
                   "Documents",
-                  "https://OfficeIndia.sharepoint.com"
+                  "https://officeindia.sharepoint.com"
                 );
               }
             } else {
@@ -1148,7 +1153,7 @@ const DiscussionForumContext = ({ props }: any) => {
                 InviteMemebersId: selectedIds,
                 ARGDiscussionStatus: "Ongoing",
                 DiscussionInProgress: "In Progress",
-                DiscussionFileManager: `/sites/Alrostmanispfx2/ARGDiscussionFiles/${formData.topic}`,
+                DiscussionFileManager: `/sites/edcspfx/ARGDiscussionFiles/${formData.topic}`,
                 DiscussionFolderName: formData.topic
               };
             }
@@ -1162,7 +1167,7 @@ const DiscussionForumContext = ({ props }: any) => {
                 DiscussionForumCategoryId: Number(formData.category),
                 ARGDiscussionStatus: "Ongoing",
                 DiscussionInProgress: "In Progress",
-                DiscussionFileManager: `/sites/Alrostmanispfx2/ARGDiscussionFiles/${formData.topic}`,
+                DiscussionFileManager: `/sites/edcspfx/ARGDiscussionFiles/${formData.topic}`,
                 DiscussionFolderName: formData.topic
               };
             }
@@ -1271,7 +1276,7 @@ const DiscussionForumContext = ({ props }: any) => {
 
   const handleCancel = () => {
     window.location.href =
-      "https://OfficeIndia.sharepoint.com/sites/Alrostmanispfx2/SitePages/Blogs.aspx";
+      "https://officeindia.sharepoint.com/sites/edcspfx/SitePages/Blogs.aspx";
   };
 
   const formats = [
@@ -2083,12 +2088,29 @@ const DiscussionForumContext = ({ props }: any) => {
                                 {item?.GroupType}
                               </td>
                               <td style={{ minWidth: "110px", maxWidth: "110px" }}>
-                                <img
+                                {/* <img
                                   src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item?.Author?.EMail}`}
                                   className="rounded-circlenu img-thumbnail avatar-xl"
                                   alt="profile-image"
-                                />
-                                {item?.Author?.Title}
+                                /> */}
+                                { item.Author?.SPSPicturePlaceholderState == 0 ?
+                                        <img
+                                          src={
+
+                                            `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item?.Author?.EMail}`
+
+                                          }
+                                          className="rounded-circle floatleft"
+                                          width="50"
+                                          alt={item.Author.Title}
+                                        />
+                                        :
+                                        item?.Author?.EMail !== null &&
+                                        <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle floatleft avatar-xl">
+                                          {`${item?.Author?.EMail?.split('.')[0].charAt(0)}${item?.Author?.EMail?.split('.')[1].charAt(0)}`.toUpperCase()}
+                                        </Avatar>
+                                      }
+                               <span className="fontclssnew"> {truncateText(item?.Author?.Title, 80)} </span>
                                 {/* <div
                                   style={{
                                   
