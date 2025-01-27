@@ -49,7 +49,10 @@ import './ApprovalActioncss'
 
 import { faEye } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+<<<<<<< HEAD
 import Swal from "sweetalert2";
+=======
+>>>>>>> c29a133774f0b44995c1a43744c9ec2d240513e5
 // import DMSMyApproval from "./MyApprovals";
 let approvedLevel: any = ''
 let filepreviewurl = ''
@@ -411,7 +414,10 @@ const DMSMyApprovalAction = ({ props }: any) => {
 
 
     let payload;
+<<<<<<< HEAD
     let successtext :string = "";
+=======
+>>>>>>> c29a133774f0b44995c1a43744c9ec2d240513e5
     if (buttonText === "Approve") {
 
 
@@ -471,8 +477,11 @@ const DMSMyApprovalAction = ({ props }: any) => {
                 console.log("entere here in 1 for approval level", filterData.FileUID.FileUID, mydat.ApprovedLevel + 1)
                 console.log("entere here in 1", ApprovedStatus)
                 console.log(approvedLevel, "approvedLevel second in 1")
+<<<<<<< HEAD
               } else {
                 setFinalStatus = "Approved"
+=======
+>>>>>>> c29a133774f0b44995c1a43744c9ec2d240513e5
               }
             }
           }
@@ -635,7 +644,11 @@ const DMSMyApprovalAction = ({ props }: any) => {
         console.error("Error fetching list items:", error);
       }
       // end
+<<<<<<< HEAD
       successtext = "Approved";
+=======
+
+>>>>>>> c29a133774f0b44995c1a43744c9ec2d240513e5
       payload = {
         Log: setFinalStatus,
         LogHistory: isoDate,
@@ -644,8 +657,12 @@ const DMSMyApprovalAction = ({ props }: any) => {
       }
     }
     else if (buttonText === "Reject") {
+<<<<<<< HEAD
       setFinalStatus = 'Rejected';
       successtext = "Approved";
+=======
+      setFinalStatus = 'Rejected'
+>>>>>>> c29a133774f0b44995c1a43744c9ec2d240513e5
       payload = {
         Log: setFinalStatus,
         LogHistory: isoDate,
@@ -653,8 +670,12 @@ const DMSMyApprovalAction = ({ props }: any) => {
         // ApprovedLevel:approvedLevel
       }
     } else if (buttonText === "Rework") {
+<<<<<<< HEAD
       setFinalStatus = 'Rework';
       successtext = "Submitted for Rework";
+=======
+      setFinalStatus = 'Rework'
+>>>>>>> c29a133774f0b44995c1a43744c9ec2d240513e5
       payload = {
         Log: setFinalStatus,
         LogHistory: isoDate,
@@ -710,6 +731,7 @@ const DMSMyApprovalAction = ({ props }: any) => {
     console.log("paylaodForDMSFileApprovalList", paylaodForDMSFileApprovalList);
 
     const updateddata1 = await sp.web.lists.getByTitle("DMSFileApprovalList").items.getById(id).update(paylaodForDMSFileApprovalList);
+<<<<<<< HEAD
     const SiteUrl = props.siteUrl;
     console.log("updateddata1", updateddata1);
     if(updateddata1){
@@ -717,6 +739,11 @@ const DMSMyApprovalAction = ({ props }: any) => {
       window.location.href = `${SiteUrl}/SitePages/MyApprovals.aspx`;
     }
     
+=======
+
+    console.log("updateddata1", updateddata1);
+
+>>>>>>> c29a133774f0b44995c1a43744c9ec2d240513e5
   }
   const iframe = document.getElementById("filePreview") as HTMLIFrameElement;
   // const spinner = document.getElementById("spinner") as HTMLElement;

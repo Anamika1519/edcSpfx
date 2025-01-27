@@ -369,7 +369,11 @@ const BlogsContext = ({ props }: any) => {
                   file,
                   sp,
                   "Documents",
+<<<<<<< HEAD
                   "https://officeindia.sharepoint.com"
+=======
+                  "https://alrostamanigroupae.sharepoint.com"
+>>>>>>> c29a133774f0b44995c1a43744c9ec2d240513e5
                 );
               }
             } else {
@@ -516,7 +520,11 @@ const BlogsContext = ({ props }: any) => {
                     file,
                     sp,
                     "Documents",
+<<<<<<< HEAD
                     "https://officeindia.sharepoint.com"
+=======
+                    "https://alrostamanigroupae.sharepoint.com"
+>>>>>>> c29a133774f0b44995c1a43744c9ec2d240513e5
                   );
                 }
               } else {
@@ -686,7 +694,11 @@ const BlogsContext = ({ props }: any) => {
                   file,
                   sp,
                   "Documents",
+<<<<<<< HEAD
                   "https://officeindia.sharepoint.com"
+=======
+                  "https://alrostamanigroupae.sharepoint.com"
+>>>>>>> c29a133774f0b44995c1a43744c9ec2d240513e5
                 );
               }
             }

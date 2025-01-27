@@ -835,7 +835,11 @@ const DiscussionForumContext = ({ props }: any) => {
                   file,
                   sp,
                   "Documents",
+<<<<<<< HEAD
                   "https://officeindia.sharepoint.com"
+=======
+                  "https://alrostamanigroupae.sharepoint.com"
+>>>>>>> c29a133774f0b44995c1a43744c9ec2d240513e5
                 );
               }
             } else {
@@ -1153,7 +1157,11 @@ const DiscussionForumContext = ({ props }: any) => {
                 InviteMemebersId: selectedIds,
                 ARGDiscussionStatus: "Ongoing",
                 DiscussionInProgress: "In Progress",
+<<<<<<< HEAD
                 DiscussionFileManager: `/sites/edcspfx/ARGDiscussionFiles/${formData.topic}`,
+=======
+                DiscussionFileManager: `/sites/IntranetUAT/ARGDiscussionFiles/${formData.topic}`,
+>>>>>>> c29a133774f0b44995c1a43744c9ec2d240513e5
                 DiscussionFolderName: formData.topic
               };
             }
@@ -1167,7 +1175,11 @@ const DiscussionForumContext = ({ props }: any) => {
                 DiscussionForumCategoryId: Number(formData.category),
                 ARGDiscussionStatus: "Ongoing",
                 DiscussionInProgress: "In Progress",
+<<<<<<< HEAD
                 DiscussionFileManager: `/sites/edcspfx/ARGDiscussionFiles/${formData.topic}`,
+=======
+                DiscussionFileManager: `/sites/IntranetUAT/ARGDiscussionFiles/${formData.topic}`,
+>>>>>>> c29a133774f0b44995c1a43744c9ec2d240513e5
                 DiscussionFolderName: formData.topic
               };
             }
@@ -1276,7 +1288,11 @@ const DiscussionForumContext = ({ props }: any) => {
 
   const handleCancel = () => {
     window.location.href =
+<<<<<<< HEAD
       "https://officeindia.sharepoint.com/sites/edcspfx/SitePages/Blogs.aspx";
+=======
+      "https://alrostamanigroupae.sharepoint.com/sites/IntranetUAT/SitePages/Blogs.aspx";
+>>>>>>> c29a133774f0b44995c1a43744c9ec2d240513e5
   };
 
   const formats = [
