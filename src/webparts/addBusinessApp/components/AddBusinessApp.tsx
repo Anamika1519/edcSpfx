@@ -714,11 +714,7 @@ const AddBusinessAppContext = ({ props }: any) => {
 
                 //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
 
-<<<<<<< HEAD
                 bannerImageArray = await uploadFile(file, sp, "Documents", "https://officeindia.sharepoint.com");
-=======
-                bannerImageArray = await uploadFile(file, sp, "Documents", "https://alrostamanigroupae.sharepoint.com");
->>>>>>> c29a133774f0b44995c1a43744c9ec2d240513e5
 
               }
 
@@ -1077,11 +1073,7 @@ const AddBusinessAppContext = ({ props }: any) => {
 
                 //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
 
-<<<<<<< HEAD
                 bannerImageArray = await uploadFile(file, sp, "Documents", "https://officeindia.sharepoint.com");
-=======
-                bannerImageArray = await uploadFile(file, sp, "Documents", "https://alrostamanigroupae.sharepoint.com");
->>>>>>> c29a133774f0b44995c1a43744c9ec2d240513e5
 
               }
 
@@ -1268,11 +1260,7 @@ const AddBusinessAppContext = ({ props }: any) => {
 
                 //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
 
-<<<<<<< HEAD
                 bannerImageArray = await uploadFile(file, sp, "Documents", "https://officeindia.sharepoint.com");
-=======
-                bannerImageArray = await uploadFile(file, sp, "Documents", "https://alrostamanigroupae.sharepoint.com");
->>>>>>> c29a133774f0b44995c1a43744c9ec2d240513e5
 
               }
 
