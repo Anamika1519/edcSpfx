@@ -33,9 +33,9 @@ const VerticalContext = ({ _context }: any) => {
   const sp: SPFI = getSP();
   console.log(sp, 'sp');
   // const imgLogo = require("../assets/logoImgsm.png");
-  const imgBigLogo = require("../assets/logodarkBig.png")
+  const imgBigLogo = require("../assets/logo-dark.png")
   // const imgLogo = require("../../../Assets/ExtraImage/logosm.png");
-  const imgSMLogo = require("../assets/smallleftlogo.png");
+  const imgSMLogo = require("../assets/logo-sm.png");
   // const useimg = require("../assets/useimg.png");
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(true);
   const [isDarkMode, setIsDarkMode] = React.useState(false);
@@ -406,10 +406,10 @@ const VerticalContext = ({ _context }: any) => {
 
                 <ul className="sub-menu blank navlinkcss" style={{ background: 'transparent', padding: 'unset', alignItems: 'start', boxShadow: '0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12)' }}>
                   <div style={{
-                    color: '#fff', textDecoration: 'none', background: '#1fb0e5', paddingLeft: '0.6rem',
+                    color: '#fff', textDecoration: 'none', background: '#ff6b00', paddingLeft: '0.6rem',
                     display: 'flex', height: '40px', alignItems: 'center'
                   }} >
-                    <li className='' style={{ background: '#1fb0e5', color: 'white' }} >
+                    <li className='' style={{ background: '#ff6b00', color: 'white' }} >
                       <a className="link_name" style={{ textDecoration: 'unset', color: 'white' }}>
                         <span className={classNames('navlink ', {
                           active: item.ID == useActive

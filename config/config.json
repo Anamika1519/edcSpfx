@@ -186,6 +186,22 @@
         }
       ]
     },
+    "announcementmaster-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/announcementmaster/AnnouncementmasterWebPart.js",
+          "manifest": "./src/webparts/announcementmaster/AnnouncementmasterWebPart.manifest.json"
+        }
+      ]
+    },
+    "addannouncement-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/addannouncement/AddannouncementWebPart.js",
+          "manifest": "./src/webparts/addannouncement/AddannouncementWebPart.manifest.json"
+        }
+      ]
+    },
     "quick-links-master-web-part": {
       "components": [
         {
@@ -221,6 +237,8 @@
     "NewsWebPartStrings": "lib/webparts/news/loc/{locale}.js",
     "NewsDetailsWebPartStrings": "lib/webparts/newsDetails/loc/{locale}.js",
     "EventFormWebPartStrings": "lib/webparts/eventForm/loc/{locale}.js",
+    "AnnouncementmasterWebPartStrings": "lib/webparts/announcementmaster/loc/{locale}.js",
+    "AddannouncementWebPartStrings": "lib/webparts/addannouncement/loc/{locale}.js",
     "ApprovalConfigurationWebPartStrings": "lib/webparts/approvalConfiguration/loc/{locale}.js",
     "MyRequestWebPartStrings": "lib/webparts/myRequest/loc/{locale}.js",
     "MyApprovalWebPartStrings": "lib/webparts/myApproval/loc/{locale}.js",

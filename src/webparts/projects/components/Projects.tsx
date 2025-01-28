@@ -1394,7 +1394,7 @@ const HelloWorldContext = ({ props }: any) => {
                   {loading ? (<div className="loadernewadd">
                     <div>
                       <img
-                        src={require("../../../CustomAsset/birdloader.gif")}
+                        src={require("../../../CustomAsset/edc-gif.gif")}
                         className="alignrightl"
                         alt="Loading..."
                       />
@@ -1402,7 +1402,7 @@ const HelloWorldContext = ({ props }: any) => {
                     <span style={{ fontWeight: '400' }}>Loading </span>{" "}
                     <span>
                       <img
-                        src={require("../assets/argloader.gif")}
+                        src={require("../assets/edcnew.gif")}
                         className="alignrightbird"
                         alt="Loading..."
                       />
@@ -2119,7 +2119,7 @@ const HelloWorldContext = ({ props }: any) => {
                   {loading ? (<div className="loadernewadd">
                     <div>
                       <img
-                        src={require("../../../CustomAsset/birdloader.gif")}
+                        src={require("../../../CustomAsset/edc-gif.gif")}
                         className="alignrightl"
                         alt="Loading..."
                       />
@@ -2127,7 +2127,7 @@ const HelloWorldContext = ({ props }: any) => {
                     <span>Loading </span>{" "}
                     <span>
                       <img style={{}}
-                        src={require("../assets/argloader.gif")}
+                        src={require("../assets/edcnew.gif")}
                         className="alignrightbird"
                         alt="Loading..."
                       />
@@ -2430,7 +2430,7 @@ const HelloWorldContext = ({ props }: any) => {
                   {loading ? (<div className="loadernewadd">
                     <div>
                       <img
-                        src={require("../../../CustomAsset/birdloader.gif")}
+                        src={require("../../../CustomAsset/edc-gif.gif")}
                         className="alignrightl"
                         alt="Loading..."
                       />
@@ -2438,7 +2438,7 @@ const HelloWorldContext = ({ props }: any) => {
                     <span>Loading </span>{" "}
                     <span>
                       <img
-                        src={require("../assets/argloader.gif")}
+                        src={require("../assets/edcnew.gif")}
                         className="alignrightbird"
                         alt="Loading..."
                       />
@@ -2740,7 +2740,7 @@ const HelloWorldContext = ({ props }: any) => {
                   {loading ? (<div className="loadernewadd">
                     <div>
                       <img
-                        src={require("../../../CustomAsset/birdloader.gif")}
+                        src={require("../../../CustomAsset/edc-gif.gif")}
                         className="alignrightl"
                         alt="Loading..."
                       />
@@ -2748,7 +2748,7 @@ const HelloWorldContext = ({ props }: any) => {
                     <span>Loading </span>{" "}
                     <span>
                       <img
-                        src={require("../assets/argloader.gif")}
+                        src={require("../assets/edcnew.gif")}
                         className="alignrightbird"
                         alt="Loading..."
                       />

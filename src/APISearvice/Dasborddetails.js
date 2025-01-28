@@ -92,7 +92,7 @@ export const fetchEventdataone = async (_sp) => {
   await _sp.web.lists.getByTitle("ARGEventMaster").items
     .select("*")
     .filter(`Status eq 'Approved'`)
-    .orderBy("EventDate", true)
+    .orderBy("EventDate", true).top(3)
     ()
 
     .then((res) => {

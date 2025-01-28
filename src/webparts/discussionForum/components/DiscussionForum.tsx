@@ -2025,7 +2025,7 @@ const DiscussionForumContext = ({ props }: any) => {
                       {loading ? (<div className="loadernewadd">
                     <div>
                     <img style={{width:'60px'}}
-                            src={require("../../../CustomAsset/birdloader.gif")}
+                            src={require("../../../CustomAsset/edc-gif.gif")}
                             className="alignrightl"
                             alt="Loading..."
                           />
@@ -2033,7 +2033,7 @@ const DiscussionForumContext = ({ props }: any) => {
                       <span>Loading </span>{" "}
                       <span>
                       <img style={{width:'35px'}}
-                          src={require("../../../CustomAsset/argloader.gif")}
+                          src={require("../../../CustomAsset/edcnew.gif")}
                           className="alignrightbird"
                           alt="Loading..."
                         />

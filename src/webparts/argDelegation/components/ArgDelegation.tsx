@@ -461,7 +461,7 @@ if(Currusers){
                     <div style={{ minHeight: '100vh', marginTop: '100px' }} className="loadernewadd mt-10">
                       <div>
                         <img
-                          src={require("../../../CustomAsset/birdloader.gif")}
+                          src={require("../../../CustomAsset/edc-gif.gif")}
                           className="alignrightl"
                           alt="Loading..."
                         />
@@ -469,7 +469,7 @@ if(Currusers){
                       <span>Loading </span>{" "}
                       <span>
                         <img
-                          src={require("../../../CustomAsset/argloader.gif")}
+                          src={require("../../../CustomAsset/edcnew.gif")}
                           className="alignrightl"
                           alt="Loading..."
                         />

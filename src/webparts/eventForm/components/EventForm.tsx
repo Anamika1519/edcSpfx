@@ -9,7 +9,7 @@ import VerticalSideBar from '../../verticalSideBar/components/VerticalSideBar';
 import UserContext from '../../../GlobalContext/context';
 import Provider from '../../../GlobalContext/provider';
 import { useMediaQuery } from 'react-responsive';
-let hidesavasdraft : string = 'false';
+let hidesavasdraft: string = 'false';
 import context from '../../../GlobalContext/context';
 import CustomBreadcrumb from '../../../CustomJSComponents/CustomBreadcrumb/CustomBreadcrumb';
 import { allowstringonly, getCurrentUser, getEntity } from '../../../APISearvice/CustomService';
@@ -36,41 +36,41 @@ import { WorkflowAuditHistory } from '../../../CustomJSComponents/WorkflowAuditH
 import { CONTENTTYPE_Event, LIST_TITLE_ContentMaster, LIST_TITLE_EventMaster, LIST_TITLE_MyRequest } from '../../../Shared/Constants';
 import moment from 'moment';
 let mode = "";
-let newfileupload:any
-let newfilepreview:any
+let newfileupload: any
+let newfilepreview: any
 const HelloWorldContext = ({ props }: any) => {
   const sp: SPFI = getSP();
   console.log(sp, 'sp');
-    
-    const [show, setShow] = useState(false);
-    const [modalImageSrc, setModalImageSrc] = useState('');
-  
-    const handleClose = () => setShow(false);
-    const handleShow = (src:any) => {
-      setModalImageSrc(src);
-      setShow(true);
-    };
-  
-    useEffect(() => { 
-      // alert("useEffect called");
-      const currentUrl = window.location.href;
-      const urlParams = new URLSearchParams(window.location.search);
-      const superadminedit = urlParams.get('superadminedit');
+
+  const [show, setShow] = useState(false);
+  const [modalImageSrc, setModalImageSrc] = useState('');
+
+  const handleClose = () => setShow(false);
+  const handleShow = (src: any) => {
+    setModalImageSrc(src);
+    setShow(true);
+  };
+
+  useEffect(() => {
+    // alert("useEffect called");
+    const currentUrl = window.location.href;
+    const urlParams = new URLSearchParams(window.location.search);
+    const superadminedit = urlParams.get('superadminedit');
+    console.log("Superadminedit value:", superadminedit);
+    if (superadminedit) {
+
+      // alert(`super admin edit ${superadminedit}`)
       console.log("Superadminedit value:", superadminedit);
-      if (superadminedit) {
+      hidesavasdraft = 'true'
 
-        // alert(`super admin edit ${superadminedit}`)
-        console.log("Superadminedit value:", superadminedit);
-        hidesavasdraft = 'true'
+      // alert(hidesavasdraft)
+      // alert(`${typeof(hidesavasdraft)} , ${hidesavasdraft}`)
 
-        // alert(hidesavasdraft)
-        // alert(`${typeof(hidesavasdraft)} , ${hidesavasdraft}`)
-        
-      } else {
-        // alert(`else super admin edit ${superadminedit}`)
-        console.log("Superadminedit parameter not found.");
-      }
-    }, []);
+    } else {
+      // alert(`else super admin edit ${superadminedit}`)
+      console.log("Superadminedit parameter not found.");
+    }
+  }, []);
   // const { useHide }: any = React.useContext(UserContext);
   // const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
   const { useHide }: any = React.useContext(UserContext);
@@ -342,12 +342,12 @@ const HelloWorldContext = ({ props }: any) => {
     if (!valid && (EventDate && RegistrationDueDate && new Date(RegistrationDueDate).getTime() > new Date(EventDate).getTime())) {
       Swal.fire('Registration date cannot be later than the event date.');
     } else if (!valid && (EventDate && new Date(EventDate).getTime() < new Date().getTime())) {
-      if(hidesavasdraft === 'true'){
+      if (hidesavasdraft === 'true') {
         valid = true;
-      }else{
+      } else {
         Swal.fire('Event date cannot be earlier than today.');
       }
-     
+
     }
     else if (!valid && (RegistrationDueDate && new Date(RegistrationDueDate).getTime() < new Date().getTime())) {
       Swal.fire('Registration date cannot be earlier than today.');
@@ -541,21 +541,32 @@ const HelloWorldContext = ({ props }: any) => {
             }
 
             let boolval = false;
-            if (ApprovalRequestItem && ApprovalRequestItem.IsRework && ApprovalRequestItem.IsRework == 'Yes') {
-              const ctmasteritm = await sp.web.lists.getByTitle(LIST_TITLE_ContentMaster).items.filter('ContentID eq ' + ApprovalRequestItem.ContentId + " and SourceName eq '" + CONTENTTYPE_Event + "'")();
-              if (ctmasteritm && ctmasteritm.length > 0) {
-                let updaterec = { 'Status': 'Pending', 'ReworkRequestedBy': 'Initiator' }
-                if (ApprovalRequestItem.LevelSequence == 1) updaterec.ReworkRequestedBy = "Level 1";
-                await UpdateContentMaster(sp, ctmasteritm[0].Id, updaterec);
-                await sp.web.lists.getByTitle(LIST_TITLE_MyRequest).items.getById(ApprovalRequestItem.Id).update({ 'Status': 'Submitted' });
-                await sp.web.lists.getByTitle(LIST_TITLE_EventMaster).items.getById(editID).update({ 'Status': 'Submitted' });
-                boolval = true;
+            if(rows.length>0){
+
+              if (ApprovalRequestItem && ApprovalRequestItem.IsRework && ApprovalRequestItem.IsRework == 'Yes') {
+                const ctmasteritm = await sp.web.lists.getByTitle(LIST_TITLE_ContentMaster).items.filter('ContentID eq ' + ApprovalRequestItem.ContentId + " and SourceName eq '" + CONTENTTYPE_Event + "'")();
+                if (ctmasteritm && ctmasteritm.length > 0) {
+                  let updaterec = { 'Status': 'Pending', 'ReworkRequestedBy': 'Initiator' }
+                  if (ApprovalRequestItem.LevelSequence == 1) updaterec.ReworkRequestedBy = "Level 1";
+                  await UpdateContentMaster(sp, ctmasteritm[0].Id, updaterec);
+                  await sp.web.lists.getByTitle(LIST_TITLE_MyRequest).items.getById(ApprovalRequestItem.Id).update({ 'Status': 'Submitted' });
+                  await sp.web.lists.getByTitle(LIST_TITLE_EventMaster).items.getById(editID).update({ 'Status': 'Submitted' });
+                  boolval = true;
+                }
               }
+              else {
+                await AddContentMaster(sp, arr)
+                boolval = await handleClick(editID, "Event", Number(formData.EntityId))
+              }
+
             }
-            else {
-              await AddContentMaster(sp, arr)
-              boolval = await handleClick(editID, "Event", Number(formData.EntityId))
+            else{
+              boolval = true;
+
             }
+
+           
+           
             if (boolval == true) {
               setLoading(false);
               Swal.fire('Submitted successfully.', '', 'success');
@@ -609,7 +620,7 @@ const HelloWorldContext = ({ props }: any) => {
               Overview: formData.Overview,
               EventAgenda: formData.EventAgenda,
               EntityId: Number(formData.EntityId),
-              Status: "Submitted",
+              Status: rows.length>0? "Submitted":"Approved",
               RegistrationDueDate: RegistrationDueDate,
               EventDate: eventDate,
               AuthorId: currentUser.Id,
@@ -975,11 +986,11 @@ const HelloWorldContext = ({ props }: any) => {
 
   const handleCancel = () => {
     //debugger
-    if(pageValue == "MyRequest"){
+    if (pageValue == "MyRequest") {
       window.location.href = `${siteUrl}/SitePages/MyRequests.aspx`;
-    }else if(pageValue == "MyApproval"){
+    } else if (pageValue == "MyApproval") {
       window.location.href = `${siteUrl}/SitePages/MyApprovals.aspx`;
-    }else{
+    } else {
       window.location.href = `${siteUrl}/SitePages/EventMaster.aspx`;
     }
     //window.location.href = `${siteUrl}/SitePages/EventMaster.aspx`;
@@ -1039,7 +1050,7 @@ const HelloWorldContext = ({ props }: any) => {
           EntityId: Number(setEventById[0].EntityId),
           RegistrationDueDate: RegistrationDueDate,
           EventDate: eventDate,
-          Status : setEventById[0].Status
+          Status: setEventById[0].Status
 
         }
         const initialContent = getDescription(setEventById[0].description);
@@ -1118,12 +1129,12 @@ const HelloWorldContext = ({ props }: any) => {
 
   // musaib changes 
   const [previewUrl, setPreviewUrl] = useState<string | null>(null); // To store the file preview URL
-const [isModalOpen, setIsModalOpen] = useState<boolean>(false);   // To manage modal visibility
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);   // To manage modal visibility
 
   //#region onFileChange
   const onFileChange = async (event: React.ChangeEvent<HTMLInputElement>, libraryName: string, docLib: string) => {
     //debugger;
-    if(libraryName === 'bannerimg'){
+    if (libraryName === 'bannerimg') {
       newfileupload = true
       //alert(`banner img `)
     }
@@ -1274,36 +1285,36 @@ const [isModalOpen, setIsModalOpen] = useState<boolean>(false);   // To manage m
     }
   };
 
-  const handlePreviewClick = (fileObj:any) => {
-     if(newfileupload === true){
-      console.log(newfilepreview , "here is newfilepreview")
-    //alert(`new file ${newfilepreview}`)
+  const handlePreviewClick = (fileObj: any) => {
+    if (newfileupload === true) {
+      console.log(newfilepreview, "here is newfilepreview")
+      //alert(`new file ${newfilepreview}`)
 
-        setPreviewUrl(newfilepreview); // Set the preview URL
-        setIsModalOpen(true);   // Open the modal
+      setPreviewUrl(newfilepreview); // Set the preview URL
+      setIsModalOpen(true);   // Open the modal
     } else {
-      console.log(fileObj , "here is fileObj")
+      console.log(fileObj, "here is fileObj")
       //alert(`here is fileObj${fileObj}`)
       //alert(`${fileObj.serverUrl} ${fileObj.serverRelativeUrl}`)
       //alert(`fileObj:${fileObj} + fileObj.serverRelativeUrl ${fileObj.serverRelativeUrl}`)
       if (fileObj && fileObj.serverUrl && fileObj.serverRelativeUrl) {
         const fileUrl = `${fileObj.serverUrl.trim()}${fileObj.serverRelativeUrl.trim()}`;
         // Combine serverUrl and serverRelativeUrl
-          setPreviewUrl(fileUrl); // Set the preview URL
-          setIsModalOpen(true);   // Open the modal
+        setPreviewUrl(fileUrl); // Set the preview URL
+        setIsModalOpen(true);   // Open the modal
       } else {
-          //alert("Invalid file object. Cannot generate preview URL.");
+        //alert("Invalid file object. Cannot generate preview URL.");
       }
     }
-     
-   
-};
 
 
-const closeModal = () => {
+  };
+
+
+  const closeModal = () => {
     setPreviewUrl(null);
     setIsModalOpen(false);
-};
+  };
 
   // const onFileChange = async (
   //   event: React.ChangeEvent<HTMLInputElement>,
@@ -1311,13 +1322,13 @@ const closeModal = () => {
   //   docLib: string
   // ) => {
   //   event.preventDefault();
-  
+
   //   if (event.target.files && event.target.files.length > 0) {
   //     const files = Array.from(event.target.files);
-  
+
   //     if (libraryName === "bannerimg") {
   //       const imageFiles = files.filter(file => file.type.startsWith("image/"));
-  
+
   //       if (imageFiles.length > 0) {
   //         const preview = URL.createObjectURL(imageFiles[0]); // Generate preview URL
   //         setPreviewUrl(preview);                            // Update preview URL state
@@ -1334,7 +1345,7 @@ const closeModal = () => {
   //     }
   //   }
   // };
-  
+
   //#endregion
 
   //#region OpenModal
@@ -1496,7 +1507,7 @@ const closeModal = () => {
                     <div style={{ minHeight: '100vh', marginTop: '100px' }} className="loadernewadd mt-10">
                       <div>
                         <img
-                          src={require("../../../CustomAsset/birdloader.gif")}
+                          src={require("../../../CustomAsset/edc-gif.gif")}
                           className="alignrightl"
                           alt="Loading..."
                         />
@@ -1504,7 +1515,7 @@ const closeModal = () => {
                       <span>Loading </span>{" "}
                       <span>
                         <img
-                          src={require("../../../CustomAsset/argloader.gif")}
+                          src={require("../../../CustomAsset/edcnew.gif")}
                           className="alignrightl"
                           alt="Loading..."
                         />
@@ -1517,10 +1528,10 @@ const closeModal = () => {
                     <form className='row'  >
                       <div className="">
 
-<strong className='font-16 mb-1'>Basic Information</strong>
-<p className='font-14 text-muted mb-3 mt-1'>Specify basic information </p>
+                        <strong className='font-16 mb-1'>Basic Information</strong>
+                        <p className='font-14 text-muted mb-3 mt-1'>Specify basic information </p>
 
-</div>
+                      </div>
                       <div className="col-lg-4">
                         <div className="mb-3">
                           <label htmlFor="title" className="form-label">
@@ -1754,7 +1765,7 @@ const closeModal = () => {
                         </div>
                       </div>
 
-                     
+
                     </form>
                   }
                 </div>
@@ -1764,12 +1775,12 @@ const closeModal = () => {
               rows != null && rows.length > 0 && !ApprovalMode && (
                 <div className="card cardborder mt-2">
                   <div className="card-body p-4">
-                  <div className="">
+                    <div className="">
 
-<strong className='font-16 mb-1'>Approval Hierarchy</strong>
-<p className='font-14 text-muted mb-3 mt-1'>Define Approaval Hierarchy for the documents.</p>
+                      <strong className='font-16 mb-1'>Approval Hierarchy</strong>
+                      <p className='font-14 text-muted mb-3 mt-1'>Define Approaval Hierarchy for the documents.</p>
 
-</div>
+                    </div>
                     {/* <div className="d-flex justify-content-between align-items-center">
                       <p className="font-14 mb-3 flex-grow-1">
                         Define approval hierarchy for the documents submitted by Team members in this folder.
@@ -1793,72 +1804,72 @@ const closeModal = () => {
                         </div>
                       </div> */}
                       <table className="mtbalenew scrollrem">
-                                                    <thead>
-                                                      <tr>
-                                                      <th style={{minWidth:'60px', maxWidth:'60px'}} className="newpad">  Select Level</th>
-                                                      <th className="newpad"> Select Approver</th>
-                                                      </tr>
-                                                    </thead>
-                                                    <tbody style={{overflowX:'hidden',overflow:'initial'}}>
+                        <thead>
+                          <tr>
+                            <th style={{ minWidth: '60px', maxWidth: '60px' }} className="newpad">  Select Level</th>
+                            <th className="newpad"> Select Approver</th>
+                          </tr>
+                        </thead>
+                        <tbody style={{ overflowX: 'hidden', overflow: 'initial' }}>
 
-                      {rows.map((row: any) => (
-                        <div className="row mb-0" key={row.id}>
-                                                                  <tr style={{overflow:'initial'}}>
-                                                                  <td style={{minWidth:'60px', maxWidth:'60px',overflow:'initial'}} className=""> 
-                                                                  <select style={{border:"0px solid #ccc", background:'#fff'}}
-                              className="form-select removeb"
-                              id={`Level-${row.id}`}
-                              name="Level"
-                              value={row.LevelId}
-                              disabled={true}
+                          {rows.map((row: any) => (
+                            <div className="row mb-0" key={row.id}>
+                              <tr style={{ overflow: 'initial' }}>
+                                <td style={{ minWidth: '60px', maxWidth: '60px', overflow: 'initial' }} className="">
+                                  <select style={{ border: "0px solid #ccc", background: '#fff' }}
+                                    className="form-select removeb"
+                                    id={`Level-${row.id}`}
+                                    name="Level"
+                                    value={row.LevelId}
+                                    disabled={true}
 
-                              onChange={(e) => {
-                                const selectedLevel = e.target.value;
-                                setRows((prevRows: any) =>
-                                  prevRows.map((r: any) =>
-                                    r.id === row.id
-                                      ? { ...r, LevelId: selectedLevel }
-                                      : r
-                                  )
-                                );
-                              }}
-                            >
-                              <option value="">Select</option>
-                              {levels.map((item: any) => (
-                                <option key={item.Id} value={item.Id}>
-                                  {item.Level}
-                                </option>
-                              ))}
-                            </select> </td>
-                                                                    <td style={{overflow:'initial'}}>
-                                                                    <Multiselect className="removeb" style={{border:"0px solid #ccc", background:'#fff'}}
-                              options={row.approvedUserList}
-                              selectedValues={row.approvedUserListupdate}
-                              onSelect={(selected) => handleUserSelect(selected, row.id)}
-                              onRemove={(selected) => handleUserSelect(selected, row.id)}
-                              displayValue="name"
-                              disable={true}
-                              placeholder=''
-                              hidePlaceholder={true}
-                            />
+                                    onChange={(e) => {
+                                      const selectedLevel = e.target.value;
+                                      setRows((prevRows: any) =>
+                                        prevRows.map((r: any) =>
+                                          r.id === row.id
+                                            ? { ...r, LevelId: selectedLevel }
+                                            : r
+                                        )
+                                      );
+                                    }}
+                                  >
+                                    <option value="">Select</option>
+                                    {levels.map((item: any) => (
+                                      <option key={item.Id} value={item.Id}>
+                                        {item.Level}
+                                      </option>
+                                    ))}
+                                  </select> </td>
+                                <td style={{ overflow: 'initial' }}>
+                                  <Multiselect className="removeb" style={{ border: "0px solid #ccc", background: '#fff' }}
+                                    options={row.approvedUserList}
+                                    selectedValues={row.approvedUserListupdate}
+                                    onSelect={(selected) => handleUserSelect(selected, row.id)}
+                                    onRemove={(selected) => handleUserSelect(selected, row.id)}
+                                    displayValue="name"
+                                    disable={true}
+                                    placeholder=''
+                                    hidePlaceholder={true}
+                                  />
 
-                                                                    </td>
-                                                                    </tr>
-                          <div className="col-12 col-md-5">
-                            {/* <label htmlFor={`Level-${row.id}`} className="form-label">
+                                </td>
+                              </tr>
+                              <div className="col-12 col-md-5">
+                                {/* <label htmlFor={`Level-${row.id}`} className="form-label">
                               Select Level
                             </label> */}
-                         
-                          </div>
 
-                          <div className="col-12 col-md-5">
-                            {/* <label htmlFor={`approver-${row.id}`} className="form-label">
+                              </div>
+
+                              <div className="col-12 col-md-5">
+                                {/* <label htmlFor={`approver-${row.id}`} className="form-label">
                               Select Approver
                             </label> */}
-                          
-                          </div>
 
-                          {/* <div className="col-12 col-md-2 d-flex align-items-center" style={{ gap: '10px' }}>
+                              </div>
+
+                              {/* <div className="col-12 col-md-2 d-flex align-items-center" style={{ gap: '10px' }}>
                             <div className="d-flex align-items-center">
                               <input
                                 className="form-check-input custom-radio"
@@ -1895,13 +1906,13 @@ const closeModal = () => {
                               </a>
                             )}
                           </div> */}
-                        </div>
-                      ))}
-                      <tr>
-                        <td style={{height:'30px', background:'#fff', border:'0px solid #ccc'}}></td>
-                        <td style={{height:'30px', background:'#fff', border:'0px solid #ccc'}}> </td>
-                      </tr>
-  </tbody>  </table>
+                            </div>
+                          ))}
+                          <tr>
+                            <td style={{ height: '30px', background: '#fff', border: '0px solid #ccc' }}></td>
+                            <td style={{ height: '30px', background: '#fff', border: '0px solid #ccc' }}> </td>
+                          </tr>
+                        </tbody>  </table>
                     </div>
 
                     {/* <div className="text-center butncss">
@@ -1934,30 +1945,30 @@ const closeModal = () => {
               <WorkflowAuditHistory ContentItemId={editID} ContentType={CONTENTTYPE_Event} ctx={props.context} />
             }
 
-{
-                        !InputDisabled ? (<div className="text-center butncss mb-4">
-                          <div className="btn btn-success waves-effect waves-light m-1" style={{ width:'145px' }} onClick={handleSaveAsDraft}>
-                            <div className='d-flex' style={{ justifyContent: 'center' }}>
-                              <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem',marginRight:'3px' }} alt="Check" /> Save As Draft
-                            </div>
-                          </div>
-                          <div className="btn btn-success waves-effect waves-light m-1" style={{ width:'145px' }} onClick={handleFormSubmit}>
-                            <div className='d-flex' style={{ justifyContent: 'center' }}>
-                              <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem', marginRight:'3px' }} alt="Check" /> Submit
-                            </div>
-                          </div>
-                          <button type="button" className="btn cancel-btn waves-effect waves-light m-1" style={{ width:'145px'}} onClick={handleCancel}>
-                            <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem', marginRight:'3px' }}
-                              className='me-1' alt="x" />
-                            Cancel
-                          </button>
-                        </div>) : (<div className="text-center butncss mb-4">
-                          <button type="button" className="btn cancel-btn waves-effect waves-light m-1" onClick={handleCancel}>
-                            <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem', marginRight:'3px' }}
-                              className='me-1' alt="x" />
-                            Cancel
-                          </button>
-                        </div>)}
+            {
+              !InputDisabled ? (<div className="text-center butncss mb-4">
+                <div className="btn btn-success waves-effect waves-light m-1" style={{ width: '145px' }} onClick={handleSaveAsDraft}>
+                  <div className='d-flex' style={{ justifyContent: 'center' }}>
+                    <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem', marginRight: '3px' }} alt="Check" /> Save As Draft
+                  </div>
+                </div>
+                <div className="btn btn-success waves-effect waves-light m-1" style={{ width: '145px' }} onClick={handleFormSubmit}>
+                  <div className='d-flex' style={{ justifyContent: 'center' }}>
+                    <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem', marginRight: '3px' }} alt="Check" /> Submit
+                  </div>
+                </div>
+                <button type="button" className="btn cancel-btn waves-effect waves-light m-1" style={{ width: '145px' }} onClick={handleCancel}>
+                  <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem', marginRight: '3px' }}
+                    className='me-1' alt="x" />
+                  Cancel
+                </button>
+              </div>) : (<div className="text-center butncss mb-4">
+                <button type="button" className="btn cancel-btn waves-effect waves-light m-1" onClick={handleCancel}>
+                  <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem', marginRight: '3px' }}
+                    className='me-1' alt="x" />
+                  Cancel
+                </button>
+              </div>)}
             {/* Modal to display uploaded files */}
             <Modal show={showModal} onHide={() => setShowModal(false)} size='lg' >
               <Modal.Header closeButton>
@@ -2023,20 +2034,20 @@ const closeModal = () => {
                                 <tr key={index}>
                                   <td className='text-center'>{index + 1}</td>
                                   <td>
-                                   
+
                                     <img
                                       className='imagefe'
                                       src={file.fileType.startsWith('video/') ?
                                         require("../../../Assets/ExtraImage/video.jpg") :
                                         (file.fileUrl ? file.fileUrl : `${file.serverUrl}${file.serverRelativeUrl}`)}
-                                   
-                                        alt={'default image'}
-                  style={{ cursor: 'pointer' }}
-                  onClick={() => handleShow(
-                    file.serverUrl && file.serverRelativeUrl
-                      ? `${siteUrl}/MediaGallery/${file.fileName}`
-                      : file.fileUrl
-                  )}
+
+                                      alt={'default image'}
+                                      style={{ cursor: 'pointer' }}
+                                      onClick={() => handleShow(
+                                        file.serverUrl && file.serverRelativeUrl
+                                          ? `${siteUrl}/MediaGallery/${file.fileName}`
+                                          : file.fileUrl
+                                      )}
                                     />
 
                                   </td>
@@ -2057,34 +2068,34 @@ const closeModal = () => {
 
               </Modal.Body>
 
-              </Modal>
+            </Modal>
             <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Image Preview</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <img src={modalImageSrc} alt="Image Preview" style={{ width: '100%' }} />
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-        </Modal.Footer>
-              </Modal>
+              <Modal.Header closeButton>
+                <Modal.Title>Image Preview</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <img src={modalImageSrc} alt="Image Preview" style={{ width: '100%' }} />
+              </Modal.Body>
+              <Modal.Footer>
+                <Button variant="secondary" onClick={handleClose}>
+                  Close
+                </Button>
+              </Modal.Footer>
+            </Modal>
             <Modal show={isModalOpen} onHide={closeModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>Image Preview</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <img src={previewUrl} alt="Image Preview" style={{ width: '100%' }} />
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={closeModal}>
-            Close
-          </Button>
-        </Modal.Footer>
-              </Modal>
-              {/* {isModalOpen && (
+              <Modal.Header closeButton>
+                <Modal.Title>Image Preview</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <img src={previewUrl} alt="Image Preview" style={{ width: '100%' }} />
+              </Modal.Body>
+              <Modal.Footer>
+                <Button variant="secondary" onClick={closeModal}>
+                  Close
+                </Button>
+              </Modal.Footer>
+            </Modal>
+            {/* {isModalOpen && (
     <div className="modal-overlay">
         <div className="modal-content">
             <button className="close-btn" onClick={closeModal}>Close</button>

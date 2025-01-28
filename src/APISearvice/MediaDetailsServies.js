@@ -29,9 +29,9 @@ export const fetchKnowledgeCentercategory = async (_sp) => {
 export const fetchMediaGallerydata = async (_sp) => {
     let arr = []
    
-       await _sp.web.lists.getByTitle("ARGMediaGallery").items.select("*,MediaGalleryCategory/Id,MediaGalleryCategory/CategoryName")
-       .expand("MediaGalleryCategory")
-       .filter("Status eq 'Approved'")
+       await _sp.web.lists.getByTitle("QuickLinks").items.select("*")
+       .expand("").top(10)
+       //.filter("Status eq 'Approved'")
        .orderBy("Modified", false)
        ().then((res) => {
         console.log("response-->>>",res);

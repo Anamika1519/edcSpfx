@@ -234,6 +234,13 @@ const AddannouncementContext = ({ props }: any) => {
     setCurrentUser(await getCurrentUser(sp, siteUrl)) //currentUser
     setEnityData(await getEntity(sp)) //Entity
     setTypeData(await getType(sp)) // Type
+    const defaultItem = await getType(sp);
+    if(defaultItem.find((item) => item.name === 'News').id){
+      formData.Type = defaultItem.find((item) => item.name === 'News').id;
+    setCategoryData(await getCategory(sp, Number(formData.Type)))
+
+    }
+    
     setBaseUrl(await (getUrl(sp))) //baseUrl
     let formitemid;
     //#region getdataByID
@@ -624,7 +631,8 @@ const AddannouncementContext = ({ props }: any) => {
                 AnnouncementandNewsTypeMasterId: Number(formData.Type),
                 //FeaturedAnnouncement: formData.FeaturedAnnouncement === true ? true : false,
                 FeaturedAnnouncement: true,
-                Status: "Submitted",
+                // Status: "Submitted",
+                Status: formData.Status,
                 AuthorId: currentUser.Id
               };
               console.log(postPayload);
@@ -813,7 +821,7 @@ const AddannouncementContext = ({ props }: any) => {
               AnnouncementandNewsTypeMasterId: Number(formData.Type),
               //FeaturedAnnouncement: formData.FeaturedAnnouncement === true ? true : false,
               FeaturedAnnouncement: true,
-              Status: "Submitted",
+              Status: rows.length>0? "Submitted":"Approved",
               AuthorId: currentUser.Id,
               AnnouncementandNewsBannerImage: JSON.stringify(bannerImageArray)
             };
@@ -882,9 +890,17 @@ const AddannouncementContext = ({ props }: any) => {
               ReworkRequestedBy: "Initiator"
 
             }
-            await AddContentMaster(sp, arr)
-            const boolval = await handleClick(postId, TypeMasterData?.TypeMaster, Number(formData.entity))
+            let boolval;
+            if(rows.length>0){
+              await AddContentMaster(sp, arr)
+             boolval = await handleClick(postId, TypeMasterData?.TypeMaster, Number(formData.entity))
 
+
+            }
+            else{
+               boolval = true;
+            }
+            
             if (boolval == true) {
               setLoading(false);
               Swal.fire('Submitted successfully.', '', 'success');
@@ -1755,7 +1771,7 @@ const closeModal = () => {
                     <div style={{minHeight:'100vh',marginTop:'100px'}} className="loadernewadd mt-10">
                     <div>
                         <img
-                            src={require("../../../CustomAsset/birdloader.gif")}
+                            src={require("../../../CustomAsset/edc-gif.gif")}
                             className="alignrightl"
                             alt="Loading..."
                           /> 
@@ -1763,7 +1779,7 @@ const closeModal = () => {
                       <span>Loading </span>{" "}
                       <span>
                         <img
-                          src={require("../../../CustomAsset/argloader.gif")}
+                          src={require("../../../CustomAsset/edcnew.gif")}
                           className="alignrightl"
                           alt="Loading..."
                         />
@@ -1803,7 +1819,7 @@ const closeModal = () => {
                           value={formData.Type}
                           onChange={(e) => onChange(e.target.name, e.target.value)}
                           className={`form-control ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
-                          disabled={InputDisabled}
+                          disabled={true}
                         >
                           <option>Select</option>
                           {

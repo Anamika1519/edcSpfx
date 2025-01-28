@@ -1275,7 +1275,7 @@ const deleteLocalFile = (index, filArray, name) => {
                    <div style={{minHeight:'100vh',marginTop:'100px'}} className="loadernewadd mt-10">
                    <div>
                        <img
-                           src={require("../../CustomAsset/birdloader.gif")}
+                           src={require("../../CustomAsset/edc-gif.gif")}
                            className="alignrightl"
                            alt="Loading..."
                          />
@@ -1283,7 +1283,7 @@ const deleteLocalFile = (index, filArray, name) => {
                      <span>Loading </span>{" "}
                      <span>
                        <img
-                         src={require("../../CustomAsset/argloader.gif")}
+                         src={require("../../CustomAsset/edcnew.gif")}
                          className="alignrightl"
                          alt="Loading..."
                        />

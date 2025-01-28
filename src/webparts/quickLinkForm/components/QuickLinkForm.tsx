@@ -113,8 +113,8 @@ const [ImagepostArr, setImagepostArr] = React.useState([]);
         //   setFormData(formobj);
         
         // }
-        var encryptedId = "U2FsdGVkX1/ZSx0oFhvAh5NpBkgWn8gIfZcjgTT+DyI=";
-        sessionStorage.setItem("quicklinkId", encryptedId)
+        // var encryptedId = "U2FsdGVkX1/ZSx0oFhvAh5NpBkgWn8gIfZcjgTT+DyI=";
+        // sessionStorage.setItem("quicklinkId", encryptedId)
          let formitemid;
             //#region getdataByID
             if (sessionStorage.getItem("quicklinkId") != undefined) {
@@ -308,9 +308,9 @@ const [ImagepostArr, setImagepostArr] = React.useState([]);
                       setLoading(false);
                       Swal.fire('Updated successfully.', '', 'success');
                       sessionStorage.removeItem("quicklinkId")
-                      // setTimeout(() => {
-                      //   window.location.href = `${siteUrl}/SitePages/QuickLinksMaster.aspx`;
-                      // }, 500);
+                      setTimeout(() => {
+                       // window.location.href = `${siteUrl}/SitePages/QuickLinksMaster.aspx`;
+                      }, 500);
         
                                
                   }
@@ -384,9 +384,9 @@ const [ImagepostArr, setImagepostArr] = React.useState([]);
                        setLoading(false);
                       Swal.fire('Submitted successfully.', '', 'success');
                   
-                      // setTimeout(() => {
-                      //   window.location.href = `${siteUrl}/SitePages/DelegateMaster.aspx`;
-                      // }, 500);
+                      setTimeout(() => {
+                        //window.location.href = `${siteUrl}/SitePages/QuickLinksMaster.aspx`;
+                      }, 500);
                    
         
                    }
@@ -401,7 +401,7 @@ const [ImagepostArr, setImagepostArr] = React.useState([]);
           const handleCancel = () => {
             // debugger
             sessionStorage.removeItem("quicklinkId")
-            window.location.href = `${siteUrl}/SitePages/DelegateMaster.aspx`;
+            window.location.href = `${siteUrl}/SitePages/QuickLinkmaster.aspx`;
           }
 
           const onSelect = (selectedList:any) => {
@@ -597,7 +597,7 @@ const clearFileInput = (name: any) => {
                     <div style={{ minHeight: '100vh', marginTop: '100px' }} className="loadernewadd mt-10">
                       <div>
                         <img
-                          src={require("../../../CustomAsset/birdloader.gif")}
+                          src={require("../../../CustomAsset/edc-gif.gif")}
                           className="alignrightl"
                           alt="Loading..."
                         />
@@ -605,7 +605,7 @@ const clearFileInput = (name: any) => {
                       <span>Loading </span>{" "}
                       <span>
                         <img
-                          src={require("../../../CustomAsset/argloader.gif")}
+                          src={require("../../../CustomAsset/edcnew.gif")}
                           className="alignrightl"
                           alt="Loading..."
                         />

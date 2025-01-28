@@ -321,7 +321,7 @@
   }
   :root {
     --white-color: #fff;
-    --blue-color: #1fb0e5;
+    --blue-color: #ff6b00;
     --grey-color: #707070;
     --grey-color-light: #aaa;
     --coloradd:#707070;
@@ -337,7 +337,7 @@
   #s4-workspace.dark {
     --white-color: #333;
     --coloradd:#fff;
-    --blue-color: #1fb0e5;
+    --blue-color: #ff6b00;
     --grey-color: #f2f2f2;
     --grey-color-light: #aaa;
   }
@@ -360,7 +360,7 @@
   margin-bottom: 15px;
   border-radius: 15px; float: left;
   position: relative;
-  border: 1px solid #54ade0;
+  border: 1px solid #ff6b00;
 }
 // .btn-primary {
 //   --ct-btn-color: #fff;
@@ -534,7 +534,7 @@ box-shadow: 4px 0px 11px -9px rgba(204,204,204,1);
   max-width: unset !important;
 }
 .card {
-  border: 1px solid #54ade0 !important;
+  border: 1px solid #ff6b00 !important;
   border-radius: 20px !important;
   box-shadow: 0 3px 20px #1d26260d;
   margin-bottom: 15px;
