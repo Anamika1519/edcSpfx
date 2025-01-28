@@ -1941,7 +1941,7 @@ const HelloWorldContext = ({ props }: any) => {
                 />
               ) : (<div></div>)
             }
-            {
+            { editID !== null &&
               <WorkflowAuditHistory ContentItemId={editID} ContentType={CONTENTTYPE_Event} ctx={props.context} />
             }
 

@@ -136,8 +136,10 @@ const VerticalContext = ({ _context }: any) => {
      // setNavItems(res);
       let securednavitems= res.filter((nav:any)=>
         {
-           return (!nav.EnableAudienceTargeting || ( nav.EnableAudienceTargeting && nav.Audience && nav.Audience.some((nv1:any)=>{  return grptitle.includes(nv1.Title.toLowerCase()); }  ) )  )
-        } 
+           //return (!nav.EnableAudienceTargeting || ( nav.EnableAudienceTargeting && nav.Audience && nav.Audience.some((nv1:any)=>{  return grptitle.includes(nv1.Title.toLowerCase()); }  ) )  )
+           return (!nav.EnableAudienceTargeting ||  nav.EnableAudienceTargeting )
+        
+          } 
       )
 
       // setNavItems(res);

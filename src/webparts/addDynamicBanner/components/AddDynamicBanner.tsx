@@ -507,7 +507,7 @@ debugger
         IsImage: formData.IsImage === "on" ? true : false,
         // IsVideo: formData.IsVedio === "on"?  true :false,
         URL: formData.URL,
-        Status: formData.Status,
+        Status: "Approved",
         AuthorId: currentUser.Id,
         BannerImage: bannerImageArray != "{}" && JSON.stringify(bannerImageArray),
         BannerImageJSON: jsonString

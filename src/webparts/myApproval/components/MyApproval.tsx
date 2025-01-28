@@ -1198,7 +1198,7 @@ const MyApprovalContext = ({ props }: any) => {
                           </a>
                         </li>
 
-                        <li className="nav-item" role="presentation">
+                        {/* <li className="nav-item" role="presentation">
                           <a
                             onClick={() => handleTabClick("Automation")}
                             className={`nav-link ${activeTab === "Automation" ? "active" : ""
@@ -1212,7 +1212,7 @@ const MyApprovalContext = ({ props }: any) => {
                               {myApprovalsDataAutomation.length}
                             </span>
                           </a>
-                        </li>
+                        </li> */}
                       </ul>
                     </div>
                   </div>

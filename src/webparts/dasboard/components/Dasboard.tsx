@@ -289,7 +289,7 @@ const HelloWorldContext = ({ props }: any) => {
   const GotoNextPagethree = (item: any) => {
     console.log("item-->>>>", item)
     const encryptedId = encryptId(String(item.ID));
-    window.location.href = `${siteUrl}/SitePages/MediaGallery.aspx`;
+    window.location.href = `${siteUrl}/SitePages/QuickLinksMaster.aspx`;
   };
   const GotoNextPagefour = (item: any) => {
     console.log("item-->>>>", item)

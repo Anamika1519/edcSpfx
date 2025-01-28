@@ -160,7 +160,7 @@ const QuickLinksMasterContext = ({ props }: any) => {
               // setUseId(id)
               const encryptedId = encryptId(String(id));
               sessionStorage.setItem("quicklinkId", encryptedId)
-              window.location.href = `${siteUrl}/SitePages/QuickLinks.aspx`;
+              window.location.href = `${siteUrl}/SitePages/QuickLinksForm.aspx`;
             }
             //#endregion
           
