@@ -655,7 +655,7 @@ const HelloWorldContext = ({ props }: any) => {
                     <div className="col-xl-12 col-lg-12">
                       <div
                         style={{ float: "left", width: "100%" }}
-                        className="card newt desknewview"
+                        className="card newt desknewview mb-3"
                       >
                         <div className="card-body heifgtgal pb-2">
                           <h4 className="header-title text-dark font-16 fw-bold mb-0">

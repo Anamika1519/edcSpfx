@@ -47,7 +47,7 @@
 .footer{bottom: -61px;}
 .newwidth6{width: 20% !important; }
 .appltext{margin-top: 7px;}
-.aaplnbg{background: #f6f6f6;height: 130px; padding: 25px 0px 0px 0px; margin-top: 13px; border: 1px solid #ccc; border-radius: 5px; text-align: center;}
+.aaplnbg{background: #fff;height: 130px; padding: 25px 0px 0px 0px; margin-top: 13px; border: 1px solid #ff6b00; border-radius: 8px; text-align: center;}
 .gheightnew{height: 400px;}
 .margin01{margin-top: 5px;}
 .float-right{float: right;}
@@ -237,11 +237,12 @@
    
     .heifgtgal{height: 488px;}
     .gheightnew{height: 408px;}
+  
     .inbox-widget .heit8 {
         padding: .52rem 0;
     
     }
-    .aaplnbg{height: 180px;}
+    .aaplnbg{height: 180px; padding-top: 40px;}
     .gheightl {
         height: 438px;
     }
@@ -472,7 +473,7 @@ img, svg {
         .news-feed {
             height: 802px;
         }
-        .aaplnbg{height: 145px;}
+        .aaplnbg{height: 145px; padding-top: 30px;}
 }
 
 @media(max-width:1440px){
@@ -483,7 +484,7 @@ img, svg {
     .event h4 {
         height: 40px;
     }
-    .aaplnbg{height: 135px;}
+    .aaplnbg{height: 135px; padding-top: 25px;}
     .heifgtgal{height: 377px;}
     .event{margin-bottom: 1px;
         margin-top: 8px;}

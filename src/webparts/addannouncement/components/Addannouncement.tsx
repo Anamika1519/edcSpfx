@@ -134,7 +134,7 @@ const AddannouncementContext = ({ props }: any) => {
       "MainComponentURl": `${siteUrl}/SitePages/Settings.aspx`
     },
     {
-      "ChildComponent": "Add Announcement & News",
+      "ChildComponent": "Add News",
       "ChildComponentURl": `${siteUrl}/SitePages/announcementmaster.aspx`
     }
   ]
@@ -1893,7 +1893,7 @@ const closeModal = () => {
                         <div className='d-flex justify-content-between'>
                           <div>
                             <label htmlFor="bannerImage" className="form-label">
-                              Announcement Image <span className="text-danger">*</span>
+                              News Image <span className="text-danger">*</span>
                             </label>
                           </div>
                           <div>
@@ -1933,7 +1933,7 @@ const closeModal = () => {
                         <div className='d-flex justify-content-between'>
                           <div>
                             <label htmlFor="announcementGallery" className="form-label">
-                              Announcement Gallery <span className="text-danger">*</span>
+                              News Gallery <span className="text-danger">*</span>
                             </label>
                           </div>
                           <div>
