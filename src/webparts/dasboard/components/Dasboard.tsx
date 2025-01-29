@@ -291,6 +291,12 @@ const HelloWorldContext = ({ props }: any) => {
     const encryptedId = encryptId(String(item.ID));
     window.location.href = `${siteUrl}/SitePages/QuickLinksMaster.aspx`;
   };
+  const GotoNextPageApp = (item: any) => {
+    console.log("item-->>>>appppp", item)
+
+    window.location.href = `${item.URL}`;
+  };
+
   const GotoNextPagefour = (item: any) => {
     console.log("item-->>>>", item)
     const encryptedId = encryptId(String(item.ID));
@@ -520,7 +526,7 @@ const HelloWorldContext = ({ props }: any) => {
                               View All
                             </a>
                           </h5>
-                         
+
                           {dataofevent.length === 0 ?
                             <div className="align-items-center newiconsvg text-center mt-14"
                             >
@@ -598,7 +604,7 @@ const HelloWorldContext = ({ props }: any) => {
                                           {event.EventName} {/* Event title */}
                                         </h4>
                                         <p className=" font-12 mb-2">
-                                          
+
                                           {moment(formattedDate).format("DD-MMM-YYYY")}
                                           {/* Display the full formatted date (22 Jul 2024) */}
                                         </p>
@@ -623,7 +629,7 @@ const HelloWorldContext = ({ props }: any) => {
 
                   <div className="row mt-0">
                     {/* Corporate Directory */}
-                   
+
                     {/* <div className="col-xl-7 col-lg-7">
                      
                       <div className="card" style={{ borderRadius: "1rem" }}>
@@ -681,51 +687,51 @@ const HelloWorldContext = ({ props }: any) => {
                             <div className="tab-content pt-1  pb-1" style={{ marginTop: '0.6rem' }}>
 
                               <div className="row">
-                               
 
-                              {console.log("tytyty",gallerydata)}
+
+                                {console.log("tytyty", gallerydata)}
                                 {gallerydata.map((item) => {
-                                 const imageData =  item.QuickLinkImage == undefined || item.QuickLinkImage == null ? "": JSON.parse(item.QuickLinkImage);
-                                 let siteId = siteID;
-                                 let listID = response.Id;
-                                 let img1 = imageData!= "" && imageData.fileName !="" ? `${siteUrl}/_api/v2.1/sites('${siteId}')/lists('${listID}')/items('${item.ID}')/attachments('${imageData.fileName}')/thumbnails/0/c400x400/content?prefer=noredirect%2Cclosestavailablesize` : ""
-                                 let img = imageData != "" && imageData.serverRelativeUrl != "" ? `https://officeindia.sharepoint.com${imageData.serverRelativeUrl}` : img1
-                                 const imageUrl = imageData != ""
-                                   ? img
-                                   : null;
-                                 { console.log("imageData", imageData, imageUrl, item, siteUrl, img) }
+                                  const imageData = item.QuickLinkImage == undefined || item.QuickLinkImage == null ? "" : JSON.parse(item.QuickLinkImage);
+                                  let siteId = siteID;
+                                  let listID = response.Id;
+                                  let img1 = imageData != "" && imageData.fileName != "" ? `${siteUrl}/_api/v2.1/sites('${siteId}')/lists('${listID}')/items('${item.ID}')/attachments('${imageData.fileName}')/thumbnails/0/c400x400/content?prefer=noredirect%2Cclosestavailablesize` : ""
+                                  let img = imageData != "" && imageData.serverRelativeUrl != "" ? `https://officeindia.sharepoint.com${imageData.serverRelativeUrl}` : img1
+                                  const imageUrl = imageData != ""
+                                    ? img
+                                    : null;
+                                  { console.log("imageData", imageData, imageUrl, item, siteUrl, img) }
                                   // const ImageUrl2 =
                                   //   item.QuickLinkImage == undefined || item.QuickLinkImage == null
                                   //     ? ""
                                   //     : JSON.parse(item.QuickLinkImage);
-                                     
+
                                   return (
                                     <div className="col-sm-3 newwidth6" key={item.ID}
-                                    id={item.ID}>
+                                      id={item.ID} onClick={(e) => GotoNextPageApp(e)}>
                                       <div>
                                         <div>
                                           <div className="aaplnbg">
-                                          <img
-                                        src={imageUrl}
-                                          // videositeurl +
-                                          // ImageUrl2?.serverRelativeUrl
-                                        
-                                        width="100%"
-                                        alt="Gallery"
-                                      />
-                                      <div className="appltext font-14">
-                                      {item.Title}
+                                            <img
+                                              src={imageUrl}
+                                              // videositeurl +
+                                              // ImageUrl2?.serverRelativeUrl
 
-                                        </div>
-                                      
+                                              width="100%"
+                                              alt="Gallery"
+                                            />
+                                            <div className="appltext font-14">
+                                              {item.Title}
 
                                             </div>
 
+
                                           </div>
-                                    
 
                                         </div>
-                                     
+
+
+                                      </div>
+
                                       {/* <div className="lspe">
                                 <img src={item.videoIcon} alt="video icon" />
                               </div> */}
@@ -739,7 +745,7 @@ const HelloWorldContext = ({ props }: any) => {
                                     </div>
                                   )
                                 })}
-                                
+
                               </div>
                             </div>}
 
@@ -867,10 +873,10 @@ const HelloWorldContext = ({ props }: any) => {
                   </div>
 
                   {/* Leaderboard  */}
-                  
+
                 </div>
               </div>
-              
+
             </div>
           }
         </div>
