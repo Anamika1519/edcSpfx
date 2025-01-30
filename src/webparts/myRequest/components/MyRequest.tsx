@@ -896,7 +896,7 @@ const MyRequestContext = ({ props }: any) => {
 
             marginLeft: `${!useHide ? "240px" : "80px"}`,
 
-            marginTop: "0rem",
+            marginTop: "2.4rem",
 
           }}>
 
@@ -1554,7 +1554,7 @@ const MyRequestContext = ({ props }: any) => {
                                     >
 
                                       {/* {item.ProcessName} */}
-                                      <span className="badge font-12 bg-info"> {activeTab == "Automation" ? item?.ProcessName : item?.SourceName} </span>
+                                      <span className="badge font-12 bg-secondary"> {activeTab == "Automation" ? item?.ProcessName : item?.SourceName} </span>
 
                                     </td>
 
@@ -2197,7 +2197,7 @@ const MyRequestContext = ({ props }: any) => {
                                         >
 
                                           {/* {item.ProcessName} */}
-                                          <span className="badge font-12 bg-info">      {item?.Processname} </span>
+                                          <span className="badge font-12 bg-secondary">      {item?.Processname} </span>
 
                                         </td>
 

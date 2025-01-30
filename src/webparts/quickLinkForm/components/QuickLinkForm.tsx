@@ -12,7 +12,7 @@ import CustomBreadcrumb from '../../../CustomJSComponents/CustomBreadcrumb/Custo
 import { FormSubmissionMode } from '../../../Shared/Interfaces';
 import { allowstringonly, getCurrentUser } from '../../../APISearvice/CustomService';
 import Swal from 'sweetalert2';
-import { addItem, getItemByID,updateItem, uploadFileBanner } from '../../../APISearvice/QuickLinksService';
+import { addItem, getEntity, getItemByID,updateItem, uploadFileBanner } from '../../../APISearvice/QuickLinksService';
 import { decryptId } from '../../../APISearvice/CryptoService';
 import { getUrlParameterValue } from '../../../Shared/Helper';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -29,6 +29,7 @@ const QuickLinkFormContext =({ props }: any) => {
   const [ValidSubmit, setValidSubmit] = React.useState(true);
   const [InputDisabled, setInputDisabled] = React.useState(false);
   const [modeValue, setmode] = React.useState(null);
+   const [EnityData, setEnityData] = React.useState([]);
   const [selectedOption, setSelectedOption] = React.useState(null);
   const [editForm, setEditForm] = React.useState(false);
   const [editID, setEditID] = React.useState(null);
@@ -46,15 +47,17 @@ const [ImagepostArr, setImagepostArr] = React.useState([]);
       "MainComponentURl": `${siteUrl}/SitePages/Settings.aspx`
     },
     {
-      "ChildComponent": "QuickLink Form",
-      "ChildComponentURl": `${siteUrl}/SitePages/QuickLinkmaster.aspx`
+      "ChildComponent": "Add QuickLink",
+      "ChildComponentURl": `${siteUrl}/SitePages/QuickLinksMaster.aspx`
     }
   ]
 
   const [formData, setFormData] = React.useState({
       Title: "",
       URL: "",
-      RedirectTONewTab:false  
+      RedirectTONewTab:false  ,
+      EntityId: 0,
+      IsActive:false
     });
 
     
@@ -69,7 +72,7 @@ const [ImagepostArr, setImagepostArr] = React.useState([]);
     const onChange = async (name: string, value: string) => {
       setFormData((prevData) => ({
         ...prevData,
-        [name]: name === "RedirectTONewTab" ? value === "true" : value,
+        [name]: name === "RedirectTONewTab" || name === "IsActive" ? value === "true" : value,
         
       }));
   
@@ -90,6 +93,7 @@ const [ImagepostArr, setImagepostArr] = React.useState([]);
 
             //#endregion
           const ApiCallFunc = async () => {
+                setEnityData(await getEntity(sp)) //Entity
         //     // setCurrentUser(await getCurrentUser(sp, siteUrl)) 
         //     const Currusers :any= await getCurrentUser(sp, siteUrl);
         //     const users = await sp.web.siteUsers();
@@ -157,6 +161,8 @@ const [ImagepostArr, setImagepostArr] = React.useState([]);
                       Title: setDelegateById[0].Title,
                       URL: setDelegateById[0].URL,
                       RedirectTONewTab: setDelegateById[0].RedirectToNewTab ,
+                      EntityId: setDelegateById[0].EntityId?setDelegateById[0].EntityId:0,
+                      IsActive:setDelegateById[0].IsActive
                       // QuickLinkImage: setDelegateById[0]?.QuickLinkImage,
                       
         
@@ -285,20 +291,24 @@ const [ImagepostArr, setImagepostArr] = React.useState([]);
                         );
                       }
 
-                       postPayload = {
-                        Title :formData.Title,
-                       URL :formData.URL,
-                       RedirectToNewTab:formData.RedirectTONewTab,
-                       QuickLinkImage: JSON.stringify(bannerImageArray)
-                       };
+                      postPayload = {
+                        Title: formData.Title,
+                        URL: formData.URL,
+                        RedirectToNewTab: formData.RedirectTONewTab,
+                        EntityId: formData.EntityId,
+                        IsActive:formData.IsActive,
+                        QuickLinkImage: JSON.stringify(bannerImageArray)
+                      };
                     }
                     else{
-                       postPayload = {
-                        Title :formData.Title,
-                       URL :formData.URL,
-                       RedirectToNewTab:formData.RedirectTONewTab,
-                       
-                       };
+                      postPayload = {
+                        Title: formData.Title,
+                        URL: formData.URL,
+                        RedirectToNewTab: formData.RedirectTONewTab,
+                        EntityId: formData.EntityId,
+                        IsActive:formData.IsActive
+
+                      };
                     }
                     
                     //   console.log(postPayload);
@@ -309,7 +319,7 @@ const [ImagepostArr, setImagepostArr] = React.useState([]);
                       Swal.fire('Updated successfully.', '', 'success');
                       sessionStorage.removeItem("quicklinkId")
                       setTimeout(() => {
-                       // window.location.href = `${siteUrl}/SitePages/QuickLinksMaster.aspx`;
+                        window.location.href = `${siteUrl}/SitePages/QuickLinksMaster.aspx`;
                       }, 500);
         
                                
@@ -366,7 +376,9 @@ const [ImagepostArr, setImagepostArr] = React.useState([]);
                     Title :formData.Title,
                     URL :formData.URL,
                     RedirectToNewTab:formData.RedirectTONewTab,
-                    QuickLinkImage: JSON.stringify(bannerImageArray)
+                    QuickLinkImage: JSON.stringify(bannerImageArray),
+                    EntityId: formData.EntityId,
+                    IsActive:formData.IsActive
                     
                   };
                     // console.log(postPayload);
@@ -385,7 +397,7 @@ const [ImagepostArr, setImagepostArr] = React.useState([]);
                       Swal.fire('Submitted successfully.', '', 'success');
                   
                       setTimeout(() => {
-                        //window.location.href = `${siteUrl}/SitePages/QuickLinksMaster.aspx`;
+                        window.location.href = `${siteUrl}/SitePages/QuickLinksMaster.aspx`;
                       }, 500);
                    
         
@@ -401,7 +413,7 @@ const [ImagepostArr, setImagepostArr] = React.useState([]);
           const handleCancel = () => {
             // debugger
             sessionStorage.removeItem("quicklinkId")
-            window.location.href = `${siteUrl}/SitePages/QuickLinkmaster.aspx`;
+            window.location.href = `${siteUrl}/SitePages/QuickLinksMaster.aspx`;
           }
 
           const onSelect = (selectedList:any) => {
@@ -580,7 +592,7 @@ const clearFileInput = (name: any) => {
       <div className="content-page">
         <HorizontalNavbar _context={sp} siteUrl={siteUrl} />
         <div className="content" style={{ marginLeft: `${!useHide ? '240px' : '80px'}`, marginTop: '0rem' }}>
-          <div className="container-fluid  paddb">
+          <div style={{marginTop:'2.4rem'}} className="container-fluid  paddb">
             <div style={{paddingLeft:'0.5rem'}} className="row">
               <div className="col-lg-5">
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
@@ -655,6 +667,28 @@ const clearFileInput = (name: any) => {
                              
                         </div>
                       </div>
+                      <div className="col-lg-4">
+                        <div className="mb-3">
+                          <label htmlFor="EntityId" className="form-label">
+                            Department 
+                          </label>
+                          <select
+                            className={`form-control ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                            id="EntityId"
+                            name="EntityId"
+                            value={formData.EntityId}
+                            onChange={(e) => onChange(e.target.name, e.target.value)}
+                            disabled={InputDisabled}
+                          >
+                            <option value="0">Select</option>
+                            {
+                              EnityData.map((item, index) => (
+                                <option key={index} value={item.id}>{item.name}</option>
+                              ))
+                            }
+                          </select>
+                        </div>
+                      </div>
                       {/*  */}
                       {/* className={`form-label form-control ${!ValidDraft ? "border-on-error" : ""} ${!ValidSubmit ? "border-on-error" : ""}`} */}
 
@@ -707,7 +741,23 @@ const clearFileInput = (name: any) => {
                       <div className="col-lg-4">
                         <div className="mb-3">
                           <label htmlFor="title" className="form-label">
-                          Want to Redirect in New Tab ?<span className="text-danger">*</span>
+                         Active
+                          </label>
+
+                          <input type="checkbox"  id="IsActive"
+                            name="IsActive"
+                            checked={formData.IsActive}  onChange={(e) =>
+                              onChange(e.target.name, e.target.checked.toString())
+                            } ></input>
+                          
+
+                        </div>
+                      </div>
+
+                      <div className="col-lg-4">
+                        <div className="mb-3">
+                          <label htmlFor="title" className="form-label">
+                          Want to Redirect in New Tab ?
                           </label>
 
                           <input type="checkbox"  id="RedirectTONewTab"

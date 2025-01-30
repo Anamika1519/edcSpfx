@@ -6,7 +6,7 @@
     justify-content: center !important;
 }
 .btn-success{
-    background-color: #008751 !important;
+    background-color: #ff6b00 !important;
 }
 .btn-danger{
     background-color: #ff555d !important;
@@ -19,8 +19,8 @@
 }
 
   .indexdesign{
-    background: #d2effa !important;
-      color: #1fb0e5 !important;
+    background: #ffe7d5  !important;
+      color: #ff6b00  !important;
       width: 28px !important;
       height:28px !important;
       font-size: 16px !important;
@@ -52,7 +52,7 @@
       
       
   }
-  .lenbg{background: #ffc313; height:20px ; color: #fff; 
+  .lenbg{background: #686763; height:20px ; color: #fff; 
     font-weight: 700; margin-top: -3px; margin-left: 5px; 
     float:right; font-weight: 700;
     height: 22px;

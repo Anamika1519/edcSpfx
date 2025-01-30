@@ -126,7 +126,7 @@ const CustomNewsWebpartTemplate = ({ _sp, SiteUrl }) => {
                                 <div className="col-lg-7">
                                     <div className="row" style={{ paddingLeft: '0.5rem' }}>
                                         <div className="col-sm-4 text-left">
-                                            <span style={{ padding: '5px', borderRadius: '4px', fontWeight: '500', color: '#009157', background: 'rgba(0, 135, 81, 0.20)' }} className="font-14 float-start mt-2">
+                                            <span style={{ padding: '5px', borderRadius: '4px', fontWeight: '500', color: '#007847', background: '#c3f6e1' }} className="font-14 float-start mt-2">
                                                 Latest News</span>
 
                                         </div>

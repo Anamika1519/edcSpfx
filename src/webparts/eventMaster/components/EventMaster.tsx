@@ -429,7 +429,7 @@ const EntityMastercontext = ({ props }: any) => {
                       <button
                         type="button"
                         className="btn btn-primary waves-effect waves-light"
-                        style={{ background: "#1fb0e5" }}
+                        style={{ background: "#ff6b00" }}
                       >
                         <FontAwesomeIcon icon={faPlusCircle} className="me-1" />
                         Add

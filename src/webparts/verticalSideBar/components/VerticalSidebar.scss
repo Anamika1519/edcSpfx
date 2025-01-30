@@ -121,7 +121,7 @@ table .no-results{position: absolute;
   overflow: hidden;
   border-radius: 20px;
 }
-.btn-success{background: rgba(31,176,229,1) !important;    border-color: #ff6b00 !important;
+.btn-success{background: #ff6b00 !important;    border-color: #ff6b00 !important;
 }
 
 
@@ -1127,7 +1127,7 @@ background-color: rgb(167, 30, 132);
   background: transparent !important; color: #6c757d;
 }
 .submenu_item .item{
-margin: 10px 0px !important ;
+margin: 0px 0px !important ;
 }
 .navlink_icon svg{    height: 22px;
   width: 22px;}
@@ -1988,10 +1988,11 @@ color: #fff !important;
 }
 .mtbalenew .inputcss {height: 34px !important;}
 .indexdesign {
-  background: #d2effa !important;
+  background: #ffe7d5  !important;
+      color: #ff6b00  !important;
   border: none;
   border-radius: 1000px;
-  color: #ff6b00 !important;
+
   float: left;
   font-size: 16px !important;
   font-weight: 600;

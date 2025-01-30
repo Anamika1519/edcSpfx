@@ -315,16 +315,18 @@ export const getEventByID = async (_sp, id) => {
 export const getARGEventMasterDetailsById = async (_sp, idNum) => {
   let arr = []
   let arr1 = []
-
+  debugger
+debugger
   await _sp.web.lists.getByTitle("ARGEventMaster").items.getById(idNum).select("*,Attendees/Id,Attendees/Title").expand("Attendees")()
     .then(async(res) => {
+      console.log(res,"rererererererere")
       // for (var i = 0; i < res.length; i++) {
-      for (var j = 0; j < res.Attendees.length; j++) {
-        var user = await _sp.web.getUserById(res.Attendees[j].Id)();
+      for (var j = 0; j < res?.Attendees?.length; j++) {
+        var user = await _sp.web.getUserById(res?.Attendees[j].Id)();
         var profile = await _sp.profiles.getPropertiesFor(`i:0#.f|membership|${user.Email}`);
-        res.Attendees[j].EMail = user.Email;
+        res?.Attendees[j].EMail = user.Email;
 
-        res.Attendees[j].SPSPicturePlaceholderState = profile.UserProfileProperties?profile.UserProfileProperties[profile.UserProfileProperties.findIndex(obj=>obj.Key === "SPS-PicturePlaceholderState")].Value:"1";
+        res?.Attendees[j].SPSPicturePlaceholderState = profile.UserProfileProperties?profile.UserProfileProperties[profile.UserProfileProperties.findIndex(obj=>obj.Key === "SPS-PicturePlaceholderState")].Value:"1";
 
       }
     // }

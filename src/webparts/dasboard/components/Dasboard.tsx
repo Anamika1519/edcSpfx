@@ -291,10 +291,10 @@ const HelloWorldContext = ({ props }: any) => {
     const encryptedId = encryptId(String(item.ID));
     window.location.href = `${siteUrl}/SitePages/QuickLinksMaster.aspx`;
   };
-  const GotoNextPageApp = (item: any) => {
+  const GotoNextPageApp = (e:any,item: any) => {
     console.log("item-->>>>appppp", item)
 
-    window.location.href = `${item.URL}`;
+    window.location.href = `${item}`;
   };
 
   const GotoNextPagefour = (item: any) => {
@@ -707,7 +707,7 @@ const HelloWorldContext = ({ props }: any) => {
 
                                   return (
                                     <div className="col-sm-3 newwidth6" key={item.ID}
-                                      id={item.ID} onClick={(e) => GotoNextPageApp(e)}>
+                                      id={item.ID} onClick={(e) => GotoNextPageApp(e,item.URL)}>
                                       <div>
                                         <div>
                                           <div className="aaplnbg">

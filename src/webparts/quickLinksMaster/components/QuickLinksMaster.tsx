@@ -66,6 +66,8 @@ const QuickLinksMasterContext = ({ props }: any) => {
        Title: '',
        URL: '',
        Redirect: '',
+       Department:'',
+       IsActive:''
        
      });
    const applyFiltersAndSorting = (data: any[]) => {
@@ -76,7 +78,9 @@ const QuickLinksMasterContext = ({ props }: any) => {
         (filters.SNo === '' || String(index + 1).includes(filters.SNo)) &&
         (filters.Title === '' || item.Title.toLowerCase().includes(filters.Title.toLowerCase())) &&
         (filters.URL === '' || item.URL.toLowerCase().includes(filters.URL.toLowerCase())) &&
-        (filters?.Redirect === '' || item?.Redirect?.toLowerCase().includes(filters?.Redirect?.toLowerCase()))
+        (filters?.Redirect === '' || item?.Redirect?.toLowerCase().includes(filters?.Redirect?.toLowerCase()))&&
+        (filters?.Department === '' || item?.Department?.toLowerCase().includes(filters?.Department?.toLowerCase()))&&
+        (filters?.IsActive === '' || item?.IsActive?.toLowerCase().includes(filters?.IsActive?.toLowerCase()))
       );
     });
     const sortedData = filteredData.sort((a, b) => {
@@ -200,7 +204,7 @@ const QuickLinksMasterContext = ({ props }: any) => {
       <div className="content-page">
         <HorizontalNavbar _context={sp} siteUrl={siteUrl} />
         <div className="content " style={{ marginLeft: `${!useHide ? '240px' : '80px'}` }}>
-          <div className="container-fluid  paddb">
+          <div style={{marginTop:'2.4rem'}} className="container-fluid  paddb">
             <div className="row">
               <div className="col-lg-3">
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
@@ -216,7 +220,7 @@ const QuickLinksMasterContext = ({ props }: any) => {
                       </button>
                     </a>
                     <a href={`${siteUrl}/SitePages/QuickLinksForm.aspx`} onClick={() => goToAddForm()}>
-                      <button type="button" className="btn btn-primary waves-effect waves-light" style={{ background: '#1fb0e5' }}>
+                      <button type="button" className="btn btn-primary waves-effect waves-light" style={{ background: '#ff6b00' }}>
                         <FontAwesomeIcon icon={faPlusCircle} className="me-1" />
                         Add
                       </button>
@@ -277,9 +281,9 @@ const QuickLinksMasterContext = ({ props }: any) => {
                           <th style={{ minWidth: '120px', maxWidth: '120px' }}>
                             <div className="d-flex flex-column bd-highlight ">
                               <div className="d-flex pb-2" style={{ justifyContent: 'space-evenly' }}>
-                                <span >URL</span>  <span onClick={() => handleSortChange('Title')}><FontAwesomeIcon icon={faSort} /> </span></div>
+                                <span >URL</span>  <span onClick={() => handleSortChange('URL')}><FontAwesomeIcon icon={faSort} /> </span></div>
                               <div className=" bd-highlight">
-                                <input type="text" placeholder="Filter by Title" onChange={(e) => handleFilterChange(e, 'Title')}
+                                <input type="text" placeholder="Filter by URL" onChange={(e) => handleFilterChange(e, 'URL')}
                                   onKeyDown={(e) => {
                                     if (e.key === 'Enter' && !e.shiftKey) {
                                       e.preventDefault(); // Prevents the new line in textarea
@@ -289,14 +293,46 @@ const QuickLinksMasterContext = ({ props }: any) => {
                               </div>
                             </div>
                           </th>
+
+                          <th style={{ minWidth: '80px', maxWidth: '80px' }}>
+                            <div className="d-flex flex-column bd-highlight ">
+                              <div className="d-flex pb-2" style={{ justifyContent: 'space-evenly' }}>
+                                <span >Department</span>  <span onClick={() => handleSortChange('Department')}><FontAwesomeIcon icon={faSort} /> </span></div>
+                              <div className=" bd-highlight">
+                                <input type="text" placeholder="Filter by Department" onChange={(e) => handleFilterChange(e, 'Department')}
+                                  onKeyDown={(e) => {
+                                    if (e.key === 'Enter' && !e.shiftKey) {
+                                      e.preventDefault(); // Prevents the new line in textarea
+                                    }
+                                  }}
+                                  className='inputcss' style={{ width: '100%' }} />
+                              </div>
+                            </div>
+                          </th>
+                          
                          
                           
                           <th style={{ minWidth: '80px', maxWidth: '80px' }}>
                             <div className="d-flex flex-column bd-highlight ">
                               <div className="d-flex pb-2" style={{ justifyContent: 'space-evenly' }}>
-                                <span >Redirect to other tab</span>  <span onClick={() => handleSortChange('SubmittedDate')}><FontAwesomeIcon icon={faSort} /> </span></div>
+                                <span >Redirect to other tab</span>  <span onClick={() => handleSortChange('Redirect')}><FontAwesomeIcon icon={faSort} /> </span></div>
                               <div className=" bd-highlight">
-                                <input type="text" placeholder="Filter by SubmittedDate" onChange={(e) => handleFilterChange(e, 'SubmittedDate')}
+                                <input type="text" placeholder="Filter by Redirect" onChange={(e) => handleFilterChange(e, 'Redirect')}
+                                  onKeyDown={(e) => {
+                                    if (e.key === 'Enter' && !e.shiftKey) {
+                                      e.preventDefault(); // Prevents the new line in textarea
+                                    }
+                                  }}
+                                  className='inputcss' style={{ width: '100%' }} />
+                              </div>
+                            </div>
+                          </th>
+                          <th style={{ minWidth: '80px', maxWidth: '80px' }}>
+                            <div className="d-flex flex-column bd-highlight ">
+                              <div className="d-flex pb-2" style={{ justifyContent: 'space-evenly' }}>
+                                <span >Active</span>  <span onClick={() => handleSortChange('Active')}><FontAwesomeIcon icon={faSort} /> </span></div>
+                              <div className=" bd-highlight">
+                                <input type="text" placeholder="Filter by Active" onChange={(e) => handleFilterChange(e, 'Active')}
                                   onKeyDown={(e) => {
                                     if (e.key === 'Enter' && !e.shiftKey) {
                                       e.preventDefault(); // Prevents the new line in textarea
@@ -364,10 +400,12 @@ const QuickLinksMasterContext = ({ props }: any) => {
                                 <td style={{ minWidth: '40px', maxWidth: '40px' }}><div style={{ marginLeft: '10px' }} className='indexdesign'> {index + 1}</div>  </td>
                                 <td style={{ minWidth: '120px', maxWidth: '120px' }}>{item.Title}</td>
                                 <td style={{ minWidth: '120px', maxWidth: '120px' }}>{item.URL}</td>
+                                <td style={{ minWidth: '120px', maxWidth: '120px' }}>{item?.Entity?.Entity}</td>
                                
                                 {/* <td style={{ minWidth: '80px', maxWidth: '80px',textAlign:'center' }}><div className='btn btn-light newlight'> {moment(item.StartDate).format("DD-MMM-YYYY")} </div> </td>
                                 <td style={{ minWidth: '80px', maxWidth: '80px',textAlign:'center' }}><div className='btn btn-light newlight'> {moment(item.EndDate).format("DD-MMM-YYYY")} </div> </td> */}
                                 <td style={{ minWidth: '80px', maxWidth: '80px',textAlign:'center' }}>  <div className='btn btn-status newlight'> {item.RedirectToNewTab?"Yes":"No"} </div> </td>
+                                <td style={{ minWidth: '80px', maxWidth: '80px',textAlign:'center' }}>  <div className='btn btn-status newlight'> {item.IsActive?"Yes":"No"} </div> </td>
                                 <td style={{ minWidth: '80px', maxWidth: '80px' }} className="ng-binding">
                                   <div className="d-flex  pb-0" style={{ justifyContent: 'center', gap: '5px' }}>
                                     <span > <a className="action-icon text-primary" onClick={() => EditDelegate(item.ID)}>

@@ -5,7 +5,7 @@ import { IAddDynamicBannerProps } from './IAddDynamicBannerProps';
 import { getSP } from '../loc/pnpjsConfig';
 import { SPFI } from '@pnp/sp/presets/all';
 import UserContext from '../../../GlobalContext/context';
-import { allowstringonly, getCurrentUser } from '../../../APISearvice/CustomService';
+import { allowstringonly, getCurrentUser, getEntity } from '../../../APISearvice/CustomService';
 import { decryptId } from '../../../APISearvice/CryptoService';
 import { addItem, getBannerByID, getUrl, updateItem, uploadFile } from '../../../APISearvice/BannerService';
 import Swal from 'sweetalert2';
@@ -43,6 +43,7 @@ const AddDynamicBannerContext = ({ props }: any) => {
   const [Loading, setLoading] = React.useState(false);
   const [ValidSubmit, setValidSubmit] = React.useState(true);
   const [InputDisabled, setInputDisabled] = React.useState(false);
+   const [EnityData, setEnityData] = React.useState([]);
   const [bannerByIDArr, setBannerByIdArr] = React.useState({
     title: '',
     description: "",
@@ -61,7 +62,8 @@ const AddDynamicBannerContext = ({ props }: any) => {
     IsVedio: "",
     IsImage: "",
     URL: "",
-    Status: ''
+    Status: '',
+    EntityId:0
   })
 
   React.useEffect(() => {
@@ -175,7 +177,8 @@ const AddDynamicBannerContext = ({ props }: any) => {
   //#region  all api call
   const ApiCallFunc = async () => {
     setCurrentUser(await getCurrentUser(sp, siteUrl))
-    setBaseUrl(await (getUrl(sp)))
+    setBaseUrl(await (getUrl(sp)));
+     setEnityData(await getEntity(sp)) //Entity
 
 
 
@@ -199,7 +202,8 @@ const AddDynamicBannerContext = ({ props }: any) => {
           IsVedio: setBannerById[0].IsVedio,
           IsImage: setBannerById[0].IsImage,
           URL: setBannerById[0].URL,
-          Status: setBannerById[0].Status
+          Status: setBannerById[0].Status,
+          EntityId:setBannerById[0].EntityId?setBannerById[0].EntityId:0,
         }
         let banneimagearr = []
         // banneimagearr = JSON.parse(setBannerById[0].BannerImage)
@@ -510,7 +514,8 @@ debugger
         Status: "Approved",
         AuthorId: currentUser.Id,
         BannerImage: bannerImageArray != "{}" && JSON.stringify(bannerImageArray),
-        BannerImageJSON: jsonString
+        BannerImageJSON: jsonString,
+        EntityId: formData.EntityId,
       };
 
 
@@ -642,6 +647,28 @@ debugger
 
                           />
 
+                        </div>
+                      </div>
+                      <div className="col-lg-4">
+                        <div className="mb-3">
+                          <label htmlFor="EntityId" className="form-label">
+                            Department 
+                          </label>
+                          <select
+                            className={`form-control ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                            id="EntityId"
+                            name="EntityId"
+                            value={formData.EntityId}
+                            onChange={(e) => onChange(e.target.name, e.target.value)}
+                            disabled={InputDisabled}
+                          >
+                            <option value="0">Select</option>
+                            {
+                              EnityData.map((item, index) => (
+                                <option key={index} value={item.id}>{item.name}</option>
+                              ))
+                            }
+                          </select>
                         </div>
                       </div>
                       <div className="col-lg-6">

@@ -326,9 +326,9 @@ const HelloWorldContext = ({ props }: any) => {
       // else if (EventDate && RegistrationDueDate && moment(new Date(RegistrationDueDate)).format("DD-MM-YYYY") > moment(new Date(EventDate)).format("DD-MM-YYYY")) {
       //   valid = false;
       // }
-      else if (!EntityId) {
-        valid = false;
-      }
+      // else if (!EntityId) {
+      //   valid = false;
+      // }
       else if (BnnerImagepostArr.length == 0) {
         valid = false;
       }
@@ -1590,10 +1590,11 @@ const HelloWorldContext = ({ props }: any) => {
                       <div className="col-lg-4">
                         <div className="mb-3">
                           <label htmlFor="EntityId" className="form-label">
-                            Department <span className="text-danger">*</span>
+                            Department 
                           </label>
                           <select
-                            className={`form-control ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                           className="form-select inputcss"
+                            //className={`form-control ${(!ValidSubmit) ? "border-on-error" : ""}`}
                             id="EntityId"
                             name="EntityId"
                             value={formData.EntityId}
@@ -1941,7 +1942,7 @@ const HelloWorldContext = ({ props }: any) => {
                 />
               ) : (<div></div>)
             }
-            { editID !== null &&
+            {rows != null && rows.length > 0 && editID !== null &&
               <WorkflowAuditHistory ContentItemId={editID} ContentType={CONTENTTYPE_Event} ctx={props.context} />
             }
 

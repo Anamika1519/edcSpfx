@@ -632,7 +632,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                     <a onClick={() => GotoAdd(`${siteUrl}/SitePages/AddAnnouncement.aspx`)}>
 
-                      <div className="btn btn-primary waves-effect waves-light" style={{ background: '#1fb0e5', width: '80px' }}>
+                      <div className="btn btn-primary waves-effect waves-light" style={{ background: '#ff6b00', width: '80px' }}>
 
                         <FontAwesomeIcon icon={faPlusCircle} className="me-1" />
 
@@ -664,7 +664,7 @@ const Announcementmastercontext = ({ props }: any) => {
            
               <Tab eventKey="News" title="News">
 
-                <div className="card cardCss mt-0">
+                <div className="card cardCss mt-3">
 
                   <div className="card-body">
 

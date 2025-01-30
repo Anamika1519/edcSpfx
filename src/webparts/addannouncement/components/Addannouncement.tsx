@@ -275,7 +275,7 @@ const AddannouncementContext = ({ props }: any) => {
         let arr = {
           title: setBannerById[0].Title,
           category: setBannerById[0]?.Category,
-          entity: setBannerById[0]?.Entity,
+          entity: setBannerById[0]?.Entity?setBannerById[0]?.Entity:0,
           Type: setBannerById[0]?.TypeMaster,
           bannerImage: setBannerById[0]?.BannerImage,
           description: setBannerById[0].description,
@@ -415,10 +415,12 @@ const AddannouncementContext = ({ props }: any) => {
       } else if (!category) {
         //Swal.fire('Error', 'Category is required!', 'error');
         valid = false;
-      } else if (!entity) {
-        //Swal.fire('Error', 'Entity is required!', 'error');
-        valid = false;
-      } else if (!overview) {
+      }
+      //  else if (!entity) {
+      //   //Swal.fire('Error', 'Entity is required!', 'error');
+      //   valid = false;
+      // }
+       else if (!overview) {
         //Swal.fire('Error', 'Entity is required!', 'error');
         valid = false;
       }
@@ -1865,11 +1867,11 @@ const closeModal = () => {
                     <div className="col-lg-4">
                       <div className="mb-3">
                         <label htmlFor="entity" className="form-label">
-                          Entity <span className="text-danger">*</span>
+                          Department 
                         </label>
                         <select
-                          // className="form-select inputcss"
-                          className={`form-control ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                           className="form-select inputcss"
+                          //className={`form-control ${(!ValidSubmit) ? "border-on-error" : ""}`}
                           id="entity"
                           name="entity"
                           value={formData.entity}
@@ -1878,7 +1880,7 @@ const closeModal = () => {
                           disabled={InputDisabled}
 
                         >
-                          <option value="">Select</option>
+                          <option value="0">Select</option>
                           {
                             EnityData.map((item, index) => (
                               <option key={index} value={item.id}>{item.name}</option>
@@ -2228,7 +2230,7 @@ const closeModal = () => {
                           Cancel
                         </button></div>)
                     }
-            {formData.title != "" &&
+            {rows != null && rows.length > 0 && formData.title != "" &&
               <WorkflowAuditHistory ContentItemId={editID} ContentType={CONTENTTYPE_Announcement} ctx={props.context} />
             }
             {/* Modal to display uploaded files */}

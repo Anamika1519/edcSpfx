@@ -93,7 +93,8 @@ const DynamicBannercontext = ({ props }: any) => {
     Overview: '',
     URL: '',
     Status: '',
-    SubmittedDate: ''
+    SubmittedDate: '',
+    Department:''
   });
   const [sortConfig, setSortConfig] = React.useState({ key: '', direction: 'ascending' });
 
@@ -188,7 +189,8 @@ const DynamicBannercontext = ({ props }: any) => {
         (filters.Title === '' || item.Title.toLowerCase().includes(filters.Title.toLowerCase())) &&
         (filters.URL === '' || item.URL.toLowerCase().includes(filters.URL.toLowerCase())) &&
         (filters?.Status === '' || item?.Status?.toLowerCase().includes(filters?.Status?.toLowerCase())) &&
-        (filters.SubmittedDate === '' || item.Created.toLowerCase().includes(filters.SubmittedDate.toLowerCase()))
+        (filters.SubmittedDate === '' || item.Created.toLowerCase().includes(filters.SubmittedDate.toLowerCase()))&&
+        (filters.Department === '' || item.Department.toLowerCase().includes(filters.Department.toLowerCase()))
       );
     });
     const sortedData = filteredData.sort((a, b) => {
@@ -359,7 +361,7 @@ const DynamicBannercontext = ({ props }: any) => {
                       </button>
                     </a>
                     <a href={`${siteUrl}/SitePages/BannerForm.aspx`} onClick={() => goToAddForm()}>
-                      <button type="button" className="btn btn-primary waves-effect waves-light" style={{ background: '#1fb0e5' }}>
+                      <button type="button" className="btn btn-primary waves-effect waves-light" style={{ background: '#ff6b00' }}>
                         <FontAwesomeIcon icon={faPlusCircle} className="me-1" />
                         Add
                       </button>
@@ -416,26 +418,21 @@ const DynamicBannercontext = ({ props }: any) => {
                               </div>
                             </div>
                           </th>
-                          {/* <th style={{ minWidth: '100px', maxWidth: '100px' }}>Banner Image
-                            <div className="d-flex flex-column bd-highlight ">
-                                    <div className="d-flex pb-2" style={{ justifyContent: 'space-between' }}>  
-                                      <span >Title</span>  <span onClick={() => handleSortChange('Title')}><FontAwesomeIcon icon={faSort} /> </span></div>
-                                    <div className=" bd-highlight">
-                                      <input type="text" placeholder="Filter by Title" onChange={(e) => handleFilterChange(e, 'Title')}
-                                        className='inputcss' style={{ width: '100%' }} />
-                                    </div>
-                                  </div>
-                            </th> */}
-                          {/* <th style={{ minWidth: '100px', maxWidth: '100px' }}>
-                            <div className="d-flex flex-column bd-highlight ">
-                                    <div className="d-flex pb-2" style={{ justifyContent: 'space-between' }}>  
-                                      <span >Url</span>  <span onClick={() => handleSortChange('URL')}><FontAwesomeIcon icon={faSort} /> </span></div>
-                                    <div className=" bd-highlight">
-                                      <input type="text" placeholder="Filter by URL" onChange={(e) => handleFilterChange(e, 'URL')}
-                                        className='inputcss' style={{ width: '100%' }} />
-                                    </div>
-                                  </div>
-                            </th> */}
+                           <th style={{ minWidth: '80px', maxWidth: '80px' }}>
+                                                      <div className="d-flex flex-column bd-highlight ">
+                                                        <div className="d-flex pb-2" style={{ justifyContent: 'space-evenly' }}>
+                                                          <span >Department</span>  <span onClick={() => handleSortChange('Department')}><FontAwesomeIcon icon={faSort} /> </span></div>
+                                                        <div className=" bd-highlight">
+                                                          <input type="text" placeholder="Filter by Department" onChange={(e) => handleFilterChange(e, 'Department')}
+                                                            onKeyDown={(e) => {
+                                                              if (e.key === 'Enter' && !e.shiftKey) {
+                                                                e.preventDefault(); // Prevents the new line in textarea
+                                                              }
+                                                            }}
+                                                            className='inputcss' style={{ width: '100%' }} />
+                                                        </div>
+                                                      </div>
+                                                    </th>
                           <th style={{ minWidth: '40px', maxWidth: '40px' }}>
                             <div className="d-flex flex-column bd-highlight ">
                               <div className="d-flex pb-2" style={{ justifyContent: 'space-evenly' }}>
@@ -497,6 +494,7 @@ const DynamicBannercontext = ({ props }: any) => {
                                 <td style={{ minWidth: '150px', maxWidth: '150px' }}>{item.Title}</td>
 
                                 <td style={{ minWidth: '40px', maxWidth: '40px' }}>  <div className='btn btn-status'> {item.Status} </div> </td>
+                                <td style={{ minWidth: '40px', maxWidth: '40px' }}>  <div className='btn btn-status'> {item.Entity?.Entity} </div> </td>
                                 <td style={{ minWidth: '40px', maxWidth: '40px' }}> <div className='btn btn-light'>{moment(item.Created).format("DD-MMM-YYYY")} </div> </td>
                                 <td style={{ minWidth: '50px', maxWidth: '50px' }} className="ng-binding">
                                 {

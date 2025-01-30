@@ -34,8 +34,8 @@ table td, table th {
 
 /* Custom button styling for consistency */
 .btn-success {
-    background-color: #1abc9c;
-    border-color: #1abc9c;
+    background-color: #ff6b00;
+    border-color: #ff6b00;
 }
 
 .btn-light {
@@ -81,7 +81,7 @@ textarea.form-control {
 }
 div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm)
 {
-    background-color: #1abc9c !important;
+    background-color: #ff6b00 !important;
 }
 .btn-light{
     border-radius: 30px;
@@ -94,10 +94,11 @@ div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm)
     width: 100px; cursor: auto;
   }
   .indexdesign {
-    background: #d2effa !important;
+    background: #ffe7d5  !important;
+    color: #ff6b00  !important;
     border: none;
     border-radius: 1000px;
-    color: #1fb0e5 !important;
+
     display: flex
   ;
     font-size: 16px !important;

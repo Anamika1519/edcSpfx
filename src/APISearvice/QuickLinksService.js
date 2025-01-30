@@ -4,7 +4,7 @@ export const getQuickLinkList = async (_sp,isSuperAdmin) => {
     const currentUser = await _sp.web.currentUser();
  
 //   if (isSuperAdmin == "Yes") {
-    await _sp.web.lists.getByTitle("QuickLinks").items.select("*").orderBy("Created",false).getAll()
+    await _sp.web.lists.getByTitle("QuickLinks").items.select("*,Entity/Entity,Entity/ID").expand("Entity").orderBy("Created",false).getAll()
         .then((res) => {
             
             arr = res;
@@ -70,7 +70,7 @@ export const getItemByID = async (_sp, id) => {
   let arr = []
   let arrs = []
   let bannerimg = []
-  await _sp.web.lists.getByTitle("QuickLinks").items.getById(id)
+  await _sp.web.lists.getByTitle("QuickLinks").items.select("*,Entity/Entity,Entity/ID").expand("Entity").getById(id)
   .select("*")()
     .then((res) => {
       console.log(res, ' let arrs=[]');
@@ -83,8 +83,10 @@ export const getItemByID = async (_sp, id) => {
         Title: res.Title != undefined ? res.Title : "",
         URL: res.URL != undefined ? res.URL : "",
         RedirectToNewTab: res.RedirectToNewTab != undefined ? res.RedirectToNewTab : "",
-       
+        IsActive:res.IsActive!= undefined ? res.IsActive : false,
         QuickLinkImage: bannerimg,
+        Entity:res.Entity,
+        EntityId:res.EntityId
        
         // other fields as needed
       };
@@ -145,3 +147,32 @@ export const updateItem = async (itemData, _sp, id) => {
     };
     return arr;
   };
+
+  export const getEntity = async (_sp) => {
+
+    let arr = []
+  
+    await _sp.web.lists.getByTitle("ARGEntityMaster").items.select("ID,Entity").filter("Active eq 1")()
+  
+      .then((res) => {
+  
+        console.log(res);
+  
+        const newArray = res.map(({ ID, Entity }) => ({ id: ID, name: Entity }));
+  
+        console.log(newArray, 'newArray');
+  
+  
+        arr = newArray;
+  
+      })
+  
+      .catch((error) => {
+  
+        console.log("Error fetching data: ", error);
+  
+      });
+  
+    return arr;
+  
+  }
