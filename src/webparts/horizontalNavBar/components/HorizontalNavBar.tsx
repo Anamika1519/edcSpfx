@@ -247,7 +247,7 @@ const HorizontalNavbar = ({ _context, siteUrl }: any) => {
           // Add ListTitle and PageName properties to the filtered items
           filteredItems.forEach((item: any) => {
             item.ListTitle = listTitle;
-            item.PageName = pageName; // Add the PageName for each item
+            item.pageName = pageName; // Add the PageName for each item
           });
 
           // Combine results
@@ -318,7 +318,7 @@ const HorizontalNavbar = ({ _context, siteUrl }: any) => {
     setTimeout(() => {
       window.location.href =
         `${siteUrl}/SitePages/${result.DeatilPage}.aspx?${result.Id}`
-    }, 2000);
+    }, 500);
 
   };
   const logout = () => {

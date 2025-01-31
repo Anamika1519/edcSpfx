@@ -307,7 +307,8 @@ export const getAnncouncementByID = async (_sp, id) => {
         AnnouncementAndNewsDocsJSON: res.AnnouncementAndNewsDocsJSON != null ? JSON.parse(res.AnnouncementAndNewsDocsJSON) : "",
         AnnouncementAndNewsGallaryId: res.AnnouncementAndNewsGallaryId,
         AnnouncementsAndNewsDocsId: res.AnnouncementsAndNewsDocsId,
-        Status:res.Status
+        Status:res.Status,
+        EntityName:res.Entity!= undefined ? res.Entity?.Entity : "",
         // other fields as needed
       };
 
@@ -322,11 +323,15 @@ export const getAnncouncementByID = async (_sp, id) => {
 export const getAllAnnouncementnonselected = async (_sp, Idnum,text) => {
   
   let arr = []
-  let str = "Announcements"
+  let str = "News";
+  const userProfile = await _sp.profiles.myProperties();
+// console.log("***userProfile", userProfile);
+const currentUserDept = userProfile.UserProfileProperties ? userProfile.UserProfileProperties[userProfile.UserProfileProperties.findIndex(obj => obj.Key === "Department")].Value : "";
+let entity ="Global";
   await _sp.web.lists.getByTitle("ARGAnnouncementAndNews").items
-  .select("*,AnnouncementandNewsTypeMaster/Id,AnnouncementandNewsTypeMaster/TypeMaster,Category/Id,Category/Category,Author/ID,Author/Title")
-  .expand("AnnouncementandNewsTypeMaster,Category,Author")
-  .filter(`AnnouncementandNewsTypeMaster/TypeMaster eq '${text}' and ID ne ${Idnum}  and Status eq 'Approved'`)
+  .select("*,AnnouncementandNewsTypeMaster/Id,AnnouncementandNewsTypeMaster/TypeMaster,Category/Id,Category/Category,Author/ID,Author/Title,Entity/ID,Entity/Entity")
+  .expand("AnnouncementandNewsTypeMaster,Category,Author,Entity")
+  .filter(`(Entity/Entity eq '${entity}' or Entity/Entity eq '${currentUserDept}') and AnnouncementandNewsTypeMaster/TypeMaster eq '${text}' and ID ne ${Idnum}  and Status eq 'Approved'`)
     //.filter(`ID ne ${Idnum}`)
     .top(3)
     .orderBy("Modified", false)
@@ -352,7 +357,8 @@ export const getAnnouncementDetailsById=async (_sp,idNum)=>
   let arr = []
   let arr1 = []
 
-  await _sp.web.lists.getByTitle("ARGAnnouncementAndNews").items.getById(idNum)()
+  await _sp.web.lists.getByTitle("ARGAnnouncementAndNews").items.getById(idNum).select("*,Entity/ID,Entity/Entity")
+  .expand("Entity")()
   .then((res) => {
     // arr=res;
     arr1.push(res)

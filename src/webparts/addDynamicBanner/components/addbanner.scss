@@ -33,13 +33,19 @@
     background-color: #f8f9fa;
     border-color: #f8f9fa;
 }
-
+.imagefe {
+  border-radius: 1000px;
+  height: 32px;
+  width: 32px;
+}
 /* Add hover effect to buttons */
 .btn-success:hover,
 .btn-light:hover {
     opacity: 0.9;
 }
-
+.form-control:focus, .form-select:focus{
+  box-shadow: none !important;
+}
 /* Style the form labels to stand out */
 .form-label {
     font-weight: 600;

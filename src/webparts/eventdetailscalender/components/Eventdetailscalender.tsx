@@ -183,7 +183,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
     let likeArray: any[] = []
     await sp.web.lists
       .getByTitle("ARGEventsComments")
-      .items.filter(`EventsMasterId eq ${Number(idNum)}`)()
+      .items.filter(`EventsMasterId eq ${Number(idNum)}`).select("*,Author/EMail,Author/ID,Author/SPSPicturePlaceholderState").expand("Author")()
       .then(async (result: any) => {
         console.log(result, "ARGEventsComments");
 
@@ -684,7 +684,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
                           <p className="d-block mt-2 mb-0 font-28">
                             {item.EventName}
                           </p>
-                          <span style={{float:'left'}} className="font-14 mt-1 mb-0 text-primary">Sales</span>
+                          <span style={{float:'left'}} className="font-14 mt-1 mb-0 text-primary">{item.Entity.Entity}</span>
 
                           <div className="row mt-2">
 

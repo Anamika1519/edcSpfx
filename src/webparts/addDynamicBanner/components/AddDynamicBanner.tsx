@@ -647,7 +647,7 @@ const AddDynamicBannerContext = ({ props }: any) => {
 
                     :
                     <form className='row' >
-                      <div className="col-lg-6">
+                      <div className="col-lg-4">
                         <div className="mb-3">
                           <label htmlFor="title" className="form-label">
                             Title <span className="text-danger">*</span>
@@ -688,7 +688,7 @@ const AddDynamicBannerContext = ({ props }: any) => {
                           </select>
                         </div>
                       </div>
-                      <div className="col-lg-6">
+                      <div className="col-lg-4">
                         <div className="mb-3">
                           <div className='d-flex justify-content-between'>
                             <div>

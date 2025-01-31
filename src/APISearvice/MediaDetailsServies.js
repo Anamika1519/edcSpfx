@@ -34,7 +34,7 @@ let entity ="Global";
     let arr = []
    
        await _sp.web.lists.getByTitle("QuickLinks").items.select("*,Entity/Entity,Entity/ID")
-       .expand("Entity").filter(`(Entity/Entity eq '${entity}' or Entity/Entity eq '${currentUserDept}' and IsActive eq 1)`).top(10)
+       .expand("Entity").filter(`(Entity/Entity eq '${entity}' or Entity/Entity eq '${currentUserDept}') and IsActive eq 1`).top(10)
        //.filter("Status eq 'Approved'")
        .orderBy("Modified", false)
        ().then((res) => {

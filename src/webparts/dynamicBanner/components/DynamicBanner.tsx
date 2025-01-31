@@ -403,7 +403,7 @@ const DynamicBannercontext = ({ props }: any) => {
                               />
                             </div>
                           </th>
-                          <th style={{ minWidth: '150px', maxWidth: '150px' }}>
+                          <th style={{ minWidth: '130px', maxWidth: '130px' }}>
                             <div className="d-flex flex-column bd-highlight ">
                               <div className="d-flex pb-2" style={{ justifyContent: 'space-evenly' }}>
                                 <span >Title</span>  <span onClick={() => handleSortChange('Title')}><FontAwesomeIcon icon={faSort} /> </span></div>
@@ -418,7 +418,7 @@ const DynamicBannercontext = ({ props }: any) => {
                               </div>
                             </div>
                           </th>
-                           <th style={{ minWidth: '80px', maxWidth: '80px' }}>
+                           <th style={{ minWidth: '60px', maxWidth: '60px' }}>
                                                       <div className="d-flex flex-column bd-highlight ">
                                                         <div className="d-flex pb-2" style={{ justifyContent: 'space-evenly' }}>
                                                           <span >Department</span>  <span onClick={() => handleSortChange('Department')}><FontAwesomeIcon icon={faSort} /> </span></div>
@@ -433,10 +433,10 @@ const DynamicBannercontext = ({ props }: any) => {
                                                         </div>
                                                       </div>
                                                     </th>
-                          <th style={{ minWidth: '40px', maxWidth: '40px' }}>
+                          <th style={{ minWidth: '60px', maxWidth: '60px' }}>
                             <div className="d-flex flex-column bd-highlight ">
                               <div className="d-flex pb-2" style={{ justifyContent: 'space-evenly' }}>
-                                <span >SubmittedDate</span>  <span onClick={() => handleSortChange('SubmittedDate')}><FontAwesomeIcon icon={faSort} /> </span></div>
+                                <span >Submitted Date</span>  <span onClick={() => handleSortChange('SubmittedDate')}><FontAwesomeIcon icon={faSort} /> </span></div>
                               <div className=" bd-highlight">
                                 <input type="text" placeholder="Filter by SubmittedDate" onChange={(e) => handleFilterChange(e, 'SubmittedDate')}
                                   onKeyDown={(e) => {
@@ -448,7 +448,7 @@ const DynamicBannercontext = ({ props }: any) => {
                               </div>
                             </div>
                           </th>
-                          <th style={{ minWidth: '40px', maxWidth: '40px' }}>
+                          <th style={{ minWidth: '60px', maxWidth: '60px' }}>
                             <div className="d-flex flex-column bd-highlight ">
                               <div className="d-flex pb-2" style={{ justifyContent: 'space-evenly' }}>
                                 <span >Status</span>  <span onClick={() => handleSortChange('Status')}><FontAwesomeIcon icon={faSort} /> </span></div>
@@ -466,7 +466,7 @@ const DynamicBannercontext = ({ props }: any) => {
                           <th style={{ borderBottomRightRadius: '0px', minWidth: '50px', maxWidth: '50px', borderTopRightRadius: '0px' }}>
                             <div className="d-flex flex-column bd-highlight pb-2">
                               <div className="d-flex  pb-2" style={{ justifyContent: 'space-evenly' }}>  <span >Action</span> <div className="dropdown">
-                                <FontAwesomeIcon icon={faEllipsisV} onClick={toggleDropdownNews} size='xl' />
+                                <FontAwesomeIcon style={{top:'3px'}} icon={faEllipsisV} onClick={toggleDropdownNews} size='xl' />
                               </div>
                               </div>
                               {/* <div className=" bd-highlight">   <div id="myDropdown" className={`dropdown-content ${isOpenNews ? 'showNews' : ''}`}>
@@ -491,12 +491,12 @@ const DynamicBannercontext = ({ props }: any) => {
                             return (
                               <tr key={index}>
                                 <td style={{ minWidth: '30px', maxWidth: '30px' }}><div style={{ marginLeft: '20px' }} className='indexdesign'> {index + 1}</div>  </td>
-                                <td style={{ minWidth: '150px', maxWidth: '150px' }}>{item.Title}</td>
+                                <td style={{ minWidth: '130px', maxWidth: '130px' }}>{item.Title}</td>
 
-                               
-                                <td style={{ minWidth: '40px', maxWidth: '40px' }}>  <div className='btn btn-status'> {item.Entity?.Entity} </div> </td>
-                                <td style={{ minWidth: '40px', maxWidth: '40px' }}> <div className='btn btn-light'>{moment(item.Created).format("DD-MMM-YYYY")} </div> </td>
-                                <td style={{ minWidth: '40px', maxWidth: '40px' }}>  <div className='btn btn-status'> {item.Status} </div> </td>
+                                
+                                <td style={{ minWidth: '60px', maxWidth: '60px', textAlign:'center' }}>  <div style={{width:'130px'}} className='btn btn-status'> {item.Entity?.Entity} </div> </td>
+                                <td style={{ minWidth: '60px', maxWidth: '60px', textAlign:'center' }}> <div className='btn btn-light'>{moment(item.Created).format("DD-MMM-YYYY")} </div> </td>
+<td style={{ minWidth: '60px', maxWidth: '60px', textAlign:'center' }}>  <div className='btn btn-status'> {item.Status} </div> </td>
                                 <td style={{ minWidth: '50px', maxWidth: '50px' }} className="ng-binding">
                                 {
                                       isIntranetAdmin ? (

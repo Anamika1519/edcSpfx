@@ -783,7 +783,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
                           </p>
 
-                          <span style={{float:'left',color:'#f37421 '}} className="font-14 mt-1 mb-0">Sales</span>
+                          <span style={{float:'left',color:'#f37421 '}} className="font-14 mt-1 mb-0">{item.Entity?.Entity}</span>
 
                           <div className="row mt-2">
 
@@ -1053,7 +1053,7 @@ const NewsdetailsContext = ({ props }: any) => {
                             <h3 className="twolinewrap font-16 hovertext text-dark fw-bold mb-2 cursor-pointer" style={{ cursor: "pointer" }} onClick={() => gotoNewsDetails(res)}>{res.Title}</h3>
                             <p style={{ lineHeight: '20px', fontSize: '15px' }} className=" text-muted twolinewrap">{res.Overview}</p>
                             <div className="row">
-                              <div className="col-sm-12"> <span style={{ marginTop: "4px" }} className="date-color font-12 float-start  mb-1 ng-binding"><i className="fe-calendar"></i> {moment(res.Modified).format("DD-MMM-YYYY")}</span>  &nbsp; &nbsp; &nbsp;| &nbsp; <span className="font-12" style={{ color: '#f37421 ', fontWeight: '600' }}>Sales  </span></div>
+                              <div className="col-sm-12"> <span style={{ marginTop: "4px" }} className="date-color font-12 float-start  mb-1 ng-binding"><i className="fe-calendar"></i> {moment(res.Modified).format("DD-MMM-YYYY")}</span>  &nbsp; &nbsp; &nbsp;| &nbsp; <span className="font-12" style={{ color: '#f37421 ', fontWeight: '600' }}>{res.Entity?.Entity}  </span></div>
 
                             </div>
                           </div>

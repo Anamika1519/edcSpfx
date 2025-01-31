@@ -639,7 +639,7 @@ const clearFileInput = (name: any) => {
                           <label htmlFor="title" className="form-label">
                             Title <span className="text-danger">*</span>
                           </label>
-                          <input
+                          <input style={{padding:'6px'}}
                             type="text"
                             id="title"
                             name="Title"
@@ -660,7 +660,7 @@ const clearFileInput = (name: any) => {
                           <label htmlFor="URL" className="form-label">
                             URL <span className="text-danger">*</span>
                           </label>
-                          <input
+                          <input style={{padding:'6px'}}
                             type="text"
                             id="URL"
                             name="URL"
@@ -701,7 +701,7 @@ const clearFileInput = (name: any) => {
                       {/*  */}
                       {/* className={`form-label form-control ${!ValidDraft ? "border-on-error" : ""} ${!ValidSubmit ? "border-on-error" : ""}`} */}
 
-                        <div className="col-lg-3">
+                        <div className="col-lg-4">
                           <div className="mb-3">
                             <div className="d-flex justify-content-between">
                               <div>
@@ -747,9 +747,9 @@ const clearFileInput = (name: any) => {
                           </div>
                         </div>
                                           {/*  */}
-                      <div className="col-lg-4">
-                        <div className="mb-3">
-                          <label htmlFor="title" className="form-label">
+                      <div className="col-lg-2 mt-3">
+                        <div className="mt-3">
+                          <label htmlFor="title" className="form-label mb-0 me-2">
                          Active
                           </label>
 
@@ -763,9 +763,9 @@ const clearFileInput = (name: any) => {
                         </div>
                       </div>
 
-                      <div className="col-lg-4">
-                        <div className="mb-3">
-                          <label htmlFor="title" className="form-label">
+                      <div style={{padding:'0px'}} className="col-lg-6 mt-3">
+                        <div className="mt-3">
+                          <label htmlFor="title" className="form-label mb-0 me-2">
                           Want to Redirect in New Tab ?
                           </label>
 

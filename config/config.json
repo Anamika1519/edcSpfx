@@ -202,6 +202,22 @@
         }
       ]
     },
+    "notification-details-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/notificationDetails/NotificationDetailsWebPart.js",
+          "manifest": "./src/webparts/notificationDetails/NotificationDetailsWebPart.manifest.json"
+        }
+      ]
+    }, 
+    "notification-master-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/notificationMaster/NotificationMasterWebPart.js",
+          "manifest": "./src/webparts/notificationMaster/NotificationMasterWebPart.manifest.json"
+        }
+      ]
+    },
     "quick-links-master-web-part": {
       "components": [
         {
@@ -247,6 +263,8 @@
     "UserProfileWebPartStrings": "lib/webparts/userProfile/loc/{locale}.js",
     "ManageMasterMWebPartStrings": "lib/webparts/manageMasterM/loc/{locale}.js",
     "MasterManageWebPartStrings": "lib/webparts/masterManage/loc/{locale}.js",
+    "NotificationDetailsWebPartStrings": "lib/webparts/notificationDetails/loc/{locale}.js",
+    "NotificationMasterWebPartStrings": "lib/webparts/notificationMaster/loc/{locale}.js",
     "QuickLinkFormWebPartStrings": "lib/webparts/quickLinkForm/loc/{locale}.js",
     "QuickLinksMasterWebPartStrings": "lib/webparts/quickLinksMaster/loc/{locale}.js"
   }
