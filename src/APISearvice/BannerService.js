@@ -4,7 +4,7 @@ export const getDynamicBanner = async (_sp,isSuperAdmin) => {
     const currentUser = await _sp.web.currentUser();
  
   if (isSuperAdmin == "Yes") {
-    await _sp.web.lists.getByTitle("DynamicBanners").items.orderBy("Created",false).getAll()
+    await _sp.web.lists.getByTitle("DynamicBanners").items.select("*,Author/ID,Entity/Entity,Entity/ID").expand("Author,Entity").orderBy("Created",false).getAll()
         .then((res) => {
             console.log(res);
             arr = res;
@@ -15,7 +15,7 @@ export const getDynamicBanner = async (_sp,isSuperAdmin) => {
       }else{
         await _sp.web.lists.getByTitle("DynamicBanners")
         .items
-        .select("*,Author/ID").expand("Author")
+        .select("*,Author/ID,Entity/Entity,Entity/ID").expand("Author,Entity")
         .filter(`AuthorId eq '${currentUser.Id}'`)
         .orderBy("Created",false).getAll()
         .then((res) => {
@@ -47,7 +47,7 @@ export const getBannerByID = async (_sp, id) => {
     
     let arr = []
     let arrs = []
-    await _sp.web.lists.getByTitle("DynamicBanners").items.getById(id).select("ID","Title","URL","IsImage","BannerImage","Description","BannerImageJSON")()
+    await _sp.web.lists.getByTitle("DynamicBanners").items.getById(id).select("EntityId","ID","Title","URL","IsImage","BannerImage","Description","BannerImageJSON")()
         .then((res) => {
             console.log(res, ' let arrs=[]');
                  const parsedValues= {
@@ -58,7 +58,8 @@ export const getBannerByID = async (_sp, id) => {
                   IsImage:res.IsImage==true?"on":"off",
                   IsVedio:res.IsImage==true?"on":"off",
                   ID:res.ID,
-                  Status:res.Status
+                  Status:res.Status,
+                  EntityId:res.EntityId
                   // other fields as needed
               };
 

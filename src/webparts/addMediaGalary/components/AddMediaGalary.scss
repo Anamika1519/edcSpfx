@@ -27,8 +27,8 @@
 
 /* Custom button styling for consistency */
 .btn-success {
-    background-color: #ff6b00;
-    border-color: #ff6b00;
+    background-color: #f37421 ;
+    border-color: #f37421 ;
 }
 
 .btn-light {
@@ -68,7 +68,7 @@ textarea.form-control {
 }
 div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm)
 {
-    background-color: #ff6b00 !important;
+    background-color: #f37421  !important;
 }
 
 .scrollbar

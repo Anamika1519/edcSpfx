@@ -429,7 +429,7 @@ const EntityMastercontext = ({ props }: any) => {
                       <button
                         type="button"
                         className="btn btn-primary waves-effect waves-light"
-                        style={{ background: "#ff6b00" }}
+                        style={{ background: "#f37421 " }}
                       >
                         <FontAwesomeIcon icon={faPlusCircle} className="me-1" />
                         Add
@@ -550,38 +550,7 @@ const EntityMastercontext = ({ props }: any) => {
                               </div>
                             </div>
                           </th>
-                          <th style={{ minWidth: "80px", maxWidth: "80px" }}>
-                            <div className="d-flex flex-column bd-highlight ">
-                              <div
-                                className="d-flex pb-2"
-                                style={{ justifyContent: "space-evenly" }}
-                              >
-                                <span>Status</span>{" "}
-                                <span
-                                  onClick={() => handleSortChange("Status")}
-                                >
-                                  <FontAwesomeIcon icon={faSort} />{" "}
-                                </span>
-                              </div>
-
-                              <div className=" bd-highlight">
-                                <input
-                                  type="text"
-                                  placeholder="Filter by Status"
-                                  onChange={(e) =>
-                                    handleFilterChange(e, "Status")
-                                  }
-                                  onKeyDown={(e) => {
-                                    if (e.key === "Enter" && !e.shiftKey) {
-                                      e.preventDefault(); // Prevents the new line in textarea
-                                    }
-                                  }}
-                                  className="inputcss"
-                                  style={{ width: "100%" }}
-                                />
-                              </div>
-                            </div>
-                          </th>
+                         
                           <th style={{ minWidth: "100px", maxWidth: "100px" }}>
                             <div className="d-flex flex-column bd-highlight ">
                               <div
@@ -634,6 +603,38 @@ const EntityMastercontext = ({ props }: any) => {
                                   placeholder="Filter by EventAgenda"
                                   onChange={(e) =>
                                     handleFilterChange(e, "EventAgenda")
+                                  }
+                                  onKeyDown={(e) => {
+                                    if (e.key === "Enter" && !e.shiftKey) {
+                                      e.preventDefault(); // Prevents the new line in textarea
+                                    }
+                                  }}
+                                  className="inputcss"
+                                  style={{ width: "100%" }}
+                                />
+                              </div>
+                            </div>
+                          </th>
+                          <th style={{ minWidth: "80px", maxWidth: "80px" }}>
+                            <div className="d-flex flex-column bd-highlight ">
+                              <div
+                                className="d-flex pb-2"
+                                style={{ justifyContent: "space-evenly" }}
+                              >
+                                <span>Status</span>{" "}
+                                <span
+                                  onClick={() => handleSortChange("Status")}
+                                >
+                                  <FontAwesomeIcon icon={faSort} />{" "}
+                                </span>
+                              </div>
+
+                              <div className=" bd-highlight">
+                                <input
+                                  type="text"
+                                  placeholder="Filter by Status"
+                                  onChange={(e) =>
+                                    handleFilterChange(e, "Status")
                                   }
                                   onKeyDown={(e) => {
                                     if (e.key === "Enter" && !e.shiftKey) {
@@ -720,6 +721,17 @@ const EntityMastercontext = ({ props }: any) => {
                                 </div>
                               </td>
 
+                             
+                              <td
+                                style={{ minWidth: "100px", maxWidth: "100px" }}
+                              >
+                                {item.Overview}
+                              </td>
+                              <td
+                                style={{ minWidth: "80px", maxWidth: "80px" }}
+                              >
+                                {item.EventAgenda}
+                              </td>
                               <td
                                 style={{
                                   minWidth: "80px",
@@ -731,16 +743,6 @@ const EntityMastercontext = ({ props }: any) => {
                                 <div className="btn  btn-status">
                                   {item.Status}{" "}
                                 </div>{" "}
-                              </td>
-                              <td
-                                style={{ minWidth: "100px", maxWidth: "100px" }}
-                              >
-                                {item.Overview}
-                              </td>
-                              <td
-                                style={{ minWidth: "80px", maxWidth: "80px" }}
-                              >
-                                {item.EventAgenda}
                               </td>
 
                               <td

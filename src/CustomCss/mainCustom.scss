@@ -321,7 +321,7 @@
   }
   :root {
     --white-color: #fff;
-    --blue-color: #ff6b00;
+    --blue-color: #f37421 ;
     --grey-color: #707070;
     --grey-color-light: #aaa;
     --coloradd:#707070;
@@ -337,7 +337,7 @@
   #s4-workspace.dark {
     --white-color: #333;
     --coloradd:#fff;
-    --blue-color: #ff6b00;
+    --blue-color: #f37421 ;
     --grey-color: #f2f2f2;
     --grey-color-light: #aaa;
   }
@@ -360,7 +360,7 @@
   margin-bottom: 15px;
   border-radius: 15px; float: left;
   position: relative;
-  border: 1px solid #ff6b00;
+  border: 1px solid #f37421 ;
 }
 // .btn-primary {
 //   --ct-btn-color: #fff;
@@ -422,20 +422,20 @@ tbody tr:nth-child(odd)
 }
 .btn-primary {
   --ct-btn-color: #fff !important;
-  --ct-btn-bg: #ff6b00 !important;
-  --bs-btn-bg: #ff6b00 !important;
-  --ct-btn-border-color: #ff6b00 !important;
+  --ct-btn-bg: #f37421  !important;
+  --bs-btn-bg: #f37421  !important;
+  --ct-btn-border-color: #f37421  !important;
   --ct-btn-hover-color: #fff !important;
-  --ct-btn-hover-bg: #ff6b00 !important;
-  --ct-btn-hover-border-color: #ff6b00 !important;
+  --ct-btn-hover-bg: #f37421  !important;
+  --ct-btn-hover-border-color: #f37421  !important;
   --ct-btn-focus-shadow-rgb: 145, 112, 203 !important;
   --ct-btn-active-color: #fff !important;
-  --ct-btn-active-bg: #ff6b00 !important;
-  --ct-btn-active-border-color: #ff6b00 !important;
+  --ct-btn-active-bg: #f37421  !important;
+  --ct-btn-active-border-color: #f37421  !important;
   --ct-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125) !important;
   --ct-btn-disabled-color: #fff !important;
-  --ct-btn-disabled-bg: #ff6b00 !important;
-  --ct-btn-disabled-border-color: #ff6b00 !important;
+  --ct-btn-disabled-bg: #f37421  !important;
+  --ct-btn-disabled-border-color: #f37421  !important;
   font-size: 0.875rem;
   border: none;
 }
@@ -534,7 +534,7 @@ box-shadow: 4px 0px 11px -9px rgba(204,204,204,1);
   max-width: unset !important;
 }
 .card {
-  border: 1px solid #ff6b00 !important;
+  border: 1px solid #f37421  !important;
   border-radius: 20px !important;
   box-shadow: 0 3px 20px #1d26260d;
   margin-bottom: 15px;

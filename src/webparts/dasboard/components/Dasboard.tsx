@@ -494,6 +494,7 @@ const HelloWorldContext = ({ props }: any) => {
                                     <p style={{ width: '100%' }} className="font-18 mb-0 mt-0 ps-4 pe-4 py-0">
                                       {item.Title}
                                     </p>
+                                    <div className="newpos1"><span style={{padding:'5px 10px'}} className="badge bg-warning">Global</span></div>
                                     <span style={{ width: '100%' }} className="font-14 nwdescrp mb-1 mt-0 ps-4 pe-4 py-0">
                                       {item.Description}
                                     </span>
@@ -567,14 +568,14 @@ const HelloWorldContext = ({ props }: any) => {
                                       <div className="icon-1 event me-0">
                                         <h4
                                           className="ng-binding"
-                                          style={{ color: "#ff6b00" }}
+                                          style={{ color: "#f37421 " }}
                                         >
                                           {eventDate.getDate()} {/* Display the day */}
                                         </h4>
                                         <p
                                           className="ng-binding"
                                           style={{
-                                            backgroundColor: "#ff6b00",
+                                            backgroundColor: "#f37421 ",
                                             color: "white",
                                           }}
                                         >
@@ -589,7 +590,7 @@ const HelloWorldContext = ({ props }: any) => {
                                     <div className="col-sm-9 upcom2">
                                       <div className="w-100 ps-0 mt-1">
                                         <h4
-                                          className="mb-1 font-14 text-dark lin30 fw-bold"
+                                          className="mb-0 text-dark lin30 fw-bold"
                                           style={{
                                             fontSize: "14px",
                                             overflow: "hidden",
@@ -603,7 +604,8 @@ const HelloWorldContext = ({ props }: any) => {
                                         >
                                           {event.EventName} {/* Event title */}
                                         </h4>
-                                        <p className=" font-12 mb-2">
+                                        <p className="font-12 mt-0 mb-0 text-primary">Sales</p>
+                                        <p className=" font-12 mb-0 mt-1">
 
                                           {moment(formattedDate).format("DD-MMM-YYYY")}
                                           {/* Display the full formatted date (22 Jul 2024) */}
@@ -658,7 +660,7 @@ const HelloWorldContext = ({ props }: any) => {
                     </div> */}
 
                     {/* gallery  */}
-                    <div className="col-xl-12 col-lg-12">
+                    <div className="col-xl-12 col-lg-12 mb-2">
                       <div
                         style={{ float: "left", width: "100%" }}
                         className="card newt desknewview mb-3"
@@ -719,10 +721,11 @@ const HelloWorldContext = ({ props }: any) => {
                                               width="100%"
                                               alt="Gallery"
                                             />
-                                            <div className="appltext font-14">
+                                            <div className="appltext font-14 mb-1">
                                               {item.Title}
 
                                             </div>
+                                            <p className="font-12 mb-2 text-primary">Sales</p>
 
 
                                           </div>
@@ -859,7 +862,7 @@ const HelloWorldContext = ({ props }: any) => {
                                   {news.Overview}
                                 </p>
                                 <p className="mb-3 font-12">
-                                  {moment(news.Modified).format("DD-MMM-YYYY")}
+                              <span>{moment(news.Modified).format("DD-MMM-YYYY")}</span> <span>&nbsp;|&nbsp;</span> <span className="text-primary">Finance</span>
                                 </p>
                               </div>
                             );

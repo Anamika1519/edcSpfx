@@ -27,10 +27,14 @@ export const fetchKnowledgeCentercategory = async (_sp) => {
   return arr;
 }
 export const fetchMediaGallerydata = async (_sp) => {
+  const userProfile = await _sp.profiles.myProperties();
+// console.log("***userProfile", userProfile);
+const currentUserDept = userProfile.UserProfileProperties ? userProfile.UserProfileProperties[userProfile.UserProfileProperties.findIndex(obj => obj.Key === "Department")].Value : "";
+let entity ="Global";
     let arr = []
    
-       await _sp.web.lists.getByTitle("QuickLinks").items.select("*")
-       .expand("").top(10)
+       await _sp.web.lists.getByTitle("QuickLinks").items.select("*,Entity/Entity,Entity/ID")
+       .expand("Entity").filter(`(Entity/Entity eq '${entity}' or Entity/Entity eq '${currentUserDept}' and IsActive eq 1)`).top(10)
        //.filter("Status eq 'Approved'")
        .orderBy("Modified", false)
        ().then((res) => {
@@ -131,9 +135,13 @@ export const fetchMediaGallerydata = async (_sp) => {
   };
   
   export const fetchDynamicdata = async (_sp) => {
-    let arr = []
+    let arr = [];
+    const userProfile = await _sp.profiles.myProperties();
+// console.log("***userProfile", userProfile);
+const currentUserDept = userProfile.UserProfileProperties ? userProfile.UserProfileProperties[userProfile.UserProfileProperties.findIndex(obj => obj.Key === "Department")].Value : "";
+let entity ="Global";
    
-    await _sp.web.lists.getByTitle("DynamicBanners").items.select("*").orderBy('Created', false).top(5).getAll().then((res) => {
+    await _sp.web.lists.getByTitle("DynamicBanners").items.select("*,Entity/Entity,Entity/ID").expand("Entity").filter(`(Entity/Entity eq '${entity}' or Entity/Entity eq '${currentUserDept}')`).orderBy('Created', false).top(5).getAll().then((res) => {
       console.log(res);
    
       //res.filter(x=>x.Category?.Category==str)

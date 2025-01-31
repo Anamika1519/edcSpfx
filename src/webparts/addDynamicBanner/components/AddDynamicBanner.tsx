@@ -82,7 +82,7 @@ const AddDynamicBannerContext = ({ props }: any) => {
   }, []);
 
   const validateForm = async () => {
-    const { title, URL, description } = formData;
+    const { title, URL, description ,EntityId} = formData;
 
     let valid = true;
     let validatetitlelength = false;
@@ -111,6 +111,10 @@ const AddDynamicBannerContext = ({ props }: any) => {
 
       valid = false;
     }
+    else if (!EntityId) {
+      valid = false;
+    }
+   
     setValidSubmit(valid);
     if (!valid)
       Swal.fire(errormsg !== "" ? errormsg : 'Please fill all the mandatory fields.');
@@ -176,6 +180,11 @@ const AddDynamicBannerContext = ({ props }: any) => {
 
   //#region  all api call
   const ApiCallFunc = async () => {
+    const entityDefaultitem = await getEntity(sp);
+    if (entityDefaultitem.find((item) => item.name === 'Global').id) {
+      formData.EntityId = entityDefaultitem.find((item) => item.name === 'Global').id;
+
+    }
     setCurrentUser(await getCurrentUser(sp, siteUrl))
     setBaseUrl(await (getUrl(sp)));
      setEnityData(await getEntity(sp)) //Entity
@@ -206,10 +215,14 @@ const AddDynamicBannerContext = ({ props }: any) => {
           EntityId:setBannerById[0].EntityId?setBannerById[0].EntityId:0,
         }
         let banneimagearr = []
-        // banneimagearr = JSON.parse(setBannerById[0].BannerImage)
-        banneimagearr = setBannerById[0].BannerImage
-        console.log(setBannerById, 'setBannerById', setBannerById[0].BannerImage, banneimagearr);
-        setBannerImagepostArr(banneimagearr);
+        if(setBannerById[0].BannerImage != null && setBannerById[0].BannerImage != "null"){
+          banneimagearr.push(JSON.parse(setBannerById[0].BannerImage));
+          // banneimagearr = setBannerById[0].BannerImage
+          console.log(setBannerById, 'setBannerById', setBannerById[0].BannerImage, banneimagearr);
+          setBannerImagepostArr(banneimagearr);
+
+        }
+       
         setFormData(arr)
       }
     }
@@ -221,7 +234,7 @@ const AddDynamicBannerContext = ({ props }: any) => {
     debugger
     setFormData((prevData) => ({
       ...prevData,
-      [name]: value,
+      [name]:name === "EntityId" ? Number(value): value,
     }));
   };
   //#endregion
@@ -235,7 +248,7 @@ const AddDynamicBannerContext = ({ props }: any) => {
 
     if (event.target.files && event.target.files.length > 0) {
       const files = Array.from(event.target.files);
-
+      (event.target as HTMLInputElement).value = '';
       if (libraryName === "bannerimg") {
         const imageVideoFiles = files.filter(file =>
           file.type.startsWith('image/')
@@ -247,8 +260,11 @@ const AddDynamicBannerContext = ({ props }: any) => {
         if (imageVideoFiles.length > 0) {
           const arr = {
             files: imageVideoFiles,
+            name:imageVideoFiles[0].name,
+            size:imageVideoFiles[0].size,
             libraryName: libraryName,
-            docLib: docLib
+            docLib: docLib,
+            fileUrl: URL.createObjectURL(imageVideoFiles[0])
           };
           uloadBannerImageFiles.push(arr);
           //setBannerImagepostArr(uloadBannerImageFiles);
@@ -472,8 +488,8 @@ const AddDynamicBannerContext = ({ props }: any) => {
   //   }
   // }
   const handleFormSubmit = async () => {
-    if (!validateForm()) return;
-debugger
+    if (await validateForm()){
+// debugger
     try {
       setLoading(true);
 
@@ -556,6 +572,7 @@ debugger
     } finally {
       setLoading(false);
     }
+  }
   };
   //#endregion
   console.log(bannerByIDArr, 'bannerByID');
@@ -567,8 +584,8 @@ debugger
   const deleteLocalFile = (index: number, filArray: any[], title: string, name: string) => {
     debugger
     // Remove the file at the specified index
-    filArray[0].files.splice(index, 1);
-
+    // filArray[0].files.splice(index, 1);
+    filArray.splice(index, 1);
     // Update the state based on the title
     if (name === "bannerimg") {
       setBannerImagepostArr([...filArray]);
@@ -652,7 +669,7 @@ debugger
                       <div className="col-lg-4">
                         <div className="mb-3">
                           <label htmlFor="EntityId" className="form-label">
-                            Department 
+                            Department <span className="text-danger">*</span>
                           </label>
                           <select
                             className={`form-control ${(!ValidSubmit) ? "border-on-error" : ""}`}
@@ -662,7 +679,7 @@ debugger
                             onChange={(e) => onChange(e.target.name, e.target.value)}
                             disabled={InputDisabled}
                           >
-                            <option value="0">Select</option>
+                            <option value="">Select</option>
                             {
                               EnityData.map((item, index) => (
                                 <option key={index} value={item.id}>{item.name}</option>
@@ -680,9 +697,9 @@ debugger
                               </label>
                             </div>
                             <div>
-                              {BnnerImagepostArr != undefined && BnnerImagepostArr.length > 0 ?
-                                (<><a style={{ fontSize: '0.875rem' }}>
-                                  <FontAwesomeIcon icon={faPaperclip} /> 1 file Attached {BnnerImagepostArr[0]?.fieldName}
+                              {BnnerImagepostArr != undefined && BnnerImagepostArr.length > 0&& BnnerImagepostArr != null ?
+                                (<><a style={{ fontSize: '0.875rem' }}  onClick={() => setShowModalFunc(true, "bannerimg")}>
+                                  <FontAwesomeIcon icon={faPaperclip} /> 1 file Attached
                                 </a>
                                   {/* <img src={`${BnnerImagepostArr[0]?.serverUrl + BnnerImagepostArr[0]?.serverRelativeUrl}`} /> */}
                                 </>
@@ -766,7 +783,7 @@ debugger
               </div>
             </div>
             {/* Modal to display uploaded files */}
-            {BnnerImagepostArr != undefined && BnnerImagepostArr.length > 0 ?
+            {BnnerImagepostArr != undefined && BnnerImagepostArr.length > 0 && BnnerImagepostArr != null ?
               <Modal show={showModal} onHide={() => setShowModal(false)}>
                 <Modal.Header closeButton>
                   {BnnerImagepostArr.length > 0 && showBannerModal && <Modal.Title>Banner Images</Modal.Title>}
@@ -779,6 +796,7 @@ debugger
                           <thead style={{ background: '#eef6f7' }}>
                             <tr>
                               <th>Serial No.</th>
+                              <th> Image </th>
                               <th>File Name</th>
                               {editForm ? "" : <th>File Size</th>}
                               <th className='text-center'>Action</th>
@@ -789,6 +807,10 @@ debugger
                               BnnerImagepostArr.map((file: any, index: number) => (
                                 <tr key={index}>
                                   <td className='text-center'>{index + 1}</td>
+                                  <td>
+                                    <img className='imagefe' src={file.fileUrl?file.fileUrl:`${file.serverUrl}${file.serverRelativeUrl}`}
+                                    />
+                                  </td>
                                   <td>{file.fileName}</td>
                                   {editForm ? <td className='text-center'> <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, BnnerImagepostArr, BnnerImagepostArr[0].docLib, "bannerimg")} /> </td> : <td className='text-center'> <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, BnnerImagepostArr, BnnerImagepostArr[0].docLib, "bannerimg")} /> </td>
                                   }
@@ -796,6 +818,10 @@ debugger
                               )) : BnnerImagepostArr.map((file: any, index: number) => (
                                 <tr key={index}>
                                   <td className='text-center'>{index + 1}</td>
+                                  <td>
+                                    <img className='imagefe' src={file.fileUrl}
+                                    />
+                                  </td>
                                   <td>{file.name}</td>
                                   {editForm ? "" : <td className='text-right'>{file.size}</td>}
                                   {editForm ? <td className='text-center'> <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, BnnerImagepostArr, BnnerImagepostArr[0].docLib, "bannerimg")} /> </td> : <td className='text-center'> <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, BnnerImagepostArr, BnnerImagepostArr[0].docLib, "bannerimg")} /> </td>

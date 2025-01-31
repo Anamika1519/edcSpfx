@@ -1,11 +1,15 @@
 export const fetchEventdata = async (_sp) => {
-  let arr = []
+  let arr = [];
+  const userProfile = await _sp.profiles.myProperties();
+  // console.log("***userProfile", userProfile);
+  const currentUserDept = userProfile.UserProfileProperties ? userProfile.UserProfileProperties[userProfile.UserProfileProperties.findIndex(obj => obj.Key === "Department")].Value : "";
+  let entity = "Global";
   const today = new Date();
       today.setHours(0, 0, 0, 0); 
      await _sp.web.lists.getByTitle("ARGEventMaster")
-     .items.select("*,Attendees/Id,Attendees/Title,Attendees/EMail")
-     .expand("Attendees")
-     .filter(`Status eq 'Approved'`)
+     .items.select("*,Attendees/Id,Attendees/Title,Attendees/EMail,Entity/Entity,Entity/ID")
+     .expand("Attendees,Entity")
+     .filter(`(Entity/Entity eq '${entity}' or Entity/Entity eq '${currentUserDept}') and Status eq 'Approved'`)
      .orderBy("EventDate",true)      
      ().then((res) => {
       console.log(res);

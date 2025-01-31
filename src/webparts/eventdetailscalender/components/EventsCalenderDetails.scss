@@ -11,12 +11,13 @@
     margin: 10px 0;
     padding: 8px 10px;
     color: #fff;
-    background-color: #008751 !important;
+    background-color: #666666 !important;
     width: 180px;
     border-radius: 4px; text-align: center;
 }
-.btn-primary{border-color: #ff6b00 !important;}
-.form-control:focus{box-shadow: none !important; outline: 0px solid #ff6b00 !important;}
+.btn-primary{border-color: #f37421  !important;}
+.text-primary{color: #f37421  !important;}
+.form-control:focus{box-shadow: none !important; outline: 0px solid #f37421  !important;}
 .EventAttendes svg{margin-top: -4px; margin-right: 5px; }
 .eventtextnew {
     font-size: 14px;

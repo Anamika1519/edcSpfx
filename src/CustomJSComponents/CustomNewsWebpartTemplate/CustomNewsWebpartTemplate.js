@@ -126,7 +126,7 @@ const CustomNewsWebpartTemplate = ({ _sp, SiteUrl }) => {
                                 <div className="col-lg-7">
                                     <div className="row" style={{ paddingLeft: '0.5rem' }}>
                                         <div className="col-sm-4 text-left">
-                                            <span style={{ padding: '5px', borderRadius: '4px', fontWeight: '500', color: '#007847', background: '#c3f6e1' }} className="font-14 float-start mt-2">
+                                            <span style={{ padding: '5px 12px', borderRadius: '4px', fontWeight: '600', color: '#007847', background: '#c3f6e1' }} className="font-14 float-start mt-2">
                                                 Latest News</span>
 
                                         </div>
@@ -137,12 +137,17 @@ const CustomNewsWebpartTemplate = ({ _sp, SiteUrl }) => {
                                         <div className="row">
                                             <div className="col-sm-12">
                                                 <p className="mb-2 mt-1 d-block text-dark customhead">
-                                                    <span style={{ fontWeight: '400' }} className="pe-2 text-nowrap font-14 mb-0 d-inline-block">
+                                                    <span style={{ fontWeight: '400' }} className="text-nowrap font-14 mb-0 d-inline-block">
                                                         <Calendar size={12} strokeWidth={1} className="pl-2 text-muted" style={{ fontWeight: '400' }} />&nbsp;
-                                                        {moment(item.Modified).format("DD-MMM-YYYY")} &nbsp;  &nbsp;  &nbsp;|
+                                                        {moment(item.Modified).format("DD-MMM-YYYY")}  &nbsp;&nbsp;| &nbsp;  &nbsp; 
                                                     </span>
                                                     <span style={{ fontWeight: '400' }} className="text-nowrap mb-0  font-14 text-muted2 d-inline-block">
-                                                        Author: <span style={{ color: '#009157', fontWeight: '600' }}>{item.Author.Title}
+                                                        Author: <span style={{ color: '#009157', fontWeight: '600' }}>{item.Author.Title}  
+                                                        </span>
+                                                        </span>
+
+                                                        <span style={{ fontWeight: '400' }} className="text-nowrap mb-0  font-14 text-muted2 d-inline-block">
+                                                        <span style={{ color: '#f37421 ', fontWeight: '600' }}>&nbsp;&nbsp;  |&nbsp; &nbsp;Sales 
                                                         </span>
 
                                                     </span></p>
@@ -193,14 +198,18 @@ const CustomNewsWebpartTemplate = ({ _sp, SiteUrl }) => {
                                             </div>
                                             <div className="col-sm-9">
                                                 <div className="row">
-                                                    <div className="col-sm-4 date-color">
-                                                        <span className="font-12 date-color float-start mt-0 mb-1 ng-binding" style={{ color: '#6b6b6b', fontSize: '12px', paddingRight: '0.2rem' }}>
-                                                            <Calendar size={12} color="#6b6b6b" strokeWidth={2} style={{ fontWeight: '400' }} /></span>
+                                                    <div className="col-sm-4">
+                                                        {/* <span className="font-12 date-color float-start mt-0 mb-1 ng-binding" style={{ color: '#6b6b6b', fontSize: '12px', paddingRight: '0.2rem' }}>
+                                                            <Calendar size={12} color="#6b6b6b" strokeWidth={2} style={{ fontWeight: '400' }} /></span> */}
 
-                                                        <span className="font-12 date-color float-start mt-0 mb-1 ng-binding" style={{ color: '#6b6b6b', fontSize: '12px' }}>{moment(item.Modified).format("DD-MMM-YYYY")}
+                                                        <span className="font-13 date-color float-start  mb-1 ng-binding" style={{ color: '#6b6b6b', fontSize: '12px',marginTop: '0px' }}>{moment(item.Modified).format("DD-MMM-YYYY")}
                                                             {/* 12-Mar-2024 18:37 */}
                                                         </span>
+                                                        <span  style={{float:'left', marginTop:'2px', fontSize:'12px', marginLeft:'3px', marginRight:'3px'}}>&nbsp;|&nbsp;</span> <span style={{float:'left'}} className="font-13 mt-0 mb-1 text-primary">Sales</span>
                                                     </div>
+
+
+
                                                 </div>
                                                 <div className="w-100">
                                                     <a >  <h4 onClick={() => gotoNewsDetails(item)} className="hovertext mt-1 mb-1 font-16 fw-bold ng-binding" style={{ color: '#343a40', fontSize: '16px' }}> {truncateText(item.Title, 80)}
@@ -238,7 +247,7 @@ const CustomNewsWebpartTemplate = ({ _sp, SiteUrl }) => {
 
                 </div>
                 {itemsToShow < NewsData.length && (
-                    <div className="col-12 text-center mt-3">
+                    <div className="col-12 text-center mt-3 mb-3">
                         <button onClick={loadMore} className="btn btn-primary">
                             Load More
                         </button>

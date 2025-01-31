@@ -448,9 +448,10 @@ const EventcalenderContext = ({ props }: any) => {
                             <div className="col-sm-9">
                               <div className="row">
                                 <div className="col-sm-12">
-                                  <span className="font-13 float-start mt-0 mb-1">
+                                  <span className="font-13 float-start me-1 mt-0 mb-1">
                                     {moment(item.EventDate).format("DD-MMM-YYYY")}
                                   </span>
+                                  <span  style={{float:'left', marginTop:'1px', marginRight:'3px'}}>&nbsp;|&nbsp;</span> <span style={{float:'left'}} className="font-13 mt-0 mb-1 text-primary">Sales</span>
                                 </div>
                               </div>
 
@@ -465,6 +466,7 @@ const EventcalenderContext = ({ props }: any) => {
                                 >
                                   {truncateText(item.EventName, 90)}
                                 </h4> </a></div>
+                                
                               <p
                                 style={{ color: "#6b6b6b", fontSize: '15px' }}
                                 className="mb-2  text-muted"
@@ -624,7 +626,7 @@ const EventcalenderContext = ({ props }: any) => {
                     );
                   })}
                   {itemsToShow < dataofevent.length && (
-                    <div className="col-12 text-center mt-3">
+                    <div className="col-12 text-center mt-3 mb-3">
                       <button onClick={loadMore} className="btn btn-primary">
                         Load More
                       </button>

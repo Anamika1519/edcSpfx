@@ -103,6 +103,10 @@ a:hover
 .dropcss a:focus{
     background-color: #f8f9fa !important;
 }
+.customhead svg {
+    margin-top: 2px;
+
+}
 @media(max-width:640px){
     .parah{height: 7em !important;}
     .heauu{height: auto !important;}

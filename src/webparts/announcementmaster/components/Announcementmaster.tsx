@@ -632,7 +632,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                     <a onClick={() => GotoAdd(`${siteUrl}/SitePages/AddAnnouncement.aspx`)}>
 
-                      <div className="btn btn-primary waves-effect waves-light" style={{ background: '#ff6b00', width: '80px' }}>
+                      <div className="btn btn-primary waves-effect waves-light" style={{ background: '#f37421 ', width: '80px' }}>
 
                         <FontAwesomeIcon icon={faPlusCircle} className="me-1" />
 
@@ -786,23 +786,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                               </th>
 
-                              <th style={{ minWidth: '100px', maxWidth: '100px' }}>
-
-                                <div className="d-flex flex-column bd-highlight ">
-
-                                  <div className="d-flex  pb-2" style={{ justifyContent: 'space-evenly' }}>  <span >Status</span>  <span onClick={() => handleSortChange('Status')}><FontAwesomeIcon icon={faSort} /> </span></div>
-
-                                  <div className=" bd-highlight">     <input type="text" placeholder="Filter by Status" onChange={(e) => handleFilterChange(e, 'Status')}
-                                    onKeyDown={(e) => {
-                                      if (e.key === 'Enter' && !e.shiftKey) {
-                                        e.preventDefault(); // Prevents the new line in textarea
-                                      }
-                                    }}
-                                    className='inputcss' style={{ width: '100%' }} /></div>
-
-                                </div>
-
-                              </th>
+                             
 
                               <th style={{ minWidth: '100px', maxWidth: '100px' }}>
 
@@ -816,6 +800,23 @@ const Announcementmastercontext = ({ props }: any) => {
                                         e.preventDefault(); // Prevents the new line in textarea
                                       }
                                     }} className='inputcss' style={{ width: '100%' }} /></div>
+
+                                </div>
+
+                              </th>
+                              <th style={{ minWidth: '100px', maxWidth: '100px' }}>
+
+                                <div className="d-flex flex-column bd-highlight ">
+
+                                  <div className="d-flex  pb-2" style={{ justifyContent: 'space-evenly' }}>  <span >Status</span>  <span onClick={() => handleSortChange('Status')}><FontAwesomeIcon icon={faSort} /> </span></div>
+
+                                  <div className=" bd-highlight">     <input type="text" placeholder="Filter by Status" onChange={(e) => handleFilterChange(e, 'Status')}
+                                    onKeyDown={(e) => {
+                                      if (e.key === 'Enter' && !e.shiftKey) {
+                                        e.preventDefault(); // Prevents the new line in textarea
+                                      }
+                                    }}
+                                    className='inputcss' style={{ width: '100%' }} /></div>
 
                                 </div>
 
@@ -921,7 +922,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                     >
 
-                                      <div className='btn btn-status'>{item.Status} </div>
+                                      <div className='btn  btn-light'>      {moment(item.Created).format("L")} </div>
 
                                     </td>
 
@@ -938,7 +939,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                                     >
 
-                                      <div className='btn  btn-light'>      {moment(item.Created).format("L")} </div>
+                                      <div className='btn btn-status'>{item.Status} </div>
 
                                     </td>
 

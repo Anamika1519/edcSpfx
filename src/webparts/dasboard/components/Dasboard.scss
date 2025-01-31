@@ -37,7 +37,7 @@
 .carousel-inner{background: #fff;}
 .line18{line-height: 1.8 !important;}
 .news-feed{height: 721px;}
-.upcom2 h4:hover, .news-feed h4:hover, .announcementner h4:hover{color: #ff6b00 !important; cursor: pointer !important;}
+.upcom2 h4:hover, .news-feed h4:hover, .announcementner h4:hover{color: #f37421  !important; cursor: pointer !important;}
 .newalignv{
     overflow: hidden;
     text-overflow: ellipsis;
@@ -45,11 +45,16 @@
     padding-right: 40px;
 } 
 .footer{bottom: -61px;}
+.newpos1{
+    position: absolute;
+    top: 15px;
+    left: 20px;
+}
 .newwidth6{width: 20% !important; }
 .appltext{margin-top: 7px;}
-.aaplnbg{background: #f6f6f6;height: 130px; padding: 25px 0px 0px 0px; margin-top: 13px; border: 1px solid #f6f6f6; border-radius: 8px; text-align: center;}
+.aaplnbg{background: #f6f6f6;height: 130px; padding: 13px 0px 0px 0px; margin-top: 13px; border: 1px solid #f6f6f6; border-radius: 8px; text-align: center;}
 .gheightnew{height: 400px;}
-.aaplnbg:hover{cursor: pointer;border: 1px solid #ff6b00;}
+.aaplnbg:hover{cursor: pointer;border: 1px solid #f37421 ;}
 .margin01{margin-top: 5px;}
 .float-right{float: right;}
 .justify-between{gap:20px;}
@@ -243,7 +248,7 @@
         padding: .52rem 0;
     
     }
-    .aaplnbg{height: 180px; padding-top: 40px;}
+    .aaplnbg{height: 180px; padding-top: 25px;}
     .gheightl {
         height: 438px;
     }
@@ -474,7 +479,7 @@ img, svg {
         .news-feed {
             height: 802px;
         }
-        .aaplnbg{height: 145px; padding-top: 30px;}
+        .aaplnbg{height: 145px; padding-top: 20px;}
 }
 
 @media(max-width:1440px){
@@ -485,7 +490,7 @@ img, svg {
     .event h4 {
         height: 40px;
     }
-    .aaplnbg{height: 135px; padding-top: 25px;}
+    .aaplnbg{height: 135px; padding-top: 15px;}
     .heifgtgal{height: 377px;}
     .event{margin-bottom: 1px;
         margin-top: 8px;}

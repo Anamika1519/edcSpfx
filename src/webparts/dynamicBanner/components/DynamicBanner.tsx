@@ -361,7 +361,7 @@ const DynamicBannercontext = ({ props }: any) => {
                       </button>
                     </a>
                     <a href={`${siteUrl}/SitePages/BannerForm.aspx`} onClick={() => goToAddForm()}>
-                      <button type="button" className="btn btn-primary waves-effect waves-light" style={{ background: '#ff6b00' }}>
+                      <button type="button" className="btn btn-primary waves-effect waves-light" style={{ background: '#f37421 ' }}>
                         <FontAwesomeIcon icon={faPlusCircle} className="me-1" />
                         Add
                       </button>
@@ -436,9 +436,9 @@ const DynamicBannercontext = ({ props }: any) => {
                           <th style={{ minWidth: '40px', maxWidth: '40px' }}>
                             <div className="d-flex flex-column bd-highlight ">
                               <div className="d-flex pb-2" style={{ justifyContent: 'space-evenly' }}>
-                                <span >Status</span>  <span onClick={() => handleSortChange('Status')}><FontAwesomeIcon icon={faSort} /> </span></div>
+                                <span >SubmittedDate</span>  <span onClick={() => handleSortChange('SubmittedDate')}><FontAwesomeIcon icon={faSort} /> </span></div>
                               <div className=" bd-highlight">
-                                <input type="text" placeholder="Filter by Status" onChange={(e) => handleFilterChange(e, 'Status')}
+                                <input type="text" placeholder="Filter by SubmittedDate" onChange={(e) => handleFilterChange(e, 'SubmittedDate')}
                                   onKeyDown={(e) => {
                                     if (e.key === 'Enter' && !e.shiftKey) {
                                       e.preventDefault(); // Prevents the new line in textarea
@@ -451,9 +451,9 @@ const DynamicBannercontext = ({ props }: any) => {
                           <th style={{ minWidth: '40px', maxWidth: '40px' }}>
                             <div className="d-flex flex-column bd-highlight ">
                               <div className="d-flex pb-2" style={{ justifyContent: 'space-evenly' }}>
-                                <span >SubmittedDate</span>  <span onClick={() => handleSortChange('SubmittedDate')}><FontAwesomeIcon icon={faSort} /> </span></div>
+                                <span >Status</span>  <span onClick={() => handleSortChange('Status')}><FontAwesomeIcon icon={faSort} /> </span></div>
                               <div className=" bd-highlight">
-                                <input type="text" placeholder="Filter by SubmittedDate" onChange={(e) => handleFilterChange(e, 'SubmittedDate')}
+                                <input type="text" placeholder="Filter by Status" onChange={(e) => handleFilterChange(e, 'Status')}
                                   onKeyDown={(e) => {
                                     if (e.key === 'Enter' && !e.shiftKey) {
                                       e.preventDefault(); // Prevents the new line in textarea
@@ -493,9 +493,10 @@ const DynamicBannercontext = ({ props }: any) => {
                                 <td style={{ minWidth: '30px', maxWidth: '30px' }}><div style={{ marginLeft: '20px' }} className='indexdesign'> {index + 1}</div>  </td>
                                 <td style={{ minWidth: '150px', maxWidth: '150px' }}>{item.Title}</td>
 
-                                <td style={{ minWidth: '40px', maxWidth: '40px' }}>  <div className='btn btn-status'> {item.Status} </div> </td>
+                               
                                 <td style={{ minWidth: '40px', maxWidth: '40px' }}>  <div className='btn btn-status'> {item.Entity?.Entity} </div> </td>
                                 <td style={{ minWidth: '40px', maxWidth: '40px' }}> <div className='btn btn-light'>{moment(item.Created).format("DD-MMM-YYYY")} </div> </td>
+                                <td style={{ minWidth: '40px', maxWidth: '40px' }}>  <div className='btn btn-status'> {item.Status} </div> </td>
                                 <td style={{ minWidth: '50px', maxWidth: '50px' }} className="ng-binding">
                                 {
                                       isIntranetAdmin ? (

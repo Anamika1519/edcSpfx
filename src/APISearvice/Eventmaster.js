@@ -34,8 +34,12 @@ export const getAllEventMaster = async (_sp,isSuperAdmin) => {
 export const getAllEventMasternonselected = async (_sp,Idnum) => {
   debugger
   let arr = []
-  let str = "Announcements"
-  await _sp.web.lists.getByTitle("ARGEventMaster").items.select("*,Entity/ID,Entity/Entity").expand("Entity").filter(`ID ne ${Idnum}`)
+  let str = "Announcements";
+  const userProfile = await _sp.profiles.myProperties();
+  // console.log("***userProfile", userProfile);
+  const currentUserDept = userProfile.UserProfileProperties ? userProfile.UserProfileProperties[userProfile.UserProfileProperties.findIndex(obj => obj.Key === "Department")].Value : "";
+  let entity = "Global";
+  await _sp.web.lists.getByTitle("ARGEventMaster").items.select("*,Entity/ID,Entity/Entity").expand("Entity").filter(`(Entity/Entity eq '${entity}' or Entity/Entity eq '${currentUserDept}') and ID ne ${Idnum}`)
   .top(3).orderBy("EventDate",true).getAll()
     .then((res) => {
       
@@ -315,9 +319,8 @@ export const getEventByID = async (_sp, id) => {
 export const getARGEventMasterDetailsById = async (_sp, idNum) => {
   let arr = []
   let arr1 = []
-  debugger
-debugger
-  await _sp.web.lists.getByTitle("ARGEventMaster").items.getById(idNum).select("*,Attendees/Id,Attendees/Title").expand("Attendees")()
+  
+  await _sp.web.lists.getByTitle("ARGEventMaster").items.getById(idNum).select("*,Attendees/Id,Attendees/Title,Entity/Entity,Entity/ID").expand("Attendees,Entity")()
     .then(async(res) => {
       console.log(res,"rererererererere")
       // for (var i = 0; i < res.length; i++) {

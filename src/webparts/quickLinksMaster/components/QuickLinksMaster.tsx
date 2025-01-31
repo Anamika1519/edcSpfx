@@ -220,7 +220,7 @@ const QuickLinksMasterContext = ({ props }: any) => {
                       </button>
                     </a>
                     <a href={`${siteUrl}/SitePages/QuickLinksForm.aspx`} onClick={() => goToAddForm()}>
-                      <button type="button" className="btn btn-primary waves-effect waves-light" style={{ background: '#ff6b00' }}>
+                      <button type="button" className="btn btn-primary waves-effect waves-light" style={{ background: '#f37421 ' }}>
                         <FontAwesomeIcon icon={faPlusCircle} className="me-1" />
                         Add
                       </button>

@@ -408,10 +408,10 @@ const VerticalContext = ({ _context }: any) => {
 
                 <ul className="sub-menu blank navlinkcss" style={{ background: 'transparent', padding: 'unset', alignItems: 'start', boxShadow: '0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12)' }}>
                   <div style={{
-                    color: '#fff', textDecoration: 'none', background: '#ff6b00', paddingLeft: '0.6rem',
+                    color: '#fff', textDecoration: 'none', background: '#f37421 ', paddingLeft: '0.6rem',
                     display: 'flex', height: '40px', alignItems: 'center'
                   }} >
-                    <li className='' style={{ background: '#ff6b00', color: 'white' }} >
+                    <li className='' style={{ background: '#f37421 ', color: 'white' }} >
                       <a className="link_name" style={{ textDecoration: 'unset', color: 'white' }}>
                         <span className={classNames('navlink ', {
                           active: item.ID == useActive

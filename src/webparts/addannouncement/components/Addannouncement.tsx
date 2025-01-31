@@ -240,7 +240,14 @@ const AddannouncementContext = ({ props }: any) => {
     setCategoryData(await getCategory(sp, Number(formData.Type)))
 
     }
-    
+    const entityDefaultitem = await getEntity(sp);
+    if(entityDefaultitem.find((item) => item.name === 'Global').id){
+      formData.entity = entityDefaultitem.find((item) => item.name === 'Global').id;
+
+    }
+   
+   
+   
     setBaseUrl(await (getUrl(sp))) //baseUrl
     let formitemid;
     //#region getdataByID
@@ -416,10 +423,10 @@ const AddannouncementContext = ({ props }: any) => {
         //Swal.fire('Error', 'Category is required!', 'error');
         valid = false;
       }
-      //  else if (!entity) {
-      //   //Swal.fire('Error', 'Entity is required!', 'error');
-      //   valid = false;
-      // }
+       else if (!entity) {
+        //Swal.fire('Error', 'Entity is required!', 'error');
+        valid = false;
+      }
        else if (!overview) {
         //Swal.fire('Error', 'Entity is required!', 'error');
         valid = false;
@@ -1384,7 +1391,7 @@ const closeModal = () => {
 
     if (event.target.files && event.target.files.length > 0 && event.target.files.length < 6) {
       const files = Array.from(event.target.files);
-
+      (event.target as HTMLInputElement).value = '';
       // if (libraryName === "Docs") {
       //   const docFiles = files.filter(file =>
       //     file.type === 'application/pdf' ||
@@ -1476,7 +1483,7 @@ const closeModal = () => {
                   "ID": 0,
                   "Createdby": "",
                   "Modified": "",
-                  "fileUrl": "",
+                  "fileUrl": URL.createObjectURL(ele),
                   "fileSize": ele.size,
                   "fileType": ele.type,
                   "fileName": ele.name
@@ -1494,7 +1501,7 @@ const closeModal = () => {
                   "ID": 0,
                   "Createdby": "",
                   "Modified": "",
-                  "fileUrl": "",
+                  "fileUrl": URL.createObjectURL(ele),
                   "fileSize": ele.size,
                   "fileType": ele.type,
                   "fileName": ele.name
@@ -1867,11 +1874,11 @@ const closeModal = () => {
                     <div className="col-lg-4">
                       <div className="mb-3">
                         <label htmlFor="entity" className="form-label">
-                          Department 
+                          Department <span className="text-danger">*</span>
                         </label>
                         <select
-                           className="form-select inputcss"
-                          //className={`form-control ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                          //  className="form-select inputcss"
+                          className={`form-control ${(!ValidSubmit) ? "border-on-error" : ""}`}
                           id="entity"
                           name="entity"
                           value={formData.entity}
@@ -1880,7 +1887,7 @@ const closeModal = () => {
                           disabled={InputDisabled}
 
                         >
-                          <option value="0">Select</option>
+                          <option value="">Select</option>
                           {
                             EnityData.map((item, index) => (
                               <option key={index} value={item.id}>{item.name}</option>
@@ -2286,7 +2293,7 @@ const closeModal = () => {
                             <tr key={index}>
                               <td className='text-center'>{index + 1}</td>
                               <td>  
-                                <img className='imagefe' src={`${siteUrl}/AnnouncementAndNewsGallary/${file.fileName}`}
+                                <img className='imagefe' src={file.fileUrl ?file.fileUrl :`${siteUrl}/AnnouncementAndNewsGallary/${file.fileName}`}
                                   style={{ cursor: 'pointer' }}
                                   onClick={() => handleShow(
                                     `${siteUrl}/AnnouncementAndNewsGallary/${file.fileName}`

@@ -92,9 +92,15 @@ const [ImagepostArr, setImagepostArr] = React.useState([]);
 
 
             //#endregion
-          const ApiCallFunc = async () => {
-                setEnityData(await getEntity(sp)) //Entity
-        //     // setCurrentUser(await getCurrentUser(sp, siteUrl)) 
+  const ApiCallFunc = async () => {
+    const entityDefaultitem = await getEntity(sp);
+    if (entityDefaultitem.find((item) => item.name === 'Global').id) {
+      formData.EntityId = entityDefaultitem.find((item) => item.name === 'Global').id;
+
+    }
+    setEnityData(await getEntity(sp)) //Entity
+   
+        //     // setCurrentUser(await getCurrentUser(sp, siteUrl))
         //     const Currusers :any= await getCurrentUser(sp, siteUrl);
         //     const users = await sp.web.siteUsers();
         
@@ -121,20 +127,20 @@ const [ImagepostArr, setImagepostArr] = React.useState([]);
         // sessionStorage.setItem("quicklinkId", encryptedId)
          let formitemid;
             //#region getdataByID
-            if (sessionStorage.getItem("quicklinkId") != undefined) {
+            if (sessionStorage.getItem("quicklinkId") != undefined && sessionStorage.getItem("quicklinkId") != null) {
               const iD = sessionStorage.getItem("quicklinkId")
               let iDs = decryptId(iD)
               formitemid = Number(iDs);
               setFormItemId(Number(iDs))
             }
-            else {
-              let formitemidparam = getUrlParameterValue('contentid');
-              if (formitemidparam) {
-                formitemid = Number(formitemidparam);
-                setFormItemId(Number(formitemid));
-              }
-            }
-        
+            // else {
+            //   let formitemidparam = getUrlParameterValue('contentid');
+            //   if (formitemidparam) {
+            //     formitemid = Number(formitemidparam);
+            //     setFormItemId(Number(formitemid));
+            //   }
+            // }
+       
             //#region getdataByID
         
         
@@ -195,7 +201,7 @@ const [ImagepostArr, setImagepostArr] = React.useState([]);
                 //#endregion
 
      const validateForm = async (fmode: FormSubmissionMode) => {
-            const { Title,URL, RedirectTONewTab } = formData;
+            const { Title,URL, RedirectTONewTab,EntityId } = formData;
             // const { description } = richTextValues;
             let valid = true;
             let validateOverview:boolean = false;
@@ -218,6 +224,9 @@ const [ImagepostArr, setImagepostArr] = React.useState([]);
          } else if (!URL) {
            //Swal.fire('Error', 'Type is required!', 'error');
            valid = false;
+         }
+         else if(!EntityId){
+          valid = false;
          }
          else if(BnnerImagepostArr.length == 0 ){
           valid = false;
@@ -670,7 +679,7 @@ const clearFileInput = (name: any) => {
                       <div className="col-lg-4">
                         <div className="mb-3">
                           <label htmlFor="EntityId" className="form-label">
-                            Department 
+                            Department <span className="text-danger">*</span>
                           </label>
                           <select
                             className={`form-control ${(!ValidSubmit) ? "border-on-error" : ""}`}
@@ -680,7 +689,7 @@ const clearFileInput = (name: any) => {
                             onChange={(e) => onChange(e.target.name, e.target.value)}
                             disabled={InputDisabled}
                           >
-                            <option value="0">Select</option>
+                            <option value="">Select</option>
                             {
                               EnityData.map((item, index) => (
                                 <option key={index} value={item.id}>{item.name}</option>

@@ -326,10 +326,13 @@ const HelloWorldContext = ({ props }: any) => {
       // else if (EventDate && RegistrationDueDate && moment(new Date(RegistrationDueDate)).format("DD-MM-YYYY") > moment(new Date(EventDate)).format("DD-MM-YYYY")) {
       //   valid = false;
       // }
-      // else if (!EntityId) {
-      //   valid = false;
-      // }
+      else if (!EntityId) {
+        valid = false;
+      }
       else if (BnnerImagepostArr.length == 0) {
+        valid = false;
+      }
+      else if (EventGalleryArr1.length == 0) {
         valid = false;
       }
       // else if (EventGalleryArr1.length == 0) {
@@ -1006,6 +1009,11 @@ const HelloWorldContext = ({ props }: any) => {
   const ApiCallFunc = async () => {
     setCurrentUser(await getCurrentUser(sp, siteUrl)) //currentUser
     setEnityData(await getEntity(sp)) //Entity
+     const entityDefaultitem = await getEntity(sp);
+        if(entityDefaultitem.find((item) => item.name === 'Global').id){
+          formData.EntityId = entityDefaultitem.find((item) => item.name === 'Global').id;
+   
+        }
     setLevel(await getLevel(sp))
     setBaseUrl(await (getUrl(sp, siteUrl))) //baseUrl
     await fetchUserInformationList();
@@ -1151,7 +1159,7 @@ const HelloWorldContext = ({ props }: any) => {
 
     if (event.target.files && event.target.files.length > 0) {
       const files = Array.from(event.target.files);
-
+      (event.target as HTMLInputElement).value = '';
       if (libraryName === "Docs") {
         const docFiles = files.filter(file =>
           file.type === 'application/pdf' ||
@@ -1259,7 +1267,7 @@ const HelloWorldContext = ({ props }: any) => {
                   "ID": 0,
                   "Createdby": "",
                   "Modified": "",
-                  "fileUrl": "",
+                  "fileUrl": URL.createObjectURL(ele),
                   "fileSize": ele.size,
                   "fileType": ele.type,
                   "fileName": ele.name
@@ -1590,11 +1598,11 @@ const HelloWorldContext = ({ props }: any) => {
                       <div className="col-lg-4">
                         <div className="mb-3">
                           <label htmlFor="EntityId" className="form-label">
-                            Department 
+                            Department <span className="text-danger">*</span>
                           </label>
                           <select
-                           className="form-select inputcss"
-                            //className={`form-control ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                          //  className="form-select inputcss"
+                            className={`form-control ${(!ValidSubmit) ? "border-on-error" : ""}`}
                             id="EntityId"
                             name="EntityId"
                             value={formData.EntityId}

@@ -1,5 +1,5 @@
 .rbc-btn-group{
-    background-color:#ff6b00;
+    background-color:#f37421 ;
 }
 .rbc-toolbar button{
     color: white;
@@ -49,10 +49,10 @@ background-color: #008751 !important;
    #listView p{color: #6c747d;}
 .card {
     border-radius: 20px !important;
-    border: 1px solid #ff6b00 !important;
+    border: 1px solid #f37421  !important;
 }
 .rbc-toolbar button.rbc-active{
-    background-color:#ff6b00 ;
+    background-color:#f37421  ;
     color: white;
 }
 .rbc-toolbar button:hover{
@@ -77,12 +77,12 @@ background-color: #008751 !important;
     color: white;
 }
 .nav-pills .nav-link.active, .nav-pills .show>.nav-link {
-    background: #ff6b00 !important;
+    background: #f37421  !important;
     color: white;
 }
 .backwhite{
     background-color: white;
-    border: 1px solid #ff6b00 !important;
+    border: 1px solid #f37421  !important;
     border-radius: 20px;
     padding: 15px;
     float: left;
@@ -110,7 +110,7 @@ background-color: #008751 !important;
     }
 .navtab-bg .nav-link {
     font-weight: 500;
-    border: 1px solid #ff6b00 !important;
+    border: 1px solid #f37421  !important;
     color: black;
     text-decoration: none;
     cursor: pointer; font-size: 14px;
@@ -120,7 +120,7 @@ background-color: #008751 !important;
     background-color: var(--ct-btn-hover-bg);
     border-color: var(--ct-btn-hover-border-color);
 }
-.rbc-current button {background: #ff6b00 !important; color:#fff !important;}
+.rbc-current button {background: #f37421  !important; color:#fff !important;}
 .external-event {
     cursor: move;
     margin: 10px 0; 
@@ -198,7 +198,7 @@ background-color: #008751 !important;
     box-shadow: 0 3px 20px #1d26260d;
 }
 .readmore {
-    color: #ff6b00;
+    color: #f37421 ;
     font-weight: 400;
     font-size: 14px;
 }
@@ -257,4 +257,4 @@ a:hover
 .dropcss a:focus{
     background-color: #f8f9fa !important;
 }
-.posx svg:hover{color: #ff6b00 !important;}
+.posx svg:hover{color: #f37421  !important;}

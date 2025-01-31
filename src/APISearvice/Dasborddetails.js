@@ -71,9 +71,14 @@ export const getAnncouncementone = async (_sp) => {
 };
 export const getNewsone = async (_sp) => {
   let arr = []
-  let str = "News"
-  await _sp.web.lists.getByTitle("ARGAnnouncementAndNews").items.select("*,AnnouncementandNewsTypeMaster/Id,AnnouncementandNewsTypeMaster/TypeMaster,Category/Id,Category/Category").expand("AnnouncementandNewsTypeMaster,Category")
-    .filter(`AnnouncementandNewsTypeMaster/TypeMaster eq '${str}' and Status eq 'Approved'`)
+  let str = "News";
+  const userProfile = await _sp.profiles.myProperties();
+  // console.log("***userProfile", userProfile);
+  const currentUserDept = userProfile.UserProfileProperties ? userProfile.UserProfileProperties[userProfile.UserProfileProperties.findIndex(obj => obj.Key === "Department")].Value : "";
+  let entity ="Global";
+ 
+  await _sp.web.lists.getByTitle("ARGAnnouncementAndNews").items.select("*,AnnouncementandNewsTypeMaster/Id,AnnouncementandNewsTypeMaster/TypeMaster,Category/Id,Category/Category,Entity/Entity,Entity/ID").expand("AnnouncementandNewsTypeMaster,Category,Entity")
+    .filter(`(Entity/Entity eq '${entity}' or Entity/Entity eq '${currentUserDept}') and AnnouncementandNewsTypeMaster/TypeMaster eq '${str}' and Status eq 'Approved'`)
     .orderBy("Modified", false).top(2)().then((res) => {
       console.log(res);
 
@@ -87,11 +92,15 @@ export const getNewsone = async (_sp) => {
 }
 
 export const fetchEventdataone = async (_sp) => {
-  let arr = []
+  let arr = [];
+  const userProfile = await _sp.profiles.myProperties();
+// console.log("***userProfile", userProfile);
+const currentUserDept = userProfile.UserProfileProperties ? userProfile.UserProfileProperties[userProfile.UserProfileProperties.findIndex(obj => obj.Key === "Department")].Value : "";
+let entity ="Global";
 
   await _sp.web.lists.getByTitle("ARGEventMaster").items
-    .select("*")
-    .filter(`Status eq 'Approved'`)
+    .select("*,Entity/Entity,Entity/ID").expand("Entity")
+    .filter(`(Entity/Entity eq '${entity}' or Entity/Entity eq '${currentUserDept}') and Status eq 'Approved'`)
     .orderBy("EventDate", true).top(3)
     ()
 
