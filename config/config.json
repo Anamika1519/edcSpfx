@@ -209,7 +209,7 @@
           "manifest": "./src/webparts/notificationDetails/NotificationDetailsWebPart.manifest.json"
         }
       ]
-    }, 
+    },
     "notification-master-web-part": {
       "components": [
         {
@@ -223,6 +223,22 @@
         {
           "entrypoint": "./lib/webparts/quickLinksMaster/QuickLinksMasterWebPart.js",
           "manifest": "./src/webparts/quickLinksMaster/QuickLinksMasterWebPart.manifest.json"
+        }
+      ]
+    },
+    "change-document-request-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/changeDocumentRequest/ChangeDocumentRequestWebPart.js",
+          "manifest": "./src/webparts/changeDocumentRequest/ChangeDocumentRequestWebPart.manifest.json"
+        }
+      ]
+    },
+    "document-cancellation-process-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/documentCancellationProcess/DocumentCancellationProcessWebPart.js",
+          "manifest": "./src/webparts/documentCancellationProcess/DocumentCancellationProcessWebPart.manifest.json"
         }
       ]
     }
@@ -266,6 +282,8 @@
     "NotificationDetailsWebPartStrings": "lib/webparts/notificationDetails/loc/{locale}.js",
     "NotificationMasterWebPartStrings": "lib/webparts/notificationMaster/loc/{locale}.js",
     "QuickLinkFormWebPartStrings": "lib/webparts/quickLinkForm/loc/{locale}.js",
-    "QuickLinksMasterWebPartStrings": "lib/webparts/quickLinksMaster/loc/{locale}.js"
+    "QuickLinksMasterWebPartStrings": "lib/webparts/quickLinksMaster/loc/{locale}.js",
+    "ChangeDocumentRequestWebPartStrings": "lib/webparts/changeDocumentRequest/loc/{locale}.js",
+    "DocumentCancellationProcessWebPartStrings": "lib/webparts/documentCancellationProcess/loc/{locale}.js"
   }
 }
