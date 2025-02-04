@@ -85,7 +85,9 @@ const NotificationList = ({ NotificationArray, handleNotificationClick, OnCleara
                                     onClick={() => handleNotificationClick(notify)} style={{display: 'flex', margin: '0 auto' }}>
                                     <div className="">
                                         <span className="float-start noti-close-btn text-muted">
-                                            <img  src={require("../../CustomAsset/Noti.jpg")}
+                                           
+                                             <img src={require('../../CustomAsset/BellIconNew.png')} alt="bell"
+
                                        
                                         className="me-1 noti"
                                       /></span>
@@ -118,7 +120,7 @@ const NotificationList = ({ NotificationArray, handleNotificationClick, OnCleara
                                     onClick={() => handleNotificationClick(notify)} style={{ display: 'flex', margin: '0px auto' }}>
                                     <div className="">
                                     <span className="float-start noti-close-btn text-muted">
-                                            <img  src={require("../../CustomAsset/Noti.jpg")}
+                                             <img src={require('../../CustomAsset/BellIconNew.png')} alt="bell"
                                        
                                         className="me-1 noti"
                                       /></span>
@@ -151,7 +153,7 @@ const NotificationList = ({ NotificationArray, handleNotificationClick, OnCleara
                                     onClick={() => handleNotificationClick(notify)} style={{ display: 'flex', margin: '0px auto' }}>
                                     <div className="">
                                     <span className="float-start noti-close-btn text-muted">
-                                            <img  src={require("../../CustomAsset/Noti.jpg")}
+                                            <img src={require('../../CustomAsset/BellIconNew.png')} alt="bell"
                                        
                className="me-1 noti"
                                       /></span>

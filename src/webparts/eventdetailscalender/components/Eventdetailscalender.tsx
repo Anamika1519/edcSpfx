@@ -327,14 +327,14 @@ const EventdetailscalenderContext = ({ props }: any) => {
           userHasLiked: false, // Initialize as false
           UserProfile: ress.data.UserProfile,
         };
-        setComments((prevComments) => [...prevComments, newCommentData1]);
+        setComments((prevComments) => [newCommentData1,...prevComments]);
         let notifiedArr = {
           ContentId: ArrDetails[0].Id,
           NotifiedUserId: ArrDetails[0].AuthorId,
           ContentType0: "Comment",
-          ContentName: ArrDetails[0].Title,
+          ContentName: ArrDetails[0].EventName,
           ActionUserId: CurrentUser.Id,
-          DeatilPage: "EventDetails",
+          DeatilPage: "EventDetailsCalendar",
           ReadStatus: false
         }
         const nofiArr = await addNotification(notifiedArr, sp)
@@ -395,9 +395,9 @@ const EventdetailscalenderContext = ({ props }: any) => {
               ContentId: ArrDetails[0].Id,
               NotifiedUserId: ArrDetails[0].AuthorId,
               ContentType0: "Like",
-              ContentName: ArrDetails[0].Title,
+              ContentName: ArrDetails[0].EventName,
               ActionUserId: CurrentUser.Id,
-              DeatilPage: "EventDetails",
+              DeatilPage: "EventDetailsCalendar",
               ReadStatus: false
             }
             const nofiArr = await addNotification(notifiedArr, sp)
@@ -426,10 +426,10 @@ const EventdetailscalenderContext = ({ props }: any) => {
             let notifiedArr = {
               ContentId: ArrDetails[0].Id,
               NotifiedUserId: ArrDetails[0].AuthorId,
-              ContentType0: "Reply",
-              ContentName: ArrDetails[0].Title,
+              ContentType0: "UnLike",
+              ContentName: ArrDetails[0].EventName,
               ActionUserId: CurrentUser.Id,
-              DeatilPage: "EventDetails",
+              DeatilPage: "EventDetailsCalendar",
               ReadStatus: false
             }
             const nofiArr = await addNotification(notifiedArr, sp)
@@ -497,9 +497,9 @@ const EventdetailscalenderContext = ({ props }: any) => {
                 ContentId: ArrDetails[0].Id,
                 NotifiedUserId: ArrDetails[0].AuthorId,
                 ContentType0: "Reply",
-                ContentName: ArrDetails[0].Title,
+                ContentName: ArrDetails[0].EventName,
                 ActionUserId: CurrentUser.Id,
-                DeatilPage: "EventDetails",
+                DeatilPage: "EventDetailsCalendar",
                 ReadStatus: false
               }
               const nofiArr = await addNotification(notifiedArr, sp)
@@ -684,7 +684,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
                           <p className="d-block mt-2 mb-0 font-28">
                             {item.EventName}
                           </p>
-                          <span style={{float:'left'}} className="font-14 mt-1 mb-0 text-primary">{item.Entity.Entity}</span>
+                         
 
                           <div className="row mt-2">
 
@@ -806,6 +806,9 @@ const EventdetailscalenderContext = ({ props }: any) => {
                                   </Modal>
                                   {item?.Attendees?.length > 0 && item?.AttendeesId.indexOf(CurrentUser.Id) == 0 && (<span className="font-14" style={{ paddingTop: '3px', paddingLeft: '3px' }}>Registered</span>)}
                                 </span>
+                                <span style={{float:'left', marginTop:'30px'}} className="font-14  mb-0">&nbsp;&nbsp;|&nbsp;&nbsp; <span className="text-primary"> {item.Entity.Entity} </span> </span>
+
+
                               </p>
                             </div>
                           </div>

@@ -150,7 +150,7 @@ const NotificationMastercontext = ({ props }: any) => {
 
             <div className="content" style={{
             marginLeft: `${!useHide ? "240px" : "80px"}`,
-            marginTop: "0rem",
+            marginTop: "2rem",
           }}>
 
                 {/* <!-- Start Content--> */}

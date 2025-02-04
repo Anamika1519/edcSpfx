@@ -1632,7 +1632,7 @@ const MyApprovalContext = ({ props }: any) => {
                                                 textAlign: 'center'
                                               }}
                                             >
-                                              <span className="badge font-12 bg-info">   {item.ProcessName}</span>
+                                              <span className="badge font-12 bg-secondary">   {item.ProcessName}</span>
                                             </td>
 
                                             <td
@@ -2287,7 +2287,7 @@ const MyApprovalContext = ({ props }: any) => {
                                                     textAlign: 'center'
                                                   }}
                                                 >
-                                                  <span className="badge font-12 bg-info">  {item?.FileUID?.Processname} </span>
+                                                  <span className="badge font-12 bg-warning">  {item?.FileUID?.Processname} </span>
                                                 </td>
 
                                                 <td

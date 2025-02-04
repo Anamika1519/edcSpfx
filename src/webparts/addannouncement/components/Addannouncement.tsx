@@ -2237,8 +2237,8 @@ const closeModal = () => {
                           Cancel
                         </button></div>)
                     }
-            {rows != null && rows.length > 0 && formData.title != "" &&
-              <WorkflowAuditHistory ContentItemId={editID} ContentType={CONTENTTYPE_Announcement} ctx={props.context} />
+            {rows != null && rows.length > 0 && formData.title != "" && editID !== null &&
+              <WorkflowAuditHistory ContentItemId={editID} ContentType={CONTENTTYPE_News} ctx={props.context} />
             }
             {/* Modal to display uploaded files */}
             <Modal show={showModal} onHide={() => setShowModal(false)} size='lg' >

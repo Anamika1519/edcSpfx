@@ -6,7 +6,7 @@ import { getSP } from '../loc/pnpjsConfig';
 
 import { SPFI } from '@pnp/sp/presets/all';
 
-import { getCurrentUser, getCurrentUserProfile, getCurrentUserProfileEmail, getuserprofilepic } from '../../../APISearvice/CustomService';
+import {addNotification, getCurrentUser, getCurrentUserProfile, getCurrentUserProfileEmail, getuserprofilepic } from '../../../APISearvice/CustomService';
 
 import VerticalSideBar from '../../verticalSideBar/components/VerticalSideBar';
 
@@ -473,7 +473,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
       UserProfile: CurrentUserProfile
 
-    }).then((ress: any) => {
+    }).then(async (ress: any) => {
 
       console.log(ress, 'ressress');
 
@@ -507,6 +507,35 @@ const NewsdetailsContext = ({ props }: any) => {
       setNewComment('');
 
       setLoading(false);
+
+      // //////******* * code changes/
+      const ids = window.location.search;
+      const originalString = ids;
+
+      const idNum = originalString.substring(1);
+
+      let a = {
+
+        RepliesCount: 1
+
+      }
+
+      const newItem = await sp.web.lists.getByTitle('ARGAnnouncementAndNews').items.getById(Number(idNum)).update(a);
+
+      console.log('Item added successfully:', newItem);
+      let notifiedArr = {
+        ContentId: ArrDetails[0].Id,
+        NotifiedUserId: ArrDetails[0].AuthorId,
+        ContentType0: "Comment",
+        ContentName: ArrDetails[0].Title,
+        ActionUserId: CurrentUser.Id,
+        DeatilPage: "NewsDetails",
+        ReadStatus: false
+      }
+      const nofiArr = await addNotification(notifiedArr, sp)
+      // console.log(nofiArr, 'nofiArr');
+
+      // /////************* */
 
     })
 
@@ -558,6 +587,43 @@ const NewsdetailsContext = ({ props }: any) => {
         updatedComments[commentIndex].UserLikesJSON.push(newLikeJson);
         updatedComments[commentIndex].LikesCount = comment.UserLikesJSON.length; // Update only this comment's LikesCount
 
+        // /////*** changes */
+
+          if (CurrentUser.Id != ArrDetails[0].AuthorId) {
+       
+                    let notifiedArr = {
+       
+                      ContentId: ArrDetails[0].Id,
+       
+                      NotifiedUserId: ArrDetails[0].AuthorId,
+       
+                      ContentType0: "Like on comment on news",
+       
+                      ContentName: ArrDetails[0].Title,
+       
+                      ActionUserId: CurrentUser.Id,
+       
+                      DeatilPage: "NewsDetails",
+       
+                      ReadStatus: false,
+       
+                      ContentComment: updatedComments[commentIndex].Comments,
+       
+                      ContentCommentId: updatedComments[commentIndex].Id,
+       
+                      CommentOnReply: ""
+       
+                    }
+       
+                    const nofiArr = await addNotification(notifiedArr, sp)
+       
+                    // console.log(nofiArr, 'nofiArr');
+       
+                  }
+       
+
+        // ////***** */
+
         // Update the corresponding SharePoint list for only the specific comment
         await sp.web.lists.getByTitle("ARGAnnouncementandNewsComments").items.getById(comment.Id).update({
           UserLikesJSON: JSON.stringify(updatedComments[commentIndex].UserLikesJSON),
@@ -566,7 +632,44 @@ const NewsdetailsContext = ({ props }: any) => {
         });
 
         updatedComments[commentIndex].userHasLiked = true; // Set like status for this comment only
-        setComments(updatedComments);
+         setComments(updatedComments);
+        ///////////******************changes */
+
+         const ids = window.location.search;
+       
+                    const originalString = ids;
+       
+                    const idNum = originalString.substring(1); // Extract the ID from query string
+       
+                    const likeUpdateBody = {
+       
+                      LikeCounts: updatedComments[commentIndex].UserLikesJSON.length
+       
+                    };
+       
+       
+       
+                    const newItem = await sp.web.lists.getByTitle('ARGAnnouncementAndNews').items.getById(Number(idNum)).update(likeUpdateBody);
+       
+                    console.log('Like count updated successfully:', newItem);
+       
+                  // });
+                  // setComments(updatedComments);
+                  // let notifiedArr = {
+                  //   ContentId: ArrDetails[0].Id,
+                  //   NotifiedUserId: ArrDetails[0].AuthorId,
+                  //   ContentType0: "Like",
+                  //   ContentName: ArrDetails[0].Title,
+                  //   ActionUserId: CurrentUser.Id,
+                  //   DeatilPage: "NewsDetails",
+                  //   ReadStatus: false
+                  // }
+                  // const nofiArr = await addNotification(notifiedArr, sp)
+                  // console.log(nofiArr, 'nofiArr');
+       
+
+
+        // ////////*********** */
 
       } else {
         // User already liked, proceed to unlike
@@ -587,7 +690,43 @@ const NewsdetailsContext = ({ props }: any) => {
         });
 
         updatedComments[commentIndex].userHasLiked = false; // Set like status for this comment only
+        // setComments(updatedComments);
+
+        // **** changes *****
+
+        const ids = window.location.search;
+
+        const originalString = ids;
+
+        const idNum = originalString.substring(1);
+
+
+
+        const likeUpdateBody = {
+
+          LikeCounts: updatedComments[commentIndex].UserLikesJSON.length
+
+        };
+
+
+
+        const newItem = await sp.web.lists.getByTitle('ARGAnnouncementAndNews').items.getById(Number(idNum)).update(likeUpdateBody);
+
+        console.log('Like count updated successfully:', newItem);
         setComments(updatedComments);
+        let notifiedArr = {
+          ContentId: ArrDetails[0].Id,
+          NotifiedUserId: ArrDetails[0].AuthorId,
+          ContentType0: "UnLike",
+          ContentName: ArrDetails[0].Title,
+          ActionUserId: CurrentUser.Id,
+          DeatilPage: "NewsDetails",
+          ReadStatus: false
+        }
+        const nofiArr = await addNotification(notifiedArr, sp);
+        console.log(nofiArr, 'nofiArr');
+
+        // //////////////
       }
     }
     catch (error) {
@@ -662,11 +801,48 @@ const NewsdetailsContext = ({ props }: any) => {
 
           CommentsCount: comment.UserCommentsJSON.length + 1
 
-        }).then((ress: any) => {
+        }).then(async (ress: any) => {
 
           console.log(ress, 'ressress');
 
           setComments(updatedComments);
+
+
+          // /////******* changes//// */
+
+            if (CurrentUser.Id != ArrDetails[0].AuthorId) {
+         
+                      let notifiedArr = {
+         
+                        ContentId: ArrDetails[0].Id,
+         
+                        NotifiedUserId: ArrDetails[0].AuthorId,
+         
+                        ContentType0: "Reply on comment on news",
+         
+                        ContentName: ArrDetails[0].Title,
+         
+                        ActionUserId: CurrentUser.Id,
+         
+                        DeatilPage: "NewsDetails",
+         
+                        ReadStatus: false,
+         
+                        ContentComment: updatedComments[commentIndex].Comments,
+         
+                        ContentCommentId: updatedComments[commentIndex].Id,
+         
+                        CommentOnReply: newReplyJson.Comments
+         
+                      }
+         
+                      const nofiArr = await addNotification(notifiedArr, sp)
+         
+                      console.log(nofiArr, 'nofiArr');
+         
+                    }
+         
+          // ///////////// changes////
 
         })
 
@@ -783,7 +959,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
                           </p>
 
-                          <span style={{float:'left',color:'#f37421 '}} className="font-14 mt-1 mb-0">{item.Entity?.Entity}</span>
+                         
 
                           <div className="row mt-2">
 
@@ -805,13 +981,15 @@ const NewsdetailsContext = ({ props }: any) => {
 
                                 <span style={{ cursor: 'pointer' }} className="text-nowrap hovertext mb-0 d-inline-block" onClick={() => copyToClipboard(item.Id)}>
 
-                                  <Link size={18} />    Copy link &nbsp;  &nbsp;  &nbsp;
+                                  <Link size={18} />    Copy link &nbsp;  &nbsp; | &nbsp;&nbsp;&nbsp;
 
                                   {copySuccess && <span className="text-success">{copySuccess}</span>}
 
                                 </span>
+                         <span style={{color:'#f37421 '}} className="font-14 mt-1 mb-0">{item.Entity?.Entity}</span>
 
-
+                              
+                                
 
                               </p>
 
