@@ -1,4 +1,4 @@
-.foldert{top: -2px; position: relative;}
+.foldert{top: -2px; position: relative; margin-right: 5px; }
 input::placeholder{color: #6b6b6b !important;}
 #tbl tbody td:nth-child(1){min-width:30px; max-width: 30px;}
 .dtr-data{right: 7px !important;     top: 9px !important;}
@@ -29,6 +29,7 @@ padding: 1px 10px; height: 22px;
 display: inline-block;
 border-radius: 5px;    font-weight: 500;
 }
+.inbox-leftbar{width:22% !important ; float: left; margin-right: 1%; }
 .finish {
 font-size: 11px;
 line-height: 19px;
@@ -39,9 +40,10 @@ background: rgb(91 156 187 / 25%) !important;
 color: #000b56;
 font-weight: 500;height: 22px;
 }
-.mail-list a{ padding: 7px 10px !important;
+.mail-list a{ padding: 7px 10px !important; color: #6c757d; background: #f7fbfc !important; font-size: 15px !important; width: 100% !important; border-radius: 30px !important;
 }
-#myUL li a,#myUL li span{ padding: 7px 0px !important;}
+.inbox-rightbar{width: 77%; float: left;}
+#myUL li a,#myUL li span{ padding: 7px 0px !important; font-size: 13px; }
 .box {
   cursor: pointer;
   -webkit-user-select: none;
@@ -62,10 +64,14 @@ font-weight: 500;height: 22px;
   display: block;
 }
 .inbox-rightbar .card{
-border: 1px solid #ccc !important;    height: 85px;
+border: 1px solid #f37421 !important;    height: 85px;
 }
 .inbox-rightbar .card .text-dark,.inbox-rightbar .card .fw-bold{
 font-weight: 500 !important;
+}
+.ms-inputBox, input:not([type]), input[type=file], input[type=password], input[type=text] {
+    height: 40px;
+    padding: .5rem;
 }
 .accordion4 {
 
@@ -86,14 +92,14 @@ background-color: #ccc;
 .inbox-rightbar .card{height: auto !important;}
 .accordion4:after {
 content: '\002B';
-color: #1fb0e5;
+color: #f37421;
 font-weight: bold;
 float: left;
 margin-right: 5px;
 width: 21px;
 height: 21px;
 border: 1px solid;
-border-block-end-width: #1fb0e5;
+border-block-end-width: rgb(59, 79, 86);
 border-radius: 1000px;
 text-align: center;
 font-size: 17px;

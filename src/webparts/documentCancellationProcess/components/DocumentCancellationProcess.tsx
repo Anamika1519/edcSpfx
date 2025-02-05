@@ -46,7 +46,7 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
             </div>
             <div className="content-page">
                 <HorizontalNavbar _context={sp} siteUrl={siteUrl} />
-                <div className="content" style={{ marginLeft: `${!useHide ? '240px' : '80px'}`, marginTop: '0rem' }}>
+                <div className="content" style={{ marginLeft: `${!useHide ? '240px' : '80px'}`, marginTop: '2.3rem' }}>
                     <div className="container-fluid  paddb">
                         <div className="row">
                             <div className="col-lg-4">
@@ -58,8 +58,8 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
 
                             {/* <!-- Right Sidebar --> */}
                             <div className="col-12">
-                                <div style={{ background: "transparent", border: "0px", boxShadow: "none", paddingLeft: "0px" }} className="card">
-                                    <div style={{ paddingLeft: "0px" }} className="card-body">
+                                <div >
+                                    <div>
                                         {/* <!-- Left sidebar --> */}
                                         <div className="inbox-leftbar">
 
