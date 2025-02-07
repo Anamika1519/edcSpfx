@@ -40,10 +40,15 @@ background: rgb(91 156 187 / 25%) !important;
 color: #000b56;
 font-weight: 500;height: 22px;
 }
-.mail-list a{ padding: 7px 10px !important; color: #6c757d; background: #f7fbfc !important; font-size: 15px !important; width: 100% !important; border-radius: 30px !important;
+.mail-list a{ padding: 9px 19px !important; margin-top: 10px; color: #6b6b6b; background: #f7fbfc !important; font-size: 15px !important; width: 100% !important; border-radius: 30px !important;
 }
+.mail-list a:hover{
+  color: #fff !important; background: #959b95 !important;
+}
+.css-13cymwt-control{box-shadow: none !important;}
+.mail-list a:hover img{filter: brightness(0) invert(1);}
 .inbox-rightbar{width: 77%; float: left;}
-#myUL li a,#myUL li span{ padding: 7px 0px !important; font-size: 13px; }
+#myUL li a,#myUL li span{ padding: 7px 0px !important; font-size: 13px; color: #6b6b6b; }
 .box {
   cursor: pointer;
   -webkit-user-select: none;
@@ -83,7 +88,7 @@ border: none !important;
 text-align: left;
 outline: none; box-shadow: none !important;
 font-size: 14px;
-transition: 0.4s; margin-bottom: 10px;
+transition: 0.4s; margin-bottom: 10px; font-weight:600;
 }
 
 /* .active, .accordion4:hover {
@@ -92,7 +97,7 @@ background-color: #ccc;
 .inbox-rightbar .card{height: auto !important;}
 .accordion4:after {
 content: '\002B';
-color: #f37421;
+color: #6b6b6b;
 font-weight: bold;
 float: left;
 margin-right: 5px;
@@ -571,7 +576,7 @@ font-size: 11px !important;
 background: #1fb0e5 !important;
 padding: 1px 7px !important;
 border-radius: 4px !important;
-font-weight: 600 !important;
+
 border: none !important;
 
 }
@@ -592,7 +597,7 @@ min-width: 90px;
   font-size: 16px !important;border-color: #008751 !important;
 }
 .btn-primary{
-border-color: #1fb0e5 !important;
+border-color: #f37421 !important;
 }
 .btn-default{background: transparent !important;}
 .btn-default:hover{background-color: #959b95  !important; border-color: #959b95  !important;}
@@ -685,3 +690,9 @@ width: 100%;
 }
 }
 .bg-light{    background-color: #ececec !important;}
+.sidebariconsmall{
+  width: 14px;
+  margin-right: 5px;
+}
+.css-hlgwow{height: 37px; padding: 0px 8px !important;}
+.css-19bb58m{padding-top: 0px !important; margin: 0px !important;}
