@@ -1,23 +1,30 @@
 import Swal from 'sweetalert2';
 export const getAllDocumentCode = async (_sp) => {
-  let arr = []
- 
+  let arr = [];
+
   await _sp.web.lists.getByTitle("ChangeRequestList").items
-  .select("*,Location/ID,Custodian/ID,DocumentType/ID,AmendmentType/ID,Classification/ID,ChangeRequestType/ID,Author/ID,Author/Title").expand("DocumentType,Custodian,Classification,AmendmentType,Location,ChangeRequestType,Author")
- 
-  .orderBy("Modified",false)()
+    .select("*,Location/ID,Custodian/ID,DocumentType/ID,AmendmentType/ID,Classification/ID,ChangeRequestType/ID,Author/ID,Author/Title")
+    .expand("DocumentType,Custodian,Classification,AmendmentType,Location,ChangeRequestType,Author")
+    .orderBy("Modified", false)() // Order by Modified descending to get latest first
     .then((res) => {
       console.log(res);
 
+      // Filter only latest entry for each unique DocumentCode
+      const latestDocuments = res.reduce((acc, item) => {
+        if (!acc[item.DocumentCode]) {
+          acc[item.DocumentCode] = item;
+        }
+        return acc;
+      }, {});
 
-      //res.filter(x=>x.Category?.Category==str)
-      arr = res;
+      arr = Object.values(latestDocuments);
     })
     .catch((error) => {
       console.log("Error fetching data: ", error);
     });
   return arr;
-}
+};
+
 
 export const addItem = async (itemData, _sp) => {
  

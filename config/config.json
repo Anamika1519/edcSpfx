@@ -241,6 +241,14 @@
           "manifest": "./src/webparts/documentCancellationProcess/DocumentCancellationProcessWebPart.manifest.json"
         }
       ]
+    },
+    "cancellation-request-form-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/cancellationRequestForm/CancellationRequestFormWebPart.js",
+          "manifest": "./src/webparts/cancellationRequestForm/CancellationRequestFormWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {
@@ -284,6 +292,7 @@
     "QuickLinkFormWebPartStrings": "lib/webparts/quickLinkForm/loc/{locale}.js",
     "QuickLinksMasterWebPartStrings": "lib/webparts/quickLinksMaster/loc/{locale}.js",
     "ChangeDocumentRequestWebPartStrings": "lib/webparts/changeDocumentRequest/loc/{locale}.js",
-    "DocumentCancellationProcessWebPartStrings": "lib/webparts/documentCancellationProcess/loc/{locale}.js"
+    "DocumentCancellationProcessWebPartStrings": "lib/webparts/documentCancellationProcess/loc/{locale}.js",
+    "CancellationRequestFormWebPartStrings": "lib/webparts/cancellationRequestForm/loc/{locale}.js"
   }
 }

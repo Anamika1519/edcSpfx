@@ -27,6 +27,7 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
     const elementRef = React.useRef<HTMLDivElement>(null);
     const siteUrl = props.siteUrl;
     const { useHide }: any = React.useContext(UserContext);
+     const [InputDisabled, setInputDisabled] = React.useState(false);
     const Breadcrumb = [
         {
             MainComponent: "Home",
@@ -46,6 +47,8 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
     const [ValidDraft, setValidDraft] = React.useState(true);
     const [ValidSubmit, setValidSubmit] = React.useState(true);
     const [editForm, setEditForm] = React.useState(false);
+    const [modeValue, setmode] = React.useState("");
+    const [pageValue, setpage] = React.useState("");
     const [cancellReason, setcancellReason] = React.useState([{ id: 0, description: "", reason: "" }]);
     const [formData, setFormData] = React.useState({
         RequesterNameId: 0,
@@ -73,7 +76,7 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
         IsRework: false,
         DigitalSignStatus: false,
         ChangeRequestID: 0,
-        Attachment: [],
+        AttachmentId: [],
         AttachmentJson: "",
 
 
@@ -114,6 +117,8 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
             SubmitStatus: item.SubmitStatus,
             DocumentTypeId: item.DocumentTypeId,
             Department:item.Department,
+            AttachmentId:item.AttachmentId,
+            AttachmentJson:item.AttachmentJson
             // DocumentName: "",
             // IsRework: false,
             // DigitalSignStatus: false,
@@ -134,11 +139,25 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
           setFormItemId(Number(iDs))
         }
         else {
-          let formitemidparam = getUrlParameterValue('contentid');
-          if (formitemidparam) {
-            formitemid = Number(formitemidparam);
-            setFormItemId(Number(formitemid));
-          }
+        //   let formitemidparam = getUrlParameterValue('contentid');
+        //   if (formitemidparam) {
+        //     formitemid = Number(formitemidparam);
+        //     setFormItemId(Number(formitemid));
+        //   }
+
+        const path = window.location.pathname;
+        const segments = path.split('/').filter(Boolean); // Remove empty elements
+       
+        // Check if "edit" or "view" exists in the URL
+        const paramIndex = segments.findIndex(seg => seg === "edit" || seg === "view" || seg === "approval");
+       
+       
+        if (paramIndex !== -1 && segments[paramIndex + 1]) {
+            // mode = segments[paramIndex]; // Will be "edit" or "view"
+            formitemid = segments[paramIndex + 1]; // Get the ID
+        }
+           
+
         }
         // formitemid =20;
          if (formitemid) {
@@ -180,7 +199,9 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                 // IsRework: false,
                 // DigitalSignStatus: false,
                 ChangeRequestIDId: setBannerById[0].ChangeRequestID,
-                DocumentTypeId: setBannerById[0].DocumentTypeId
+                DocumentTypeId: setBannerById[0].DocumentTypeId,
+                AttachmentId:setBannerById[0].AttachmentId,
+                AttachmentJson:setBannerById[0].AttachmentJson
                
                  
                 }
@@ -213,7 +234,9 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                     // IsRework: false,
                     // DigitalSignStatus: false,
                     ChangeRequestIDId: setBannerById[0].ChangeRequestIDId,
-                    DocumentTypeId: setBannerById[0].DocumentTypeId
+                    DocumentTypeId: setBannerById[0].DocumentTypeId,
+                    AttachmentId:setBannerById[0].AttachmentId,
+                    AttachmentJson:setBannerById[0].AttachmentJson
                    
                      
                     }
@@ -237,6 +260,8 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                         DocumentCode: setBannerById[0].value,
                         DocumentTypeId: setBannerById[0].DocumentTypeId,
                         Department:setBannerById[0].Department,
+                        AttachmentId:setBannerById[0].AttachmentId,
+                        AttachmentJson:setBannerById[0].AttachmentJson
                        
                         // Format as YYYY-MM-DD
                     }));
@@ -286,7 +311,8 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
             DocumentCode: selectedList.value,
             DocumentTypeId: selectedList.DocumentTypeId,
             Department:selectedList.Department,
-           
+            AttachmentId:selectedList.AttachmentId,
+            AttachmentJson:selectedList.AttachmentJson
             // Format as YYYY-MM-DD
         }));
         setSelectedOption(selectedList);  // Set the selected users
@@ -297,11 +323,32 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
 
         ApiCallFunc();
 
+        const path = window.location.pathname;
+           
+        if (path.includes("/view/") || path.includes("/approval/")) {
+            setInputDisabled(true);
+        }
+        else{
+            setInputDisabled(false);  
+        }
 
 
         // formData.title = currentUser.Title;
 
     }, [useHide]);
+
+    const handleCancel = () => {
+        window.location.href = `${siteUrl}/SitePages/EDCMAIN.aspx`;
+        // debugger
+        // if(pageValue == "MyRequest"){
+        //   window.location.href = `${siteUrl}/SitePages/MyRequests.aspx`;
+        // }else if(pageValue == "MyApproval"){
+        //   window.location.href = `${siteUrl}/SitePages/MyApprovals.aspx`;
+        // }else{
+        //   window.location.href = `${siteUrl}/SitePages/announcementmaster.aspx`;
+        // }
+    }
+       
 
     const addCancelReason = () => {
         setcancellReason([...cancellReason, { id: 0, description: "", reason: "" }]);
@@ -463,7 +510,12 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                             // IsRework: false,
                             // DigitalSignStatus: false,
                             ChangeRequestIDId: formData.ChangeRequestID,
-                            DocumentTypeId: selectedOption.DocumentTypeId
+                            DocumentTypeId: selectedOption.DocumentTypeId,
+                            OESSubmitStatus:"No",
+                            InitiatorSubmitStatus:"Yes",
+                            CurrentUserRole:"OES",
+                            AttachmentId:selectedOption.AttachmentId,
+                            AttachmentJson:selectedOption.AttachmentJson
 
 
                         }
@@ -553,7 +605,12 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                             //   IsRework: false,
                             //   DigitalSignStatus: false,
                             ChangeRequestIDId: formData.ChangeRequestID,
-                            DocumentTypeId: selectedOption.DocumentTypeId
+                            DocumentTypeId: selectedOption.DocumentTypeId,
+                             OESSubmitStatus:"No",
+                            InitiatorSubmitStatus:"Yes",
+                            CurrentUserRole:"OES",
+                            AttachmentId:selectedOption.AttachmentId,
+                            AttachmentJson:selectedOption.AttachmentJson
 
 
                         };
@@ -647,7 +704,12 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                             // IsRework: false,
                             // DigitalSignStatus: false,
                             ChangeRequestIDId: formData.ChangeRequestID,
-                            DocumentTypeId: selectedOption.DocumentTypeId
+                            DocumentTypeId: selectedOption.DocumentTypeId,
+                            OESSubmitStatus:"No",
+                            InitiatorSubmitStatus:"No",
+                            CurrentUserRole:"OES",
+                            AttachmentId:selectedOption.AttachmentId,
+                            AttachmentJson:selectedOption.AttachmentJson
 
 
                         }
@@ -738,7 +800,12 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                             //   IsRework: false,
                             //   DigitalSignStatus: false,
                             ChangeRequestIDId: formData.ChangeRequestID,
-                            DocumentTypeId: selectedOption.DocumentTypeId
+                            DocumentTypeId: selectedOption.DocumentTypeId,
+                             OESSubmitStatus:"No",
+                            InitiatorSubmitStatus:"No",
+                            CurrentUserRole:"OES",
+                            AttachmentId:selectedOption.AttachmentId,
+                            AttachmentJson:selectedOption.AttachmentJson
 
 
                         };
@@ -954,7 +1021,7 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
 
                                                                 <div className="mb-3">
                                                                     <label htmlFor="RequestDate" className="form-label">Request Date:</label>
-                                                                    <input type="date" id="RequestDate" name="RequestDate" className="form-control" value={formData.RequestDate} onChange={(e) => setFormData({ ...formData, RequestDate: e.target.value })} />
+                                                                    <input type="date" id="RequestDate" name="RequestDate" className="form-control" value={formData.RequestDate} onChange={(e) => setFormData({ ...formData, RequestDate: e.target.value })}  disabled={InputDisabled} />
                                                                 </div>
                                                             </div>
 
@@ -970,7 +1037,7 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                                                                         name="DocumentCode"
                                                                         className={`newse ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
                                                                         onChange={(selectedOption: any) => onSelect(selectedOption)}
-                                                                        placeholder="Search Document Code"
+                                                                        placeholder="Search Document Code"  disabled={InputDisabled}
                                                                     />
                                                                 </div>
                                                             </div>
@@ -997,13 +1064,13 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                                                                 </div>
                                                             </div>
 
-                                                        <div className="col-lg-8">
+                                                        {/* <div className="col-lg-8">
 
                                                             <div className="mb-3">
                                                                 <label htmlFor="example-email" className="form-label">Document Link:</label>
 
                                                             </div>
-                                                        </div>
+                                                        </div> */}
 
 
 
@@ -1034,7 +1101,7 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                                                     <div style={{ textAlign: "right"}} className="mt-2 float-end text-right">
                                                             {/* <i style={{ cursor: "pointer" }} onClick={addField}  className="fe-plus-circle  font-20 text-warning"></i> */}
                                                             {/* <i style={{ cursor: "pointer" }} className="fe-plus-circle  font-20 text-warning"></i> */}
-                                                            <img style={{width:'30px', cursor:'pointer', marginTop:'-7px'}} src={require("../assets/plus.png")} onClick={addCancelReason} className=''></img>
+                                                           {!InputDisabled && <img style={{width:'30px', cursor:'pointer', marginTop:'-7px'}} src={require("../assets/plus.png")} onClick={addCancelReason} className=''></img>}
 
 
                                                         </div>
@@ -1063,7 +1130,7 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                                   className="indexdesign"
                                 >
                                                                       {index + 1}</div></td>
-                                                                        <td><input type="text" id="simpleinput" className="form-control"
+                                                                        <td><input type="text" id="simpleinput"  disabled={InputDisabled} className="form-control"
                                                                             value={row.description}
                                                                             onChange={(e) => {
                                                                                 const newRowscancellReason = [...cancellReason];
@@ -1073,7 +1140,7 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                                                                         />
 
                                                                         </td>
-                                                                        <td><input type="text" id="simpleinput" className="form-control"
+                                                                        <td><input type="text" id="simpleinput"  disabled={InputDisabled} className="form-control"
                                                                             value={row.reason}
                                                                             onChange={(e) => {
                                                                                 const newRowscancellReason = [...cancellReason];
@@ -1092,12 +1159,13 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                                                     <div className="row mt-3">
                                                         <div className="col-12 text-center">
                                                             {/* <a href="my-approval.html">   */}
-                                                            <button type="button" className="btn btn-primary waves-effect waves-light m-1" onClick={handleSaveAsDraft}><i className="fe-check-circle me-1"></i> Save As Draft</button>
+                                                            {!InputDisabled &&  <button type="button" className="btn btn-primary waves-effect waves-light m-1" onClick={handleSaveAsDraft}><i className="fe-check-circle me-1"></i> Save As Draft</button>}
 
-                                                            <button type="button" className="btn btn-primary waves-effect waves-light m-1" onClick={handleFormSubmit}><i className="fe-check-circle me-1"></i> Submit</button>
+                                                            {!InputDisabled &&  <button type="button" className="btn btn-primary waves-effect waves-light m-1" onClick={handleFormSubmit}><i className="fe-check-circle me-1"></i> Submit</button>}
+                                                             
                                                             {/* </a> */}
-                                                            {/* <a href="my-approval.html">       */}
-                                                            <button type="button" className="btn cancel-btn waves-effect waves-light m-1"><i className="fe-x me-1"></i> Cancel</button>
+                                                            {/* <a href="../sites/edcspfx/SitePages/EDCMAIN.aspx">       */}
+                                                            <button type="button" className="btn cancel-btn waves-effect waves-light m-1" onClick={handleCancel}><i className="fe-x me-1"></i> Cancel</button>
                                                             {/* </a> */}
                                                         </div>
                                                     </div>
