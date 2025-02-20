@@ -30,7 +30,7 @@ import { TimeFormat } from "../../../APISearvice/AnnouncementsService";
 import { getMyRequestBlog, updateItemApproval } from "../../../APISearvice/ApprovalService";
 import { WorkflowAction } from "../../../CustomJSComponents/WorkflowAction/WorkflowAction";
 import { WorkflowAuditHistory } from "../../../CustomJSComponents/WorkflowAuditHistory/WorkflowAuditHistory";
-import { CONTENTTYPE_Blogs } from "../../../Shared/Constants";
+import { CONTENTTYPE_Blogs, LIST_TITLE_MyRequest } from "../../../Shared/Constants";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { getUrlParameterValue } from "../../../Shared/Helper";
@@ -909,7 +909,7 @@ const BlogDetailsContext = ({ props }: any) => {
               {
                 //let forrework=ApprovalRequestItem && ApprovalRequestItem.IsRework=='Yes'&& ApprovalRequestItem.LevelSequence!=0;
                 (ApprovalRequestItem) || (ApprovalRequestItem && ApprovalRequestItem.IsRework == 'Yes' && ApprovalRequestItem.LevelSequence != 0) ? (
-                  <WorkflowAction currentItem={ApprovalRequestItem} ctx={props.context}
+                  <WorkflowAction currentItem={ApprovalRequestItem} ctx={props.context} ContentType={LIST_TITLE_MyRequest}
                     DisableApproval={ApprovalRequestItem && ApprovalRequestItem.IsRework == 'Yes' && ApprovalRequestItem.LevelSequence != 0}
                     DisableCancel={ApprovalRequestItem && ApprovalRequestItem.IsRework == 'Yes' && ApprovalRequestItem.LevelSequence != 0}
                   //  DisableReject={ApprovalRequestItem && ApprovalRequestItem.IsRework=='Yes'&& ApprovalRequestItem.LevelSequence!=0}

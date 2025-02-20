@@ -87,15 +87,19 @@ export const WorkflowAuditHistory = (props: IWorkflowAuditHistoryProps) => {
         case "IT Demand Request":
           listname = "blogId";
           break;
+        case "Document Cancellation":
+          listname = "DocumentCancelId";
+          break;
+
         default:
       }
       setLoading(true);
-
-      sp.web.lists.getByTitle("ARGMyRequest").items
-        .select("*,Requester/Id,Requester/Title,Approver/Id,Approver/Title")
-        .expand("Approver,Requester")
-        .filter('ContentId eq ' + props.ContentItemId + "and ProcessName eq '" + props.ContentType + "'")
-        .orderBy('Created')().then(datarows => {
+      if (props.ContentType != "Document Cancellation") {
+        sp.web.lists.getByTitle("ARGMyRequest").items
+          .select("*,Requester/Id,Requester/Title,Approver/Id,Approver/Title")
+          .expand("Approver,Requester")
+          .filter('ContentId eq ' + props.ContentItemId + "and ProcessName eq '" + props.ContentType + "'")
+          .orderBy('Created')().then(datarows => {
 
           if (datarows.length == 0) {
 
@@ -116,7 +120,51 @@ export const WorkflowAuditHistory = (props: IWorkflowAuditHistoryProps) => {
           setAuditHistoryRows(datarows);
 
 
-        })
+          });
+
+
+      }
+      else {
+        // "ID eq " + props.ContentItemId.Id +
+
+        sp.web.lists.getByTitle("ProcessApprovalList").items
+          .select("*,RequesterName/Id,RequesterName/Title,AssignedTo/Id,AssignedTo/Title,ActionTakenBy/Id,ActionTakenBy/Title")
+          .expand("AssignedTo,RequesterName,ActionTakenBy")
+          .filter(
+
+            "ListItemId eq " + props.ContentItemId.ListItemId +
+            " and ProcessName eq '" + props.ContentType + "'"
+          )
+          .orderBy('Created')().then(datarows => {
+
+            if (datarows.length == 0) {
+
+              setIsHistoryData(true);
+
+              setLoading(false);
+
+            }
+
+            if (datarows.length > 0) {
+
+              setLoading(false);
+
+              setIsHistoryData(true);
+
+            }
+
+            setAuditHistoryRows(datarows);
+            // setAuditHistoryRows((prevRows) => [...prevRows, ...datarows]);
+
+
+
+          })
+
+
+      }
+
+
+
 
     }
 
@@ -249,15 +297,40 @@ export const WorkflowAuditHistory = (props: IWorkflowAuditHistoryProps) => {
 
                         <td style={{ minWidth: '60px', maxWidth: '60px' }}> {index + 1}</td>
 
-                        <td> {(row.LevelId == 0) ? "Initiator" : `Level ${row.LevelId}`}</td>
+                        <td>
+                          <td>
+                            {
+                              row.LevelId !== undefined && row.LevelId !== null
+                                ? row.LevelId === 0
+                                  ? "Initiator"
+                                  : `Level ${row.LevelId}`
+                                : row.Level !== undefined && row.Level !== null
+                                  ? row.Level === 0
+                                    ? row.CurrentUserRole === "OES"
+                                      ? "OES"
+                                      : row.CurrentUserRole == null
+                                        ? "Initiator"
+                                        : `Level ${row.Level}`
+                                    : `Level ${row.Level}`
+                                  : ""
+                            }
 
-                        <td> {row.Approver.Title}</td>
+                          </td>
 
-                        <td> {row.Requester.Title}</td>
+                        </td>
+
+                        <td> {row.Approver ? row.Approver.Title : row.AssignedTo.Title}</td>
+
+                        <td> {row.Requester ? row.Requester.Title : row.RequesterName.Title}</td>
 
                         <td> {(new Date(row.Created)).toLocaleString()}</td>
 
-                        <td> {(row.Status != 'Pending') ? (row.Approver.Title) : ""}</td>
+                        {/* <td> {(row.Status != 'Pending') ? (row.Approver?.Title ? row.Approver.Title:(row.ActionTakenBy.Title?row.ActionTakenBy.Title:"")) : ""}</td> */}
+                        <td>
+                          {row.Status !== "Pending"
+                            ? row.Approver?.Title || row.ActionTakenBy?.Title || ""
+                            : ""}
+                        </td>
 
                         <td>{(row.Status != 'Pending') ? ((new Date(row.Modified)).toLocaleString()) : ""}</td>
 

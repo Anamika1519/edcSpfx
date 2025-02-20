@@ -481,6 +481,23 @@ export const updateItemApproval = async (itemData, _sp, id) => {
   return resultArr;
 };
 
+
+export const updateItemApproval2 = async (itemData, _sp, id) => {
+  let resultArr = []
+  try {
+    const newItem = await _sp.web.lists.getByTitle('ProcessApprovalList').items.getById(id).update(itemData);
+    Swal.fire('Item update successfully', '', 'success');
+    resultArr = newItem
+    // Perform any necessary actions after successful addition
+  } catch (error) {
+    console.log('Error adding item:', error);
+    Swal.fire(' Cancelled', '', 'error')
+    // Handle errors appropriately
+    resultArr = null
+  }
+  return resultArr;
+};
+
 export const getMyRequestBlog = async (sp, item) => {
 
   const currentUser = await sp.web.currentUser();
@@ -526,5 +543,29 @@ export const getMyRequestBlogPending = async (sp, item) => {
     })
 
   return arr
+
+}
+
+export const getAllDMSTasks = async (sp, itemStatus) => {
+  const currentUser = await sp.web.currentUser();
+  let arr = []
+
+  await sp.web.lists.getByTitle("ProcessApprovalList").items.select("*,AssignedTo/Id,AssignedTo/Title,RequesterName/Id,RequesterName/Title").expand("RequesterName,AssignedTo")
+
+    .filter(`Status eq 'Pending' and AssignedToId eq ${currentUser.Id} and ApprovalType eq 'Assignment'`)
+
+    .orderBy("Created", false)
+
+    .getAll().then((res) => {
+
+      arr = res
+
+      console.log(arr, 'arr');
+
+    })
+
+  return arr
+
+
 
 }

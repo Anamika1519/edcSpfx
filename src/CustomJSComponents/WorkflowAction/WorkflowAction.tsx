@@ -1,14 +1,16 @@
 import { escape } from "@microsoft/sp-lodash-subset";
 
 import React, { useState } from "react";
-import { updateItemApproval } from "../../APISearvice/ApprovalService";
+import { updateItemApproval, updateItemApproval2 } from "../../APISearvice/ApprovalService";
 import { getSP } from "../../webparts/addDynamicBanner/loc/pnpjsConfig";
 import { WebPartContext } from "@microsoft/sp-webpart-base";
 import Swal from "sweetalert2";
+import { updateItem } from "../../APISearvice/DocumentCancellation";
 
 export interface IWorkflowActionProps
 {
     currentItem:any;
+    ContentType:string;
     ctx:WebPartContext;
     DisableApproval?:boolean;
     DisableRework?:boolean;
@@ -47,16 +49,46 @@ export const WorkflowAction=(props: IWorkflowActionProps) => {
       const handleFromSubmit = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, Status: string) => {
 
         e.preventDefault();
-    
-      
-        const postPayload = {
-    
-          Remark: formData.Remark,
-    
-          Status: Status
-    
-        };
-    
+        let postPayload ={}
+        let postPayload2 = {}
+
+       
+        if(props.ContentType =="Document Cancellation"){
+          const currentUser = await sp.web.currentUser();
+
+          postPayload = {
+   
+            Remark: formData.Remark,
+     
+            Status: Status,
+
+            ActionTakenById:currentUser.Id,
+            ActionTakenOn:new Date().toLocaleDateString("en-CA")
+     
+          };
+
+          postPayload2 = {
+   
+            Status: Status,
+            OESSubmitStatus: "No",
+            InitiatorSubmitStatus: "No",
+            CurrentUserRole: "Initiator",
+            SubmitStatus: "No",
+     
+          };
+
+        }
+        else{
+           postPayload = {
+   
+            Remark: formData.Remark,
+     
+            Status: Status
+     
+          };
+        }
+       
+   
         console.log(postPayload);
        let confirmation,resultmessage="";
 
@@ -86,9 +118,21 @@ export const WorkflowAction=(props: IWorkflowActionProps) => {
       }).then(async (result) => {
         console.log(result)
         if (result.isConfirmed) {
+          var postResult;
+      if(props.ContentType =="Document Cancellation"){
+         postResult = await updateItemApproval2(postPayload, sp, props.currentItem.Id);
+         if(Status=='Rework') {
+          const postResult2 = await updateItem(postPayload2, sp, Number(props.currentItem.ListItemId));
 
-          const postResult = await updateItemApproval(postPayload, sp, props.currentItem.Id);
-    
+         }
+        // const postId = postResult?.data?.ID;
+
+      }
+      else{
+         postResult = await updateItemApproval(postPayload, sp, props.currentItem.Id);
+
+      }
+   
           if (postResult) {
               Swal.fire(resultmessage, '', 'success');
               setTimeout(() => {

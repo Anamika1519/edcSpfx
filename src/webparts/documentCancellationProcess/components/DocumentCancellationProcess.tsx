@@ -15,12 +15,23 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "../../verticalSideBar/components/VerticalSidebar.scss";
 import "../components/documentCancellation.scss";
 import { allowstringonly, getCurrentUser } from '../../../APISearvice/CustomService';
-import { addItem, addItem2, getAllDocumentCode, getItemByID, getItemByID2, updateItem, updateItem2 } from '../../../APISearvice/DocumentCancellation';
+import { addAllProcessItem, addApprovalItem, addItem, addItem2, getAllDocumentCode, getAllProcessData, getApprovalByID, getApprovalByID2, getDataRoles, getDocumentLinkByID, getFormNameID, getItemByID, getItemByID2, getListNameID, getRequesterID, UpdateAllProcessItem, updateApprovalItem, updateItem, updateItem2 } from '../../../APISearvice/DocumentCancellation';
 import Select from "react-select";
 import Swal from 'sweetalert2';
 import { FormSubmissionMode } from '../../../Shared/Interfaces';
 import { decryptId } from '../../../APISearvice/CryptoService';
 import { getUrlParameterValue } from '../../../Shared/Helper';
+import { WorkflowAction } from '../../../CustomJSComponents/WorkflowAction/WorkflowAction';
+import { WorkflowAuditHistory } from '../../../CustomJSComponents/WorkflowAuditHistory/WorkflowAuditHistory';
+import { CONTENTTYPE_DocumentCancel, LIST_TITLE_DocCancel, Tenant_URL } from '../../../Shared/Constants';
+import { IPeoplePickerContext, PeoplePicker, PrincipalType } from "@pnp/spfx-controls-react/lib/PeoplePicker";
+
+interface ForwardTo {
+    id: number;
+    role: number;
+    level: number;
+    approvers: any[]; // Or a more specific type like `string[]` or `SPUser[]`
+}
 
 const DocumentCancellationProcessContext = ({ props }: any) => {
     const sp: SPFI = getSP();
@@ -41,15 +52,25 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
     const [Loading, setLoading] = React.useState(false);
     const [FormItemId, setFormItemId] = React.useState(null);
     const [editID, setEditID] = React.useState(null);
+    const [editItemID, setEditItemID] = React.useState(null);
+    const [MainEditItem, setMainEditItem] = React.useState(null);
     const [rows, setRows] = React.useState<any>([]);
+    const [UserRoles, setUserRoles] = React.useState<any>([]);
+    const [rows1, setRows1] = React.useState<any>([]);
     const [currentUser, setCurrentUser] = React.useState(null);
     const [selectedOption, setSelectedOption] = React.useState(null);
+    const [selectedPeople, setSelectedPeople] = React.useState(null);
+    const [selectedRole, setSelectedRole] = React.useState(null);
     const [ValidDraft, setValidDraft] = React.useState(true);
     const [ValidSubmit, setValidSubmit] = React.useState(true);
+    const [RequesterRoleId, setRequesterRoleId] = React.useState(null);
+    const [FormNameId, setFormNameId] = React.useState(null);
+    const [ListNameId, setListNameId] = React.useState(null);
     const [editForm, setEditForm] = React.useState(false);
     const [modeValue, setmode] = React.useState("");
-    const [pageValue, setpage] = React.useState("");
+    const [DocumentLink, setDocumentLink] = React.useState(null);
     const [cancellReason, setcancellReason] = React.useState([{ id: 0, description: "", reason: "" }]);
+    const [cancellReasonEdit, setcancellReasonEdit] = React.useState([]);
     const [formData, setFormData] = React.useState({
         RequesterNameId: 0,
         RequesterName: "",
@@ -82,9 +103,53 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
 
 
     });
+
+    const [forwardToArr, setForwardToArr] = React.useState<ForwardTo[]>([
+        { id: 0, role: 0, level: 1, approvers: [] } // Default row
+    ]);
+    const [forwardToArrEdit, setForwardToArrEdit] = React.useState<ForwardTo[]>([]);
+    const [selectedUsers, setSelectedUsers] = React.useState<any[]>([]);
+    const [remark, setRemark] = React.useState("");
+
+    // Function to handle People Picker selection
+    const onPeoplePickerChange = (items: any[]) => {
+        setSelectedUsers(items);
+    };
+
     const ApiCallFunc = async () => {
+
+        const path1 = window.location.pathname;
+
+        if (path1.includes("/view/") || path1.includes("/approve/")) {
+            setInputDisabled(true);
+        }
+        else {
+            setInputDisabled(false);
+        }
+
         const Currusers: any = await getCurrentUser(sp, siteUrl);
+        setCurrentUser(await getCurrentUser(sp, siteUrl));
         const userProfile = await sp.profiles.myProperties();
+
+        const AllUserRoles = await getDataRoles(sp);
+        const setRolesValue = AllUserRoles.map(item => ({
+            value: item.Id,
+            label: item.Role,
+
+        }));
+
+        setUserRoles(setRolesValue)
+
+        const users = await sp.web.siteUsers();
+
+        const Selectedoptions = users.map(item => ({
+            value: item.Id,
+            label: item.Title,
+            UserName: item.Title,
+            UserEmail: item.Email
+        }));
+
+        setRows1(Selectedoptions);
 
         setFormData(prevData => ({
             ...prevData,
@@ -145,69 +210,72 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
         //     setFormItemId(Number(formitemid));
         //   }
 
-        const path = window.location.pathname;
-        const segments = path.split('/').filter(Boolean); // Remove empty elements
-       
-        // Check if "edit" or "view" exists in the URL
-        const paramIndex = segments.findIndex(seg => seg === "edit" || seg === "view" || seg === "approval");
-       
-       
-        if (paramIndex !== -1 && segments[paramIndex + 1]) {
-            // mode = segments[paramIndex]; // Will be "edit" or "view"
-            formitemid = segments[paramIndex + 1]; // Get the ID
-        }
-           
+            const path = window.location.pathname;
+            const segments = path.split('/').filter(Boolean); // Remove empty elements
+
+            // Check if "edit" or "view" exists in the URL
+            const paramIndex = segments.findIndex(seg => seg === "edit" || seg === "view" || seg === "approve");
+
+
+            if (paramIndex !== -1 && segments[paramIndex + 1]) {
+                setmode(segments[paramIndex])
+                // mode = segments[paramIndex]; // Will be "edit" or "view"
+                formitemid = segments[paramIndex + 1]; // Get the ID
+                if (segments[paramIndex + 2] !== undefined) {
+                    // var ProcessListItem={
+                    //     Status:"",
+                    //     Level:0,
+                    //     CurrentUserRole:"",
+
+                    // }
+
+                    //  ProcessListItem =await getApprovalByID(sp, Number(segments[paramIndex + 2]),CONTENTTYPE_DocumentCancel);
+                    // setInputDisabled((ProcessListItem.Status == "Pending" || ProcessListItem?.Status === "Save as draft") && ProcessListItem.Level === 0 && ProcessListItem.CurrentUserRole !=="OES")
+                    setEditID(await getApprovalByID(sp, Number(segments[paramIndex + 2]), CONTENTTYPE_DocumentCancel));
+                    var ProcessItemId : any= await getApprovalByID(sp, Number(segments[paramIndex + 2]), CONTENTTYPE_DocumentCancel);
+                    setInputDisabled(await getApprovalByID2(sp, Number(segments[paramIndex + 2]), CONTENTTYPE_DocumentCancel));
+                }
+            }
 
         }
         // formitemid =20;
-         if (formitemid) {
-             
-              const setBannerById = await getItemByID(sp, Number(formitemid))
-       
-              console.log(setBannerById, 'DocumentCancelId');
-              setEditID(Number(setBannerById[0].ID))
-              if (setBannerById.length > 0) {
+        if (formitemid) {
+            setEditItemID(Number(formitemid));
+
+            const setBannerById = await getItemByID(sp, Number(formitemid))
+
+            if (setBannerById.length > 0) {
                 debugger
-                setEditForm(true)
+                setEditForm(true);
+                setMainEditItem(setBannerById[0]);
                 // setCategoryData(await getCategory(sp, Number(setBannerById[0]?.TypeMaster))) // Category
-       
-                let arr = {
-               
-               RequesterName: setBannerById[0].RequesterName,
-                RequesterNameId: setBannerById[0].RequesterNameId,
-                RequesterDesignation: setBannerById[0].RequesterDesignation,
-                Department: setBannerById[0].Department,
-                RequestDate: setBannerById[0].RequestDate,
-                IssueDate: setBannerById[0].IssueDate,
-                LocationId: setBannerById[0].LocationId,
-                CustodianId: setBannerById[0].CustodianId,
-                SerialNumber: setBannerById[0].SerialNumber,
-                IssueNumber: setBannerById[0].IssueNumber,
-                RevisionNumber: setBannerById[0].RevisionNumber,
-                RevisionDate: setBannerById[0].RevisionDate,
-                DocumentCode: setBannerById[0].value,
-                ReferenceNumber: setBannerById[0].ReferenceNumber,
-                AmendmentTypeId: setBannerById[0].AmendmentTypeId,                
-                ClassificationId: setBannerById[0].ClassificationId,
-                ChangeRequestTypeId:setBannerById[0].ChangeRequestTypeId,
-                SubmiitedDate: setBannerById[0].SubmiitedDate,
-                SubmitStatus: setBannerById[0].SubmitStatus,
-                value: setBannerById[0].DocumentCode,
-                label: setBannerById[0].DocumentCode,
-                // Status: "Pending",
-                // DocumentName: "",
-                // IsRework: false,
-                // DigitalSignStatus: false,
-                ChangeRequestIDId: setBannerById[0].ChangeRequestID,
-                DocumentTypeId: setBannerById[0].DocumentTypeId,
-                AttachmentId:setBannerById[0].AttachmentId,
-                AttachmentJson:setBannerById[0].AttachmentJson
-               
-                 
+                if (setBannerById[0].AttachmentId) {
+                    setDocumentLink(await getDocumentLinkByID(sp, setBannerById[0].AttachmentId))
+                }
+                if (ProcessItemId && ProcessItemId.Level === 0 && ProcessItemId.CurrentUserRole === "OES" && ProcessItemId.IsInitiator == "No") {
+                    const ApprowData: any[] = await getAllProcessData(sp, Number(formitemid), CONTENTTYPE_DocumentCancel, setBannerById[0].DocumentCode)
+                   
+                    if(ApprowData.length >0){
+
+                        const EditApprowData = ApprowData.map((item: any) => ({
+                            id: item.ID,
+                            role: item.ApproverRole?.Id || 0, // Assuming role comes from ApproverRole
+                            level: item.Level || 1, // Default to 1 if missing
+                            approvers: item.Approvers?.map((approver: any) => ({
+                                value: approver.Id,
+                                label: approver.Title,
+                            })) || []
+                        }));
+                        setForwardToArr(EditApprowData);
+                        setForwardToArrEdit(EditApprowData);
+
+                    }
+                   
+                    // MainListID
                 }
 
-                let arr2 = {
-               
+                let arr = {
+
                     RequesterName: setBannerById[0].RequesterName,
                     RequesterNameId: setBannerById[0].RequesterNameId,
                     RequesterDesignation: setBannerById[0].RequesterDesignation,
@@ -220,51 +288,86 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                     IssueNumber: setBannerById[0].IssueNumber,
                     RevisionNumber: setBannerById[0].RevisionNumber,
                     RevisionDate: setBannerById[0].RevisionDate,
-                    DocumentCode: setBannerById[0].value,
+                    DocumentCode: setBannerById[0].DocumentCode,
                     ReferenceNumber: setBannerById[0].ReferenceNumber,
-                    AmendmentTypeId: setBannerById[0].AmendmentTypeId,                
+                    AmendmentTypeId: setBannerById[0].AmendmentTypeId,
                     ClassificationId: setBannerById[0].ClassificationId,
-                    ChangeRequestTypeId:setBannerById[0].ChangeRequestTypeId,
+                    ChangeRequestTypeId: setBannerById[0].ChangeRequestTypeId,
                     SubmiitedDate: setBannerById[0].SubmiitedDate,
                     SubmitStatus: setBannerById[0].SubmitStatus,
-                    // value: setBannerById[0].DocumentCode,
-                    // label: setBannerById[0].DocumentCode,
+                    value: setBannerById[0].DocumentCode,
+                    label: setBannerById[0].DocumentCode,
                     // Status: "Pending",
                     // DocumentName: "",
                     // IsRework: false,
                     // DigitalSignStatus: false,
-                    ChangeRequestIDId: setBannerById[0].ChangeRequestIDId,
+                    ChangeRequestIDId: setBannerById[0].ChangeRequestID,
                     DocumentTypeId: setBannerById[0].DocumentTypeId,
-                    AttachmentId:setBannerById[0].AttachmentId,
-                    AttachmentJson:setBannerById[0].AttachmentJson
-                   
-                     
-                    }
+                    AttachmentId: setBannerById[0].AttachmentId,
+                    AttachmentJson: setBannerById[0].AttachmentJson
 
-                    setFormData(prevData => ({
-                        ...prevData,
-                        IssueNumber: setBannerById[0].IssueNumber,
-                        ReferenceNumber: setBannerById[0].ReferenceNumber,
-                        RevisionNumber: setBannerById[0].RevisionNumber,
-                        ChangeRequestID: setBannerById[0].ChangeRequestIDId,
-                        IssueDate: setBannerById[0].IssueDate,
-                        LocationId: setBannerById[0].LocationId,
-                        CustodianId: setBannerById[0].CustodianId,
-                        SerialNumber: setBannerById[0].SerialNumber,
-                        RevisionDate: setBannerById[0].RevisionDate,
-                        AmendmentTypeId: setBannerById[0].AmendmentTypeId,
-                        ClassificationId: setBannerById[0].ClassificationId,
-                        ChangeRequestTypeId: setBannerById[0].ChangeRequestTypeId,
-                        SubmiitedDate: setBannerById[0].SubmiitedDate,
-                        SubmitStatus: setBannerById[0].SubmitStatus,
-                        DocumentCode: setBannerById[0].value,
-                        DocumentTypeId: setBannerById[0].DocumentTypeId,
-                        Department:setBannerById[0].Department,
-                        AttachmentId:setBannerById[0].AttachmentId,
-                        AttachmentJson:setBannerById[0].AttachmentJson
-                       
-                        // Format as YYYY-MM-DD
-                    }));
+
+                }
+
+                // let arr2 = {
+
+                //     RequesterName: setBannerById[0].RequesterName,
+                //     RequesterNameId: setBannerById[0].RequesterNameId,
+                //     RequesterDesignation: setBannerById[0].RequesterDesignation,
+                //     Department: setBannerById[0].Department,
+                //     RequestDate: setBannerById[0].RequestDate,
+                //     IssueDate: setBannerById[0].IssueDate,
+                //     LocationId: setBannerById[0].LocationId,
+                //     CustodianId: setBannerById[0].CustodianId,
+                //     SerialNumber: setBannerById[0].SerialNumber,
+                //     IssueNumber: setBannerById[0].IssueNumber,
+                //     RevisionNumber: setBannerById[0].RevisionNumber,
+                //     RevisionDate: setBannerById[0].RevisionDate,
+                //     DocumentCode: setBannerById[0].value,
+                //     ReferenceNumber: setBannerById[0].ReferenceNumber,
+                //     AmendmentTypeId: setBannerById[0].AmendmentTypeId,
+                //     ClassificationId: setBannerById[0].ClassificationId,
+                //     ChangeRequestTypeId: setBannerById[0].ChangeRequestTypeId,
+                //     SubmiitedDate: setBannerById[0].SubmiitedDate,
+                //     SubmitStatus: setBannerById[0].SubmitStatus,
+                //     // value: setBannerById[0].DocumentCode,
+                //     // label: setBannerById[0].DocumentCode,
+                //     // Status: "Pending",
+                //     // DocumentName: "",
+                //     // IsRework: false,
+                //     // DigitalSignStatus: false,
+                //     ChangeRequestIDId: setBannerById[0].ChangeRequestIDId,
+                //     DocumentTypeId: setBannerById[0].DocumentTypeId,
+                //     AttachmentId: setBannerById[0].AttachmentId,
+                //     AttachmentJson: setBannerById[0].AttachmentJson
+
+
+                // }
+
+                setFormData(prevData => ({
+                    ...prevData,
+                    IssueNumber: setBannerById[0].IssueNumber,
+                    ReferenceNumber: setBannerById[0].ReferenceNumber,
+                    RevisionNumber: setBannerById[0].RevisionNumber,
+                    ChangeRequestID: setBannerById[0].ChangeRequestIDId,
+                    IssueDate: setBannerById[0].IssueDate,
+                    LocationId: setBannerById[0].LocationId,
+                    CustodianId: setBannerById[0].CustodianId,
+                    SerialNumber: setBannerById[0].SerialNumber,
+                    RevisionDate: setBannerById[0].RevisionDate,
+                    AmendmentTypeId: setBannerById[0].AmendmentTypeId,
+                    ClassificationId: setBannerById[0].ClassificationId,
+                    ChangeRequestTypeId: setBannerById[0].ChangeRequestTypeId,
+                    SubmiitedDate: setBannerById[0].SubmiitedDate,
+                    SubmitStatus: setBannerById[0].SubmitStatus,
+                    DocumentCode: setBannerById[0].DocumentCode,
+                    DocumentTypeId: setBannerById[0].DocumentTypeId,
+                    Department: setBannerById[0].Department,
+                    AttachmentId: setBannerById[0].AttachmentId,
+                    AttachmentJson: setBannerById[0].AttachmentJson
+
+                    // Format as YYYY-MM-DD
+                }));
 
                 // setFormData(arr2);
 
@@ -272,25 +375,30 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
 
                 const rowData: any[] = await getItemByID2(sp, Number(setBannerById[0].ChangeRequestIDId)) //baseUrl
                 const initialRows = rowData.map((item: any) => ({
-                  id: item.Id,
-                  description: item.ChangeDescription,
-                  reason: item.ReasonforChange,
-                  }));
-                 setcancellReason(initialRows);
-               
-       
-                }
-               
-               
-       
-              }
-            //}
-            //#endregion
+                    id: item.Id,
+                    description: item.ChangeDescription,
+                    reason: item.ReasonforChange,
+                }));
+                setcancellReason(initialRows);
+                setcancellReasonEdit(initialRows);
+
+
+            }
+
+            setRequesterRoleId(await getRequesterID(sp))
+            setFormNameId(await getFormNameID(sp, CONTENTTYPE_DocumentCancel))
+            setListNameId(await getListNameID(sp, LIST_TITLE_DocCancel))
+
+
+
+        }
+        //}
+        //#endregion
 
        
     };
 
-    const onSelect = (selectedList: any) => {
+    const onSelect = async (selectedList: any) => {
         console.log(selectedList, "selectedList");
         setFormData(prevData => ({
             ...prevData,
@@ -315,22 +423,73 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
             AttachmentJson:selectedList.AttachmentJson
             // Format as YYYY-MM-DD
         }));
-        setSelectedOption(selectedList);  // Set the selected users
+        setSelectedOption(selectedList);
+        if (selectedList.AttachmentId) {
+            setDocumentLink(await getDocumentLinkByID(sp, selectedList.AttachmentId))
+        }
+        else {
+            setDocumentLink(null);
+        }  // Set the selected users
     };
+
+    const onSelectApprovers = (selectedOptions: any, lvl: number) => {
+        setForwardToArr((prev) =>
+            prev.map((row) =>
+                row.level === lvl ? { ...row, approvers: selectedOptions || [] } : row
+            )
+        );
+    };
+
+
+    // const onSelectRole = (selectedList: any) => {
+    //     // console.log(selectedList , "selectedList");
+    //     setSelectedRole(selectedList);  // Set the selected users
+    // };
+
+    const onSelectRole = (event: React.ChangeEvent<HTMLSelectElement>, lvl: number) => {
+        const updatedArr = forwardToArr.map(row =>
+            row.level === lvl ? { ...row, role: Number(event.target.value) } : row
+        );
+        setForwardToArr(updatedArr);
+    };
+
+
+    // const handleAddRow = () => {
+    //     const newRow: ForwardTo = { id: Date.now(), role: 0, level: "", approvers: [] };
+    //     setForwardToArr([...forwardToArr, newRow]);
+    // };
+    const handleAddRow = () => {
+        setForwardToArr((prev) => [
+            ...prev,
+            { id: 0, role: 0, level: prev.length + 1, approvers: [] }
+        ]);
+    };
+
+    // const handleDeleteRow = (index: number) => {
+    //     // const updatedRows = forwardToArr.filter((_, i) => i !== index);
+    //     // setForwardToArr(updatedRows);
+    //     forwardToArr.splice(index, 1);
+    //     setForwardToArr(forwardToArr);
+    // };
+    // const handleDeleteRow = (index: number) => {
+    //     const updatedRows = forwardToArr.filter((_, i) => i !== index);
+    //     setForwardToArr([...updatedRows]); // Ensure a new array reference
+    // };
+    const handleDeleteRow = (index: number) => {
+        const updatedRows = forwardToArr
+            .filter((_, i) => i !== index) // Remove selected row
+            .map((row, newIndex) => ({ ...row, level: newIndex + 1 })); // Reassign levels
+   
+        setForwardToArr([...updatedRows]); // Ensure a new array reference
+    };
+   
 
 
     React.useEffect(() => {
 
         ApiCallFunc();
 
-        const path = window.location.pathname;
-           
-        if (path.includes("/view/") || path.includes("/approval/")) {
-            setInputDisabled(true);
-        }
-        else{
-            setInputDisabled(false);  
-        }
+
 
 
         // formData.title = currentUser.Title;
@@ -348,7 +507,38 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
         //   window.location.href = `${siteUrl}/SitePages/announcementmaster.aspx`;
         // }
     }
-       
+
+    //#region deleteLocalFile
+    const deleteLocalFile = (index: number, filArray: any[]) => {
+        // Create a new array without mutating the existing state
+        const updatedFiles = [...cancellReason];
+        updatedFiles.splice(index, 1);
+
+        // Update the state with the new array
+        setcancellReason(updatedFiles);
+    };
+
+    const OpenFile = (obj: any) => {
+
+        const fileUrl = `${Tenant_URL}${obj.FileRef}`;
+
+        // if (obj.FileRef.endsWith(".docx")) {
+        //     window.open(`https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(fileUrl)}`, "_blank");
+        //   } else if (obj.FileRef.endsWith(".xlsx")) {
+        //     window.open(`https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(fileUrl)}`, "_blank");
+        //   } else {
+        //     window.open(fileUrl, "_blank"); // Open PDF and other files normally
+        //   }
+
+        if (fileUrl.endsWith(".docx") || fileUrl.endsWith(".xlsx") || fileUrl.endsWith(".pptx")) {
+            window.open(`${siteUrl}/_layouts/15/WopiFrame.aspx?sourcedoc=${encodeURIComponent(obj.FileRef)}&action=default`, "_blank");
+        } else {
+            window.open(fileUrl, "_blank"); // Open PDF and other files normally
+        }
+    }
+
+    //#endregion
+
 
     const addCancelReason = () => {
         setcancellReason([...cancellReason, { id: 0, description: "", reason: "" }]);
@@ -400,7 +590,7 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
             //     //Swal.fire('Error', 'Category is required!', 'error');
             //     valid = false;
             //   }
-            else if (!selectedOption.value) {
+            else if (selectedOption == null || !selectedOption.value) {
                 //Swal.fire('Error', 'Entity is required!', 'error');
                 valid = false;
             }
@@ -412,11 +602,11 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                 // const isValid = rows.every((row:any) => row.description.trim() !== "" && row.reason.trim() !== "");
                 valid = false;
             }
-               else if (IssueNumber =="") {
+            else if (IssueNumber === "") {
                 //Swal.fire('Error', 'Entity is required!', 'error');
                 valid = false;
-              }
-              else if (RevisionNumber =="") {
+            }
+            else if (RevisionNumber === "") {
                 //Swal.fire('Error', 'Entity is required!', 'error');
                 valid = false;
               }
@@ -434,6 +624,10 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                 valid = false;
             } else if (!RequesterDesignation) {
                 //Swal.fire('Error', 'Type is required!', 'error');
+                valid = false;
+            }
+            else if (selectedOption == null || !selectedOption.value) {
+                //Swal.fire('Error', 'Entity is required!', 'error');
                 valid = false;
             }
 
@@ -504,7 +698,8 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                             ClassificationId: selectedOption.ClassificationId,
                             ChangeRequestTypeId:selectedOption.ChangeRequestTypeId,
                             SubmiitedDate: selectedOption.SubmiitedDate,
-                            SubmitStatus: selectedOption.SubmitStatus,
+                            // SubmitStatus: selectedOption.SubmitStatus,
+                            SubmitStatus: "Yes",
                             Status: "Pending",
                             // DocumentName: "",
                             // IsRework: false,
@@ -519,7 +714,7 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
 
 
                         }
-                         const postResult = await updateItem(arr, sp, editID);
+                        const postResult = await updateItem(arr, sp, editItemID);
                         const postId = postResult?.data?.ID;
 
 
@@ -542,15 +737,68 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                                 }
                                
                             }
-                            else if(row.id>0){
-                                const postResult2 = await updateItem2(arr, sp, row.id);
+                            else if (row.id > 0) {
+                                const postResult2 = await updateItem2(postPayload2, sp, row.id);
                                 const postId2 = postResult2?.data?.ID;
                             }
                            
                         }
+
+                        // let Apparr = {
+                        //     // Title:,
+                        //     RequestId:selectedOption.value,
+                        //     Level:0,
+                        //     // LevelType:
+                        //     AssignedToId:currentUser?.Id,
+                        //     RequesterNameId:currentUser?.Id,
+                        //     RequestedDate:new Date().toLocaleDateString("en-CA"),
+                        //     // RequesterRoleId:"Initiator",
+                        //     // ActionTakenBy:
+                        //     // ActionTakenOn:
+                        //     // ActionTakenRole:
+                        //     Status:"Pending",
+                        //     // Remark:
+                        //     // IsAutoRework:
+                        //     IsRework:"No",
+                        //     ListItemId:editItemID,
+                        //     // ListName:"ChangeRequestDocumentCancellationList",
+                        //     ProcessName:"Document Cancellation",
+                        //     // FormName:
+                        //     ApprovalType:"Assignment",
+                        //     // RedirectionLink:
+                        //     // ApprovalLevelListItemId:
+                        //     // ApprovalLevelListName:
+                        //     // Maxlevel :
+                        //     InitiatorNameId:currentUser?.Id,
+                        //     DirectTask:"No",
+                        //     CurrentUserRole:"OES"                          
+
+
+                        // }
+                        // const postResult3 = await addApprovalItem(Apparr, sp);
+                        // const postId3 = postResult3?.data?.ID;
+
                         // await AddContentMaster(sp, arr)
 
                         // const boolval = await handleClick(editID, TypeMasterData?.TypeMaster, Number(formData.entity))
+                        // /*********** */
+
+                        // Find items that are in cancellReasonEdit but NOT in cancellReason
+                        const toDelete = cancellReasonEdit.filter(
+                            (itemEdit) => !cancellReason.some(item => item.id === itemEdit.id) // Assuming ID is the unique key
+                        );
+
+                        // Delete each item from SharePoint
+                        for (const item of toDelete) {
+                            try {
+                                await sp.web.lists.getByTitle("ChangeRequestReasonList").items.getById(item.id).delete();
+                                // console.log(`Deleted item with ID: ${item.ID}`);
+                            } catch (error) {
+                                console.error(`Error deleting item with ID: ${item.id}`, error);
+                            }
+                        }
+
+                        // ///////************* */
                         let boolval = false;
 
                         // if (boolval == true) {
@@ -558,7 +806,7 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                         Swal.fire('Submitted successfully.', '', 'success');
                         sessionStorage.removeItem("DocumentCancelId")
                         setTimeout(() => {
-                            window.location.href = `${siteUrl}/SitePages/Dashboard.aspx`;
+                            window.location.href = `${siteUrl}/SitePages/EDCMAIN.aspx`;
                         }, 500);
                         // }
                     }
@@ -585,13 +833,13 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                             RequesterDesignation: formData.RequesterDesignation,
                             Department: formData.Department,
                             RequestDate: formData.RequestDate,
-                            IssueDate: formData.IssueDate,
+                            IssueDate: formData.IssueDate ? formData.IssueDate : null,
                             LocationId: selectedOption.LocationId,
                             CustodianId: selectedOption.CustodianId,
                             SerialNumber: Number(selectedOption.SerialNumber),
                             IssueNumber: Number(selectedOption.IssueNumber),
                             RevisionNumber: selectedOption.RevisionNumber,
-                            RevisionDate: selectedOption.RevisionDate,
+                            RevisionDate: selectedOption.RevisionDate ? selectedOption.RevisionDate : null,
                             DocumentCode: selectedOption.value,
                             ReferenceNumber: selectedOption.ReferenceNumber,
                             AmendmentTypeId: selectedOption.AmendmentTypeId,
@@ -599,18 +847,19 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                             ClassificationId: selectedOption.ClassificationId,
                             ChangeRequestTypeId: selectedOption.ChangeRequestTypeId,
                             SubmiitedDate: selectedOption.SubmiitedDate,
-                            SubmitStatus: selectedOption.SubmitStatus,
+                            // SubmitStatus: selectedOption.SubmitStatus,
+                            SubmitStatus: "Yes",
                             Status: "Pending",
                             //   DocumentName: "",
                             //   IsRework: false,
                             //   DigitalSignStatus: false,
                             ChangeRequestIDId: formData.ChangeRequestID,
                             DocumentTypeId: selectedOption.DocumentTypeId,
-                             OESSubmitStatus:"No",
-                            InitiatorSubmitStatus:"Yes",
-                            CurrentUserRole:"OES",
-                            AttachmentId:selectedOption.AttachmentId,
-                            AttachmentJson:selectedOption.AttachmentJson
+                            OESSubmitStatus: "No",
+                            InitiatorSubmitStatus: "Yes",
+                            CurrentUserRole: "OES",
+                            AttachmentId: selectedOption.AttachmentId,
+                            AttachmentJson: selectedOption.AttachmentJson ? selectedOption.AttachmentJson : ""
 
 
                         };
@@ -641,6 +890,41 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                             }
                         }
 
+                        // let Apparr = {
+                        //     // Title:,
+                        //     RequestId:selectedOption.value,
+                        //     Level:0,
+                        //     // LevelType:
+                        //     AssignedToId:currentUser?.Id,
+                        //     RequesterName:currentUser.Title,
+                        //     RequestedDate:new Date().toLocaleDateString("en-CA"),
+                        //     RequesterRole:"Initiator",
+                        //     // ActionTakenBy:
+                        //     // ActionTakenOn:
+                        //     // ActionTakenRole:
+                        //     Status:"Pending",
+                        //     // Remark:
+                        //     // IsAutoRework:
+                        //     IsRework:"No",
+                        //     ListItemId:postId,
+                        //     // ListName:"ChangeRequestDocumentCancellationList",
+                        //     ProcessName:"Document Cancellation",
+                        //     // FormName:
+                        //     ApprovalType:"Assignment",
+                        //     // RedirectionLink:
+                        //     // ApprovalLevelListItemId:
+                        //     // ApprovalLevelListName:
+                        //     // Maxlevel :
+                        //     InitiatorNameId:currentUser?.Id,
+                        //     DirectTask:"No",
+                        //     CurrentUserRole:"OES"                          
+
+
+                        // }
+                        // const postResult3 = await addApprovalItem(Apparr, sp);
+                        // const postId3 = postResult3?.data?.ID;
+
+
 
                         let boolval;
 
@@ -649,7 +933,7 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                         Swal.fire('Submitted successfully.', '', 'success');
                         // sessionStorage.removeItem("bannerId")
                         setTimeout(() => {
-                            window.location.href = `${siteUrl}/SitePages/Dashboard.aspx`;
+                            window.location.href = `${siteUrl}/SitePages/EDCMAIN.aspx`;
                         }, 500);
                         // }
 
@@ -698,7 +982,8 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                             ClassificationId: selectedOption.ClassificationId,
                             ChangeRequestTypeId:selectedOption.ChangeRequestTypeId,
                             SubmiitedDate: selectedOption.SubmiitedDate,
-                            SubmitStatus: selectedOption.SubmitStatus,
+                            // SubmitStatus: selectedOption.SubmitStatus,
+                            SubmitStatus: "No",
                             Status: "Save as draft",
                             // DocumentName: "",
                             // IsRework: false,
@@ -713,7 +998,7 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
 
 
                         }
-                         const postResult = await updateItem(arr, sp, editID);
+                        const postResult = await updateItem(arr, sp, editItemID);
                         const postId = postResult?.data?.ID;
 
 
@@ -745,15 +1030,33 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                         // await AddContentMaster(sp, arr)
 
                         // const boolval = await handleClick(editID, TypeMasterData?.TypeMaster, Number(formData.entity))
+                        // /*********** */
+
+                        // Find items that are in cancellReasonEdit but NOT in cancellReason
+                        const toDelete = cancellReasonEdit.filter(
+                            (itemEdit) => !cancellReason.some(item => item.id === itemEdit.id) // Assuming ID is the unique key
+                        );
+
+                        // Delete each item from SharePoint
+                        for (const item of toDelete) {
+                            try {
+                                await sp.web.lists.getByTitle("ChangeRequestReasonList").items.getById(item.id).delete();
+                                // console.log(`Deleted item with ID: ${item.ID}`);
+                            } catch (error) {
+                                console.error(`Error deleting item with ID: ${item.id}`, error);
+                            }
+                        }
+
+                        // ///////************* */
                         let boolval = false;
 
                         // if (boolval == true) {
-                            setLoading(false);
-                            Swal.fire('Saved successfully.', '', 'success');
-                            sessionStorage.removeItem("DocumentCancelId")
-                            setTimeout(() => {
-                                window.location.href = `${siteUrl}/SitePages/Dashboard.aspx`;
-                            }, 1000);
+                        setLoading(false);
+                        Swal.fire('Saved successfully.', '', 'success');
+                        sessionStorage.removeItem("DocumentCancelId")
+                        setTimeout(() => {
+                            window.location.href = `${siteUrl}/SitePages/EDCMAIN.aspx`;
+                        }, 1000);
                         // }
                     }
 
@@ -794,7 +1097,7 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                             ClassificationId: selectedOption.ClassificationId,
                             ChangeRequestTypeId: selectedOption.ChangeRequestTypeId,
                             SubmiitedDate: selectedOption.SubmiitedDate,
-                            SubmitStatus: selectedOption.SubmitStatus,
+                            SubmitStatus: "No",
                             Status: "Save as draft",
                             //   DocumentName: "",
                             //   IsRework: false,
@@ -841,13 +1144,582 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                         Swal.fire('Saved successfully.', '', 'success');
                         // sessionStorage.removeItem("bannerId")
                         setTimeout(() => {
-                            window.location.href = `${siteUrl}/SitePages/Dashboard.aspx`;
+                            window.location.href = `${siteUrl}/SitePages/EDCMAIN.aspx`;
                         }, 1000);
                     }
                 })
 
             }
         }
+
+    }
+
+
+    // public render(): React.ReactElement<IDocumentCancellationProcessProps> {  
+    //     const peoplePickerContext: IPeoplePickerContext = {
+    //       absoluteUrl: this.props.context.pageContext.web.absoluteUrl,
+    //       msGraphClientFactory: this.props.context.msGraphClientFactory,
+    //       spHttpClient: this.props.context.spHttpClient
+    //   };
+
+    const ForwardApproval = async (status: string) => {
+        let valid = true;
+        let actionMessage = "";
+        let successMessage = "";
+        switch (status) {
+            case "Forward":
+                actionMessage = "Do you want to forward this request?";
+                successMessage = "Request forwarded successfully.";
+                break;
+            case "Reject":
+                actionMessage = "Do you want to reject this request?";
+                successMessage = "Request rejected successfully.";
+                break;
+            case "Rework":
+                actionMessage = "Do you want to send this request for rework?";
+                successMessage = "Request sent for rework successfully.";
+                break;
+        }
+
+
+        if (status == "Forward") {
+            if (forwardToArr.length === 0) {
+                // alert("At least one row is required.");
+                valid = false;
+            }
+
+            const isValid = forwardToArr.every(row => row.role !== 0 && row.approvers.length > 0);
+
+            if (!isValid) {
+                // alert("Each row must have a role selected and at least one approver.");
+                valid = false;
+            }
+
+            if (!valid) {
+                Swal.fire('Please fill all the mandatory fields.');
+                return;
+            }
+
+            if (valid) {
+                Swal.fire({
+                    title: actionMessage,
+                    showConfirmButton: true,
+                    showCancelButton: true,
+                    confirmButtonText: "Yes",
+                    cancelButtonText: "No",
+                    icon: 'warning'
+                }
+                ).then(async (result) => {
+                    console.log(result)
+                    if (result.isConfirmed) {
+                        setLoading(true);
+
+                        // let TypeMasterData: any = await getAnnouncementandNewsTypeMaster(sp, Number(formData.Type))
+
+                        let arr = {
+                            ActionTakenById: currentUser.Id,
+                            ActionTakenOn: new Date().toLocaleDateString("en-CA"),
+                            // ActionTakenRoleId: formData.RequesterDesignation,
+                            Status: "Approved",
+                            Remark: remark,
+
+
+                        }
+                        const postResult = await updateApprovalItem(arr, sp, editID.Id);
+                        const postId = postResult?.data?.ID;
+
+                        for (const item of forwardToArr) {
+
+                            const approversIds: any[] = [];
+                            item.approvers.forEach((user: any) => {
+                                if (user?.value) {
+                                    approversIds.push(user.value);
+                                }
+                            });
+
+                            let arr2 = {
+
+                                MainListNameId: ListNameId,
+                                ApproverRoleId: item.role,
+                                Level: Number(item.level),
+                                ApproversId: approversIds,
+                                LevelType: "One",
+                                SubmitStatus: "Yes",
+                                Maxlevel: item.approvers?.length,
+                                // ContentTitle:,
+                                MainListID: String(editItemID),
+                                RequestId: selectedOption.DocumentCode,
+                                // RequestId:String(editID.Id),
+                                RequesterNameId: currentUser.Id,
+                                RequestedDate: new Date().toLocaleDateString("en-CA"),
+                                RequesterRoleId: RequesterRoleId,
+                                ProcessName: "Document Cancellation",
+                                FormNameId: FormNameId,
+                                ApprovalType: "Approval",
+                                IsApprovalGenerated:"No"
+                                // RedirectionLink:,
+
+
+
+                            }
+                            if(item.id){
+                                const postResult2 = await UpdateAllProcessItem(arr2, sp,item.id);
+                                const postId2 = postResult2?.data?.ID;
+
+                            }
+                            else{
+
+                                const postResult2 = await addAllProcessItem(arr2, sp);
+                                const postId2 = postResult2?.data?.ID;
+
+                            }
+                           
+
+                        }
+
+                        let arr2 = {
+                            // ActionTakenById: currentUser.Id,
+                            SubmiitedDate: new Date().toLocaleDateString("en-CA"),
+                            // ActionTakenRoleId: formData.RequesterDesignation,
+                            // Status: status ==="Rework"?"Rework":"Rejected",
+                            // IsRework: status ==="Rework"?"Yes":"No",
+                            OESSubmitStatus: "Yes",
+                            InitiatorSubmitStatus: "Yes",
+                            SubmitStatus: "Yes",
+
+
+                        }
+                        const postResult3 = await updateItem(arr2, sp, editItemID);
+                        const postId3 = postResult3?.data?.ID;
+
+                        // //////// if approver row deleted
+
+                        const toDelete = forwardToArrEdit.filter(
+                            (itemEdit) => !forwardToArr.some(item => item.id === itemEdit.id) // Assuming ID is the unique key
+                        );
+
+                        // Delete each item from SharePoint
+                        for (const item of toDelete) {
+                            try {
+                                await sp.web.lists.getByTitle("AllProcessApprovalLevelList").items.getById(item.id).delete();
+                                // console.log(`Deleted item with ID: ${item.ID}`);
+                            } catch (error) {
+                                console.error(`Error deleting item with ID: ${item.id}`, error);
+                            }
+                        }
+
+
+
+
+                        setLoading(false);
+                        Swal.fire(successMessage, '', 'success');
+                        sessionStorage.removeItem("DocumentCancelId")
+                        setTimeout(() => {
+                            window.location.href = `${siteUrl}/SitePages/Dashboard.aspx`;
+                        }, 1000);
+                        // }
+                    }
+                })
+            }
+
+
+
+        }
+        else {
+
+            if (valid) {
+                Swal.fire({
+                    title: actionMessage,
+                    showConfirmButton: true,
+                    showCancelButton: true,
+                    confirmButtonText: "Yes",
+                    cancelButtonText: "No",
+                    icon: 'warning'
+                }
+                ).then(async (result) => {
+                    console.log(result)
+                    if (result.isConfirmed) {
+                        setLoading(true);
+
+                        // let TypeMasterData: any = await getAnnouncementandNewsTypeMaster(sp, Number(formData.Type))
+                        let arr = {
+                            ActionTakenById: currentUser.Id,
+                            ActionTakenOn: new Date().toLocaleDateString("en-CA"),
+                            // ActionTakenRoleId: formData.RequesterDesignation,
+                            Status: status,
+                            Remark: remark,
+
+
+                        }
+                        const postResult = await updateApprovalItem(arr, sp, editID.Id);
+                        const postId = postResult?.data?.ID;
+
+                        for (const item of forwardToArr) {
+
+                            const approversIds: any[] = [];
+                            item.approvers.forEach((user: any) => {
+                                if (user?.value) {
+                                    approversIds.push(user.value);
+                                }
+                            });
+
+                            let arr2 = {
+
+                                MainListNameId: ListNameId,
+                                ApproverRoleId: item.role,
+                                Level: Number(item.level),
+                                ApproversId: approversIds,
+                                LevelType: "One",
+                                SubmitStatus: "Yes",
+                                Maxlevel: item.approvers?.length,
+                                // ContentTitle:,
+                                MainListID: String(editItemID),
+                                RequestId: selectedOption.DocumentCode,
+                                // RequestId:String(editID.Id),
+                                RequesterNameId: currentUser.Id,
+                                RequestedDate: new Date().toLocaleDateString("en-CA"),
+                                RequesterRoleId: RequesterRoleId,
+                                ProcessName: "Document Cancellation",
+                                FormNameId: FormNameId,
+                                ApprovalType: "Approval",
+                                IsApprovalGenerated:"No"
+                                // RedirectionLink:,
+
+
+
+                            }
+                            if(item.id){
+                                const postResult2 = await UpdateAllProcessItem(arr2, sp,item.id);
+                                const postId2 = postResult2?.data?.ID;
+
+                            }
+                            else{
+                            const postResult2 = await addAllProcessItem(arr2, sp);
+                            const postId2 = postResult2?.data?.ID;
+                            }
+
+                        }
+
+                        let arr2 = {
+                            // ActionTakenById: currentUser.Id,
+                            SubmiitedDate: new Date().toLocaleDateString("en-CA"),
+                            // ActionTakenRoleId: formData.RequesterDesignation,
+                            Status: status === "Rework" ? "Rework" : "Rejected",
+                            IsRework: status === "Rework" ? "Yes" : "No",
+                            OESSubmitStatus: "No",
+                            InitiatorSubmitStatus: "No",
+                            SubmitStatus: "No",
+
+
+                        }
+                        const postResult2 = await updateItem(arr2, sp, editItemID);
+                        const postId2 = postResult2?.data?.ID;
+
+                         // //////// if approver row deleted
+
+                         const toDelete = forwardToArrEdit.filter(
+                            (itemEdit) => !forwardToArr.some(item => item.id === itemEdit.id) // Assuming ID is the unique key
+                        );
+
+                        // Delete each item from SharePoint
+                        for (const item of toDelete) {
+                            try {
+                                await sp.web.lists.getByTitle("AllProcessApprovalLevelList").items.getById(item.id).delete();
+                                // console.log(`Deleted item with ID: ${item.ID}`);
+                            } catch (error) {
+                                console.error(`Error deleting item with ID: ${item.id}`, error);
+                            }
+                        }
+
+                        setLoading(false);
+                        Swal.fire(successMessage, '', 'success');
+                        sessionStorage.removeItem("DocumentCancelId")
+                        setTimeout(() => {
+                            window.location.href = `${siteUrl}/SitePages/Dashboard.aspx`;
+                        }, 1000);
+                        // }
+                    }
+
+                })
+            }
+        }
+
+
+    }
+
+
+    const ForwardInitiatorApproval = async (status: string) => {
+        // let valid = true;
+        let actionMessage = "";
+        let successMessage = "";
+        switch (status) {
+            case "Approved":
+                actionMessage = "Do you want to submit this request?";
+                successMessage = "Submitted successfully.";
+                break;
+            case "Save as draft":
+                actionMessage = "Do you want to save this request?";
+                successMessage = "Saved successfully.";
+                break;
+            // case "Rework":
+            //     actionMessage = "Do you want to send this request for rework?";
+            //     successMessage = "Request sent for rework successfully.";
+            //     break;
+        }
+
+
+        if (status == "Approved") {
+            if (await validateForm(FormSubmissionMode.SUBMIT)) {
+
+                //   if (valid) {
+                Swal.fire({
+                    title: actionMessage,
+                    showConfirmButton: true,
+                    showCancelButton: true,
+                    confirmButtonText: "Yes",
+                    cancelButtonText: "No",
+                    icon: 'warning'
+                }
+                ).then(async (result) => {
+                    console.log(result)
+                    if (result.isConfirmed) {
+                        setLoading(true);
+
+                        // let TypeMasterData: any = await getAnnouncementandNewsTypeMaster(sp, Number(formData.Type))
+                        // //////////////Update Process Approval List when Submitted
+                        let arr = {
+                            ActionTakenById: currentUser.Id,
+                            ActionTakenOn: new Date().toLocaleDateString("en-CA"),
+                            // ActionTakenRoleId: formData.RequesterDesignation,
+                            Status: "Approved",
+                            // Remark: remark,
+
+                        }
+                        const postResult = await updateApprovalItem(arr, sp, editID.Id);
+                        const postId = postResult?.data?.ID;
+
+                        // //////////////Update Document cancellation List when Submitted
+                        let arr3 = {
+                            Title: formData.RequesterName,
+                            RequesterNameId: formData.RequesterNameId,
+                            RequesterDesignation: formData.RequesterDesignation,
+                            Department: formData.Department,
+                            RequestDate: formData.RequestDate,
+                            IssueDate: formData.IssueDate,
+                            LocationId: selectedOption.LocationId,
+                            CustodianId: selectedOption.CustodianId,
+                            SerialNumber: selectedOption.SerialNumber,
+                            IssueNumber: selectedOption.IssueNumber,
+                            RevisionNumber: selectedOption.RevisionNumber,
+                            RevisionDate: selectedOption.RevisionDate,
+                            DocumentCode: selectedOption.value,
+                            ReferenceNumber: selectedOption.ReferenceNumber,
+                            AmendmentTypeId: selectedOption.AmendmentTypeId,
+                            // RequestTypeId: selectedOption.RequestTypeId,
+                            ClassificationId: selectedOption.ClassificationId,
+                            ChangeRequestTypeId: selectedOption.ChangeRequestTypeId,
+                            SubmiitedDate: selectedOption.SubmiitedDate,
+                            SubmitStatus: "Yes",
+                            Status: "Pending",
+                            // DocumentName: "",
+                            // IsRework: false,
+                            // DigitalSignStatus: false,
+                            ChangeRequestIDId: formData.ChangeRequestID,
+                            DocumentTypeId: selectedOption.DocumentTypeId,
+                            OESSubmitStatus: "No",
+                            InitiatorSubmitStatus: "Yes",
+                            CurrentUserRole: "OES",
+                            AttachmentId: selectedOption.AttachmentId,
+                            AttachmentJson: selectedOption.AttachmentJson
+
+
+                        }
+                        const postResult3 = await updateItem(arr3, sp, editItemID);
+                        const postId3 = postResult?.data?.ID;
+
+
+                        // //////////////Update Document cancellation Reason List when Submitted
+
+                        for (const row of cancellReason) {
+
+                            const postPayload2 = {
+                                ChangeRequestIDId: formData.ChangeRequestID, // Assuming "Title" column exists
+                                ChangeDescription: row.description,
+                                ReasonforChange: row.reason,
+                            }
+
+                            if (!row.id) {
+
+                                const postResult2 = await addItem2(postPayload2, sp);
+                                const postId2 = postResult2?.data?.ID;
+                                // debugger
+                                if (!postId2) {
+                                    console.error("Post creation failed.");
+                                    return;
+                                }
+
+                            }
+                            else if (row.id > 0) {
+                                const postResult2 = await updateItem2(postPayload2, sp, row.id);
+                                const postId2 = postResult2?.data?.ID;
+                            }
+
+                        }
+
+                        const toDelete = cancellReasonEdit.filter(
+                            (itemEdit) => !cancellReason.some(item => item.id === itemEdit.id) // Assuming ID is the unique key
+                        );
+
+                        // Delete each item from SharePoint
+                        for (const item of toDelete) {
+                            try {
+                                await sp.web.lists.getByTitle("ChangeRequestReasonList").items.getById(item.id).delete();
+                                // console.log(`Deleted item with ID: ${item.ID}`);
+                            } catch (error) {
+                                console.error(`Error deleting item with ID: ${item.id}`, error);
+                            }
+                        }
+
+                        setLoading(false);
+                        Swal.fire(successMessage, '', 'success');
+                        sessionStorage.removeItem("DocumentCancelId")
+                        setTimeout(() => {
+                            window.location.href = `${siteUrl}/SitePages/EDCMAIN.aspx`;
+                        }, 1000);
+
+                    }
+
+                })
+
+
+
+            }
+        }
+        else if (status == "Save as draft") {
+
+            if (await validateForm(FormSubmissionMode.DRAFT)) {
+                Swal.fire({
+                    title: actionMessage,
+                    showConfirmButton: true,
+                    showCancelButton: true,
+                    confirmButtonText: "Yes",
+                    cancelButtonText: "No",
+                    icon: 'warning'
+                }
+                ).then(async (result) => {
+                    console.log(result)
+                    if (result.isConfirmed) {
+                        setLoading(true);
+
+                        // let TypeMasterData: any = await getAnnouncementandNewsTypeMaster(sp, Number(formData.Type))
+                        let arr = {
+                            ActionTakenById: currentUser.Id,
+                            ActionTakenOn: new Date().toLocaleDateString("en-CA"),
+                            // ActionTakenRoleId: formData.RequesterDesignation,
+                            Status: status,
+                            // Remark: remark,
+
+                        }
+                        const postResult = await updateApprovalItem(arr, sp, editID.Id);
+                        const postId = postResult?.data?.ID;
+
+                        // //////////////Update Document cancellation List when Submitted
+                        let arr3 = {
+                            Title: formData.RequesterName,
+                            RequesterNameId: formData.RequesterNameId,
+                            RequesterDesignation: formData.RequesterDesignation,
+                            Department: formData.Department,
+                            RequestDate: formData.RequestDate,
+                            IssueDate: formData.IssueDate,
+                            LocationId: selectedOption.LocationId,
+                            CustodianId: selectedOption.CustodianId,
+                            SerialNumber: selectedOption.SerialNumber,
+                            IssueNumber: selectedOption.IssueNumber,
+                            RevisionNumber: selectedOption.RevisionNumber,
+                            RevisionDate: selectedOption.RevisionDate,
+                            DocumentCode: selectedOption.value,
+                            ReferenceNumber: selectedOption.ReferenceNumber,
+                            AmendmentTypeId: selectedOption.AmendmentTypeId,
+                            // RequestTypeId: selectedOption.RequestTypeId,
+                            ClassificationId: selectedOption.ClassificationId,
+                            ChangeRequestTypeId: selectedOption.ChangeRequestTypeId,
+                            SubmiitedDate: selectedOption.SubmiitedDate,
+                            SubmitStatus: "No",
+                            Status: "Save as draft",
+                            // DocumentName: "",
+                            // IsRework: false,
+                            // DigitalSignStatus: false,
+                            ChangeRequestIDId: formData.ChangeRequestID,
+                            DocumentTypeId: selectedOption.DocumentTypeId,
+                            OESSubmitStatus: "No",
+                            InitiatorSubmitStatus: "No",
+                            CurrentUserRole: "OES",
+                            AttachmentId: selectedOption.AttachmentId,
+                            AttachmentJson: selectedOption.AttachmentJson
+
+
+                        }
+                        const postResult3 = await updateItem(arr3, sp, editItemID);
+                        const postId3 = postResult?.data?.ID;
+
+
+                        // //////////////Update Document cancellation Reason List when Submitted
+
+                        for (const row of cancellReason) {
+
+                            const postPayload2 = {
+                                ChangeRequestIDId: formData.ChangeRequestID, // Assuming "Title" column exists
+                                ChangeDescription: row.description,
+                                ReasonforChange: row.reason,
+                            }
+
+                            if (!row.id) {
+
+                                const postResult2 = await addItem2(postPayload2, sp);
+                                const postId2 = postResult2?.data?.ID;
+                                // debugger
+                                if (!postId2) {
+                                    console.error("Post creation failed.");
+                                    return;
+                                }
+
+                            }
+                            else if (row.id > 0) {
+                                const postResult2 = await updateItem2(postPayload2, sp, row.id);
+                                const postId2 = postResult2?.data?.ID;
+                            }
+
+                        }
+
+                        const toDelete = cancellReasonEdit.filter(
+                            (itemEdit) => !cancellReason.some(item => item.id === itemEdit.id) // Assuming ID is the unique key
+                        );
+
+                        // Delete each item from SharePoint
+                        for (const item of toDelete) {
+                            try {
+                                await sp.web.lists.getByTitle("ChangeRequestReasonList").items.getById(item.id).delete();
+                                // console.log(`Deleted item with ID: ${item.ID}`);
+                            } catch (error) {
+                                console.error(`Error deleting item with ID: ${item.id}`, error);
+                            }
+                        }
+
+
+                        setLoading(false);
+                        Swal.fire(successMessage, '', 'success');
+                        sessionStorage.removeItem("DocumentCancelId")
+                        setTimeout(() => {
+                            window.location.href = `${siteUrl}/SitePages/EDCMAIN.aspx`;
+                        }, 1000);
+                        // }
+                    }
+
+                })
+            }
+
+        }
+
 
     }
 
@@ -1037,7 +1909,7 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                                                                         name="DocumentCode"
                                                                         className={`newse ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
                                                                         onChange={(selectedOption: any) => onSelect(selectedOption)}
-                                                                        placeholder="Search Document Code"  disabled={InputDisabled}
+                                                                        placeholder="Search Document Code" isDisabled={InputDisabled}
                                                                     />
                                                                 </div>
                                                             </div>
@@ -1064,13 +1936,17 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                                                                 </div>
                                                             </div>
 
-                                                        {/* <div className="col-lg-8">
+                                                            <div className="col-lg-8">
 
                                                             <div className="mb-3">
                                                                 <label htmlFor="example-email" className="form-label">Document Link:</label>
 
+
+                                                                    <div className="text-dark mt-0"> <span onClick={() => OpenFile(DocumentLink)} style={{ color: "blue", cursor: "pointer" }}>{DocumentLink ? `${Tenant_URL}${DocumentLink?.FileRef}` : ""}</span>
+                                                                    </div>
+
+                                                                </div>
                                                             </div>
-                                                        </div> */}
 
 
 
@@ -1119,6 +1995,7 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                                                                     <th style={{ minWidth: "30px", maxWidth: "30px" }}>S.No</th>
                                                                     <th>Description</th>
                                                                     <th>Reason for Cancellation</th>
+                                                                    <th>Action</th>
                                                                 </tr>
 
                                                             </thead>
@@ -1148,6 +2025,10 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                                                                                 setcancellReason(newRowscancellReason);
                                                                             }}
                                                                         /></td>
+                                                                        {(modeValue === "" || modeValue === "edit" || InputDisabled != true) && <td>
+                                                                            <img src={require("../assets/recycle-bin.png")} className='sidebariconsmall' onClick={() => deleteLocalFile(index, cancellReason)}></img>
+                                                                        </td>
+                                                                        }
                                                                     </tr>
                                                                 ))}
                                                             </tbody>
@@ -1156,24 +2037,170 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
 
                                                     </div>
 
-                                                    <div className="row mt-3">
-                                                        <div className="col-12 text-center">
-                                                            {/* <a href="my-approval.html">   */}
-                                                            {!InputDisabled &&  <button type="button" className="btn btn-primary waves-effect waves-light m-1" onClick={handleSaveAsDraft}><i className="fe-check-circle me-1"></i> Save As Draft</button>}
 
-                                                            {!InputDisabled &&  <button type="button" className="btn btn-primary waves-effect waves-light m-1" onClick={handleFormSubmit}><i className="fe-check-circle me-1"></i> Submit</button>}
-                                                             
-                                                            {/* </a> */}
-                                                            {/* <a href="../sites/edcspfx/SitePages/EDCMAIN.aspx">       */}
-                                                            <button type="button" className="btn cancel-btn waves-effect waves-light m-1" onClick={handleCancel}><i className="fe-x me-1"></i> Cancel</button>
-                                                            {/* </a> */}
-                                                        </div>
-                                                    </div>
                                                 </div>
 
 
                                             </div>
+                                            {/* /////////////////%%%%%%%%%%%%%%%%%%%%%%%% */}
 
+                                            {modeValue === "approve" && editID != null && editID.ApprovalType === "Assignment" && editID.Status === "Pending" && editID.CurrentUserRole === "OES" &&
+                                                <div className="card">
+                                                    <div className="card-body">
+                                                        <h4 className="header-title mb-0">Forward Approval To</h4>
+                                                        <div className="table-responsive mt-3 pt-0">
+                                                            <table className="mtbale table-centered table-nowrap table-borderless mb-0" id="myTabl">
+                                                                <thead className="table-light">
+                                                                    <tr>
+                                                                        <th style={{ borderBottomLeftRadius: "0px" }}>Role</th>
+                                                                        <th >Level</th>
+                                                                        <th >Approver Name</th>
+                                                                        <th >Action</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody style={{ maxHeight: "8007px" }}>
+                                                                    {forwardToArr.map((row, index) => (
+                                                                        <tr>
+                                                                            <td className="text-dark ng-binding">
+                                                                                <select className="form-select" onChange={(e) => onSelectRole(e, row.level)} value={row.role}>
+                                                                                    <option value="" selected>Select Role</option>
+                                                                                    {UserRoles.map((role: any, index: number) => (
+                                                                                        <option key={index} value={role.value}>{role.label}</option>
+                                                                                    ))}
+                                                                                </select>
+
+                                                                            </td>
+                                                                            <td >Level {index + 1}</td>
+                                                                            <td >
+
+                                                                                <Select
+                                                                                    options={rows1}
+                                                                                    isMulti
+                                                                                    value={row.approvers}
+                                                                                    name="Approvers"
+                                                                                    className={`newse ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                                                                                    // onChange={(selectedOption: any) => onSelect(selectedOption)}
+                                                                                    onChange={(selectedOptions: any) => onSelectApprovers(selectedOptions, row.level)}
+                                                                                    placeholder="Enter Approver Name"
+                                                                                />
+
+
+
+                                                                            </td>
+                                                                            <td >
+                                                                                {/* <i className="fe-trash-2 text-danger"></i> */}
+                                                                                <img src={require("../assets/recycle-bin.png")} onClick={() => handleDeleteRow(index)} className='sidebariconsmall' />
+
+                                                                            </td>
+                                                                        </tr>
+
+                                                                    ))}
+
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+
+                                                        <div className="mt-2 float-end text-right" style={{ textAlign: "right", paddingRight: "22px" }}>
+                                                            <img src={require("../assets/plus.png")} onClick={handleAddRow} className='sidebariconsmall' />
+
+                                                            {/* <i style={{ cursor: "pointer" }} onClick={handleAddRow} className="fe-plus-circle font-20 text-warning"></i> */}
+                                                        </div>
+
+                                                        <div className="row mt-3">
+                                                            <div className="col-12 text-center">
+                                                                {/* <a href="my-approval.html"> */}
+                                                                <button type="button" className="btn btn-primary waves-effect waves-light m-1" onClick={() => ForwardApproval("Forward")} >
+                                                                    <i className="fe-check-circle me-1"></i> Forward
+                                                                </button>
+                                                                {/* </a> */}
+                                                                {/* <a href="#"> */}
+                                                                <button type="button" className="btn btn-warning waves-effect waves-light m-1" onClick={() => ForwardApproval("Rework")} >
+                                                                    <i className="fe-corner-up-left me-1"></i> Rework
+                                                                </button>
+                                                                {/* </a> */}
+                                                                {/* <a href="#"> */}
+                                                                <button type="button" className="btn btn-danger waves-effect waves-light m-1" onClick={() => ForwardApproval("Rejected")} >
+                                                                    <i className="fe-x me-1"></i> Reject
+                                                                </button>
+                                                                {/* </a> */}
+                                                                {/* <a href="my-approval.html"> */}
+                                                                <button type="button" className="btn btn-light waves-effect waves-light m-1" onClick={handleCancel}>
+                                                                    <i className="fe-x me-1"></i> Cancel
+                                                                </button>
+                                                                {/* </a> */}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            }
+
+                                            {modeValue === "approve" && editID != null && editID.ApprovalType === "Assignment" && editID.Status === "Pending" && editID.CurrentUserRole === "OES" && (
+                                                <div className="card">
+                                                    <div className="card-body">
+                                                        <h4 className="header-title mb-0">Remarks</h4>
+                                                        <textarea
+                                                            className="form-control"
+                                                            value={remark}
+                                                            onChange={(e) => setRemark(e.target.value)}
+                                                            placeholder="Enter your remarks here..."
+                                                        ></textarea>
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            {/* ////////////Approval card */}
+
+                                            {
+                                                //let forrework=ApprovalRequestItem && ApprovalRequestItem.IsRework=='Yes'&& ApprovalRequestItem.LevelSequence!=0;
+                                                // (InputDisabled && ApprovalRequestItem) || (ApprovalRequestItem && ApprovalRequestItem.IsRework == 'Yes' && ApprovalRequestItem.LevelSequence != 0) ? (
+                                                (InputDisabled && editID != null && modeValue === "approve" && editID.ApprovalType === "Approval" && editID.Status === "Pending") ? (
+                                                    <WorkflowAction currentItem={editID} ctx={props.context} ContentType={CONTENTTYPE_DocumentCancel}
+                                                        DisableApproval={false} DisableCancel={false}
+                                                    // DisableApproval={ApprovalRequestItem && ApprovalRequestItem.IsRework == 'Yes' && ApprovalRequestItem.LevelSequence != 0}
+                                                    // DisableCancel={ApprovalRequestItem && ApprovalRequestItem.IsRework == 'Yes' && ApprovalRequestItem.LevelSequence != 0}
+                                                    //DisableReject={ApprovalRequestItem && ApprovalRequestItem.IsRework=='Yes'&& ApprovalRequestItem.LevelSequence!=0}
+                                                    />
+                                                ) : (<div></div>)
+                                            }
+
+                                            {/* ////////////Audit History card */}
+                                            {editID !== null && editID.length != 0 && modeValue === "approve" &&
+                                                <WorkflowAuditHistory ContentItemId={editID} ContentType={CONTENTTYPE_DocumentCancel} ctx={props.context} />
+                                            }
+                                            {/* ////////////Audit History card */}
+
+                                            {/* ////////////Approval card */}
+
+
+                                            {/* </div> */}
+                                            {/* /////////////////%%%%%%%%%%%%%%%%%%%%%%%% */}
+
+                                        </div>
+
+                                        <div className="row mt-3">
+                                            <div className="col-12 text-center">
+                                                {/* <a href="my-approval.html">   */}
+                                                {/* {(((InputDisabled != true && editItemID == null && MainEditItem == null) || (MainEditItem?.Status === "Save as draft" || MainEditItem?.Status === "Rework")) || (editID != null && editID.Level === 0 && editID.CurrentUserRole == "OES" && editID.IsInitiator == "No")) && <button type="button" className="btn btn-primary waves-effect waves-light m-1" onClick={handleSaveAsDraft}><i className="fe-check-circle me-1"></i> Save As Draft</button>}
+
+                                                {(((InputDisabled != true && editItemID == null && MainEditItem == null) || (MainEditItem?.Status === "Save as draft" || MainEditItem?.Status === "Rework")) || (editID != null && editID.Level === 0 && editID.CurrentUserRole == "OES" && editID.IsInitiator == "No")) && <button type="button" className="btn btn-primary waves-effect waves-light m-1" onClick={handleFormSubmit}><i className="fe-check-circle me-1"></i> Submit</button>}
+                                                */}
+
+                                                {(((InputDisabled != true && editItemID == null && MainEditItem == null) || (MainEditItem?.Status === "Save as draft" && editID == null && (modeValue === ""||modeValue === "edit"))) || (editID && editID != null && editID.ApprovalType !== "Approval" && editID.ApprovalType !== "Assignment")) && <button type="button" className="btn btn-primary waves-effect waves-light m-1" onClick={handleSaveAsDraft}><i className="fe-check-circle me-1"></i> Save As Draft</button>}
+
+                                                {(((InputDisabled != true && editItemID == null && MainEditItem == null) || (MainEditItem?.Status === "Save as draft" && editID == null && (modeValue === ""||modeValue === "edit")))|| (editID && editID != null && editID.ApprovalType !== "Approval" && editID.ApprovalType !== "Assignment")) && <button type="button" className="btn btn-primary waves-effect waves-light m-1" onClick={handleFormSubmit}><i className="fe-check-circle me-1"></i> Submit</button>}
+
+                                                {((editID?.Status === "Pending" || editID?.Status === "Save as draft") && (editID.Level === 0 && editID.CurrentUserRole !== "OES" && editID.IsInitiator == "Yes")) && (modeValue === "approve") && <button type="button" className="btn btn-primary waves-effect waves-light m-1" onClick={() => ForwardInitiatorApproval("Save as draft")}><i className="fe-check-circle me-1"></i> Save As Draft</button>}
+
+                                                {((editID?.Status === "Pending" || editID?.Status === "Save as draft") && (editID.Level === 0 && editID.CurrentUserRole !== "OES" && editID.IsInitiator == "Yes")) && (modeValue === "approve") && <button type="button" className="btn btn-primary waves-effect waves-light m-1" onClick={() => ForwardInitiatorApproval("Approved")}><i className="fe-check-circle me-1"></i> Submit</button>}
+
+
+                                                {/* </a> */}
+                                                {/* <a href="../sites/edcspfx/SitePages/EDCMAIN.aspx">       */}
+                                                {/* {modeValue !=="approve" && */}
+                                                <button type="button" className="btn cancel-btn waves-effect waves-light m-1" onClick={handleCancel}><i className="fe-x me-1"></i> Cancel</button>
+                                                {/* } */}
+                                                {/* </a> */}
+                                            </div>
                                         </div>
 
                                     </div>

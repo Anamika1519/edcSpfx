@@ -5,6 +5,10 @@ export const LIST_TITLE_EventMaster="ARGEventMaster";
 export const LIST_TITLE_AnnouncementAndNews="ARGAnnouncementAndNews";
 export const LIST_TITLE_MediaGallery="ARGMediaGallery";
 export const LIST_TITLE_MyRequest="ARGMyRequest";
+export const CONTENTTYPE_DocumentCancel ="Document Cancellation";
+export const LIST_TITLE_DocCancel="ChangeRequestDocumentCancellationList";
+
+export const Tenant_URL ="https://officeindia.sharepoint.com"
 
 // Content Types
 export const CONTENTTYPE_Event="Event";
