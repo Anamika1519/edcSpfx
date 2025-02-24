@@ -700,3 +700,9 @@ width: 100%;
   font-weight: 500;
   color: #000 !important;
 }
+.newtabledc{overflow: inherit !important;}
+.newtabledc tbody{overflow: initial !important;}
+.newtabledc tbody td{overflow: initial !important;}
+.mtbalenew input[type=text]:focus{
+  border: 0px solid #f37421 !important;
+}

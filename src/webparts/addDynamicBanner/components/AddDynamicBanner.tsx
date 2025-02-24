@@ -672,7 +672,7 @@ const AddDynamicBannerContext = ({ props }: any) => {
                             Department <span className="text-danger">*</span>
                           </label>
                           <select
-                            className={`form-control ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                            className={`form-select ${(!ValidSubmit) ? "border-on-error" : ""}`}
                             id="EntityId"
                             name="EntityId"
                             value={formData.EntityId}

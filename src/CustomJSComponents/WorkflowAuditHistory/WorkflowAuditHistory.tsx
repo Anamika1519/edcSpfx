@@ -189,7 +189,7 @@ export const WorkflowAuditHistory = (props: IWorkflowAuditHistoryProps) => {
 
           {console.log("AuditHistoryRows", AuditHistoryRows)}
 
-          <div className="table-responsive pt-0">
+          <div style={{display:'grid'}} className="table-responsive pt-0">
 
 
             <table
@@ -213,50 +213,50 @@ export const WorkflowAuditHistory = (props: IWorkflowAuditHistoryProps) => {
 
                   </th>
 
-                  <th>
+                  <th style={{ minWidth: '70px', maxWidth: '70px' }}>
 
                     Level
 
                   </th>
 
-                  <th>
+                  <th style={{ minWidth: '70px', maxWidth: '70px' }}>
 
                     Assigned To
 
                   </th>
 
-                  <th>
+                  <th style={{ minWidth: '70px', maxWidth: '70px' }}>
 
                     Requester Name
 
                   </th>
 
-                  <th>
+                  <th style={{ minWidth: '70px', maxWidth: '70px' }}>
 
                     Requested Date
 
                   </th>
 
-                  <th>
+                  <th style={{ minWidth: '70px', maxWidth: '70px' }}>
 
                     Action Taken By
 
                   </th>
 
-                  <th>
+                  <th style={{ minWidth: '70px', maxWidth: '70px' }}>
 
                     Action Taken On
 
                   </th>
 
 
-                  <th>
+                  <th style={{ minWidth: '70px', maxWidth: '70px' }}>
 
                     Remarks
 
                   </th>
 
-                  <th>
+                  <th style={{ minWidth: '70px', maxWidth: '70px' }}>
 
                     Status
 
@@ -299,8 +299,8 @@ export const WorkflowAuditHistory = (props: IWorkflowAuditHistoryProps) => {
 
                         <td style={{ minWidth: '60px', maxWidth: '60px' }}> {index + 1}</td>
 
-                        <td>
-                          <td>
+                      
+                          <td style={{ minWidth: '70px', maxWidth: '70px' }}>
                             {
                               row.LevelId !== undefined && row.LevelId !== null
                                 ? row.LevelId === 0
@@ -319,26 +319,26 @@ export const WorkflowAuditHistory = (props: IWorkflowAuditHistoryProps) => {
 
                           </td>
 
-                        </td>
+                      
 
-                        <td> {row.Approver ? row.Approver.Title : row.AssignedTo.Title}</td>
+                        <td style={{ minWidth: '70px', maxWidth: '70px' }}> {row.Approver ? row.Approver.Title : row.AssignedTo.Title}</td>
 
-                        <td> {row.Requester ? row.Requester.Title : row.RequesterName.Title}</td>
+                        <td style={{ minWidth: '70px', maxWidth: '70px' }}> {row.Requester ? row.Requester.Title : row.RequesterName.Title}</td>
 
-                        <td> {(new Date(row.Created)).toLocaleString()}</td>
+                               <td  style={{ minWidth: '70px', maxWidth: '70px' }}> {(new Date(row.Created)).toLocaleString()}</td>
 
                         {/* <td> {(row.Status != 'Pending') ? (row.Approver?.Title ? row.Approver.Title:(row.ActionTakenBy.Title?row.ActionTakenBy.Title:"")) : ""}</td> */}
-                        <td>
+                        <td style={{ minWidth: '70px', maxWidth: '70px' }}>
                           {row.Status !== "Pending"
                             ? row.Approver?.Title || row.ActionTakenBy?.Title || ""
                             : ""}
                         </td>
 
-                        <td>{(row.Status != 'Pending') ? ((new Date(row.Modified)).toLocaleString()) : ""}</td>
+                        <td style={{ minWidth: '70px', maxWidth: '70px' }}>{(row.Status != 'Pending') ? ((new Date(row.Modified)).toLocaleString()) : ""}</td>
 
-                        <td> {row.Remark}</td>
+                        <td style={{ minWidth: '70px', maxWidth: '70px' }}> {row.Remark}</td>
 
-                        <td> <div className="btn  btn-status">{row.Status}</div> </td>
+                        <td style={{ minWidth: '70px', maxWidth: '70px' }}> <div className="btn  btn-status">{row.Status}</div> </td>
 
 
                       </tr>

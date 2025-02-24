@@ -1828,7 +1828,7 @@ const closeModal = () => {
                           name="Type"
                           value={formData.Type}
                           onChange={(e) => onChange(e.target.name, e.target.value)}
-                          className={`form-control ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                          className={`form-select ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
                           disabled={true}
                         >
                           <option>Select</option>
@@ -1850,7 +1850,7 @@ const closeModal = () => {
                         </label>
                         <select
                           // className="form-select inputcss"
-                          className={`form-control ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                          className={`form-select ${(!ValidSubmit) ? "border-on-error" : ""}`}
                           id="category"
                           name="category"
                           value={formData.category}
@@ -1879,7 +1879,7 @@ const closeModal = () => {
                         </label>
                         <select
                           //  className="form-select inputcss"
-                          className={`form-control ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                          className={`form-select ${(!ValidSubmit) ? "border-on-error" : ""}`}
                           id="entity"
                           name="entity"
                           value={formData.entity}

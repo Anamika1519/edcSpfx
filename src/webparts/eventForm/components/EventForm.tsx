@@ -1604,7 +1604,7 @@ const HelloWorldContext = ({ props }: any) => {
                           </label>
                           <select
                           //  className="form-select inputcss"
-                            className={`form-control ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                            className={`form-select ${(!ValidSubmit) ? "border-on-error" : ""}`}
                             id="EntityId"
                             name="EntityId"
                             value={formData.EntityId}

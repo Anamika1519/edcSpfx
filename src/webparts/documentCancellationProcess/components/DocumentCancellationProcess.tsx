@@ -373,7 +373,7 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
 
                 setSelectedOption(arr);
 
-                const rowData: any[] = await getItemByID2(sp, Number(setBannerById[0].ChangeRequestIDId)) //baseUrl
+                const rowData: any[] = await getItemByID2(sp, Number(setBannerById[0].ID)) //baseUrl
                 const initialRows = rowData.map((item: any) => ({
                     id: item.Id,
                     description: item.ChangeDescription,
@@ -721,7 +721,7 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                         for (const row of cancellReason) {
 
                             const postPayload2 = {
-                                ChangeRequestIDId: formData.ChangeRequestID, // Assuming "Title" column exists
+                                ChangeRequestDCIDId: editItemID, // Assuming "Title" column exists
                                 ChangeDescription: row.description,
                                 ReasonforChange: row.reason,
                             }
@@ -791,7 +791,7 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                         // Delete each item from SharePoint
                         for (const item of toDelete) {
                             try {
-                                await sp.web.lists.getByTitle("ChangeRequestReasonList").items.getById(item.id).delete();
+                                await sp.web.lists.getByTitle("ChangeRequestReasonDocumentCancellationList").items.getById(item.id).delete();
                                 // console.log(`Deleted item with ID: ${item.ID}`);
                             } catch (error) {
                                 console.error(`Error deleting item with ID: ${item.id}`, error);
@@ -876,7 +876,7 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                         for (const row of cancellReason) {
 
                             const postPayload2 = {
-                                ChangeRequestIDId: formData.ChangeRequestID, // Assuming "Title" column exists
+                                ChangeRequestDCIDId: postId, // Assuming "Title" column exists
                                 ChangeDescription: row.description,
                                 ReasonforChange: row.reason,
                             }
@@ -1005,7 +1005,7 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                         for (const row of cancellReason) {
 
                             const postPayload2 = {
-                                ChangeRequestIDId: formData.ChangeRequestID, // Assuming "Title" column exists
+                                ChangeRequestDCIDId: editItemID, // Assuming "Title" column exists
                                 ChangeDescription: row.description,
                                 ReasonforChange: row.reason,
                             }
@@ -1040,7 +1040,7 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                         // Delete each item from SharePoint
                         for (const item of toDelete) {
                             try {
-                                await sp.web.lists.getByTitle("ChangeRequestReasonList").items.getById(item.id).delete();
+                                await sp.web.lists.getByTitle("ChangeRequestReasonDocumentCancellationList").items.getById(item.id).delete();
                                 // console.log(`Deleted item with ID: ${item.ID}`);
                             } catch (error) {
                                 console.error(`Error deleting item with ID: ${item.id}`, error);
@@ -1125,7 +1125,7 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                         for (const row of cancellReason) {
 
                             const postPayload2 = {
-                                ChangeRequestIDId: formData.ChangeRequestID, // Assuming "Title" column exists
+                                ChangeRequestDCIDId: postId, // Assuming "Title" column exists
                                 ChangeDescription: row.description,
                                 ReasonforChange: row.reason,
                             }
@@ -1316,7 +1316,7 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                         Swal.fire(successMessage, '', 'success');
                         sessionStorage.removeItem("DocumentCancelId")
                         setTimeout(() => {
-                            window.location.href = `${siteUrl}/SitePages/Dashboard.aspx`;
+                            window.location.href = `${siteUrl}/SitePages/EDCMAIN.aspx`;
                         }, 1000);
                         // }
                     }
@@ -1438,7 +1438,7 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                         Swal.fire(successMessage, '', 'success');
                         sessionStorage.removeItem("DocumentCancelId")
                         setTimeout(() => {
-                            window.location.href = `${siteUrl}/SitePages/Dashboard.aspx`;
+                            window.location.href = `${siteUrl}/SitePages/EDCMAIN.aspx`;
                         }, 1000);
                         // }
                     }
@@ -1546,7 +1546,7 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                         for (const row of cancellReason) {
 
                             const postPayload2 = {
-                                ChangeRequestIDId: formData.ChangeRequestID, // Assuming "Title" column exists
+                                ChangeRequestDCIDId: editItemID, // Assuming "Title" column exists
                                 ChangeDescription: row.description,
                                 ReasonforChange: row.reason,
                             }
@@ -1576,7 +1576,7 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                         // Delete each item from SharePoint
                         for (const item of toDelete) {
                             try {
-                                await sp.web.lists.getByTitle("ChangeRequestReasonList").items.getById(item.id).delete();
+                                await sp.web.lists.getByTitle("ChangeRequestReasonDocumentCancellationList").items.getById(item.id).delete();
                                 // console.log(`Deleted item with ID: ${item.ID}`);
                             } catch (error) {
                                 console.error(`Error deleting item with ID: ${item.id}`, error);
@@ -1671,7 +1671,7 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                         for (const row of cancellReason) {
 
                             const postPayload2 = {
-                                ChangeRequestIDId: formData.ChangeRequestID, // Assuming "Title" column exists
+                                ChangeRequestDCIDId: editItemID, // Assuming "Title" column exists
                                 ChangeDescription: row.description,
                                 ReasonforChange: row.reason,
                             }
@@ -1701,7 +1701,7 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                         // Delete each item from SharePoint
                         for (const item of toDelete) {
                             try {
-                                await sp.web.lists.getByTitle("ChangeRequestReasonList").items.getById(item.id).delete();
+                                await sp.web.lists.getByTitle("ChangeRequestReasonDocumentCancellationList").items.getById(item.id).delete();
                                 // console.log(`Deleted item with ID: ${item.ID}`);
                             } catch (error) {
                                 console.error(`Error deleting item with ID: ${item.id}`, error);
@@ -1904,7 +1904,7 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                                                             <div className="col-lg-4">
 
                                                                 <div className="mb-3">
-                                                                    <label htmlFor="DocumentCode" className="form-label">Document Code:</label>
+                                                                    <label htmlFor="DocumentCode" className="form-label">Document Code <span className="text-danger">*</span></label>
                                                                     {/* <input type="text" id="example-email" name="example-email" className="form-control" placeholder="Search Document Code" value={formData.DocumentCode} /> */}
                                                                     <Select
                                                                         options={rows}
@@ -2050,21 +2050,35 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                                             {modeValue === "approve" && editID != null && editID.ApprovalType === "Assignment" && editID.Status === "Pending" && editID.CurrentUserRole === "OES" &&
                                                 <div className="card">
                                                     <div className="card-body">
-                                                        <h4 className="header-title mb-0">Forward Approval To</h4>
-                                                        <div className="table-responsive mt-3 pt-0">
-                                                            <table className="mtbale table-centered table-nowrap table-borderless mb-0" id="myTabl">
-                                                                <thead className="table-light">
+                                                        <div className='row'>
+                                                            <div className='col-sm-8'>
+                                                            <h4 className="header-title text-dark font-16 mb-3 ">Forward Approval To</h4>
+
+                                                                </div>
+                                                                <div className='col-sm-4'>
+                                                                <div className="mt-0 mb-0 float-end text-right" style={{ textAlign: "right", paddingRight: "22px" }}>
+                                                            <img style={{width:'34px'}} src={require("../assets/plus.png")} onClick={handleAddRow} className='' />
+
+                                                            {/* <i style={{ cursor: "pointer" }} onClick={handleAddRow} className="fe-plus-circle font-20 text-warning"></i> */}
+                                                        </div>
+                                                        </div>
+
+                                                            </div>
+                                                        
+                                                        <div style={{overflow:'inherit'}} className="table-responsive mt-3 pt-0">
+                                                            <table  className="mtbalenew  table-centered table-nowrap table-borderless mb-0 newtabledc" id="myTabl">
+                                                                <thead >
                                                                     <tr>
                                                                         <th style={{ borderBottomLeftRadius: "0px" }}>Role</th>
-                                                                        <th >Level</th>
+                                                                        <th style={{ minWidth: '70px', maxWidth: '70px' }} >Level</th>
                                                                         <th >Approver Name</th>
-                                                                        <th >Action</th>
+                                                                        <th style={{ minWidth: '70px', maxWidth: '70px'}}>Action</th>
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody style={{ maxHeight: "8007px" }}>
                                                                     {forwardToArr.map((row, index) => (
                                                                         <tr>
-                                                                            <td className="text-dark ng-binding">
+                                                                            <td className="ng-binding">
                                                                                 <select className="form-select" onChange={(e) => onSelectRole(e, row.level)} value={row.role}>
                                                                                     <option value="" selected>Select Role</option>
                                                                                     {UserRoles.map((role: any, index: number) => (
@@ -2073,7 +2087,7 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                                                                                 </select>
 
                                                                             </td>
-                                                                            <td >Level {index + 1}</td>
+                                                                            <td style={{ minWidth: '70px', maxWidth: '70px' }}>Level {index + 1}</td>
                                                                             <td >
 
                                                                                 <Select
@@ -2090,24 +2104,21 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
 
 
                                                                             </td>
-                                                                            <td >
+                                                                            <td style={{ minWidth: '70px', maxWidth: '70px' }}>
                                                                                 {/* <i className="fe-trash-2 text-danger"></i> */}
-                                                                                <img src={require("../assets/recycle-bin.png")} onClick={() => handleDeleteRow(index)} className='sidebariconsmall' />
+                                                                                <img src={require("../../../CustomAsset/del.png")} onClick={() => handleDeleteRow(index)} className='' />
 
                                                                             </td>
                                                                         </tr>
 
                                                                     ))}
+                                                                   
 
                                                                 </tbody>
                                                             </table>
                                                         </div>
 
-                                                        <div className="mt-2 float-end text-right" style={{ textAlign: "right", paddingRight: "22px" }}>
-                                                            <img src={require("../assets/plus.png")} onClick={handleAddRow} className='sidebariconsmall' />
-
-                                                            {/* <i style={{ cursor: "pointer" }} onClick={handleAddRow} className="fe-plus-circle font-20 text-warning"></i> */}
-                                                        </div>
+                                                       
 
                                                         <div className="row mt-3">
                                                             <div className="col-12 text-center">
@@ -2127,7 +2138,7 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                                                                 </button>
                                                                 {/* </a> */}
                                                                 {/* <a href="my-approval.html"> */}
-                                                                <button type="button" className="btn btn-light waves-effect waves-light m-1" onClick={handleCancel}>
+                                                                <button type="button" className="btn cancel-btn waves-effect waves-light m-1" onClick={handleCancel}>
                                                                     <i className="fe-x me-1"></i> Cancel
                                                                 </button>
                                                                 {/* </a> */}
@@ -2178,9 +2189,7 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                                             {/* </div> */}
                                             {/* /////////////////%%%%%%%%%%%%%%%%%%%%%%%% */}
 
-                                        </div>
-
-                                        <div className="row mt-3">
+                                            <div className="row mt-3">
                                             <div className="col-12 text-center">
                                                 {/* <a href="my-approval.html">   */}
                                                 {/* {(((InputDisabled != true && editItemID == null && MainEditItem == null) || (MainEditItem?.Status === "Save as draft" || MainEditItem?.Status === "Rework")) || (editID != null && editID.Level === 0 && editID.CurrentUserRole == "OES" && editID.IsInitiator == "No")) && <button type="button" className="btn btn-primary waves-effect waves-light m-1" onClick={handleSaveAsDraft}><i className="fe-check-circle me-1"></i> Save As Draft</button>}
@@ -2205,6 +2214,9 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                                                 {/* </a> */}
                                             </div>
                                         </div>
+                                      
+                                        </div>
+
 
                                     </div>
                                 </div>

@@ -430,7 +430,7 @@ const HelloWorldContext = ({ props }: any) => {
                 >
                   <div className="row">
                     {/* Carousel Section */}
-                    <div className="col-xl-8 col-lg-8 order-lg-2 order-xl-1">
+                    <div className="col-xl-12 col-lg-12 order-lg-2 order-xl-1">
                       <div className="carousel1">
                         <div
                           id="carouselExampleIndicators"
@@ -513,13 +513,145 @@ const HelloWorldContext = ({ props }: any) => {
                       </div>
                     </div>
 
-                    {/* Announcement Section */}
-                    <div className="col-xl-4 col-lg-4 order-lg-1 order-xl-1">
+                  
+                  </div>
+
+
+
+                  <div className="row mt-0">
+                    {/* Corporate Directory */}
+
+                    {/* <div className="col-xl-7 col-lg-7">
+                     
+                      <div className="card" style={{ borderRadius: "1rem" }}>
+                        <div className="card-body gheightnew pb-0">
+                          <h4
+                            className="header-title text-dark fw-bold mb-0"
+                            style={{
+                              fontSize: "16px",
+                              fontWeight: "bold",
+                            }}
+                          >
+                            Upcoming Events
+                            <a
+
+                              style={{ float: "right", cursor: "pointer" }}
+                              className="font-11 fw-normal btn  rounded-pill waves-effect waves-light view-all"
+                              
+                              onClick={(e) => GotoNextPage(e)}
+                            >
+                              View All
+                            </a>
+                          </h4>
+
+                        </div>
+                      </div>
+                    </div> */}
+
+                    {/* gallery  */}
+                    <div className="col-xl-8 col-lg-8 mb-2">
+                      <div
+                        style={{ float: "left", width: "100%" }}
+                        className="card newt desknewview mb-3"
+                      >
+                        <div className="card-body heifgtgal pb-2">
+                          <h4 className="header-title text-dark font-16 fw-bold mb-0">
+                            Application Link
+                            <a
+                              style={{ float: "right", cursor: "pointer" }}
+                              className="font-11 fw-normal btn  rounded-pill waves-effect waves-light view-all"
+                              onClick={(e) => GotoNextPagethree(e)}
+                            >
+                              View All
+                            </a>
+                          </h4>
+                          {gallerydata.length === 0 ?
+                            <div className="align-items-center newiconsvg text-center mt-10"
+                            >
+
+                              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+
+                              <p className="font-14 text-muted text-center">No Application Link Available </p>
+
+                            </div>
+                            :
+                            <div className="tab-content pt-1  pb-1" style={{ marginTop: '0.6rem' }}>
+
+                              <div className="row">
+
+
+                                {console.log("tytyty", gallerydata)}
+                                {gallerydata.map((item) => {
+                                  const imageData = item.QuickLinkImage == undefined || item.QuickLinkImage == null ? "" : JSON.parse(item.QuickLinkImage);
+                                  let siteId = siteID;
+                                  let listID = response.Id;
+                                  let img1 = imageData != "" && imageData.fileName != "" ? `${siteUrl}/_api/v2.1/sites('${siteId}')/lists('${listID}')/items('${item.ID}')/attachments('${imageData.fileName}')/thumbnails/0/c400x400/content?prefer=noredirect%2Cclosestavailablesize` : ""
+                                  let img = imageData != "" && imageData.serverRelativeUrl != "" ? `https://officeindia.sharepoint.com${imageData.serverRelativeUrl}` : img1
+                                  const imageUrl = imageData != ""
+                                    ? img
+                                    : null;
+                                  { console.log("imageData", imageData, imageUrl, item, siteUrl, img) }
+                                  // const ImageUrl2 =
+                                  //   item.QuickLinkImage == undefined || item.QuickLinkImage == null
+                                  //     ? ""
+                                  //     : JSON.parse(item.QuickLinkImage);
+
+                                  return (
+                                    <div className="col-sm-3 newwidth6" key={item.ID}
+                                      id={item.ID} onClick={(e) => GotoNextPageApp(e,item)}>
+                                      <div>
+                                        <div>
+                                          <div className="aaplnbg">
+                                            <img
+                                              src={imageUrl}
+                                              // videositeurl +
+                                              // ImageUrl2?.serverRelativeUrl
+
+                                              width="100%"
+                                              alt="Gallery"
+                                            />
+                                            <div className="appltext font-14 mb-1">
+                                              {item.Title}
+
+                                            </div>
+                                            <p className="font-12 mb-2 text-primary">{item.Entity.Entity}</p>
+
+
+                                          </div>
+
+                                        </div>
+
+
+                                      </div>
+
+                                      {/* <div className="lspe">
+                                <img src={item.videoIcon} alt="video icon" />
+                              </div> */}
+                                      {/* <div className="cptext">
+                                        <p>
+                                          <i className="fa fa-clock-o"></i>&nbsp;
+                                          {moment(item.Created).format("DD-MMM-YYYY")}
+                                        </p>
+                                        <p style={{ cursor: "pointer" }} onClick={() => GotoNextPageMediaDetails(item)}>{item.Title}</p>
+                                      </div> */}
+                                    </div>
+                                  )
+                                })}
+
+                              </div>
+                            </div>}
+
+
+                        </div>
+                      </div>
+                    </div>
+                      {/* Announcement Section */}
+                      <div className="col-xl-4 col-lg-4 order-lg-1 order-xl-1">
                       <div
                         className="card announcementner"
                         style={{ borderRadius: "1rem" }}
                       >
-                        <div className="card-body height">
+                        <div className="card-body height heifgtgal">
                           <h5
                             className="header-title line18 font-8 text-dark newtextdark fw-bold mb-0"
                             style={{ fontSize: "16px", fontWeight: "bold", marginTop: '2px' }}
@@ -626,137 +758,6 @@ const HelloWorldContext = ({ props }: any) => {
 
 
 
-
-
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-
-
-                  <div className="row mt-0">
-                    {/* Corporate Directory */}
-
-                    {/* <div className="col-xl-7 col-lg-7">
-                     
-                      <div className="card" style={{ borderRadius: "1rem" }}>
-                        <div className="card-body gheightnew pb-0">
-                          <h4
-                            className="header-title text-dark fw-bold mb-0"
-                            style={{
-                              fontSize: "16px",
-                              fontWeight: "bold",
-                            }}
-                          >
-                            Upcoming Events
-                            <a
-
-                              style={{ float: "right", cursor: "pointer" }}
-                              className="font-11 fw-normal btn  rounded-pill waves-effect waves-light view-all"
-                              
-                              onClick={(e) => GotoNextPage(e)}
-                            >
-                              View All
-                            </a>
-                          </h4>
-
-                        </div>
-                      </div>
-                    </div> */}
-
-                    {/* gallery  */}
-                    <div className="col-xl-12 col-lg-12 mb-2">
-                      <div
-                        style={{ float: "left", width: "100%" }}
-                        className="card newt desknewview mb-3"
-                      >
-                        <div className="card-body heifgtgal pb-2">
-                          <h4 className="header-title text-dark font-16 fw-bold mb-0">
-                            Application Link
-                            <a
-                              style={{ float: "right", cursor: "pointer" }}
-                              className="font-11 fw-normal btn  rounded-pill waves-effect waves-light view-all"
-                              onClick={(e) => GotoNextPagethree(e)}
-                            >
-                              View All
-                            </a>
-                          </h4>
-                          {gallerydata.length === 0 ?
-                            <div className="align-items-center newiconsvg text-center mt-10"
-                            >
-
-                              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-
-                              <p className="font-14 text-muted text-center">No Application Link Available </p>
-
-                            </div>
-                            :
-                            <div className="tab-content pt-1  pb-1" style={{ marginTop: '0.6rem' }}>
-
-                              <div className="row">
-
-
-                                {console.log("tytyty", gallerydata)}
-                                {gallerydata.map((item) => {
-                                  const imageData = item.QuickLinkImage == undefined || item.QuickLinkImage == null ? "" : JSON.parse(item.QuickLinkImage);
-                                  let siteId = siteID;
-                                  let listID = response.Id;
-                                  let img1 = imageData != "" && imageData.fileName != "" ? `${siteUrl}/_api/v2.1/sites('${siteId}')/lists('${listID}')/items('${item.ID}')/attachments('${imageData.fileName}')/thumbnails/0/c400x400/content?prefer=noredirect%2Cclosestavailablesize` : ""
-                                  let img = imageData != "" && imageData.serverRelativeUrl != "" ? `https://officeindia.sharepoint.com${imageData.serverRelativeUrl}` : img1
-                                  const imageUrl = imageData != ""
-                                    ? img
-                                    : null;
-                                  { console.log("imageData", imageData, imageUrl, item, siteUrl, img) }
-                                  // const ImageUrl2 =
-                                  //   item.QuickLinkImage == undefined || item.QuickLinkImage == null
-                                  //     ? ""
-                                  //     : JSON.parse(item.QuickLinkImage);
-
-                                  return (
-                                    <div className="col-sm-3 newwidth6" key={item.ID}
-                                      id={item.ID} onClick={(e) => GotoNextPageApp(e,item)}>
-                                      <div>
-                                        <div>
-                                          <div className="aaplnbg">
-                                            <img
-                                              src={imageUrl}
-                                              // videositeurl +
-                                              // ImageUrl2?.serverRelativeUrl
-
-                                              width="100%"
-                                              alt="Gallery"
-                                            />
-                                            <div className="appltext font-14 mb-1">
-                                              {item.Title}
-
-                                            </div>
-                                            <p className="font-12 mb-2 text-primary">{item.Entity.Entity}</p>
-
-
-                                          </div>
-
-                                        </div>
-
-
-                                      </div>
-
-                                      {/* <div className="lspe">
-                                <img src={item.videoIcon} alt="video icon" />
-                              </div> */}
-                                      {/* <div className="cptext">
-                                        <p>
-                                          <i className="fa fa-clock-o"></i>&nbsp;
-                                          {moment(item.Created).format("DD-MMM-YYYY")}
-                                        </p>
-                                        <p style={{ cursor: "pointer" }} onClick={() => GotoNextPageMediaDetails(item)}>{item.Title}</p>
-                                      </div> */}
-                                    </div>
-                                  )
-                                })}
-
-                              </div>
-                            </div>}
 
 
                         </div>
