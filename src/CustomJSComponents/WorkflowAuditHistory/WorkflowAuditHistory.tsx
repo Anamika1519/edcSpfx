@@ -90,11 +90,13 @@ export const WorkflowAuditHistory = (props: IWorkflowAuditHistoryProps) => {
         case "Document Cancellation":
           listname = "DocumentCancelId";
           break;
-
+        case "Change Request":
+          listname = "ChangeRequestId";
+          break;
         default:
       }
       setLoading(true);
-      if (props.ContentType != "Document Cancellation") {
+      if (props.ContentType != "Document Cancellation" && props.ContentType != "Change Request") {
         sp.web.lists.getByTitle("ARGMyRequest").items
           .select("*,Requester/Id,Requester/Title,Approver/Id,Approver/Title")
           .expand("Approver,Requester")

@@ -15,12 +15,12 @@ import { getSP } from "../loc/pnpjsConfig";
 import CustomBreadcrumb from "../../../CustomJSComponents/CustomBreadcrumb/CustomBreadcrumb";
 import UserContext from "../../../GlobalContext/context";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faEllipsisV, faPlusCircle, faSort } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faEllipsisV, faFileExport, faPlusCircle, faSort } from '@fortawesome/free-solid-svg-icons';
 import { DeleteQuickLink, getQuickLinkList } from '../../../APISearvice/QuickLinksService';
 import { encryptId } from '../../../APISearvice/CryptoService';
 import Swal from 'sweetalert2';
 import moment from 'moment';
-
+import * as XLSX from "xlsx";
 
  
 
@@ -65,8 +65,11 @@ const QuickLinksMasterContext = ({ props }: any) => {
        SNo: '',
        Title: '',
        URL: '',
-       Redirect: '',
-       Department:'',
+       RedirectToNewTab: '',
+       Entity:{
+        ID:'',
+        Entity:''
+       },
        IsActive:''
        
      });
@@ -78,9 +81,14 @@ const QuickLinksMasterContext = ({ props }: any) => {
         (filters.SNo === '' || String(index + 1).includes(filters.SNo)) &&
         (filters.Title === '' || item.Title.toLowerCase().includes(filters.Title.toLowerCase())) &&
         (filters.URL === '' || item.URL.toLowerCase().includes(filters.URL.toLowerCase())) &&
-        (filters?.Redirect === '' || item?.Redirect?.toLowerCase().includes(filters?.Redirect?.toLowerCase()))&&
-        (filters?.Department === '' || item?.Department?.toLowerCase().includes(filters?.Department?.toLowerCase()))&&
-        (filters?.IsActive === '' || item?.IsActive?.toLowerCase().includes(filters?.IsActive?.toLowerCase()))
+        // (filters.RedirectToNewTab === '' || String(item.RedirectToNewTab).toLowerCase() === filters.RedirectToNewTab.toLowerCase())&&
+        (filters.RedirectToNewTab === '' || String(item.RedirectToNewTab ? 'Yes' : 'No').toLowerCase() === filters.RedirectToNewTab.toLowerCase())&&
+
+        // (filters?.RedirectToNewTab === '' || item?.RedirectToNewTab?.toLowerCase().includes(filters?.RedirectToNewTab?.toLowerCase()))&&
+        (Object.keys(filters.Entity).length === 0 || item.Entity?.Entity?.toLowerCase().includes(filters.Entity.Entity.toLowerCase())) &&
+        (filters.IsActive === '' || String(item.IsActive ? 'Yes' : 'No').toLowerCase() === filters.IsActive.toLowerCase())
+
+        // (filters?.IsActive === '' || item?.IsActive?.toLowerCase().includes(filters?.IsActive?.toLowerCase()))
       );
     });
     const sortedData = filteredData.sort((a, b) => {
@@ -151,12 +159,24 @@ const QuickLinksMasterContext = ({ props }: any) => {
       setSortConfig({ key, direction });
     };
 
+    // const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
+    //       setFilters({
+    //         ...filters,
+    //         [field]: e.target.value,
+    //       });
+    //     };
+
     const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
-          setFilters({
-            ...filters,
-            [field]: e.target.value,
-          });
-        };
+      setFilters((prevFilters) => ({
+        ...prevFilters,
+        ...(field === "Entity"
+          ? { Entity: { ...prevFilters.Entity, Entity: e.target.value } } // Corrected bracket placement
+          : { [field]: e.target.value }) // Update other fields normally
+      }));
+    };
+   
+   
+   
 
         //#region 
             const EditDelegate = (id: any) => {
@@ -191,7 +211,40 @@ const QuickLinksMasterContext = ({ props }: any) => {
                 }
               })
             }
-        
+
+            //#region Download exl file
+              const handleExportClick = () => {
+                const exportData = currentData.map((item, index) => ({
+                  // 'S.No.': startIndex + index + 1,
+                  // 'Title': item.Title,
+                  // 'Url': item.Url,
+           
+                  // 'Status': item.Status,
+                  // 'Submitted Date': item.Created,
+                  "S.No.": startIndex + index + 1,
+           
+                  Title: item.Title,
+           
+                  URL: item.URL,
+                  Department: item.Entity.Entity,
+           
+                  "Redirect to new tab": item.RedirectToNewTab,
+           
+                  Active: item.IsActive,
+           
+                  "Submitted Date": item.Created,
+                }));
+           
+                exportToExcel(exportData, "Application Links Master");
+              };
+              const exportToExcel = (data: any[], fileName: string) => {
+                const workbook = XLSX.utils.book_new();
+                const worksheet = XLSX.utils.json_to_sheet(data);
+                XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+                XLSX.writeFile(workbook, `${fileName}.xlsx`);
+              };
+              //#endregion
+       
 
   return (
 
@@ -250,7 +303,7 @@ const QuickLinksMasterContext = ({ props }: any) => {
                             <div className="bd-highlight">
                               <input
                                 type="text"
-                                placeholder="index"
+                                placeholder="SNo"
                                 onKeyDown={(e) => {
                                   if (e.key === 'Enter' && !e.shiftKey) {
                                     e.preventDefault(); // Prevents the new line in textarea
@@ -299,7 +352,7 @@ const QuickLinksMasterContext = ({ props }: any) => {
                               <div className="d-flex pb-2" style={{ justifyContent: 'space-evenly' }}>
                                 <span >Department</span>  <span onClick={() => handleSortChange('Department')}><FontAwesomeIcon icon={faSort} /> </span></div>
                               <div className=" bd-highlight">
-                                <input type="text" placeholder="Filter by Department" onChange={(e) => handleFilterChange(e, 'Department')}
+                                <input type="text" placeholder="Filter by Department" onChange={(e) => handleFilterChange(e, 'Entity')}
                                   onKeyDown={(e) => {
                                     if (e.key === 'Enter' && !e.shiftKey) {
                                       e.preventDefault(); // Prevents the new line in textarea
@@ -315,9 +368,9 @@ const QuickLinksMasterContext = ({ props }: any) => {
                           <th style={{ minWidth: '80px', maxWidth: '80px' }}>
                             <div className="d-flex flex-column bd-highlight ">
                               <div className="d-flex pb-2" style={{ justifyContent: 'space-evenly' }}>
-                                <span >Redirect to other tab</span>  <span onClick={() => handleSortChange('Redirect')}><FontAwesomeIcon icon={faSort} /> </span></div>
+                                <span >Redirect to other tab</span>  <span onClick={() => handleSortChange('RedirectToNewTab')}><FontAwesomeIcon icon={faSort} /> </span></div>
                               <div className=" bd-highlight">
-                                <input type="text" placeholder="Filter by Redirect" onChange={(e) => handleFilterChange(e, 'Redirect')}
+                                <input type="text" placeholder="Filter by Redirect" onChange={(e) => handleFilterChange(e, 'RedirectToNewTab')}
                                   onKeyDown={(e) => {
                                     if (e.key === 'Enter' && !e.shiftKey) {
                                       e.preventDefault(); // Prevents the new line in textarea
@@ -330,9 +383,9 @@ const QuickLinksMasterContext = ({ props }: any) => {
                           <th style={{ minWidth: '80px', maxWidth: '80px' }}>
                             <div className="d-flex flex-column bd-highlight ">
                               <div className="d-flex pb-2" style={{ justifyContent: 'space-evenly' }}>
-                                <span >Active</span>  <span onClick={() => handleSortChange('Active')}><FontAwesomeIcon icon={faSort} /> </span></div>
+                                <span >Active</span>  <span onClick={() => handleSortChange('IsActive')}><FontAwesomeIcon icon={faSort} /> </span></div>
                               <div className=" bd-highlight">
-                                <input type="text" placeholder="Filter by Active" onChange={(e) => handleFilterChange(e, 'Active')}
+                                <input type="text" placeholder="Filter by Active" onChange={(e) => handleFilterChange(e, 'IsActive')}
                                   onKeyDown={(e) => {
                                     if (e.key === 'Enter' && !e.shiftKey) {
                                       e.preventDefault(); // Prevents the new line in textarea
@@ -353,18 +406,18 @@ const QuickLinksMasterContext = ({ props }: any) => {
                                                           </div>
                           
                                                           </div>
-                          
-                                                          {/* <div className=" bd-highlight">   <div id="myDropdown" className={`dropdown-content ${isOpen ? 'show' : ''}`}>
-                          
+                         
+                                                          <div className=" bd-highlight">   <div id="myDropdown" className={`dropdown-content ${isOpen ? 'show' : ''}`}>
+                         
                                                             <div onClick={handleExportClick} className="" >
                           
                                                               <FontAwesomeIcon icon={faFileExport} />  Export
                           
                                                             </div>
-                          
-                                                          </div></div> */}
-                          
-                          
+                         
+                                                          </div></div>
+                         
+                         
                                                         </div>
                           
                                                           <div style={{ height: '32px' }}></div>

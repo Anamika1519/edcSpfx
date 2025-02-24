@@ -17,3 +17,5 @@ export const CONTENTTYPE_News="News";
 export const CONTENTTYPE_Media="Media";
 export const LIST_TITLE_Blogs="ARGBlogs";
 export const CONTENTTYPE_Blogs="Blogs";
+export const CONTENTTYPE_ChangeDocument = "Change Request";
+export const LIST_TITLE_ChangeRequest = "ChangeRequestList";

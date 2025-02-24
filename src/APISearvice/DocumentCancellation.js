@@ -24,7 +24,81 @@ export const getAllDocumentCode = async (_sp) => {
     });
   return arr;
 };
+export const getAllRequestType = async (_sp) => {
+  let arr = [];
 
+  await _sp.web.lists.getByTitle("RequestTypeMaster").items
+    .select("*,Author/ID,Author/Title")
+    .expand("Author")
+    .orderBy("Modified", false)() // Order by Modified descending to get latest first
+    .then((res) => {
+      console.log(res);
+
+      // Filter only latest entry for each unique DocumentCode
+      const latestDocuments = res.reduce((acc, item) => {
+        if (!acc[item.RequestType]) {
+          acc[item.RequestType] = item;
+        }
+        return acc;
+      }, {});
+
+      arr = Object.values(latestDocuments);
+    })
+    .catch((error) => {
+      console.log("Error fetching data: ", error);
+    });
+  return arr;
+};
+export const getAllAmendmentType = async (_sp) => {
+  let arr = [];
+
+  await _sp.web.lists.getByTitle("AmendmentTypeMaster").items
+    .select("*,Author/ID,Author/Title")
+    .expand("Author")
+    .orderBy("Modified", false)() // Order by Modified descending to get latest first
+    .then((res) => {
+      console.log(res);
+
+      // Filter only latest entry for each unique DocumentCode
+      const latestDocuments = res.reduce((acc, item) => {
+        if (!acc[item.AmendmentType]) {
+          acc[item.AmendmentType] = item;
+        }
+        return acc;
+      }, {});
+
+      arr = Object.values(latestDocuments);
+    })
+    .catch((error) => {
+      console.log("Error fetching data: ", error);
+    });
+  return arr;
+};
+export const getAllClassificationMaster = async (_sp) => {
+  let arr = [];
+
+  await _sp.web.lists.getByTitle("ClassificationMaster").items
+    .select("*,Author/ID,Author/Title")
+    .expand("Author")
+    .orderBy("Modified", false)() // Order by Modified descending to get latest first
+    .then((res) => {
+      console.log(res);
+
+      // Filter only latest entry for each unique DocumentCode
+      const latestDocuments = res.reduce((acc, item) => {
+        if (!acc[item.Classification]) {
+          acc[item.Classification] = item;
+        }
+        return acc;
+      }, {});
+
+      arr = Object.values(latestDocuments);
+    })
+    .catch((error) => {
+      console.log("Error fetching data: ", error);
+    });
+  return arr;
+};
 
 export const addItem = async (itemData, _sp) => {
  
@@ -45,7 +119,25 @@ export const addItem = async (itemData, _sp) => {
   }
   return resultArr;
 };
+export const addItemChangeRequestList = async (itemData, _sp) => {
 
+  let resultArr = []
+  try {
+    const newItem = await _sp.web.lists.getByTitle('ChangeRequestList').items.add(itemData);
+
+    console.log('Item added successfully:', newItem);
+    // Swal.fire('Item added successfully', '', 'success');
+
+    resultArr = newItem
+    // Perform any necessary actions after successful addition
+  } catch (error) {
+    console.log('Error adding item:', error);
+    // Handle errors appropriately
+    resultArr = null
+    Swal.fire(' Cancelled', '', 'error')
+  }
+  return resultArr;
+};
 export const addItem2 = async (itemData, _sp) => {
  
   let resultArr = []
@@ -80,7 +172,20 @@ export const updateItem = async (itemData, _sp, id) => {
   }
   return resultArr;
 };
-
+export const updateItemChangeRequestList = async (itemData, _sp, id) => {
+  let resultArr = []
+  try {
+    const newItem = await _sp.web.lists.getByTitle('ChangeRequestList').items.getById(id).update(itemData);
+    console.log('Item added successfully:', newItem);
+    resultArr = newItem
+    // Perform any necessary actions after successful addition
+  } catch (error) {
+    console.log('Error adding item:', error);
+    // Handle errors appropriately
+    resultArr = null
+  }
+  return resultArr;
+};
 export const updateItem2 = async (itemData, _sp, id) => {
   let resultArr = []
   try {
@@ -130,7 +235,26 @@ export const getItemByID = async (_sp, id) => {
   console.log(arr, 'arr');
   return arr;
 }
+export const getItemByIDCR = async (_sp, id) => {
 
+  let arr = []
+  let arrs = []
+  let bannerimg = []
+
+  await _sp.web.lists.getByTitle("ChangeRequestList").items.getById(id)
+    .select("*,Location/ID,Custodian/ID,DocumentType/ID,AmendmentType/ID,Classification/ID,ChangeRequestType/ID,Author/ID,Author/Title").expand("DocumentType,Custodian,Classification,AmendmentType,Location,ChangeRequestType,Author")()
+    .then((res) => {
+      console.log(res, ' let arrs=[]');
+
+      arr.push(res)
+      // arr = res;
+    })
+    .catch((error) => {
+      console.log("Error fetching data: ", error);
+    });
+  console.log(arr, 'arr');
+  return arr;
+}
 export const getItemByID2 = async (sp, ChangeRequestID) => {
   debugger
   let arr = []
@@ -142,6 +266,8 @@ export const getItemByID2 = async (sp, ChangeRequestID) => {
   // })
   return arr
 }
+export const GetQueryString = (string) =>
+  new URLSearchParams(window.location.search).get(string);
 
 export const getApprovalByID = async (_sp, id,processName) => {
  

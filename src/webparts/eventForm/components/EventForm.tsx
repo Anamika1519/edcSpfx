@@ -348,12 +348,14 @@ const HelloWorldContext = ({ props }: any) => {
       if (hidesavasdraft === 'true') {
         valid = true;
       } else {
-        Swal.fire('Event date cannot be earlier than today.');
+        // Swal.fire('Event date cannot be earlier than today.');
+        Swal.fire('Please select a future event date to continue.');
       }
 
     }
     else if (!valid && (RegistrationDueDate && new Date(RegistrationDueDate).getTime() < new Date().getTime())) {
-      Swal.fire('Registration date cannot be earlier than today.');
+      // Swal.fire('Registration date cannot be earlier than today.');
+      Swal.fire('Please select a future event date to continue.');
     }
     else {
       Swal.fire(errormsg !== "" ? errormsg : 'Please fill the mandatory fields.');

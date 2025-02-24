@@ -231,15 +231,17 @@ const [ImagepostArr, setImagepostArr] = React.useState([]);
          else if(BnnerImagepostArr.length == 0 ){
           valid = false;
          }
-        //   else if (!RedirectTONewTab) {
-        //    //Swal.fire('Error', 'Category is required!', 'error');
-        //    valid = false;
-        //  }
-        //   else if (!selectedOption) {
-        //    //Swal.fire('Error', 'Entity is required!', 'error');
-        //    valid = false;
-        //  }
-        
+         else if (URL) {
+          const urlPattern =/^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/i;
+          // urlPattern.test(URL);
+          if(urlPattern.test(URL) == false){
+            Swal.fire('Please enter valid link.');
+          return
+          }
+         
+        }
+       
+         
 
          setValidSubmit(valid);
 

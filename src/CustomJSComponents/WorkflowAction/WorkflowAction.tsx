@@ -5,7 +5,7 @@ import { updateItemApproval, updateItemApproval2 } from "../../APISearvice/Appro
 import { getSP } from "../../webparts/addDynamicBanner/loc/pnpjsConfig";
 import { WebPartContext } from "@microsoft/sp-webpart-base";
 import Swal from "sweetalert2";
-import { updateItem } from "../../APISearvice/DocumentCancellation";
+import { updateItem, updateItemChangeRequestList } from "../../APISearvice/DocumentCancellation";
 
 export interface IWorkflowActionProps
 {
@@ -52,9 +52,9 @@ export const WorkflowAction=(props: IWorkflowActionProps) => {
         let postPayload ={}
         let postPayload2 = {}
 
-       
-        if(props.ContentType =="Document Cancellation"){
-          const currentUser = await sp.web.currentUser();
+
+    if (props.ContentType == "Document Cancellation" || props.ContentType == "Change Request") {
+      const currentUser = await sp.web.currentUser();
 
           postPayload = {
    
@@ -107,22 +107,23 @@ export const WorkflowAction=(props: IWorkflowActionProps) => {
         resultmessage='Sent for rework.'
        }
 
-       Swal.fire({
-        // title: 'Do you want to save?',
-        title: confirmation ,
-        showConfirmButton: true,
-        showCancelButton: true,
-        confirmButtonText: "Yes",
-        cancelButtonText: "No"
-        
-      }).then(async (result) => {
-        console.log(result)
-        if (result.isConfirmed) {
-          var postResult;
-      if(props.ContentType =="Document Cancellation"){
-         postResult = await updateItemApproval2(postPayload, sp, props.currentItem.Id);
-         if(Status=='Rework') {
-          const postResult2 = await updateItem(postPayload2, sp, Number(props.currentItem.ListItemId));
+    Swal.fire({
+      // title: 'Do you want to save?',
+      title: confirmation,
+      showConfirmButton: true,
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      cancelButtonText: "No"
+
+    }).then(async (result) => {
+      console.log(result)
+      if (result.isConfirmed) {
+        var postResult;
+        if (props.ContentType == "Document Cancellation" || props.ContentType == "Change Request") {
+          postResult = await updateItemApproval2(postPayload, sp, props.currentItem.Id);
+          if (Status == 'Rework') {
+            const postResult2 = props.ContentType == "Document Cancellation" ? await updateItem(postPayload2, sp, Number(props.currentItem.ListItemId)) :
+              await updateItemChangeRequestList(postPayload2, sp, Number(props.currentItem.ListItemId))
 
          }
         // const postId = postResult?.data?.ID;

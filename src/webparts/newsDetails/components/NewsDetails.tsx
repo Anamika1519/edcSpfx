@@ -37,6 +37,7 @@ import moment from 'moment';
 import UserContext from '../../../GlobalContext/context';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+import Swal from 'sweetalert2';
 
 interface Reply {
 
@@ -449,7 +450,10 @@ const NewsdetailsContext = ({ props }: any) => {
   };
   const handleAddComment = async () => {
 
-    if (newComment.trim() === '') return;
+    if (newComment.trim() === ""){
+      Swal.fire('Please enter a comment before submitting.');
+      return;
+    } 
 
     setLoading(true);
 
@@ -1129,7 +1133,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
                             />
                             <div className="p-2 bg-light d-flex justify-content-end align-items-center">
-                              <button
+                              <button type='button'
 
                                 className="btn btn-primary mt-1 mb-1"
 

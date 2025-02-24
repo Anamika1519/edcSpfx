@@ -32,6 +32,7 @@ import { Modal } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import Avatar from "@mui/material/Avatar";
+import Swal from "sweetalert2";
 interface Reply {
   Id: number;
   AuthorId: number;
@@ -299,7 +300,10 @@ const EventdetailscalenderContext = ({ props }: any) => {
 
   // Add a new comment
   const handleAddComment = async () => {
-    if (newComment.trim() === "") return;
+    if (newComment.trim() === ""){
+      Swal.fire('Please enter a comment before submitting.');
+      return;
+    } 
     setLoading(true);
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
@@ -882,7 +886,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
                             rows={3} style={{ borderRadius: 'unset' }}
                           />
                           <div className="p-2 bg-light d-flex justify-content-end align-items-center">
-                            <button
+                            <button type="button"
                               className="btn btn-primary mt-1 mb-1"
                               onClick={handleAddComment}
                               disabled={loading} // Disable button when loading

@@ -1171,7 +1171,7 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                 actionMessage = "Do you want to forward this request?";
                 successMessage = "Request forwarded successfully.";
                 break;
-            case "Reject":
+            case "Rejected":
                 actionMessage = "Do you want to reject this request?";
                 successMessage = "Request rejected successfully.";
                 break;
@@ -1238,7 +1238,8 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                             });
 
                             let arr2 = {
-
+                                Title:currentUser.Title,
+                                ContentTitle:selectedOption.DocumentCode,
                                 MainListNameId: ListNameId,
                                 ApproverRoleId: item.role,
                                 Level: Number(item.level),
@@ -1364,6 +1365,8 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                             });
 
                             let arr2 = {
+                                Title:currentUser.Title,
+                                ContentTitle:selectedOption.DocumentCode,
 
                                 MainListNameId: ListNameId,
                                 ApproverRoleId: item.role,
@@ -1995,7 +1998,7 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
                                                                     <th style={{ minWidth: "30px", maxWidth: "30px" }}>S.No</th>
                                                                     <th>Description</th>
                                                                     <th>Reason for Cancellation</th>
-                                                                    <th>Action</th>
+                                                                    {(modeValue === "" || modeValue === "edit" || InputDisabled != true) && <th>Action</th>}
                                                                 </tr>
 
                                                             </thead>

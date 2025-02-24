@@ -523,7 +523,8 @@ const AddannouncementContext = ({ props }: any) => {
                 CategoryId: Number(formData.category),
                 AnnouncementandNewsTypeMasterId: Number(formData.Type),
                 FeaturedAnnouncement: true,
-                Status: formData.Status,
+                // Status: formData.Status,
+                Status:rows.length>0? "Submitted":"Approved",
                 AuthorId: currentUser.Id,
                 AnnouncementandNewsBannerImage: bannerImageArray != "{}" && JSON.stringify(bannerImageArray)
               };
