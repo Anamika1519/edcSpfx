@@ -565,6 +565,26 @@ export const getAllDMSTasks = async (sp, itemStatus) => {
     })
 
   return arr
+}
+export const getAllDMSApprovals = async (sp, itemStatus,actingfor) => {
+  const currentUser = await sp.web.currentUser();
+  let arr = []
+
+  await sp.web.lists.getByTitle("ProcessApprovalList").items.select("*,AssignedTo/Id,AssignedTo/Title,RequesterName/Id,RequesterName/Title").expand("RequesterName,AssignedTo")
+
+    .filter(`AssignedToId eq ${currentUser.Id} and ApprovalType eq 'Approval' and Status eq '${itemStatus}'`)
+
+    .orderBy("Created", false)
+
+    .getAll().then((res) => {
+
+      arr = res
+
+      console.log(arr, 'arr');
+
+    })
+
+  return arr
 
 
 

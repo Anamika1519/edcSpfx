@@ -92,6 +92,7 @@ import { getSP } from "../loc/pnpjsConfig";
 import { Eye, Edit } from "react-feather";
 
 import {
+  getAllDMSApprovals,
   getDataByID,
   getMyApproval,
   getMyRequest,
@@ -591,6 +592,7 @@ const MyApprovalContext = ({ props }: any) => {
 
   //const [activeTab, setActiveTab] = useState("home1");
   const [activeTab, setActiveTab] = useState("Intranet");
+  const [MylistdataCRDC, setMylistdataCRDC] = useState([]);
   const handleTabClick = async (tab: React.SetStateAction<string>) => {
     setActiveTab(tab);
 
@@ -605,7 +607,7 @@ const MyApprovalContext = ({ props }: any) => {
     if (tab == "Intranet") {
       setMyApprovalsData(myApprovalsDataAll);
     } else if (tab == "DMS") {
-      setMyApprovalsData(Mylistdata);
+      setMyApprovalsData(MylistdataCRDC);
     } else if (tab == "Automation") {
       //ApiCall("Pending");
       setMyApprovalsData(myApprovalsDataAutomation);
@@ -634,6 +636,9 @@ const MyApprovalContext = ({ props }: any) => {
     setMyApprovalsDataAutomation(Automationdata);
 
     console.log("Automationdata", Automationdata);
+    let ChangeReqandCancellationdata = await getAllDMSApprovals(sp,status,"test");
+    console.log("ChangeReqandCancellationdata", ChangeReqandCancellationdata);
+    setMylistdataCRDC(ChangeReqandCancellationdata);
     // }
   };
 
@@ -657,7 +662,8 @@ const MyApprovalContext = ({ props }: any) => {
       let MyApprovaldata = await getMyApproval(sp, value, actingfor);
       let Automationdata = await getApprovalListsData(sp, value, actingfor);
       // let MyDMSAPPROVALDATA:any = await MyDMSAPPROVALDATASTATUS(sp, value)
-      let MyDMSAPPROVALDATA: any = await getApprovalmasterTasklist(value, actingfor)
+      let MyDMSAPPROVALDATA: any = await getApprovalmasterTasklist(value, actingfor);
+      let MyDMSAPPROVALDATACRDC: any = await getAllDMSApprovals(sp,value, actingfor)
       console.log("MyDMSAPPROVALDATA", MyDMSAPPROVALDATA)
       setMyApprovalsDataAll(MyApprovaldata);
       setMyApprovalsDataAutomation(Automationdata);
@@ -665,7 +671,7 @@ const MyApprovalContext = ({ props }: any) => {
         setMyApprovalsData(MyApprovaldata);
       } else if (activeTab == "DMS") {
         // alert(value)
-        setMyApprovalsData(MyDMSAPPROVALDATA);
+        setMyApprovalsData(MyDMSAPPROVALDATACRDC);
       } else if (activeTab == "Automation") {
         setMyApprovalsData(Automationdata);
         console.log("Automationdata", Automationdata);

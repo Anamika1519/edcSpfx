@@ -794,10 +794,6 @@ const MyTasksContext = ({ props }: any) => {
       debugger
       if (Item?.SourceName) {
         switch (Item?.ProcessName) {
-          case "Document Cancellation":
-            sessionkey = "DocumentCancelId";
-            redirecturl = `${siteUrl}/SitePages/DocumentCancellation.aspx` + "/approve" + Item?.Id + "&mode=view" + "&page=MyRequest";
-            break;
           case "Announcement":
             sessionkey = "announcementId";
             redirecturl = `${siteUrl}/SitePages/AddAnnouncement.aspx` + "?requestid=" + Item?.Id + "&mode=view" + "&page=MyRequest";
@@ -827,8 +823,20 @@ const MyTasksContext = ({ props }: any) => {
 
       }
     } else if (activeTab == "DMS") {
+      let sessionkey = "";
+      if (Item?.ProcessName) {
+        switch (Item?.ProcessName) {
+          case "Document Cancellation":
+            sessionkey = "DocumentCancelId";
+            redirecturl = `${siteUrl}/SitePages/DocumentCancellation.aspx` + "/approve/" + Number(Item?.ListItemId) + "/" + Item?.Id ;
+            break;
+            default: ;  
+        }
 
-      // window.location.href = `${siteUrl}/SitePages/DMS.aspx?${Item?.ContentId}`;
+        const encryptedId = encryptId(String(Item?.ListItemId));
+        sessionStorage.setItem(sessionkey, encryptedId);
+        location.href = redirecturl;
+      }
     }
   };
   const getTaskItemsbyID = async (itemid: any) => {
@@ -2202,7 +2210,7 @@ const MyTasksContext = ({ props }: any) => {
                                         >
 
                                           {/* {item.ProcessName} */}
-                                          <span className="badge font-12 bg-secondary">      {item?.Processname} </span>
+                                          <span className="badge font-12 bg-secondary">      {item?.Processname?(item?.Processname):(item?.ProcessName? item?.ProcessName:"")} </span>
 
                                         </td>
 
@@ -2250,10 +2258,11 @@ const MyTasksContext = ({ props }: any) => {
 
                                         >
 
-                                          {item?.Processname == "New File Request" ?
+                                          {/* {item?.Processname == "New File Request" ? */}
 
 
-                                            <Eye onClick={() => { getTaskItemsbyID(item.FileUID); handleShowNestedDMSTable("DMSAuditHistory") }}
+                                            {/* <Eye onClick={() => { getTaskItemsbyID(item.FileUID); handleShowNestedDMSTable("DMSAuditHistory") }} */}
+                                            <Eye onClick={() => {  handleRedirect(item) }}
 
                                               style={{
 
@@ -2265,7 +2274,10 @@ const MyTasksContext = ({ props }: any) => {
 
                                                 cursor: "pointer",
 
-                                              }} /> : item?.Processname == "New Folder Request" ? <Eye onClick={() => { getTaskItemsbyID(item.FileUID); handleShowNestedDMSTable("DMSFolderAuditHistory") }}
+                                              }} />
+                                             
+                                               {/* : item?.Processname == "New Folder Request" ?  */}
+                                               {/* <Eye onClick={() => { getTaskItemsbyID(item.FileUID); handleShowNestedDMSTable("DMSFolderAuditHistory") }}
 
                                                 style={{
 
@@ -2277,7 +2289,9 @@ const MyTasksContext = ({ props }: any) => {
 
                                                   cursor: "pointer",
 
-                                                }} /> : null}
+                                                 }}
+                                                 />  */}
+                                                {/* : null} */}
 
 
 
