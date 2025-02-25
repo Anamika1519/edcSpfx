@@ -170,6 +170,7 @@ const MyApprovalContext = ({ props }: any) => {
 
   const [IsinvideHide, setIsinvideHide] = React.useState(false);
   const [Mylistdata, setMylistdata] = useState([]);
+  const [MylistdataCRDC, setMylistdataCRDC] = useState([]);
   const handleReturnToMain = (Name: any) => {
     setActiveComponent(Name); // Reset to show the main component
     console.log(activeComponent, "activeComponent updated");
@@ -480,8 +481,8 @@ const MyApprovalContext = ({ props }: any) => {
     const userdata = await sp.web.currentUser();
     currentUserEmailRef.current = userdata.Email;
     console.log("currentUserEmailRefhhg", currentUserEmailRef)
-    getApprovalmasterTasklist('Pending', '');
-    myActingfordata()
+    //getApprovalmasterTasklist('Pending', '');
+   // myActingfordata()
   };
   React.useEffect(() => {
     getCurrrentuser();
@@ -592,7 +593,7 @@ const MyApprovalContext = ({ props }: any) => {
 
   //const [activeTab, setActiveTab] = useState("home1");
   const [activeTab, setActiveTab] = useState("Intranet");
-  const [MylistdataCRDC, setMylistdataCRDC] = useState([]);
+  //const [MylistdataCRDC, setMylistdataCRDC] = useState([]);
   const handleTabClick = async (tab: React.SetStateAction<string>) => {
     setActiveTab(tab);
 
@@ -663,8 +664,8 @@ const MyApprovalContext = ({ props }: any) => {
       let Automationdata = await getApprovalListsData(sp, value, actingfor);
       // let MyDMSAPPROVALDATA:any = await MyDMSAPPROVALDATASTATUS(sp, value)
       let MyDMSAPPROVALDATA: any = await getApprovalmasterTasklist(value, actingfor);
-      let MyDMSAPPROVALDATACRDC: any = await getAllDMSApprovals(sp,value, actingfor)
-      console.log("MyDMSAPPROVALDATA", MyDMSAPPROVALDATA)
+      let MyDMSAPPROVALDATACRDC: any = await getAllDMSApprovals(sp,value, actingfor);
+      console.log("MyDMSAPPROVALDATA", MyDMSAPPROVALDATACRDC)
       setMyApprovalsDataAll(MyApprovaldata);
       setMyApprovalsDataAutomation(Automationdata);
       if (activeTab == "Intranet") {
@@ -2271,7 +2272,7 @@ const MyApprovalContext = ({ props }: any) => {
                                                   }}
                                                   title={item?.FileUID?.RequestNo}
                                                 >
-                                                  {item?.FileUID?.RequestNo}
+                                                  {item?.IsDocChange == "CRDC" ? item?.RequestId: item?.FileUID?.RequestNo}
 
                                                 </td>
                                                 <td
@@ -2284,7 +2285,7 @@ const MyApprovalContext = ({ props }: any) => {
                                                   }}
                                                   title={item?.FileUID?.FileName}
                                                 >
-                                                  {item?.FileUID?.FileName}
+                                                  {item?.IsDocChange == "CRDC" ? item?.FileName : item?.FileUID?.FileName}
                                                 </td>
                                                 <td
                                                   style={{
@@ -2293,7 +2294,8 @@ const MyApprovalContext = ({ props }: any) => {
                                                     textAlign: 'center'
                                                   }}
                                                 >
-                                                  <span className="badge font-12 bg-warning">  {item?.FileUID?.Processname} </span>
+                                                  <span className="badge font-12 bg-warning"> 
+                                                    {item?.IsDocChange == "CRDC" ? item?.ProcessName : item?.FileUID?.Processname} </span>
                                                 </td>
 
                                                 <td
@@ -2302,7 +2304,7 @@ const MyApprovalContext = ({ props }: any) => {
                                                     maxWidth: "100px",
                                                   }}
                                                 >
-                                                  {item?.RequestedByTitle}
+                                                  {item?.IsDocChange == "CRDC" ? item?.Requestedby?.Title : item?.RequestedByTitle}
                                                 </td>
 
                                                 <td
@@ -2315,7 +2317,7 @@ const MyApprovalContext = ({ props }: any) => {
                                                   <div className="btn btn-light1">
 
                                                     {/* {item?.FileUID?.Created} */}
-                                                    {new Date(item?.FileUID?.Created).toLocaleString('en-US', {
+                                                    {new Date(item?.IsDocChange == "CRDC" ? item?.Created : item?.FileUID?.Created).toLocaleString('en-US', {
                                                       month: '2-digit',
                                                       day: '2-digit',
                                                       year: 'numeric',
@@ -2335,7 +2337,7 @@ const MyApprovalContext = ({ props }: any) => {
                                                   }}
                                                 >
                                                   <div className="btn btn-status">
-                                                    {item?.FileUID?.Status}
+                                                    {item?.IsDocChange == "CRDC" ? item?.Status : item?.FileUID?.Status}
                                                   </div>
                                                 </td>
 
@@ -2348,7 +2350,9 @@ const MyApprovalContext = ({ props }: any) => {
                                                 >
 
                                                   <Edit
-                                                    onClick={(e) => { getTaskItemsbyID(e, item?.FileUID?.FileUID); handleShowNestedDMSTable() }}
+                                                    onClick={(e) => {
+                                                      
+                                                      item?.IsDocChange == "CRDC" ? window.location.href =`https://officeindia.sharepoint.com/sites/edcspfx/SitePages/ChangeRequest.aspx/${item?.RedirectionLink}` : getTaskItemsbyID(e, item?.FileUID?.FileUID); handleShowNestedDMSTable() }}
                                                     style={{
                                                       minWidth: "20px",
 

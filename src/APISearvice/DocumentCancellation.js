@@ -172,6 +172,40 @@ export const updateItem = async (itemData, _sp, id) => {
   }
   return resultArr;
 };
+export const addItemChangeRequestReasonlist = async (itemData, _sp) => {
+ 
+  let resultArr = []
+  try {
+    const newItem = await _sp.web.lists.getByTitle('ChangeRequestReasonList').items.add(itemData);
+ 
+    console.log('Item added successfully:', newItem);
+    // Swal.fire('Item added successfully', '', 'success');
+
+    resultArr = newItem
+    // Perform any necessary actions after successful addition
+  } catch (error) {
+    console.log('Error adding item:', error);
+    // Handle errors appropriately
+    resultArr = null
+    Swal.fire(' Cancelled', '', 'error')
+  }
+  return resultArr;
+};
+
+export const updateItemchangeRequestReasonlist = async (itemData, _sp, id) => {
+  let resultArr = []
+  try {
+    const newItem = await _sp.web.lists.getByTitle('ChangeRequestReasonList').items.getById(id).update(itemData);
+    console.log('Item added successfully:', newItem);
+    resultArr = newItem
+    // Perform any necessary actions after successful addition
+  } catch (error) {
+    console.log('Error adding item:', error);
+    // Handle errors appropriately
+    resultArr = null
+  }
+  return resultArr;
+};
 export const updateItemChangeRequestList = async (itemData, _sp, id) => {
   let resultArr = []
   try {
@@ -200,7 +234,20 @@ export const updateItem2 = async (itemData, _sp, id) => {
   }
   return resultArr;
 };
-
+export const updateItemChangeRequestReasonList = async (itemData, _sp, id) => {
+  let resultArr = []
+  try {
+    const newItem = await _sp.web.lists.getByTitle('ChangeRequestReasonList').items.getById(id).update(itemData);
+    console.log('Item added successfully:', newItem);
+    resultArr = newItem
+    // Perform any necessary actions after successful addition
+  } catch (error) {
+    console.log('Error adding item:', error);
+    // Handle errors appropriately
+    resultArr = null
+  }
+  return resultArr;
+};
 export const updateApprovalItem = async (itemData, _sp, id) => {
   let resultArr = []
   try {
@@ -260,6 +307,17 @@ export const getItemByID2 = async (sp, ChangeRequestID) => {
   let arr = []
   let sampleDataArray = []
   arr = await sp.web.lists.getByTitle("ChangeRequestReasonDocumentCancellationList").items.select("*,ChangeRequestDCID/ID").expand("ChangeRequestDCID").filter(`ChangeRequestDCID/ID eq ${ChangeRequestID}`).getAll();
+  // .then((res) => {
+  //   arr = res
+  //   console.log(arr, 'arr');
+  // })
+  return arr
+}
+export const getItemByIDChangeRequest = async (sp, ChangeRequestID) => {
+  debugger
+  let arr = []
+  let sampleDataArray = []
+  arr = await sp.web.lists.getByTitle("ChangeRequestReasonList").items.select("*,ChangeRequestID/ID").expand("ChangeRequestID").filter(`ChangeRequestID/ID eq ${ChangeRequestID}`).getAll();
   // .then((res) => {
   //   arr = res
   //   console.log(arr, 'arr');

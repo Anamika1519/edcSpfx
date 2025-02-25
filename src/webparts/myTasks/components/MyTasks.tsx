@@ -830,6 +830,10 @@ const MyTasksContext = ({ props }: any) => {
             sessionkey = "DocumentCancelId";
             redirecturl = `${siteUrl}/SitePages/DocumentCancellation.aspx` + "/approve/" + Number(Item?.ListItemId) + "/" + Item?.Id ;
             break;
+            case "Change Request":
+            sessionkey = "ChangeRequestId";
+            redirecturl = `${siteUrl}/SitePages/ChangeRequest.aspx` + "/approve/" + Number(Item?.ListItemId) + "/" + Item?.Id ;
+            break;
             default: ;  
         }
 

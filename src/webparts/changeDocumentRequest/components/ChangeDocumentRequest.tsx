@@ -17,7 +17,7 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "../../verticalSideBar/components/VerticalSidebar.scss";
 import "../components/changeDocumentRequest.scss";
 import { allowstringonly, getCurrentUser } from '../../../APISearvice/CustomService';
-import { addAllProcessItem, addApprovalItem, addItem, addItem2, addItemChangeRequestList, getAllAmendmentType, getAllClassificationMaster, getAllDocumentCode, getAllProcessData, getAllRequestType, getApprovalByID, getApprovalByID2, getDataRoles, getDocumentLinkByID, getFormNameID, getItemByID, getItemByID2, getItemByIDCR, getListNameID, GetQueryString, getRequesterID, UpdateAllProcessItem, updateApprovalItem, updateItem, updateItem2, updateItemChangeRequestList } from '../../../APISearvice/DocumentCancellation';
+import { addAllProcessItem, addApprovalItem, addItem, addItemChangeRequestReasonlist, addItemChangeRequestList, getAllAmendmentType, getAllClassificationMaster, getAllDocumentCode, getAllProcessData, getAllRequestType, getApprovalByID, getApprovalByID2, getDataRoles, getDocumentLinkByID, getFormNameID, getItemByID, getItemByIDChangeRequest, getItemByIDCR, getListNameID, GetQueryString, getRequesterID, UpdateAllProcessItem, updateApprovalItem, updateItem, updateItemChangeRequestReasonList, updateItemChangeRequestList } from '../../../APISearvice/DocumentCancellation';
 import Select from "react-select";
 import Swal from 'sweetalert2';
 import { FormSubmissionMode } from '../../../Shared/Interfaces';
@@ -277,12 +277,16 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
 
 
     let formitemid;
+    let ProcessItemId: any
     //#region getdataByID
     if (sessionStorage.getItem("ChangeRequestId") != undefined) {
       const iD = sessionStorage.getItem("ChangeRequestId")
       let iDs = decryptId(iD)
       formitemid = Number(iDs);
-      setFormItemId(Number(iDs))
+      setFormItemId(Number(iDs));
+      setEditID(await getApprovalByID(sp, Number(iDs), CONTENTTYPE_ChangeDocument));
+       ProcessItemId = await getApprovalByID(sp, Number(iDs), CONTENTTYPE_ChangeDocument);
+      setInputDisabled(await getApprovalByID2(sp, Number(iDs), CONTENTTYPE_ChangeDocument));
     }
     else {
       //   let formitemidparam = getUrlParameterValue('contentid');
@@ -296,16 +300,16 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
 
       // Check if "edit" or "view" exists in the URL
       const paramIndex = segments.findIndex(seg => seg === "edit" || seg === "view" || seg === "approve");
-
+     
       //let segmentsnew = GetQueryString("mode");
       if (paramIndex !== -1 && segments[paramIndex + 1]) {
         setmode(segments[paramIndex])
         // mode = segments[paramIndex]; // Will be "edit" or "view"
         formitemid = segments[paramIndex + 1]; // Get the ID
         if (segments[paramIndex + 2] !== undefined) {
-
+          debugger
           setEditID(await getApprovalByID(sp, Number(segments[paramIndex + 2]), CONTENTTYPE_ChangeDocument));
-          var ProcessItemId: any = await getApprovalByID(sp, Number(segments[paramIndex + 2]), CONTENTTYPE_ChangeDocument);
+           ProcessItemId = await getApprovalByID(sp, Number(segments[paramIndex + 2]), CONTENTTYPE_ChangeDocument);
           setInputDisabled(await getApprovalByID2(sp, Number(segments[paramIndex + 2]), CONTENTTYPE_ChangeDocument));
         }
       }
@@ -370,6 +374,7 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
           SubmitStatus: setBannerById[0].SubmitStatus,
           value: setBannerById[0].DocumentCode,
           label: setBannerById[0].DocumentCode,
+          RequestTypeId: setBannerById[0].RequestTypeId,
           // Status: "Pending",
           // DocumentName: "",
           // IsRework: false,
@@ -435,6 +440,7 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
           SubmiitedDate: setBannerById[0].SubmiitedDate,
           SubmitStatus: setBannerById[0].SubmitStatus,
           DocumentCode: setBannerById[0].DocumentCode,
+          RequestTypeId: setBannerById[0].RequestTypeId,
           DocumentTypeId: setBannerById[0].DocumentTypeId,
           Department: setBannerById[0].Department,
           AttachmentId: setBannerById[0].AttachmentId,
@@ -444,19 +450,21 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
         }));
 
         // setFormData(arr2);
-
+        debugger
         setSelectedOption(arr);
         const selectedLocation = locationoptions.filter((loc: { locationId: any; }) => loc.locationId === setBannerById[0].LocationId)[0] || null;
         const selectedCustodian = custodianoptions.filter((cust: { custodianId: any; }) => cust.custodianId === setBannerById[0].CustodianId)[0] || null;
         const selectedDocumentType = documenttypeoptions.filter((docType: { documentTypeId: any; }) => docType.documentTypeId === setBannerById[0].DocumentTypeId)[0] || null;
         const selectedAmendment = optionsamendment.filter((amend: { value: any; }) => amend.value === setBannerById[0].AmendmentTypeId)[0] || null;
         const selectedClassifiction = optionsclassification.filter((classi: { value: any; }) => classi.value === setBannerById[0].ClassificationId)[0] || null;
+        const selectedRequesttype = optionsreq.filter((cust: { value: any; }) => cust.value === setBannerById[0].RequestTypeId)[0] || null;
         setselectedOptionDoctype(selectedDocumentType);
         setSelectedOptionClassification(selectedClassifiction);
         setSelectedOptionAmend(selectedAmendment);
         setselectedOptionCusto(selectedCustodian);
         setselectedOptionLoc(selectedLocation);
-        setselectedCheckboxIds(setBannerById[0].ChangeRequestTypeId)
+        setselectedCheckboxIds(setBannerById[0].ChangeRequestTypeId);
+        setSelectedOptionReq(selectedRequesttype);
 
         if (setBannerById[0].AttachmentId) {
           setDocumentLink(await getDocumentLinkByID(sp, setBannerById[0].AttachmentId))
@@ -464,7 +472,7 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
         else {
           setDocumentLink(null);
         }  // Set the selected users
-        const rowData: any[] = await getItemByID2(sp, Number(setBannerById[0].ID)) //baseUrl
+        const rowData: any[] = await getItemByIDChangeRequest(sp, Number(setBannerById[0].ID)) //baseUrl
         const initialRows = rowData.map((item: any) => ({
           id: item.Id,
           description: item.ChangeDescription,
@@ -517,6 +525,7 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
     const selectedDocumentType = DocumentTypeOpt.filter((docType: { documentTypeId: any; }) => docType.documentTypeId === selectedList.DocumentTypeId)[0] || null;
     const selectedAmendment = Amendtype.filter((cust: { value: any; }) => cust.value === selectedList.AmendmentTypeId)[0] || null;
     const selectedClassifiction = Classificationopt.filter((docType: { value: any; }) => docType.value === selectedList.ClassificationId)[0] || null;
+    //const selectedRequesttype = optionsreq.filter((cust: { value: any; }) => cust.value === selectedList.RequestTypeId)[0] || null;
     setselectedOptionDoctype(selectedDocumentType);
     setSelectedOptionClassification(selectedClassifiction);
     setSelectedOptionAmend(selectedAmendment);
@@ -929,6 +938,7 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
               RevisionDate: selectedOption.RevisionDate,
               DocumentCode: selectedOption.value,
               ReferenceNumber: selectedOption.ReferenceNumber,
+              RequestTypeId: selectedOption.RequestTypeId,
               AmendmentTypeId: selectedOption.AmendmentTypeId,
               // RequestTypeId: selectedOption.RequestTypeId,
               ClassificationId: selectedOption.ClassificationId,
@@ -958,7 +968,7 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
 
               if (!row.id) {
 
-                const postResult2 = await addItem2(postPayload2, sp);
+                const postResult2 = await addItemChangeRequestReasonlist(postPayload2, sp);
                 const postId2 = postResult2?.data?.ID;
                 // debugger
                 if (!postId2) {
@@ -968,7 +978,7 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
 
               }
               else if (row.id > 0) {
-                const postResult2 = await updateItem2(postPayload2, sp, row.id);
+                const postResult2 = await updateItemChangeRequestReasonList(postPayload2, sp, row.id);
                 const postId2 = postResult2?.data?.ID;
               }
 
@@ -996,8 +1006,8 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
             Swal.fire('Submitted successfully.', '', 'success');
             sessionStorage.removeItem("ChangeRequestId")
             setTimeout(() => {
-              //window.location.href = `${siteUrl}/SitePages/EDCMAIN.aspx`;
-            }, 500);
+              window.location.href = `${siteUrl}/SitePages/EDCMAIN.aspx`;
+            }, 1000);
             // }
           }
 
@@ -1057,7 +1067,7 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
               DocumentCode: doccode,
               ReferenceNumber: referencecode,
               AmendmentTypeId: formData.AmendmentTypeId,
-              //   RequestTypeId: selectedOption.RequestTypeId,
+              RequestTypeId: formData.RequestTypeId,
               ClassificationId: formData.ClassificationId,
               ChangeRequestTypeId: selectedCheckboxIds,
               //SubmiitedDate: selectedOption.SubmiitedDate,
@@ -1090,7 +1100,7 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
                 ReasonforChange: row.reason,
               }
 
-              const postResult2 = await addItem2(postPayload2, sp);
+              const postResult2 = await addItemChangeRequestReasonlist(postPayload2, sp);
               const postId2 = postResult2?.data?.ID;
               // debugger
               if (!postId2) {
@@ -1105,8 +1115,8 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
             Swal.fire('Submitted successfully.', '', 'success');
             // sessionStorage.removeItem("bannerId")
             setTimeout(() => {
-              //window.location.href = `${siteUrl}/SitePages/EDCMAIN.aspx`;
-            }, 500);
+              window.location.href = `${siteUrl}/SitePages/EDCMAIN.aspx`;
+            }, 1000);
             // }
 
           }
@@ -1210,7 +1220,7 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
               DocumentCode: formData.DocumentCode,
               ReferenceNumber: formData.ReferenceNumber,
               AmendmentTypeId: formData.AmendmentTypeId,
-              // RequestTypeId: selectedOption.RequestTypeId,
+              RequestTypeId: formData.RequestTypeId,
               ClassificationId: formData.ClassificationId,
               ChangeRequestTypeId: formData.ChangeRequestTypeId,
               //SubmiitedDate: selectedOption.SubmiitedDate,
@@ -1241,7 +1251,7 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
 
               if (!row.id) {
 
-                const postResult2 = await addItem2(postPayload2, sp);
+                const postResult2 = await addItemChangeRequestReasonlist(postPayload2, sp);
                 const postId2 = postResult2?.data?.ID;
                 // debugger
                 if (!postId2) {
@@ -1251,7 +1261,7 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
 
               }
               else if (row.id > 0) {
-                const postResult2 = await updateItem2(postPayload2, sp, row.id);
+                const postResult2 = await updateItemChangeRequestReasonList(postPayload2, sp, row.id);
                 const postId2 = postResult2?.data?.ID;
               }
 
@@ -1341,6 +1351,7 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
               SerialNumber: Number("01"),
               IssueNumber: Number("01"),
               RevisionNumber: Number("00"),
+              RequestTypeId: formData.RequestTypeId,
               AmendmentTypeId: formData.AmendmentTypeId,
               ClassificationId: formData.ClassificationId,
               ChangeRequestTypeId: selectedCheckboxIds,
@@ -1370,7 +1381,7 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
                 ReasonforChange: row.reason,
               }
 
-              const postResult2 = await addItem2(postPayload2, sp);
+              const postResult2 = await addItemChangeRequestReasonlist(postPayload2, sp);
               const postId2 = postResult2?.data?.ID;
               // debugger
               if (!postId2) {
@@ -1761,7 +1772,7 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
               DocumentCode: selectedOption.value,
               ReferenceNumber: selectedOption.ReferenceNumber,
               AmendmentTypeId: selectedOption.AmendmentTypeId,
-              // RequestTypeId: selectedOption.RequestTypeId,
+              RequestTypeId: selectedOption.RequestTypeId,
               ClassificationId: selectedOption.ClassificationId,
               ChangeRequestTypeId: selectedOption.ChangeRequestTypeId,
               SubmiitedDate: selectedOption.SubmiitedDate,
@@ -1796,7 +1807,7 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
 
               if (!row.id) {
 
-                const postResult2 = await addItem2(postPayload2, sp);
+                const postResult2 = await addItemChangeRequestReasonlist(postPayload2, sp);
                 const postId2 = postResult2?.data?.ID;
                 // debugger
                 if (!postId2) {
@@ -1806,7 +1817,7 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
 
               }
               else if (row.id > 0) {
-                const postResult2 = await updateItem2(postPayload2, sp, row.id);
+                const postResult2 = await updateItemChangeRequestReasonList(postPayload2, sp, row.id);
                 const postId2 = postResult2?.data?.ID;
               }
 
@@ -1886,7 +1897,7 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
               DocumentCode: selectedOption.value,
               ReferenceNumber: selectedOption.ReferenceNumber,
               AmendmentTypeId: selectedOption.AmendmentTypeId,
-              // RequestTypeId: selectedOption.RequestTypeId,
+              RequestTypeId: selectedOption.RequestTypeId,
               ClassificationId: selectedOption.ClassificationId,
               ChangeRequestTypeId: selectedOption.ChangeRequestTypeId,
               SubmiitedDate: selectedOption.SubmiitedDate,
@@ -1921,7 +1932,7 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
 
               if (!row.id) {
 
-                const postResult2 = await addItem2(postPayload2, sp);
+                const postResult2 = await addItemChangeRequestReasonlist(postPayload2, sp);
                 const postId2 = postResult2?.data?.ID;
                 // debugger
                 if (!postId2) {
@@ -1931,7 +1942,7 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
 
               }
               else if (row.id > 0) {
-                const postResult2 = await updateItem2(postPayload2, sp, row.id);
+                const postResult2 = await updateItemChangeRequestReasonList(postPayload2, sp, row.id);
                 const postId2 = postResult2?.data?.ID;
               }
 
@@ -2445,6 +2456,7 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
                                   </div>
                                 </div>
                               }
+                              {console.log("editiiiID", editID)}
                               {(editID != null || (selectedOptionReq != null && selectedOptionReq?.label !== "Change Request for New Addition")) &&
                                 // <div className="col-lg-8">
 

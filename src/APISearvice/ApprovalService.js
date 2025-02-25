@@ -577,11 +577,25 @@ export const getAllDMSApprovals = async (sp, itemStatus,actingfor) => {
     .orderBy("Created", false)
 
     .getAll().then((res) => {
-
+      
+      let arrnew = [];
       arr = res
-
-      console.log(arr, 'arr');
-
+      let siteurl =`https://officeindia.sharepoint.com/sites/edcspfx/SitePages/ChangeRequest.aspx`;
+      console.log("resresresresr", res,siteurl)
+      for (let i = 0; i < res.length; i++) {
+        arrnew.push({
+          RequestId: res[i].RequestId,
+          FileName: res[i].Title,
+          ProcessName: res[i].ProcessName,
+          RequestedBy: res[i].InitiatorName?.Title,
+          Created: res[i].Created,
+          Status: res[i].Status,
+          IsDocChange:"CRDC",
+          RedirectionLink: siteurl + "/" + res[i].Status == "Rework" ? "edit" : "approve" + "/" + res[i].ListItemId + "/" + res[i].ID
+        })
+      }
+      console.log(arr, 'arr arrnew', arrnew);
+      arr = arrnew
     })
 
   return arr
