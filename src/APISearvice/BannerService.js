@@ -81,7 +81,7 @@ export const addItem = async (itemData, _sp) => {
         const newItem = await _sp.web.lists.getByTitle('DynamicBanners').items.add(itemData);
         
         console.log('Item added successfully:', newItem);
-        Swal.fire('Item added successfully', '', 'success');
+        Swal.fire('Submitted successfully.', '', 'success');
 
         resultArr = newItem
         // Perform any necessary actions after successful addition
@@ -97,7 +97,7 @@ export const updateItem = async (itemData,_sp,id) => {
     let resultArr=[]
     try {
       const newItem = await _sp.web.lists.getByTitle('DynamicBanners').items.getById(id).update(itemData);
-      Swal.fire('Item update successfully', '', 'success');
+      Swal.fire('Submitted successfully.', '', 'success');
       resultArr=newItem
       // Perform any necessary actions after successful addition
     } catch (error) {

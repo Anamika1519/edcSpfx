@@ -327,7 +327,7 @@ const [ImagepostArr, setImagepostArr] = React.useState([]);
                       const postResult = await updateItem(postPayload, sp, editID);
                      
                       setLoading(false);
-                      Swal.fire('Updated successfully.', '', 'success');
+                      Swal.fire('Submitted successfully.', '', 'success');
                       sessionStorage.removeItem("quicklinkId")
                       setTimeout(() => {
                         window.location.href = `${siteUrl}/SitePages/QuickLinksMaster.aspx`;
