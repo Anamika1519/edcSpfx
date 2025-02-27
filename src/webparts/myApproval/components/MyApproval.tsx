@@ -1047,6 +1047,26 @@ const MyApprovalContext = ({ props }: any) => {
       }
     }
 
+    else if (activeTab == "DMS") {
+      // if(item?.ProcessName ==="Document Cancellation"){
+
+        if (Item?.ProcessName) {
+          switch (Item?.ProcessName) {
+            case "Document Cancellation":
+            sessionkey = "DocumentCancelId";
+            redirecturl = `${siteUrl}/SitePages/DocumentCancellation.aspx` + "/approve/" + Number(Item?.ListItemId) + "/" + Item?.Id ;
+            break;
+
+              default:
+            }
+
+            location.href = redirecturl;
+
+      }
+
+     }
+    
+
     // const encryptedId = encryptId(String(Item?.ContentId));
 
     // sessionStorage.setItem("announcementId", encryptedId);
@@ -1200,7 +1220,7 @@ const MyApprovalContext = ({ props }: any) => {
                           >
                             <span className="lenbg1">DMS </span>
                             <span className="lenbg">
-                              {Mylistdata.length}
+                              {MylistdataCRDC.length}
                             </span>
                           </a>
                         </li>
@@ -2348,21 +2368,37 @@ const MyApprovalContext = ({ props }: any) => {
                                                   }}
                                                   className="fe-eye font-18"
                                                 >
+                 { item?.ProcessName ==="Document Cancellation"?
+                  <Edit
+                  onClick={(e) => {
+                    
+                    handleRedirect(e, item, "view");handleShowNestedDMSTable() }}
+                  style={{
+                    minWidth: "20px",
 
-                                                  <Edit
-                                                    onClick={(e) => {
-                                                      
-                                                      item?.IsDocChange == "CRDC" ? window.location.href =`https://officeindia.sharepoint.com/sites/edcspfx/SitePages/ChangeRequest.aspx/${item?.RedirectionLink}` : getTaskItemsbyID(e, item?.FileUID?.FileUID); handleShowNestedDMSTable() }}
-                                                    style={{
-                                                      minWidth: "20px",
+                    maxWidth: "20px",
 
-                                                      maxWidth: "20px",
+                    marginLeft: "15px",
 
-                                                      marginLeft: "15px",
+                    cursor: "pointer",
+                  }}
+                />:
+                <Edit
+                onClick={(e) => {
+                  
+                  item?.IsDocChange == "CRDC" ? window.location.href =`https://officeindia.sharepoint.com/sites/edcspfx/SitePages/ChangeRequest.aspx/${item?.RedirectionLink}` : getTaskItemsbyID(e, item?.FileUID?.FileUID); handleShowNestedDMSTable() }}
+                style={{
+                  minWidth: "20px",
 
-                                                      cursor: "pointer",
-                                                    }}
-                                                  />
+                  maxWidth: "20px",
+
+                  marginLeft: "15px",
+
+                  cursor: "pointer",
+                }}
+              />
+                 }
+                                                 
                                                 </td>
                                               </tr>
                                             )

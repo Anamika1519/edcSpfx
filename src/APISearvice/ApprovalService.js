@@ -552,7 +552,7 @@ export const getAllDMSTasks = async (sp, itemStatus) => {
 
   await sp.web.lists.getByTitle("ProcessApprovalList").items.select("*,AssignedTo/Id,AssignedTo/Title,RequesterName/Id,RequesterName/Title").expand("RequesterName,AssignedTo")
 
-    .filter(`Status eq 'Pending' and AssignedToId eq ${currentUser.Id} and ApprovalType eq 'Assignment'`)
+    .filter(`(Status eq 'Pending' or Status eq 'Save as draft') and AssignedToId eq ${currentUser.Id} and ApprovalType eq 'Assignment'`)
 
     .orderBy("Created", false)
 
@@ -584,6 +584,8 @@ export const getAllDMSApprovals = async (sp, itemStatus,actingfor) => {
       console.log("resresresresr", res,siteurl)
       for (let i = 0; i < res.length; i++) {
         arrnew.push({
+          ListItemId:res[i].ListItemId,
+          Id:res[i].Id,
           RequestId: res[i].RequestId,
           FileName: res[i].Title,
           ProcessName: res[i].ProcessName,

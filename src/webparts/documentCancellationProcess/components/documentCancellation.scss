@@ -538,7 +538,7 @@ font-weight: 600; margin-top: 1%;
 }
 .modal-content, .modal-dialog {
 border-radius: 20px !important;
-min-width: 80% !important;
+min-width: 50% !important;
 }
 .modal-dialog .carousel-item {
 height: 500px;
@@ -705,4 +705,27 @@ width: 100%;
 .newtabledc tbody td{overflow: initial !important;}
 .mtbalenew input[type=text]:focus{
   border: 0px solid #f37421 !important;
+}
+.border-on-error {
+  background-color: #ffe6e6 !important;
+  border-color: red !important;
+}
+.border-on-error .css-13cymwt-control{
+  background-color: #ffe6e6 !important;
+  border-color: red !important;
+}
+.filemodal .modal-header {
+  background: transparent;
+  position: relative;
+  border-bottom: 1px solid #ccc !important;
+  border-radius: 0px !important;
+  height: auto;
+  padding: 20px !important;
+  right: initial;
+  top: auto;
+  width: auto;
+  z-index: 999;justify-content: space-between;
+}
+.filemodal .btn-close{
+  right: 25px;
 }

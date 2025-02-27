@@ -837,8 +837,8 @@ const MyTasksContext = ({ props }: any) => {
             default: ;  
         }
 
-        const encryptedId = encryptId(String(Item?.ListItemId));
-        sessionStorage.setItem(sessionkey, encryptedId);
+        // const encryptedId = encryptId(String(Item?.ListItemId));
+        // sessionStorage.setItem(sessionkey, encryptedId);
         location.href = redirecturl;
       }
     }

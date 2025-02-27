@@ -1,8 +1,9 @@
 import Swal from 'sweetalert2';
 export const getAllDocumentCode = async (_sp) => {
   let arr = [];
+  let sts = "Approved";
 
-  await _sp.web.lists.getByTitle("ChangeRequestList").items
+  await _sp.web.lists.getByTitle("ChangeRequestList").items.filter(`Status eq '${sts}'`)
     .select("*,Location/ID,Custodian/ID,DocumentType/ID,AmendmentType/ID,Classification/ID,ChangeRequestType/ID,Author/ID,Author/Title")
     .expand("DocumentType,Custodian,Classification,AmendmentType,Location,ChangeRequestType,Author")
     .orderBy("Modified", false)() // Order by Modified descending to get latest first
@@ -485,6 +486,26 @@ export const getRequesterID = async (_sp) => {
   var reqId;
   await _sp.web.lists.getByTitle("RequesterRoleMaster").items
   .select("*").filter("Role eq 'Initiator' and IsActive eq 'Yes'")()
+    .then((res) => {
+      console.log(res, ' let arrs=[]');
+     
+
+      //  arr =(res[0].Id)
+      // arr = res;
+      reqId=res[0].Id
+    })
+    .catch((error) => {
+      console.log("Error fetching data: ", error);
+    });
+  console.log(reqId, 'arr');
+  return reqId;
+}
+
+export const getRequestTypeID = async (_sp) => {
+ 
+  var reqId;
+  await _sp.web.lists.getByTitle("RequestTypeMaster").items
+  .select("*").filter("RequestType eq 'Document Cancellations' and IsActive eq 'Yes'")()
     .then((res) => {
       console.log(res, ' let arrs=[]');
      

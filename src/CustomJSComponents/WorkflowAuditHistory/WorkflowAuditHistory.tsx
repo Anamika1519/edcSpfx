@@ -310,7 +310,7 @@ export const WorkflowAuditHistory = (props: IWorkflowAuditHistoryProps) => {
                                   ? row.Level === 0
                                     ? row.CurrentUserRole === "OES"
                                       ? "OES"
-                                      : row.CurrentUserRole == null
+                                      : row.CurrentUserRole == null || row.CurrentUserRole == "Initiator"
                                         ? "Initiator"
                                         : `Level ${row.Level}`
                                     : `Level ${row.Level}`
@@ -325,7 +325,10 @@ export const WorkflowAuditHistory = (props: IWorkflowAuditHistoryProps) => {
 
                         <td style={{ minWidth: '70px', maxWidth: '70px' }}> {row.Requester ? row.Requester.Title : row.RequesterName.Title}</td>
 
-                               <td  style={{ minWidth: '70px', maxWidth: '70px' }}> {(new Date(row.Created)).toLocaleString()}</td>
+                         {/* <td  style={{ minWidth: '70px', maxWidth: '70px' }}> {(new Date(row.Created)).toLocaleString()}</td> */}
+                        <td style={{ minWidth: '70px', maxWidth: '70px' }}>
+                          {new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).format(new Date(row.Created))}
+                        </td>
 
                         {/* <td> {(row.Status != 'Pending') ? (row.Approver?.Title ? row.Approver.Title:(row.ActionTakenBy.Title?row.ActionTakenBy.Title:"")) : ""}</td> */}
                         <td style={{ minWidth: '70px', maxWidth: '70px' }}>
@@ -334,7 +337,11 @@ export const WorkflowAuditHistory = (props: IWorkflowAuditHistoryProps) => {
                             : ""}
                         </td>
 
-                        <td style={{ minWidth: '70px', maxWidth: '70px' }}>{(row.Status != 'Pending') ? ((new Date(row.Modified)).toLocaleString()) : ""}</td>
+                        {/* <td style={{ minWidth: '70px', maxWidth: '70px' }}>{(row.Status != 'Pending') ? ((new Date(row.Modified)).toLocaleString()) : ""}</td> */}
+                        <td style={{ minWidth: '70px', maxWidth: '70px' }}>
+                          {(row.Status != 'Pending') ?(new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).format(new Date(row.Modified))):""}
+                        </td>
+
 
                         <td style={{ minWidth: '70px', maxWidth: '70px' }}> {row.Remark}</td>
 
