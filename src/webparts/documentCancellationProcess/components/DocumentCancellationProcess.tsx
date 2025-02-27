@@ -1183,6 +1183,7 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
         let valid = true;
         let actionMessage = "";
         let successMessage = "";
+        setValidSubmit(true);
         switch (status) {
             case "Forward":
                 actionMessage = "Do you want to forward this request?";
@@ -1214,6 +1215,8 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
 
             if (!valid) {
                 Swal.fire('Please fill all the mandatory fields.');
+                // setValidDraft(true);
+            setValidSubmit(false);
                 return;
             }
 
@@ -1357,6 +1360,7 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
 
             if (!valid) {
                 Swal.fire('Please fill all the mandatory fields.');
+                setValidSubmit(false);
                 return;
             }
 
@@ -2314,7 +2318,7 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
 
                                                     {/* </a> */}
                                                     {/* <a href="../sites/edcspfx/SitePages/EDCMAIN.aspx">       */}
-                                                    {((modeValue === "" || modeValue === "edit") ||(editID !== null && editID.IsInitiator == "Yes")) &&
+                                                    {((modeValue === "" || modeValue === "edit"|| modeValue === "view") ||(editID !== null && editID.IsInitiator == "Yes")) &&
                                                         <button type="button" className="btn cancel-btn waves-effect waves-light m-1" onClick={handleCancel}> <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }}
                                                         className='me-1' alt="x" /> Cancel</button>
                                                     }
