@@ -25,15 +25,50 @@ export const getAllDocumentCode = async (_sp) => {
     });
   return arr;
 };
+export const getDocumentCodeselected = async (_sp, locId, custoId, doctypeId) => {
+  let arr = [];
+
+  await _sp.web.lists.getByTitle("ChangeRequestList").items
+    .select("*,Location/ID,Custodian/ID,DocumentType/ID,AmendmentType/ID,Classification/ID,ChangeRequestType/ID,Author/ID,Author/Title")
+    .expand("DocumentType,Custodian,Classification,AmendmentType,Location,ChangeRequestType,Author")
+    .filter(`LocationId eq '${locId}' and CustodianId eq '${custoId}' and DocumentTypeId eq '${doctypeId}'`)
+    .orderBy("Modified", false)() // Order by Modified descending to get latest first
+    .then((res) => {
+      console.log(res);
+
+      // Filter only latest entry for each unique DocumentCode
+      // const latestDocuments = res.reduce((acc, item) => {
+      //   if (!acc[item.DocumentCode]) {
+      //     acc[item.DocumentCode] = item;
+      //   }
+      //   return acc;
+      // }, {});
+      let SnoArr = [];
+      if (res.length > 0) {
+        SnoArr.push({
+          SerialNo: Number(res[0].SerialNumber) + 1,
+          IssueNo: Number(res[0].IssueNumber)+1,
+            RevisionNo: Number(res[0].RevisionNumber)
+        })
+      }
+      console.log("resresr serialnumber", res, SnoArr);
+      arr = SnoArr
+    })
+    .catch((error) => {
+      console.log("Error fetching data: ", error);
+    });
+  return arr;
+};
 export const getAllRequestType = async (_sp) => {
   let arr = [];
 
   await _sp.web.lists.getByTitle("RequestTypeMaster").items
     .select("*,Author/ID,Author/Title")
     .expand("Author")
+    .filter("FornName eq 'Change Request'")
     .orderBy("Modified", false)() // Order by Modified descending to get latest first
     .then((res) => {
-      console.log(res);
+      console.log("optrequest",res);
 
       // Filter only latest entry for each unique DocumentCode
       const latestDocuments = res.reduce((acc, item) => {
@@ -577,5 +612,24 @@ export const getDocumentLinkByID = async (_sp,itemId) => {
       console.log("Error fetching data: ", error);
     });
   console.log(reqId, 'arr');
+  return reqId;
+}
+export const getDocumentLinkByIDarr = async (_sp, itemId) => {
+
+  let reqId=[];
+  await _sp.web.lists.getByTitle("ChangeRequestDocs").items.getById(itemId)
+    .select("*,FileRef, FileLeafRef")()
+    .then((res) => {
+      console.log(res, ' let arrs=[]');
+
+
+      //  arr =(res[0].Id)
+      // arr = res;
+      reqId.push(res)
+    })
+    .catch((error) => {
+      console.log("Error fetching data: ", error);
+    });
+  console.log(reqId, 'arr arrrr');
   return reqId;
 }

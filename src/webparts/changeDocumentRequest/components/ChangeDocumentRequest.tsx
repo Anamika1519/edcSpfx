@@ -17,7 +17,7 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "../../verticalSideBar/components/VerticalSidebar.scss";
 import "../components/changeDocumentRequest.scss";
 import { allowstringonly, getCurrentUser } from '../../../APISearvice/CustomService';
-import { addAllProcessItem, addApprovalItem, addItem, addItemChangeRequestReasonlist, addItemChangeRequestList, getAllAmendmentType, getAllClassificationMaster, getAllDocumentCode, getAllProcessData, getAllRequestType, getApprovalByID, getApprovalByID2, getDataRoles, getDocumentLinkByID, getFormNameID, getItemByID, getItemByIDChangeRequest, getItemByIDCR, getListNameID, GetQueryString, getRequesterID, UpdateAllProcessItem, updateApprovalItem, updateItem, updateItemChangeRequestReasonList, updateItemChangeRequestList } from '../../../APISearvice/DocumentCancellation';
+import { addAllProcessItem, addApprovalItem, addItem, addItemChangeRequestReasonlist, addItemChangeRequestList, getAllAmendmentType, getAllClassificationMaster, getAllDocumentCode, getAllProcessData, getAllRequestType, getApprovalByID, getApprovalByID2, getDataRoles, getDocumentLinkByID, getFormNameID, getItemByID, getItemByIDChangeRequest, getItemByIDCR, getListNameID, GetQueryString, getRequesterID, UpdateAllProcessItem, updateApprovalItem, updateItem, updateItemChangeRequestReasonList, updateItemChangeRequestList, getDocumentCodeselected, getDocumentLinkByIDarr } from '../../../APISearvice/DocumentCancellation';
 import Select from "react-select";
 import Swal from 'sweetalert2';
 import { FormSubmissionMode } from '../../../Shared/Interfaces';
@@ -28,10 +28,11 @@ import { WorkflowAuditHistory } from '../../../CustomJSComponents/WorkflowAuditH
 import { CONTENTTYPE_ChangeDocument, CONTENTTYPE_DocumentCancel, LIST_TITLE_ChangeRequest, Tenant_URL } from '../../../Shared/Constants';
 import { IPeoplePickerContext, PeoplePicker, PrincipalType } from "@pnp/spfx-controls-react/lib/PeoplePicker";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPaperclip } from '@fortawesome/free-solid-svg-icons';
+import { faDownload, faPaperclip } from '@fortawesome/free-solid-svg-icons';
 import { uploadFile } from '../../../APISearvice/MediaService';
 import { Modal } from 'react-bootstrap';
 import { Link } from '@fluentui/react';
+import moment from 'moment';
 let newfileupload: any
 let newfilepreview: any
 interface ForwardTo {
@@ -121,6 +122,7 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
   const [docCode, setdocCode] = React.useState("");
   const [serialNo, setserialNo] = React.useState("");
   const [issueNo, setissueNo] = React.useState("");
+  const [revisionNo, setrevisionNo] = React.useState("");
   const [pageValue, setpage] = React.useState("");
   const [cancellReason, setcancellReason] = React.useState([{ id: 0, description: "", reason: "" }]);
   const [cancellReasonEdit, setcancellReasonEdit] = React.useState([]);
@@ -328,6 +330,11 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
         setMainEditItem(setBannerById[0]);
         // setCategoryData(await getCategory(sp, Number(setBannerById[0]?.TypeMaster))) // Category
         if (setBannerById[0].AttachmentId) {
+          let arrn = await getDocumentLinkByIDarr(sp, setBannerById[0].AttachmentId);
+          //let arraynew: any[];
+          //arraynew.push(arrn)
+          console.log("arrrrrrnh", arrn);
+          setAttachmentarr(arrn);
           setDocumentLink(await getDocumentLinkByID(sp, setBannerById[0].AttachmentId))
         }
         if (ProcessItemId && ProcessItemId.Level === 0 && ProcessItemId.CurrentUserRole === "OES" && ProcessItemId.IsInitiator == "No") {
@@ -467,7 +474,12 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
         setSelectedOptionReq(selectedRequesttype);
 
         if (setBannerById[0].AttachmentId) {
-          setDocumentLink(await getDocumentLinkByID(sp, setBannerById[0].AttachmentId))
+          setDocumentLink(await getDocumentLinkByID(sp, setBannerById[0].AttachmentId));
+          let arrn = await getDocumentLinkByIDarr(sp, setBannerById[0].AttachmentId);
+          //let arraynew: any[];
+          //arraynew.push(arrn)
+          console.log("arrrrrrnty", arrn);
+          setAttachmentarr(arrn);
         }
         else {
           setDocumentLink(null);
@@ -519,7 +531,14 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
       // Format as YYYY-MM-DD
     }));
     setSelectedOption(selectedList);
-
+    const rowData: any[] = await getItemByIDChangeRequest(sp, Number(selectedList.ID)) //baseUrl
+    const initialRows = rowData.map((item: any) => ({
+      id: item.Id,
+      description: item.ChangeDescription,
+      reason: item.ReasonforChange,
+    }));
+    setcancellReason(initialRows);
+    setcancellReasonEdit(initialRows);
     const selectedLocation = LocationOpt.filter((loc: { locationId: any; }) => loc.locationId === selectedList.LocationId)[0] || null;
     const selectedCustodian = Custodianopt.filter((cust: { custodianId: any; }) => cust.custodianId === selectedList.CustodianId)[0] || null;
     const selectedDocumentType = DocumentTypeOpt.filter((docType: { documentTypeId: any; }) => docType.documentTypeId === selectedList.DocumentTypeId)[0] || null;
@@ -533,6 +552,11 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
     setselectedOptionLoc(selectedLocation);
     setselectedCheckboxIds(selectedList.ChangeRequestTypeId)
     if (selectedList.AttachmentId) {
+      let arrn = await getDocumentLinkByIDarr(sp, selectedList.AttachmentId);
+      //let arraynew: any[];
+      //arraynew.push(arrn)
+      console.log("arrrrrrn56", arrn);
+      setAttachmentarr(arrn);
       setDocumentLink(await getDocumentLinkByID(sp, selectedList.AttachmentId))
     }
     else {
@@ -693,12 +717,13 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
   //     setSelectedRole(selectedList);  // Set the selected users
   // };
 
-  const onSelectRole = (event: React.ChangeEvent<HTMLSelectElement>, id: number) => {
-    const updatedArr = forwardToArr.map(row =>
-      row.id === id ? { ...row, role: Number(event.target.value) } : row
-    );
-    setForwardToArr(updatedArr);
-  };
+   const onSelectRole = (event: React.ChangeEvent<HTMLSelectElement>, lvl: number) => {
+        const updatedArr = forwardToArr.map(row =>
+            row.level === lvl ? { ...row, role: Number(event.target.value) } : row
+        );
+        setForwardToArr(updatedArr);
+        setUserRoles(UserRoles.filter((x: any) => x.label !== event.target.value))
+    };
 
 
   // const handleAddRow = () => {
@@ -797,41 +822,46 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
       }
       else if (!selectedOptionLoc) {
         //Swal.fire('Error', 'Category is required!', 'error');
-        errormsg = "Please select Location"
+        //errormsg = "Please select Location"
         valid = false;
       }
       else if (!selectedOptionCusto) {
         //Swal.fire('Error', 'Category is required!', 'error');
-        errormsg = "Please select Custodian"
+        //errormsg = "Please select Custodian"
         valid = false;
       }
       else if (!selectedOptionDoctype) {
-        errormsg = "Please select Document Type"
+        //errormsg = "Please select Document Type"
         //Swal.fire('Error', 'Category is required!', 'error');
         valid = false;
       }
       else if (!selectedOptionClass) {
-        errormsg = "Please select Classification"
+        //errormsg = "Please select Classification"
+        //Swal.fire('Error', 'Category is required!', 'error');
+        valid = false;
+      }
+      else if (!selectedOptionReq) {
+        //errormsg = "Please select Classification"
         //Swal.fire('Error', 'Category is required!', 'error');
         valid = false;
       }
       else if (selectedOptionReq.label != "Change Request for New Addition" && !selectedOption.value) {
-        errormsg = "Please select Document code"
+        //errormsg = "Please select Document code"
         //Swal.fire('Error', 'Entity is required!', 'error');
         valid = false;
       }
       else if (!selectedOptionAmend) {
-        errormsg = "Please select Amendment Type"
+        //errormsg = "Please select Amendment Type"
         //Swal.fire('Error', 'Category is required!', 'error');
         valid = false;
       }
       else if (cancellReason.length > 0 && cancellReason.every((row: any) => row.description.trim() !== "" && row.reason.trim() !== "") == false) {
         // const isValid = cancellReason.every((row:any) => row.description.trim() !== "" && row.reason.trim() !== "");
-        errormsg = "Please enter Description and Reason"
+        //errormsg = "Please enter Description and Reason"
         valid = false;
       }
       else if (cancellReason.length == 0) {
-        errormsg = "Please enter atleast one Description and Reason"
+        //errormsg = "Please enter atleast one Description and Reason"
         // const isValid = rows.every((row:any) => row.description.trim() !== "" && row.reason.trim() !== "");
         valid = false;
       }
@@ -861,7 +891,11 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
         //Swal.fire('Error', 'Type is required!', 'error');
         valid = false;
       }
-
+      else if (!selectedOptionReq) {
+        //errormsg = "Please select Classification"
+        //Swal.fire('Error', 'Category is required!', 'error');
+        valid = false;
+      }
       setValidDraft(valid);
 
     }
@@ -880,9 +914,32 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
   const handleFormSubmit = async () => {
     if (await validateForm(FormSubmissionMode.SUBMIT)) {
       debugger
-
-      setissueNo(issueNo == "" ? "01" : issueNo);
-      setserialNo(serialNo == "" ? "01" : serialNo)
+      let serialnumber = await getDocumentCodeselected(sp, selectedOptionLoc.locationId, selectedOptionCusto.custodianId, selectedOptionDoctype.documentTypeId)
+      let issueno = "";
+      let serialno = "";
+      let revisionno = "";
+      if (selectedOptionReq.label == "Change Request for New Addition"){
+      if (serialnumber.length > 0) {
+        issueno = serialnumber[0].IssueNo;
+        serialno = serialnumber[0].SerialNo;
+        revisionno = serialnumber[0].RevisionNo;
+        setissueNo(serialnumber[0].IssueNo);
+        setserialNo(serialnumber[0].SerialNo);
+        setrevisionNo(serialnumber[0].RevisionNo)
+      } else {
+        issueno = issueNo == "" ? "01" : issueNo;
+        serialno = serialNo == "" ? "01" : serialNo;
+        revisionno = revisionNo == "" ? "00" : revisionNo;
+        setissueNo(issueNo == "" ? "01" : issueNo);
+        setserialNo(serialNo == "" ? "01" : serialNo);
+      }
+    } else{
+        issueno = selectedOption.IssueNumber + 1;
+        serialno = selectedOption.SerialNumber +1;
+        revisionno = selectedOption.RevisionNumber +1;
+        setissueNo(issueNo == "" ? "01" : issueNo);
+        setserialNo(serialNo == "" ? "01" : serialNo);
+    }
       let doccode = await generateDocCode();
       let referencecode = await generateReferenceCode();
       console.log("doccode doccode", doccode, referencecode);
@@ -930,27 +987,26 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
               Department: formData.Department,
               RequestDate: new Date(formData.RequestDate).toISOString(),
               IssueDate: new Date(formData.IssueDate).toISOString(),
-              LocationId: selectedOption.LocationId,
-              CustodianId: selectedOption.CustodianId,
-              SerialNumber: selectedOption.SerialNumber,
-              IssueNumber: selectedOption.IssueNumber,
-              RevisionNumber: selectedOption.RevisionNumber,
-              RevisionDate: selectedOption.RevisionDate,
-              DocumentCode: selectedOption.value,
-              ReferenceNumber: selectedOption.ReferenceNumber,
-              RequestTypeId: selectedOption.RequestTypeId,
-              AmendmentTypeId: selectedOption.AmendmentTypeId,
-              // RequestTypeId: selectedOption.RequestTypeId,
-              ClassificationId: selectedOption.ClassificationId,
-              ChangeRequestTypeId: selectedOption.ChangeRequestTypeId,
-              SubmiitedDate: new Date(selectedOption.RequestDate).toISOString(),
+              LocationId: formData.LocationId,
+              CustodianId: formData.CustodianId,
+              SerialNumber: Number(serialno),
+              IssueNumber: Number(issueno),
+              RevisionNumber: Number(revisionno),
+              RevisionDate: formData.RevisionDate,
+              DocumentCode: doccode,
+              ReferenceNumber:referencecode,
+              RequestTypeId: formData.RequestTypeId,
+              AmendmentTypeId: formData.AmendmentTypeId,
+              ChangeRequestTypeId: selectedCheckboxIds,
+              ClassificationId: formData.ClassificationId,
+              SubmiitedDate: new Date(formData.RequestDate).toISOString(),
               SubmitStatus: "Yes",
               Status: "Pending",
               OESSubmitStatus: "No",
               InitiatorSubmitStatus: "Yes",
               CurrentUserRole: "OES",
               DocumentName: DocumentName,
-              DocumentTypeId: selectedOption.DocumentTypeId,
+              DocumentTypeId: formData.DocumentTypeId,
               AttachmentId: attachmentIds,
               AttachmentJson: JSON.stringify(bannerImageArray)
             }
@@ -1059,9 +1115,9 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
               //IssueDate: formData.IssueDate,
               LocationId: formData.LocationId,
               CustodianId: formData.CustodianId,
-              SerialNumber: Number("01"),
-              IssueNumber: Number("01"),
-              RevisionNumber: Number("00"),
+              SerialNumber: Number(serialno),
+              IssueNumber: Number(issueno),
+              RevisionNumber: Number(revisionno),
               //RevisionNumber: selectedOption.RevisionNumber,
               RevisionDate: new Date().toISOString(),
               DocumentCode: doccode,
@@ -1345,7 +1401,7 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
               RequesterDesignation: formData.RequesterDesignation,
               Department: formData.Department,
               RequestDate: new Date().toISOString(),
-              IssueDate: formData.IssueDate,
+              IssueDate: new Date().toISOString(),
               LocationId: formData.LocationId,
               CustodianId: formData.CustodianId,
               SerialNumber: Number("01"),
@@ -2304,13 +2360,13 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
                               <div className="col-lg-4">
 
                                 <div className="mb-3">
-                                  <label htmlFor="DocumentCode" className="form-label">Request Type:</label>
+                                  <label htmlFor="DocumentCode" className="form-label">Request Type:<span className="text-danger">*</span></label>
                                   {/* <input type="text" id="example-email" name="example-email" className="form-control" placeholder="Search Document Code" value={formData.DocumentCode} /> */}
                                   <Select
                                     options={ReqType}
                                     value={selectedOptionReq}
                                     name="Request Type"
-                                    className={`newse ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                                     className={`form-control ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
                                     onChange={(selectedOption: any) => onSelectReq(selectedOption)}
                                     placeholder="Search Request Type" isDisabled={InputDisabled}
                                   />
@@ -2328,7 +2384,7 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
                                     isClearable={true}
                                     //isOptionDisabled={() => selectedOptionReq.label == "Change Request for New Addition"}
                                     isSearchable={true}
-                                    className={`newse ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                                     className={`form-control ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
                                     onChange={(selectedOption: any) => onSelectDocCode(selectedOption)}
                                     placeholder="Search Document Code"
                                     isDisabled={selectedOptionReq == null || (selectedOptionReq != null && selectedOptionReq?.label == "Change Request for New Addition")}
@@ -2360,13 +2416,13 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
                               <div className="col-lg-4">
 
                                 <div className="mb-3">
-                                  <label htmlFor="DocumentCode" className="form-label">Amendment Type:</label>
+                                  <label htmlFor="DocumentCode" className="form-label">Amendment Type:<span className="text-danger">*</span></label>
                                   {/* <input type="text" id="example-email" name="example-email" className="form-control" placeholder="Search Document Code" value={formData.DocumentCode} /> */}
                                   <Select
                                     options={Amendtype}
                                     value={selectedOptionAmend}
                                     name="Amendment Type"
-                                    className={`newse ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                                     className={`form-control ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
                                     onChange={(selectedOption: any) => onSelectAmend(selectedOption)}
                                     placeholder="Search Amendment Type" isDisabled={InputDisabled}
                                   />
@@ -2375,13 +2431,13 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
                               <div className="col-lg-4">
 
                                 <div className="mb-3">
-                                  <label htmlFor="DocumentCode" className="form-label">Classification:</label>
+                                  <label htmlFor="DocumentCode" className="form-label">Classification:<span className="text-danger">*</span></label>
                                   {/* <input type="text" id="example-email" name="example-email" className="form-control" placeholder="Search Document Code" value={formData.DocumentCode} /> */}
                                   <Select
                                     options={Classificationopt}
                                     value={selectedOptionClass}
                                     name="Classification"
-                                    className={`newse ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                                     className={`form-control ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
                                     onChange={(selectedOption: any) => onSelectClassification(selectedOption)}
                                     placeholder="Search Classification" isDisabled={InputDisabled}
                                   />
@@ -2390,13 +2446,13 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
                               <div className="col-lg-4">
 
                                 <div className="mb-3">
-                                  <label htmlFor="DocumentCode" className="form-label">Location:</label>
+                                  <label htmlFor="DocumentCode" className="form-label">Location:<span className="text-danger">*</span></label>
                                   {/* <input type="text" id="example-email" name="example-email" className="form-control" placeholder="Search Document Code" value={formData.DocumentCode} /> */}
                                   <Select
                                     options={LocationOpt}
                                     value={selectedOptionLoc}
                                     name="Location"
-                                    className={`newse ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                                     className={`form-control ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
                                     onChange={(selectedOption: any) => onSelectLocation(selectedOption)}
                                     placeholder="Search Location" isDisabled={InputDisabled}
                                   />
@@ -2405,13 +2461,13 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
                               <div className="col-lg-4">
 
                                 <div className="mb-3">
-                                  <label htmlFor="DocumentCode" className="form-label">Custodian:</label>
+                                  <label htmlFor="DocumentCode" className="form-label">Custodian:<span className="text-danger">*</span></label>
                                   {/* <input type="text" id="example-email" name="example-email" className="form-control" placeholder="Search Document Code" value={formData.DocumentCode} /> */}
                                   <Select
                                     options={Custodianopt}
                                     value={selectedOptionCusto}
                                     name="Custodian"
-                                    className={`newse ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                                    className={`form-control ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
                                     onChange={(selectedOption: any) => onSelectCustodian(selectedOption)}
                                     placeholder="Search Custodian" isDisabled={InputDisabled}
                                   />
@@ -2420,13 +2476,13 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
                               <div className="col-lg-4">
 
                                 <div className="mb-3">
-                                  <label htmlFor="DocumentCode" className="form-label">Document Type:</label>
+                                  <label htmlFor="DocumentCode" className="form-label">Document Type:<span className="text-danger">*</span></label>
                                   {/* <input type="text" id="example-email" name="example-email" className="form-control" placeholder="Search Document Code" value={formData.DocumentCode} /> */}
                                   <Select
                                     options={DocumentTypeOpt}
                                     value={selectedOptionDoctype}
                                     name="Document Type"
-                                    className={`newse ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                                    className={`form-control ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
                                     onChange={(selectedOption: any) => onSelectDocumentType(selectedOption)}
                                     placeholder="Search Document Type" isDisabled={InputDisabled}
                                   />
@@ -2436,7 +2492,7 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
                                 <div className="col-lg-4">
 
                                   <div className="mb-3">
-                                    <label htmlFor="DocumentCode" className="form-label">Attachment:</label>
+                                    <label htmlFor="DocumentCode" className="form-label">Attachment:<span className="text-danger">*</span></label>
                                     {Attachmentarr[0] != false && Attachmentarr.length > 0 &&
                                       Attachmentarr != undefined ? Attachmentarr.length == 1 &&
                                     (<a style={{ fontSize: '0.875rem' }}
@@ -2450,7 +2506,7 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
                                       id="attachment"
                                       name="attachment"
                                       //disabled={handleSectionState('requestedBySection')}
-                                      className={`newse ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                                       className={`form-control ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
                                       onChange={(e) => onFileChange(e, "bannerimg", "Document")}
                                     />
                                   </div>
@@ -2474,8 +2530,19 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
                                   <div className="mb-3">
                                     <label htmlFor="DocumentCode" className="form-label">Document Link:</label>
                                     {/* <input type="text" id="example-email" name="example-email" className="form-control" placeholder="Search Document Code" value={formData.DocumentCode} /> */}
-                                    <div className="text-dark mt-0"> <span onClick={() => OpenFile(DocumentLink)} style={{ color: "blue", cursor: "pointer" }}>{DocumentLink ? `${Tenant_URL}${DocumentLink?.FileRef}` : ""}</span>
+                                    
+                                    <div className="text-dark mt-0"> <span >
+                                      <a onClick={() => setShowModal(true)} ><FontAwesomeIcon icon={faPaperclip} />1 file Attached</a>
+                                      
+                                    </span>
                                     </div>
+                                    {/* <a style={{ fontSize: '0.875rem' }}
+                                      //onClick={() => handlePreviewClick(Attachmentarr[0])}
+                                      onClick={() => setShowModal(true)}>
+                                      <FontAwesomeIcon icon={faPaperclip} />1 file Attached
+                                    </a> */}
+                                    {/* <div className="text-dark mt-0"> <span onClick={() => OpenFile(DocumentLink)} style={{ color: "blue", cursor: "pointer" }}>{DocumentLink ? `${Tenant_URL}${DocumentLink?.FileRef}` : ""}</span>
+                                    </div> */}
                                     {/* <Link
                                       href={selectedOption != null && formData.AttachmentJson != "" && (JSON.parse(formData.AttachmentJson)?.serverUrl +
                                         JSON.parse(formData.AttachmentJson)?.serverRelativeUrl)}
@@ -2549,7 +2616,7 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
                                       className="indexdesign"
                                     >
                                       {index + 1}</div></td>
-                                    <td><input type="text" id="simpleinput" disabled={InputDisabled} className="form-control"
+                                    <td><input type="text" id="simpleinput" disabled={InputDisabled} 
                                       value={row.description}
                                       onChange={(e) => {
                                         const newRowscancellReason = [...cancellReason];
@@ -2559,7 +2626,8 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
                                     />
 
                                     </td>
-                                    <td><input type="text" id="simpleinput" disabled={InputDisabled} className="form-control"
+                                    <td><input type="text" id="simpleinput" disabled={InputDisabled} 
+                                      className={`form-control ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
                                       value={row.reason}
                                       onChange={(e) => {
                                         const newRowscancellReason = [...cancellReason];
@@ -2589,22 +2657,36 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
                       {modeValue === "approve" && editID != null && editID.ApprovalType === "Assignment" && editID.Status === "Pending" && editID.CurrentUserRole === "OES" &&
                         <div className="card">
                           <div className="card-body">
-                            <h4 className="header-title mb-0">Forward Approval To</h4>
-                            <div className="table-responsive mt-3 pt-0">
-                              <table className="mtbale table-centered table-nowrap table-borderless mb-0" id="myTabl">
-                                <thead className="table-light">
+                            <div className='row'>
+                              <div className='col-sm-8'>
+                                <h4 className="header-title text-dark font-16 mb-3 ">Forward Approval To</h4>
+
+                              </div>
+                              <div className='col-sm-4'>
+                                <div className="mt-0 mb-0 float-end text-right" style={{ textAlign: "right", paddingRight: "22px" }}>
+                                  <img style={{ width: '34px' }} src={require("../assets/plus.png")} onClick={handleAddRow} className='' />
+
+                                  {/* <i style={{ cursor: "pointer" }} onClick={handleAddRow} className="fe-plus-circle font-20 text-warning"></i> */}
+                                </div>
+                              </div>
+
+                            </div>
+
+                            <div style={{ overflow: 'inherit' }} className="table-responsive mt-3 pt-0">
+                              <table className="mtbalenew  table-centered table-nowrap table-borderless mb-0 newtabledc" id="myTabl">
+                                <thead >
                                   <tr>
                                     <th style={{ borderBottomLeftRadius: "0px" }}>Role</th>
-                                    <th >Level</th>
+                                    <th style={{ minWidth: '70px', maxWidth: '70px' }} >Level</th>
                                     <th >Approver Name</th>
-                                    <th >Action</th>
+                                    <th style={{ minWidth: '70px', maxWidth: '70px' }}>Action</th>
                                   </tr>
                                 </thead>
                                 <tbody style={{ maxHeight: "8007px" }}>
                                   {forwardToArr.map((row, index) => (
                                     <tr>
-                                      <td className="text-dark ng-binding">
-                                        <select className="form-select" onChange={(e) => onSelectRole(e, row.id)}>
+                                      <td className="ng-binding">
+                                        <select className="form-select" onChange={(e) => onSelectRole(e, row.level)} value={row.role}>
                                           <option value="" selected>Select Role</option>
                                           {UserRoles.map((role: any, index: number) => (
                                             <option key={index} value={role.value}>{role.label}</option>
@@ -2612,7 +2694,7 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
                                         </select>
 
                                       </td>
-                                      <td >Level {index + 1}</td>
+                                      <td style={{ minWidth: '70px', maxWidth: '70px' }}>Level {index + 1}</td>
                                       <td >
 
                                         <Select
@@ -2620,18 +2702,18 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
                                           isMulti
                                           value={row.approvers}
                                           name="Approvers"
-                                          className={`newse ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                                           className={`form-control ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
                                           // onChange={(selectedOption: any) => onSelect(selectedOption)}
-                                          onChange={(selectedOptions: any) => onSelectApprovers(selectedOptions, row.id)}
+                                          onChange={(selectedOptions: any) => onSelectApprovers(selectedOptions, row.level)}
                                           placeholder="Enter Approver Name"
                                         />
 
 
 
                                       </td>
-                                      <td >
+                                      <td style={{ minWidth: '70px', maxWidth: '70px' }}>
                                         {/* <i className="fe-trash-2 text-danger"></i> */}
-                                        <img src={require("../assets/recycle-bin.png")} onClick={() => handleDeleteRow(index)} className='sidebariconsmall' />
+                                        <img src={require("../../../CustomAsset/del.png")} onClick={() => handleDeleteRow(index)} className='' />
 
                                       </td>
                                     </tr>
@@ -2642,11 +2724,7 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
                               </table>
                             </div>
 
-                            <div className="mt-2 float-end text-right" style={{ textAlign: "right", paddingRight: "22px" }}>
-                              <img src={require("../assets/plus.png")} onClick={handleAddRow} className='sidebariconsmall' />
 
-                              {/* <i style={{ cursor: "pointer" }} onClick={handleAddRow} className="fe-plus-circle font-20 text-warning"></i> */}
-                            </div>
 
                             <div className="row mt-3">
                               <div className="col-12 text-center">
@@ -2666,7 +2744,7 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
                                 </button>
                                 {/* </a> */}
                                 {/* <a href="my-approval.html"> */}
-                                <button type="button" className="btn btn-light waves-effect waves-light m-1" onClick={handleCancel}>
+                                <button type="button" className="btn cancel-btn waves-effect waves-light m-1" onClick={handleCancel}>
                                   <i className="fe-x me-1"></i> Cancel
                                 </button>
                                 {/* </a> */}
@@ -2744,7 +2822,9 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
 
             <Modal show={showModal} onHide={() => setShowModal(false)} size="lg">
               <Modal.Header closeButton>
-                <Modal.Title>Attachments</Modal.Title>
+                <Modal.Title>
+                  <FontAwesomeIcon icon={faPaperclip} style={{ width: '70px',height:'50px' }} />
+                  Attachment Details</Modal.Title>
                 {/* {ImagepostArr1.length > 0 && showBannerModal && <Modal.Title>Media Images</Modal.Title>} */}
               </Modal.Header>
               <Modal.Body className="scrollbar" id="style-5">
@@ -2752,35 +2832,40 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
                   <table className="mtable table-bordered" style={{ fontSize: '0.75rem' }}>
                     <thead style={{ background: '#eef6f7' }}>
                       <tr>
-                        <th>Serial No.</th>
-                        <th > Image </th>
                         <th>File Name</th>
-                        <th>File Size</th>
+                        <th > File Link </th>
+                       
+                        <th>Upload date</th>
                         {/* {modeValue == null && */}
-                        <th className='text-center'>Action</th>
+                        {/* <th className='text-center'>Action</th> */}
                         {/* } */}
                       </tr>
                     </thead>
                     <tbody>
-                      {Attachmentarr.map((file: any, index: number) => (
-                        <tr key={index}>
-                          <td className='text-center'>{index + 1}</td>
+                      {console.log("Attachmentarrnmnm", Attachmentarr,DocumentLink)}
+                      {/* {Attachmentarr.map((file: any, index: number) => ( */}
+                        <tr >
+                          {/* <td className='text-center'>{index + 1}</td> */}
+                        <td>{DocumentLink ? `${Tenant_URL}${DocumentLink?.FileLeafRef}` : Attachmentarr && Attachmentarr[0]?.fileName}</td>
                           <td>
-                            <Link
+                            <FontAwesomeIcon icon={faDownload} style={{ width: '35px', height: '30px' }} 
+                            onClick={() => OpenFile(DocumentLink ? DocumentLink : Attachmentarr && Attachmentarr[0]?.fileUrl)}/>
+                            {/* <Link
                               href={file.fileUrl}
                               className="anchor"
                               target="_blank"
                             >
                               {file.fileUrl}
-                            </Link>
+                            </Link> */}
                           </td>
-                          <td>{file.fileName}</td>
-                          <td className='text-right'>{file.fileSize}</td>
-                          <td className='text-center'>
+                        <td>{DocumentLink ? moment(DocumentLink?.Created).format("DD-MMM-YYYY") : Attachmentarr && moment(Attachmentarr[0]?.Created).format("DD-MMM-YYYY")}</td>
+                          {/* <td>{file.fileName}</td>
+                          <td className='text-right'>{file.fileSize}</td> */}
+                          {/* <td className='text-center'>
                             <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }}
-                              onClick={() => deleteLocalFileAttachment(index, Attachmentarr, "Gallery")} /> </td>
+                              onClick={() => deleteLocalFileAttachment(index, Attachmentarr, "Gallery")} /> </td> */}
                         </tr>
-                      ))}
+                      {/* ))} */}
                     </tbody>
                   </table>
                 </>

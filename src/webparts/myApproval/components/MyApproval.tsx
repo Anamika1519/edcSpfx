@@ -482,7 +482,7 @@ const MyApprovalContext = ({ props }: any) => {
     currentUserEmailRef.current = userdata.Email;
     console.log("currentUserEmailRefhhg", currentUserEmailRef)
     //getApprovalmasterTasklist('Pending', '');
-   // myActingfordata()
+    // myActingfordata()
   };
   React.useEffect(() => {
     getCurrrentuser();
@@ -637,7 +637,7 @@ const MyApprovalContext = ({ props }: any) => {
     setMyApprovalsDataAutomation(Automationdata);
 
     console.log("Automationdata", Automationdata);
-    let ChangeReqandCancellationdata = await getAllDMSApprovals(sp,status,"test");
+    let ChangeReqandCancellationdata = await getAllDMSApprovals(sp, status, "test");
     console.log("ChangeReqandCancellationdata", ChangeReqandCancellationdata);
     setMylistdataCRDC(ChangeReqandCancellationdata);
     // }
@@ -664,7 +664,7 @@ const MyApprovalContext = ({ props }: any) => {
       let Automationdata = await getApprovalListsData(sp, value, actingfor);
       // let MyDMSAPPROVALDATA:any = await MyDMSAPPROVALDATASTATUS(sp, value)
       let MyDMSAPPROVALDATA: any = await getApprovalmasterTasklist(value, actingfor);
-      let MyDMSAPPROVALDATACRDC: any = await getAllDMSApprovals(sp,value, actingfor);
+      let MyDMSAPPROVALDATACRDC: any = await getAllDMSApprovals(sp, value, actingfor);
       console.log("MyDMSAPPROVALDATA", MyDMSAPPROVALDATACRDC)
       setMyApprovalsDataAll(MyApprovaldata);
       setMyApprovalsDataAutomation(Automationdata);
@@ -1050,22 +1050,28 @@ const MyApprovalContext = ({ props }: any) => {
     else if (activeTab == "DMS") {
       // if(item?.ProcessName ==="Document Cancellation"){
 
-        if (Item?.ProcessName) {
-          switch (Item?.ProcessName) {
-            case "Document Cancellation":
+      if (Item?.ProcessName) {
+        var actionType = "aprrove";
+        switch (Item?.ProcessName) {
+          case "Document Cancellation":
             sessionkey = "DocumentCancelId";
-            redirecturl = `${siteUrl}/SitePages/DocumentCancellation.aspx` + "/approve/" + Number(Item?.ListItemId) + "/" + Item?.Id ;
+            redirecturl = `${siteUrl}/SitePages/EDCMAIN.aspx#/${Item.ProcessName}/${actionType}/${Number(Item?.ListItemId)}/${Item?.Id}`;
+            // redirecturl = `${siteUrl}/SitePages/DocumentCancellation.aspx` + "/approve/" + Number(Item?.ListItemId) + "/" + Item?.Id ;
             break;
+            case "Change Request":
+              sessionkey = "ChangeRequestId";
+              redirecturl = `${siteUrl}/SitePages/EDCMAIN.aspx#/${Item.ProcessName}/${actionType}/${Number(Item?.ListItemId)}/${Item?.Id}`;
+              // redirecturl = `${siteUrl}/SitePages/DocumentCancellation.aspx` + "/approve/" + Number(Item?.ListItemId) + "/" + Item?.Id ;
+              break;
+          default:
+        }
 
-              default:
-            }
-
-            location.href = redirecturl;
+        location.href = redirecturl;
 
       }
 
-     }
-    
+    }
+
 
     // const encryptedId = encryptId(String(Item?.ContentId));
 
@@ -2292,7 +2298,7 @@ const MyApprovalContext = ({ props }: any) => {
                                                   }}
                                                   title={item?.FileUID?.RequestNo}
                                                 >
-                                                  {item?.IsDocChange == "CRDC" ? item?.RequestId: item?.FileUID?.RequestNo}
+                                                  {item?.IsDocChange == "CRDC" ? item?.RequestId : item?.FileUID?.RequestNo}
 
                                                 </td>
                                                 <td
@@ -2314,7 +2320,7 @@ const MyApprovalContext = ({ props }: any) => {
                                                     textAlign: 'center'
                                                   }}
                                                 >
-                                                  <span className="badge font-12 bg-warning"> 
+                                                  <span className="badge font-12 bg-warning">
                                                     {item?.IsDocChange == "CRDC" ? item?.ProcessName : item?.FileUID?.Processname} </span>
                                                 </td>
 
@@ -2368,37 +2374,39 @@ const MyApprovalContext = ({ props }: any) => {
                                                   }}
                                                   className="fe-eye font-18"
                                                 >
-                 { item?.ProcessName ==="Document Cancellation"?
-                  <Edit
-                  onClick={(e) => {
-                    
-                    handleRedirect(e, item, "view");handleShowNestedDMSTable() }}
-                  style={{
-                    minWidth: "20px",
+                                                  {item?.ProcessName === "Document Cancellation" ?
+                                                    <Edit
+                                                      onClick={(e) => {
 
-                    maxWidth: "20px",
+                                                        handleRedirect(e, item, "view"); handleShowNestedDMSTable()
+                                                      }}
+                                                      style={{
+                                                        minWidth: "20px",
 
-                    marginLeft: "15px",
+                                                        maxWidth: "20px",
 
-                    cursor: "pointer",
-                  }}
-                />:
-                <Edit
-                onClick={(e) => {
-                  
-                  item?.IsDocChange == "CRDC" ? window.location.href =`https://officeindia.sharepoint.com/sites/edcspfx/SitePages/ChangeRequest.aspx/${item?.RedirectionLink}` : getTaskItemsbyID(e, item?.FileUID?.FileUID); handleShowNestedDMSTable() }}
-                style={{
-                  minWidth: "20px",
+                                                        marginLeft: "15px",
 
-                  maxWidth: "20px",
+                                                        cursor: "pointer",
+                                                      }}
+                                                    /> :
+                                                    <Edit
+                                                      onClick={(e) => {
 
-                  marginLeft: "15px",
+                                                        item?.IsDocChange == "CRDC" ? window.location.href = `https://officeindia.sharepoint.com/sites/edcspfx/SitePages/ChangeRequest.aspx/${item?.RedirectionLink}` : getTaskItemsbyID(e, item?.FileUID?.FileUID); handleShowNestedDMSTable()
+                                                      }}
+                                                      style={{
+                                                        minWidth: "20px",
 
-                  cursor: "pointer",
-                }}
-              />
-                 }
-                                                 
+                                                        maxWidth: "20px",
+
+                                                        marginLeft: "15px",
+
+                                                        cursor: "pointer",
+                                                      }}
+                                                    />
+                                                  }
+
                                                 </td>
                                               </tr>
                                             )

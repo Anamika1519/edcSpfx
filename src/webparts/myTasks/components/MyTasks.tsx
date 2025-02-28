@@ -825,10 +825,13 @@ const MyTasksContext = ({ props }: any) => {
     } else if (activeTab == "DMS") {
       let sessionkey = "";
       if (Item?.ProcessName) {
+        var actionType="aprrove";
         switch (Item?.ProcessName) {
           case "Document Cancellation":
             sessionkey = "DocumentCancelId";
-            redirecturl = `${siteUrl}/SitePages/DocumentCancellation.aspx` + "/approve/" + Number(Item?.ListItemId) + "/" + Item?.Id ;
+            redirecturl = `${siteUrl}/SitePages/EDCMAIN.aspx#/${Item.ProcessName}/${actionType}/${Number(Item?.ListItemId)}/${Item?.Id}`;
+
+            // redirecturl = `${siteUrl}/SitePages/DocumentCancellation.aspx` + "/approve/" + Number(Item?.ListItemId) + "/" + Item?.Id ;
             break;
             case "Change Request":
             sessionkey = "ChangeRequestId";
