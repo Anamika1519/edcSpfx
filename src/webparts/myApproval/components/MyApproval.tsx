@@ -113,6 +113,9 @@ const MyApprovalContext = ({ props }: any) => {
   const [myApprovalsDataAll, setMyApprovalsDataAll] = React.useState([]);
   const [myApprovalsDataAutomation, setMyApprovalsDataAutomation] =
     React.useState([]);
+
+    const [myEdcApprovalData,setMyEdcApprovalData] = React.useState([]);
+    const [showEdcTable,setShowEdcTable]=React.useState(false);
   const handleShowNestedDMSTable = () => {
     setShowNestedDMSTable(true); // Show nested table within DMS
   };
@@ -475,14 +478,52 @@ const MyApprovalContext = ({ props }: any) => {
     }
   };
 
+  const currentUserIdRef = useRef(null);
+  const getEdcApprovalData=async (value:any,actingfor:any)=>{
+
+    console.log("Edc data get called ")
+    console.log("currentUserIdRef",currentUserIdRef.current)
+    try {
+      const edcProcessApprovalItems = await sp.web.lists.getByTitle("ProcessApprovalList").items.select("*,AssignedTo/Id,AssignedTo/Title,RequesterName/Id,RequesterName/Title","ListItemId").expand("RequesterName,AssignedTo")
+      .filter(`AssignedToId eq ${currentUserIdRef.current} and Status eq '${value}'`).orderBy("Created", false).getAll();
+
+      console.log("edcProcessApprovalItems",edcProcessApprovalItems)
+
+      let allItems: any[] = [];
+
+      edcProcessApprovalItems.forEach(item => {
+      allItems.push({
+          RequestId: item.RequestId,
+          Title: item.Title,
+          ProcessName: item.ProcessName,
+          RequestedBy: item.RequesterName ? item.RequesterName.Title : '',
+          RequestedDate: item.RequestedDate ? new Date(item.RequestedDate).toLocaleDateString() : '',
+          Status: item.Status,
+          MainListId: item.ListItemId,
+          Id: item.Id
+        });
+      });
+      setMyEdcApprovalData(allItems);
+      return allItems;
+    } catch (error) {
+      console.log("error in getting the data of the edc approvals",error)
+    }finally{
+      console.log("Finally inside edc data getting");
+    }
+       
+
+  }
+
   console.log(Mylistdata, "Mylistdata");
   const currentUserEmailRef = useRef("");
   const getCurrrentuser = async () => {
     const userdata = await sp.web.currentUser();
     currentUserEmailRef.current = userdata.Email;
+    currentUserIdRef.current=userdata.Id;
     console.log("currentUserEmailRefhhg", currentUserEmailRef)
     //getApprovalmasterTasklist('Pending', '');
     // myActingfordata()
+    getEdcApprovalData('Pending','');
   };
   React.useEffect(() => {
     getCurrrentuser();
@@ -592,7 +633,7 @@ const MyApprovalContext = ({ props }: any) => {
   }>({});
 
   //const [activeTab, setActiveTab] = useState("home1");
-  const [activeTab, setActiveTab] = useState("Intranet");
+  const [activeTab, setActiveTab] = useState("EDC Approval");
   //const [MylistdataCRDC, setMylistdataCRDC] = useState([]);
   const handleTabClick = async (tab: React.SetStateAction<string>) => {
     setActiveTab(tab);
@@ -613,6 +654,8 @@ const MyApprovalContext = ({ props }: any) => {
       //ApiCall("Pending");
       setMyApprovalsData(myApprovalsDataAutomation);
       //setMyApprovalsDataAutomation(myApprovalsDataAutomation);
+    }else if(tab == "EDC Approval"){
+      setMyApprovalsData(myEdcApprovalData);
     }
   };
 
@@ -627,7 +670,9 @@ const MyApprovalContext = ({ props }: any) => {
     let MyApprovaldata = await getMyApproval(sp, status);
     let Automationdata1 = await getApprovalListsData(sp, status);
     let typedata = await getType(sp);
-    setMyApprovalsData(MyApprovaldata);
+    const returnDataEDC=await getEdcApprovalData(status,'');
+    // setMyApprovalsData(MyApprovaldata);
+    setMyApprovalsData(returnDataEDC);
     setMyApprovalsDataAll(MyApprovaldata);
     //}
     //else if(activeTab == "Automation"){
@@ -666,6 +711,7 @@ const MyApprovalContext = ({ props }: any) => {
       let MyDMSAPPROVALDATA: any = await getApprovalmasterTasklist(value, actingfor);
       let MyDMSAPPROVALDATACRDC: any = await getAllDMSApprovals(sp, value, actingfor);
       console.log("MyDMSAPPROVALDATA", MyDMSAPPROVALDATACRDC)
+      const edcReturnData=await getEdcApprovalData(value,actingfor);
       setMyApprovalsDataAll(MyApprovaldata);
       setMyApprovalsDataAutomation(Automationdata);
       if (activeTab == "Intranet") {
@@ -676,6 +722,8 @@ const MyApprovalContext = ({ props }: any) => {
       } else if (activeTab == "Automation") {
         setMyApprovalsData(Automationdata);
         console.log("Automationdata", Automationdata);
+      }else if(activeTab === "EDC Approval"){
+        setMyApprovalsData(edcReturnData)
       }
       // else if (activeTab == "Automation") {
       //   setMyApprovalsData(null);
@@ -1072,6 +1120,35 @@ const MyApprovalContext = ({ props }: any) => {
 
     }
 
+    else if (activeTab == "EDC Approval") {
+      // if(item?.ProcessName ==="Document Cancellation"){
+      console.log("EDC Approval called",Item)
+      if (Item?.ProcessName) {
+        var actionType = "approve";
+        switch (Item?.ProcessName) {
+          case "Document Cancellation":
+            sessionkey = "DocumentCancelId";
+            redirecturl = `${siteUrl}/SitePages/EDCMAIN.aspx#/${Item?.ProcessName}/${actionType}/${Number(Item?.MainListId)}/${Item?.Id}`;
+            // redirecturl = `${siteUrl}/SitePages/DocumentCancellation.aspx` + "/approve/" + Number(Item?.ListItemId) + "/" + Item?.Id ;
+            break;
+            case "Change Request":
+              sessionkey = "ChangeRequestId";
+              redirecturl = `${siteUrl}/SitePages/EDCMAIN.aspx#/${Item.ProcessName}/${actionType}/${Number(Item?.MainListId)}/${Item?.Id}`;
+              // redirecturl = `${siteUrl}/SitePages/DocumentCancellation.aspx` + "/approve/" + Number(Item?.ListItemId) + "/" + Item?.Id ;
+            case "Annual Audit Program":
+                sessionkey = "AnnualAuditProgramId";
+                redirecturl = `${siteUrl}/SitePages/EDCMAIN.aspx#/${Item.ProcessName}/${actionType}/${Number(Item?.MainListId)}/${Item?.Id}`;
+                // redirecturl = `${siteUrl}/SitePages/DocumentCancellation.aspx` + "/approve/" + Number(Item?.ListItemId) + "/" + Item?.Id ;
+              break;
+          default:
+        }
+
+        location.href = redirecturl;
+
+      }
+
+    }
+
 
     // const encryptedId = encryptId(String(Item?.ContentId));
 
@@ -1105,6 +1182,13 @@ const MyApprovalContext = ({ props }: any) => {
       }, 1000);
     }
   };
+
+  React.useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(1); 
+      setCurrentGroup(1);
+    }
+  }, [filteredMyApprovalData,currentGroup]);
 
   return (
     <div id="wrapper" ref={elementRef}>
@@ -1199,7 +1283,7 @@ const MyApprovalContext = ({ props }: any) => {
                         className="nav nav-pills navtab-bg float-end justify-content-center"
                         role="tablist"
                       >
-                        <li className="nav-item" role="presentation">
+                       {/* <li className="nav-item" role="presentation">
                           <a
                             onClick={() => handleTabClick("Intranet")}
                             className={`nav-link ${activeTab === "Intranet" ? "active" : ""
@@ -1213,7 +1297,7 @@ const MyApprovalContext = ({ props }: any) => {
                               {myApprovalsDataAll.length}
                             </span>
                           </a>
-                        </li>
+                        </li>*/}
 
                         <li className="nav-item" role="presentation">
                           <a
@@ -1246,6 +1330,22 @@ const MyApprovalContext = ({ props }: any) => {
                             </span>
                           </a>
                         </li> */}
+
+                        <li className="nav-item" role="presentation">
+                          <a
+                            onClick={() => handleTabClick("EDC Approval")}
+                            className={`nav-link ${activeTab === "EDC Approval" ? "active" : ""
+                              }`}
+                            aria-selected={activeTab === "EDC Approval"}
+                            role="tab"
+                            tabIndex={-1}
+                          >
+                            <span className="lenbg1">EDC Approval</span>
+                            <span className="lenbg">
+                              {myEdcApprovalData.length}
+                            </span>
+                          </a>
+                        </li>
                       </ul>
                     </div>
                   </div>
@@ -1255,7 +1355,9 @@ const MyApprovalContext = ({ props }: any) => {
             </div>
             {(activeTab === "Intranet" ||
               activeTab === "Automation" ||
-              activeTab === "DMS") && (
+              activeTab === "DMS" ||
+              activeTab === "EDC Approval"
+            ) && (
                 <div>
                   {!isActivedata && (
                     <div className="card cardCss mt-2">
@@ -2526,6 +2628,676 @@ const MyApprovalContext = ({ props }: any) => {
                                         Cancel
                                       </button>
                                     </div>
+                                  </div>
+                                )}
+                              </div>
+                            )}
+
+                              {activeTab === "EDC Approval" && (
+                              <div>
+                                {!showEdcTable ? (
+                                  <div>
+                                    <table
+                                      className="mtbalenew mt-0 table-centered table-nowrap table-borderless mb-0"
+                                      style={{ position: "relative" }}
+                                    >
+                                      <thead>
+                                        <tr>
+                                          <th
+                                            style={{
+                                              borderBottomLeftRadius: "0px",
+
+                                              minWidth: "40px",
+
+                                              maxWidth: "40px",
+
+                                              borderTopLeftRadius: "0px",
+                                            }}
+                                          >
+                                            <div
+                                              className="d-flex pb-2"
+                                              style={{
+                                                justifyContent: "space-evenly",
+                                              }}
+                                            >
+                                              <span>S.No.</span>
+
+                                              <span
+                                                onClick={() =>
+                                                  handleSortChange("SNo")
+                                                }
+                                              >
+                                                <FontAwesomeIcon icon={faSort} />
+                                              </span>
+                                            </div>
+
+                                            <div className="bd-highlight">
+                                              <input
+                                                type="text"
+                                                placeholder="index"
+                                                onChange={(e) =>
+                                                  handleFilterChange(e, "SNo")
+                                                }
+                                                onKeyDown={(e) => {
+                                                  if (e.key === 'Enter' && !e.shiftKey) {
+                                                    e.preventDefault();
+                                                  }
+                                                }}
+                                                className="inputcss"
+                                                style={{ width: "100%" }}
+                                              />
+                                            </div>
+                                          </th>
+
+                                          <th
+                                            style={{
+                                              minWidth: "80px",
+                                              maxWidth: "80px",
+                                            }}
+                                          >
+                                            <div className="d-flex flex-column bd-highlight ">
+                                              <div
+                                                className="d-flex pb-2"
+                                                style={{
+                                                  justifyContent: "space-evenly",
+                                                }}
+                                              >
+                                                <span>Request ID</span>
+
+                                                <span
+                                                  onClick={() =>
+                                                    handleSortChange("RequestID")
+                                                  }
+                                                >
+                                                  <FontAwesomeIcon
+                                                    icon={faSort}
+                                                  />
+                                                </span>
+                                              </div>
+
+                                              <div className=" bd-highlight">
+                                                <input
+                                                  type="text"
+                                                  placeholder="Filter by Request ID"
+                                                  onChange={(e) =>
+                                                    handleFilterChange(
+                                                      e,
+                                                      "RequestID"
+                                                    )
+                                                  }
+                                                  onKeyDown={(e) => {
+                                                    if (e.key === 'Enter' && !e.shiftKey) {
+                                                      e.preventDefault();
+                                                    }
+                                                  }}
+                                                  className="inputcss"
+                                                  style={{ width: "100%" }}
+                                                />
+                                              </div>
+                                            </div>
+                                          </th>
+                                          <th
+                                            style={{
+                                              minWidth: "120px",
+                                              maxWidth: "120px",
+                                            }}
+                                          >
+                                            <div className="d-flex flex-column bd-highlight ">
+                                              <div
+                                                className="d-flex pb-2"
+                                                style={{
+                                                  justifyContent: "space-evenly",
+                                                }}
+                                              >
+                                                <span>Title</span>
+
+                                                <span
+                                                  onClick={() =>
+                                                    handleSortChange("Title")
+                                                  }
+                                                >
+                                                  <FontAwesomeIcon
+                                                    icon={faSort}
+                                                  />
+                                                </span>
+                                              </div>
+
+                                              <div className=" bd-highlight">
+                                                <input
+                                                  type="text"
+                                                  placeholder="Filter by Title"
+                                                  onChange={(e) =>
+                                                    handleFilterChange(
+                                                      e,
+                                                      "RequestID"
+                                                    )
+                                                  }
+                                                  onKeyDown={(e) => {
+                                                    if (e.key === 'Enter' && !e.shiftKey) {
+                                                      e.preventDefault();
+                                                    }
+                                                  }}
+                                                  className="inputcss"
+                                                  style={{ width: "100%" }}
+                                                />
+                                              </div>
+                                            </div>
+                                          </th>
+
+                                          <th
+                                            style={{
+                                              minWidth: "120px",
+                                              maxWidth: "120px",
+                                            }}
+                                          >
+                                            <div className="d-flex flex-column bd-highlight ">
+                                              <div
+                                                className="d-flex  pb-2"
+                                                style={{
+                                                  justifyContent: "space-evenly",
+                                                }}
+                                              >
+                                                <span>Process Name</span>{" "}
+                                                <span
+                                                  onClick={() =>
+                                                    handleSortChange(
+                                                      "ProcessName"
+                                                    )
+                                                  }
+                                                >
+                                                  <FontAwesomeIcon
+                                                    icon={faSort}
+                                                  />{" "}
+                                                </span>
+                                              </div>
+
+                                              <div className=" bd-highlight">
+                                                <input
+                                                  type="text"
+                                                  placeholder="Filter by Process Name"
+                                                  onChange={(e) =>
+                                                    handleFilterChange(
+                                                      e,
+                                                      "ProcessName"
+                                                    )
+                                                  }
+                                                  onKeyDown={(e) => {
+                                                    if (e.key === 'Enter' && !e.shiftKey) {
+                                                      e.preventDefault();
+                                                    }
+                                                  }}
+                                                  className="inputcss"
+                                                  style={{ width: "100%" }}
+                                                />
+                                              </div>
+                                            </div>
+                                          </th>
+
+                                          <th
+                                            style={{
+                                              minWidth: "100px",
+                                              maxWidth: "100px",
+                                            }}
+                                          >
+                                            <div className="d-flex flex-column bd-highlight ">
+                                              <div
+                                                className="d-flex  pb-2"
+                                                style={{
+                                                  justifyContent: "space-evenly",
+                                                }}
+                                              >
+                                                <span>Requested By</span>{" "}
+                                                <span
+                                                  onClick={() =>
+                                                    handleSortChange(
+                                                      "RequestedBy"
+                                                    )
+                                                  }
+                                                >
+                                                  <FontAwesomeIcon
+                                                    icon={faSort}
+                                                  />{" "}
+                                                </span>
+                                              </div>
+
+                                              <div className=" bd-highlight">
+                                                <input
+                                                  type="text"
+                                                  placeholder="Filter by Requested By"
+                                                  onChange={(e) =>
+                                                    handleFilterChange(
+                                                      e,
+                                                      "RequestedBy"
+                                                    )
+                                                  }
+                                                  onKeyDown={(e) => {
+                                                    if (e.key === 'Enter' && !e.shiftKey) {
+                                                      e.preventDefault();
+                                                    }
+                                                  }}
+                                                  className="inputcss"
+                                                  style={{ width: "100%" }}
+                                                />
+                                              </div>
+                                            </div>
+                                          </th>
+
+                                          <th
+                                            style={{
+                                              minWidth: "80px",
+                                              maxWidth: "80px",
+                                            }}
+                                          >
+                                            <div className="d-flex flex-column bd-highlight ">
+                                              <div
+                                                className="d-flex  pb-2"
+                                                style={{
+                                                  justifyContent: "space-evenly",
+                                                }}
+                                              >
+                                                <span>Requested Date</span>{" "}
+                                                {/* <span
+                                                  onClick={() =>
+                                                    handleSortChange(
+                                                      "RequestedDate"
+                                                    )
+                                                  }
+                                                >
+                                                  <FontAwesomeIcon
+                                                    icon={faSort}
+                                                  />{" "}
+                                                </span> */}
+                                              </div>
+
+                                              <div className=" bd-highlight">
+                                                <input
+                                                  type="text"
+                                                  placeholder="Filter by Requested Date"
+                                                  onChange={(e) =>
+                                                    handleFilterChange(
+                                                      e,
+                                                      "RequestedDate"
+                                                    )
+                                                  }
+                                                  onKeyDown={(e) => {
+                                                    if (e.key === 'Enter' && !e.shiftKey) {
+                                                      e.preventDefault();
+                                                    }
+                                                  }}
+                                                  className="inputcss"
+                                                  style={{ width: "100%" }}
+                                                />
+                                              </div>
+                                            </div>
+                                          </th>
+
+                                          <th
+                                            style={{
+                                              minWidth: "80px",
+                                              maxWidth: "80px",
+                                            }}
+                                          >
+                                            <div className="d-flex flex-column bd-highlight ">
+                                              <div
+                                                className="d-flex  pb-2"
+                                                style={{
+                                                  justifyContent: "space-evenly",
+                                                }}
+                                              >
+                                                <span>Status</span>{" "}
+                                                {/* <span
+                                                  onClick={() =>
+                                                    handleSortChange("Status")
+                                                  }
+                                                >
+                                                  <FontAwesomeIcon
+                                                    icon={faSort}
+                                                  />{" "}
+                                                </span> */}
+                                              </div>
+
+                                              <div className=" bd-highlight">
+                                                <input
+                                                  type="text"
+                                                  placeholder="Filter by Status"
+                                                  onChange={(e) =>
+                                                    handleFilterChange(
+                                                      e,
+                                                      "Status"
+                                                    )
+                                                  }
+                                                  onKeyDown={(e) => {
+                                                    if (e.key === 'Enter' && !e.shiftKey) {
+                                                      e.preventDefault();
+                                                    }
+                                                  }}
+                                                  className="inputcss"
+                                                  style={{ width: "100%" }}
+                                                />
+                                              </div>
+                                            </div>
+                                          </th>
+
+                                          <th
+                                            style={{
+                                              minWidth: "50px",
+
+                                              maxWidth: "50px",
+
+                                              borderBottomRightRadius: "0px",
+
+                                              borderTopRightRadius: "0px",
+
+                                              textAlign: "center",
+
+                                              verticalAlign: "top",
+                                            }}
+                                          >
+                                            <div className="d-flex flex-column bd-highlight ">
+                                              <div
+                                                className="d-flex  pb-2"
+                                                style={{
+                                                  justifyContent: "space-between",
+                                                }}
+                                              >
+                                                <span>Action</span>{" "}
+                                              </div>
+                                            </div>
+                                          </th>
+                                        </tr>
+                                      </thead>
+                                      {console.log(
+                                        "currentData",
+                                        currentData,
+                                        isActivedata
+                                      )}
+                                      <tbody>
+                                        {currentData?.length === 0 ? (
+                                          <div
+
+                                            className="no-results card card-body align-items-center  annusvg text-center "
+
+                                            style={{
+
+                                              display: "flex",
+
+                                              justifyContent: "center",
+                                              position: 'relative',
+                                              marginTop: '10px',
+                                              height: '500px'
+
+                                            }}
+
+                                          >
+                                            <svg style={{ top: '0%' }} xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+
+                                            <p className="font-14 text-muted text-center">No Approval found </p>
+
+                                          </div>
+                                        ) : (
+                                          currentData?.map(
+                                            (item: any, index: number) => (
+                                              <tr
+                                                key={index}
+
+                                              >
+                                                <td
+                                                  style={{
+                                                    minWidth: "40px",
+                                                    maxWidth: "40px",
+
+                                                    backgroundColor: "transparent",
+
+                                                  }}
+                                                >
+                                                  <div
+                                                    style={{ marginLeft: "0px" }}
+                                                    className="indexdesign"
+                                                  >
+                                                    {" "}
+                                                    {startIndex + index + 1}
+                                                  </div>{" "}
+                                                </td>
+
+                                                <td
+                                                  style={{
+                                                    minWidth: "80px",
+
+                                                    maxWidth: "80px",
+                                                    textAlign: 'center',
+
+                                                    textTransform: "capitalize",
+                                                  }}
+                                                  title={item?.RequestId}
+                                                >
+                                                  {item?.RequestId}
+
+                                                </td>
+                                                <td
+                                                  style={{
+                                                    minWidth: "120px",
+
+                                                    maxWidth: "120px",
+
+
+                                                  }}
+                                                  title={item?.Title}
+                                                >
+                                                  {item?.Title}
+                                                </td>
+                                                <td
+                                                  style={{
+                                                    minWidth: "120px",
+                                                    maxWidth: "120px",
+                                                    textAlign: 'center'
+                                                  }}
+                                                >
+                                                  <span className="badge font-12 bg-info">  {item?.ProcessName} </span>
+                                                </td>
+
+                                                <td
+                                                  style={{
+                                                    minWidth: "100px",
+                                                    maxWidth: "100px",
+                                                  }}
+                                                >
+                                                  {item?.RequestedBy}
+                                                </td>
+
+                                                <td
+                                                  style={{
+                                                    minWidth: "80px", maxWidth: "80px",
+                                                    // maxWidth: "100px",
+                                                    textAlign: 'center'
+                                                  }}
+                                                >
+                                                  <div className="btn btn-light1">
+
+                                                    {/* {item?.FileUID?.Created} */}
+                                                    {new Date(item?.RequestedDate).toLocaleString('en-US', {
+                                                      month: '2-digit',
+                                                      day: '2-digit',
+                                                      year: 'numeric',
+                                                      // hour: '2-digit',
+                                                      // minute: '2-digit',
+                                                      // second: '2-digit',
+                                                      // hour12: true 
+                                                    })}
+                                                  </div>
+                                                </td>
+
+                                                <td
+                                                  style={{
+                                                    minWidth: "80px",
+                                                    maxWidth: "80px",
+                                                    textAlign: 'center'
+                                                  }}
+                                                >
+                                                  <div className="btn btn-status">
+                                                    {item?.Status}
+                                                  </div>
+                                                </td>
+
+                                                <td
+                                                  style={{
+                                                    minWidth: "50px",
+                                                    maxWidth: "50px",
+                                                  }}
+                                                  className="fe-eye font-18"
+                                                >
+
+                                                  <Edit
+                                                    onClick={(e) => { 
+                                                      handleRedirect(e, item, "approval");
+                                                    }}
+                                                    style={{
+                                                      minWidth: "20px",
+
+                                                      maxWidth: "20px",
+
+                                                      marginLeft: "15px",
+
+                                                      cursor: "pointer",
+                                                    }}
+                                                  />
+                                                </td>
+                                              </tr>
+                                            )
+                                          )
+                                        )}
+                                      </tbody>
+                                    </table>
+                                    {currentData?.length > 0 ? (
+                                      <nav className="pagination-container">
+                                        <ul className="pagination">
+                                          {/* <li
+        className={`page-item ${currentPage === 1 ? "disabled" : ""
+          }`}
+      > */}
+                                          <li
+
+                                            className={`prevPage page-item ${currentGroup === 1 ? "disabled" : ""
+                                              }`}
+                                            onClick={() => handleGroupChange("prev")}
+                                          >
+
+                                            <a
+                                              className="page-link"
+                                              // onClick={() =>
+                                              //   handlePageChange(currentPage - 1)
+                                              // }
+                                              aria-label="Previous"
+                                            >
+                                              «
+                                            </a>
+                                          </li>
+                                          {Array.from(
+
+                                            { length: endPage - startPage + 1 },
+
+                                            (_, num) => {
+                                              const pageNum = startPage + num;
+                                              return (
+
+                                                <li
+
+                                                  key={pageNum}
+
+                                                  className={`page-item ${currentPage === pageNum ? "active" : ""
+
+                                                    }`}
+
+                                                >
+
+                                                  <a
+
+                                                    className="page-link"
+
+                                                    onClick={() =>
+
+                                                      handlePageChange(pageNum)
+
+                                                    }
+
+                                                  >
+
+                                                    {pageNum}
+
+                                                  </a>
+
+                                                </li>
+
+                                              )
+                                            }
+
+                                          )}
+
+                                          <li
+
+                                            className={`nextPage page-item ${currentGroup === totalGroups ? "disabled" : ""
+
+                                              }`}
+                                            onClick={() => handleGroupChange("next")}
+                                          >
+
+                                            <a
+
+                                              className="page-link"
+
+                                              onClick={() =>
+
+                                                handlePageChange(currentPage + 1)
+
+                                              }
+
+                                              aria-label="Next"
+
+                                            >
+
+                                              »
+
+                                            </a>
+
+                                          </li>
+
+                                        </ul>
+                                      </nav>
+                                    ) : (
+                                      <></>
+                                    )}
+
+                                  </div>
+                                ) : (
+                                  <div>
+                                    {/* {folderActionOrFileAction === "New File Request" && (
+                                      <>
+                                      <DMSMyApprovalAction props={{currentItemID , actingforuseremail}} />
+                                    <div className="col-sm-12 text-center">
+                                     
+
+                                          <button type="button" className="btn cancel-btn newp waves-effect waves-light m-3" style={{ fontSize: '0.875rem' }} onClick={() => setShowNestedDMSTable(false)}>
+                                            <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }}
+                                              className='me-1' alt="x" />
+                                            Cancel
+                                          </button>
+                                        </div>
+                                      </>
+                                    )}
+                                    {folderActionOrFileAction === "New Folder Request" && (
+                                      <>
+                                      <DMSMyFolderApprovalAction props={{currentItemID , actingforuseremail}} />
+                                    <div className="col-sm-12 text-center">
+                                      
+
+                                          <button type="button" className="btn cancel-btn newp waves-effect waves-light m-3" style={{ fontSize: '0.875rem' }} onClick={() => setShowNestedDMSTable(false)}>
+                                            <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }}
+                                              className='me-1' alt="x" />
+                                            Cancel
+                                          </button>
+                                        </div>
+                                      </>
+                                    )} */}
+
                                   </div>
                                 )}
                               </div>
