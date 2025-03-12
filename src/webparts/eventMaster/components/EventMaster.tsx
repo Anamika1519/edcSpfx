@@ -440,7 +440,7 @@ const EntityMastercontext = ({ props }: any) => {
               </div>
             </div>
             <div className="card cardCss mt-4">
-              <div className="card-body">
+              <div className="">
                 <div id="cardCollpase4" className="collapse show">
                   <div className="table-responsive pt-0">
                     <table className="mtbalenew table-centered table-nowrap table-borderless mb-0">

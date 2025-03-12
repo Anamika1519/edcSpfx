@@ -3,27 +3,32 @@
     margin-bottom: 20px;
     padding: 32px 0px;
     height: 160px;
-    border-radius: 20px;
+    border-radius: 0px;
     width: 100%;
     margin: 0px auto 0px auto;
-    border: 2px solid #f37421 ;
+    border: 0px solid #f37421 ;
 }
 .paddb{
     min-height: calc(100vh - 139px);
   }
   #s4-workspace{overflow: hidden !important;}
-.manage-master .box1 {
+  .manage-master .box1 {
     background: #fff !important;
 }
+.manage-master .box1:hover{
+    background: #f37421 !important; 
+}
+.manage-master .box1:hover p{color: #fff !important;}
 .manage-master .col-md-3 {
     width: 20% !important;
 }
 .manage-master .box1 .icon {
     padding: 10px 0px 10px 0px;
-    margin-bottom: 7px;
-    height: 60px;
+    margin-bottom: 7px; background: #fff;
+    height: 60px; width: 60px; margin:0px auto 10px auto;
     font-size: 20px;
 }
+
 .manage-master .box1 p {
     display: block;
     font-size: 0.875rem;
@@ -38,8 +43,8 @@ a:hover
     text-decoration: none;
 }
 .manage-master .box1:hover {
-    border: 2px solid #f37421 ;
-    background: #efefef !important;
+    border: 0px solid #f37421 ;
+    background: #f37421 !important;
 }
 .content-page
 {

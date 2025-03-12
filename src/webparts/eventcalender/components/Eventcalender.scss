@@ -11,7 +11,7 @@
   transform: scale(1.03) !important;
 }
 .imagehright img{
-    border-radius: 15px;
+    border-radius:0px;
     width: 100%;
     height: 100%;object-fit: cover;
 }
@@ -48,8 +48,8 @@ background-color: #008751 !important;
    #listView span{color: #6c747d; font-size: 13px; font-weight: 400 !important;}
    #listView p{color: #6c747d;}
 .card {
-    border-radius: 20px !important;
-    border: 1px solid #f37421  !important;
+    border-radius: 0px !important;
+    border: 0px solid #f37421  !important;
 }
 .rbc-toolbar button.rbc-active{
     background-color:#f37421  ;

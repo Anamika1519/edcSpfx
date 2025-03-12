@@ -360,7 +360,7 @@
   margin-bottom: 15px;
   border-radius: 15px; float: left;
   position: relative;
-  border: 1px solid #f37421 ;
+  border: 0px solid #f37421 ;
 }
 // .btn-primary {
 //   --ct-btn-color: #fff;
@@ -534,8 +534,8 @@ box-shadow: 4px 0px 11px -9px rgba(204,204,204,1);
   max-width: unset !important;
 }
 .card {
-  border: 1px solid #f37421  !important;
-  border-radius: 20px !important;
+  border: 0px solid #f37421  !important;
+  border-radius: 0px !important;
   box-shadow: 0 3px 20px #1d26260d;
   margin-bottom: 15px;
 }

@@ -207,43 +207,43 @@ export const WorkflowAuditHistory = (props: IWorkflowAuditHistoryProps) => {
 
                 <tr>
 
-                  <th style={{ minWidth: '60px', maxWidth: '60px' }}>
+                  <th style={{ minWidth: '40px', maxWidth: '40px' }}>
 
                     S.No.
 
                   </th>
 
-                  <th style={{ minWidth: '70px', maxWidth: '70px' }}>
+                  <th style={{ minWidth: '65px', maxWidth: '65px' }}>
 
                     Level
 
                   </th>
 
-                  <th style={{ minWidth: '70px', maxWidth: '70px' }}>
+                  <th style={{ minWidth: '65px', maxWidth: '65px' }}>
 
                     Assigned To
 
                   </th>
 
-                  <th style={{ minWidth: '70px', maxWidth: '70px' }}>
+                  <th style={{ minWidth: '65px', maxWidth: '65px' }}>
 
                     Requester Name
 
                   </th>
 
-                  <th style={{ minWidth: '70px', maxWidth: '70px' }}>
+                  <th style={{ minWidth: '65px', maxWidth: '65px' }}>
 
                     Requested Date
 
                   </th>
 
-                  <th style={{ minWidth: '70px', maxWidth: '70px' }}>
+                  <th style={{ minWidth: '65px', maxWidth: '65px' }}>
 
                     Action Taken By
 
                   </th>
 
-                  <th style={{ minWidth: '70px', maxWidth: '70px' }}>
+                  <th style={{ minWidth: '65px', maxWidth: '65px' }}>
 
                     Action Taken On
 
@@ -256,8 +256,7 @@ export const WorkflowAuditHistory = (props: IWorkflowAuditHistoryProps) => {
 
                   </th>
 
-                  <th style={{ minWidth: '70px', maxWidth: '70px' }}>
-
+                  <th style={{ minWidth: '65px', maxWidth: '65px' }}>
                     Status
 
                   </th>
@@ -297,10 +296,10 @@ export const WorkflowAuditHistory = (props: IWorkflowAuditHistoryProps) => {
 
                       <tr>
 
-                        <td style={{ minWidth: '60px', maxWidth: '60px' }}> {index + 1}</td>
+                        <td style={{ minWidth: '40px', maxWidth: '40px' }}> {index + 1}</td>
 
                       
-                          <td style={{ minWidth: '70px', maxWidth: '70px' }}>
+                          <td style={{ minWidth: '65px', maxWidth: '65px' }}>
                             {
                               row.LevelId !== undefined && row.LevelId !== null
                                 ? row.LevelId === 0
@@ -321,31 +320,31 @@ export const WorkflowAuditHistory = (props: IWorkflowAuditHistoryProps) => {
 
                       
 
-                        <td style={{ minWidth: '70px', maxWidth: '70px' }}> {row.Approver ? row.Approver.Title : row.AssignedTo.Title}</td>
+                        <td style={{ minWidth: '65px', maxWidth: '65px' }}> {row.Approver ? row.Approver.Title : row.AssignedTo.Title}</td>
 
-                        <td style={{ minWidth: '70px', maxWidth: '70px' }}> {row.Requester ? row.Requester.Title : row.RequesterName.Title}</td>
+                        <td style={{ minWidth: '65px', maxWidth: '65px' }}> {row.Requester ? row.Requester.Title : row.RequesterName.Title}</td>
 
                          {/* <td  style={{ minWidth: '70px', maxWidth: '70px' }}> {(new Date(row.Created)).toLocaleString()}</td> */}
-                        <td style={{ minWidth: '70px', maxWidth: '70px' }}>
+                        <td style={{ minWidth: '65px', maxWidth: '65px' }}>
                           {new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).format(new Date(row.Created))}
                         </td>
 
                         {/* <td> {(row.Status != 'Pending') ? (row.Approver?.Title ? row.Approver.Title:(row.ActionTakenBy.Title?row.ActionTakenBy.Title:"")) : ""}</td> */}
-                        <td style={{ minWidth: '70px', maxWidth: '70px' }}>
+                        <td style={{ minWidth: '65px', maxWidth: '65px' }}>
                           {row.Status !== "Pending"
                             ? row.Approver?.Title || row.ActionTakenBy?.Title || ""
                             : ""}
                         </td>
 
                         {/* <td style={{ minWidth: '70px', maxWidth: '70px' }}>{(row.Status != 'Pending') ? ((new Date(row.Modified)).toLocaleString()) : ""}</td> */}
-                        <td style={{ minWidth: '70px', maxWidth: '70px' }}>
+                        <td style={{ minWidth: '65px', maxWidth: '65px' }}>
                           {(row.Status != 'Pending') ?(new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).format(new Date(row.Modified))):""}
                         </td>
 
 
-                        <td style={{ minWidth: '70px', maxWidth: '70px' }}> {row.Remark}</td>
+                        <td style={{ minWidth: '65px', maxWidth: '65px' }}> {row.Remark}</td>
 
-                        <td style={{ minWidth: '70px', maxWidth: '70px' }}> <div className="btn  btn-status">{row.Status}</div> </td>
+                        <td style={{ minWidth: '65px', maxWidth: '65px' }}> <div className="btn  btn-status">{row.Status}</div> </td>
 
 
                       </tr>

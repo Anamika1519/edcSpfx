@@ -745,7 +745,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
                                                           />
                                                           :
                                                           item1.EMail !== null &&
-                                                          <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle floatr avatar-xl">
+                                                          <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle floatr avatar-xl martop0">
                                                             {`${item1.EMail?.split('.')[0].charAt(0)}${item1.EMail?.split('.')[1].charAt(0)}`.toUpperCase()}
                                                           </Avatar>
                                                         }

@@ -666,7 +666,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                 <div className="card cardCss mt-3">
 
-                  <div className="card-body">
+                  <div className="">
 
                     <div id="cardCollpase4" className="collapse show">
 

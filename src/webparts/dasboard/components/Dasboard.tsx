@@ -450,7 +450,7 @@ const HelloWorldContext = ({ props }: any) => {
                           <div
                             className="carousel-inner"
                             role="listbox"
-                            style={{ borderRadius: "1rem" }}
+                            style={{ borderRadius: "0rem" }}
                           >
                             {dynamicbanners.length == 0 &&
                               <div
@@ -648,7 +648,7 @@ const HelloWorldContext = ({ props }: any) => {
                       {/* Announcement Section */}
                       <div className="col-xl-4 col-lg-4 order-lg-1 order-xl-1">
                       <div
-                        className="card announcementner"
+                        className="card"
                         style={{ borderRadius: "1rem" }}
                       >
                         <div className="card-body height heifgtgal">
@@ -676,7 +676,7 @@ const HelloWorldContext = ({ props }: any) => {
 
                             </div>
                             :
-                            <div className="mt-1">
+                            <div className="mt-2">
                               {dataofevent.map((event, index) => {
                                 // Parse the EventDate to get the day, month, and year
                                 const eventDate = new Date(event.EventDate);

@@ -2357,7 +2357,7 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
                                 </div>
                               </div>
 
-                              <div className="col-lg-4">
+                              <div className="col-lg-4 newpaddinput">
 
                                 <div className="mb-3">
                                   <label htmlFor="DocumentCode" className="form-label">Request Type:<span className="text-danger">*</span></label>
@@ -2372,7 +2372,7 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
                                   />
                                 </div>
                               </div>
-                              <div className="col-lg-4">
+                              <div className="col-lg-4 newpaddinput">
                                 {console.log("selectedOptionReqselectedOptionReq", selectedOptionReq)}
                                 <div className="mb-3">
                                   <label htmlFor="DocumentCode" className="form-label">Document Code:</label>
@@ -2413,7 +2413,7 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
                                   <input disabled type="text" id="example-email" name="example-email" className="form-control" placeholder="" value={formData.ReferenceNumber} />
                                 </div>
                               </div>
-                              <div className="col-lg-4">
+                              <div className="col-lg-4 newpaddinput">
 
                                 <div className="mb-3">
                                   <label htmlFor="DocumentCode" className="form-label">Amendment Type:<span className="text-danger">*</span></label>
@@ -2428,7 +2428,7 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
                                   />
                                 </div>
                               </div>
-                              <div className="col-lg-4">
+                              <div className="col-lg-4 newpaddinput">
 
                                 <div className="mb-3">
                                   <label htmlFor="DocumentCode" className="form-label">Classification:<span className="text-danger">*</span></label>
@@ -2443,7 +2443,7 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
                                   />
                                 </div>
                               </div>
-                              <div className="col-lg-4">
+                              <div className="col-lg-4 newpaddinput">
 
                                 <div className="mb-3">
                                   <label htmlFor="DocumentCode" className="form-label">Location:<span className="text-danger">*</span></label>
@@ -2458,7 +2458,7 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
                                   />
                                 </div>
                               </div>
-                              <div className="col-lg-4">
+                              <div className="col-lg-4 newpaddinput">
 
                                 <div className="mb-3">
                                   <label htmlFor="DocumentCode" className="form-label">Custodian:<span className="text-danger">*</span></label>
@@ -2473,7 +2473,7 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
                                   />
                                 </div>
                               </div>
-                              <div className="col-lg-4">
+                              <div className="col-lg-4 newpaddinput">
 
                                 <div className="mb-3">
                                   <label htmlFor="DocumentCode" className="form-label">Document Type:<span className="text-danger">*</span></label>
@@ -2603,7 +2603,7 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
                                   <th style={{ minWidth: "30px", maxWidth: "30px" }}>S.No</th>
                                   <th>Change Description</th>
                                   <th>Reason for Change</th>
-                                  <th>Action</th>
+                                  <th style={{ minWidth: "80px", maxWidth: "80px" }}>Action</th>
                                 </tr>
 
                               </thead>
@@ -2612,11 +2612,11 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
                                 {cancellReason.map((row, index) => (
                                   <tr key={index}> <td style={{ minWidth: "30px", maxWidth: "30px" }}>
                                     <div
-                                      style={{ marginLeft: "20px" }}
+                                      style={{ marginLeft: "4px" }}
                                       className="indexdesign"
                                     >
                                       {index + 1}</div></td>
-                                    <td><input type="text" id="simpleinput" disabled={InputDisabled} 
+                                    <td><input type="text" id="simpleinput" className='form-control' disabled={InputDisabled} 
                                       value={row.description}
                                       onChange={(e) => {
                                         const newRowscancellReason = [...cancellReason];
@@ -2635,7 +2635,7 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
                                         setcancellReason(newRowscancellReason);
                                       }}
                                     /></td>
-                                    {(modeValue === "" || modeValue === "edit" || InputDisabled != true) && <td>
+                                    {(modeValue === "" || modeValue === "edit" || InputDisabled != true) && <td style={{ minWidth: "80px", maxWidth: "80px" }}>
                                       <img src={require("../assets/recycle-bin.png")} className='sidebariconsmall' onClick={() => deleteLocalFile(index, cancellReason)}></img>
                                     </td>
                                     }
@@ -2722,7 +2722,7 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
 
                                 </tbody>
                               </table>
-                            </div>
+                            
 
 
 
@@ -2749,6 +2749,7 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
                                 </button>
                                 {/* </a> */}
                               </div>
+                            </div>
                             </div>
                           </div>
                         </div>
@@ -2795,7 +2796,7 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
                       {/* </div> */}
                       {/* /////////////////%%%%%%%%%%%%%%%%%%%%%%%% */}
 
-                    </div>
+                   
                     {console.log("ediiiiitiitiititID", editID, InputDisabled, editItemID, MainEditItem, modeValue)}
                     <div className="row mt-3">
                       <div className="col-12 text-center">
@@ -2813,7 +2814,7 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
                         {/* </a> */}
                       </div>
                     </div>
-
+                    </div>
                   </div>
                 </div>
 
@@ -2823,19 +2824,19 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
             <Modal show={showModal} onHide={() => setShowModal(false)} size="lg">
               <Modal.Header closeButton>
                 <Modal.Title>
-                  <FontAwesomeIcon icon={faPaperclip} style={{ width: '70px',height:'50px' }} />
+                  <FontAwesomeIcon icon={faPaperclip} style={{ width: '40px',height:'25px' }} />
                   Attachment Details</Modal.Title>
                 {/* {ImagepostArr1.length > 0 && showBannerModal && <Modal.Title>Media Images</Modal.Title>} */}
               </Modal.Header>
-              <Modal.Body className="scrollbar" id="style-5">
+              <Modal.Body className="" id="style-5">
                 <>
-                  <table className="mtable table-bordered" style={{ fontSize: '0.75rem' }}>
+                  <table className="mtbalenew  table-bordered" style={{ fontSize: '0.75rem' }}>
                     <thead style={{ background: '#eef6f7' }}>
                       <tr>
                         <th>File Name</th>
-                        <th > File Link </th>
+                        <th style={{minWidth:'40px', maxWidth:'40px'}}> File Link </th>
                        
-                        <th>Upload date</th>
+                        <th style={{minWidth:'40px', maxWidth:'40px'}}>Upload date</th>
                         {/* {modeValue == null && */}
                         {/* <th className='text-center'>Action</th> */}
                         {/* } */}
@@ -2847,7 +2848,7 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
                         <tr >
                           {/* <td className='text-center'>{index + 1}</td> */}
                         <td>{DocumentLink ? `${Tenant_URL}${DocumentLink?.FileLeafRef}` : Attachmentarr && Attachmentarr[0]?.fileName}</td>
-                          <td>
+                          <td style={{textAlign:'center',minWidth:'40px', maxWidth:'40px'}}>
                             <FontAwesomeIcon icon={faDownload} style={{ width: '35px', height: '30px' }} 
                             onClick={() => OpenFile(DocumentLink ? DocumentLink : Attachmentarr && Attachmentarr[0]?.fileUrl)}/>
                             {/* <Link
@@ -2858,7 +2859,7 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
                               {file.fileUrl}
                             </Link> */}
                           </td>
-                        <td>{DocumentLink ? moment(DocumentLink?.Created).format("DD-MMM-YYYY") : Attachmentarr && moment(Attachmentarr[0]?.Created).format("DD-MMM-YYYY")}</td>
+                        <td style={{textAlign:'center',minWidth:'40px', maxWidth:'40px'}}>{DocumentLink ? moment(DocumentLink?.Created).format("DD-MMM-YYYY") : Attachmentarr && moment(Attachmentarr[0]?.Created).format("DD-MMM-YYYY")}</td>
                           {/* <td>{file.fileName}</td>
                           <td className='text-right'>{file.fileSize}</td> */}
                           {/* <td className='text-center'>

@@ -52,7 +52,7 @@
 }
 .newwidth6{width: 33.3% !important; }
 .appltext{margin-top: 7px;}
-.aaplnbg{background: #f6f6f6;height: 130px; padding: 13px 0px 0px 0px; margin-top: 13px; border: 1px solid #f6f6f6; border-radius: 8px; text-align: center;}
+.aaplnbg{background: #f6f6f6;height: 130px; padding: 13px 0px 0px 0px; margin-top: 13px; border: 1px solid #f6f6f6; border-radius: 0px; text-align: center;}
 .gheightnew{height: 400px;}
 .aaplnbg:hover{cursor: pointer;border: 1px solid #f37421 ;}
 .margin01{margin-top: 5px;}
@@ -102,8 +102,8 @@
     font-weight: 900;
     width: 62px;
     align-items: center;
-    border-top-left-radius: 6px;
-    border-top-right-radius: 6px;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
     padding-top: 6px;
 }
 .event p {
@@ -113,8 +113,8 @@
     justify-content: center;
     color: #fff;
     align-items: center;
-    border-bottom-left-radius: 6px;
-    border-bottom-right-radius: 6px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
     font-size: 13px;
     width: 62px;
     line-height: 20px;
@@ -198,7 +198,7 @@
     display: block !important;
 }
 .card {
-    border-radius: 20px !important;
+    border-radius: 0px !important;
     border: 1px solid #54ade0;
     box-shadow: 0 3px 20px #1d26260d;
     margin-bottom: 15px;
@@ -222,7 +222,7 @@
     color: var(--ct-card-color);
 }
 .imgh img {
-    border-radius: 10px;
+    border-radius: 0px;
     height: 100%;
     width: 100%;
     object-fit: cover;

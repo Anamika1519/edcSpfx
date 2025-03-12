@@ -598,22 +598,9 @@ a.nav-linkcss.px-4.py-3 {
     height: 500px;
 }
 
-.modal-header {
-    padding: 0px !important;
-    border: 0px !important;
-    position: absolute;
-    width: 42px;
-    background: #fff;
-    right: 22px;
-    height: 42px;
-    border-radius: 1000px !important;
-    z-index: 999;
-    top: 27px;
-}
 
-.btn-close {
-    position: absolute;
-}
+
+
 
 .small-image {
     grid-column: 2 / 3;
@@ -682,7 +669,7 @@ textarea:focus {
 
 .modal-content,
 .modal-dialog {
-    border-radius: 20px !important;
+    border-radius: 0px !important;
     min-width: 80% !important;
 }
 
@@ -982,3 +969,7 @@ textarea:focus {
 .mtbalenew input[type=text]:focus {
     border: 0px solid #f37421 !important;
 }
+.btn-status{
+    width:82px !important; font-size: 12px !important;
+}
+.newpaddinput .form-control{padding: 0px !important; border: 0px solid #ccc !important;}
