@@ -484,7 +484,7 @@ const MyApprovalContext = ({ props }: any) => {
     console.log("Edc data get called ")
     console.log("currentUserIdRef",currentUserIdRef.current)
     try {
-      const edcProcessApprovalItems = await sp.web.lists.getByTitle("ProcessApprovalList").items.select("*,AssignedTo/Id,AssignedTo/Title,RequesterName/Id,RequesterName/Title","ListItemId").expand("RequesterName,AssignedTo")
+      const edcProcessApprovalItems = await sp.web.lists.getByTitle("ProcessApprovalList").items.select("*,ContentTitle,AssignedTo/Id,AssignedTo/Title,RequesterName/Id,RequesterName/Title","ListItemId").expand("RequesterName,AssignedTo")
       .filter(`AssignedToId eq ${currentUserIdRef.current} and Status eq '${value}'`).orderBy("Created", false).getAll();
 
       console.log("edcProcessApprovalItems",edcProcessApprovalItems)
@@ -494,7 +494,7 @@ const MyApprovalContext = ({ props }: any) => {
       edcProcessApprovalItems.forEach(item => {
       allItems.push({
           RequestId: item.RequestId,
-          Title: item.Title,
+          Title: item.ContentTitle,
           ProcessName: item.ProcessName,
           RequestedBy: item.RequesterName ? item.RequesterName.Title : '',
           RequestedDate: item.RequestedDate ? new Date(item.RequestedDate).toLocaleDateString() : '',
@@ -1340,7 +1340,7 @@ const MyApprovalContext = ({ props }: any) => {
                             role="tab"
                             tabIndex={-1}
                           >
-                            <span className="lenbg1">EDC Approval</span>
+                            <span className="lenbg1">Approvals</span>
                             <span className="lenbg">
                               {myEdcApprovalData.length}
                             </span>
