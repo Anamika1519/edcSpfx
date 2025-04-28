@@ -1107,8 +1107,13 @@ const MyApprovalContext = ({ props }: any) => {
             redirecturl = `${siteUrl}/SitePages/EDCMAIN.aspx#/${Item.ProcessName}/${actionType}/${Number(Item?.ListItemId)}/${Item?.Id}`;
             // redirecturl = `${siteUrl}/SitePages/DocumentCancellation.aspx` + "/approve/" + Number(Item?.ListItemId) + "/" + Item?.Id ;
             break;
-          case "Change Request":
-            sessionkey = "ChangeRequestId";
+            case "Change Request":
+              sessionkey = "ChangeRequestId";
+              redirecturl = `${siteUrl}/SitePages/EDCMAIN.aspx#/${Item.ProcessName}/${actionType}/${Number(Item?.ListItemId)}/${Item?.Id}`;
+              // redirecturl = `${siteUrl}/SitePages/DocumentCancellation.aspx` + "/approve/" + Number(Item?.ListItemId) + "/" + Item?.Id ;
+              break;
+              case "Annual Audit Plan":
+            // sessionkey = "DocumentCancelId";
             redirecturl = `${siteUrl}/SitePages/EDCMAIN.aspx#/${Item.ProcessName}/${actionType}/${Number(Item?.ListItemId)}/${Item?.Id}`;
             // redirecturl = `${siteUrl}/SitePages/DocumentCancellation.aspx` + "/approve/" + Number(Item?.ListItemId) + "/" + Item?.Id ;
             break;
@@ -2143,7 +2148,7 @@ const MyApprovalContext = ({ props }: any) => {
                                                   onChange={(e) =>
                                                     handleFilterChange(
                                                       e,
-                                                      "RequestID"
+                                                      "Title"
                                                     )
                                                   }
                                                   onKeyDown={(e) => {
