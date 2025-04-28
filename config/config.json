@@ -257,6 +257,14 @@
           "manifest": "./src/webparts/myTasks/MyTasksWebPart.manifest.json"
         }
       ]
+    },
+    "quicklinks-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/quicklinks/QuicklinksWebPart.js",
+          "manifest": "./src/webparts/quicklinks/QuicklinksWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {
@@ -302,6 +310,7 @@
     "ChangeDocumentRequestWebPartStrings": "lib/webparts/changeDocumentRequest/loc/{locale}.js",
     "DocumentCancellationProcessWebPartStrings": "lib/webparts/documentCancellationProcess/loc/{locale}.js",
     "CancellationRequestFormWebPartStrings": "lib/webparts/cancellationRequestForm/loc/{locale}.js",
-    "MyTasksWebPartStrings": "lib/webparts/myTasks/loc/{locale}.js"
+    "MyTasksWebPartStrings": "lib/webparts/myTasks/loc/{locale}.js",
+    "QuicklinksWebPartStrings": "lib/webparts/quicklinks/loc/{locale}.js"
   }
 }
