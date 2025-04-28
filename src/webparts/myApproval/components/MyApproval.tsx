@@ -114,8 +114,8 @@ const MyApprovalContext = ({ props }: any) => {
   const [myApprovalsDataAutomation, setMyApprovalsDataAutomation] =
     React.useState([]);
 
-    const [myEdcApprovalData,setMyEdcApprovalData] = React.useState([]);
-    const [showEdcTable,setShowEdcTable]=React.useState(false);
+  const [myEdcApprovalData, setMyEdcApprovalData] = React.useState([]);
+  const [showEdcTable, setShowEdcTable] = React.useState(false);
   const handleShowNestedDMSTable = () => {
     setShowNestedDMSTable(true); // Show nested table within DMS
   };
@@ -479,25 +479,26 @@ const MyApprovalContext = ({ props }: any) => {
   };
 
   const currentUserIdRef = useRef(null);
-  const getEdcApprovalData=async (value:any,actingfor:any)=>{
+  const getEdcApprovalData = async (value: any, actingfor: any) => {
 
     console.log("Edc data get called ")
-    console.log("currentUserIdRef",currentUserIdRef.current)
+    console.log("currentUserIdRef", currentUserIdRef.current)
     try {
-      const edcProcessApprovalItems = await sp.web.lists.getByTitle("ProcessApprovalList").items.select("*,ContentTitle,AssignedTo/Id,AssignedTo/Title,RequesterName/Id,RequesterName/Title","ListItemId").expand("RequesterName,AssignedTo")
-      .filter(`AssignedToId eq ${currentUserIdRef.current} and Status eq '${value}'`).orderBy("Created", false).getAll();
+      const edcProcessApprovalItems = await sp.web.lists.getByTitle("ProcessApprovalList").items.select("*,ContentTitle,AssignedTo/Id,AssignedTo/Title,RequesterName/Id,RequesterName/Title", "ListItemId").expand("RequesterName,AssignedTo")
+        .filter(`AssignedToId eq ${currentUserIdRef.current} and Status eq '${value}'`).orderBy("Created", false).getAll();
 
-      console.log("edcProcessApprovalItems",edcProcessApprovalItems)
+      console.log("edcProcessApprovalItems", edcProcessApprovalItems)
 
       let allItems: any[] = [];
 
       edcProcessApprovalItems.forEach(item => {
-      allItems.push({
+        allItems.push({
           RequestId: item.RequestId,
           Title: item.ContentTitle,
           ProcessName: item.ProcessName,
           RequestedBy: item.RequesterName ? item.RequesterName.Title : '',
           RequestedDate: item.RequestedDate ? new Date(item.RequestedDate).toLocaleDateString() : '',
+          Created: item.RequestedDate ? new Date(item.RequestedDate).toLocaleDateString() : '',
           Status: item.Status,
           MainListId: item.ListItemId,
           Id: item.Id
@@ -506,11 +507,11 @@ const MyApprovalContext = ({ props }: any) => {
       setMyEdcApprovalData(allItems);
       return allItems;
     } catch (error) {
-      console.log("error in getting the data of the edc approvals",error)
-    }finally{
+      console.log("error in getting the data of the edc approvals", error)
+    } finally {
       console.log("Finally inside edc data getting");
     }
-       
+
 
   }
 
@@ -519,11 +520,11 @@ const MyApprovalContext = ({ props }: any) => {
   const getCurrrentuser = async () => {
     const userdata = await sp.web.currentUser();
     currentUserEmailRef.current = userdata.Email;
-    currentUserIdRef.current=userdata.Id;
+    currentUserIdRef.current = userdata.Id;
     console.log("currentUserEmailRefhhg", currentUserEmailRef)
     //getApprovalmasterTasklist('Pending', '');
     // myActingfordata()
-    getEdcApprovalData('Pending','');
+    getEdcApprovalData('Pending', '');
   };
   React.useEffect(() => {
     getCurrrentuser();
@@ -654,7 +655,7 @@ const MyApprovalContext = ({ props }: any) => {
       //ApiCall("Pending");
       setMyApprovalsData(myApprovalsDataAutomation);
       //setMyApprovalsDataAutomation(myApprovalsDataAutomation);
-    }else if(tab == "EDC Approval"){
+    } else if (tab == "EDC Approval") {
       setMyApprovalsData(myEdcApprovalData);
     }
   };
@@ -670,7 +671,7 @@ const MyApprovalContext = ({ props }: any) => {
     let MyApprovaldata = await getMyApproval(sp, status);
     let Automationdata1 = await getApprovalListsData(sp, status);
     let typedata = await getType(sp);
-    const returnDataEDC=await getEdcApprovalData(status,'');
+    const returnDataEDC = await getEdcApprovalData(status, '');
     // setMyApprovalsData(MyApprovaldata);
     setMyApprovalsData(returnDataEDC);
     setMyApprovalsDataAll(MyApprovaldata);
@@ -711,7 +712,7 @@ const MyApprovalContext = ({ props }: any) => {
       let MyDMSAPPROVALDATA: any = await getApprovalmasterTasklist(value, actingfor);
       let MyDMSAPPROVALDATACRDC: any = await getAllDMSApprovals(sp, value, actingfor);
       console.log("MyDMSAPPROVALDATA", MyDMSAPPROVALDATACRDC)
-      const edcReturnData=await getEdcApprovalData(value,actingfor);
+      const edcReturnData = await getEdcApprovalData(value, actingfor);
       setMyApprovalsDataAll(MyApprovaldata);
       setMyApprovalsDataAutomation(Automationdata);
       if (activeTab == "Intranet") {
@@ -722,7 +723,7 @@ const MyApprovalContext = ({ props }: any) => {
       } else if (activeTab == "Automation") {
         setMyApprovalsData(Automationdata);
         console.log("Automationdata", Automationdata);
-      }else if(activeTab === "EDC Approval"){
+      } else if (activeTab === "EDC Approval") {
         setMyApprovalsData(edcReturnData)
       }
       // else if (activeTab == "Automation") {
@@ -1106,11 +1107,11 @@ const MyApprovalContext = ({ props }: any) => {
             redirecturl = `${siteUrl}/SitePages/EDCMAIN.aspx#/${Item.ProcessName}/${actionType}/${Number(Item?.ListItemId)}/${Item?.Id}`;
             // redirecturl = `${siteUrl}/SitePages/DocumentCancellation.aspx` + "/approve/" + Number(Item?.ListItemId) + "/" + Item?.Id ;
             break;
-            case "Change Request":
-              sessionkey = "ChangeRequestId";
-              redirecturl = `${siteUrl}/SitePages/EDCMAIN.aspx#/${Item.ProcessName}/${actionType}/${Number(Item?.ListItemId)}/${Item?.Id}`;
-              // redirecturl = `${siteUrl}/SitePages/DocumentCancellation.aspx` + "/approve/" + Number(Item?.ListItemId) + "/" + Item?.Id ;
-              break;
+          case "Change Request":
+            sessionkey = "ChangeRequestId";
+            redirecturl = `${siteUrl}/SitePages/EDCMAIN.aspx#/${Item.ProcessName}/${actionType}/${Number(Item?.ListItemId)}/${Item?.Id}`;
+            // redirecturl = `${siteUrl}/SitePages/DocumentCancellation.aspx` + "/approve/" + Number(Item?.ListItemId) + "/" + Item?.Id ;
+            break;
           default:
         }
 
@@ -1122,24 +1123,67 @@ const MyApprovalContext = ({ props }: any) => {
 
     else if (activeTab == "EDC Approval") {
       // if(item?.ProcessName ==="Document Cancellation"){
-      console.log("EDC Approval called",Item)
+      console.log("EDC Approval called", Item)
       if (Item?.ProcessName) {
         var actionType = "approve";
+        if (Item?.ProcessName === 'Non Conformity') {
+
+
+          const getnonconfirmitydata = await sp.web.lists.getByTitle("NonConformityList").items.getById(Item.MainListId).select("* , CurrentUserRole , Status", "SubmitStatus")();
+          //  alert(`getnonconfirmitydata: ${JSON.stringify(getnonconfirmitydata)}`);
+
+          const isEditable =
+            getnonconfirmitydata?.Status === "Pending" &&
+            getnonconfirmitydata?.SubmitStatus === "Yes" &&
+            (getnonconfirmitydata?.CurrentUserRole === "FirstAssignedTo" || getnonconfirmitydata?.CurrentUserRole === "DelegateTo");
+
+          //  alert("isEditable"+ isEditable)
+          if (isEditable) {
+            // alert("edit")
+            actionType = "edit";
+          }
+        }
         switch (Item?.ProcessName) {
           case "Document Cancellation":
             sessionkey = "DocumentCancelId";
             redirecturl = `${siteUrl}/SitePages/EDCMAIN.aspx#/${Item?.ProcessName}/${actionType}/${Number(Item?.MainListId)}/${Item?.Id}`;
             // redirecturl = `${siteUrl}/SitePages/DocumentCancellation.aspx` + "/approve/" + Number(Item?.ListItemId) + "/" + Item?.Id ;
             break;
-            case "Change Request":
-              sessionkey = "ChangeRequestId";
+          case "Change Request":
+            sessionkey = "ChangeRequestId";
+            redirecturl = `${siteUrl}/SitePages/EDCMAIN.aspx#/${Item.ProcessName}/${actionType}/${Number(Item?.MainListId)}/${Item?.Id}`;
+          // redirecturl = `${siteUrl}/SitePages/DocumentCancellation.aspx` + "/approve/" + Number(Item?.ListItemId) + "/" + Item?.Id ;
+          case "Annual Audit Program":
+            sessionkey = "AnnualAuditProgramId";
+            redirecturl = `${siteUrl}/SitePages/EDCMAIN.aspx#/${Item.ProcessName}/${actionType}/${Number(Item?.MainListId)}/${Item?.Id}`;
+            // redirecturl = `${siteUrl}/SitePages/DocumentCancellation.aspx` + "/approve/" + Number(Item?.ListItemId) + "/" + Item?.Id ;
+            break;
+          case "Annual Audit Report":
+            sessionkey = "AnnualAuditReportId";
+            redirecturl = `${siteUrl}/SitePages/EDCMAIN.aspx#/${Item.ProcessName}/${actionType}/${Number(Item?.MainListId)}/${Item?.Id}`;
+            // redirecturl = `${siteUrl}/SitePages/DocumentCancellation.aspx` + "/approve/" + Number(Item?.ListItemId) + "/" + Item?.Id ;
+            break;
+          case "Annual Audit Plan":
+            // sessionkey = "DocumentCancelId";
+            redirecturl = `${siteUrl}/SitePages/EDCMAIN.aspx#/${Item.ProcessName}/${actionType}/${Number(Item?.MainListId)}/${Item?.Id}`;
+            // redirecturl = `${siteUrl}/SitePages/DocumentCancellation.aspx` + "/approve/" + Number(Item?.ListItemId) + "/" + Item?.Id ;
+            break;
+          case "Memorandum":
+            sessionkey = "MemorandumId";
+            redirecturl = `${siteUrl}/SitePages/EDCMAIN.aspx#/${Item.ProcessName}/${actionType}/${Number(Item?.MainListId)}/${Item?.Id}`;
+            // redirecturl = `${siteUrl}/SitePages/DocumentCancellation.aspx` + "/approve/" + Number(Item?.ListItemId) + "/" + Item?.Id ;
+            break;
+
+          case "Non Conformity":
+            if (actionType === "edit") {
+              // alert("edit")
+              redirecturl = `${siteUrl}/SitePages/EDCMAIN.aspx#/${Item.ProcessName}/${actionType}/${Number(Item?.MainListId)}`;
+            } else {
               redirecturl = `${siteUrl}/SitePages/EDCMAIN.aspx#/${Item.ProcessName}/${actionType}/${Number(Item?.MainListId)}/${Item?.Id}`;
-              // redirecturl = `${siteUrl}/SitePages/DocumentCancellation.aspx` + "/approve/" + Number(Item?.ListItemId) + "/" + Item?.Id ;
-            case "Annual Audit Program":
-                sessionkey = "AnnualAuditProgramId";
-                redirecturl = `${siteUrl}/SitePages/EDCMAIN.aspx#/${Item.ProcessName}/${actionType}/${Number(Item?.MainListId)}/${Item?.Id}`;
-                // redirecturl = `${siteUrl}/SitePages/DocumentCancellation.aspx` + "/approve/" + Number(Item?.ListItemId) + "/" + Item?.Id ;
-              break;
+            }
+            // redirecturl = `${siteUrl}/SitePages/EDCMAIN.aspx#/${Item.ProcessName}/${actionType}/${Number(Item?.MainListId)}/${Item?.Id}`;
+
+            break;
           default:
         }
 
@@ -1185,10 +1229,10 @@ const MyApprovalContext = ({ props }: any) => {
 
   React.useEffect(() => {
     if (currentPage > totalPages) {
-      setCurrentPage(1); 
+      setCurrentPage(1);
       setCurrentGroup(1);
     }
-  }, [filteredMyApprovalData,currentGroup]);
+  }, [filteredMyApprovalData, currentGroup]);
 
   return (
     <div id="wrapper" ref={elementRef}>
@@ -1283,7 +1327,7 @@ const MyApprovalContext = ({ props }: any) => {
                         className="nav nav-pills navtab-bg float-end justify-content-center"
                         role="tablist"
                       >
-                       {/* <li className="nav-item" role="presentation">
+                        {/* <li className="nav-item" role="presentation">
                           <a
                             onClick={() => handleTabClick("Intranet")}
                             className={`nav-link ${activeTab === "Intranet" ? "active" : ""
@@ -2633,7 +2677,7 @@ const MyApprovalContext = ({ props }: any) => {
                               </div>
                             )}
 
-                              {activeTab === "EDC Approval" && (
+                            {activeTab === "EDC Approval" && (
                               <div>
                                 {!showEdcTable ? (
                                   <div>
@@ -2769,7 +2813,7 @@ const MyApprovalContext = ({ props }: any) => {
                                                   onChange={(e) =>
                                                     handleFilterChange(
                                                       e,
-                                                      "RequestID"
+                                                      "Title"
                                                     )
                                                   }
                                                   onKeyDown={(e) => {
@@ -3092,7 +3136,12 @@ const MyApprovalContext = ({ props }: any) => {
                                                     textAlign: 'center'
                                                   }}
                                                 >
-                                                  <span className="badge font-12 bg-secondary">  {item?.ProcessName} </span>
+                                                  <span className="badge font-12 bg-secondary">
+                                                     {item?.ProcessName === "Annual Audit Plan" && "IMS Audit Plan"}
+                                                    {item?.ProcessName === "Annual Audit Program" && "IMS Annual Audit Program"}
+                                                    {item?.ProcessName === "Annual Audit Report" && "IMS Audit Report and Checklist"}
+                                                    {item?.ProcessName !== "Annual Audit Plan" && item?.ProcessName !== "Annual Audit Program" && item?.ProcessName !== "Annual Audit Report" && item?.ProcessName}
+                                                  </span>
                                                 </td>
 
                                                 <td
@@ -3147,7 +3196,7 @@ const MyApprovalContext = ({ props }: any) => {
                                                 >
 
                                                   <Edit
-                                                    onClick={(e) => { 
+                                                    onClick={(e) => {
                                                       handleRedirect(e, item, "approval");
                                                     }}
                                                     style={{

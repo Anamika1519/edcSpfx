@@ -227,18 +227,23 @@ const HelloWorldContext = ({ props }: any) => {
     if (name == "EntityId") {
       //ARGApprovalConfiguration
       const rowData: any[] = await getApprovalConfiguration(sp, Number(value)) //baseUrl
-      const initialRows = rowData.map((item: any) => ({
+      debugger
+      const initialRows = rowData.length > 0 && rowData.map((item: any) => ({
         id: item.Id,
-        Level: item.Level.Level,
-        LevelId: item.LevelId,
-        approvedUserListupdate: item.Users.map((user: any) => ({
-          id: user.ID,
-          name: user.Title,
-          email: user.EMail
-        })),
-        selectionType: 'All' // default selection type, if any
+        Level: item?.Level?.Level,
+        LevelId: item?.LevelId,
+        approvedUserListupdate: Array.isArray(item?.Users)
+          ? item?.Users?.map((user: any) => ({
+              id: user.ID,
+              name: user.Title,
+              email: user.EMail
+            }))
+          : [], // fallback to empty array or handle differently
+        selectionType: 'All'
       }));
+      
       setRows(initialRows);
+      console.log("initialRows",initialRows)
     }
 
   };
@@ -391,7 +396,7 @@ const HelloWorldContext = ({ props }: any) => {
           console.log(result)
           if (result.isConfirmed) {
             //console.log("Form Submitted:", formValues, bannerImages, galleryImages, documents);
-            //debugger
+            debugger
             setLoading(true);
             let bannerImageArray: any = {};
             let galleryIds: any[] = [];
@@ -422,7 +427,7 @@ const HelloWorldContext = ({ props }: any) => {
               Overview: formData.Overview,
               EventAgenda: formData.EventAgenda,
               EntityId: Number(formData.EntityId),
-              Status: formData.Status,
+              Status: rows.length>0? "Submitted":"Approved",
               RegistrationDueDate: RegistrationDueDate,
               EventDate: eventDate,
               AuthorId: currentUser.Id,

@@ -378,6 +378,7 @@ const AddannouncementContext = ({ props }: any) => {
 
 
   const validateForm = async (fmode: FormSubmissionMode) => {
+    debugger
     const { title, Type, category, entity, overview } = formData;
     const { description } = richTextValues;
     let valid = true;

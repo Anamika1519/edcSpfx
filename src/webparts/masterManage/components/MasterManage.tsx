@@ -130,10 +130,10 @@ export const MastersettingContext = ({ props }: any) => {
       grptitle.push(userGroups[i].Title.toLowerCase());
     }
 
-    let sidebarnavitems = await sp.web.lists.getByTitle("ARGSidebarNavigation").items.select("Title,Url,Icon,ParentId,ID,EnableAudienceTargeting,Audience/Title").expand("Audience").orderBy("Order0", true).getAll();
+    let sidebarnavitems = await sp.web.lists.getByTitle("ARGSidebarNavigation").items.select("Title,Url,Icon,ParentId,ID,EnableAudienceTargeting,Audience/Title").expand("Audience").filter("IsActive eq 1").orderBy("Order0", true).getAll();
 
     let securednavitems = sidebarnavitems.filter((nav: any) => {
-      return (nav.EnableAudienceTargeting && nav.Audience && nav.Audience.some((nv1: any) => { return grptitle.includes(nv1.Title.toLowerCase()); }))
+      return (nav.EnableAudienceTargeting && nav.Audience && nav.Audience.some((nv1: any) => { return grptitle?.includes(nv1.Title.toLowerCase()); }))
     }
     )
     console.log("sidebarnavitems", sidebarnavitems, securednavitems)

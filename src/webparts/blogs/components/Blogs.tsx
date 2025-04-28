@@ -1140,7 +1140,7 @@ const deleteLocalFile = (index: number, filArray: any[], name: string) => {
                                         htmlFor="discussionGallery"
                                         className="form-label"
                                       >
-                                        Discussion Gallery{" "}
+                                        Blog Gallery{" "}
                                         <span className="text-danger">*</span>
                                       </label>
                                     </div>
@@ -1602,11 +1602,7 @@ const deleteLocalFile = (index: number, filArray: any[], name: string) => {
                           {DocumentpostArr1.map((file: any, index: number) => (
                             <tr key={index}>
                               <td className='text-center'>{index + 1}</td>
-<<<<<<< HEAD
                               <td>{file.fileName.replace("/sites/edcspfx", "")}</td>
-=======
-                              <td>{file.fileName.replace("/sites/IntranetUAT", "")}</td>
->>>>>>> c29a133774f0b44995c1a43744c9ec2d240513e5
                               <td className='text-right'>{file.fileSize}</td>
                               <td className='text-center'> <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, DocumentpostArr1, "docs")} /> </td>
                             </tr>

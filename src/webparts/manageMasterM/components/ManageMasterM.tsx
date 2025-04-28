@@ -23,7 +23,8 @@ const endsWith = (str: string, ending: string) => {
   console.log("strrrr",str,ending)
   return str.slice(-ending.length) === ending;
 }
-
+let siteID: any;
+let response: any;
 export const MastersettingContext = ({ props }: any) => {
   const sp: SPFI = getSP();
   console.log(sp, 'sp');
@@ -56,10 +57,10 @@ export const MastersettingContext = ({ props }: any) => {
       grptitle.push(userGroups[i].Title.toLowerCase());
     }
 
-    let sidebarnavitems = await sp.web.lists.getByTitle("ARGSidebarNavigation").items.select("Title,Url,Icon,ParentId,ID,EnableAudienceTargeting,Audience/Title").expand("Audience").orderBy("Order0", true).getAll();
+    let sidebarnavitems = await sp.web.lists.getByTitle("ARGSidebarNavigation").items.select("Title,Url,Icon,ParentId,ID,EnableAudienceTargeting,Audience/Title").expand("Audience").filter("IsActive eq 1").orderBy("Order0", true).getAll();
 
     let securednavitems = sidebarnavitems.filter((nav: any) => {
-      return (nav.EnableAudienceTargeting && nav.Audience && nav.Audience.some((nv1: any) => { return grptitle.includes(nv1.Title.toLowerCase()); }))
+      return (nav.EnableAudienceTargeting && nav.Audience && nav.Audience.some((nv1: any) => { return grptitle?.includes(nv1.Title.toLowerCase()); }))
     }
     )
     console.log("sidebarnavitems", sidebarnavitems, securednavitems)
@@ -120,6 +121,11 @@ export const MastersettingContext = ({ props }: any) => {
   };
 
   const ApiCall = async () => {
+    let listTitle = 'Settings'
+    let CurrentsiteID = props.context.pageContext.site.id;
+    siteID = CurrentsiteID;
+    response = await sp.web.lists.getByTitle(listTitle).select('Id')();
+    console.log("resp",response,siteID,CurrentsiteID);
     const settingsData = setsettingArray(await getSettingAPImanagemaster(sp))
     console.log(settingsData, 'settingsData');
   }
@@ -195,13 +201,26 @@ export const MastersettingContext = ({ props }: any) => {
                 {console.log("IsUserAlllowed",IsUserAlllowed,settingArray)}
                 {
                   IsUserAlllowed ?
+                    // settingArray.map((item: any) => {
+                    //   const ImageUrl = item.ImageIcon == undefined || item.ImageIcon == null ? "" : JSON.parse(item.ImageIcon);
                     settingArray.map((item: any) => {
+                      debugger
                       const ImageUrl = item.ImageIcon == undefined || item.ImageIcon == null ? "" : JSON.parse(item.ImageIcon);
+                      const imageData = item.ImageIcon == undefined || item.ImageIcon == null ? "" : JSON.parse(item.ImageIcon);
+                      let siteId = siteID;
+                      let listID = response && response.Id;
+                      let img1 = imageData && imageData.fileName ? `${SiteUrl}/_api/v2.1/sites('${siteId}')/lists('${listID}')/items('${item.ID}')/attachments('${imageData.fileName}')/thumbnails/0/c400x400/content` : ""
+                      let img = imageData && imageData.serverRelativeUrl ? `https://edcadae.sharepoint.com${imageData.serverRelativeUrl}` : img1
+                      const imageUrl = imageData
+                        //? `${siteUrl}/SiteAssets/Lists/ea596702-57db-4833-8023-5dcd2bba46e3/${imageData.fileName}`
+                        //? `${imageData.serverUrl}${imageData.serverRelativeUrl}`
+                        ? img
+                        : require("../assets/news.png");
                       return (<div className="col-sm-3 col-md-3 mt-2">
                         <a href={item?.LinkUrl}>
                           <div className="card-master box1">
                             <div className="icon">
-                              <img src={ImageUrl?.serverUrl + ImageUrl?.serverRelativeUrl} />
+                            <img src={imageUrl} /> 
                             </div>
                             <p className="text-dark">{item.Title}</p>
                           </div>
