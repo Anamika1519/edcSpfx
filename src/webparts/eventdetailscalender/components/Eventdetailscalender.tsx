@@ -235,8 +235,10 @@ const EventdetailscalenderContext = ({ props }: any) => {
 
 
         }
-
-        setComments(initialArray)
+        let initialArraynew = initialArray.sort((a, b) => {
+          return a.Created === new Date(b.Created) ? 0 : new Date(a.Created) ? -1 : 1;
+        });
+        setComments(initialArraynew)
         // setComments(
         //   initialComments.map((res) => ({
         //     Id: res.Id,

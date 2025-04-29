@@ -43,7 +43,7 @@ const AddDynamicBannerContext = ({ props }: any) => {
   const [Loading, setLoading] = React.useState(false);
   const [ValidSubmit, setValidSubmit] = React.useState(true);
   const [InputDisabled, setInputDisabled] = React.useState(false);
-   const [EnityData, setEnityData] = React.useState([]);
+  const [EnityData, setEnityData] = React.useState([]);
   const [bannerByIDArr, setBannerByIdArr] = React.useState({
     title: '',
     description: "",
@@ -63,7 +63,7 @@ const AddDynamicBannerContext = ({ props }: any) => {
     IsImage: "",
     URL: "",
     Status: '',
-    EntityId:0
+    EntityId: 0
   })
 
   React.useEffect(() => {
@@ -82,7 +82,7 @@ const AddDynamicBannerContext = ({ props }: any) => {
   }, []);
 
   const validateForm = async () => {
-    const { title, URL, description ,EntityId} = formData;
+    const { title, URL, description, EntityId } = formData;
 
     let valid = true;
     let validatetitlelength = false;
@@ -114,7 +114,7 @@ const AddDynamicBannerContext = ({ props }: any) => {
     else if (!EntityId) {
       valid = false;
     }
-   
+
     setValidSubmit(valid);
     if (!valid)
       Swal.fire(errormsg !== "" ? errormsg : 'Please fill all the mandatory fields.');
@@ -187,7 +187,7 @@ const AddDynamicBannerContext = ({ props }: any) => {
     }
     setCurrentUser(await getCurrentUser(sp, siteUrl))
     setBaseUrl(await (getUrl(sp)));
-     setEnityData(await getEntity(sp)) //Entity
+    setEnityData(await getEntity(sp)) //Entity
 
 
 
@@ -212,17 +212,17 @@ const AddDynamicBannerContext = ({ props }: any) => {
           IsImage: setBannerById[0].IsImage,
           URL: setBannerById[0].URL,
           Status: setBannerById[0].Status,
-          EntityId:setBannerById[0].EntityId?setBannerById[0].EntityId:0,
+          EntityId: setBannerById[0].EntityId ? setBannerById[0].EntityId : 0,
         }
         let banneimagearr = []
-        if(setBannerById[0].BannerImage != null && setBannerById[0].BannerImage != "null"){
+        if (setBannerById[0].BannerImage != null && setBannerById[0].BannerImage != "null") {
           banneimagearr.push(JSON.parse(setBannerById[0].BannerImage));
           // banneimagearr = setBannerById[0].BannerImage
           console.log(setBannerById, 'setBannerById', setBannerById[0].BannerImage, banneimagearr);
           setBannerImagepostArr(banneimagearr);
 
         }
-       
+
         setFormData(arr)
       }
     }
@@ -234,7 +234,7 @@ const AddDynamicBannerContext = ({ props }: any) => {
     debugger
     setFormData((prevData) => ({
       ...prevData,
-      [name]:name === "EntityId" ? Number(value): value,
+      [name]: name === "EntityId" ? Number(value) : value,
     }));
   };
   //#endregion
@@ -260,8 +260,8 @@ const AddDynamicBannerContext = ({ props }: any) => {
         if (imageVideoFiles.length > 0) {
           const arr = {
             files: imageVideoFiles,
-            name:imageVideoFiles[0].name,
-            size:imageVideoFiles[0].size,
+            name: imageVideoFiles[0].name,
+            size: imageVideoFiles[0].size,
             libraryName: libraryName,
             docLib: docLib,
             fileUrl: URL.createObjectURL(imageVideoFiles[0])
@@ -356,7 +356,7 @@ const AddDynamicBannerContext = ({ props }: any) => {
   //           //   for (const file of BnnerImagepostArr) {
   //           //     if (!file.serverRelativeUrl) {
   //           //       // const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
-  //           //       bannerImageArray = await uploadFile(file, sp, "Documents", "https://officeindia.sharepoint.com");
+  //           //       bannerImageArray = await uploadFile(file, sp, "Documents", "https://edcadae.sharepoint.com");
   //           //     }
 
   //           //   }
@@ -435,7 +435,7 @@ const AddDynamicBannerContext = ({ props }: any) => {
   //           // if (BnnerImagepostArr.length > 0) {
   //           //   for (const file of BnnerImagepostArr) {
   //           //     // const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
-  //           //     bannerImageArray = await uploadFile(file, sp, "Documents", "https://officeindia.sharepoint.com");
+  //           //     bannerImageArray = await uploadFile(file, sp, "Documents", "https://edcadae.sharepoint.com");
   //           //   }
   //           // }
   //           if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
@@ -488,91 +488,121 @@ const AddDynamicBannerContext = ({ props }: any) => {
   //   }
   // }
   const handleFormSubmit = async () => {
-    if (await validateForm()){
-// debugger
-    try {
-      setLoading(true);
 
-      let bannerImageArray = null;
-      //let galleryArray = [];
-      let existingGalleryJSON = [];
-      let existingGalleryIds = [];
+    if (await validateForm()) {
+      // debugger
 
-      // Upload new banner images if any
-      // if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
-      //   bannerImageArray = await uploadAllFiles(BnnerImagepostArr[0].files, sp, "Documents");
-      // }
-      if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
+      try {
 
-        for (const file of BnnerImagepostArr[0].files) {
+        setLoading(true);
 
-          //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
+        let bannerImageArray = null;
+        //let galleryArray = [];
+        let existingGalleryJSON = [];
+        let existingGalleryIds = [];
 
-          bannerImageArray = await uploadFile(file, sp, "Documents", tenantUrl);
+        // Upload new banner images if any
+        // if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
+        //   bannerImageArray = await uploadAllFiles(BnnerImagepostArr[0].files, sp, "Documents");
+        // }
+        if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
+
+          for (const file of BnnerImagepostArr[0].files) {
+
+            //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
+
+            bannerImageArray = await uploadFile(file, sp, "Documents", tenantUrl);
+
+          }
+
+        }
+        let bannerPost = {
+          filename: BnnerImagepostArr.name,
+          size: BnnerImagepostArr.size,
+          type: BnnerImagepostArr.type
+        }
+        console.log("JSON.stringify(bannerImageArray)", bannerImageArray,
+          JSON.stringify(bannerImageArray))
+        const jsonString = JSON.stringify(bannerPost)
+        const postPayload = {
+          Title: formData.title,
+          Description: formData.description,
+          IsImage: formData.IsImage === "on" ? true : false,
+          // IsVideo: formData.IsVedio === "on"?  true :false,
+          URL: formData.URL,
+          Status: "Approved",
+          AuthorId: currentUser.Id,
+          BannerImage: bannerImageArray != "{}" && JSON.stringify(bannerImageArray),
+          BannerImageJSON: jsonString,
+          EntityId: formData.EntityId,
+        };
+
+
+
+        // Create or update item
+        if (editForm) {
+          Swal.fire({
+            // title: 'Do you want to update?',
+            title: 'Do you want to submit this request?',
+            showConfirmButton: true,
+            showCancelButton: true,
+            confirmButtonText: "Yes",
+            cancelButtonText: "No",
+            icon: 'warning'
+          }
+          ).then(async (result) => {
+            console.log(result)
+            if (result.isConfirmed) {
+              console.log(postPayload);
+              const postResult = await updateItem(postPayload, sp, editID);
+              const postId = postResult?.data?.ID;
+
+              if (postResult != null) {
+                sessionStorage.removeItem("bannerId")
+                window.location.href = `${siteUrl}/SitePages/BannerMaster.aspx`;
+              }
+            }
+          }
+          )
+        } else {
+          Swal.fire({
+            // title: 'Do you want to update?',
+            title: 'Do you want to submit this request?',
+            showConfirmButton: true,
+            showCancelButton: true,
+            confirmButtonText: "Yes",
+            cancelButtonText: "No",
+            icon: 'warning'
+          }
+          ).then(async (result) => {
+            console.log(result)
+            if (result.isConfirmed) {
+          console.log(postPayload);
+          const postResult = await addItem(postPayload, sp);
+          const postId = postResult?.data?.ID;
+          if (postResult != null) {
+            sessionStorage.removeItem("bannerId")
+            setTimeout(() => {
+              window.location.href = `${siteUrl}/SitePages/BannerMaster.aspx`;
+            }, 2000);
+
+          }
+          if (!postId) {
+            throw new Error("Failed to create item.");
+          }
+        }})
 
         }
 
+        // Swal.fire('Submitted successfully.', '', 'success');
+        // window.location.href = `${siteUrl}/SitePages/MediaGalleryMaster.aspx`;
+      } catch (error) {
+        console.error("Error during form submission:", error);
+        Swal.fire('Error', error.message, 'error');
+      } finally {
+        setLoading(false);
       }
-      let bannerPost = {
-        filename: BnnerImagepostArr.name,
-        size: BnnerImagepostArr.size,
-        type: BnnerImagepostArr.type
-      }
-      console.log("JSON.stringify(bannerImageArray)", bannerImageArray,
-        JSON.stringify(bannerImageArray))
-      const jsonString = JSON.stringify(bannerPost)
-      const postPayload = {
-        Title: formData.title,
-        Description: formData.description,
-        IsImage: formData.IsImage === "on" ? true : false,
-        // IsVideo: formData.IsVedio === "on"?  true :false,
-        URL: formData.URL,
-        Status: "Approved",
-        AuthorId: currentUser.Id,
-        BannerImage: bannerImageArray != "{}" && JSON.stringify(bannerImageArray),
-        BannerImageJSON: jsonString,
-        EntityId: formData.EntityId,
-      };
-
-
-
-      // Create or update item
-      if (editForm) {
-        console.log(postPayload);
-        const postResult = await updateItem(postPayload, sp, editID);
-        const postId = postResult?.data?.ID;
-
-        if (postResult != null) {
-          sessionStorage.removeItem("bannerId")
-          window.location.href = `${siteUrl}/SitePages/BannerMaster.aspx`;
-        }
-      } else {
-        console.log(postPayload);
-        const postResult = await addItem(postPayload, sp);
-        const postId = postResult?.data?.ID;
-        if (postResult != null) {
-          sessionStorage.removeItem("bannerId")
-          setTimeout(() => {
-            window.location.href = `${siteUrl}/SitePages/BannerMaster.aspx`;
-          }, 2000);
-
-        }
-        if (!postId) {
-          throw new Error("Failed to create item.");
-        }
-
-    
-      }
-
-      // Swal.fire('Submitted successfully.', '', 'success');
-      // window.location.href = `${siteUrl}/SitePages/MediaGalleryMaster.aspx`;
-    } catch (error) {
-      console.error("Error during form submission:", error);
-      Swal.fire('Error', error.message, 'error');
-    } finally {
-      setLoading(false);
     }
-  }
   };
   //#endregion
   console.log(bannerByIDArr, 'bannerByID');
@@ -697,8 +727,8 @@ const AddDynamicBannerContext = ({ props }: any) => {
                               </label>
                             </div>
                             <div>
-                              {BnnerImagepostArr != undefined && BnnerImagepostArr.length > 0&& BnnerImagepostArr != null ?
-                                (<><a style={{ fontSize: '0.875rem' }}  onClick={() => setShowModalFunc(true, "bannerimg")}>
+                              {BnnerImagepostArr != undefined && BnnerImagepostArr.length > 0 && BnnerImagepostArr != null ?
+                                (<><a style={{ fontSize: '0.875rem' }} onClick={() => setShowModalFunc(true, "bannerimg")}>
                                   <FontAwesomeIcon icon={faPaperclip} /> 1 file Attached
                                 </a>
                                   {/* <img src={`${BnnerImagepostArr[0]?.serverUrl + BnnerImagepostArr[0]?.serverRelativeUrl}`} /> */}
@@ -808,7 +838,7 @@ const AddDynamicBannerContext = ({ props }: any) => {
                                 <tr key={index}>
                                   <td className='text-center'>{index + 1}</td>
                                   <td>
-                                    <img className='imagefe' src={file.fileUrl?file.fileUrl:`${file.serverUrl}${file.serverRelativeUrl}`}
+                                    <img className='imagefe' src={file.fileUrl ? file.fileUrl : `${file.serverUrl}${file.serverRelativeUrl}`}
                                     />
                                   </td>
                                   <td>{file.fileName}</td>

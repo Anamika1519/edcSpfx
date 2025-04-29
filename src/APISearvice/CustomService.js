@@ -1027,7 +1027,7 @@ export const getAllARGNotificationHistory = async (sp) => {
 
   try {
 
-    const newItem = await sp.web.lists.getByTitle('ARGNotificationHistory').items.select("*,NotifiedUser/Id,NotifiedUser/Title,ActionUser/Id,ActionUser/Title").expand("NotifiedUser,ActionUser").filter(`NotifiedUserId eq ${currentUser.Id}`).getAll();
+    const newItem = await sp.web.lists.getByTitle('ARGNotificationHistory').items.select("*,NotifiedUser/Id,NotifiedUser/Title,ActionUser/Id,ActionUser/Title").expand("NotifiedUser,ActionUser").filter(`NotifiedUserId eq ${currentUser.Id} and ActionUserId ne ${currentUser.Id}`).getAll();
 
     debugger
 
@@ -1093,7 +1093,7 @@ export const getTodayARGNotificationHistory = async (sp) => {
 
           .expand("NotifiedUser,ActionUser")
 
-          .filter(`NotifiedUserId eq ${currentUser.Id} and Created ge '${startTimestamp}' and Created le '${endTimestamp}'`)
+          .filter(`NotifiedUserId eq ${currentUser.Id} and ActionUserId ne ${currentUser.Id} and Created ge '${startTimestamp}' and Created le '${endTimestamp}'`)
           .orderBy("Created", false)
           .getAll();
 
@@ -1155,7 +1155,7 @@ export const getlastSevenDaysARGNotificationHistory = async (sp) => {
 
           .expand("NotifiedUser,ActionUser")
 
-          .filter(`NotifiedUserId eq ${currentUser.Id} and Created ge '${startTimestamp}' and Created le '${endTimestamp}'`)
+          .filter(`NotifiedUserId eq ${currentUser.Id} and ActionUserId ne ${currentUser.Id} and Created ge '${startTimestamp}' and Created le '${endTimestamp}'`)
           .orderBy("Created", false)
           .getAll();
 
@@ -1212,7 +1212,7 @@ export const getOlderARGNotificationHistory = async (sp) => {
 
           .expand("NotifiedUser,ActionUser")
 
-          .filter(`NotifiedUserId eq ${currentUser.Id} and Created lt '${startTimestamp}'`)
+          .filter(`NotifiedUserId eq ${currentUser.Id} and ActionUserId ne ${currentUser.Id} and Created lt '${startTimestamp}'`)
           .orderBy("Created", false)
           .getAll();
 

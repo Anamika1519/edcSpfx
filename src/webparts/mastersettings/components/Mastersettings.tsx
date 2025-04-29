@@ -45,7 +45,7 @@ export const MastersettingContext = ({ props }: any) => {
     },
     {
       "ChildComponent": "Settings",
-      "ChildComponentURl": `${SiteUrl}/SitePages/Settings.aspx`
+      "ChildComponentURl": `${SiteUrl}/SitePages/MasterSettings.aspx`
     }
   ]
   const IsUserAllowedAccess = async () => {

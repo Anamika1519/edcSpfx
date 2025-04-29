@@ -294,7 +294,7 @@ const HelloWorldContext = ({ props }: any) => {
   const handleCancel = () => {
     debugger;
     window.location.href =
-      "https://officeindia.sharepoint.com/sites/edcspfx/SitePages/Project.aspx";
+      "https://edcadae.sharepoint.com/sites/EDeDMS/SitePages/Project.aspx";
   };
 
   const saveProjectData = async (formData: {
@@ -357,7 +357,7 @@ const HelloWorldContext = ({ props }: any) => {
         // // Budget: formData.Budget,
         ProjectOverview: formData.ProjectOverview,
         TeamMembersId: selectedIds,
-        ProjectFileManager: `/sites/edcspfx/ARGProjectsFiles/${formData.ProjectName}`,
+        ProjectFileManager: `/sites/EDeDMS/ARGProjectsFiles/${formData.ProjectName}`,
         ProjectStatus: "Ongoing",
         ProjectFolderName: formData.ProjectName,
         FolderInProgress: 'In Progress'

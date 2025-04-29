@@ -541,7 +541,7 @@ const BlogsContext = ({ props }: any) => {
                   file,
                   sp,
                   "Documents",
-                  "https://officeindia.sharepoint.com"
+                  "https://edcadae.sharepoint.com"
                 );
               }
             }
@@ -705,7 +705,7 @@ const BlogsContext = ({ props }: any) => {
               file,
               sp,
               "Documents",
-              "https://officeindia.sharepoint.com"
+              "https://edcadae.sharepoint.com"
             );
           }
         }

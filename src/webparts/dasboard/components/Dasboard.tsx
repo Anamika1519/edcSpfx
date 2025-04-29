@@ -289,7 +289,7 @@ const HelloWorldContext = ({ props }: any) => {
   const GotoNextPagethree = (item: any) => {
     console.log("item-->>>>", item)
     const encryptedId = encryptId(String(item.ID));
-    window.location.href = `${siteUrl}/SitePages/QuickLinksMaster.aspx`;
+    window.location.href = `${siteUrl}/SitePages/QuickLinks.aspx`;
   };
   const GotoNextPageApp = (e:any,item: any) => {
     console.log("item-->>>>appppp", item)
@@ -586,7 +586,7 @@ const HelloWorldContext = ({ props }: any) => {
                                   let siteId = siteID;
                                   let listID = response.Id;
                                   let img1 = imageData != "" && imageData.fileName != "" ? `${siteUrl}/_api/v2.1/sites('${siteId}')/lists('${listID}')/items('${item.ID}')/attachments('${imageData.fileName}')/thumbnails/0/c400x400/content?prefer=noredirect%2Cclosestavailablesize` : ""
-                                  let img = imageData != "" && imageData.serverRelativeUrl != "" ? `https://officeindia.sharepoint.com${imageData.serverRelativeUrl}` : img1
+                                  let img = imageData != "" && imageData.serverRelativeUrl != "" ? `https://edcadae.sharepoint.com${imageData.serverRelativeUrl}` : img1
                                   const imageUrl = imageData != ""
                                     ? img
                                     : null;

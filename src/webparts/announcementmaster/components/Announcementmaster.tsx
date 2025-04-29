@@ -618,7 +618,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                   <div className="d-flex flex-wrap align-items-center justify-content-start">
 
-                    <a href={`${siteUrl}/SitePages/settings.aspx`}>
+                    <a href={`${siteUrl}/SitePages/mastersettings.aspx`}>
 
                       <div style={{ width: '80px' }} className="btn btn-secondary me-1 waves-effect waves-light">
 

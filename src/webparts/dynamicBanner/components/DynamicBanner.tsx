@@ -354,7 +354,7 @@ const DynamicBannercontext = ({ props }: any) => {
               <div className="col-lg-9">
                 <div className="d-flex flex-wrap align-items-center justify-content-end mt-3">
                   <div className="d-flex flex-wrap align-items-center justify-content-start">
-                    <a href={`${siteUrl}/SitePages/settings.aspx`}>
+                    <a href={`${siteUrl}/SitePages/mastersettings.aspx`}>
                       <button type="button" className="btn btn-secondary me-1 waves-effect waves-light">
                         <FontAwesomeIcon icon={faArrowLeft} className="me-1" />
                         Back

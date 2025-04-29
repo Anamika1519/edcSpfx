@@ -420,7 +420,7 @@ const AddannouncementContext = ({ props }: any) => {
       } else if (!Type) {
         //Swal.fire('Error', 'Type is required!', 'error');
         valid = false;
-      } else if (!category) {
+      } else if (!category || category == "Select") {
         //Swal.fire('Error', 'Category is required!', 'error');
         valid = false;
       }
@@ -1663,6 +1663,7 @@ const closeModal = () => {
 
   //#region onChange
   const onChange = async (name: string, value: string) => {
+    debugger
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
