@@ -690,7 +690,7 @@ const EventcalenderContext = ({ props }: any) => {
                             <div className="">
                               <div id="carouselExampleCaptions" className="carousel slide" data-bs-ride="carousel">
 
-                                <div className="carousel-inner">
+                                <div className="carousel-inner" style={{border:"1px solid #f37421"}}>
                                   <div className="carousel-item active">
                                     <div style={{ padding: '10px', height: '425px' }} className="gal-box">
 

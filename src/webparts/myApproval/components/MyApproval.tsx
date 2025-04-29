@@ -1253,7 +1253,7 @@ const MyApprovalContext = ({ props }: any) => {
           style={{
             marginLeft: `${!useHide ? "240px" : "80px"}`,
 
-            marginTop: "2rem",
+            marginTop: "0rem",
           }}
         >
           <div className="container-fluid paddb">

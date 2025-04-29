@@ -44,7 +44,7 @@ const [ImagepostArr, setImagepostArr] = React.useState([]);
   const Breadcrumb = [
     {
       "MainComponent": "Settings",
-      "MainComponentURl": `${siteUrl}/SitePages/Settings.aspx`
+      "MainComponentURl": `${siteUrl}/SitePages/MasterSettings.aspx`
     },
     {
       "ChildComponent": "Add QuickLink",
@@ -603,7 +603,7 @@ const clearFileInput = (name: any) => {
       <div className="content-page">
         <HorizontalNavbar _context={sp} siteUrl={siteUrl} />
         <div className="content" style={{ marginLeft: `${!useHide ? '240px' : '80px'}`, marginTop: '0rem' }}>
-          <div style={{marginTop:'2.4rem'}} className="container-fluid  paddb">
+          <div  className="container-fluid  paddb">
             <div style={{paddingLeft:'0.5rem'}} className="row">
               <div className="col-lg-5">
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />

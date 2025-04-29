@@ -414,7 +414,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
       "MainComponent": "Settings",
 
-      "MainComponentURl": `${siteUrl}/SitePages/Settings.aspx`
+      "MainComponentURl": `${siteUrl}/SitePages/MasterSettings.aspx`
 
     },
 

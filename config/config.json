@@ -265,6 +265,22 @@
           "manifest": "./src/webparts/quicklinks/QuicklinksWebPart.manifest.json"
         }
       ]
+    },
+    "arg-delegation-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/argDelegation/ArgDelegationWebPart.js",
+          "manifest": "./src/webparts/argDelegation/ArgDelegationWebPart.manifest.json"
+        }
+      ]
+    },
+    "arg-delegation-master-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/argDelegationMaster/ArgDelegationMasterWebPart.js",
+          "manifest": "./src/webparts/argDelegationMaster/ArgDelegationMasterWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {
@@ -311,6 +327,8 @@
     "DocumentCancellationProcessWebPartStrings": "lib/webparts/documentCancellationProcess/loc/{locale}.js",
     "CancellationRequestFormWebPartStrings": "lib/webparts/cancellationRequestForm/loc/{locale}.js",
     "MyTasksWebPartStrings": "lib/webparts/myTasks/loc/{locale}.js",
-    "QuicklinksWebPartStrings": "lib/webparts/quicklinks/loc/{locale}.js"
+    "QuicklinksWebPartStrings": "lib/webparts/quicklinks/loc/{locale}.js",
+    "ArgDelegationWebPartStrings": "lib/webparts/argDelegation/loc/{locale}.js",
+    "ArgDelegationMasterWebPartStrings": "lib/webparts/argDelegationMaster/loc/{locale}.js"
   }
 }

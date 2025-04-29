@@ -18,6 +18,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faEllipsisV, faFileExport, faPlusCircle, faSort } from '@fortawesome/free-solid-svg-icons';
 import { DeleteQuickLink, getQuickLinkList } from '../../../APISearvice/QuickLinksService';
 import { encryptId } from '../../../APISearvice/CryptoService';
+import "../../../CustomJSComponents/CustomForm/CustomForm.scss";
+import "../../../CustomJSComponents/CustomTable/CustomTable.scss";
+
+
 import Swal from 'sweetalert2';
 import moment from 'moment';
 import * as XLSX from "xlsx";
@@ -138,7 +142,7 @@ const QuickLinksMasterContext = ({ props }: any) => {
     const Breadcrumb = [
       {
         "MainComponent": "Settings",
-        "MainComponentURl": `${siteUrl}/SitePages/Settings.aspx`
+        "MainComponentURl": `${siteUrl}/SitePages/MasterSettings.aspx`
       },
       {
         ChildComponent: "QuickLinks Master",

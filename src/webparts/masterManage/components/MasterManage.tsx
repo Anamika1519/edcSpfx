@@ -21,16 +21,17 @@ import HorizontalNavbar from '../../horizontalNavBar/components/HorizontalNavBar
 import { IMasterManageProps } from './IMasterManageProps';
 import { useEffect, useState } from 'react';
 const endsWith = (str: string, ending: string) => {
-  console.log("strrrr",str,ending)
+  console.log("strrrr", str, ending)
   return str.slice(-ending.length) === ending;
 }
-
+let siteID: any;
+let response: any;
 export const MastersettingContext = ({ props }: any) => {
   const sp: SPFI = getSP();
   console.log(sp, 'sp');
   const [showIframe, setShowIframe] = useState(false);
   const [iframeUrl, setIframeUrl] = useState('');
-  const handleCardClick = (url:any) => {
+  const handleCardClick = (url: any) => {
     setIframeUrl(url);
     setShowIframe(true);
     // hideElementsInIframe()
@@ -45,7 +46,7 @@ export const MastersettingContext = ({ props }: any) => {
           const sideNavBox = iframeDocument.getElementById('sideNavBox');
           const s4TitleRow = iframeDocument.getElementById('s4-titlerow');
           const mainribbon = iframeDocument.getElementById('suiteBarDelta');
-          
+
           if (sideNavBox) {
             // sideNavBox.style.display = 'none';
             sideNavBox.remove()
@@ -81,9 +82,9 @@ export const MastersettingContext = ({ props }: any) => {
       const sideNavBox = iframeDocument.getElementById('sideNavBox');
       const s4TitleRow = iframeDocument.getElementById('s4-titlerow');
       const s4TitleRow2 = iframeDocument.getElementById('s4-ribbonrow');
-      
+
       if (sideNavBox) {
-         sideNavBox.remove()
+        sideNavBox.remove()
         // sideNavBox.style.display = 'none';
       }
       if (s4TitleRow) {
@@ -96,7 +97,7 @@ export const MastersettingContext = ({ props }: any) => {
       }
     });
   }
-  const isSpecialGroup = (linkUrl:any) => {
+  const isSpecialGroup = (linkUrl: any) => {
 
     const specialGroups = ['Super Admin Group', 'Content Contributor Group', 'Intranet Member Group'];
     return specialGroups.some(group => linkUrl.includes(group));
@@ -137,7 +138,7 @@ export const MastersettingContext = ({ props }: any) => {
     }
     )
     console.log("sidebarnavitems", sidebarnavitems, securednavitems)
-    let access = securednavitems.some((navitm:any)=> (navitm.Url)?endsWith(navitm.Url.toLowerCase(),location.pathname.toLowerCase()):false);
+    let access = securednavitems.some((navitm: any) => (navitm.Url) ? endsWith(navitm.Url.toLowerCase(), location.pathname.toLowerCase()) : false);
     console.log("acess", access);
     //return securednavitems.some((navitm:any)=> (navitm.Url)?endsWith(navitm.Url.toLowerCase(),location.pathname.toLowerCase()):false)
     return securednavitems.length > 0;
@@ -147,7 +148,7 @@ export const MastersettingContext = ({ props }: any) => {
     console.log('This function is called only once', useHide);
     IsUserAllowedAccess().then(bAllowed => {
 
-        console.log("%c Access allowed","color:green,font-size:14px",bAllowed);
+      console.log("%c Access allowed", "color:green,font-size:14px", bAllowed);
       setIsUserAlllowed(bAllowed);
 
     })
@@ -194,6 +195,11 @@ export const MastersettingContext = ({ props }: any) => {
   };
 
   const ApiCall = async () => {
+    let listTitle = 'Settings'
+    let CurrentsiteID = props.context.pageContext.site.id;
+    siteID = CurrentsiteID;
+    response = await sp.web.lists.getByTitle(listTitle).select('Id')();
+    console.log("resp", response, siteID, CurrentsiteID);
     const settingsData = setsettingArray(await getSettingAPImanagemaster(sp))
     console.log(settingsData, 'settingsData');
   }
@@ -251,17 +257,17 @@ export const MastersettingContext = ({ props }: any) => {
   };
 
   // Function to check the URL and show an alert
-function checkUrlForMembershipGroupId() {
-  const currentUrl = window.location.href;
-  const pattern = /_layouts\/15\/people\.aspx\?MembershipGroupId=32/;
+  function checkUrlForMembershipGroupId() {
+    const currentUrl = window.location.href;
+    const pattern = /_layouts\/15\/people\.aspx\?MembershipGroupId=32/;
 
-  if (pattern.test(currentUrl)) {
-    //alert("Match found: MembershipGroupId=32");
+    if (pattern.test(currentUrl)) {
+      //alert("Match found: MembershipGroupId=32");
+    }
   }
-}
 
-// Call the function
-checkUrlForMembershipGroupId();
+  // Call the function
+  checkUrlForMembershipGroupId();
 
   return (
 
@@ -274,7 +280,7 @@ checkUrlForMembershipGroupId();
       <div className="content-page">
         <HorizontalNavbar _context={sp} siteUrl={SiteUrl} />
         <div className="content" style={{ marginLeft: `${!useHide ? '240px' : '80px'}` }}>
-          <div style={{paddingTop:'12px'}} className="container-fluid  paddb">
+          <div style={{ paddingTop: '12px' }} className="container-fluid  paddb">
             <div className="row pt-0" style={{ paddingLeft: '0.5rem' }}>
               <div className="col-lg-3">
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
@@ -297,58 +303,73 @@ checkUrlForMembershipGroupId();
                       </div>)
                     }) : (<div>Access Denied</div>)
                 } */}
-           
-      {!showIframe ? (
-        IsUserAlllowed ? (
-          settingArray.map((item) => {
-            const ImageUrl = item.ImageIcon == undefined || item.ImageIcon == null ? "" : JSON.parse(item.ImageIcon);
-            return (
-              <div className="col-sm-3 col-md-3 mt-2" key={item.Title}>
-                {isSpecialGroup(item?.Title) ? (
-                  <div
-                    className="card-master box1"
-                    onClick={() => handleCardClick(item?.LinkUrl)}
-                  >
-                    <div className="icon">
-                      <img src={ImageUrl?.serverUrl + ImageUrl?.serverRelativeUrl} alt="Icon" />
-                    </div>
-                    <p className="text-dark">{item.Title}</p>
-                  </div>
+
+                {!showIframe ? (
+                  IsUserAlllowed ? (
+                    // settingArray.map((item) => {
+                    //   const ImageUrl = item.ImageIcon == undefined || item.ImageIcon == null ? "" : JSON.parse(item.ImageIcon);
+                    settingArray.map((item: any) => {
+                      debugger
+                      const ImageUrl = item.ImageIcon == undefined || item.ImageIcon == null ? "" : JSON.parse(item.ImageIcon);
+                      const imageData = item.ImageIcon == undefined || item.ImageIcon == null ? "" : JSON.parse(item.ImageIcon);
+                      let siteId = siteID;
+                      let listID = response && response.Id;
+                      let img1 = imageData && imageData.fileName ? `${SiteUrl}/_api/v2.1/sites('${siteId}')/lists('${listID}')/items('${item.ID}')/attachments('${imageData.fileName}')/thumbnails/0/c400x400/content` : ""
+                      let img = imageData && imageData.serverRelativeUrl != undefined ? `https://edcadae.sharepoint.com${imageData.serverRelativeUrl}` : img1
+                      const imageUrl = imageData
+                        //? `${siteUrl}/SiteAssets/Lists/ea596702-57db-4833-8023-5dcd2bba46e3/${imageData.fileName}`
+                        //? `${imageData.serverUrl}${imageData.serverRelativeUrl}`
+                        ? img
+                        : require("../assets/news.png");
+                      console.log("imageurl", imageData && imageData.serverRelativeUrl,imageUrl)
+                      return (
+                        <div className="col-sm-3 col-md-3 mt-2" key={item.Title}>
+                          {isSpecialGroup(item?.Title) ? (
+                            <div
+                              className="card-master box1"
+                              onClick={() => handleCardClick(item?.LinkUrl)}
+                            >
+                              <div className="icon">
+                                {console.log(imageUrl, "final image", item.Title, "new url",`${SiteUrl}/SiteAssets/Lists/${listID}/${imageData.fileName}`)}
+                                <img src={imageUrl} alt="Icon" />
+                              </div>
+                              <p className="text-dark">{item.Title}</p>
+                            </div>
+                          ) : (
+                            <a href={item?.LinkUrl}>
+                              <div className="card-master box1">
+                                <div className="icon">
+                                    <img src={imageUrl} alt="Icon" />
+                                </div>
+                                <p className="text-dark">{item.Title}</p>
+                              </div>
+                            </a>
+                          )}
+                        </div>
+                      );
+                    })
+                  ) : (
+                    <div>Access Denied</div>
+                  )
                 ) : (
-                  <a href={item?.LinkUrl}>
-                    <div className="card-master box1">
-                      <div className="icon">
-                        <img src={ImageUrl?.serverUrl + ImageUrl?.serverRelativeUrl} alt="Icon" />
-                      </div>
-                      <p className="text-dark">{item.Title}</p>
-                    </div>
-                  </a>
+                  <div>
+                    <button
+                      style={{ margin: '10px' }}
+                      className="btn btn-secondary"
+                      onClick={handleBackClick}
+                    >
+                      Back
+                    </button>
+                    <iframe
+                      id='iframe'
+                      src={iframeUrl}
+                      style={{ width: '100%', height: '600px', border: 'none' }}
+                      title="Content"
+                    ></iframe>
+                  </div>
                 )}
-              </div>
-            );
-          })
-        ) : (
-          <div>Access Denied</div>
-        )
-      ) : (
-        <div>
-          <button 
-            style={{ margin: '10px' }} 
-            className="btn btn-secondary" 
-            onClick={handleBackClick}
-          >
-            Back
-          </button>
-          <iframe
-            id='iframe'
-            src={iframeUrl}
-            style={{ width: '100%', height: '600px', border: 'none' }}
-            title="Content"
-          ></iframe>
-        </div>
-      )}
-      <div id="iframeContainer" style={{ marginTop: '20px' }}></div>
-  
+                <div id="iframeContainer" style={{ marginTop: '20px' }}></div>
+
 
                 {/* {
   IsUserAlllowed ? (

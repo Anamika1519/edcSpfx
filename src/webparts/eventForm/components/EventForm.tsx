@@ -137,7 +137,7 @@ const HelloWorldContext = ({ props }: any) => {
   const Breadcrumb = [
     {
       "MainComponent": "Settings",
-      "MainComponentURl": `${siteUrl}/SitePages/Settings.aspx`
+      "MainComponentURl": `${siteUrl}/SitePages/MasterSettings.aspx`
     },
     {
       "ChildComponent": "Add-Event",
@@ -298,6 +298,12 @@ const HelloWorldContext = ({ props }: any) => {
       if (!EventName) {
         valid = false;
       }
+      if (!EventDate) {
+        valid = false;
+      }
+      if (!RegistrationDueDate) {
+        valid = false;
+      }
       else if (EventDate && new Date(EventDate).getTime() < new Date().getTime()) {
         valid = false;
       }
@@ -353,14 +359,14 @@ const HelloWorldContext = ({ props }: any) => {
       if (hidesavasdraft === 'true') {
         valid = true;
       } else {
-        // Swal.fire('Event date cannot be earlier than today.');
-        Swal.fire('Please select a future event date to continue.');
+         Swal.fire('Event date cannot be earlier than today.');
+        //Swal.fire('Please select a future event date to continue.');
       }
 
     }
     else if (!valid && (RegistrationDueDate && new Date(RegistrationDueDate).getTime() < new Date().getTime())) {
-      // Swal.fire('Registration date cannot be earlier than today.');
-      Swal.fire('Please select a future event date to continue.');
+       Swal.fire('Registration date cannot be earlier than today.');
+      //Swal.fire('Please select a future event date to continue.');
     }
     else {
       Swal.fire(errormsg !== "" ? errormsg : 'Please fill the mandatory fields.');
@@ -419,8 +425,8 @@ const HelloWorldContext = ({ props }: any) => {
             else {
               bannerImageArray = null
             }
-            const eventDate = new Date(formData.EventDate).toISOString()?.split("T")[0];
-            const RegistrationDueDate = new Date(formData.RegistrationDueDate).toISOString()?.split("T")[0];
+            const eventDate =formData.EventDate != null ? new Date(formData.EventDate).toISOString()?.split("T")[0] :null;
+            const RegistrationDueDate =formData.RegistrationDueDate != null? new Date(formData.RegistrationDueDate).toISOString()?.split("T")[0] :null;
             // update Post
             const postPayload = {
               EventName: formData.EventName,
@@ -525,12 +531,12 @@ const HelloWorldContext = ({ props }: any) => {
             console.log(galleryIds, 'galleryIds');
             // Update Post with Gallery and Document Information
             const updatePayload = {
-              ...(galleryIds.length > 0 && {
+              ...(galleryIds!= null && galleryIds.length > 0 && {
                 EventGalleryId: galleryIds,
 
                 EventGalleryJson: JSON.stringify(flatArray(galleryArray)),
               }),
-              ...(documentIds.length > 0 && {
+              ...(documentIds!= null && documentIds.length > 0 && {
                 EventThumbnailId: documentIds,
                 EventThumbnailJson: JSON.stringify(flatArray(documentArray)),
               }),
@@ -622,8 +628,8 @@ const HelloWorldContext = ({ props }: any) => {
               }
             }
             //debugger
-            const eventDate = new Date(formData.EventDate).toISOString()?.split("T")[0];
-            const RegistrationDueDate = new Date(formData.RegistrationDueDate).toISOString()?.split("T")[0];
+            const eventDate =formData.EventDate != null ? new Date(formData.EventDate).toISOString()?.split("T")[0] :null;
+            const RegistrationDueDate =formData.RegistrationDueDate != null ? new Date(formData.RegistrationDueDate).toISOString()?.split("T")[0] :null;
             // Create Post
             const postPayload = {
               EventName: formData.EventName,
@@ -669,11 +675,11 @@ const HelloWorldContext = ({ props }: any) => {
 
             // Update Post with Gallery and Document Information
             const updatePayload = {
-              ...(galleryIds.length > 0 && {
+              ...(galleryIds!= null && galleryIds.length > 0 && {
                 EventGalleryId: galleryIds,
                 EventGalleryJson: JSON.stringify(flatArray(galleryArray)),
               }),
-              ...(documentIds.length > 0 && {
+              ...(documentIds!= null && documentIds.length > 0 && {
                 EventThumbnailId: documentIds,
                 EventThumbnailJson: JSON.stringify(flatArray(documentArray)),
               }),
@@ -749,9 +755,8 @@ const HelloWorldContext = ({ props }: any) => {
             else {
               bannerImageArray = null
             }
-            const eventDate = new Date(formData.EventDate).toISOString()?.split("T")[0];
-            const RegistrationDueDate = new Date(formData.RegistrationDueDate).toISOString()?.split("T")[0];
-            // update Post
+            const eventDate =formData.EventDate != null ? new Date(formData.EventDate).toISOString()?.split("T")[0] :null;
+            const RegistrationDueDate =formData.RegistrationDueDate != null? new Date(formData.RegistrationDueDate).toISOString()?.split("T")[0] :null;
             const postPayload = {
               EventName: formData.EventName,
               Overview: formData.Overview,
@@ -855,12 +860,12 @@ const HelloWorldContext = ({ props }: any) => {
             console.log(galleryIds, 'galleryIds');
             // Update Post with Gallery and Document Information
             const updatePayload = {
-              ...(galleryIds.length > 0 && {
+              ...(galleryIds!= null && galleryIds.length > 0 && {
                 EventGalleryId: galleryIds,
 
                 EventGalleryJson: JSON.stringify(flatArray(galleryArray)),
               }),
-              ...(documentIds.length > 0 && {
+              ...(documentIds!= null && documentIds.length > 0 && {
                 EventThumbnailId: documentIds,
                 EventThumbnailJson: JSON.stringify(flatArray(documentArray)),
               }),
@@ -914,9 +919,9 @@ const HelloWorldContext = ({ props }: any) => {
               }
             }
             //debugger
-            const eventDate = new Date(formData.EventDate).toISOString()?.split("T")[0];
-            const RegistrationDueDate = new Date(formData.RegistrationDueDate).toISOString()?.split("T")[0];
-            // Create Post
+            const eventDate =formData.EventDate  != null ? new Date(formData.EventDate).toISOString()?.split("T")[0] :null;
+            const RegistrationDueDate =formData.RegistrationDueDate != null ? new Date(formData.RegistrationDueDate).toISOString()?.split("T")[0] :null;
+              // Create Post
             const postPayload = {
               EventName: formData.EventName,
               Overview: formData.Overview,
@@ -961,11 +966,11 @@ const HelloWorldContext = ({ props }: any) => {
 
             // Update Post with Gallery and Document Information
             const updatePayload = {
-              ...(galleryIds.length > 0 && {
+              ...(galleryIds!= null && galleryIds.length > 0 && {
                 EventGalleryId: galleryIds,
                 EventGalleryJson: JSON.stringify(flatArray(galleryArray)),
               }),
-              ...(documentIds.length > 0 && {
+              ...(documentIds!= null && documentIds.length > 0 && {
                 EventThumbnailId: documentIds,
                 EventThumbnailJson: JSON.stringify(flatArray(documentArray)),
               }),

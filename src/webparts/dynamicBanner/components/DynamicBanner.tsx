@@ -260,7 +260,7 @@ const DynamicBannercontext = ({ props }: any) => {
   const Breadcrumb = [
     {
       "MainComponent": "Settings",
-      "MainComponentURl": `${siteUrl}/SitePages/settings.aspx`
+      "MainComponentURl": `${siteUrl}/SitePages/MasterSettings.aspx`
     },
     {
       "ChildComponent": "Banner Master",

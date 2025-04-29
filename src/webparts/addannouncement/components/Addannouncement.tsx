@@ -131,11 +131,11 @@ const AddannouncementContext = ({ props }: any) => {
   const Breadcrumb = [
     {
       "MainComponent": "Settings",
-      "MainComponentURl": `${siteUrl}/SitePages/Settings.aspx`
+      "MainComponentURl": `${siteUrl}/SitePages/MasterSettings.aspx`
     },
     {
       "ChildComponent": "Add News",
-      "ChildComponentURl": `${siteUrl}/SitePages/announcementmaster.aspx`
+      "ChildComponentURl": `${siteUrl}/SitePages/newsmaster.aspx`
     }
   ]
   //#endregion
@@ -614,12 +614,12 @@ const AddannouncementContext = ({ props }: any) => {
 
               }
               const updatePayload = {
-                ...(galleryIds.length > 0 && {
+                ...(galleryIds !=null && galleryIds.length > 0 && {
                   AnnouncementAndNewsGallaryId: galleryIds,
 
                   AnnouncementAndNewsGallaryJSON: JSON.stringify(flatArray(galleryArray)),
                 }),
-                ...(documentIds.length > 0 && {
+                ...(documentIds !=null && documentIds.length > 0 && {
                   AnnouncementsAndNewsDocsId: documentIds,
                   AnnouncementAndNewsDocsJSON: JSON.stringify(flatArray(documentArray)),
                 }),
@@ -730,12 +730,12 @@ const AddannouncementContext = ({ props }: any) => {
               console.log(galleryIds, 'galleryIds');
               // Update Post with Gallery and Document Information
               const updatePayload = {
-                ...(galleryIds.length > 0 && {
+                ...(galleryIds !=null && galleryIds.length > 0 && {
                   AnnouncementAndNewsGallaryId: galleryIds,
 
                   AnnouncementAndNewsGallaryJSON: JSON.stringify(flatArray(galleryArray)),
                 }),
-                ...(documentIds.length > 0 && {
+                ...(documentIds !=null && documentIds.length > 0 && {
                   AnnouncementsAndNewsDocsId: documentIds,
                   AnnouncementAndNewsDocsJSON: JSON.stringify(flatArray(documentArray)),
                 }),
@@ -784,7 +784,7 @@ const AddannouncementContext = ({ props }: any) => {
               Swal.fire('Submitted successfully.', '', 'success');
               sessionStorage.removeItem("announcementId")
               setTimeout(() => {
-                window.location.href = `${siteUrl}/SitePages/Announcementmaster.aspx`;
+                window.location.href = `${siteUrl}/SitePages/newsmaster.aspx`;
               }, 1000);
             }
           }
@@ -870,11 +870,11 @@ const AddannouncementContext = ({ props }: any) => {
 
             // Update Post with Gallery and Document Information
             const updatePayload = {
-              ...(galleryIds.length > 0 && {
+              ...(galleryIds !=null && galleryIds.length > 0 && {
                 AnnouncementAndNewsGallaryId: galleryIds,
                 AnnouncementAndNewsGallaryJSON: JSON.stringify(flatArray(galleryArray)),
               }),
-              ...(documentIds.length > 0 && {
+              ...(documentIds != null && documentIds.length > 0 && {
                 AnnouncementsAndNewsDocsId: documentIds,
                 AnnouncementAndNewsDocsJSON: JSON.stringify(flatArray(documentArray)),
               }),
@@ -917,7 +917,7 @@ const AddannouncementContext = ({ props }: any) => {
               Swal.fire('Submitted successfully.', '', 'success');
               // sessionStorage.removeItem("bannerId")
               setTimeout(() => {
-                window.location.href = `${siteUrl}/SitePages/Announcementmaster.aspx`;
+                window.location.href = `${siteUrl}/SitePages/newsmaster.aspx`;
               }, 1000);
             }
 
@@ -1101,12 +1101,12 @@ const closeModal = () => {
 
               }
               const updatePayload = {
-                ...(galleryIds.length > 0 && {
+                ...(galleryIds !=null && galleryIds.length > 0 && {
                   AnnouncementAndNewsGallaryId: galleryIds,
 
                   AnnouncementAndNewsGallaryJSON: JSON.stringify(flatArray(galleryArray)),
                 }),
-                ...(documentIds.length > 0 && {
+                ...(documentIds !=null && documentIds.length > 0 && {
                   AnnouncementsAndNewsDocsId: documentIds,
                   AnnouncementAndNewsDocsJSON: JSON.stringify(flatArray(documentArray)),
                 }),
@@ -1214,12 +1214,13 @@ const closeModal = () => {
               console.log(galleryIds, 'galleryIds');
               // Update Post with Gallery and Document Information
               const updatePayload = {
-                ...(galleryIds.length > 0 && {
+               
+                ...(galleryIds !=null && galleryIds.length > 0 && {
                   AnnouncementAndNewsGallaryId: galleryIds,
 
                   AnnouncementAndNewsGallaryJSON: JSON.stringify(flatArray(galleryArray)),
                 }),
-                ...(documentIds.length > 0 && {
+                ...(documentIds != null && documentIds.length > 0 && {
                   AnnouncementsAndNewsDocsId: documentIds,
                   AnnouncementAndNewsDocsJSON: JSON.stringify(flatArray(documentArray)),
                 }),
@@ -1234,7 +1235,7 @@ const closeModal = () => {
             Swal.fire('Saved successfully.', '', 'success');
             sessionStorage.removeItem("announcementId")
             setTimeout(() => {
-              window.location.href = `${siteUrl}/SitePages/Announcementmaster.aspx`;
+              window.location.href = `${siteUrl}/SitePages/newsmaster.aspx`;
             }, 1000);
           }
 
@@ -1318,11 +1319,11 @@ const closeModal = () => {
 
             // Update Post with Gallery and Document Information
             const updatePayload = {
-              ...(galleryIds.length > 0 && {
+              ...(galleryIds !=null && galleryIds.length > 0 && {
                 AnnouncementAndNewsGallaryId: galleryIds,
                 AnnouncementAndNewsGallaryJSON: JSON.stringify(flatArray(galleryArray)),
               }),
-              ...(documentIds.length > 0 && {
+              ...(documentIds !=null && documentIds.length > 0 && {
                 AnnouncementsAndNewsDocsId: documentIds,
                 AnnouncementAndNewsDocsJSON: JSON.stringify(flatArray(documentArray)),
               }),
@@ -1336,7 +1337,7 @@ const closeModal = () => {
             Swal.fire('Saved successfully.', '', 'success');
             // sessionStorage.removeItem("bannerId")
             setTimeout(() => {
-              window.location.href = `${siteUrl}/SitePages/Announcementmaster.aspx`;
+              window.location.href = `${siteUrl}/SitePages/newsmaster.aspx`;
             }, 1000);
           }
         })
@@ -1546,7 +1547,7 @@ const closeModal = () => {
     }else if(pageValue == "MyApproval"){
       window.location.href = `${siteUrl}/SitePages/MyApprovals.aspx`;
     }else{
-      window.location.href = `${siteUrl}/SitePages/announcementmaster.aspx`;
+      window.location.href = `${siteUrl}/SitePages/newsmaster.aspx`;
     }
    
   }
@@ -1590,7 +1591,7 @@ const closeModal = () => {
       cancelButtonText: "No",
     }).then((result) => {
       if (val == true) {
-        window.location.href = `${siteUrl}/SitePages/announcementmaster.aspx`
+        window.location.href = `${siteUrl}/SitePages/newsmaster.aspx`
       }
     });
 

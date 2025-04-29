@@ -18,11 +18,12 @@ import { Tenant_URL } from '../../../Shared/Constants';
 
 export const MastersettingContext = ({ props }: any) => {
   const { useHide }: any = React.useContext(UserContext);
-   const elementRef = React.useRef<HTMLDivElement>(null);
-   const SiteUrl = props.siteUrl;
-   const sp: SPFI = getSP();
-    const [QuickLinkArray, setQuickLinkArray] = React.useState([]);
-   const Breadcrumb = [
+  const elementRef = React.useRef<HTMLDivElement>(null);
+  const SiteUrl = props.siteUrl;
+  const sp: SPFI = getSP();
+  const [QuickLinkArray, setQuickLinkArray] = React.useState([]);
+  const [showImg, setshowImg] = React.useState(false);
+  const Breadcrumb = [
     {
       "MainComponent": "Home",
       "MainComponentURl": `${SiteUrl}/SitePages/Dashboard.aspx`
@@ -32,39 +33,41 @@ export const MastersettingContext = ({ props }: any) => {
       "ChildComponentURl": `${SiteUrl}/SitePages/QuickLinks.aspx`
     }
   ]
-   
+
   React.useEffect(() => {
-      ApiCall()
-      // console.log('This function is called only once', useHide);
-      // IsUserAllowedAccess().then(bAllowed => {
-  
-      //   //  console.log("%c Access allowed","color:green,font-size:14px",bAllowed);
-      //   setIsUserAlllowed(bAllowed);
-  
-      // })
-    }, []);
+    ApiCall()
+    // console.log('This function is called only once', useHide);
+    // IsUserAllowedAccess().then(bAllowed => {
 
-    const ApiCall = async () => {
-       
-        let listTitle = 'QuickLinks'
-        const userProfile = await sp.profiles.myProperties();
-        const currentUserDept = userProfile.UserProfileProperties ? userProfile.UserProfileProperties[userProfile.UserProfileProperties.findIndex((obj:any) => obj.Key === "Department")].Value : "";
-        let entity ="Global";
-        // let CurrentsiteID = props.context.pageContext.site.id;
-        // siteID = CurrentsiteID;
-        // response = await sp.web.lists.getByTitle(listTitle).select('Id')();
-        // console.log("resp",response,siteID,CurrentsiteID);
-        // const settingsData = setsettingArray(await getSettingAPI(sp))
-        // console.log(settingsData, 'settingsData');
+    //   //  console.log("%c Access allowed","color:green,font-size:14px",bAllowed);
+    //   setIsUserAlllowed(bAllowed);
 
-        // setQuickLinkArray(await sp.web.lists.getByTitle(listTitle).items.getAll());
-        const settingsData = await sp.web.lists.getByTitle(listTitle).items.select('Id', 'Title', 'URL', 'RedirectToNewTab', 'QuickLinkImage', 'Entity/Entity').expand('Entity').filter(`(Entity/Entity eq '${entity}' or Entity/Entity eq '${currentUserDept}') and IsActive eq 1`).getAll();
-        setQuickLinkArray(settingsData);
-        console.log(settingsData, 'settingsData');
-      }
+    // })
+  }, []);
+
+  const ApiCall = async () => {
+
+    let listTitle = 'QuickLinks'
+    const userProfile = await sp.profiles.myProperties();
+    const currentUserDept = userProfile.UserProfileProperties ? userProfile.UserProfileProperties[userProfile.UserProfileProperties.findIndex((obj: any) => obj.Key === "Department")].Value : "";
+    let entity = "Global";
+    // let CurrentsiteID = props.context.pageContext.site.id;
+    // siteID = CurrentsiteID;
+    // response = await sp.web.lists.getByTitle(listTitle).select('Id')();
+    // console.log("resp",response,siteID,CurrentsiteID);
+    // const settingsData = setsettingArray(await getSettingAPI(sp))
+    // console.log(settingsData, 'settingsData');
+
+    // setQuickLinkArray(await sp.web.lists.getByTitle(listTitle).items.getAll());
+    const settingsData = await sp.web.lists.getByTitle(listTitle).items.select('Id', 'Title', 'URL', 'RedirectToNewTab', 'QuickLinkImage', 'Entity/Entity').expand('Entity').filter(`(Entity/Entity eq '${entity}' or Entity/Entity eq '${currentUserDept}') and IsActive eq 1`).getAll();
+    setQuickLinkArray(settingsData);
+
+    setshowImg(settingsData.length == 0 ? true : false);
+    console.log(settingsData, 'settingsData');
+  }
 
   return (
-<div id="wrapper" ref={elementRef}>
+    <div id="wrapper" ref={elementRef}>
       <div
         className='app-menu'
         id="myHeader">
@@ -78,34 +81,58 @@ export const MastersettingContext = ({ props }: any) => {
               <div className="col-lg-3">
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
               </div>
-              <div className="row manage-master mt-3">
-                {QuickLinkArray.map((item: any) => {
-                  const ImageUrl = item.QuickLinkImage == undefined || item.QuickLinkImage == null ? "" : JSON.parse(item.QuickLinkImage);
-                  // let img1 = imageData && imageData.fileName ? `${SiteUrl}/_api/v2.1/sites('${siteId}')/lists('${listID}')/items('${item.ID}')/attachments('${imageData.fileName}')/thumbnails/0/c400x400/content` : ""
+              {QuickLinkArray.length == 0 && showImg?
 
-                  const imageUrl = ImageUrl?.serverRelativeUrl  
-                        
+                <div>
+                  <img src={require("../assets/Group.png")} />
+                </div>
+
+
+                :
+                <div className="row manage-master mt-0">
+
+
+
+                  {
+                    QuickLinkArray.map((item: any) => {
+                      const ImageUrl = item.QuickLinkImage == undefined || item.QuickLinkImage == null ? "" : JSON.parse(item.QuickLinkImage);
+                      // let img1 = imageData && imageData.fileName ? `${SiteUrl}/_api/v2.1/sites('${siteId}')/lists('${listID}')/items('${item.ID}')/attachments('${imageData.fileName}')/thumbnails/0/c400x400/content` : ""
+
+                      const imageUrl = ImageUrl?.serverRelativeUrl
+
                         ? `${Tenant_URL}/${ImageUrl.serverRelativeUrl}`
                         : require("../assets/news.png");
-                  return (<div className="col-sm-3 col-md-3 mt-2 newwidth6" key={item?.Id}>
-                    <a href={item?.URL} target={item?.RedirectToNewTab ? "_blank" : "_self"}>
-                      <div className="aaplnbg">
-                      <div className="aaplnbg">
-                        <img src={imageUrl} />
+                      return (<div className="col-sm-3 col-md-3 mt-2 newwidth6" key={item?.Id}>
+                        <a href={item?.URL} target={item?.RedirectToNewTab ? "_blank" : "_self"}>
+                          <div className="aaplnbg">
+                            <div className="">
+                              <img src={imageUrl} />
+                            </div>
+                            <div className="text-dark appltext font-14 mb-1">
+                              {/* <p className="text-dark appltext font-14 mb-1"> */}
+                              {item?.Title}
+                              {/* </p> */}
+                            </div>
+                            <p className="font-12 mb-2 text-primary">{item.Entity?.Entity}</p>
+                          </div>
+                        </a>
                       </div>
-                      <div className="text-dark appltext font-14 mb-1">
-                      {/* <p className="text-dark appltext font-14 mb-1"> */}
-                        {item?.Title}
-                        {/* </p> */}
-                      </div>
-                      <p className="font-12 mb-2 text-primary">{item.Entity?.Entity}</p>
-                      </div>
-                    </a>
-                  </div>
-                  )
-                })}
-              </div>
-              
+                      )
+                    })
+
+                  }
+
+
+
+
+
+
+
+
+
+                </div>
+              }
+
             </div>
 
           </div>
@@ -115,11 +142,11 @@ export const MastersettingContext = ({ props }: any) => {
   )
 }
 
-const Quicklinks :React.FC<IQuicklinksProps> = (props) => {
+const Quicklinks: React.FC<IQuicklinksProps> = (props) => {
   return (
     <Provider>
-    <MastersettingContext props={props} />
-  </Provider>
+      <MastersettingContext props={props} />
+    </Provider>
   )
 }
 
