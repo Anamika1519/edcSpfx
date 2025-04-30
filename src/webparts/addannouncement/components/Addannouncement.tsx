@@ -34,8 +34,8 @@ import { FormSubmissionMode } from '../../../Shared/Interfaces';
 import { WorkflowAuditHistory } from '../../../CustomJSComponents/WorkflowAuditHistory/WorkflowAuditHistory';
 import { CONTENTTYPE_Announcement, CONTENTTYPE_News, LIST_TITLE_ContentMaster, LIST_TITLE_AnnouncementAndNews, LIST_TITLE_MyRequest } from '../../../Shared/Constants';
 import { useRef, useState } from 'react';
-let newfileupload:any
-let newfilepreview:any
+let newfileupload: any
+let newfilepreview: any
 interface FormField {
   type: string;
   name: string;
@@ -92,7 +92,7 @@ const AddannouncementContext = ({ props }: any) => {
     description: "",
     overview: "",
     FeaturedAnnouncement: false,
-    Status:"",
+    Status: "",
   });
   const [richTextValues, setRichTextValues] = React.useState<{ [key: string]: string }>({});
   const [DocumentpostArr, setDocumentpostArr] = React.useState([]);
@@ -144,7 +144,7 @@ const AddannouncementContext = ({ props }: any) => {
   const [modalImageSrc, setModalImageSrc] = useState('');
 
   const handleClose = () => setShow(false);
-  const handleShow = (src:any) => {
+  const handleShow = (src: any) => {
     setModalImageSrc(src);
     setShow(true);
   };
@@ -175,7 +175,7 @@ const AddannouncementContext = ({ props }: any) => {
         // else
         //   setInputDisabled(true);
         //setInputDisabled(true && (!itm.IsRework || itm.IsRework == "No"))
-      //  setInputDisabled(false && (itm.IsRework || itm.IsRework == "Yes"))
+        //  setInputDisabled(false && (itm.IsRework || itm.IsRework == "Yes"))
         //setInputDisabled(ApprovalMode)
       })
     }
@@ -235,19 +235,19 @@ const AddannouncementContext = ({ props }: any) => {
     setEnityData(await getEntity(sp)) //Entity
     setTypeData(await getType(sp)) // Type
     const defaultItem = await getType(sp);
-    if(defaultItem.find((item) => item.name === 'News').id){
+    if (defaultItem.find((item) => item.name === 'News').id) {
       formData.Type = defaultItem.find((item) => item.name === 'News').id;
-    setCategoryData(await getCategory(sp, Number(formData.Type)))
+      setCategoryData(await getCategory(sp, Number(formData.Type)))
 
     }
     const entityDefaultitem = await getEntity(sp);
-    if(entityDefaultitem.find((item) => item.name === 'Global').id){
+    if (entityDefaultitem.find((item) => item.name === 'Global').id) {
       formData.entity = entityDefaultitem.find((item) => item.name === 'Global').id;
 
     }
-   
-   
-   
+
+
+
     setBaseUrl(await (getUrl(sp))) //baseUrl
     let formitemid;
     //#region getdataByID
@@ -282,7 +282,7 @@ const AddannouncementContext = ({ props }: any) => {
         let arr = {
           title: setBannerById[0].Title,
           category: setBannerById[0]?.Category,
-          entity: setBannerById[0]?.Entity?setBannerById[0]?.Entity:0,
+          entity: setBannerById[0]?.Entity ? setBannerById[0]?.Entity : 0,
           Type: setBannerById[0]?.TypeMaster,
           bannerImage: setBannerById[0]?.BannerImage,
           description: setBannerById[0].description,
@@ -298,11 +298,11 @@ const AddannouncementContext = ({ props }: any) => {
           ...prevValues,
           description: initialContent,
         }));
-        setImagepostIdsArr(setBannerById[0]?.AnnouncementAndNewsGallaryId)
-        setImagepostArr(setBannerById[0].AnnouncementAndNewsGallaryJSON);
-        setDocumentpostIdsArr(setBannerById[0]?.AnnouncementsAndNewsDocsId)
-        setImagepostArr1(setBannerById[0].AnnouncementAndNewsGallaryJSON)
-        setDocumentpostArr1(setBannerById[0].AnnouncementAndNewsDocsJSON)
+        setImagepostIdsArr(setBannerById[0]?.AnnouncementAndNewsGallaryId != null ? setBannerById[0]?.AnnouncementAndNewsGallaryId:[])
+        setImagepostArr(setBannerById[0]?.AnnouncementAndNewsGallaryId != null ? setBannerById[0].AnnouncementAndNewsGallaryJSON:[]);
+        setDocumentpostIdsArr(setBannerById[0]?.AnnouncementsAndNewsDocsId != null ? setBannerById[0]?.AnnouncementsAndNewsDocsId:[])
+        setImagepostArr1(setBannerById[0]?.AnnouncementAndNewsGallaryId != null ?setBannerById[0].AnnouncementAndNewsGallaryJSON:[])
+        setDocumentpostArr1(setBannerById[0]?.AnnouncementsAndNewsDocsId != null ?setBannerById[0].AnnouncementAndNewsDocsJSON:[])
         if (setBannerById[0].BannerImage.length > 0) {
           banneimagearr = setBannerById[0].BannerImage
           console.log(banneimagearr, 'banneimagearr');
@@ -382,37 +382,37 @@ const AddannouncementContext = ({ props }: any) => {
     const { title, Type, category, entity, overview } = formData;
     const { description } = richTextValues;
     let valid = true;
-    let validateOverview:boolean = false;
+    let validateOverview: boolean = false;
     let validatetitlelength = false;
     let validateTitle = false;
     setValidDraft(true);
     setValidSubmit(true);
-    if (title!== "") {
-     validatetitlelength = title.length <= 255;
+    if (title !== "") {
+      validatetitlelength = title.length <= 255;
       validateTitle = title !== "" && await allowstringonly(title);
     }
-    if (overview !==""){
+    if (overview !== "") {
       validateOverview = overview! == "" && await allowstringonly(overview);
     }
-   
-   
+
+
     let errormsg = "";
-    console.log("validateTitleup", validateTitle, "validatetitlelength", validatetitlelength, title !== "", overview !== "","overview", overview, validateOverview);
+    console.log("validateTitleup", validateTitle, "validatetitlelength", validatetitlelength, title !== "", overview !== "", "overview", overview, validateOverview);
     if (title !== "" && !validateTitle && validatetitlelength) {
       errormsg = "No special character allowed in Title";
       valid = false;
     } else if (title !== "" && validateTitle && !validatetitlelength) {
       errormsg = "Title must be less than 255 characters";
       valid = false;
-    // }
-    // else if (overview !== "" && !validateOverview) {
-    //   errormsg = "No special character allowed in Overview";
-    //   valid = false;
-  } 
-  // else if ((ImagepostArr.length > 0 && ImagepostArr.length > 5) || ( ImagepostArr1.length > 0 && ImagepostArr1.length > 5)){
-  //     errormsg = "More than 5 attachments not allowed";
-  //     valid = false;
-  //   }
+      // }
+      // else if (overview !== "" && !validateOverview) {
+      //   errormsg = "No special character allowed in Overview";
+      //   valid = false;
+    }
+    // else if ((ImagepostArr.length > 0 && ImagepostArr.length > 5) || ( ImagepostArr1.length > 0 && ImagepostArr1.length > 5)){
+    //     errormsg = "More than 5 attachments not allowed";
+    //     valid = false;
+    //   }
     if (fmode == FormSubmissionMode.SUBMIT) {
       if (!title) {
         //Swal.fire('Error', 'Title is required!', 'error');
@@ -424,17 +424,17 @@ const AddannouncementContext = ({ props }: any) => {
         //Swal.fire('Error', 'Category is required!', 'error');
         valid = false;
       }
-       else if (!entity) {
+      else if (!entity) {
         //Swal.fire('Error', 'Entity is required!', 'error');
         valid = false;
       }
-       else if (!overview) {
+      else if (!overview) {
         //Swal.fire('Error', 'Entity is required!', 'error');
         valid = false;
       }
       else if (BnnerImagepostArr.length == 0) {
         valid = false;
-      } 
+      }
       // else if ((ImagepostArr.length == 0 || ImagepostArr.length > 5) && (ImagepostArr1.length > 0 && ImagepostArr1.length > 5)) {
       //   valid = false;
       // }
@@ -463,9 +463,9 @@ const AddannouncementContext = ({ props }: any) => {
     //   Swal.fire('Error', 'Featured Announcement is required!', 'error');
     //   valid = false;
     // }
-    console.log("validateTitle", validateTitle,"errormsg", errormsg,"valid,", valid, ImagepostArr.length);
+    console.log("validateTitle", validateTitle, "errormsg", errormsg, "valid,", valid, ImagepostArr.length);
     if (!valid && fmode == FormSubmissionMode.SUBMIT)
-      Swal.fire(errormsg !== "" ?errormsg : 'Please fill all the mandatory fields.');
+      Swal.fire(errormsg !== "" ? errormsg : 'Please fill all the mandatory fields.');
     else if (!valid && fmode == FormSubmissionMode.DRAFT) {
       Swal.fire(errormsg !== "" ? errormsg : 'Please fill the mandatory fields for draft - Title and Type');
     }
@@ -496,7 +496,7 @@ const AddannouncementContext = ({ props }: any) => {
             let documentIds: any[] = [];
             let galleryArray: any[] = [];
             let documentArray: any[] = [];
-
+            let ImagepostIdsArrN:any[]=[];
             // formData.FeaturedAnnouncement === "on"?  true :false;
 
             // Upload Banner Images
@@ -525,7 +525,7 @@ const AddannouncementContext = ({ props }: any) => {
                 AnnouncementandNewsTypeMasterId: Number(formData.Type),
                 FeaturedAnnouncement: true,
                 // Status: formData.Status,
-                Status:rows.length>0? "Submitted":"Approved",
+                Status: rows.length > 0 ? "Submitted" : "Approved",
                 AuthorId: currentUser.Id,
                 AnnouncementandNewsBannerImage: bannerImageArray != "{}" && JSON.stringify(bannerImageArray)
               };
@@ -546,7 +546,7 @@ const AddannouncementContext = ({ props }: any) => {
                 for (const file of ImagepostArr[0].files) {
 
                   const uploadedGalleryImage = await uploadFileToLibrary(file, sp, "AnnouncementAndNewsGallary");
-
+                  debugger
                   galleryIds = galleryIds.concat(uploadedGalleryImage.map((item: { ID: any }) => item.ID));
                   if (ImagepostArr1.length > 0 && ImagepostArr1.length < 6) {
 
@@ -555,8 +555,8 @@ const AddannouncementContext = ({ props }: any) => {
                     console.log(updatedData, 'updatedData');
                     galleryArray = updatedData;
                     //galleryArray.push(ImagepostArr1);
-
-                    ImagepostIdsArr.push(galleryIds[0]) //galleryIds.push(ImagepostIdsArr)
+                    //ImagepostIdsArrN.push(galleryIds != null ? galleryIds[0] : [])
+                    ImagepostIdsArr.push(galleryIds != null ? galleryIds[0] : []) //galleryIds.push(ImagepostIdsArr)
                     galleryIds = ImagepostIdsArr
                   }
                   else {
@@ -614,12 +614,12 @@ const AddannouncementContext = ({ props }: any) => {
 
               }
               const updatePayload = {
-                ...(galleryIds !=null && galleryIds.length > 0 && {
+                ...(galleryIds != null && galleryIds.length > 0 && {
                   AnnouncementAndNewsGallaryId: galleryIds,
 
                   AnnouncementAndNewsGallaryJSON: JSON.stringify(flatArray(galleryArray)),
                 }),
-                ...(documentIds !=null && documentIds.length > 0 && {
+                ...(documentIds != null && documentIds.length > 0 && {
                   AnnouncementsAndNewsDocsId: documentIds,
                   AnnouncementAndNewsDocsJSON: JSON.stringify(flatArray(documentArray)),
                 }),
@@ -673,7 +673,7 @@ const AddannouncementContext = ({ props }: any) => {
                     galleryArray = updatedData;
                     // galleryArray.push(ImagepostArr1);
 
-                    ImagepostIdsArr.push(galleryIds[0]) //galleryIds.push(ImagepostIdsArr)
+                    ImagepostIdsArr.push(galleryIds != null ? galleryIds[0] : []) //galleryIds.push(ImagepostIdsArr)
                     galleryIds = ImagepostIdsArr
                   }
                   else {
@@ -730,12 +730,12 @@ const AddannouncementContext = ({ props }: any) => {
               console.log(galleryIds, 'galleryIds');
               // Update Post with Gallery and Document Information
               const updatePayload = {
-                ...(galleryIds !=null && galleryIds.length > 0 && {
+                ...(galleryIds != null && galleryIds.length > 0 && {
                   AnnouncementAndNewsGallaryId: galleryIds,
 
                   AnnouncementAndNewsGallaryJSON: JSON.stringify(flatArray(galleryArray)),
                 }),
-                ...(documentIds !=null && documentIds.length > 0 && {
+                ...(documentIds != null && documentIds.length > 0 && {
                   AnnouncementsAndNewsDocsId: documentIds,
                   AnnouncementAndNewsDocsJSON: JSON.stringify(flatArray(documentArray)),
                 }),
@@ -809,7 +809,7 @@ const AddannouncementContext = ({ props }: any) => {
             let documentIds: any[] = [];
             let galleryArray: any[] = [];
             let documentArray: any[] = [];
-
+            let ImagepostIdsArrN: any[] = [];
             // formData.FeaturedAnnouncement === "on"?  true :false;
 
 
@@ -832,7 +832,7 @@ const AddannouncementContext = ({ props }: any) => {
               AnnouncementandNewsTypeMasterId: Number(formData.Type),
               //FeaturedAnnouncement: formData.FeaturedAnnouncement === true ? true : false,
               FeaturedAnnouncement: true,
-              Status: rows.length>0? "Submitted":"Approved",
+              Status: rows.length > 0 ? "Submitted" : "Approved",
               AuthorId: currentUser.Id,
               AnnouncementandNewsBannerImage: JSON.stringify(bannerImageArray)
             };
@@ -870,7 +870,7 @@ const AddannouncementContext = ({ props }: any) => {
 
             // Update Post with Gallery and Document Information
             const updatePayload = {
-              ...(galleryIds !=null && galleryIds.length > 0 && {
+              ...(galleryIds != null && galleryIds.length > 0 && {
                 AnnouncementAndNewsGallaryId: galleryIds,
                 AnnouncementAndNewsGallaryJSON: JSON.stringify(flatArray(galleryArray)),
               }),
@@ -902,16 +902,16 @@ const AddannouncementContext = ({ props }: any) => {
 
             }
             let boolval;
-            if(rows.length>0){
+            if (rows.length > 0) {
               await AddContentMaster(sp, arr)
-             boolval = await handleClick(postId, TypeMasterData?.TypeMaster, Number(formData.entity))
+              boolval = await handleClick(postId, TypeMasterData?.TypeMaster, Number(formData.entity))
 
 
             }
-            else{
-               boolval = true;
+            else {
+              boolval = true;
             }
-            
+
             if (boolval == true) {
               setLoading(false);
               Swal.fire('Submitted successfully.', '', 'success');
@@ -930,37 +930,37 @@ const AddannouncementContext = ({ props }: any) => {
   }
 
   const [previewUrl, setPreviewUrl] = useState<string | null>(null); // To store the file preview URL
-const [isModalOpen, setIsModalOpen] = useState<boolean>(false);   // To manage modal visibility
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);   // To manage modal visibility
 
-  const handlePreviewClick = (fileObj:any) => {
-    if(newfileupload === true){
-     console.log(newfilepreview , "here is newfilepreview")
-   //alert(`new file ${newfilepreview}`)
+  const handlePreviewClick = (fileObj: any) => {
+    if (newfileupload === true) {
+      console.log(newfilepreview, "here is newfilepreview")
+      //alert(`new file ${newfilepreview}`)
 
-       setPreviewUrl(newfilepreview); // Set the preview URL
-       setIsModalOpen(true);   // Open the modal
-   } else {
-     console.log(fileObj , "here is fileObj")
-     //alert(`here is fileObj${fileObj}`)
-     //alert(`${fileObj.serverUrl} ${fileObj.serverRelativeUrl}`)
-     //alert(`fileObj:${fileObj} + fileObj.serverRelativeUrl ${fileObj.serverRelativeUrl}`)
-     if (fileObj && fileObj.serverUrl && fileObj.serverRelativeUrl) {
-       const fileUrl = `${fileObj.serverUrl.trim()}${fileObj.serverRelativeUrl.trim()}`;
-       // Combine serverUrl and serverRelativeUrl
-         setPreviewUrl(fileUrl); // Set the preview URL
-         setIsModalOpen(true);   // Open the modal
-     } else {
-         //alert("Invalid file object. Cannot generate preview URL.");
-     }
-   }
-    
-  
-};
+      setPreviewUrl(newfilepreview); // Set the preview URL
+      setIsModalOpen(true);   // Open the modal
+    } else {
+      console.log(fileObj, "here is fileObj")
+      //alert(`here is fileObj${fileObj}`)
+      //alert(`${fileObj.serverUrl} ${fileObj.serverRelativeUrl}`)
+      //alert(`fileObj:${fileObj} + fileObj.serverRelativeUrl ${fileObj.serverRelativeUrl}`)
+      if (fileObj && fileObj.serverUrl && fileObj.serverRelativeUrl) {
+        const fileUrl = `${fileObj.serverUrl.trim()}${fileObj.serverRelativeUrl.trim()}`;
+        // Combine serverUrl and serverRelativeUrl
+        setPreviewUrl(fileUrl); // Set the preview URL
+        setIsModalOpen(true);   // Open the modal
+      } else {
+        //alert("Invalid file object. Cannot generate preview URL.");
+      }
+    }
 
-const closeModal = () => {
-  setPreviewUrl(null);
-  setIsModalOpen(false);
-};
+
+  };
+
+  const closeModal = () => {
+    setPreviewUrl(null);
+    setIsModalOpen(false);
+  };
 
   //#endregion
 
@@ -988,7 +988,7 @@ const closeModal = () => {
             let documentIds: any[] = [];
             let galleryArray: any[] = [];
             let documentArray: any[] = [];
-
+            let ImagepostIdsArrN: any[] = [];
             // formData.FeaturedAnnouncement === "on"?  true :false;
 
             // Upload Banner Images
@@ -1043,7 +1043,7 @@ const closeModal = () => {
                     galleryArray = updatedData;
                     //galleryArray.push(ImagepostArr1);
 
-                    ImagepostIdsArr.push(galleryIds[0]) //galleryIds.push(ImagepostIdsArr)
+                    ImagepostIdsArr.push(galleryIds != null ? galleryIds[0] : []) //galleryIds.push(ImagepostIdsArr)
                     galleryIds = ImagepostIdsArr
                   }
                   else {
@@ -1101,12 +1101,12 @@ const closeModal = () => {
 
               }
               const updatePayload = {
-                ...(galleryIds !=null && galleryIds.length > 0 && {
+                ...(galleryIds != null && galleryIds.length > 0 && {
                   AnnouncementAndNewsGallaryId: galleryIds,
 
                   AnnouncementAndNewsGallaryJSON: JSON.stringify(flatArray(galleryArray)),
                 }),
-                ...(documentIds !=null && documentIds.length > 0 && {
+                ...(documentIds != null && documentIds.length > 0 && {
                   AnnouncementsAndNewsDocsId: documentIds,
                   AnnouncementAndNewsDocsJSON: JSON.stringify(flatArray(documentArray)),
                 }),
@@ -1157,7 +1157,7 @@ const closeModal = () => {
                     galleryArray = updatedData;
                     // galleryArray.push(ImagepostArr1);
 
-                    ImagepostIdsArr.push(galleryIds[0]) //galleryIds.push(ImagepostIdsArr)
+                    ImagepostIdsArr.push(galleryIds != null ? galleryIds[0] : []) //galleryIds.push(ImagepostIdsArr)
                     galleryIds = ImagepostIdsArr
                   }
                   else {
@@ -1214,8 +1214,8 @@ const closeModal = () => {
               console.log(galleryIds, 'galleryIds');
               // Update Post with Gallery and Document Information
               const updatePayload = {
-               
-                ...(galleryIds !=null && galleryIds.length > 0 && {
+
+                ...(galleryIds != null && galleryIds.length > 0 && {
                   AnnouncementAndNewsGallaryId: galleryIds,
 
                   AnnouncementAndNewsGallaryJSON: JSON.stringify(flatArray(galleryArray)),
@@ -1259,7 +1259,7 @@ const closeModal = () => {
             let documentIds: any[] = [];
             let galleryArray: any[] = [];
             let documentArray: any[] = [];
-
+            let ImagepostIdsArrN: any[] = [];
             // formData.FeaturedAnnouncement === "on"?  true :false;
 
 
@@ -1319,11 +1319,11 @@ const closeModal = () => {
 
             // Update Post with Gallery and Document Information
             const updatePayload = {
-              ...(galleryIds !=null && galleryIds.length > 0 && {
+              ...(galleryIds != null && galleryIds.length > 0 && {
                 AnnouncementAndNewsGallaryId: galleryIds,
                 AnnouncementAndNewsGallaryJSON: JSON.stringify(flatArray(galleryArray)),
               }),
-              ...(documentIds !=null && documentIds.length > 0 && {
+              ...(documentIds != null && documentIds.length > 0 && {
                 AnnouncementsAndNewsDocsId: documentIds,
                 AnnouncementAndNewsDocsJSON: JSON.stringify(flatArray(documentArray)),
               }),
@@ -1378,7 +1378,7 @@ const closeModal = () => {
   //#region onFileChange
   const onFileChange = async (event: React.ChangeEvent<HTMLInputElement>, libraryName: string, docLib: string) => {
 
-    if(libraryName === 'bannerimg'){
+    if (libraryName === 'bannerimg') {
       newfileupload = true
       //alert(`banner img `)
     }
@@ -1470,7 +1470,7 @@ const closeModal = () => {
           const preview = URL.createObjectURL(imageVideoFiles[0]); // Generate preview URL
           //alert(`preview ${preview}`)
           newfilepreview = preview
-          setPreviewUrl(preview);  
+          setPreviewUrl(preview);
           const arr = {
             files: imageVideoFiles,
             libraryName: libraryName,
@@ -1542,21 +1542,21 @@ const closeModal = () => {
 
   const handleCancel = () => {
     debugger
-    if(pageValue == "MyRequest"){
+    if (pageValue == "MyRequest") {
       window.location.href = `${siteUrl}/SitePages/MyRequests.aspx`;
-    }else if(pageValue == "MyApproval"){
+    } else if (pageValue == "MyApproval") {
       window.location.href = `${siteUrl}/SitePages/MyApprovals.aspx`;
-    }else{
+    } else {
       window.location.href = `${siteUrl}/SitePages/newsmaster.aspx`;
     }
-   
+
   }
   const formats = [
     "header", "height", "bold", "italic",
     "underline", "strike", "blockquote",
     "list", "color", "bullet", "indent",
     //"link",
-     "image", "align", "size",
+    "image", "align", "size",
   ];
 
   const modules = {
@@ -1566,7 +1566,7 @@ const closeModal = () => {
       [{ list: "ordered" }, { list: "bullet" }],
       [
         //"link",
-         "image"],
+        "image"],
       [
         { list: "ordered" },
         { list: "bullet" },
@@ -1781,14 +1781,14 @@ const closeModal = () => {
                     // <div className="loadercss" role="status">Loading...
                     //   <img src={require('../../../Assets/ExtraImage/loader.gif')} style={{ height: '80px', width: '70px' }} alt="Check" />
                     // </div>
-                    <div style={{minHeight:'100vh',marginTop:'100px'}} className="loadernewadd mt-10">
-                    <div>
+                    <div style={{ minHeight: '100vh', marginTop: '100px' }} className="loadernewadd mt-10">
+                      <div>
                         <img
-                            src={require("../../../CustomAsset/edc-gif.gif")}
-                            className="alignrightl"
-                            alt="Loading..."
-                          /> 
-                        </div>
+                          src={require("../../../CustomAsset/edc-gif.gif")}
+                          className="alignrightl"
+                          alt="Loading..."
+                        />
+                      </div>
                       <span>Loading </span>{" "}
                       <span>
                         <img
@@ -1798,192 +1798,192 @@ const closeModal = () => {
                         />
                       </span>
                     </div>
-                  :
-                  <form className='row' >
-                    <div className=""><strong className="font-16 mb-1">Basic Information</strong><p className="font-14 text-muted mb-3 mt-1">Specify basic information </p></div>
-                    <div className="col-lg-4">
-                      <div className="mb-3">
-                        <label htmlFor="title" className="form-label">
-                          Title <span className="text-danger">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          id="title"
-                          name="title"
-                          placeholder='Enter Title'
-                          // className="form-control inputcss"
-                          className={`form-control ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
-                          value={formData.title}
-                          onChange={(e) => onChange(e.target.name, e.target.value)}
-                          disabled={InputDisabled}
+                    :
+                    <form className='row' >
+                      <div className=""><strong className="font-16 mb-1">Basic Information</strong><p className="font-14 text-muted mb-3 mt-1">Specify basic information </p></div>
+                      <div className="col-lg-4">
+                        <div className="mb-3">
+                          <label htmlFor="title" className="form-label">
+                            Title <span className="text-danger">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            id="title"
+                            name="title"
+                            placeholder='Enter Title'
+                            // className="form-control inputcss"
+                            className={`form-control ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                            value={formData.title}
+                            onChange={(e) => onChange(e.target.name, e.target.value)}
+                            disabled={InputDisabled}
 
-                        />
-                      </div>
-                    </div>
-                    <div className="col-lg-4">
-                      <div className="mb-3">
-                        <label htmlFor="Type" className="form-label">
-                          Type <span className="text-danger">*</span>
-                        </label>
-                        <select
-                          // className="form-select inputcss"
-                          id="Type"
-                          name="Type"
-                          value={formData.Type}
-                          onChange={(e) => onChange(e.target.name, e.target.value)}
-                          className={`form-select ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
-                          disabled={true}
-                        >
-                          <option>Select</option>
-                          {
-                            TypeData.map((item, index) => (
-                              <option key={index} value={item.id}>{item.name}</option>
-                            )
-                            )
-                          }
-
-
-                        </select>
-                      </div>
-                    </div>
-                    <div className="col-lg-4">
-                      <div className="mb-3">
-                        <label htmlFor="category" className="form-label">
-                          Category <span className="text-danger">*</span>
-                        </label>
-                        <select
-                          // className="form-select inputcss"
-                          className={`form-select ${(!ValidSubmit) ? "border-on-error" : ""}`}
-                          id="category"
-                          name="category"
-                          value={formData.category}
-                          onChange={(e) => onChange(e.target.name, e.target.value)}
-                          // disabled={ApprovalMode}
-                          disabled={InputDisabled}
-
-                        >
-                          <option>Select</option>
-                          {
-                            CategoryData.map((item, index) => (
-                              <option key={index} value={item.id}>{item.name}</option>
-                            )
-                            )
-                          }
-
-
-                        </select>
-                      </div>
-                    </div>
-
-                    <div className="col-lg-4">
-                      <div className="mb-3">
-                        <label htmlFor="entity" className="form-label">
-                          Department <span className="text-danger">*</span>
-                        </label>
-                        <select
-                          //  className="form-select inputcss"
-                          className={`form-select ${(!ValidSubmit) ? "border-on-error" : ""}`}
-                          id="entity"
-                          name="entity"
-                          value={formData.entity}
-                          onChange={(e) => onChange(e.target.name, e.target.value)}
-                          // disabled={ApprovalMode}
-                          disabled={InputDisabled}
-
-                        >
-                          <option value="">Select</option>
-                          {
-                            EnityData.map((item, index) => (
-                              <option key={index} value={item.id}>{item.name}</option>
-                            ))
-                          }
-                        </select>
-                      </div>
-                    </div>
-                    <div className="col-lg-4">
-                      <div className="mb-3">
-
-                        <div className='d-flex justify-content-between'>
-                          <div>
-                            <label htmlFor="bannerImage" className="form-label">
-                              News Image <span className="text-danger">*</span>
-                            </label>
-                          </div>
-                          <div>
-                            <div>
-                              {BnnerImagepostArr[0] != false && BnnerImagepostArr.length > 0 &&
-                                BnnerImagepostArr != undefined ? BnnerImagepostArr.length == 1 &&
-                              (<a style={{ fontSize: '0.875rem' }} onClick={() => handlePreviewClick(BnnerImagepostArr[0])}>
-                                <FontAwesomeIcon icon={faPaperclip} />1 file Attached
-                              </a>) : ""
-                                // || BnnerImagepostArr.length > 0 && BnnerImagepostArr[0].files.length > 1 &&
-                                // (<a onClick={() => setShowModalFunc(true, "bannerimg")} style={{ fontSize: '0.875rem' }}>
-                                //   <FontAwesomeIcon icon={faPaperclip} /> {BnnerImagepostArr[0].files.length} files Attached
-                                // </a>)
-                              }
-                            </div>
-                          </div>
+                          />
                         </div>
-                        <input
-                          type="file"
-                          ref={inputFile}
-                          id="bannerImage"
-                          name="bannerImage"
-                          accept=".jpeg,.jpg,.png,.gif"
-                          className={`form-control  ${(!ValidSubmit) ? "border-on-error" : ""}`}
-                          // className="form-control inputcss"
-                          onChange={(e) => onFileChange(e, "bannerimg", "Document")}
-                          // disabled={ApprovalMode}
-                          disabled={InputDisabled}
-
-                        />
                       </div>
-                    </div>
-
-                    <div className="col-lg-4">
-                      <div className="mb-3">
-
-                        <div className='d-flex justify-content-between'>
-                          <div>
-                            <label htmlFor="announcementGallery" className="form-label">
-                              News Gallery <span className="text-danger">*</span>
-                            </label>
-                          </div>
-                          <div>
-
-                            {ImagepostArr1.length > 0 &&
-                              ImagepostArr1.length == 1 &&
-                              (<a onClick={() => setShowModalFunc(true, "Gallery")} style={{ fontSize: '0.875rem' }}>
-                                <FontAwesomeIcon icon={faPaperclip} /> {ImagepostArr1.length} file Attached
-                              </a>)
-                              || ImagepostArr1.length > 0 && ImagepostArr1.length > 1 &&
-                              (<a onClick={() => setShowModalFunc(true, "Gallery")} style={{ fontSize: '0.875rem' }}>
-                                <FontAwesomeIcon icon={faPaperclip} /> {ImagepostArr1.length} files Attached
-                              </a>)
+                      <div className="col-lg-4">
+                        <div className="mb-3">
+                          <label htmlFor="Type" className="form-label">
+                            Type <span className="text-danger">*</span>
+                          </label>
+                          <select
+                            // className="form-select inputcss"
+                            id="Type"
+                            name="Type"
+                            value={formData.Type}
+                            onChange={(e) => onChange(e.target.name, e.target.value)}
+                            className={`form-select ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                            disabled={true}
+                          >
+                            <option>Select</option>
+                            {
+                              TypeData.map((item, index) => (
+                                <option key={index} value={item.id}>{item.name}</option>
+                              )
+                              )
                             }
 
-                          </div>
+
+                          </select>
                         </div>
-                        <input
-                          type="file"
-                          ref={inputFilegal}
-                          id="announcementGallery"
-                          name="announcementGallery"
-                          accept=".jpeg,.jpg,.png,.gif,.mp4,.mp3,.mkv,.webm,.flv,.vob,.ogg,.wmv,.yuv.,MTS,.TS,.m4p..mpeg,.mpe,.mpv,.m4v,.svi,.3gp,.3g2,.roq,.nsv,.flv,.f4v,.f4p,.f4a,.f4b"
-
-                          //className="form-control inputcss"
-                          className={`form-control  ${(!ValidSubmit) ? "border-on-error" : ""}`}
-                          multiple
-                          //maxLength={5}
-                          onChange={(e) => onFileChange(e, "Gallery", "AnnouncementAndNewsGallary")}
-                          // disabled={ApprovalMode}
-                          disabled={InputDisabled}
-
-                        />
                       </div>
-                    </div>
+                      <div className="col-lg-4">
+                        <div className="mb-3">
+                          <label htmlFor="category" className="form-label">
+                            Category <span className="text-danger">*</span>
+                          </label>
+                          <select
+                            // className="form-select inputcss"
+                            className={`form-select ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                            id="category"
+                            name="category"
+                            value={formData.category}
+                            onChange={(e) => onChange(e.target.name, e.target.value)}
+                            // disabled={ApprovalMode}
+                            disabled={InputDisabled}
 
-                    {/* <div className="col-lg-4">
+                          >
+                            <option>Select</option>
+                            {
+                              CategoryData.map((item, index) => (
+                                <option key={index} value={item.id}>{item.name}</option>
+                              )
+                              )
+                            }
+
+
+                          </select>
+                        </div>
+                      </div>
+
+                      <div className="col-lg-4">
+                        <div className="mb-3">
+                          <label htmlFor="entity" className="form-label">
+                            Department <span className="text-danger">*</span>
+                          </label>
+                          <select
+                            //  className="form-select inputcss"
+                            className={`form-select ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                            id="entity"
+                            name="entity"
+                            value={formData.entity}
+                            onChange={(e) => onChange(e.target.name, e.target.value)}
+                            // disabled={ApprovalMode}
+                            disabled={InputDisabled}
+
+                          >
+                            <option value="">Select</option>
+                            {
+                              EnityData.map((item, index) => (
+                                <option key={index} value={item.id}>{item.name}</option>
+                              ))
+                            }
+                          </select>
+                        </div>
+                      </div>
+                      <div className="col-lg-4">
+                        <div className="mb-3">
+
+                          <div className='d-flex justify-content-between'>
+                            <div>
+                              <label htmlFor="bannerImage" className="form-label">
+                                News Image <span className="text-danger">*</span>
+                              </label>
+                            </div>
+                            <div>
+                              <div>
+                                {BnnerImagepostArr[0] != false && BnnerImagepostArr.length > 0 &&
+                                  BnnerImagepostArr != undefined ? BnnerImagepostArr.length == 1 &&
+                                (<a style={{ fontSize: '0.875rem' }} onClick={() => handlePreviewClick(BnnerImagepostArr[0])}>
+                                  <FontAwesomeIcon icon={faPaperclip} />1 file Attached
+                                </a>) : ""
+                                  // || BnnerImagepostArr.length > 0 && BnnerImagepostArr[0].files.length > 1 &&
+                                  // (<a onClick={() => setShowModalFunc(true, "bannerimg")} style={{ fontSize: '0.875rem' }}>
+                                  //   <FontAwesomeIcon icon={faPaperclip} /> {BnnerImagepostArr[0].files.length} files Attached
+                                  // </a>)
+                                }
+                              </div>
+                            </div>
+                          </div>
+                          <input
+                            type="file"
+                            ref={inputFile}
+                            id="bannerImage"
+                            name="bannerImage"
+                            accept=".jpeg,.jpg,.png,.gif"
+                            className={`form-control  ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                            // className="form-control inputcss"
+                            onChange={(e) => onFileChange(e, "bannerimg", "Document")}
+                            // disabled={ApprovalMode}
+                            disabled={InputDisabled}
+
+                          />
+                        </div>
+                      </div>
+
+                      <div className="col-lg-4">
+                        <div className="mb-3">
+
+                          <div className='d-flex justify-content-between'>
+                            <div>
+                              <label htmlFor="announcementGallery" className="form-label">
+                                News Gallery <span className="text-danger">*</span>
+                              </label>
+                            </div>
+                            <div>
+
+                              {ImagepostArr1.length > 0 &&
+                                ImagepostArr1.length == 1 &&
+                                (<a onClick={() => setShowModalFunc(true, "Gallery")} style={{ fontSize: '0.875rem' }}>
+                                  <FontAwesomeIcon icon={faPaperclip} /> {ImagepostArr1.length} file Attached
+                                </a>)
+                                || ImagepostArr1.length > 0 && ImagepostArr1.length > 1 &&
+                                (<a onClick={() => setShowModalFunc(true, "Gallery")} style={{ fontSize: '0.875rem' }}>
+                                  <FontAwesomeIcon icon={faPaperclip} /> {ImagepostArr1.length} files Attached
+                                </a>)
+                              }
+
+                            </div>
+                          </div>
+                          <input
+                            type="file"
+                            ref={inputFilegal}
+                            id="announcementGallery"
+                            name="announcementGallery"
+                            accept=".jpeg,.jpg,.png,.gif,.mp4,.mp3,.mkv,.webm,.flv,.vob,.ogg,.wmv,.yuv.,MTS,.TS,.m4p..mpeg,.mpe,.mpv,.m4v,.svi,.3gp,.3g2,.roq,.nsv,.flv,.f4v,.f4p,.f4a,.f4b"
+
+                            //className="form-control inputcss"
+                            className={`form-control  ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                            multiple
+                            //maxLength={5}
+                            onChange={(e) => onFileChange(e, "Gallery", "AnnouncementAndNewsGallary")}
+                            // disabled={ApprovalMode}
+                            disabled={InputDisabled}
+
+                          />
+                        </div>
+                      </div>
+
+                      {/* <div className="col-lg-4">
                       <div className="mb-3">
 
                         <div className='d-flex justify-content-between'>
@@ -2019,7 +2019,7 @@ const closeModal = () => {
                       </div>
                     </div> */}
 
-                    {/* <div className="col-lg-3">
+                      {/* <div className="col-lg-3">
                       <div className="mb-3">
                         <label htmlFor="FeaturedAnnouncement" className="form-label">
                           Featured Announcement <span className="text-danger">*</span>
@@ -2042,54 +2042,54 @@ const closeModal = () => {
                       </div>
                     </div> */}
 
-                    <div className="col-lg-12">
-                      <div className="mb-3">
-                        <label htmlFor="overview" className="form-label">
-                          Overview <span className="text-danger">*</span>
-                        </label>
-                        <textarea
-                          className={`form-control  ${(!ValidSubmit) ? "border-on-error" : ""}`}
-                          // className="form-control inputcss"
-                          id="overview"
-                          placeholder='Enter Overview'
-                          name="overview"
-                          style={{ height: "100px" }}
-                          value={formData.overview}
-                          onChange={(e) => onChange(e.target.name, e.target.value)}
-                          // disabled={ApprovalMode}
-                          disabled={InputDisabled}
+                      <div className="col-lg-12">
+                        <div className="mb-3">
+                          <label htmlFor="overview" className="form-label">
+                            Overview <span className="text-danger">*</span>
+                          </label>
+                          <textarea
+                            className={`form-control  ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                            // className="form-control inputcss"
+                            id="overview"
+                            placeholder='Enter Overview'
+                            name="overview"
+                            style={{ height: "100px" }}
+                            value={formData.overview}
+                            onChange={(e) => onChange(e.target.name, e.target.value)}
+                            // disabled={ApprovalMode}
+                            disabled={InputDisabled}
 
-                        ></textarea>
-                      </div>
-                    </div>
-
-                    <div className="col-lg-12">
-                      <div className="mb-3">
-                        <label htmlFor="description" className="form-label">
-                          Description
-                          {/* <span className="text-danger">*</span> */}
-                        </label>
-                        <div style={{ display: "contents", justifyContent: "start" }}>
-                          <ReactQuill
-                            theme="snow"
-                            modules={modules}
-                            formats={formats}
-                            placeholder={''}
-                            value={richTextValues.description}
-                            onChange={(content) => {
-                              setRichTextValues((prevValues) => ({
-                                ...prevValues,
-                                ["description"]: content,
-                              }));
-                            }}
-                            style={{ width: '100%', fontSize: '6px', height: '100px' }}
-                            readOnly={InputDisabled}
-                          />
+                          ></textarea>
                         </div>
                       </div>
-                    </div>
-                  
-                  </form>
+
+                      <div className="col-lg-12">
+                        <div className="mb-3">
+                          <label htmlFor="description" className="form-label">
+                            Description
+                            {/* <span className="text-danger">*</span> */}
+                          </label>
+                          <div style={{ display: "contents", justifyContent: "start" }}>
+                            <ReactQuill
+                              theme="snow"
+                              modules={modules}
+                              formats={formats}
+                              placeholder={''}
+                              value={richTextValues.description}
+                              onChange={(content) => {
+                                setRichTextValues((prevValues) => ({
+                                  ...prevValues,
+                                  ["description"]: content,
+                                }));
+                              }}
+                              style={{ width: '100%', fontSize: '6px', height: '100px' }}
+                              readOnly={InputDisabled}
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                    </form>
                   }
                 </div>
               </div>
@@ -2100,12 +2100,12 @@ const closeModal = () => {
                 (
                   <div className="mt-2">
                     <div className="card cardborder p-4">
-                    <div className="">
+                      <div className="">
 
-<strong className='font-16 mb-1'>Approval Hierarchy</strong>
-<p className='font-14 text-muted mb-3 mt-1'>Define Approaval Hierarchy for the documents.</p>
+                        <strong className='font-16 mb-1'>Approval Hierarchy</strong>
+                        <p className='font-14 text-muted mb-3 mt-1'>Define Approaval Hierarchy for the documents.</p>
 
-</div>
+                      </div>
                       {/* <div className="d-flex justify-content-between align-items-center">
                       <p className="font-14 mb-3 flex-grow-1">
                         Define approval hierarchy for the documents submitted by Team members in this folder.
@@ -2129,61 +2129,61 @@ const closeModal = () => {
                         </div>
                       </div> */}
 
-<table className="mtbalenew nretabl0">
-                                                    <thead>
-                                                      <tr>
-                                                      <th style={{minWidth:'60px', maxWidth:'60px'}} className="newpad">  Select Level</th>
-                                                      <th className="newpad"> Select Approver</th>
-                                                      </tr>
-                                                    </thead>
-                                                    <tbody style={{overflowX:'hidden',overflow:'initial'}}>
+                        <table className="mtbalenew nretabl0">
+                          <thead>
+                            <tr>
+                              <th style={{ minWidth: '60px', maxWidth: '60px' }} className="newpad">  Select Level</th>
+                              <th className="newpad"> Select Approver</th>
+                            </tr>
+                          </thead>
+                          <tbody style={{ overflowX: 'hidden', overflow: 'initial' }}>
 
-                        {rows.map((row: any) => (
-                          <div className="row mb-0" key={row.id}>
-                             <tr style={{overflow:'initial'}}>
-                      <td style={{minWidth:'60px', maxWidth:'60px',overflow:'initial'}} className=""> 
-                        <select style={{border:"0px solid #ccc", background:'#fff'}}
-                                className="form-select removeb"
-                                id={`Level-${row.id}`}
-                                name="Level"
-                                value={row.LevelId}
-                                disabled={true}
-                                onChange={(e) => {
-                                  const selectedLevel = e.target.value;
-                                  setRows((prevRows: any) =>
-                                    prevRows.map((r: any) =>
-                                      r.id === row.id
-                                        ? { ...r, LevelId: selectedLevel }
-                                        : r
-                                    )
-                                  );
-                                }}
-                              >
-                                <option value="">Select</option>
-                                {levels.map((item: any) => (
-                                  <option key={item.Id} value={item.Id}>
-                                    {item.Level}
-                                  </option>
-                                ))}
-                              </select>  
-                                                        
-                                                        </td>
-                                                        <td style={{overflow:'initial'}} className=""> 
-                                                      <Multiselect className="removeb" style={{border:"0px solid #ccc", background:'#fff'}}
-                                                      options={row.approvedUserList}
-                                                      selectedValues={row.approvedUserListupdate}
-                                                      onSelect={(selected) => handleUserSelect(selected, row.id)}
-                                                      onRemove={(selected) => handleUserSelect(selected, row.id)}
-                                                      displayValue="name"
-                                                      disable={true}
-                                                      placeholder=''
-                                                      hidePlaceholder={true}
-                                                    /> </td>
-                                                        </tr>
-                         
-                          </div>
-                        ))}
-                        </tbody>
+                            {rows.map((row: any) => (
+                              <div className="row mb-0" key={row.id}>
+                                <tr style={{ overflow: 'initial' }}>
+                                  <td style={{ minWidth: '60px', maxWidth: '60px', overflow: 'initial' }} className="">
+                                    <select style={{ border: "0px solid #ccc", background: '#fff' }}
+                                      className="form-select removeb"
+                                      id={`Level-${row.id}`}
+                                      name="Level"
+                                      value={row.LevelId}
+                                      disabled={true}
+                                      onChange={(e) => {
+                                        const selectedLevel = e.target.value;
+                                        setRows((prevRows: any) =>
+                                          prevRows.map((r: any) =>
+                                            r.id === row.id
+                                              ? { ...r, LevelId: selectedLevel }
+                                              : r
+                                          )
+                                        );
+                                      }}
+                                    >
+                                      <option value="">Select</option>
+                                      {levels.map((item: any) => (
+                                        <option key={item.Id} value={item.Id}>
+                                          {item.Level}
+                                        </option>
+                                      ))}
+                                    </select>
+
+                                  </td>
+                                  <td style={{ overflow: 'initial' }} className="">
+                                    <Multiselect className="removeb" style={{ border: "0px solid #ccc", background: '#fff' }}
+                                      options={row.approvedUserList}
+                                      selectedValues={row.approvedUserListupdate}
+                                      onSelect={(selected) => handleUserSelect(selected, row.id)}
+                                      onRemove={(selected) => handleUserSelect(selected, row.id)}
+                                      displayValue="name"
+                                      disable={true}
+                                      placeholder=''
+                                      hidePlaceholder={true}
+                                    /> </td>
+                                </tr>
+
+                              </div>
+                            ))}
+                          </tbody>
                         </table>
                       </div>
 
@@ -2209,38 +2209,38 @@ const closeModal = () => {
             {
               //let forrework=ApprovalRequestItem && ApprovalRequestItem.IsRework=='Yes'&& ApprovalRequestItem.LevelSequence!=0;
               (InputDisabled && ApprovalRequestItem) || (ApprovalRequestItem && ApprovalRequestItem.IsRework == 'Yes' && ApprovalRequestItem.LevelSequence != 0) ? (
-                <WorkflowAction currentItem={ApprovalRequestItem} ctx={props.context}  ContentType={LIST_TITLE_MyRequest}
+                <WorkflowAction currentItem={ApprovalRequestItem} ctx={props.context} ContentType={LIST_TITLE_MyRequest}
                   DisableApproval={ApprovalRequestItem && ApprovalRequestItem.IsRework == 'Yes' && ApprovalRequestItem.LevelSequence != 0}
                   DisableCancel={ApprovalRequestItem && ApprovalRequestItem.IsRework == 'Yes' && ApprovalRequestItem.LevelSequence != 0}
                 //DisableReject={ApprovalRequestItem && ApprovalRequestItem.IsRework=='Yes'&& ApprovalRequestItem.LevelSequence!=0}
                 />
               ) : (<div></div>)
             }
-              {
-                      !InputDisabled ?
-                        (<div className="text-center" style={{ marginTop: '2rem',marginBottom: '2rem'  }}>
-                          <div className="btn btn-success waves-effect waves-light m-1" style={{width:'145px' }} onClick={handleSaveAsDraft}>
-                            <div className='d-flex' style={{ justifyContent: 'center' }}>
-                              <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} className='me-1' alt="Check" /> Save As Draft
-                            </div>
-                          </div>
-                          <div className="btn btn-success waves-effect waves-light m-1" style={{ width:'145px' }} onClick={handleFormSubmit}>
-                            <div className='d-flex' style={{ justifyContent: 'center'}}>
-                              <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} className='me-1' alt="Check" /> Submit
-                            </div>
-                          </div>
-                          <button type="button" className="btn cancel-btn waves-effect waves-light m-1" style={{width:'145px' }} onClick={handleCancel}>
-                            <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }}
-                              className='me-1' alt="x" />
-                            Cancel
-                          </button>
-                        </div>) :
-                        (modeValue == 'view') && (<div className="text-center" style={{ marginTop: '2rem' }}><button type="button" className="btn cancel-btn waves-effect waves-light m-1" style={{ width:'145px' }} onClick={handleCancel}>
-                          <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }}
-                            className='me-1' alt="x" />
-                          Cancel
-                        </button></div>)
-                    }
+            {
+              !InputDisabled ?
+                (<div className="text-center" style={{ marginTop: '2rem', marginBottom: '2rem' }}>
+                  <div className="btn btn-success waves-effect waves-light m-1" style={{ width: '145px' }} onClick={handleSaveAsDraft}>
+                    <div className='d-flex' style={{ justifyContent: 'center' }}>
+                      <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} className='me-1' alt="Check" /> Save As Draft
+                    </div>
+                  </div>
+                  <div className="btn btn-success waves-effect waves-light m-1" style={{ width: '145px' }} onClick={handleFormSubmit}>
+                    <div className='d-flex' style={{ justifyContent: 'center' }}>
+                      <img src={require('../../../Assets/ExtraImage/checkcircle.svg')} style={{ width: '1rem' }} className='me-1' alt="Check" /> Submit
+                    </div>
+                  </div>
+                  <button type="button" className="btn cancel-btn waves-effect waves-light m-1" style={{ width: '145px' }} onClick={handleCancel}>
+                    <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }}
+                      className='me-1' alt="x" />
+                    Cancel
+                  </button>
+                </div>) :
+                (modeValue == 'view') && (<div className="text-center" style={{ marginTop: '2rem' }}><button type="button" className="btn cancel-btn waves-effect waves-light m-1" style={{ width: '145px' }} onClick={handleCancel}>
+                  <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }}
+                    className='me-1' alt="x" />
+                  Cancel
+                </button></div>)
+            }
             {rows != null && rows.length > 0 && formData.title != "" && editID !== null &&
               <WorkflowAuditHistory ContentItemId={editID} ContentType={CONTENTTYPE_News} ctx={props.context} />
             }
@@ -2296,13 +2296,13 @@ const closeModal = () => {
                           {ImagepostArr1.map((file: any, index: number) => (
                             <tr key={index}>
                               <td className='text-center'>{index + 1}</td>
-                              <td>  
-                                <img className='imagefe' src={file.fileUrl ?file.fileUrl :`${siteUrl}/AnnouncementAndNewsGallary/${file.fileName}`}
+                              <td>
+                                <img className='imagefe' src={file.fileUrl ? file.fileUrl : `${siteUrl}/AnnouncementAndNewsGallary/${file.fileName}`}
                                   style={{ cursor: 'pointer' }}
                                   onClick={() => handleShow(
                                     `${siteUrl}/AnnouncementAndNewsGallary/${file.fileName}`
                                   )}
-                              />
+                                />
                               </td>
 
                               <td>{file.fileName}</td>
@@ -2335,12 +2335,12 @@ const closeModal = () => {
                             <tr key={index}>
                               <td className='text-center'>{index + 1}</td>
                               <img
-                              className='imagefe'
-                              src={file.fileType.startsWith('video/') ?
-                                require("../../../Assets/ExtraImage/video.jpg") :
-                                (file.fileUrl ? file.fileUrl : `${siteUrl}/MediaGallery/${file.fileName}`)}
-                              alt={'default image'}
-                            />
+                                className='imagefe'
+                                src={file.fileType.startsWith('video/') ?
+                                  require("../../../Assets/ExtraImage/video.jpg") :
+                                  (file.fileUrl ? file.fileUrl : `${siteUrl}/MediaGallery/${file.fileName}`)}
+                                alt={'default image'}
+                              />
                               <td>{file.name}</td>
                               <td className='text-right'>{file.size}</td>
                               <td className='text-center'> <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, BnnerImagepostArr, "bannerimg")} /> </td>
@@ -2354,19 +2354,19 @@ const closeModal = () => {
 
             </Modal>
             <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Image Preview</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <img src={modalImageSrc} alt="Image Preview" style={{ width: '100%' }} />
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal>
-             <Modal show={isModalOpen} onHide={closeModal}>
+              <Modal.Header closeButton>
+                <Modal.Title>Image Preview</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <img src={modalImageSrc} alt="Image Preview" style={{ width: '100%' }} />
+              </Modal.Body>
+              <Modal.Footer>
+                <Button variant="secondary" onClick={handleClose}>
+                  Close
+                </Button>
+              </Modal.Footer>
+            </Modal>
+            <Modal show={isModalOpen} onHide={closeModal}>
               <Modal.Header closeButton>
                 <Modal.Title>Image Preview</Modal.Title>
               </Modal.Header>
@@ -2378,7 +2378,7 @@ const closeModal = () => {
                   Close
                 </Button>
               </Modal.Footer>
-                    </Modal>
+            </Modal>
           </div>
         </div>
       </div>

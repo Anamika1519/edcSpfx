@@ -93,11 +93,11 @@ const NotificationList = ({ NotificationArray, handleNotificationClick, OnCleara
                                       /></span>
                                         <div className="d-flex align-items-center">
                                             <div className="flex-grow-1 text-truncate ms-2">
-                                                <h5 className="noti-item-title hovertext  fw-semibold font-14 mb-0" style={{ textTransform: 'capitalize' }}>
+                                                <h5 className="noti-item-title hovertext  fw-semibold font-14 mb-0" title={notify.ContentName || notify.ContentComment}style={{ textTransform: 'capitalize' }}>
                                                 {notify.ContentName || notify.ContentComment}
                                                     <small className="fw-normal text-muted ms-0" style={{ textTransform: 'lowercase' }}>{moment(notify.Created).fromNow()}</small>
                                                 </h5>
-                                                <small className="noti-item-subtitle text-muted">{notify?.ActionUser?.Title} {notify.ContentType0} on {notify?.NotifiedUser?.Title}</small>
+                                                <small className="noti-item-subtitle text-muted" title={`${notify?.ActionUser?.Title} ${notify.ContentType0} on ${notify?.NotifiedUser?.Title}`}>{notify?.ActionUser?.Title} {notify.ContentType0} on {notify?.NotifiedUser?.Title}</small>
                                             </div>
                                             <div className="flex-shrink-0">
                                                 {/* <div className="notify-icon bg-primary">

@@ -84,7 +84,7 @@ export const MastersettingContext = ({ props }: any) => {
               {QuickLinkArray.length == 0 && showImg?
 
                 <div>
-                  <img src={require("../assets/Group.png")} />
+                  <img style={{ width: '100%' }}  src={require("../assets/Group.png")} />
                 </div>
 
 

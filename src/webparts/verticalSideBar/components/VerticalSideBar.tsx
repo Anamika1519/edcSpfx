@@ -355,11 +355,11 @@ const VerticalContext = ({ _context }: any) => {
         localStorage.setItem("NavId", String(1));
         setuseActive(1)
     } 
-    else if (pageName === "MediaGallery" || pageName === "Mediadetails") {
-        // alert("set MediaGallery/Mediadetails");
-        localStorage.setItem("NavId", String(2));
-        setuseActive(2)
-    } 
+    // else if (pageName === "MediaGallery" || pageName === "Mediadetails") {
+    //     // alert("set MediaGallery/Mediadetails");
+    //     localStorage.setItem("NavId", String(2));
+    //     setuseActive(2)
+    // } 
     
     else if (pageName === "EventCalendar" || pageName === "EventDetailsCalendar") {
         // alert("set Event");
@@ -371,24 +371,24 @@ const VerticalContext = ({ _context }: any) => {
         localStorage.setItem("NavId", String(4));
         setuseActive(4)
     } 
-    else if (pageName === "Announcements" || pageName === "AnnouncementDetails") {
-        // alert("set Announcement");
-        localStorage.setItem("NavId", String(5));
-        setuseActive(5)
-    } 
-    else if (pageName === "CorporateDirectory" ) {
-        // alert("set MediaGallery/Mediadetails");
-        localStorage.setItem("NavId", String(6));
-        setuseActive(6)
-    } 
-    else if (pageName === "SocialFeed" || 
-      pageName === "DiscussionForum" || pageName === "DiscussionForumDetail" ||
-      pageName === "Blogs" || pageName === "BlogDetails" ||
-      pageName === "GroupandTeam" || pageName === "GroupandTeamDetails"){
-        // alert("set MediaGallery/Mediadetails");
-        localStorage.setItem("NavId", String(7));
-        setuseActive(7)
-    }  
+    // else if (pageName === "Announcements" || pageName === "AnnouncementDetails") {
+    //     // alert("set Announcement");
+    //     localStorage.setItem("NavId", String(5));
+    //     setuseActive(5)
+    // } 
+    // else if (pageName === "CorporateDirectory" ) {
+    //     // alert("set MediaGallery/Mediadetails");
+    //     localStorage.setItem("NavId", String(6));
+    //     setuseActive(6)
+    // } 
+    // else if (pageName === "SocialFeed" || 
+    //   pageName === "DiscussionForum" || pageName === "DiscussionForumDetail" ||
+    //   pageName === "Blogs" || pageName === "BlogDetails" ||
+    //   pageName === "GroupandTeam" || pageName === "GroupandTeamDetails"){
+    //     // alert("set MediaGallery/Mediadetails");
+    //     localStorage.setItem("NavId", String(7));
+    //     setuseActive(7)
+    // }  
     // else if (pageName === "DiscussionForum" || pageName === "DiscussionForumDetail") {
     //     // alert("set MediaGallery/Mediadetails");
     //     localStorage.setItem("NavId", String(7));

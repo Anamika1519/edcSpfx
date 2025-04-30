@@ -1015,7 +1015,12 @@ const HelloWorldContext = ({ props }: any) => {
     return arr.reduce((acc, val) => acc.concat(val), []);
   };
   //#endregion
-
+  const fixTimezoneOffset = (dateStr: string) => {
+    const date = new Date(dateStr);
+    const timezoneOffset = date.getTimezoneOffset(); // in minutes
+    date.setMinutes(date.getMinutes() + timezoneOffset); // shift back to correct day
+    return date.toISOString().split('T')[0]; // returns 'YYYY-MM-DD'
+  };
 
   //#region ApiCallFunc
   const ApiCallFunc = async () => {
@@ -1058,9 +1063,10 @@ const HelloWorldContext = ({ props }: any) => {
         setEditID(Number(setEventById[0].ID))
         setEditForm(true)
         // setCategoryData(await getCategory(sp, Number(setBannerById[0]?.TypeMaster))) // Category
-        const eventDate = new Date(setEventById[0].EventDate).toISOString()?.split("T")[0];
-        const RegistrationDueDate = new Date(setEventById[0].RegistrationDueDate).toISOString()?.split("T")[0];
-
+        //const eventDate = new Date(setEventById[0].EventDate).toISOString()?.split("T")[0];
+        //const RegistrationDueDate = new Date(setEventById[0].RegistrationDueDate).toISOString()?.split("T")[0];
+        const eventDate = fixTimezoneOffset(setEventById[0].EventDate);
+        const RegistrationDueDate = fixTimezoneOffset(setEventById[0].RegistrationDueDate);
         //  setSelectedDate(eventDate);
         //  setSelectedRegistrationDueDate(RegistrationDueDate);
         let arr = {
@@ -1081,10 +1087,10 @@ const HelloWorldContext = ({ props }: any) => {
         // }));
 
 
-        setEventGalleryArrIdsArr(setEventById[0]?.EventGalleryId)
-        setEventThumbnailIdsArr(setEventById[0]?.EventThumbnailId)
-        setEventGalleryArr1(setEventById[0].EventGalleryJson)
-        setEventThumbnailArr1(setEventById[0].EventThumbnailJson)
+        setEventGalleryArrIdsArr(setEventById[0]?.EventGalleryId !=null ? setEventById[0]?.EventGalleryId:[])
+        setEventThumbnailIdsArr(setEventById[0]?.EventThumbnailId !=null ? setEventById[0]?.EventThumbnailId:[])
+        setEventGalleryArr1(setEventById[0]?.EventGalleryId != null ?setEventById[0].EventGalleryJson:[])
+        setEventThumbnailArr1(setEventById[0]?.EventThumbnailId != null ?setEventById[0].EventThumbnailJson:[])
         if (setEventById[0].BannerImage.length) {
           banneimagearr = setEventById[0].BannerImage
           console.log(banneimagearr, 'banneimagearr');

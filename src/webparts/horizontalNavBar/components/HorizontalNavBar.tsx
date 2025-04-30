@@ -318,7 +318,7 @@ const HorizontalNavbar = ({ _context, siteUrl }: any) => {
     debugger
     setTimeout(() => {
       window.location.href =
-        `${siteUrl}/SitePages/${result.DeatilPage}.aspx?${result.Id}`
+        `${siteUrl}/SitePages/${result.DeatilPage}.aspx?${result.ContentId}`
     }, 500);
 
   };
