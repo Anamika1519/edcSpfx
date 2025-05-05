@@ -94,7 +94,7 @@ const NotificationList = ({ NotificationArray, handleNotificationClick, OnCleara
                                         <div className="d-flex align-items-center">
                                             <div className="flex-grow-1 text-truncate ms-2">
                                                 <h5 className="noti-item-title hovertext  fw-semibold font-14 mb-0" title={notify.ContentName || notify.ContentComment}style={{ textTransform: 'capitalize' }}>
-                                                {notify.ContentName || notify.ContentComment}
+                                               <span style={{width:'160px', float:'left', overflow:'hidden', whiteSpace:'nowrap', textOverflow:'ellipsis'}}> {notify.ContentName || notify.ContentComment} </span>
                                                     <small className="fw-normal text-muted ms-0" style={{ textTransform: 'lowercase' }}>{moment(notify.Created).fromNow()}</small>
                                                 </h5>
                                                 <small className="noti-item-subtitle text-muted" title={`${notify?.ActionUser?.Title} ${notify.ContentType0} on ${notify?.NotifiedUser?.Title}`}>{notify?.ActionUser?.Title} {notify.ContentType0} on {notify?.NotifiedUser?.Title}</small>
@@ -127,7 +127,7 @@ const NotificationList = ({ NotificationArray, handleNotificationClick, OnCleara
                                         <div className="d-flex align-items-center">
                                             <div className="flex-grow-1 text-truncate ms-2">
                                                 <h5 className="noti-item-title hovertext  fw-semibold font-14 mb-0" style={{ textTransform: 'capitalize' }}>
-                                                {notify.ContentName || notify.ContentComment}
+                                              <span style={{width:'160px', float:'left', overflow:'hidden', whiteSpace:'nowrap', textOverflow:'ellipsis'}} className='text-truncate'>  {notify.ContentName || notify.ContentComment}</span>
                                                     <small className="fw-normal text-muted ms-0">{moment(notify.Created).fromNow()}</small>
                                                 </h5>
                                                 <small className="noti-item-subtitle text-muted">{notify?.ActionUser?.Title} {notify.ContentType0} on {notify?.NotifiedUser?.Title}</small>
@@ -160,7 +160,7 @@ const NotificationList = ({ NotificationArray, handleNotificationClick, OnCleara
                                         <div className="d-flex align-items-center">
                                             <div className="flex-grow-1 text-truncate ms-2">
                                                 <h5 className="noti-item-title hovertext  fw-semibold font-14 mb-0" style={{ textTransform: 'capitalize' }}>
-                                                {notify.ContentName || notify.ContentComment} <small className="fw-normal text-muted ms-0">{moment(notify.Created).fromNow()}</small>
+                                               <span style={{width:'160px',  float:'left', overflow:'hidden', whiteSpace:'nowrap', textOverflow:'ellipsis'}}>{notify.ContentName || notify.ContentComment}</span>  <small className="fw-normal text-muted ms-0">{moment(notify.Created).fromNow()}</small>
                                                 </h5>
                                                 <small className="noti-item-subtitle text-muted">{notify?.ActionUser?.Title} {notify.ContentType0} on {notify?.NotifiedUser?.Title}</small>
                                             </div>

@@ -841,7 +841,7 @@ const AddDynamicBannerContext = ({ props }: any) => {
                                     <img className='imagefe' src={file.fileUrl ? file.fileUrl : `${file.serverUrl}${file.serverRelativeUrl}`}
                                     />
                                   </td>
-                                  <td>{file.fileName}</td>
+                                  <td>{file.name || file.fileName}</td>
                                   {editForm ? <td className='text-center'> <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, BnnerImagepostArr, BnnerImagepostArr[0].docLib, "bannerimg")} /> </td> : <td className='text-center'> <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, BnnerImagepostArr, BnnerImagepostArr[0].docLib, "bannerimg")} /> </td>
                                   }
                                 </tr>

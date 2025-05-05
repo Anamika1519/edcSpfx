@@ -184,21 +184,21 @@ const NotificationDetailsContext = ({ props }: any) => {
                                         src={
                                         `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${notification.EMail}`  
                                         } /> */}
-                                         { notification.SPSPicturePlaceholderState == 0 ?
+                                         { notification.ActionUser?.SPSPicturePlaceholderState == 0 ?
                                         <img
                                           src={
 
-                                            `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${notification?.EMail}`
+                                            `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${notification?.ActionUser?.EMail}`
 
                                           }
                                           className="rounded-circle"
                                           width="50"
-                                          alt={notification.Author.Title}
+                                          alt={notification.ActionUser.Title}
                                         />
                                         :
-                                        notification?.EMail !== null &&
+                                        notification?.ActionUser.EMail !== null &&
                                         <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle avatar-xl">
-                                          {`${notification?.EMail?.split('.')[0]?.charAt(0)}${notification?.EMail?.split('.')[1]?.charAt(0)}`.toUpperCase()}
+                                          {`${notification?.ActionUser.EMail?.split('.')[0]?.charAt(0)}${notification?.ActionUser.EMail?.split('.')[1]?.charAt(0)}`.toUpperCase()}
                                         </Avatar>
                                       }
                                       </div>
@@ -246,21 +246,21 @@ const NotificationDetailsContext = ({ props }: any) => {
                                         src={
                                         `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${notification.EMail}`  
                                         } /> */}
-                                         { notification.SPSPicturePlaceholderState == 0 ?
+                                         { notification?.ActionUser.SPSPicturePlaceholderState == 0 ?
                                         <img
                                           src={
 
-                                            `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${notification?.EMail}`
+                                            `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${notification.ActionUser?.EMail}`
 
                                           }
                                           className="rounded-circle"
                                           width="50"
-                                          alt={notification.Author.Title}
+                                          alt={notification.ActionUser.Title}
                                         />
                                         :
-                                        notification?.EMail !== null &&
+                                        notification.ActionUser?.EMail !== null &&
                                         <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle avatar-xl">
-                                          {`${notification?.EMail?.split('.')[0]?.charAt(0)}${notification?.EMail?.split('.')[1]?.charAt(0)}`.toUpperCase()}
+                                          {`${notification.ActionUser?.EMail?.split('.')[0]?.charAt(0)}${notification.ActionUser?.EMail?.split('.')[1]?.charAt(0)}`.toUpperCase()}
                                         </Avatar>
                                       }
                                       </div>
@@ -307,21 +307,21 @@ const NotificationDetailsContext = ({ props }: any) => {
                                         src={
                                         `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${notification.EMail}`  
                                         } /> */}
-                                         { notification.SPSPicturePlaceholderState == 0 ?
+                                         { notification.ActionUser.SPSPicturePlaceholderState == 0 ?
                                         <img
                                           src={
 
-                                            `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${notification?.EMail}`
+                                            `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${notification.ActionUser?.EMail}`
 
                                           }
                                           className="rounded-circle"
                                           width="50"
-                                          alt={notification.Author.Title}
+                                          alt={notification.ActionUser.Title}
                                         />
                                         :
-                                        notification?.EMail !== null &&
+                                        notification.ActionUser?.EMail !== null &&
                                         <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle avatar-xl">
-                                          {`${notification?.EMail?.split('.')[0]?.charAt(0)}${notification?.EMail?.split('.')[1]?.charAt(0)}`.toUpperCase()}
+                                          {`${notification?.EMail?.split('.')[0]?.charAt(0)}${notification.ActionUser?.EMail?.split('.')[1]?.charAt(0)}`.toUpperCase()}
                                         </Avatar>
                                       }
                                     </div>

@@ -2544,7 +2544,7 @@ const MyApprovalContext = ({ props }: any) => {
                                                     <Edit
                                                       onClick={(e) => {
 
-                                                        item?.IsDocChange == "CRDC" ? window.location.href = `https://edcadae.sharepoint.com/sites/EDeDMS/SitePages/ChangeRequest.aspx/${item?.RedirectionLink}` : getTaskItemsbyID(e, item?.FileUID?.FileUID); handleShowNestedDMSTable()
+                                                        item?.IsDocChange == "CRDC" ? window.location.href = `https://edcadae.sharepoint.com/sites/edcspfxSitePages/ChangeRequest.aspx/${item?.RedirectionLink}` : getTaskItemsbyID(e, item?.FileUID?.FileUID); handleShowNestedDMSTable()
                                                       }}
                                                       style={{
                                                         minWidth: "20px",

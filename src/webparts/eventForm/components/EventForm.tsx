@@ -35,6 +35,7 @@ import { FormSubmissionMode } from '../../../Shared/Interfaces';
 import { WorkflowAuditHistory } from '../../../CustomJSComponents/WorkflowAuditHistory/WorkflowAuditHistory';
 import { CONTENTTYPE_Event, LIST_TITLE_ContentMaster, LIST_TITLE_EventMaster, LIST_TITLE_MyRequest } from '../../../Shared/Constants';
 import moment from 'moment';
+import { DatePicker } from '@fluentui/react/lib/DatePicker';
 let mode = "";
 let newfileupload: any
 let newfilepreview: any
@@ -234,16 +235,16 @@ const HelloWorldContext = ({ props }: any) => {
         LevelId: item?.LevelId,
         approvedUserListupdate: Array.isArray(item?.Users)
           ? item?.Users?.map((user: any) => ({
-              id: user.ID,
-              name: user.Title,
-              email: user.EMail
-            }))
+            id: user.ID,
+            name: user.Title,
+            email: user.EMail
+          }))
           : [], // fallback to empty array or handle differently
         selectionType: 'All'
       }));
-      
+
       setRows(initialRows);
-      console.log("initialRows",initialRows)
+      console.log("initialRows", initialRows)
     }
 
   };
@@ -359,13 +360,13 @@ const HelloWorldContext = ({ props }: any) => {
       if (hidesavasdraft === 'true') {
         valid = true;
       } else {
-         Swal.fire('Event date cannot be earlier than today.');
+        Swal.fire('Event date cannot be earlier than today.');
         //Swal.fire('Please select a future event date to continue.');
       }
 
     }
     else if (!valid && (RegistrationDueDate && new Date(RegistrationDueDate).getTime() < new Date().getTime())) {
-       Swal.fire('Registration date cannot be earlier than today.');
+      Swal.fire('Registration date cannot be earlier than today.');
       //Swal.fire('Please select a future event date to continue.');
     }
     else {
@@ -413,29 +414,41 @@ const HelloWorldContext = ({ props }: any) => {
             // formData.FeaturedAnnouncement === "on"?  true :false;
 
             // Upload Banner Images
-            if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
-              for (const file of BnnerImagepostArr[0].files) {
+            // if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
+            //   for (const file of BnnerImagepostArr[0].files) {
+            //     //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
+            //     bannerImageArray = await uploadFileBanner(file, sp, "Documents", tenantUrl);
+            //   }
+            // }
+            // else if (BnnerImagepostArr.length > 0) {
+            //   bannerImageArray = BnnerImagepostArr[0];
+            // }
+            // else {
+            //   bannerImageArray = null
+            // }
+            if (BnnerImagepostArr.length > 0) {
+              for (const file of BnnerImagepostArr) {
                 //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
-                bannerImageArray = await uploadFileBanner(file, sp, "Documents", tenantUrl);
+                if (!file.ID) {
+                  bannerImageArray = await uploadFileBanner(file, sp, "Documents", tenantUrl);
+
+                }
+                else {
+                  bannerImageArray = file;
+                }
               }
             }
-            else if (BnnerImagepostArr.length > 0) {
-              bannerImageArray = BnnerImagepostArr[0];
-            }
-            else {
-              bannerImageArray = null
-            }
-            const eventDate =formData.EventDate != null ? new Date(formData.EventDate).toISOString()?.split("T")[0] :null;
-            const RegistrationDueDate =formData.RegistrationDueDate != null? new Date(formData.RegistrationDueDate).toISOString()?.split("T")[0] :null;
+            // const eventDate =formData.EventDate != null ? new Date(formData.EventDate).toISOString()?.split("T")[0] :null;
+            // const RegistrationDueDate =formData.RegistrationDueDate != null? new Date(formData.RegistrationDueDate).toISOString()?.split("T")[0] :null;
             // update Post
             const postPayload = {
               EventName: formData.EventName,
               Overview: formData.Overview,
               EventAgenda: formData.EventAgenda,
               EntityId: Number(formData.EntityId),
-              Status: rows.length>0? "Submitted":"Approved",
-              RegistrationDueDate: RegistrationDueDate,
-              EventDate: eventDate,
+              Status: rows.length > 0 ? "Submitted" : "Approved",
+              RegistrationDueDate: formData.RegistrationDueDate,
+              EventDate: formData.EventDate,
               AuthorId: currentUser.Id,
               image: bannerImageArray != "{}" && JSON.stringify(bannerImageArray)
               // EventThumbnail: EventThumbnailArr != "{}" && JSON.stringify(EventThumbnailArr)
@@ -531,12 +544,12 @@ const HelloWorldContext = ({ props }: any) => {
             console.log(galleryIds, 'galleryIds');
             // Update Post with Gallery and Document Information
             const updatePayload = {
-              ...(galleryIds!= null && galleryIds.length > 0 && {
+              ...(galleryIds != null && galleryIds.length > 0 && {
                 EventGalleryId: galleryIds,
 
                 EventGalleryJson: JSON.stringify(flatArray(galleryArray)),
               }),
-              ...(documentIds!= null && documentIds.length > 0 && {
+              ...(documentIds != null && documentIds.length > 0 && {
                 EventThumbnailId: documentIds,
                 EventThumbnailJson: JSON.stringify(flatArray(documentArray)),
               }),
@@ -557,7 +570,7 @@ const HelloWorldContext = ({ props }: any) => {
             }
 
             let boolval = false;
-            if(rows.length>0){
+            if (rows.length > 0) {
 
               if (ApprovalRequestItem && ApprovalRequestItem.IsRework && ApprovalRequestItem.IsRework == 'Yes') {
                 const ctmasteritm = await sp.web.lists.getByTitle(LIST_TITLE_ContentMaster).items.filter('ContentID eq ' + ApprovalRequestItem.ContentId + " and SourceName eq '" + CONTENTTYPE_Event + "'")();
@@ -576,13 +589,13 @@ const HelloWorldContext = ({ props }: any) => {
               }
 
             }
-            else{
+            else {
               boolval = true;
 
             }
 
-           
-           
+
+
             if (boolval == true) {
               setLoading(false);
               Swal.fire('Submitted successfully.', '', 'success');
@@ -621,24 +634,31 @@ const HelloWorldContext = ({ props }: any) => {
 
 
             //   Upload Banner Images
-            if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
-              for (const file of BnnerImagepostArr[0].files) {
+            // if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
+            //   for (const file of BnnerImagepostArr[0].files) {
+            //     //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
+            //     bannerImageArray = await uploadFileBanner(file, sp, "Documents", tenantUrl);
+            //   }
+            // }
+
+            if (BnnerImagepostArr.length > 0) {
+              for (const file of BnnerImagepostArr) {
                 //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
                 bannerImageArray = await uploadFileBanner(file, sp, "Documents", tenantUrl);
               }
             }
             //debugger
-            const eventDate =formData.EventDate != null ? new Date(formData.EventDate).toISOString()?.split("T")[0] :null;
-            const RegistrationDueDate =formData.RegistrationDueDate != null ? new Date(formData.RegistrationDueDate).toISOString()?.split("T")[0] :null;
+            // const eventDate =formData.EventDate != null ? new Date(formData.EventDate).toISOString()?.split("T")[0] :null;
+            // const RegistrationDueDate =formData.RegistrationDueDate != null ? new Date(formData.RegistrationDueDate).toISOString()?.split("T")[0] :null;
             // Create Post
             const postPayload = {
               EventName: formData.EventName,
               Overview: formData.Overview,
               EventAgenda: formData.EventAgenda,
               EntityId: Number(formData.EntityId),
-              Status: rows.length>0? "Submitted":"Approved",
-              RegistrationDueDate: RegistrationDueDate,
-              EventDate: eventDate,
+              Status: rows.length > 0 ? "Submitted" : "Approved",
+              RegistrationDueDate: formData.RegistrationDueDate,
+              EventDate: formData.EventDate,
               AuthorId: currentUser.Id,
               image: bannerImageArray != "{}" && JSON.stringify(bannerImageArray)
             };
@@ -675,11 +695,11 @@ const HelloWorldContext = ({ props }: any) => {
 
             // Update Post with Gallery and Document Information
             const updatePayload = {
-              ...(galleryIds!= null && galleryIds.length > 0 && {
+              ...(galleryIds != null && galleryIds.length > 0 && {
                 EventGalleryId: galleryIds,
                 EventGalleryJson: JSON.stringify(flatArray(galleryArray)),
               }),
-              ...(documentIds!= null && documentIds.length > 0 && {
+              ...(documentIds != null && documentIds.length > 0 && {
                 EventThumbnailId: documentIds,
                 EventThumbnailJson: JSON.stringify(flatArray(documentArray)),
               }),
@@ -746,25 +766,37 @@ const HelloWorldContext = ({ props }: any) => {
             // formData.FeaturedAnnouncement === "on"?  true :false;
 
             // Upload Banner Images
-            if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
-              for (const file of BnnerImagepostArr[0].files) {
+            // if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
+            //   for (const file of BnnerImagepostArr[0].files) {
+            //     //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
+            //     bannerImageArray = await uploadFileBanner(file, sp, "Documents", tenantUrl);
+            //   }
+            // }
+            // else {
+            //   bannerImageArray = null
+            // }
+            if (BnnerImagepostArr.length > 0) {
+              for (const file of BnnerImagepostArr) {
                 //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
-                bannerImageArray = await uploadFileBanner(file, sp, "Documents", tenantUrl);
+                if (!file.ID) {
+                  bannerImageArray = await uploadFileBanner(file, sp, "Documents", tenantUrl);
+
+                }
+                else {
+                  bannerImageArray = file;
+                }
               }
             }
-            else {
-              bannerImageArray = null
-            }
-            const eventDate =formData.EventDate != null ? new Date(formData.EventDate).toISOString()?.split("T")[0] :null;
-            const RegistrationDueDate =formData.RegistrationDueDate != null? new Date(formData.RegistrationDueDate).toISOString()?.split("T")[0] :null;
+            // const eventDate =formData.EventDate != null ? new Date(formData.EventDate).toISOString()?.split("T")[0] :null;
+            // const RegistrationDueDate =formData.RegistrationDueDate != null? new Date(formData.RegistrationDueDate).toISOString()?.split("T")[0] :null;
             const postPayload = {
               EventName: formData.EventName,
               Overview: formData.Overview,
               EventAgenda: formData.EventAgenda,
               EntityId: Number(formData.EntityId),
               Status: "Save as draft",
-              RegistrationDueDate: RegistrationDueDate,
-              EventDate: eventDate,
+              RegistrationDueDate: formData.RegistrationDueDate,
+              EventDate: formData.EventDate,
               AuthorId: currentUser.Id,
               image: bannerImageArray != "{}" && JSON.stringify(bannerImageArray)
               // EventThumbnail: EventThumbnailArr != "{}" && JSON.stringify(EventThumbnailArr)
@@ -860,12 +892,12 @@ const HelloWorldContext = ({ props }: any) => {
             console.log(galleryIds, 'galleryIds');
             // Update Post with Gallery and Document Information
             const updatePayload = {
-              ...(galleryIds!= null && galleryIds.length > 0 && {
+              ...(galleryIds != null && galleryIds.length > 0 && {
                 EventGalleryId: galleryIds,
 
                 EventGalleryJson: JSON.stringify(flatArray(galleryArray)),
               }),
-              ...(documentIds!= null && documentIds.length > 0 && {
+              ...(documentIds != null && documentIds.length > 0 && {
                 EventThumbnailId: documentIds,
                 EventThumbnailJson: JSON.stringify(flatArray(documentArray)),
               }),
@@ -912,24 +944,30 @@ const HelloWorldContext = ({ props }: any) => {
 
 
             //   Upload Banner Images
-            if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
-              for (const file of BnnerImagepostArr[0].files) {
+            // if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
+            //   for (const file of BnnerImagepostArr[0].files) {
+            //     //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
+            //     bannerImageArray = await uploadFileBanner(file, sp, "Documents", tenantUrl);
+            //   }
+            // }
+            if (BnnerImagepostArr.length > 0) {
+              for (const file of BnnerImagepostArr) {
                 //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
                 bannerImageArray = await uploadFileBanner(file, sp, "Documents", tenantUrl);
               }
             }
             //debugger
-            const eventDate =formData.EventDate  != null ? new Date(formData.EventDate).toISOString()?.split("T")[0] :null;
-            const RegistrationDueDate =formData.RegistrationDueDate != null ? new Date(formData.RegistrationDueDate).toISOString()?.split("T")[0] :null;
-              // Create Post
+            // const eventDate =formData.EventDate  != null ? new Date(formData.EventDate).toISOString()?.split("T")[0] :null;
+            // const RegistrationDueDate =formData.RegistrationDueDate != null ? new Date(formData.RegistrationDueDate).toISOString()?.split("T")[0] :null;
+            // Create Post
             const postPayload = {
               EventName: formData.EventName,
               Overview: formData.Overview,
               EventAgenda: formData.EventAgenda,
               EntityId: Number(formData.EntityId),
               Status: "Save as draft",
-              RegistrationDueDate: RegistrationDueDate,
-              EventDate: eventDate,
+              RegistrationDueDate: formData.RegistrationDueDate,
+              EventDate: formData.EventDate,
               AuthorId: currentUser.Id,
               image: bannerImageArray != "{}" && JSON.stringify(bannerImageArray)
             };
@@ -966,11 +1004,11 @@ const HelloWorldContext = ({ props }: any) => {
 
             // Update Post with Gallery and Document Information
             const updatePayload = {
-              ...(galleryIds!= null && galleryIds.length > 0 && {
+              ...(galleryIds != null && galleryIds.length > 0 && {
                 EventGalleryId: galleryIds,
                 EventGalleryJson: JSON.stringify(flatArray(galleryArray)),
               }),
-              ...(documentIds!= null && documentIds.length > 0 && {
+              ...(documentIds != null && documentIds.length > 0 && {
                 EventThumbnailId: documentIds,
                 EventThumbnailJson: JSON.stringify(flatArray(documentArray)),
               }),
@@ -1026,11 +1064,11 @@ const HelloWorldContext = ({ props }: any) => {
   const ApiCallFunc = async () => {
     setCurrentUser(await getCurrentUser(sp, siteUrl)) //currentUser
     setEnityData(await getEntity(sp)) //Entity
-     const entityDefaultitem = await getEntity(sp);
-        if(entityDefaultitem.find((item) => item.name === 'Global').id){
-          formData.EntityId = entityDefaultitem.find((item) => item.name === 'Global').id;
-   
-        }
+    const entityDefaultitem = await getEntity(sp);
+    if (entityDefaultitem.find((item) => item.name === 'Global').id) {
+      formData.EntityId = entityDefaultitem.find((item) => item.name === 'Global').id;
+
+    }
     setLevel(await getLevel(sp))
     setBaseUrl(await (getUrl(sp, siteUrl))) //baseUrl
     await fetchUserInformationList();
@@ -1065,8 +1103,8 @@ const HelloWorldContext = ({ props }: any) => {
         // setCategoryData(await getCategory(sp, Number(setBannerById[0]?.TypeMaster))) // Category
         //const eventDate = new Date(setEventById[0].EventDate).toISOString()?.split("T")[0];
         //const RegistrationDueDate = new Date(setEventById[0].RegistrationDueDate).toISOString()?.split("T")[0];
-        const eventDate = fixTimezoneOffset(setEventById[0].EventDate);
-        const RegistrationDueDate = fixTimezoneOffset(setEventById[0].RegistrationDueDate);
+        // const eventDate = fixTimezoneOffset(setEventById[0].EventDate);
+        // const RegistrationDueDate = fixTimezoneOffset(setEventById[0].RegistrationDueDate);
         //  setSelectedDate(eventDate);
         //  setSelectedRegistrationDueDate(RegistrationDueDate);
         let arr = {
@@ -1074,8 +1112,10 @@ const HelloWorldContext = ({ props }: any) => {
           Overview: setEventById[0].Overview,
           EventAgenda: setEventById[0].EventAgenda,
           EntityId: Number(setEventById[0].EntityId),
-          RegistrationDueDate: RegistrationDueDate,
-          EventDate: eventDate,
+          // RegistrationDueDate: setEventById[0].RegistrationDueDate,
+          // EventDate: setEventById[0].EventDate,
+          RegistrationDueDate: new Date(setEventById[0].RegistrationDueDate).toLocaleDateString("en-CA"),
+          EventDate: new Date(setEventById[0].EventDate).toLocaleDateString("en-CA"),
           Status: setEventById[0].Status
 
         }
@@ -1087,10 +1127,10 @@ const HelloWorldContext = ({ props }: any) => {
         // }));
 
 
-        setEventGalleryArrIdsArr(setEventById[0]?.EventGalleryId !=null ? setEventById[0]?.EventGalleryId:[])
-        setEventThumbnailIdsArr(setEventById[0]?.EventThumbnailId !=null ? setEventById[0]?.EventThumbnailId:[])
-        setEventGalleryArr1(setEventById[0]?.EventGalleryId != null ?setEventById[0].EventGalleryJson:[])
-        setEventThumbnailArr1(setEventById[0]?.EventThumbnailId != null ?setEventById[0].EventThumbnailJson:[])
+        setEventGalleryArrIdsArr(setEventById[0]?.EventGalleryId != null ? setEventById[0]?.EventGalleryId : [])
+        setEventThumbnailIdsArr(setEventById[0]?.EventThumbnailId != null ? setEventById[0]?.EventThumbnailId : [])
+        setEventGalleryArr1(setEventById[0]?.EventGalleryId != null ? setEventById[0].EventGalleryJson : [])
+        setEventThumbnailArr1(setEventById[0]?.EventThumbnailId != null ? setEventById[0].EventThumbnailJson : [])
         if (setEventById[0].BannerImage.length) {
           banneimagearr = setEventById[0].BannerImage
           console.log(banneimagearr, 'banneimagearr');
@@ -1299,7 +1339,8 @@ const HelloWorldContext = ({ props }: any) => {
             }
           } else {
             uloadBannerImageFiles.push(arr);
-            setBannerImagepostArr(uloadBannerImageFiles);
+            // setBannerImagepostArr(uloadBannerImageFiles);
+            setBannerImagepostArr(imageVideoFiles);
           }
 
         } else {
@@ -1586,11 +1627,30 @@ const HelloWorldContext = ({ props }: any) => {
                             name="EventDate"
                             placeholder='Enter Event Date'
                             className={`form-control ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
-                            value={formData.EventDate}
-                            // value={formData.EventDate}
-                            onChange={(e) => onChange(e.target.name, e.target.value)}
+                            value={formData.EventDate ? new Date(formData.EventDate).toLocaleDateString("en-GB").split('/').reverse().join('-') : ""}
+                            onChange={(e) => {
+                              const formattedDate = new Date(e.target.value).toISOString().split('T')[0];
+                              onChange(e.target.name, formattedDate);
+                            }}
                             disabled={InputDisabled}
                           />
+
+                          {/* <DatePicker id="EventDate"
+                            value={
+                              formData?.EventDate
+                                ? new Date(moment(formData?.EventDate).format('YYYY-MM-DD'))
+                                : null
+                            }
+                            onSelectDate={(date: Date | null) => {
+                              setFormData({ ...formData, EventDate: new Date(date).toLocaleDateString("en-CA") });
+                              // setFormData({ ...formData, date: moment(date).format('DD/MMM/YYYY') });
+                            }}
+                            
+                            // maxDate={new Date()}
+                            minDate={new Date()}
+                            disabled={InputDisabled}
+                            formatDate={(date: any) => moment(date).format('DD/MMM/YYYY')}
+                          /> */}
                         </div>
                       </div>
                       <div className="col-lg-4">
@@ -1619,7 +1679,7 @@ const HelloWorldContext = ({ props }: any) => {
                             Department <span className="text-danger">*</span>
                           </label>
                           <select
-                          //  className="form-select inputcss"
+                            //  className="form-select inputcss"
                             className={`form-select ${(!ValidSubmit) ? "border-on-error" : ""}`}
                             id="EntityId"
                             name="EntityId"
@@ -1961,7 +2021,7 @@ const HelloWorldContext = ({ props }: any) => {
             {
               //let forrework=ApprovalRequestItem && ApprovalRequestItem.IsRework=='Yes'&& ApprovalRequestItem.LevelSequence!=0;
               (InputDisabled && ApprovalRequestItem) || (ApprovalRequestItem && ApprovalRequestItem.IsRework == 'Yes' && ApprovalRequestItem.LevelSequence != 0) ? (
-                <WorkflowAction currentItem={ApprovalRequestItem} ctx={props.context} ContentType={LIST_TITLE_MyRequest}
+                <WorkflowAction currentItem={ApprovalRequestItem} ctx={props.context} ContentType={LIST_TITLE_MyRequest}
                   DisableApproval={ApprovalRequestItem && ApprovalRequestItem.IsRework == 'Yes' && ApprovalRequestItem.LevelSequence != 0}
                   DisableCancel={ApprovalRequestItem && ApprovalRequestItem.IsRework == 'Yes' && ApprovalRequestItem.LevelSequence != 0}
                 //DisableReject={ApprovalRequestItem && ApprovalRequestItem.IsRework=='Yes'&& ApprovalRequestItem.LevelSequence!=0}

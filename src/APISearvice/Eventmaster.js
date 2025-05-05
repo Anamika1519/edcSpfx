@@ -199,7 +199,7 @@ const handleFileChange = async (event) => {
   const file = event.target.files[0];
   if (file) {
     try {
-      const folderUrl = `/sites/EDeDMS/${docLib}`; // Replace with your folder URL
+      const folderUrl = `/sites/edcspfx${docLib}`; // Replace with your folder URL
       const fileName = file.name;
 
       const fileBlob = new Blob([file], { type: file.type });
@@ -282,8 +282,8 @@ export const getEventByID = async (_sp, id) => {
       console.log(res, ' let arrs=[]');
       const bannerimgobject = res.image != "{}"&& res.image !=null && JSON.parse(res.image)
       console.log(bannerimgobject[0], 'bannerimgobject');
-      if (bannerimgobject != null) {
-
+      if (bannerimgobject != null && bannerimgobject != false) {
+        bannerimgobject.ID = res.ID;
         bannerimg.push(bannerimgobject);
 
       }

@@ -160,7 +160,7 @@ const VerticalContext = ({ _context }: any) => {
       console.log(res, "currentuser");
     })
     
-    const siteUrl = "https://edcadae.sharepoint.com/sites/EDeDMS";
+    const siteUrl = "https://edcadae.sharepoint.com/sites/edcspfx";
     let listTitle = 'UtilitySettings'
     let CurrentsiteID ="ec1d9ac4-4785-46e0-91bf-9e0ce3b8f5e6";
     siteID = CurrentsiteID;
@@ -363,14 +363,19 @@ const VerticalContext = ({ _context }: any) => {
     
     else if (pageName === "EventCalendar" || pageName === "EventDetailsCalendar") {
         // alert("set Event");
-        localStorage.setItem("NavId", String(3));
-        setuseActive(3)
+        localStorage.setItem("NavId", String(2));
+        setuseActive(2)
     } 
     else if (pageName === "News" || pageName === "NewsDetails") {
         // alert("set News");
-        localStorage.setItem("NavId", String(4));
-        setuseActive(4)
+        localStorage.setItem("NavId", String(3));
+        setuseActive(3)
     } 
+    else if (pageName === "QuickLinks") {
+      // alert("set News");
+      localStorage.setItem("NavId", String(10));
+      setuseActive(10)
+  } 
     // else if (pageName === "Announcements" || pageName === "AnnouncementDetails") {
     //     // alert("set Announcement");
     //     localStorage.setItem("NavId", String(5));

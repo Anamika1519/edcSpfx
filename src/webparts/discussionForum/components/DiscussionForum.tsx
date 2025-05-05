@@ -1153,7 +1153,7 @@ const DiscussionForumContext = ({ props }: any) => {
                 InviteMemebersId: selectedIds,
                 ARGDiscussionStatus: "Ongoing",
                 DiscussionInProgress: "In Progress",
-                DiscussionFileManager: `/sites/EDeDMS/ARGDiscussionFiles/${formData.topic}`,
+                DiscussionFileManager: `/sites/edcspfxARGDiscussionFiles/${formData.topic}`,
                 DiscussionFolderName: formData.topic
               };
             }
@@ -1167,7 +1167,7 @@ const DiscussionForumContext = ({ props }: any) => {
                 DiscussionForumCategoryId: Number(formData.category),
                 ARGDiscussionStatus: "Ongoing",
                 DiscussionInProgress: "In Progress",
-                DiscussionFileManager: `/sites/EDeDMS/ARGDiscussionFiles/${formData.topic}`,
+                DiscussionFileManager: `/sites/edcspfxARGDiscussionFiles/${formData.topic}`,
                 DiscussionFolderName: formData.topic
               };
             }
@@ -1276,7 +1276,7 @@ const DiscussionForumContext = ({ props }: any) => {
 
   const handleCancel = () => {
     window.location.href =
-      "https://edcadae.sharepoint.com/sites/EDeDMS/SitePages/Blogs.aspx";
+      "https://edcadae.sharepoint.com/sites/edcspfxSitePages/Blogs.aspx";
   };
 
   const formats = [
