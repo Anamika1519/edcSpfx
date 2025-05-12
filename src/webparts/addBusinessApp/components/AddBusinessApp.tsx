@@ -51,6 +51,7 @@ import { AddContentLevelMaster, AddContentMaster, getApprovalConfiguration, getL
 import { Delete, PlusCircle } from 'react-feather';
 
 import Multiselect from 'multiselect-react-dropdown';
+import { Tenant_URL } from '../../../Shared/Constants';
 
 const AddBusinessAppContext = ({ props }: any) => {
 
@@ -714,7 +715,7 @@ const AddBusinessAppContext = ({ props }: any) => {
 
                 //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
 
-                bannerImageArray = await uploadFile(file, sp, "Documents", "https://edcadae.sharepoint.com");
+                bannerImageArray = await uploadFile(file, sp, "Documents", Tenant_URL);
 
               }
 
@@ -1073,7 +1074,7 @@ const AddBusinessAppContext = ({ props }: any) => {
 
                 //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
 
-                bannerImageArray = await uploadFile(file, sp, "Documents", "https://edcadae.sharepoint.com");
+                bannerImageArray = await uploadFile(file, sp, "Documents", Tenant_URL);
 
               }
 
@@ -1260,7 +1261,7 @@ const AddBusinessAppContext = ({ props }: any) => {
 
                 //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
 
-                bannerImageArray = await uploadFile(file, sp, "Documents", "https://edcadae.sharepoint.com");
+                bannerImageArray = await uploadFile(file, sp, "Documents", Tenant_URL);
 
               }
 
@@ -1595,7 +1596,7 @@ const AddBusinessAppContext = ({ props }: any) => {
 
                 //  const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
 
-                bannerImageArray = await uploadFile(file, sp, "Documents", "https://edcadae.sharepoint.com");
+                bannerImageArray = await uploadFile(file, sp, "Documents", Tenant_URL);
 
               }
 

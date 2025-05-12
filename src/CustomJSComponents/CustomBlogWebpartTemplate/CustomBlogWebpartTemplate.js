@@ -20,7 +20,7 @@ import {
     fetchPinstatus, updateItem, uploadFileBanner, DeleteBusinessAppsAPI
 } from "../../APISearvice/BlogService";
 import Multiselect from "multiselect-react-dropdown";
-import { CONTENTTYPE_Media, LIST_TITLE_ContentMaster, LIST_TITLE_Blogs, LIST_TITLE_MyRequest,CONTENTTYPE_Blogs } from '../../Shared/Constants';
+import { Tenant_URL,CONTENTTYPE_Media, LIST_TITLE_ContentMaster, LIST_TITLE_Blogs, LIST_TITLE_MyRequest,CONTENTTYPE_Blogs } from '../../Shared/Constants';
 import { Modal } from 'react-bootstrap';
 import { AddContentLevelMaster, AddContentMaster, getApprovalConfiguration, getLevel, UpdateContentMaster,getMyRequestBlogPending } from '../../APISearvice/ApprovalService';
 
@@ -690,10 +690,7 @@ const deleteLocalFile = (index, filArray, name) => {
                                 //debugger
                                 //  const uploadedBanner = await uploadFile(file, _sp, "Documents", Url);
                                 bannerImageArray = await uploadFileBanner(
-                                    file,
-                                    _sp,
-                                    "Documents",
-                                    "https://edcadae.sharepoint.com"
+                                    file,_sp,"Documents",Tenant_URL
                                 );
                             }
                         } else {
@@ -883,7 +880,7 @@ const deleteLocalFile = (index, filArray, name) => {
                                 file,
                                 _sp,
                                 "Documents",
-                                "https://edcadae.sharepoint.com"
+                                Tenant_URL
                             );
                         }
                     }
@@ -1928,7 +1925,7 @@ const deleteLocalFile = (index, filArray, name) => {
                           {DocumentpostArr1.map((file, index) => (
                             <tr key={index}>
                               <td className='text-center'>{index + 1}</td>
-                              <td>{file.fileName.replace("/sites/edcspfx", "")}</td>
+                              <td>{file.fileName.replace("/sites/EDeDMS/", "")}</td>
                               <td className='text-right'>{file.fileSize}</td>
                               <td className='text-center'> <img src={require("../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, DocumentpostArr1, "docs")} /> </td>
                             </tr>
@@ -2034,7 +2031,7 @@ const deleteLocalFile = (index, filArray, name) => {
                           {DocumentpostArr1.map((file, index) => (
                             <tr key={index}>
                               <td style={{minWidth:'40px',maxWidth:'40px'}} className='text-center'>{index + 1}</td>
-                              <td style={{minWidth:'100px',maxWidth:'100px'}}>{file.fileName.replace("/sites/edcspfx", "")}</td>
+                              <td style={{minWidth:'100px',maxWidth:'100px'}}>{file.fileName.replace("/sites/EDeDMS/", "")}</td>
                               <td style={{minWidth:'40px',maxWidth:'40px'}} className='text-right'>{file.fileSize}</td>
                               <td style={{minWidth:'40px',maxWidth:'40px'}} className='text-center'> <img style={{cursor:'pointer'}} src={require("../../CustomAsset/del.png")}  onClick={() => deleteLocalFile(index, DocumentpostArr1, "docs")} /> </td>
                             </tr>
@@ -2136,7 +2133,7 @@ const deleteLocalFile = (index, filArray, name) => {
                           {DocumentpostArr1.map((file, index) => (
                             <tr key={index}>
                               <td style={{minWidth:'40px',maxWidth:'40px'}} className='text-center'>{index + 1}</td>
-                              <td>{file.fileName.replace("/sites/edcspfx", "")}</td>
+                              <td>{file.fileName.replace("/sites/EDeDMS/", "")}</td>
                               <td style={{minWidth:'40px',maxWidth:'40px'}} className='text-right'>{file.fileSize}</td>
                               <td style={{minWidth:'40px',maxWidth:'40px'}}className='text-center'> <img src={require("../../CustomAsset/del.png")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, DocumentpostArr1, "docs")} /> </td>
                             </tr>

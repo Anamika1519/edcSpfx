@@ -32,6 +32,7 @@ import moment from "moment";
 import { addActivityLeaderboard, getLeaderTop } from "../../../APISearvice/CustomService";
 import { fertchprojectcomments, fetchprojectdataTop } from "../../../APISearvice/ProjectsService";
 import Avatar from "@mui/material/Avatar";
+import { Tenant_URL } from "../../../Shared/Constants";
 let siteID: any;
 let response: any;
 const HelloWorldContext = ({ props }: any) => {
@@ -586,7 +587,7 @@ const HelloWorldContext = ({ props }: any) => {
                                   let siteId = siteID;
                                   let listID = response.Id;
                                   let img1 = imageData != "" && imageData.fileName != "" ? `${siteUrl}/_api/v2.1/sites('${siteId}')/lists('${listID}')/items('${item.ID}')/attachments('${imageData.fileName}')/thumbnails/0/c400x400/content?prefer=noredirect%2Cclosestavailablesize` : ""
-                                  let img = imageData != "" && imageData.serverRelativeUrl != "" ? `https://edcadae.sharepoint.com${imageData.serverRelativeUrl}` : img1
+                                  let img = imageData != "" && imageData.serverRelativeUrl != "" ? `${Tenant_URL}${imageData.serverRelativeUrl}` : img1
                                   const imageUrl = imageData != ""
                                     ? img
                                     : null;

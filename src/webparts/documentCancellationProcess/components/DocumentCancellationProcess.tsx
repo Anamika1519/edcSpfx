@@ -2317,7 +2317,7 @@ const DocumentCancellationProcessContext = ({ props }: any) => {
 
 
                                                     {/* </a> */}
-                                                    {/* <a href="../sites/edcspfxSitePages/EDCMAIN.aspx">       */}
+                                                    {/* <a href="../sites/EDeDMS/SitePages/EDCMAIN.aspx">       */}
                                                     {((modeValue === "" || modeValue === "edit"|| modeValue === "view") ||(editID !== null && editID.IsInitiator == "Yes")) &&
                                                         <button type="button" className="btn cancel-btn waves-effect waves-light m-1" onClick={handleCancel}> <img src={require('../../../Assets/ExtraImage/xIcon.svg')} style={{ width: '1rem' }}
                                                         className='me-1' alt="x" /> Cancel</button>

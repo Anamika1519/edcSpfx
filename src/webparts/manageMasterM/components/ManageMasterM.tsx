@@ -19,6 +19,7 @@ import { faPaperclip } from '@fortawesome/free-solid-svg-icons';
 import HorizontalNavbar from '../../horizontalNavBar/components/HorizontalNavBar';
 import styles from "../components/ManageMasterM.module.scss";
 import { IManageMasterMProps } from './IManageMasterMProps';
+import { Tenant_URL } from '../../../Shared/Constants';
 const endsWith = (str: string, ending: string) => {
   console.log("strrrr",str,ending)
   return str.slice(-ending.length) === ending;
@@ -210,7 +211,7 @@ export const MastersettingContext = ({ props }: any) => {
                       let siteId = siteID;
                       let listID = response && response.Id;
                       let img1 = imageData && imageData.fileName ? `${SiteUrl}/_api/v2.1/sites('${siteId}')/lists('${listID}')/items('${item.ID}')/attachments('${imageData.fileName}')/thumbnails/0/c400x400/content` : ""
-                      let img = imageData && imageData.serverRelativeUrl ? `https://edcadae.sharepoint.com${imageData.serverRelativeUrl}` : img1
+                      let img = imageData && imageData.serverRelativeUrl ? `${Tenant_URL}${imageData.serverRelativeUrl}` : img1
                       const imageUrl = imageData
                         //? `${siteUrl}/SiteAssets/Lists/ea596702-57db-4833-8023-5dcd2bba46e3/${imageData.fileName}`
                         //? `${imageData.serverUrl}${imageData.serverRelativeUrl}`

@@ -54,6 +54,7 @@ import {
   getUserProfilePicture,
 } from "../../../APISearvice/CustomService";
 import Avatar from "@mui/material/Avatar";
+import { Tenant_URL } from "../../../Shared/Constants";
 const HelloWorldContext = ({ props }: any) => {
   const sp: SPFI = getSP();
   console.log(sp, "sp");
@@ -294,7 +295,7 @@ const HelloWorldContext = ({ props }: any) => {
   const handleCancel = () => {
     debugger;
     window.location.href =
-      "https://edcadae.sharepoint.com/sites/edcspfxSitePages/Project.aspx";
+      `${Tenant_URL}/sites/EDeDMS/SitePages/Project.aspx`;
   };
 
   const saveProjectData = async (formData: {
@@ -357,7 +358,7 @@ const HelloWorldContext = ({ props }: any) => {
         // // Budget: formData.Budget,
         ProjectOverview: formData.ProjectOverview,
         TeamMembersId: selectedIds,
-        ProjectFileManager: `/sites/edcspfxARGProjectsFiles/${formData.ProjectName}`,
+        ProjectFileManager: `/sites/EDeDMS/ARGProjectsFiles/${formData.ProjectName}`,
         ProjectStatus: "Ongoing",
         ProjectFolderName: formData.ProjectName,
         FolderInProgress: 'In Progress'

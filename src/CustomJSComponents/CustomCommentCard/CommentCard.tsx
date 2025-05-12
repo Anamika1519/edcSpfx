@@ -8,7 +8,7 @@ import "../../CustomJSComponents/CustomCommentCard/Commentscard.scss";
 import "../../CustomCss/mainCustom.scss"
 import moment from "moment";
 // import {getSP} from '../../webparts/blogDetails/loc/pnpjsConfig';
-import {getSP} from '../../webparts/blogDetails/loc/pnpjsConfig';
+import {getSP} from '../../webparts/eventdetailscalender/loc/pnpjsConfig';
 import { SPFI } from "@pnp/sp/presets/all";
 import Swal from "sweetalert2";
 import Avatar from "@mui/material/Avatar";

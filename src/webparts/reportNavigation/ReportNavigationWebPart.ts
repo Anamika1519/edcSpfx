@@ -11,6 +11,7 @@ import { IReadonlyTheme } from '@microsoft/sp-component-base';
 import * as strings from 'ReportNavigationWebPartStrings';
 import ReportNavigation from './components/ReportNavigation';
 import { IReportNavigationProps } from './components/IReportNavigationProps';
+import { getSP } from './loc/pnpjsConfig';
 
 export interface IReportNavigationWebPartProps {
   description: string;
@@ -29,47 +30,81 @@ export default class ReportNavigationWebPart extends BaseClientSideWebPart<IRepo
         isDarkTheme: this._isDarkTheme,
         environmentMessage: this._environmentMessage,
         hasTeamsContext: !!this.context.sdks.microsoftTeams,
-        userDisplayName: this.context.pageContext.user.displayName
+        userDisplayName: this.context.pageContext.user.displayName,
+        context: this.context,
+        siteUrl: this.context.pageContext.web.absoluteUrl,
       }
     );
 
     ReactDom.render(element, this.domElement);
   }
 
-  protected onInit(): Promise<void> {
-    return this._getEnvironmentMessage().then(message => {
-      this._environmentMessage = message;
-    });
-  }
-
-
-
-  private _getEnvironmentMessage(): Promise<string> {
-    if (!!this.context.sdks.microsoftTeams) { // running in Teams, office.com or Outlook
-      return this.context.sdks.microsoftTeams.teamsJs.app.getContext()
-        .then(context => {
-          let environmentMessage: string = '';
-          switch (context.app.host.name) {
-            case 'Office': // running in Office
-              environmentMessage = this.context.isServedFromLocalhost ? strings.AppLocalEnvironmentOffice : strings.AppOfficeEnvironment;
-              break;
-            case 'Outlook': // running in Outlook
-              environmentMessage = this.context.isServedFromLocalhost ? strings.AppLocalEnvironmentOutlook : strings.AppOutlookEnvironment;
-              break;
-            case 'Teams': // running in Teams
-            case 'TeamsModern':
-              environmentMessage = this.context.isServedFromLocalhost ? strings.AppLocalEnvironmentTeams : strings.AppTeamsTabEnvironment;
-              break;
-            default:
-              environmentMessage = strings.UnknownEnvironment;
-          }
-
-          return environmentMessage;
-        });
+  protected async onInit(): Promise<void> {
+    // Classic page detection and initialization
+  // if (typeof this.context.sdks?.spPageContext?.legacyPageContext?.isModernExperience === 'boolean') {
+  //   if (!this.context.sdks.spPageContext.legacyPageContext.isModernExperience) {
+  //     // Load classic page requirements
+  //     return this.loadClassicDependencies();
+  //   }
+  // }
+// const legacyContext = (this.context as any).pageContext.legacyPageContext;
+// if (legacyContext?.isModernExperience) {this.initializeForModern();} else {this.initializeForClassic();}
+//   return Promise.resolve();
+    // Classic page detection and initializationif (typeof this.context.sdks?.spPageContext?.legacyPageContext?.isModernExperience === 'boolean') {if (!this.context.sdks.spPageContext.legacyPageContext.isModernExperience) {// Load classic page requirementsreturn this.loadClassicDependencies();}}return Promise.resolve();
+    // if (this.context.sdks === 'SharePointFullPage') {// Classic page specific initializationthis.initializeForClassic();} else {// Modern page initializationthis.initializeForModern();}return Promise.resolve();
+      this._environmentMessage = this._getEnvironmentMessage();
+  
+      await super.onInit();
+      getSP(this.context);
     }
 
-    return Promise.resolve(this.context.isServedFromLocalhost ? strings.AppLocalEnvironmentSharePoint : strings.AppSharePointEnvironment);
-  }
+  //   private initializeForModern(): void {
+  //     // Modern page specific initialization
+  //     console.log("Initializing for modern page experience");
+  //     // Modern pages don't need special JS files, just proceed with normal initialization
+  //     this._environmentMessage = this._getEnvironmentMessage();
+  //     getSP(this.context); // Initialize PnPjs
+  //     // Modern pages can use React without special handling
+  //     this.renderWebPart();
+  //   }
+  // renderWebPart() {
+  //   throw new Error('Method not implemented.');
+  // }
+     
+     
+    // private initializeForClassic(): void {
+    //   console.log("Initializing for classic page experience");
+    //   // Classic pages need special handling
+    //   this.loadClassicDependencies().then(() => {
+    //     this._environmentMessage = this._getEnvironmentMessage();
+    //     getSP(this.context); // Initialize PnPjs
+    //     // Classic pages might need DOM ready check
+    //     if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    //       this.renderWebPart();
+    //     } else {
+    //       document.addEventListener('DOMContentLoaded', () => this.renderWebPart());
+    //     }
+    //   });
+    // }
+  // loadClassicDependencies(): Promise<void> {
+  //   return new Promise((resolve) => {
+  //     // Simulate loading dependencies
+  //     console.log("Loading classic dependencies...");
+  //     setTimeout(() => {
+  //       console.log("Classic dependencies loaded.");
+  //       resolve();
+  //     }, 1000); // Simulated delay
+  //   });
+  // }
+
+
+    private _getEnvironmentMessage(): string {
+      if (!!this.context.sdks.microsoftTeams) { // running in Teams
+        return this.context.isServedFromLocalhost ? strings.AppLocalEnvironmentTeams : strings.AppTeamsTabEnvironment;
+      }
+  
+      return this.context.isServedFromLocalhost ? strings.AppLocalEnvironmentSharePoint : strings.AppSharePointEnvironment;
+    }
 
   protected onThemeChanged(currentTheme: IReadonlyTheme | undefined): void {
     if (!currentTheme) {

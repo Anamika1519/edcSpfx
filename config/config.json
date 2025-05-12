@@ -289,6 +289,14 @@
           "manifest": "./src/webparts/reportNavigation/ReportNavigationWebPart.manifest.json"
         }
       ]
+    },
+    "reports-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/reports/ReportsWebPart.js",
+          "manifest": "./src/webparts/reports/ReportsWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {
@@ -338,6 +346,7 @@
     "QuicklinksWebPartStrings": "lib/webparts/quicklinks/loc/{locale}.js",
     "ArgDelegationWebPartStrings": "lib/webparts/argDelegation/loc/{locale}.js",
     "ArgDelegationMasterWebPartStrings": "lib/webparts/argDelegationMaster/loc/{locale}.js",
-    "ReportNavigationWebPartStrings": "lib/webparts/reportNavigation/loc/{locale}.js"
+    "ReportNavigationWebPartStrings": "lib/webparts/reportNavigation/loc/{locale}.js",
+    "ReportsWebPartStrings": "lib/webparts/reports/loc/{locale}.js"
   }
 }

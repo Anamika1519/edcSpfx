@@ -101,6 +101,7 @@ import {
 import DMSMyApprovalAction from "./DMSApprovalAction";
 import { getApprovalListsData } from "../../../APISearvice/BusinessAppsService";
 import DMSMyFolderApprovalAction from "./DMSFolderApprovalAction";
+import { Tenant_URL } from "../../../Shared/Constants";
 let actingforuseremail: any
 const MyApprovalContext = ({ props }: any) => {
   const sp: SPFI = getSP();
@@ -168,6 +169,7 @@ const MyApprovalContext = ({ props }: any) => {
     { id: "Pending", name: "Pending" },
     { id: "Approved", name: "Approved" },
     { id: "Rejected", name: "Rejected" },
+    { id: "Rework", name: "Rework" }
   ]);
   const [isOpen, setIsOpen] = React.useState(false);
 
@@ -483,9 +485,18 @@ const MyApprovalContext = ({ props }: any) => {
 
     console.log("Edc data get called ")
     console.log("currentUserIdRef", currentUserIdRef.current)
+    let edcProcessApprovalItems;
     try {
-      const edcProcessApprovalItems = await sp.web.lists.getByTitle("ProcessApprovalList").items.select("*,ContentTitle,AssignedTo/Id,AssignedTo/Title,RequesterName/Id,RequesterName/Title", "ListItemId").expand("RequesterName,AssignedTo")
-        .filter(`AssignedToId eq ${currentUserIdRef.current} and Status eq '${value}'`).orderBy("Created", false).getAll();
+      if (value === "All") {
+        edcProcessApprovalItems = await sp.web.lists.getByTitle("ProcessApprovalList").items.select("*,ContentTitle,AssignedTo/Id,AssignedTo/Title,RequesterName/Id,RequesterName/Title", "ListItemId").expand("RequesterName,AssignedTo")
+          .filter(`AssignedToId eq ${currentUserIdRef.current} and (Status eq 'Pending' or Status eq 'Approved' or Status eq 'Rejected')`).orderBy("Created", false).getAll();
+
+      }
+      else {
+        edcProcessApprovalItems = await sp.web.lists.getByTitle("ProcessApprovalList").items.select("*,ContentTitle,AssignedTo/Id,AssignedTo/Title,RequesterName/Id,RequesterName/Title", "ListItemId").expand("RequesterName,AssignedTo")
+          .filter(`AssignedToId eq ${currentUserIdRef.current} and Status eq '${value}'`).orderBy("Created", false).getAll();
+
+      }
 
       console.log("edcProcessApprovalItems", edcProcessApprovalItems)
 
@@ -1107,12 +1118,12 @@ const MyApprovalContext = ({ props }: any) => {
             redirecturl = `${siteUrl}/SitePages/EDCMAIN.aspx#/${Item.ProcessName}/${actionType}/${Number(Item?.ListItemId)}/${Item?.Id}`;
             // redirecturl = `${siteUrl}/SitePages/DocumentCancellation.aspx` + "/approve/" + Number(Item?.ListItemId) + "/" + Item?.Id ;
             break;
-            case "Change Request":
-              sessionkey = "ChangeRequestId";
-              redirecturl = `${siteUrl}/SitePages/EDCMAIN.aspx#/${Item.ProcessName}/${actionType}/${Number(Item?.ListItemId)}/${Item?.Id}`;
-              // redirecturl = `${siteUrl}/SitePages/DocumentCancellation.aspx` + "/approve/" + Number(Item?.ListItemId) + "/" + Item?.Id ;
-              break;
-              case "Annual Audit Plan":
+          case "Change Request":
+            sessionkey = "ChangeRequestId";
+            redirecturl = `${siteUrl}/SitePages/EDCMAIN.aspx#/${Item.ProcessName}/${actionType}/${Number(Item?.ListItemId)}/${Item?.Id}`;
+            // redirecturl = `${siteUrl}/SitePages/DocumentCancellation.aspx` + "/approve/" + Number(Item?.ListItemId) + "/" + Item?.Id ;
+            break;
+          case "Annual Audit Plan":
             // sessionkey = "DocumentCancelId";
             redirecturl = `${siteUrl}/SitePages/EDCMAIN.aspx#/${Item.ProcessName}/${actionType}/${Number(Item?.ListItemId)}/${Item?.Id}`;
             // redirecturl = `${siteUrl}/SitePages/DocumentCancellation.aspx` + "/approve/" + Number(Item?.ListItemId) + "/" + Item?.Id ;
@@ -1135,19 +1146,29 @@ const MyApprovalContext = ({ props }: any) => {
 
 
           const getnonconfirmitydata = await sp.web.lists.getByTitle("NonConformityList").items.getById(Item.MainListId).select("* , CurrentUserRole , Status", "SubmitStatus")();
+          const getprocessapprovaldata = await sp.web.lists.getByTitle("ProcessApprovalList").items.getById(Item.Id).select("* , CurrentUserRole , Status")();
           //  alert(`getnonconfirmitydata: ${JSON.stringify(getnonconfirmitydata)}`);
+
 
           const isEditable =
             getnonconfirmitydata?.Status === "Pending" &&
             getnonconfirmitydata?.SubmitStatus === "Yes" &&
             (getnonconfirmitydata?.CurrentUserRole === "FirstAssignedTo" || getnonconfirmitydata?.CurrentUserRole === "DelegateTo");
-
+          const isRework =
+            getnonconfirmitydata?.Status === "Rework" &&
+            getnonconfirmitydata?.SubmitStatus === "Yes" &&
+            (getnonconfirmitydata?.CurrentUserRole === "FirstInitiator") ||
+            (getnonconfirmitydata?.CurrentUserRole === "FirstAssignedTo" || getnonconfirmitydata?.CurrentUserRole === "DelegateTo");
+          console.log("getprocessapprovaldata", getprocessapprovaldata)
           //  alert("isEditable"+ isEditable)
-          if (isEditable) {
+          if (isEditable || isRework) {
             // alert("edit")
             actionType = "edit";
+          } else if (getprocessapprovaldata?.Status === "Approved") {
+            actionType = "view";
           }
         }
+        console.log("actionTypeactionType", actionType)
         switch (Item?.ProcessName) {
           case "Document Cancellation":
             sessionkey = "DocumentCancelId";
@@ -1183,6 +1204,8 @@ const MyApprovalContext = ({ props }: any) => {
             if (actionType === "edit") {
               // alert("edit")
               redirecturl = `${siteUrl}/SitePages/EDCMAIN.aspx#/${Item.ProcessName}/${actionType}/${Number(Item?.MainListId)}`;
+            } else if (actionType === "view") {
+              redirecturl = `${siteUrl}/SitePages/EDCMAIN.aspx#/${Item.ProcessName}/${actionType}/${Number(Item?.MainListId)}/${Item?.Id}`;
             } else {
               redirecturl = `${siteUrl}/SitePages/EDCMAIN.aspx#/${Item.ProcessName}/${actionType}/${Number(Item?.MainListId)}/${Item?.Id}`;
             }
@@ -1308,9 +1331,10 @@ const MyApprovalContext = ({ props }: any) => {
                       }
                       className="form-select"
                     >
-                      {/* <option value="">Pending</option> */}
+                      <option value="All">All</option>
                       {StatusTypeData.map((item, index) => (
-                        <option key={index} value={item.name}>
+
+                        <option key={index} value={item.name} selected={item.name === "Pending"}>
                           {item.name}
                         </option>
                       ))}
@@ -1389,7 +1413,7 @@ const MyApprovalContext = ({ props }: any) => {
                             role="tab"
                             tabIndex={-1}
                           >
-                            <span className="lenbg1">Approvals</span>
+                            <span className="lenbg1">Process Approvals</span>
                             <span className="lenbg">
                               {myEdcApprovalData.length}
                             </span>
@@ -2544,7 +2568,7 @@ const MyApprovalContext = ({ props }: any) => {
                                                     <Edit
                                                       onClick={(e) => {
 
-                                                        item?.IsDocChange == "CRDC" ? window.location.href = `https://edcadae.sharepoint.com/sites/edcspfxSitePages/ChangeRequest.aspx/${item?.RedirectionLink}` : getTaskItemsbyID(e, item?.FileUID?.FileUID); handleShowNestedDMSTable()
+                                                        item?.IsDocChange == "CRDC" ? window.location.href = `${Tenant_URL}/sites/EDeDMS/SitePages/ChangeRequest.aspx/${item?.RedirectionLink}` : getTaskItemsbyID(e, item?.FileUID?.FileUID); handleShowNestedDMSTable()
                                                       }}
                                                       style={{
                                                         minWidth: "20px",
@@ -3142,7 +3166,7 @@ const MyApprovalContext = ({ props }: any) => {
                                                   }}
                                                 >
                                                   <span className="badge font-12 bg-secondary">
-                                                     {item?.ProcessName === "Annual Audit Plan" && "IMS Audit Plan"}
+                                                    {item?.ProcessName === "Annual Audit Plan" && "IMS Audit Plan"}
                                                     {item?.ProcessName === "Annual Audit Program" && "IMS Annual Audit Program"}
                                                     {item?.ProcessName === "Annual Audit Report" && "IMS Audit Report and Checklist"}
                                                     {item?.ProcessName !== "Annual Audit Plan" && item?.ProcessName !== "Annual Audit Program" && item?.ProcessName !== "Annual Audit Report" && item?.ProcessName}

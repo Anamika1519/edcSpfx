@@ -580,7 +580,7 @@ export const getAllDMSApprovals = async (sp, itemStatus,actingfor) => {
       
       let arrnew = [];
       arr = res
-      let siteurl =`https://edcadae.sharepoint.com/sites/edcspfxSitePages/ChangeRequest.aspx`;
+      let siteurl =`https://edcadae.sharepoint.com/sites/EDeDMS/SitePages/ChangeRequest.aspx`;
       console.log("resresresresr", res,siteurl)
       for (let i = 0; i < res.length; i++) {
         arrnew.push({

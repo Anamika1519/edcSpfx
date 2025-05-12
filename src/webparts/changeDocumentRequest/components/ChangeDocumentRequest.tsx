@@ -959,7 +959,7 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
             let bannerImageArray: any = {};
             let DocumentName: string = "";
             let attachmentIds = [];
-            const folder = sp.web.getFolderByServerRelativePath('/sites/edcspfxChangeRequestDocs');
+            const folder = sp.web.getFolderByServerRelativePath('/sites/EDeDMS/ChangeRequestDocs');
             if (Attachmentarr.length > 0 && Attachmentarr[0]?.files?.length > 0) {
               for (const file of Attachmentarr[0].files) {
                 //bannerImageArray = await uploadFile(file, sp, "ChangeRequestDocs", tenantUrl);
@@ -1086,7 +1086,7 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
             let bannerImageArray: any = {};
             let DocumentName: string = "";
             let attachmentIds = [];
-            const folder = sp.web.getFolderByServerRelativePath('/sites/edcspfxChangeRequestDocs');
+            const folder = sp.web.getFolderByServerRelativePath('/sites/EDeDMS/ChangeRequestDocs');
             if (Attachmentarr.length > 0 && Attachmentarr[0]?.files?.length > 0) {
               for (const file of Attachmentarr[0].files) {
                 //bannerImageArray = await uploadFile(file, sp, "ChangeRequestDocs", tenantUrl);
@@ -1240,7 +1240,7 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
             let bannerImageArray: any = {};
             let DocumentName: string = "";
             let attachmentIds = [];
-            const folder = sp.web.getFolderByServerRelativePath('/sites/edcspfxChangeRequestDocs');
+            const folder = sp.web.getFolderByServerRelativePath('/sites/EDeDMS/ChangeRequestDocs');
             if (Attachmentarr.length > 0 && Attachmentarr[0]?.files?.length > 0) {
               for (const file of Attachmentarr[0].files) {
                 //bannerImageArray = await uploadFile(file, sp, "ChangeRequestDocs", tenantUrl);
@@ -1373,7 +1373,7 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
             let bannerImageArray: any = {};
             let DocumentName: string = "";
             let attachmentIds = [];
-            const folder = sp.web.getFolderByServerRelativePath('/sites/edcspfxChangeRequestDocs');
+            const folder = sp.web.getFolderByServerRelativePath('/sites/EDeDMS/ChangeRequestDocs');
             if (Attachmentarr.length > 0 && Attachmentarr[0]?.files?.length > 0) {
               for (const file of Attachmentarr[0].files) {
                 //bannerImageArray = await uploadFile(file, sp, "ChangeRequestDocs", tenantUrl);
@@ -2809,7 +2809,7 @@ const ChangeDocumentRequestContext = ({ props }: any) => {
                         {((editID?.Status === "Pending" || editID?.Status === "Save as draft") && (editID.Level === 0 && editID.CurrentUserRole !== "OES" && editID.IsInitiator == "Yes")) && (modeValue === "approve") && <button type="button" className="btn btn-primary waves-effect waves-light m-1" onClick={() => ForwardInitiatorApproval("Approved")}><i className="fe-check-circle me-1"></i> Submit</button>}
 
                         {/* </a> */}
-                        {/* <a href="../sites/edcspfxSitePages/EDCMAIN.aspx">       */}
+                        {/* <a href="../sites/EDeDMS/SitePages/EDCMAIN.aspx">       */}
                         <button type="button" className="btn cancel-btn waves-effect waves-light m-1" onClick={handleCancel}><i className="fe-x me-1"></i> Cancel</button>
                         {/* </a> */}
                       </div>

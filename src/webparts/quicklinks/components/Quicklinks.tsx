@@ -17,6 +17,19 @@ import "../../horizontalNavBar/components/horizontalNavbar.scss";
 import { Tenant_URL } from '../../../Shared/Constants';
 
 export const MastersettingContext = ({ props }: any) => {
+//   const style = document.createElement("style");
+//   style.innerHTML = `
+//   #O365_ShellHeader, #SuiteNavWrapper, #spCommandBar,
+//   #RecommendedItems, #CommentsWrapper, #spLeftNav,
+//   #spSiteHeader, #sp-appBar, [data-automation-id="pageHeader"],
+//   [data-automation-id="comments-section"],
+//   .s_f_a15aba7f, .co_t_acbc1db2, .w_b_4ade22aa {
+//     display: none !important;
+//     visibility: hidden !important;
+//   }
+// `;
+//   document.head.appendChild(style);
+
   const { useHide }: any = React.useContext(UserContext);
   const elementRef = React.useRef<HTMLDivElement>(null);
   const SiteUrl = props.siteUrl;
@@ -35,15 +48,77 @@ export const MastersettingContext = ({ props }: any) => {
   ]
 
   React.useEffect(() => {
-    ApiCall()
-    // console.log('This function is called only once', useHide);
-    // IsUserAllowedAccess().then(bAllowed => {
+     // Immediately hide sidebar and navbar
+     const hideElements = () => {
+      document.querySelectorAll("#O365_ShyHeader, #SuiteNavWrapper, #spCommandBar, #RecommendedItems, #CommentsWrapper, #spLeftNav, #spSiteHeader, #spCommandBar, #sp-appBar, .s_f_a15aba7f, .co_t_acbc1db2, .w_b_4ade22aa").forEach((el) => {
+        // (el as HTMLElement).style.display = "none";
+        el.remove();
+      });
+    };
 
-    //   //  console.log("%c Access allowed","color:green,font-size:14px",bAllowed);
-    //   setIsUserAlllowed(bAllowed);
+    hideElements(); // Run once when component loads
 
-    // })
+
+
+    // Optional: Observer to prevent SharePoint scripts from re-showing
+    const observer = new MutationObserver(hideElements);
+    observer.observe(document.body, { childList: true, subtree: true });
+
+   
+
+    ApiCall();
+    return () => observer.disconnect(); // Cleanup on unmount
+    
   }, []);
+
+  // React.useLayoutEffect(() => {
+
+  //   // Example: hide the side badges using CSS or DOM manipulation
+  //   const badges = document.querySelectorAll('[data-automation-id="pageHeader"]');
+  //   badges.forEach(badge => {
+  //     (badge as HTMLElement).style.display = 'none';
+  //   });
+
+  //   // You can also hide other known elements using their classes or IDs
+  //   const comments = document.querySelector('[data-automation-id="comments-section"]');
+  //   if (comments) {
+  //     (comments as HTMLElement).style.display = 'none';
+  //   }
+
+  //   const elementsToHide = [
+  //     "O365_ShyHeader",
+  //     "SuiteNavWrapper",
+  //     "spCommandBar",
+  //     "RecommendedItems",
+  //     "CommentsWrapper",
+  //     "spLeftNav",
+  //     "spSiteHeader",
+  //     "spCommandBar",
+  //     "sp-appBar",
+  //   ];
+
+  //   elementsToHide.forEach(id => {
+  //     const element = document.getElementById(id);
+  //     if (element) {
+  //       element.style.display = 'none !important';
+  //     }
+  //   });
+
+
+  //   const classesToHide = [
+  //     "s_f_a15aba7f",
+  //     "co_t_acbc1db2",
+  //     "w_b_4ade22aa"
+  //   ];
+
+  //   classesToHide.forEach(className => {
+  //     const elements = document.getElementsByClassName(className);
+  //     Array.from(elements).forEach(element => {
+  //       (element as HTMLElement).style.display = 'none';
+  //     });
+  //   });
+
+  // }, []);
 
   const ApiCall = async () => {
 
@@ -81,10 +156,10 @@ export const MastersettingContext = ({ props }: any) => {
               <div className="col-lg-3">
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
               </div>
-              {QuickLinkArray.length == 0 && showImg?
+              {QuickLinkArray.length == 0 && showImg ?
 
                 <div>
-                  <img style={{ width: '100%' }}  src={require("../assets/Group.png")} />
+                  <img style={{ width: '100%' }} src={require("../assets/Group.png")} />
                 </div>
 
 
@@ -93,7 +168,7 @@ export const MastersettingContext = ({ props }: any) => {
 
 
 
-                  {
+                  {QuickLinkArray &&
                     QuickLinkArray.map((item: any) => {
                       const ImageUrl = item.QuickLinkImage == undefined || item.QuickLinkImage == null ? "" : JSON.parse(item.QuickLinkImage);
                       // let img1 = imageData && imageData.fileName ? `${SiteUrl}/_api/v2.1/sites('${siteId}')/lists('${listID}')/items('${item.ID}')/attachments('${imageData.fileName}')/thumbnails/0/c400x400/content` : ""

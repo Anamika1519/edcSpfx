@@ -30,6 +30,7 @@ import { Image } from "react-feather";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperclip } from '@fortawesome/free-solid-svg-icons';
 import ModalStructure, { ModalSize } from '../../../GlobalContext/ModalStructure';
+import { Tenant_URL } from '../../../Shared/Constants';
 let siteID: any;
 let response: any;
 const HelloWorldContext = ({ props }: any) => {
@@ -825,7 +826,7 @@ const HelloWorldContext = ({ props }: any) => {
                 let siteId = siteID;
                 let listID = response.Id;
                 let img1 = imageData && imageData.fileName ? `${siteUrl}/_api/v2.1/sites('${siteId}')/lists('${listID}')/items('${item.ID}')/attachments('${imageData.fileName}')/thumbnails/0/c400x400/content?prefer=noredirect%2Cclosestavailablesize` : ""
-                let img = imageData && imageData.serverRelativeUrl ? `https://edcadae.sharepoint.com${imageData.serverRelativeUrl}` : img1
+                let img = imageData && imageData.serverRelativeUrl ? `${Tenant_URL}${imageData.serverRelativeUrl}` : img1
                 const imageUrl = imageData
                   //? `${siteUrl}/SiteAssets/Lists/ea596702-57db-4833-8023-5dcd2bba46e3/${imageData.fileName}`
                   //? `${imageData.serverUrl}${imageData.serverRelativeUrl}`

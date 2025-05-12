@@ -55,6 +55,7 @@ import { MSGraphClientV3 } from "@microsoft/sp-http";
 import { WebPartContext } from "@microsoft/sp-webpart-base";
 import context from "react-bootstrap/esm/AccordionContext";
 import Avatar from "@mui/material/Avatar";
+import { Tenant_URL } from "../../../Shared/Constants";
 
 const DiscussionForumContext = ({ props }: any) => {
   const sp: SPFI = getSP();
@@ -835,7 +836,7 @@ const DiscussionForumContext = ({ props }: any) => {
                   file,
                   sp,
                   "Documents",
-                  "https://edcadae.sharepoint.com"
+                  Tenant_URL
                 );
               }
             } else {
@@ -1153,7 +1154,7 @@ const DiscussionForumContext = ({ props }: any) => {
                 InviteMemebersId: selectedIds,
                 ARGDiscussionStatus: "Ongoing",
                 DiscussionInProgress: "In Progress",
-                DiscussionFileManager: `/sites/edcspfxARGDiscussionFiles/${formData.topic}`,
+                DiscussionFileManager: `/sites/EDeDMS/ARGDiscussionFiles/${formData.topic}`,
                 DiscussionFolderName: formData.topic
               };
             }
@@ -1167,7 +1168,7 @@ const DiscussionForumContext = ({ props }: any) => {
                 DiscussionForumCategoryId: Number(formData.category),
                 ARGDiscussionStatus: "Ongoing",
                 DiscussionInProgress: "In Progress",
-                DiscussionFileManager: `/sites/edcspfxARGDiscussionFiles/${formData.topic}`,
+                DiscussionFileManager: `/sites/EDeDMS/ARGDiscussionFiles/${formData.topic}`,
                 DiscussionFolderName: formData.topic
               };
             }
@@ -1276,7 +1277,7 @@ const DiscussionForumContext = ({ props }: any) => {
 
   const handleCancel = () => {
     window.location.href =
-      "https://edcadae.sharepoint.com/sites/edcspfxSitePages/Blogs.aspx";
+      `${Tenant_URL}/sites/EDeDMS/SitePages/Blogs.aspx`;
   };
 
   const formats = [
