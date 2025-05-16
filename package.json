@@ -63,6 +63,7 @@
     "react-responsive-carousel": "^3.2.23",
     "react-richtext": "^1.1.0",
     "react-select": "^5.8.3",
+    "recharts": "^2.15.3",
     "sweetalert2": "^11.12.4",
     "tslib": "2.3.1",
     "xlsx": "^0.18.5"
@@ -79,6 +80,7 @@
     "@types/react": "17.0.45",
     "@types/react-big-calendar": "^1.8.11",
     "@types/react-dom": "17.0.17",
+    "@types/recharts": "^1.8.29",
     "@types/webpack-env": "~1.15.2",
     "ajv": "^6.12.5",
     "eslint": "8.7.0",

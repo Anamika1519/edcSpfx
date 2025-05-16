@@ -8076,3 +8076,136 @@ body{width: 1350px; margin: auto;}
     .posnew{position: relative; top:5px;}
     .gheight .ps-2,.gheight .ps-3{padding: 0px !important;}
 }
+
+.container {
+    padding: 20px;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.tableWrapper {
+    overflow-x: auto;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    background-color: white;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    background-color: #f3f2f1;
+    font-weight: bold;
+    padding: 12px;
+    border: 1px solid #e0e0e0;
+    text-align: left;
+    white-space: nowrap;
+    cursor: pointer;
+    position: relative;
+}
+
+th:hover {
+    background-color: #eaeaea;
+}
+
+td {
+    padding: 12px;
+    border: 1px solid #e0e0e0;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.rowEven {
+    background-color: #f9f9f9;
+}
+
+.title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #323130;
+}
+
+.filterInput {
+    width: 100%;
+    padding: 6px 8px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    font-size: 13px;
+    background-color: white;
+    margin: 4px 0;
+}
+
+.filterInput:focus {
+    outline: none;
+    border: 1px solid #0078d4;
+    box-shadow: 0 0 0 2px #c7e0f4;
+}
+
+.sortIcon {
+    margin-left: 4px;
+    vertical-align: middle;
+    color: #0078d4;
+}
+
+.filterRow {
+    background-color: #f8f8f8;
+}
+
+.filterCell {
+    padding: 8px;
+    border: 1px solid #e0e0e0;
+}
+
+.resultsCount {
+    color: #605e5c;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    gap: 4px;
+}
+
+.pageButton {
+    min-width: 32px;
+    padding: 6px 8px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    background-color: white;
+    cursor: pointer;
+}
+
+.pageButton:hover {
+    background-color: #f3f2f1;
+}
+
+.pageButton:disabled {
+    background-color: #f3f2f1;
+    cursor: default;
+    opacity: 0.6;
+}
+
+.activePage {
+    background-color: #0078d4;
+    color: white;
+    border: 1px solid #0078d4;
+}
+
+.activePage:hover {
+    background-color: #0078d4;
+}
+
+.pageInfo {
+    margin: 0 10px;
+    font-size: 14px;
+}
+
+.ellipsis {
+    padding: 6px 8px;
+}

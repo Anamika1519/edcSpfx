@@ -6,7 +6,7 @@ export const getEntity = async (_sp) => {
 
   let arr = []
 
-  await _sp.web.lists.getByTitle("ARGEntityMaster").items.select("ID,Entity").filter("Active eq 1")()
+  await _sp.web.lists.getByTitle("ARGEntityMaster").items.select("ID,Entity,ADDepartmentName").filter("Active eq 1")()
 
     .then((res) => {
 

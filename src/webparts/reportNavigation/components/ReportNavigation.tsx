@@ -40,39 +40,31 @@ export const ReportNavigationContext = ({ props }: any) => {
 
     }
   ]
+
   React.useEffect(() => {
-    // Immediately hide sidebar and navbar
-    const hideElements = () => {
-     document.querySelectorAll("#O365_ShyHeader, #SuiteNavWrapper, #spCommandBar, #RecommendedItems, #CommentsWrapper, #spLeftNav, #spSiteHeader, #spCommandBar, #sp-appBar, .s_f_a15aba7f, .co_t_acbc1db2, .w_b_4ade22aa").forEach((el) => {
-       // (el as HTMLElement).style.display = "none";
-       el.remove();
-     });
-   };
-
-   hideElements(); // Run once when component loads
-
-
-
-   // Optional: Observer to prevent SharePoint scripts from re-showing
-   const observer = new MutationObserver(hideElements);
-   observer.observe(document.body, { childList: true, subtree: true });
-
-  
-
-   ApiCall();
-   return () => observer.disconnect(); // Cleanup on unmount
+    // ApiCall()
+     // Immediately hide sidebar and navbar
+     const hideElements = () => {
+      document.querySelectorAll("#O365_ShyHeader, #SuiteNavWrapper, #spCommandBar, #RecommendedItems, #CommentsWrapper, #spLeftNav, #spSiteHeader, #spCommandBar, #sp-appBar, .s_f_a15aba7f, .co_t_acbc1db2, .w_b_4ade22aa").forEach((el) => {
+        // (el as HTMLElement).style.display = "none";
+        el.remove();
+      });
+    };
+ 
+    hideElements(); // Run once when component loads
+ 
+ 
+ 
+    // Optional: Observer to prevent SharePoint scripts from re-showing
+    const observer = new MutationObserver(hideElements);
+    observer.observe(document.body, { childList: true, subtree: true });
+ 
    
- }, []);
-  // React.useEffect(() => {
-  //   ApiCall()
-  //   // console.log('This function is called only once', useHide);
-  //   // IsUserAllowedAccess().then(bAllowed => {
-
-  //   //   //  console.log("%c Access allowed","color:green,font-size:14px",bAllowed);
-  //   //   setIsUserAlllowed(bAllowed);
-
-  //   // })
-  // }, []);
+ 
+    ApiCall();
+    return () => observer.disconnect(); // 
+    
+  }, []);
 
   // const IsUserAllowedAccess = async () => {
   //   // Get groups for the current user

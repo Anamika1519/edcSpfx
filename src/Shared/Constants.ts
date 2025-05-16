@@ -8,8 +8,8 @@ export const LIST_TITLE_MyRequest="ARGMyRequest";
 export const CONTENTTYPE_DocumentCancel ="Document Cancellation";
 export const LIST_TITLE_DocCancel="ChangeRequestDocumentCancellationList";
 
-// export const Tenant_URL ="https://edcadae.sharepoint.com"
-export const Tenant_URL ="https://edcadae.sharepoint.com"
+// export const Tenant_URL ="https://officeindia.sharepoint.com"
+export const Tenant_URL ="https://officeindia.sharepoint.com"
 
 // Content Types
 export const CONTENTTYPE_Event="Event";

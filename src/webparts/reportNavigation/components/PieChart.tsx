@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Chart, registerables } from 'chart.js';
 
 Chart.register(...registerables);
@@ -7,32 +7,34 @@ interface ChartComponentProps {
   UniqNCDept: any[];
 }
 const DepartmentPieChart: React.FC<ChartComponentProps> = ({ UniqNCDept }) => {
-
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const chartInstanceRef = useRef<Chart | null>(null);
   // Generate N distinct colors using HSL
-const generateColors = (count: number): string[] => {
-  const colors: string[] = [];
-  const saturation = 70;
-  const lightness = 60;
-  for (let i = 0; i < count; i++) {
-    const hue = Math.floor((360 / count) * i);
-    colors.push(`hsl(${hue}, ${saturation}%, ${lightness}%)`);
-  }
-  return colors;
-};
+  const generateColors = (count: number): string[] => {
+    const colors: string[] = [];
+    const saturation = 70;
+    const lightness = 60;
+    for (let i = 0; i < count; i++) {
+      const hue = Math.floor((360 / count) * i);
+      colors.push(`hsl(${hue}, ${saturation}%, ${lightness}%)`);
+    }
+    return colors;
+  };
 
   useEffect(() => {
-    const ctx = document.getElementById('lifetime-sales') as HTMLCanvasElement;
+    if (!canvasRef.current) return;
 
-    if (!ctx) return;
+    // Destroy previous chart instance
+    if (chartInstanceRef.current) {
+      chartInstanceRef.current.destroy();
+    }
+    // const ctx = document.getElementById('lifetime-sales') as HTMLCanvasElement;
 
-    // Sample data processing
-    // const departments = [
-    //   { Title: "HR" },
-    //   { Title: "Finance" },
-    //   { Title: "IT" },
-    //   { Title: "Finance" },
-    //   { Title: "HR" },
-    // ];
+    // if (!ctx) return;
+
+    // if (chartRef.current) {
+    //   chartRef.current.destroy();
+    // }
 
     const countMap: { [key: string]: number } = {};
     UniqNCDept.forEach(dep => {
@@ -45,7 +47,8 @@ const generateColors = (count: number): string[] => {
     const colors = generateColors(labels.length);
 
 
-    new Chart(ctx, {
+    // new Chart(ctx, {
+    chartInstanceRef.current = new Chart(canvasRef.current, {
       type: 'pie',
       data: {
         labels,
@@ -72,10 +75,11 @@ const generateColors = (count: number): string[] => {
         }
       }
     });
-  }, []);
+  }, [UniqNCDept]);
 
   return (
-    <canvas id="lifetime-sales" style={{ height: '270px' }}></canvas>
+    <canvas ref={canvasRef} style={{ height: '270px' }}></canvas>
+    // <canvas id="lifetime-sales" style={{ height: '270px' }}></canvas>
   );
 };
 
