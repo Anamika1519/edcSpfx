@@ -123,7 +123,7 @@ const MyApprovalContext = ({ props }: any) => {
   const elementRef = React.useRef<HTMLDivElement>(null);
 
   const SiteUrl = props.siteUrl;
-
+  const [StatusChange, setStatusChange] = React.useState(false);
   const [newsData, setNewsData] = React.useState([]);
 
   const [TypeData, setTypeData] = React.useState([]);
@@ -180,70 +180,7 @@ const MyApprovalContext = ({ props }: any) => {
     setActiveComponent(Name); // Reset to show the main component
     console.log(activeComponent, "activeComponent updated");
   };
-  // const getApprovalmasterTasklist = async () => {
-  //   try {
-  //     const items = await sp.web.lists
-  //       .getByTitle("DMSFileApprovalTaskList")
-  //       .items.select(
-  //         "Log",
-  //         "CurrentUser",
-  //         "Remark",
-  //         "LogHistory",
-  //         "FileUID/FileUID",
-  //         "FileUID/SiteName",
-  //         "FileUID/DocumentLibraryName",
-  //         "FileUID/FileName",
-  //         "FileUID/RequestNo",
-  //         // , "FileUID/FilePreviewUrl"
-  //         "FileUID/Status",
-  //         "FileUID/FolderPath",
-  //         "FileUID/RequestedBy",
-  //         "FileUID/Created",
-  //         "FileUID/ApproveAction",
-  //         "MasterApproval/ApprovalType",
-  //         "MasterApproval/Level",
-  //         "MasterApproval/DocumentLibraryName"
-  //       )
-  //       .expand("FileUID", "MasterApproval")
-  //       .filter(`CurrentUser eq '${currentUserEmailRef.current}'`)();
-  //     console.log(items, "DMSFileApprovalTaskList");
-  //     setMylistdata(items);
-  //   } catch (error) {
-  //     console.error("Error fetching list items:", error);
-  //   }
-  // };
-  // const MyDMSAPPROVALDATASTATUS = async (sp: any, value: any) => {
-  //   try {
-  //     const items = await sp.web.lists
-  //       .getByTitle("DMSFileApprovalTaskList")
-  //       .items.select(
-  //         "Log",
-  //         "CurrentUser",
-  //         "Remark",
-  //         "LogHistory",
-  //         "FileUID/FileUID",
-  //         "FileUID/SiteName",
-  //         "FileUID/DocumentLibraryName",
-  //         "FileUID/FileName",
-  //         "FileUID/RequestNo",
-  //         // , "FileUID/FilePreviewUrl"
-  //         "FileUID/Status",
-  //         "FileUID/FolderPath",
-  //         "FileUID/RequestedBy",
-  //         "FileUID/Created",
-  //         "FileUID/ApproveAction",
-  //         "MasterApproval/ApprovalType",
-  //         "MasterApproval/Level",
-  //         "MasterApproval/DocumentLibraryName"
-  //       )
-  //       .expand("FileUID", "MasterApproval")
-  //       .filter(`CurrentUser eq '${currentUserEmailRef.current}' and FileUID/Status eq '${value}'`)();
-  //     console.log(items, "DMSFileApprovalTaskList");
-  //     setMylistdata(items);
-  //   } catch (error) {
-  //     console.error("Error fetching list items:", error);
-  //   }
-  // };
+
   const getUserTitleByEmail = async (userEmail: any) => {
     try {
       const user = await sp.web.siteUsers.getByEmail(userEmail)();
@@ -342,7 +279,7 @@ const MyApprovalContext = ({ props }: any) => {
 
 
       let arr = [];
-      if (actingfor === "") {
+      if (actingfor === "" || actingfor == undefined || !actingfor) {
         const items = await sp.web.lists.getByTitle('DMSFileApprovalTaskList').items.select(
           "Log", "CurrentUser", "Remark"
           , "LogHistory"
@@ -377,9 +314,10 @@ const MyApprovalContext = ({ props }: any) => {
           const requestedbyuserTitle = await getUserTitleByEmail(item?.FileUID?.RequestedBy);
           return { ...item, RequestedByTitle: requestedbyuserTitle };
         }));
-        setMylistdata(updatedItems);
+        // setMylistdata(updatedItems);
+        setMylistdataCRDC(updatedItems);
       }
-      if (actingfor !== "") {
+      else if (actingfor !== "" && actingfor != undefined) {
         const items = await sp.web.lists.getByTitle('DMSFileApprovalTaskList').items.select(
           "Log", "CurrentUser", "Remark"
           , "LogHistory"
@@ -414,7 +352,8 @@ const MyApprovalContext = ({ props }: any) => {
           const requestedbyuserTitle = await getUserTitleByEmail(item?.FileUID?.RequestedBy);
           return { ...item, RequestedByTitle: requestedbyuserTitle };
         }));
-        setMylistdata(updatedItems);
+        // setMylistdata(updatedItems);
+        setMylistdataCRDC(updatedItems);
       }
 
       // const updatedItems2 = await Promise.all(items2.map(async (item) => {
@@ -487,14 +426,31 @@ const MyApprovalContext = ({ props }: any) => {
     console.log("currentUserIdRef", currentUserIdRef.current)
     let edcProcessApprovalItems;
     try {
-      if (value === "All") {
-        edcProcessApprovalItems = await sp.web.lists.getByTitle("ProcessApprovalList").items.select("*,ContentTitle,AssignedTo/Id,AssignedTo/Title,RequesterName/Id,RequesterName/Title", "ListItemId").expand("RequesterName,AssignedTo")
-          .filter(`AssignedToId eq ${currentUserIdRef.current} and (Status eq 'Pending' or Status eq 'Approved' or Status eq 'Rejected')`).orderBy("Created", false).getAll();
+      if (!actingfor) {
+        if (value === "All") {
+          edcProcessApprovalItems = await sp.web.lists.getByTitle("ProcessApprovalList").items.select("*,ContentTitle,AssignedTo/Id,AssignedTo/Title,RequesterName/Id,RequesterName/Title", "ListItemId").expand("RequesterName,AssignedTo")
+            .filter(`AssignedToId eq ${currentUserIdRef.current} and (Status eq 'Pending' or Status eq 'Approved' or Status eq 'Rework' or Status eq 'Rejected')`).orderBy("Created", false).getAll();
 
+        }
+        else {
+          edcProcessApprovalItems = await sp.web.lists.getByTitle("ProcessApprovalList").items.select("*,ContentTitle,AssignedTo/Id,AssignedTo/Title,RequesterName/Id,RequesterName/Title", "ListItemId").expand("RequesterName,AssignedTo")
+            .filter(`AssignedToId eq ${currentUserIdRef.current} and Status eq '${value}'`).orderBy("Created", false).getAll();
+
+        }
       }
       else {
-        edcProcessApprovalItems = await sp.web.lists.getByTitle("ProcessApprovalList").items.select("*,ContentTitle,AssignedTo/Id,AssignedTo/Title,RequesterName/Id,RequesterName/Title", "ListItemId").expand("RequesterName,AssignedTo")
-          .filter(`AssignedToId eq ${currentUserIdRef.current} and Status eq '${value}'`).orderBy("Created", false).getAll();
+        const user = await sp.web.siteUsers.getByEmail(actingfor)();
+
+        if (value === "All") {
+          edcProcessApprovalItems = await sp.web.lists.getByTitle("ProcessApprovalList").items.select("*,ContentTitle,AssignedTo/Id,AssignedTo/Title,RequesterName/Id,RequesterName/Title", "ListItemId").expand("RequesterName,AssignedTo")
+            .filter(`AssignedToId eq ${user.Id} and (Status eq 'Pending' or Status eq 'Approved' or Status eq 'Rejected')`).orderBy("Created", false).getAll();
+
+        }
+        else {
+          edcProcessApprovalItems = await sp.web.lists.getByTitle("ProcessApprovalList").items.select("*,ContentTitle,AssignedTo/Id,AssignedTo/Title,RequesterName/Id,RequesterName/Title", "ListItemId").expand("RequesterName,AssignedTo")
+            .filter(`AssignedToId eq ${user.Id} and Status eq '${value}'`).orderBy("Created", false).getAll();
+
+        }
 
       }
 
@@ -508,8 +464,10 @@ const MyApprovalContext = ({ props }: any) => {
           Title: item.ContentTitle,
           ProcessName: item.ProcessName,
           RequestedBy: item.RequesterName ? item.RequesterName.Title : '',
-          RequestedDate: item.RequestedDate ? new Date(item.RequestedDate).toLocaleDateString() : '',
-          Created: item.RequestedDate ? new Date(item.RequestedDate).toLocaleDateString() : '',
+          RequestedDate: item?.RequestedDate,
+
+          // RequestedDate: item.RequestedDate ? new Date(item.RequestedDate).toLocaleDateString() : '',
+          Created: item?.RequestedDate ? new Date(item.RequestedDate).toLocaleDateString() : '',
           Status: item.Status,
           MainListId: item.ListItemId,
           Id: item.Id
@@ -662,6 +620,7 @@ const MyApprovalContext = ({ props }: any) => {
       setMyApprovalsData(myApprovalsDataAll);
     } else if (tab == "DMS") {
       setMyApprovalsData(MylistdataCRDC);
+      setMylistdataCRDC(MylistdataCRDC);
     } else if (tab == "Automation") {
       //ApiCall("Pending");
       setMyApprovalsData(myApprovalsDataAutomation);
@@ -679,11 +638,13 @@ const MyApprovalContext = ({ props }: any) => {
 
   const ApiCall = async (status: string) => {
     // if(activeTab == "Intranet"){
+    setLoading(true);
     let MyApprovaldata = await getMyApproval(sp, status);
     let Automationdata1 = await getApprovalListsData(sp, status);
     let typedata = await getType(sp);
     const returnDataEDC = await getEdcApprovalData(status, '');
     // setMyApprovalsData(MyApprovaldata);
+    console.log("returnDataEDC", returnDataEDC);
     setMyApprovalsData(returnDataEDC);
     setMyApprovalsDataAll(MyApprovaldata);
     //}
@@ -694,9 +655,11 @@ const MyApprovalContext = ({ props }: any) => {
     setMyApprovalsDataAutomation(Automationdata);
 
     console.log("Automationdata", Automationdata);
-    let ChangeReqandCancellationdata = await getAllDMSApprovals(sp, status, "test");
+    let ChangeReqandCancellationdata = await getAllDMSApprovals(sp, status, actingforuseremail);
+    // let ChangeReqandCancellationdata = await getApprovalmasterTasklist(status,actingforuseremail);
     console.log("ChangeReqandCancellationdata", ChangeReqandCancellationdata);
     setMylistdataCRDC(ChangeReqandCancellationdata);
+    setLoading(false);
     // }
   };
 
@@ -706,6 +669,8 @@ const MyApprovalContext = ({ props }: any) => {
 
   // };
   const handleStatusChange = async (name: string, value: string, actingfor: any) => {
+    setLoading(true);
+    setStatusChange(true);
     actingforuseremail = actingfor
     // alert(`Status value is ${value} is acting for ${actingfor}`)
     if (actingforuseremail === undefined || actingforuseremail === null || actingforuseremail === "") {
@@ -720,12 +685,14 @@ const MyApprovalContext = ({ props }: any) => {
       let MyApprovaldata = await getMyApproval(sp, value, actingfor);
       let Automationdata = await getApprovalListsData(sp, value, actingfor);
       // let MyDMSAPPROVALDATA:any = await MyDMSAPPROVALDATASTATUS(sp, value)
-      let MyDMSAPPROVALDATA: any = await getApprovalmasterTasklist(value, actingfor);
+      // let MyDMSAPPROVALDATA: any = await getApprovalmasterTasklist(value, actingfor);//commented by riya
       let MyDMSAPPROVALDATACRDC: any = await getAllDMSApprovals(sp, value, actingfor);
+      // let MyDMSAPPROVALDATACRDC: any = await getApprovalmasterTasklist(value, actingfor);
       console.log("MyDMSAPPROVALDATA", MyDMSAPPROVALDATACRDC)
       const edcReturnData = await getEdcApprovalData(value, actingfor);
       setMyApprovalsDataAll(MyApprovaldata);
       setMyApprovalsDataAutomation(Automationdata);
+      setMylistdataCRDC(MyDMSAPPROVALDATACRDC);
       if (activeTab == "Intranet") {
         setMyApprovalsData(MyApprovaldata);
       } else if (activeTab == "DMS") {
@@ -744,6 +711,8 @@ const MyApprovalContext = ({ props }: any) => {
       //   console.log("Automationdata", Automationdata);
       // }
     }
+    setStatusChange(false);
+    setLoading(false);
   };
   const handleFilterChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -775,6 +744,7 @@ const MyApprovalContext = ({ props }: any) => {
     );
 
     const filteredData = data?.filter((item, index) => {
+      console.log("new Date(item.RequestedDate)toLocaleDateString()", new Date(item.RequestedDate).toLocaleDateString(), filters.RequestedDate)
       return (
         (filters.SNo === "" || String(index + 1).includes(filters.SNo)) &&
         // (filters.Title === "" ||
@@ -786,8 +756,8 @@ const MyApprovalContext = ({ props }: any) => {
               filters.ProcessName.toLowerCase()
             ))) &&
         (filters.RequestID === "" ||
-          (item.RequestID != undefined &&
-            item.RequestID.toLowerCase().includes(
+          (item.RequestId != undefined &&
+            item.RequestId.toLowerCase().includes(
               filters.RequestID.toLowerCase()
             ))) &&
         // (filters.ProcessName === "" ||
@@ -797,20 +767,23 @@ const MyApprovalContext = ({ props }: any) => {
         (filters.Status === "" ||
           item.Status.toLowerCase().includes(filters.Status.toLowerCase())) &&
         (filters.RequestedDate === "" ||
-          new Date(item.Created)
-            .toLocaleDateString()
-            .startsWith(filters.RequestedDate + "")) &&
+          (activeTab == "Automation" || activeTab == "EDC Approval"
+            ? moment(item.RequestedDate).format("DD-MMM-YYYY")
+              .includes(filters.RequestedDate + "")
+            : moment(item.Created).format("DD-MMM-YYYY")
+              .includes(filters.RequestedDate + ""))) &&
+
         (filters.Title === "" ||
-          (activeTab == "Automation"
-            ? item?.ApprovalTitle?.toLowerCase().includes(
+          (activeTab == "Automation" || activeTab == "EDC Approval"
+            ? item?.Title?.toLowerCase().includes(
               filters.Title.toLowerCase()
             )
             : item?.Title?.toLowerCase().includes(
               filters.Title.toLowerCase()
             ))) &&
         (filters.RequestedBy === "" ||
-          (activeTab == "Automation"
-            ? item?.Author?.Title?.toLowerCase().includes(
+          (activeTab == "Automation" || activeTab == "EDC Approval"
+            ? item?.RequestedBy?.toLowerCase().includes(
               filters.RequestedBy.toLowerCase()
             )
             : item?.Requester?.Title?.toLowerCase().includes(
@@ -1145,8 +1118,9 @@ const MyApprovalContext = ({ props }: any) => {
         if (Item?.ProcessName === 'Non Conformity') {
 
 
-          const getnonconfirmitydata = await sp.web.lists.getByTitle("NonConformityList").items.getById(Item.MainListId).select("* , CurrentUserRole , Status", "SubmitStatus")();
+          const getnonconfirmitydata = await sp.web.lists.getByTitle("NonConformityList").items.getById(Item.MainListId).select("* , CurrentUserRole , Status, SubmitStatus")();
           const getprocessapprovaldata = await sp.web.lists.getByTitle("ProcessApprovalList").items.getById(Item.Id).select("* , CurrentUserRole , Status")();
+          //const getchangerequestdata = await sp.web.lists.getByTitle("ChangeRequestList").items.getById(Item.Id).select("*  , Status")();
           //  alert(`getnonconfirmitydata: ${JSON.stringify(getnonconfirmitydata)}`);
 
 
@@ -1167,6 +1141,9 @@ const MyApprovalContext = ({ props }: any) => {
           } else if (getprocessapprovaldata?.Status === "Approved") {
             actionType = "view";
           }
+          // if(getchangerequestdata?.Status === "Save as draft"){
+          //   actionType = "edit";
+          // }
         }
         console.log("actionTypeactionType", actionType)
         switch (Item?.ProcessName) {
@@ -1184,12 +1161,28 @@ const MyApprovalContext = ({ props }: any) => {
             redirecturl = `${siteUrl}/SitePages/EDCMAIN.aspx#/${Item.ProcessName}/${actionType}/${Number(Item?.MainListId)}/${Item?.Id}`;
             // redirecturl = `${siteUrl}/SitePages/DocumentCancellation.aspx` + "/approve/" + Number(Item?.ListItemId) + "/" + Item?.Id ;
             break;
+          case "IMS Annual Audit Program":
+            sessionkey = "AnnualAuditProgramId";
+            redirecturl = `${siteUrl}/SitePages/EDCMAIN.aspx#/${Item.ProcessName}/${actionType}/${Number(Item?.MainListId)}/${Item?.Id}`;
+            // redirecturl = `${siteUrl}/SitePages/DocumentCancellation.aspx` + "/approve/" + Number(Item?.ListItemId) + "/" + Item?.Id ;
+            break;
           case "Annual Audit Report":
             sessionkey = "AnnualAuditReportId";
             redirecturl = `${siteUrl}/SitePages/EDCMAIN.aspx#/${Item.ProcessName}/${actionType}/${Number(Item?.MainListId)}/${Item?.Id}`;
             // redirecturl = `${siteUrl}/SitePages/DocumentCancellation.aspx` + "/approve/" + Number(Item?.ListItemId) + "/" + Item?.Id ;
             break;
+
+          case "IMS Audit Report and Checklist":
+            sessionkey = "AnnualAuditReportId";
+            redirecturl = `${siteUrl}/SitePages/EDCMAIN.aspx#/${Item.ProcessName}/${actionType}/${Number(Item?.MainListId)}/${Item?.Id}`;
+            // redirecturl = `${siteUrl}/SitePages/DocumentCancellation.aspx` + "/approve/" + Number(Item?.ListItemId) + "/" + Item?.Id ;
+            break;
           case "Annual Audit Plan":
+            // sessionkey = "DocumentCancelId";
+            redirecturl = `${siteUrl}/SitePages/EDCMAIN.aspx#/${Item.ProcessName}/${actionType}/${Number(Item?.MainListId)}/${Item?.Id}`;
+            // redirecturl = `${siteUrl}/SitePages/DocumentCancellation.aspx` + "/approve/" + Number(Item?.ListItemId) + "/" + Item?.Id ;
+            break;
+          case "IMS Audit Plan":
             // sessionkey = "DocumentCancelId";
             redirecturl = `${siteUrl}/SitePages/EDCMAIN.aspx#/${Item.ProcessName}/${actionType}/${Number(Item?.MainListId)}/${Item?.Id}`;
             // redirecturl = `${siteUrl}/SitePages/DocumentCancellation.aspx` + "/approve/" + Number(Item?.ListItemId) + "/" + Item?.Id ;
@@ -1288,8 +1281,9 @@ const MyApprovalContext = ({ props }: any) => {
               </div>
 
               <div className="col-md-8">
-                <div className="row">
-                  <div style={{ textAlign: "center" }} className="col-md-3 newtexleft">
+                <div className="row" style={{ justifyContent: "flex-end" }}>
+                  {/* acting for */}
+                  {/* <div style={{ textAlign: "center" }} className="col-md-3 newtexleft">
                     <div className="mb-0">
                       <label htmlFor="Status" className="form-label mt-2">
                         <img src={require('../assets/delegation.png')}
@@ -1297,7 +1291,7 @@ const MyApprovalContext = ({ props }: any) => {
                       </label>
                     </div>
                   </div>
-                  <div style={{ paddingLeft: '0px' }} className="col-md-4">
+                <div style={{ paddingLeft: '0px' }} className="col-md-4">
                     <select
                       id="Type"
                       name="Type"
@@ -1314,7 +1308,8 @@ const MyApprovalContext = ({ props }: any) => {
                         </option>
                       ))}
                     </select>
-                  </div>
+                  </div> */}
+                  {/* acting for */}
                   <div style={{ textAlign: "center", padding: '0px' }} className="col-md-1 newtexleft ivon">
                     <div className="mb-0">
                       <label htmlFor="Status" className="form-label newfil mt-0 mb-0">
@@ -1652,8 +1647,8 @@ const MyApprovalContext = ({ props }: any) => {
 
                                       <th
                                         style={{
-                                          minWidth: "80px",
-                                          maxWidth: "80px",
+                                          minWidth: "100px",
+                                          maxWidth: "100px",
                                         }}
                                       >
                                         <div className="d-flex flex-column bd-highlight ">
@@ -1765,7 +1760,27 @@ const MyApprovalContext = ({ props }: any) => {
                                     isActivedata
                                   )}
                                   <tbody>
-                                    {currentData?.length === 0 ? (
+                                    {((loading && currentData?.length == 0)
+                                      ||
+                                      (StatusChange)) && (
+                                        <div style={{ minHeight: '100vh', marginTop: '100px' }} className="loadernewadd mt-10">
+                                          <div>
+                                            <img
+                                              src={require("../../../CustomAsset/edc-gif.gif")}
+                                              className="alignrightl"
+                                              alt="Loading..."
+                                            />
+                                          </div>
+                                          <span>Loading </span>{" "}
+                                          <span>
+                                            <img
+                                              src={require("../../../CustomAsset/edcnew.gif")}
+                                              className="alignrightl"
+                                              alt="Loading..."
+                                            />
+                                          </span>
+                                        </div>)}
+                                    {!loading && currentData?.length === 0 ? (
                                       <div
 
                                         className="no-results card card-body align-items-center  annusvg text-center "
@@ -1788,7 +1803,7 @@ const MyApprovalContext = ({ props }: any) => {
 
                                       </div>
                                     ) : (
-                                      currentData?.map(
+                                      !StatusChange && currentData?.map(
                                         (item: any, index: number) => (
                                           <tr
                                             key={index}
@@ -1859,15 +1874,32 @@ const MyApprovalContext = ({ props }: any) => {
 
                                             <td
                                               style={{
-                                                minWidth: "80px",
-                                                maxWidth: "80px",
-                                                textAlign: 'center'
+                                                minWidth: "100px",
+                                                maxWidth: "100px",
+                                                textAlign: 'left'
                                               }}
+                                              className="no-ellipsis"
                                             >
-                                              <div className="btn btn-light1">
-                                                {new Date(
-                                                  item?.Created
-                                                ).toLocaleDateString()}
+                                              <div title={`${new Intl.DateTimeFormat('en-GB', {
+                                                day: '2-digit',
+                                                month: 'short',
+                                                year: 'numeric'
+                                              }).format(new Date(new Date(item?.Created).getTime() - (5 * 60 + 30) * 60 * 1000)).replace(/ /g, "/")} ${new Date(new Date(item?.Created).getTime() - (5 * 60 + 30) * 60 * 1000).toLocaleTimeString('en-GB', {
+                                                hour: '2-digit',
+                                                minute: '2-digit',
+                                                hour12: false
+                                              })}`} className="btn btn-light1">
+                                                {/* {moment(item?.Created).format("DD/MMM/YYYY hh:mm A").substring(0, 21)} */}
+                                                {`${new Intl.DateTimeFormat('en-GB', {
+                                                  day: '2-digit',
+                                                  month: 'short',
+                                                  year: 'numeric'
+                                                }).format(new Date(new Date(item?.Created).getTime() - (5 * 60 + 30) * 60 * 1000)).replace(/ /g, "/")} ${new Date(new Date(item?.Created).getTime() - (5 * 60 + 30) * 60 * 1000).toLocaleTimeString('en-GB', {
+                                                  hour: '2-digit',
+                                                  minute: '2-digit',
+                                                  hour12: false
+                                                })}`}
+                                               
                                               </div>
                                             </td>
 
@@ -2287,8 +2319,8 @@ const MyApprovalContext = ({ props }: any) => {
 
                                           <th
                                             style={{
-                                              minWidth: "80px",
-                                              maxWidth: "80px",
+                                              minWidth: "100px",
+                                              maxWidth: "100px",
                                             }}
                                           >
                                             <div className="d-flex flex-column bd-highlight ">
@@ -2415,7 +2447,27 @@ const MyApprovalContext = ({ props }: any) => {
                                         isActivedata
                                       )}
                                       <tbody>
-                                        {currentData?.length === 0 ? (
+                                        {((loading && currentData?.length == 0)
+                                          ||
+                                          (StatusChange)) && (
+                                            <div style={{ minHeight: '100vh', marginTop: '100px' }} className="loadernewadd mt-10">
+                                              <div>
+                                                <img
+                                                  src={require("../../../CustomAsset/edc-gif.gif")}
+                                                  className="alignrightl"
+                                                  alt="Loading..."
+                                                />
+                                              </div>
+                                              <span>Loading </span>{" "}
+                                              <span>
+                                                <img
+                                                  src={require("../../../CustomAsset/edcnew.gif")}
+                                                  className="alignrightl"
+                                                  alt="Loading..."
+                                                />
+                                              </span>
+                                            </div>)}
+                                        {!loading && currentData?.length === 0 ? (
                                           <div
 
                                             className="no-results card card-body align-items-center  annusvg text-center "
@@ -2438,7 +2490,7 @@ const MyApprovalContext = ({ props }: any) => {
 
                                           </div>
                                         ) : (
-                                          currentData?.map(
+                                          !StatusChange && currentData?.map(
                                             (item: any, index: number) => (
                                               <tr
                                                 key={index}
@@ -2510,23 +2562,42 @@ const MyApprovalContext = ({ props }: any) => {
 
                                                 <td
                                                   style={{
-                                                    minWidth: "80px", maxWidth: "80px",
+                                                    minWidth: "100px", maxWidth: "100px",
                                                     // maxWidth: "100px",
-                                                    textAlign: 'center'
+                                                    textAlign: 'left'
                                                   }}
+                                                  className="no-ellipsis"
                                                 >
-                                                  <div className="btn btn-light1">
+                                                  <div className="btn btn-light1" title={`${new Intl.DateTimeFormat('en-GB', {
+                                                    day: '2-digit',
+                                                    month: 'short',
+                                                    year: 'numeric'
+                                                  }).format(new Date(new Date(item?.IsDocChange == "CRDC" ? item?.Created : item?.FileUID?.Created).getTime() - (5 * 60 + 30) * 60 * 1000)).replace(/ /g, "/")} ${new Date(new Date(item?.IsDocChange == "CRDC" ? item?.Created : item?.FileUID?.Created).getTime() - (5 * 60 + 30) * 60 * 1000).toLocaleTimeString('en-GB', {
+                                                    hour: '2-digit',
+                                                    minute: '2-digit',
+                                                    hour12: false
+                                                  })}`}>
 
                                                     {/* {item?.FileUID?.Created} */}
-                                                    {new Date(item?.IsDocChange == "CRDC" ? item?.Created : item?.FileUID?.Created).toLocaleString('en-US', {
+                                                    {`${new Intl.DateTimeFormat('en-GB', {
+                                                      day: '2-digit',
+                                                      month: 'short',
+                                                      year: 'numeric'
+                                                    }).format(new Date(new Date(item?.IsDocChange == "CRDC" ? item?.Created : item?.FileUID?.Created).getTime() - (5 * 60 + 30) * 60 * 1000)).replace(/ /g, "/")} ${new Date(new Date(item?.IsDocChange == "CRDC" ? item?.Created : item?.FileUID?.Created).getTime() - (5 * 60 + 30) * 60 * 1000).toLocaleTimeString('en-GB', {
+                                                      hour: '2-digit',
+                                                      minute: '2-digit',
+                                                      hour12: false
+                                                    })}`}
+                                                    {/* {new Date(item?.IsDocChange == "CRDC" ? item?.Created : item?.FileUID?.Created).toLocaleString('en-US', {
                                                       month: '2-digit',
                                                       day: '2-digit',
                                                       year: 'numeric',
-                                                      // hour: '2-digit',
-                                                      // minute: '2-digit',
-                                                      // second: '2-digit',
-                                                      // hour12: true 
-                                                    })}
+                                                      hour: '2-digit',
+                                                      minute: '2-digit',
+                                                      second: '2-digit',
+                                                      hour12: true
+                                                    }).substring(0, 21)}
+                                                    */}
                                                   </div>
                                                 </td>
 
@@ -2957,8 +3028,8 @@ const MyApprovalContext = ({ props }: any) => {
 
                                           <th
                                             style={{
-                                              minWidth: "80px",
-                                              maxWidth: "80px",
+                                              minWidth: "100px",
+                                              maxWidth: "100px",
                                             }}
                                           >
                                             <div className="d-flex flex-column bd-highlight ">
@@ -3085,7 +3156,27 @@ const MyApprovalContext = ({ props }: any) => {
                                         isActivedata
                                       )}
                                       <tbody>
-                                        {currentData?.length === 0 ? (
+                                        {((loading && currentData?.length == 0)
+                                          ||
+                                          (StatusChange)) && (
+                                            <div style={{ minHeight: '100vh', marginTop: '100px' }} className="loadernewadd mt-10">
+                                              <div>
+                                                <img
+                                                  src={require("../../../CustomAsset/edc-gif.gif")}
+                                                  className="alignrightl"
+                                                  alt="Loading..."
+                                                />
+                                              </div>
+                                              <span>Loading </span>{" "}
+                                              <span>
+                                                <img
+                                                  src={require("../../../CustomAsset/edcnew.gif")}
+                                                  className="alignrightl"
+                                                  alt="Loading..."
+                                                />
+                                              </span>
+                                            </div>)}
+                                        {!loading && currentData?.length === 0 ? (
                                           <div
 
                                             className="no-results card card-body align-items-center  annusvg text-center "
@@ -3108,7 +3199,7 @@ const MyApprovalContext = ({ props }: any) => {
 
                                           </div>
                                         ) : (
-                                          currentData?.map(
+                                          !StatusChange && currentData?.map(
                                             (item: any, index: number) => (
                                               <tr
                                                 key={index}
@@ -3182,25 +3273,35 @@ const MyApprovalContext = ({ props }: any) => {
                                                   {item?.RequestedBy}
                                                 </td>
 
-                                                <td
+                                                <td title={`${new Intl.DateTimeFormat('en-GB', {
+                                                  day: '2-digit',
+                                                  month: 'short',
+                                                  year: 'numeric'
+                                                }).format(new Date(new Date(item?.RequestedDate).getTime() - (5 * 60 + 30) * 60 * 1000)).replace(/ /g, "/")} ${new Date(new Date(item?.RequestedDate).getTime() - (5 * 60 + 30) * 60 * 1000).toLocaleTimeString('en-GB', {
+                                                  hour: '2-digit',
+                                                  minute: '2-digit',
+                                                  hour12: false
+                                                })}`}
                                                   style={{
-                                                    minWidth: "80px", maxWidth: "80px",
+                                                    minWidth: "100px", maxWidth: "100px",
                                                     // maxWidth: "100px",
-                                                    textAlign: 'center'
+                                                    textAlign: 'left'
                                                   }}
+                                                  className="no-ellipsis"
                                                 >
                                                   <div className="btn btn-light1">
 
-                                                    {/* {item?.FileUID?.Created} */}
-                                                    {new Date(item?.RequestedDate).toLocaleString('en-US', {
-                                                      month: '2-digit',
+                                                    {`${new Intl.DateTimeFormat('en-GB', {
                                                       day: '2-digit',
-                                                      year: 'numeric',
-                                                      // hour: '2-digit',
-                                                      // minute: '2-digit',
-                                                      // second: '2-digit',
-                                                      // hour12: true 
-                                                    })}
+                                                      month: 'short',
+                                                      year: 'numeric'
+                                                    }).format(new Date(new Date(item?.RequestedDate).getTime() - (5 * 60 + 30) * 60 * 1000)).replace(/ /g, "/")} ${new Date(new Date(item?.RequestedDate).getTime() - (5 * 60 + 30) * 60 * 1000).toLocaleTimeString('en-GB', {
+                                                      hour: '2-digit',
+                                                      minute: '2-digit',
+                                                      hour12: false
+                                                    })}`}
+                                                    {/* {moment(item.RequestedDate).format("DD/MMM/YYYY hh:mm A").substring(0, 21)} */}
+
                                                   </div>
                                                 </td>
 
@@ -3347,6 +3448,7 @@ const MyApprovalContext = ({ props }: any) => {
                                   </div>
                                 ) : (
                                   <div>
+                                    {/* acting for */}
                                     {/* {folderActionOrFileAction === "New File Request" && (
                                       <>
                                       <DMSMyApprovalAction props={{currentItemID , actingforuseremail}} />
@@ -3375,6 +3477,7 @@ const MyApprovalContext = ({ props }: any) => {
                                         </div>
                                       </>
                                     )} */}
+                                    {/* acting for */}
 
                                   </div>
                                 )}

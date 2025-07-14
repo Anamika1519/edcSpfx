@@ -781,7 +781,7 @@ const DMSMyApprovalAction = ({ props }: any) => {
       const spinner = document.getElementById("spinner") as HTMLElement;
 
       // Show the spinner and hide the iframe initially
-      spinner.style.display = "block";
+      if(spinner)spinner.style.display = "block";
       iframe.style.display = "none";
       iframe.src = previewUrl;
 

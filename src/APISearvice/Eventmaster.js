@@ -39,7 +39,7 @@ export const getAllEventMasternonselected = async (_sp,Idnum) => {
   // console.log("***userProfile", userProfile);
   const currentUserDept = userProfile.UserProfileProperties ? userProfile.UserProfileProperties[userProfile.UserProfileProperties.findIndex(obj => obj.Key === "Department")].Value : "";
   let entity = "Global";
-  await _sp.web.lists.getByTitle("ARGEventMaster").items.select("*,Entity/ID,Entity/Entity").expand("Entity").filter(`(Entity/Entity eq '${entity}' or Entity/Entity eq '${currentUserDept}') and ID ne ${Idnum}`)
+  await _sp.web.lists.getByTitle("ARGEventMaster").items.select("*,Entity/ID,Entity/Entity,Entity/ADDepartmentName").expand("Entity").filter(`(Entity/ADDepartmentName eq '${entity}' or Entity/ADDepartmentName eq '${currentUserDept}') and ID ne ${Idnum}`)
   .top(3).orderBy("EventDate",true).getAll()
     .then((res) => {
       

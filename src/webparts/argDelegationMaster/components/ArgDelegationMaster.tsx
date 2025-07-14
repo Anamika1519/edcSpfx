@@ -271,7 +271,7 @@ const ArgDelegationMasterContext = ({ props }: any) => {
                         </button>
                       </a>
                       <a href={`${siteUrl}/SitePages/Delegation.aspx`} onClick={() => goToAddForm()}>
-                        <button type="button" className="btn btn-primary waves-effect waves-light" style={{ background: '#1fb0e5' }}>
+                        <button type="button" className="btn btn-success waves-effect waves-light" style={{ background: '#1fb0e5' }}>
                           <FontAwesomeIcon icon={faPlusCircle} className="me-1" />
                           Add
                         </button>
@@ -316,7 +316,7 @@ const ArgDelegationMasterContext = ({ props }: any) => {
                             <th style={{ minWidth: '120px', maxWidth: '120px' }}>
                               <div className="d-flex flex-column bd-highlight ">
                                 <div className="d-flex pb-2" style={{ justifyContent: 'space-evenly' }}>
-                                  <span >Delegate Name</span>  <span onClick={() => handleSortChange('Title')}><FontAwesomeIcon icon={faSort} /> </span></div>
+                                  <span >Employee Name</span>  <span onClick={() => handleSortChange('Title')}><FontAwesomeIcon icon={faSort} /> </span></div>
                                 <div className=" bd-highlight">
                                   <input type="text" placeholder="Filter by Title" onChange={(e) => handleFilterChange(e, 'Title')}
                                     onKeyDown={(e) => {
@@ -332,7 +332,7 @@ const ArgDelegationMasterContext = ({ props }: any) => {
                             <th style={{ minWidth: '120px', maxWidth: '120px' }}>
                               <div className="d-flex flex-column bd-highlight ">
                                 <div className="d-flex pb-2" style={{ justifyContent: 'space-evenly' }}>
-                                  <span >Acting For</span>  <span onClick={() => handleSortChange('Title')}><FontAwesomeIcon icon={faSort} /> </span></div>
+                                  <span >Delegate Access To</span>  <span onClick={() => handleSortChange('Title')}><FontAwesomeIcon icon={faSort} /> </span></div>
                                 <div className=" bd-highlight">
                                   <input type="text" placeholder="Filter by Title" onChange={(e) => handleFilterChange(e, 'Title')}
                                     onKeyDown={(e) => {

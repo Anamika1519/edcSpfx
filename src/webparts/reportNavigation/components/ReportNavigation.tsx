@@ -186,8 +186,10 @@ export const ReportNavigationContext = ({ props }: any) => {
         const IconComponent = getIcon(item.Icon); // Get the icon component dynamically
         return (
 
-          <div className="col-sm-3 col-md-3 mt-2 newwidth6" key={item?.Id} onClick={(event)=>{ setActiveComponent(item?.Title)}}>
-            {/* <a href={item?.Url}> */}
+          // <div className="col-sm-3 col-md-3 mt-2 newwidth6" key={item?.Id} onClick={(event)=>{ setActiveComponent(item?.Title)}}>
+          <div className="col-sm-3 col-md-3 mt-2 newwidth6" key={item?.Id}>
+
+            <a href={item?.Url} target="_blank">
               <div className="aaplnbg">
                 <div className="">
                   {/* <img src={imageUrl} /> */}
@@ -200,7 +202,7 @@ export const ReportNavigationContext = ({ props }: any) => {
                 </div>
                 {/* <p className="font-12 mb-2 text-primary">{item.Entity?.Entity}</p> */}
               </div>
-            {/* </a> */}
+            </a>
           </div>
 
           // :
@@ -231,13 +233,13 @@ export const ReportNavigationContext = ({ props }: any) => {
       <div className="content-page">
         <HorizontalNavbar _context={sp} siteUrl={SiteUrl} />
         {/* <div className="content" style={{ marginLeft: `${!useHide ? '240px' : '80px'}` }}> */}
-        <div className="content" >
+        <div className="content" style={{ marginLeft: `${!useHide ? '240px' : '80px'}` }}>
 
-          <div style={{ paddingTop: '12px' }} className="container-fluid  paddb">
+          <div style={{ paddingTop: '60px' }} className="container-fluid  paddb">
             <div className="row pt-0" style={{ paddingLeft: '0.5rem' }}>
               
-              {activeComponent === "" ?
-              <>
+              {/* {activeComponent === "" ?
+              <> */}
               <div className="col-lg-3">
               <CustomBreadcrumb Breadcrumb={Breadcrumb} />
             </div>
@@ -265,20 +267,19 @@ export const ReportNavigationContext = ({ props }: any) => {
                     </div>
                   }
 
-                </>
+                {/* </>
 
                 :
                 <div>
 
                   {activeComponent === 'Non conformity Report' && (
                     <>
-                      {/* <button onClick={() => handleReturnToMain('')}> Create Entity back </button> */}
                       <NCReport props={props}/>
                     </>
 
                   )}
                 </div>
-              }
+              } */}
 
 
             </div>

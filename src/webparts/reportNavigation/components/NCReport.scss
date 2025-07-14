@@ -301,8 +301,8 @@ html[data-two-column-color=light] {
     color: #3c3c3c;
     font-size: 14px;
     padding-left: 10px;
-    min-width: 130px;
-    max-width: 130px;
+    min-width: 135px;
+    max-width: 135px;
     padding: 10px !important;
     border-bottom: 0px solid #1b6363 !important;
   }
@@ -574,9 +574,9 @@ html[data-two-column-color=light] {
   
 
 
-.carousel-inner{border-radius: 20px !important;border: 2px solid #747171 !important;} 
+.carousel-inner{border-radius: 0px !important;border: 2px solid #747171 !important;} 
 
-.card{border-radius: 0.25rem !important;    border: 1px solid #747171 !important;}
+.card{border-radius: 0rem !important;    border: 0px solid #747171 !important;}
 .h4, h4 {
     font-size: 16px; line-height: 22px;
 } 
@@ -626,6 +626,7 @@ margin-left: 14px;
     font-size: 22px !important;
    
 }
+.recharts-legend-wrapper{bottom: -14px !important;}
 .viewall{
     color: #000 !important; font-weight: 500;
 }
@@ -7619,7 +7620,7 @@ span.flatpickr-weekday {
     background: #3f99ff  !important;  color: #000 !important;
 }
 .card {
-    border-radius: 20px !important;
+    border-radius: 0px !important;
 }
 .bg-success, .btn-success {
     background-color: #008751 !important;

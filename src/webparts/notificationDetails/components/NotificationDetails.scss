@@ -204,4 +204,15 @@
     border: 2px solid #007bff;
     box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
   }
+  .clickable-text {
+    color: #007bff; /* Bootstrap primary blue */
+    cursor: pointer;
+    text-decoration: none;
+  }
+  
+  .clickable-text:hover {
+    text-decoration: underline;
+    color: #f37421!important; /* darker blue on hover */
+  }
+  
   

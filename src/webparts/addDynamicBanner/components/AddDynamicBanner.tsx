@@ -356,7 +356,7 @@ const AddDynamicBannerContext = ({ props }: any) => {
   //           //   for (const file of BnnerImagepostArr) {
   //           //     if (!file.serverRelativeUrl) {
   //           //       // const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
-  //           //       bannerImageArray = await uploadFile(file, sp, "Documents", "https://officeindia.sharepoint.com");
+  //           //       bannerImageArray = await uploadFile(file, sp, "Documents", "https://edcadae.sharepoint.com");
   //           //     }
 
   //           //   }
@@ -435,7 +435,7 @@ const AddDynamicBannerContext = ({ props }: any) => {
   //           // if (BnnerImagepostArr.length > 0) {
   //           //   for (const file of BnnerImagepostArr) {
   //           //     // const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
-  //           //     bannerImageArray = await uploadFile(file, sp, "Documents", "https://officeindia.sharepoint.com");
+  //           //     bannerImageArray = await uploadFile(file, sp, "Documents", "https://edcadae.sharepoint.com");
   //           //   }
   //           // }
   //           if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {

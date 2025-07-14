@@ -611,8 +611,8 @@ const HelloWorldContext = ({ props }: any) => {
                                               width="100%"
                                               alt="Gallery"
                                             />
-                                            <div className="appltext font-14 mb-1">
-                                              {item.Title}
+                                            <div className="appltext font-14 mb-1" title={item?.Title}>
+                                            {item?.Title?.length > 40 ? `${item?.Title.substring(0, 40)}...` : item?.Title}
 
                                             </div>
                                             <p className="font-12 mb-2 text-primary">{item.Entity.Entity}</p>

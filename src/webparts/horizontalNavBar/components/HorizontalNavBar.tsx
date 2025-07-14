@@ -532,8 +532,7 @@ const HorizontalNavbar = ({ _context, siteUrl }: any) => {
             </div>
             <div id="myDropdown" className={`dropdown-content newdrop ${isOpen ? 'show' : ''}`}>
               <a href={`${siteUrl}/SitePages/DelegateMaster.aspx?`}>Delegation</a>
-              {/* <a href="#about">About</a>
-              <a href="#contact">Contact</a> */}
+             
             </div>
           </div>
           <svg className='logoutop' style={{ opacity: '0.6', cursor: 'pointer' }} width="33px" height="35px" viewBox="0 -0.5 25 25" fill="none" xmlns="http://www.w3.org/2000/svg" onClick={() => logout()}>

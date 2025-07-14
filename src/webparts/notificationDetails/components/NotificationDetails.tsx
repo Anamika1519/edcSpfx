@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import VerticalSideBar from "../../verticalSideBar/components/VerticalSideBar";
 import HorizontalNavbar from "../../horizontalNavBar/components/HorizontalNavBar";
 import CustomBreadcrumb from "../../../CustomJSComponents/CustomBreadcrumb/CustomBreadcrumb";
@@ -29,22 +29,11 @@ const NotificationDetailsContext = ({ props }: any) => {
     },
     {
       ChildComponent: "Notification",
-      ChildComponentURl: `${siteUrl}/SitePages/Notification.aspx`,
+      ChildComponentURl: `${siteUrl}/SitePages/NotificationDetails.aspx`,
     },
   ];
 
-  const getTodayNotificationList = async () => {
-    setTodayNotificationArray(await getTodayARGNotificationHistory(sp))
-  }
 
-
-  const getLastSevenDateNotificationList = async () => {
-    setlastSevenDaysNotificationArray(await getlastSevenDaysARGNotificationHistory(sp))
-  }
-
-  const getOldNotificationList = async () => {
-    setOlderNotificationArray(await getOlderARGNotificationHistory(sp))
-  }
 
   const notificationsData: Record<NotificationType, { id: number; author: string; message: string; time: string }[]> = {
     new: [
@@ -65,7 +54,21 @@ const NotificationDetailsContext = ({ props }: any) => {
   const [TodayactiveTab, setTodayactiveTab] = useState(true);
 
   const [PreviousactiveTab, setPreviousactiveTab] = useState(false);
-  getTodayNotificationList();
+  useEffect(() => {
+    getTodayNotificationList(); // runs only once on initial render
+    getLastSevenDateNotificationList(); // runs only once on initial render
+    getOldNotificationList(); // runs only once on initial render  
+  }, []);
+  const getTodayNotificationList = async () => {
+    setTodayNotificationArray(await getTodayARGNotificationHistory(sp))
+  }
+  const getLastSevenDateNotificationList = async () => {
+    setlastSevenDaysNotificationArray(await getlastSevenDaysARGNotificationHistory(sp))
+  }
+
+  const getOldNotificationList = async () => {
+    setOlderNotificationArray(await getOlderARGNotificationHistory(sp))
+  }
   const handleTodayactiveTab = () => {
     setTodayactiveTab(true);
     setOldactiveTab(false);
@@ -84,7 +87,14 @@ const NotificationDetailsContext = ({ props }: any) => {
     setTodayactiveTab(false);
     getOldNotificationList()
   };
+  const handleNotificationClick = async (result: any) => {
+    debugger
+    setTimeout(() => {
+      window.location.href =
+        `${siteUrl}/SitePages/${result.DeatilPage}.aspx?${result.ContentId}`
+    }, 500);
 
+  };
   return (
     <div>
       <div id="wrapper" ref={elementRef}>
@@ -139,30 +149,30 @@ const NotificationDetailsContext = ({ props }: any) => {
               <div className="notification-container">
                 <div className="row">
                   <div className="col-xl-3 col-lg-6 notification-sidebar">
-                    <div style={{position:'sticky', top:'90px'}} className="">
-                    <div className="list-group list-group-flush font-15">
-                      <a
+                    <div style={{ position: 'sticky', top: '90px' }} className="">
+                      <div className="list-group list-group-flush font-15">
+                        <a
 
-                        onClick={() => handleTodayactiveTab()}
-                        className={`list-group-item ${TodayactiveTab === true ? "active" : ""}`}
-                      >
-           <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="bx bx-bell desktoView dropcssBell"  style={{position:'relative'}}><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg> New Notification
-                      </a>
-                      <a
+                          onClick={() => handleTodayactiveTab()}
+                          className={`list-group-item ${TodayactiveTab === true ? "active" : ""}`}
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="bx bx-bell desktoView dropcssBell" style={{ position: 'relative' }}><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg> New Notification
+                        </a>
+                        <a
 
-                        onClick={() => handlePreviousactiveTab()}
-                        className={`list-group-item ${PreviousactiveTab === true ? "active" : ""}`}
-                      >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="bx bx-bell desktoView dropcssBell"  style={{position:'relative'}}><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg> Last 7 Days Notification
-                      </a>
-                      <a
+                          onClick={() => handlePreviousactiveTab()}
+                          className={`list-group-item ${PreviousactiveTab === true ? "active" : ""}`}
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="bx bx-bell desktoView dropcssBell" style={{ position: 'relative' }}><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg> Last 7 Days Notification
+                        </a>
+                        <a
 
-                        onClick={() => handleOldactiveTab()}
-                        className={`list-group-item ${OldactiveTab === true ? "active" : ""}`}
-                      >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="bx bx-bell desktoView dropcssBell" style={{position:'relative'}}><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg> Old Notification
-                      </a>
-                    </div>
+                          onClick={() => handleOldactiveTab()}
+                          className={`list-group-item ${OldactiveTab === true ? "active" : ""}`}
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="bx bx-bell desktoView dropcssBell" style={{ position: 'relative' }}><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg> Old Notification
+                        </a>
+                      </div>
                     </div>
                   </div>
                   {
@@ -173,40 +183,44 @@ const NotificationDetailsContext = ({ props }: any) => {
                             <div className="inbox-widget">
                               <div className="simplebar-content">
                                 {/* <h3 className="font-20">Today Notifications</h3> */}
-                                 {/* Heading for the active tab */}
-                                
+                                {/* Heading for the active tab */}
 
+                                {console.log("TodayNotificationArray", TodayNotificationArray, lastSevenDaysNotificationArray, OlderNotificationArray)}
                                 {TodayNotificationArray != null && TodayNotificationArray.length > 0 && TodayNotificationArray.map((notification) => (
                                   <div className="inbox-item" key={notification.Id} style={{ justifyContent: 'space-between' }}>
                                     <div style={{ display: 'flex' }}>
                                       <div className="inbox-item-img">
-                                      {/* <img
+                                        {/* <img
                                         src={
                                         `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${notification.EMail}`  
                                         } /> */}
-                                         { notification.ActionUser?.SPSPicturePlaceholderState == 0 ?
-                                        <img
-                                          src={
+                                        {notification.ActionUser?.SPSPicturePlaceholderState == 0 ?
+                                          <img
+                                            src={
 
-                                            `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${notification?.ActionUser?.EMail}`
+                                              `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${notification?.ActionUser?.EMail}`
 
-                                          }
-                                          className="rounded-circle"
-                                          width="50"
-                                          alt={notification.ActionUser.Title}
-                                        />
-                                        :
-                                        notification?.ActionUser.EMail !== null &&
-                                        <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle avatar-xl">
-                                          {`${notification?.ActionUser.EMail?.split('.')[0]?.charAt(0)}${notification?.ActionUser.EMail?.split('.')[1]?.charAt(0)}`.toUpperCase()}
-                                        </Avatar>
-                                      }
+                                            }
+                                            className="rounded-circle"
+                                            width="50"
+                                            alt={notification.ActionUser.Title}
+                                          />
+                                          :
+                                          notification?.ActionUser.EMail !== null &&
+                                          <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle avatar-xl">
+                                            {`${notification?.ActionUser.EMail?.split('.')[0]?.charAt(0)}${notification?.ActionUser.EMail?.split('.')[1]?.charAt(0)}`.toUpperCase()}
+                                          </Avatar>
+                                        }
                                       </div>
                                       <div className="inbox-item-details">
                                         <p className="inbox-item-author mb-1"><span className="me-4"> {notification?.ActionUser?.Title} </span>  <span className="text-info font-12">
-                                        {moment(notification.Created).fromNow()}
-                                      </span></p>
-                                        <p className="inbox-item-text text-muted mb-1">
+                                          {moment(notification.Created).fromNow()}
+                                        </span></p>
+                                        
+                                        <p
+                                          className="inbox-item-text clickable-text mb-1"
+                                          onClick={() => handleNotificationClick(notification)} // your function here
+                                        >
                                           {notification.ContentName}
                                         </p>
                                         <small className="noti-item-subtitle text-muted">{notification?.ActionUser?.Title} {notification.ContentType0} on {notification?.NotifiedUser?.Title}</small>
@@ -219,7 +233,7 @@ const NotificationDetailsContext = ({ props }: any) => {
                                   </div>
                                 ))}
 
-                             
+
                               </div>
                             </div>
                           </div>
@@ -235,50 +249,53 @@ const NotificationDetailsContext = ({ props }: any) => {
                             <div className="inbox-widget">
                               <div className="simplebar-content">
                                 {/* <h3 className="font-20">Previous Notifications</h3>  */}
-                                
+
                                 {/* Heading for the active tab */}
-                      
+
                                 {lastSevenDaysNotificationArray != null && lastSevenDaysNotificationArray.length > 0 && lastSevenDaysNotificationArray.map((notification) => (
                                   <div className="inbox-item" key={notification.Id} style={{ justifyContent: 'space-between' }}>
                                     <div style={{ display: 'flex' }}>
                                       <div className="inbox-item-img">
-                                      {/* <img
+                                        {/* <img
                                         src={
                                         `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${notification.EMail}`  
                                         } /> */}
-                                         { notification?.ActionUser.SPSPicturePlaceholderState == 0 ?
-                                        <img
-                                          src={
+                                        {notification?.ActionUser.SPSPicturePlaceholderState == 0 ?
+                                          <img
+                                            src={
 
-                                            `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${notification.ActionUser?.EMail}`
+                                              `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${notification.ActionUser?.EMail}`
 
-                                          }
-                                          className="rounded-circle"
-                                          width="50"
-                                          alt={notification.ActionUser.Title}
-                                        />
-                                        :
-                                        notification.ActionUser?.EMail !== null &&
-                                        <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle avatar-xl">
-                                          {`${notification.ActionUser?.EMail?.split('.')[0]?.charAt(0)}${notification.ActionUser?.EMail?.split('.')[1]?.charAt(0)}`.toUpperCase()}
-                                        </Avatar>
-                                      }
+                                            }
+                                            className="rounded-circle"
+                                            width="50"
+                                            alt={notification.ActionUser.Title}
+                                          />
+                                          :
+                                          notification.ActionUser?.EMail !== null &&
+                                          <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle avatar-xl">
+                                            {`${notification.ActionUser?.EMail?.split('.')[0]?.charAt(0)}${notification.ActionUser?.EMail?.split('.')[1]?.charAt(0)}`.toUpperCase()}
+                                          </Avatar>
+                                        }
                                       </div>
                                       <div className="inbox-item-details">
-                                        <p className="inbox-item-author mb-1"><span className="me-4">{notification?.ActionUser?.Title}</span>  <span style={{fontWeight:'400'}} className="text-info font-12">
-                                        {moment(notification.Created).fromNow()}
-                                      </span></p>
-                                        <p className="inbox-item-text text-muted mb-1">
+                                        <p className="inbox-item-author mb-1"><span className="me-4">{notification?.ActionUser?.Title}</span>  <span style={{ fontWeight: '400' }} className="text-info font-12">
+                                          {moment(notification.Created).fromNow()}
+                                        </span></p>
+                                        <p
+                                          className="inbox-item-text clickable-text mb-1"
+                                          onClick={() => handleNotificationClick(notification)} // your function here
+                                        >
                                           {notification.ContentName}
                                         </p>
                                         <small className="noti-item-subtitle text-muted">{notification?.ActionUser?.Title} {notification.ContentType0} on {notification?.NotifiedUser?.Title}</small>
 
                                       </div>
                                     </div>
-                                  
+
                                   </div>
                                 ))}
-                            
+
                               </div>
                             </div>
                           </div>
@@ -294,20 +311,20 @@ const NotificationDetailsContext = ({ props }: any) => {
                           <div className="inbox-widget">
                             <div className="simplebar-content">
                               {/* <h3 className="font-20">Old Notifications</h3>  */}
-                              
+
                               {/* Heading for the active tab */}
-                        
-                            
+
+
                               {OlderNotificationArray != null && OlderNotificationArray.length > 0 && OlderNotificationArray.map((notification) => (
                                 <div className="inbox-item" key={notification.Id} style={{ justifyContent: 'space-between' }}>
                                   <div style={{ display: 'flex' }}>
                                     <div className="inbox-item-img">
-                                    
+
                                       {/* <img
                                         src={
                                         `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${notification.EMail}`  
                                         } /> */}
-                                         { notification.ActionUser.SPSPicturePlaceholderState == 0 ?
+                                      {notification.ActionUser.SPSPicturePlaceholderState == 0 ?
                                         <img
                                           src={
 
@@ -326,12 +343,15 @@ const NotificationDetailsContext = ({ props }: any) => {
                                       }
                                     </div>
                                     <div className="inbox-item-details">
-                                      <p className="inbox-item-author mb-1"> <span className="me-4"> {notification?.ActionUser?.Title} </span>  <span  className="text-info font-12">
-                                    {moment(notification.Created).fromNow()}
-                                    </span></p>
-                                      <p className="inbox-item-text text-muted mb-1">
-                                        {notification.ContentName}
-                                      </p>
+                                      <p className="inbox-item-author mb-1"> <span className="me-4"> {notification?.ActionUser?.Title} </span>  <span className="text-info font-12">
+                                        {moment(notification.Created).fromNow()}
+                                      </span></p>
+                                      <p
+                                          className="inbox-item-text clickable-text mb-1"
+                                          onClick={() => handleNotificationClick(notification)} // your function here
+                                        >
+                                          {notification.ContentName}
+                                        </p>
                                       <small className="noti-item-subtitle text-muted">{notification?.ActionUser?.Title} {notification.ContentType0} on {notification?.NotifiedUser?.Title}</small>
 
                                     </div>
@@ -342,7 +362,7 @@ const NotificationDetailsContext = ({ props }: any) => {
                                 </div>
                               ))}
                             </div>
-                       
+
                           </div>
                         </div>
                       </div>

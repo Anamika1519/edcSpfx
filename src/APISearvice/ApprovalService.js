@@ -566,42 +566,296 @@ export const getAllDMSTasks = async (sp, itemStatus) => {
 
   return arr
 }
-export const getAllDMSApprovals = async (sp, itemStatus,actingfor) => {
-  const currentUser = await sp.web.currentUser();
-  let arr = []
+// export const getAllDMSApprovals = async (sp, itemStatus,actingfor) => {
+//   const currentUser = await sp.web.currentUser();
+//   let arr = []
 
-  await sp.web.lists.getByTitle("ProcessApprovalList").items.select("*,AssignedTo/Id,AssignedTo/Title,RequesterName/Id,RequesterName/Title").expand("RequesterName,AssignedTo")
+//   // await sp.web.lists.getByTitle("DMSFileApprovallist").items.select("*,AssignedTo/Id,AssignedTo/Title,RequesterName/Id,RequesterName/Title").expand("RequesterName,AssignedTo")
 
-    .filter(`AssignedToId eq ${currentUser.Id} and ApprovalType eq 'Approval' and Status eq '${itemStatus}'`)
+//   //   .filter(`AssignedToId eq ${currentUser.Id} and ApprovalType eq 'Approval' and Status eq '${itemStatus}'`)
 
-    .orderBy("Created", false)
+//   //   .orderBy("Created", false)
 
-    .getAll().then((res) => {
-      
-      let arrnew = [];
-      arr = res
-      let siteurl =`https://officeindia.sharepoint.com/sites/ededms/SitePages/ChangeRequest.aspx`;
-      console.log("resresresresr", res,siteurl)
-      for (let i = 0; i < res.length; i++) {
-        arrnew.push({
-          ListItemId:res[i].ListItemId,
-          Id:res[i].Id,
-          RequestId: res[i].RequestId,
-          FileName: res[i].Title,
-          ProcessName: res[i].ProcessName,
-          RequestedBy: res[i].InitiatorName?.Title,
-          Created: res[i].Created,
-          Status: res[i].Status,
-          IsDocChange:"CRDC",
-          RedirectionLink: siteurl + "/" + res[i].Status == "Rework" ? "edit" : "approve" + "/" + res[i].ListItemId + "/" + res[i].ID
-        })
-      }
-      console.log(arr, 'arr arrnew', arrnew);
-      arr = arrnew
-    })
+//   //   .getAll().then((res) => {
+//     await sp.web.lists.getByTitle("DMSFileApprovallist").items.select("*,RequestedBy,RequesterName/Id,RequesterName/Title").expand("RequesterName,AssignedTo")
+
+//     .filter(`AssignedToId eq ${currentUser.Id} and ApprovalType eq 'Approval' and Status eq '${itemStatus}'`)
+
+//     .orderBy("Created", false)
+
+//     .getAll().then((res) => {
+     
+//       let arrnew = [];
+//       arr = res
+//       let siteurl =`https://edcadae.sharepoint.com/sites/ededms/SitePages/ChangeRequest.aspx`;
+//       console.log("resresresresr", res,siteurl)
+//       for (let i = 0; i < res.length; i++) {
+//         arrnew.push({
+//           ListItemId:res[i].ListItemId,
+//           Id:res[i].Id,
+//           RequestId: res[i].RequestId,
+//           FileName: res[i].Title,
+//           ProcessName: res[i].ProcessName,
+//           RequestedBy: res[i].InitiatorName?.Title,
+//           Created: res[i].Created,
+//           Status: res[i].Status,
+//           IsDocChange:"CRDC",
+//           RedirectionLink: siteurl + "/" + res[i].Status == "Rework" ? "edit" : "approve" + "/" + res[i].ListItemId + "/" + res[i].ID
+//         })
+//       }
+//       console.log(arr, 'arr arrnew', arrnew);
+//       arr = arrnew
+//     })
+
+//   return arr
+
+
+
+// }
+
+const getUserTitleByEmail = async (sp,userEmail) => {
+  try {
+    const user = await sp.web.siteUsers.getByEmail(userEmail)();
+    return user.Title;
+  } catch (error) {
+    console.error("Error fetching user title:", error);
+    return null;
+  }
+};
+
+export const getAllDMSApprovals = async (sp,value, actingfor) => {
+  // alert(`Status value is ${value} is acting for ${actingfor} in DMS`)
+
+  try {
+    // Retrieve current user email
+    const currentUser = await sp.web.currentUser();
+    // const currentUserEmail = currentUserEmailRef.current;
+    const currentUserEmail = currentUser.Email;
+
+    // Fetch the ARGDelegateList items where the current user is in the ActingFor column
+    const today = new Date().toISOString(); // Get today's date in YYYY-MM-DD format
+
+
+    let arr = [];
+    let approvalData= [];
+    if (!actingfor) {
+      const items = await sp.web.lists.getByTitle('DMSFileApprovalTaskList').items.select(
+        "Log", "CurrentUser", "Remark"
+        , "LogHistory"
+        , "FileUID/FileUID"
+        , "FileUID/SiteName"
+        , "FileUID/DocumentLibraryName"
+        , "FileUID/FileName"
+        , "FileUID/RequestNo"
+        , "FileUID/Processname"
+        //  ,"FileUID/FilePreviewUrl"
+        , "FileUID/Status"
+        , "FileUID/FolderPath"
+        , "FileUID/RequestedBy"
+        , "FileUID/Created"
+        , "FileUID/ApproveAction"
+        , "MasterApproval/ApprovalType"
+        , "MasterApproval/Level"
+        , "MasterApproval/DocumentLibraryName"
+
+      )
+        .expand("FileUID", "MasterApproval")
+        .filter(`CurrentUser eq '${currentUserEmail}' and FileUID/Status eq '${value}'`).orderBy("Created", false).getAll();
+      console.log(items, "DMSFileApprovalTaskList");
+      // items.map((item) => {
+      //   if (item.CurrentUser !== currentUserEmail) {
+      //     arr.push(item)
+         
+      //   }
+
+      // }); // changes by riya
+      const updatedItems = await Promise.all(items.map(async (item) => {
+        const requestedbyuserTitle = await getUserTitleByEmail(sp,item?.FileUID?.RequestedBy);
+        return { ...item, RequestedByTitle: requestedbyuserTitle };
+      }));
+      approvalData = updatedItems;
+
+      return arr = approvalData;
+
+      // setMylistdata(updatedItems);
+    }
+    if (actingfor !== "" && actingfor !== undefined) {
+      const items = await sp.web.lists.getByTitle('DMSFileApprovalTaskList').items.select(
+        "Log", "CurrentUser", "Remark"
+        , "LogHistory"
+        , "FileUID/FileUID"
+        , "FileUID/SiteName"
+        , "FileUID/DocumentLibraryName"
+        , "FileUID/FileName"
+        , "FileUID/RequestNo"
+        , "FileUID/Processname"
+        //  ,"FileUID/FilePreviewUrl"
+        , "FileUID/Status"
+        , "FileUID/FolderPath"
+        , "FileUID/RequestedBy"
+        , "FileUID/Created"
+        , "FileUID/ApproveAction"
+        , "MasterApproval/ApprovalType"
+        , "MasterApproval/Level"
+        , "MasterApproval/DocumentLibraryName"
+
+      )
+        .expand("FileUID", "MasterApproval")
+        .filter(`CurrentUser eq '${actingfor}' and FileUID/Status eq '${value}'`).orderBy("Created", false).getAll();
+      console.log(items, "DMSFileApprovalTaskList");
+      // items.map((item) => {
+      //   if (item.CurrentUser !== currentUserEmail) {
+      //     arr.push(item)
+      //     // alert(`Delegate user ${item.CurrentUser} is acting for ${item.FileUID.FileName}`)
+      //   }
+
+      // }); //Commented by riya
+      const updatedItems = await Promise.all(items.map(async (item) => {
+        const requestedbyuserTitle = await getUserTitleByEmail(sp,item?.FileUID?.RequestedBy);
+        return { ...item, RequestedByTitle: requestedbyuserTitle };
+      }));
+      approvalData = updatedItems;
+      // setMylistdata(updatedItems);
+      return arr = approvalData;
+    }
+
+    // const updatedItems2 = await Promise.all(items2.map(async (item) => {
+    //   const requestedbyuserTitle = await getUserTitleByEmail(item?.FileUID?.RequestedBy);
+    //   return { ...item, RequestedByTitle: requestedbyuserTitle };
+    // }));
+    // commented by riya
+    // if (!actingfor) {
+    //   const Item2 = await sp.web.lists.getByTitle('DMSFolderDeligationApprovalTask').items.select(
+    //     "*",
+    //     "Folderdetail"
+    //     , "Folderdetail/SiteTitle"
+    //     , "Folderdetail/DocumentLibraryName"
+    //     , "Folderdetail/CurrentUser"
+    //     , "Folderdetail/FolderPath"
+    //     , "Folderdetail/FolderName"
+    //     , "Folderdetail/ParentFolderId"
+    //     , "Folderdetail/Department"
+    //     , "Folderdetail/Devision"
+    //     , "Folderdetail/RequestNo"
+    //     , "FolderMeta"
+    //     , "FolderMeta/SiteName"
+    //     , "FolderMeta/DocumentLibraryName"
+    //     , "FolderMeta/ColumnName",
+    //     "Folderdetail/Processname",
+    //     "Folderdetail/Status",
+    //     "Approver"
+    //   ).expand("Folderdetail", "FolderMeta")
+    //     .filter(`Approver eq '${currentUserEmail}' and Folderdetail/Status eq '${value}'`)();
+    //   console.log("Item2 get from dmsfolderdeligationapprovaltasklist", Item2)
+    //   const normalizeItem2 = async (item) => ({
+    //     Log: item?.Log || '', // Replace with appropriate mappings
+    //     CurrentUser: item?.Folderdetail?.CurrentUser || '',
+    //     Remark: item?.Remark || '',
+    //     LogHistory: item?.LogHistory || '',
+    //     // ProcessName:  item?.Folderdetail?.Processname,
+    //     RequestedByTitle: await getUserTitleByEmail(item?.Folderdetail?.CurrentUser),
+    //     FileUID: {
+    //       FileUID: item?.FolderMeta?.FileUID || item?.Folderdetail?.RequestNo,
+    //       SiteName: item?.FolderMeta?.SiteName || '',
+    //       DocumentLibraryName: item?.FolderMeta?.DocumentLibraryName || '',
+    //       // FileName: item?.FolderMeta?.FolderName || '',
+    //       FileName: item?.Folderdetail?.FolderName === null ? item?.Folderdetail?.DocumentLibraryName : item?.Folderdetail?.FolderName,
+    //       RequestNo: item?.Folderdetail?.RequestNo || '',
+    //       Status: item?.Folderdetail?.Status || '',
+    //       FolderPath: item?.Folderdetail?.FolderPath || '',
+    //       // RequestedBy: item?.RequestedBy || item?.Folderdetail?.CurrentUser || '',
+    //       // RequestedByTitle:await getUserTitleByEmail(item?.Folderdetail?.CurrentUser),
+    //       Created: item?.Created || '',
+    //       ApproveAction: item?.ApproveAction || '',
+    //       Processname: item?.Folderdetail?.Processname
+    //     },
+    //     MasterApproval: {
+    //       ApprovalType: item?.ApprovalType || '',
+    //       Level: item?.Level || '',
+    //       DocumentLibraryName: item?.DocumentLibraryName || ''
+    //     }
+    //   });
+    //   // const normalizeItem3 = Item2.map(normalizeItem2);
+    //   const normalizeItem3 = await Promise.all(Item2.map(normalizeItem2));
+    //   console.log("normalizeItem3", normalizeItem3);
+    //   console.log(approvalData, "approvalData 666");
+    //   const CombinedItems = [...approvalData, ...normalizeItem3];
+    //   console.log(CombinedItems, "CombinedItems")
+    //   // setMylistdata(CombinedItems);
+    //   // setMylistdata(updatedItems);
+
+
+    //   return arr = CombinedItems
+    //   // return arr = approvalData;
+    // }
+    // if (actingfor !== "" && actingfor !== undefined) {
+    //   const Item2 = await sp.web.lists.getByTitle('DMSFolderDeligationApprovalTask').items.select(
+    //     "*",
+    //     "Folderdetail"
+    //     , "Folderdetail/SiteTitle"
+    //     , "Folderdetail/DocumentLibraryName"
+    //     , "Folderdetail/CurrentUser"
+    //     , "Folderdetail/FolderPath"
+    //     , "Folderdetail/FolderName"
+    //     , "Folderdetail/ParentFolderId"
+    //     , "Folderdetail/Department"
+    //     , "Folderdetail/Devision"
+    //     , "Folderdetail/RequestNo"
+    //     , "FolderMeta"
+    //     , "FolderMeta/SiteName"
+    //     , "FolderMeta/DocumentLibraryName"
+    //     , "FolderMeta/ColumnName",
+    //     "Folderdetail/Processname",
+    //     "Folderdetail/Status",
+    //     "Approver"
+    //   ).expand("Folderdetail", "FolderMeta")
+    //     .filter(`Approver eq '${actingfor}' and Folderdetail/Status eq '${value}'`)();
+    //   console.log("Item2 get from dmsfolderdeligationapprovaltasklist", Item2)
+    //   const normalizeItem2 = async (item) => ({
+    //     Log: item?.Log || '', // Replace with appropriate mappings
+    //     CurrentUser: item?.Folderdetail?.CurrentUser || '',
+    //     Remark: item?.Remark || '',
+    //     LogHistory: item?.LogHistory || '',
+    //     // ProcessName:  item?.Folderdetail?.Processname,
+    //     RequestedByTitle: await getUserTitleByEmail(item?.Folderdetail?.CurrentUser),
+    //     FileUID: {
+    //       FileUID: item?.FolderMeta?.FileUID || item?.Folderdetail?.RequestNo,
+    //       SiteName: item?.FolderMeta?.SiteName || '',
+    //       DocumentLibraryName: item?.FolderMeta?.DocumentLibraryName || '',
+    //       // FileName: item?.FolderMeta?.FolderName || '',
+    //       FileName: item?.Folderdetail?.FolderName === null ? item?.Folderdetail?.DocumentLibraryName : item?.Folderdetail?.FolderName,
+    //       RequestNo: item?.Folderdetail?.RequestNo || '',
+    //       Status: item?.Folderdetail?.Status || '',
+    //       FolderPath: item?.Folderdetail?.FolderPath || '',
+    //       // RequestedBy: item?.RequestedBy || item?.Folderdetail?.CurrentUser || '',
+    //       // RequestedByTitle:await getUserTitleByEmail(item?.Folderdetail?.CurrentUser),
+    //       Created: item?.Created || '',
+    //       ApproveAction: item?.ApproveAction || '',
+    //       Processname: item?.Folderdetail?.Processname
+    //     },
+    //     MasterApproval: {
+    //       ApprovalType: item?.ApprovalType || '',
+    //       Level: item?.Level || '',
+    //       DocumentLibraryName: item?.DocumentLibraryName || ''
+    //     }
+    //   });
+    //   // const normalizeItem3 = Item2.map(normalizeItem2);
+    //   const normalizeItem3 = await Promise.all(Item2.map(normalizeItem2));
+    //   console.log("normalizeItem3", normalizeItem3);
+    //   console.log(approvalData, "approvalData 666");
+    //   const CombinedItems = [...approvalData, ...normalizeItem3];
+    //   console.log(CombinedItems, "CombinedItems")
+    //   // setMylistdata(CombinedItems);
+    //   // setMylistdata(updatedItems);
+
+
+    //   return arr = CombinedItems
+     
+    // }
+    // commented by riya
+  } catch (error) {
+    console.error("Error fetching list items:", error);
+  }
 
   return arr
-
-
-
-}
+};

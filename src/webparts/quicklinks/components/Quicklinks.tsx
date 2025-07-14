@@ -134,7 +134,7 @@ export const MastersettingContext = ({ props }: any) => {
     // console.log(settingsData, 'settingsData');
 
     // setQuickLinkArray(await sp.web.lists.getByTitle(listTitle).items.getAll());
-    const settingsData = await sp.web.lists.getByTitle(listTitle).items.select('Id', 'Title', 'URL', 'RedirectToNewTab', 'QuickLinkImage', 'Entity/Entity').expand('Entity').filter(`(Entity/Entity eq '${entity}' or Entity/Entity eq '${currentUserDept}') and IsActive eq 1`).getAll();
+    const settingsData = await sp.web.lists.getByTitle(listTitle).items.select('Id', 'Title', 'URL', 'RedirectToNewTab', 'QuickLinkImage', 'Entity/Entity','Entity/ADDepartmentName').expand('Entity').filter(`(Entity/ADDepartmentName eq '${entity}' or Entity/ADDepartmentName eq '${currentUserDept}') and IsActive eq 1`).getAll();
     setQuickLinkArray(settingsData);
 
     setshowImg(settingsData.length == 0 ? true : false);
@@ -183,9 +183,9 @@ export const MastersettingContext = ({ props }: any) => {
                             <div className="">
                               <img src={imageUrl} />
                             </div>
-                            <div className="text-dark appltext font-14 mb-1">
+                            <div className="text-dark appltext font-14 mb-1" title={item?.Title}>
                               {/* <p className="text-dark appltext font-14 mb-1"> */}
-                              {item?.Title}
+                                {item?.Title?.length > 60 ? `${item?.Title.substring(0, 60)}...` : item?.Title}
                               {/* </p> */}
                             </div>
                             <p className="font-12 mb-2 text-primary">{item.Entity?.Entity}</p>

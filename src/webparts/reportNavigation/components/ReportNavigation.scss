@@ -11,7 +11,8 @@
 .paddb{
     min-height: calc(100vh - 139px);
   }
-  #s4-workspace{overflow: hidden !important;}
+  .card{border-radius: 0px !important;}
+  #s4-workspace{overflow: hidden !important;overflow-y: auto !important;}
 .manage-master .box1 {
     background: #fff !important;
 }
@@ -32,6 +33,7 @@
     display: block;
     font-size: 0.875rem;
 }
+// .navcss{margin-left: 0px !important;}
 a
 {
     text-decoration: none;
@@ -47,7 +49,7 @@ a:hover
 }
 .appltext{margin-top: 7px;}
 .aaplnbg{background: #fff;height: 150px; padding: 25px 0px 0px 0px; margin-top: 13px; border: 1px solid #f6f6f6; border-radius: 0px; text-align: center;}
-
+.aaplnbg svg{width:55px !important; height:40px !important;}
 .aaplnbg:hover{cursor: pointer;border: 1px solid #f37421 ;}
 .aaplnbg img {
     height: 50px;
@@ -65,7 +67,7 @@ a:hover
     .aaplnbg{height: 155px; padding-top: 30px;}
 }
 @media(max-width:1440px){
-    .aaplnbg{height: 145px; padding-top: 25px;}
+    .aaplnbg{height: 145px; padding-top: 38px;}
 }
 @media(max-width:640px){
     #s4-workspace{overflow-y: auto !important;}

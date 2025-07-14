@@ -480,7 +480,7 @@ if(Currusers){
                       <div className="col-lg-4">
                         <div className="mb-3">
                           <label htmlFor="title" className="form-label">
-                            Delegate Name <span className="text-danger">*</span>
+                            Employee Name <span className="text-danger">*</span>
                           </label>
                           <input
                             type="text"
@@ -501,7 +501,7 @@ if(Currusers){
                       <div className="col-lg-4">
                         <div className="mb-3">
                           <label htmlFor="title" className="form-label">
-                            Acting For <span className="text-danger">*</span>
+                          Delegate Access To <span className="text-danger">*</span>
                           </label>
                           {/* <input
                             type="text"

@@ -1177,7 +1177,7 @@ const NCReport = ({ props }: any) => {
 
             <div className="row">
                 <div className="col-xl-4 col-md-6">
-                    <div style={{ height: '420px' }} className="card">
+                    <div style={{ height: '450px' }} className="card">
                         <div className="card-body">
                             <div className="card-widgets">
                                 {/* <a href="javascript: void(0);" data-bs-toggle="reload"><i className="mdi mdi-refresh"></i></a> */}
@@ -1198,7 +1198,7 @@ const NCReport = ({ props }: any) => {
                                 {/* <a href="javascript: void(0);" data-bs-toggle="remove"><i className="mdi mdi-close"></i></a> */}
                                 {/* <a href="javascript: void(0);" data-bs-toggle="remove"><FontAwesomeIcon icon={faTimes} size="2x" style={{ color: 'red' }} /></a> */}
                             </div>
-                            <h4 className="header-title mb-0">Department Wise NC/Observation</h4>
+                            <h4 className="header-title mt-2 mb-0">Department Wise NC/Observation</h4>
 
                             <div id="cardCollpase1" className="collapse show">
                                 <div className="text-center pt-3">
@@ -1220,14 +1220,14 @@ const NCReport = ({ props }: any) => {
                 </div>
 
                 <div className="col-xl-4 col-md-6">
-                    <div style={{ height: '420px' }} className="card">
+                    <div style={{ height: '450px' }} className="card">
                         <div className="card-body">
                             <div className="card-widgets">
                                 <a href="javascript: void(0);" data-bs-toggle="reload"><i className="mdi mdi-refresh"></i></a>
                                 <a data-bs-toggle="collapse" href="#cardCollpase3" role="button" aria-expanded="false" aria-controls="cardCollpase3"><i className="mdi mdi-minus"></i></a>
                                 <a href="javascript: void(0);" data-bs-toggle="remove"><i className="mdi mdi-close"></i></a>
                             </div>
-                            <h4 className="header-title mb-0">NC / Observation Category</h4>
+                            <h4 className="header-title mt-2 mb-3">NC / Observation Category</h4>
 
                             <div id="cardCollpase3" className="collapse show">
                                 <div className="text-center pt-3">
@@ -1256,10 +1256,10 @@ const NCReport = ({ props }: any) => {
                         </div>
                     </div>
                 </div>
-            </div>
+            
 
-            <div className="col-xl-4 col-md-12">
-                <div style={{ height: '420px' }} className="card">
+            <div className="col-xl-4 col-md-6">
+                <div style={{ height: '450px' }} className="card">
                     <div className="card-body">
                         <div className="card-widgets">
                             <a href="javascript: void(0);" data-bs-toggle="reload"><i className="mdi mdi-refresh"></i></a>
@@ -1331,7 +1331,7 @@ const NCReport = ({ props }: any) => {
                 </div>
             </div>
 
-
+            </div>
 
 
 
@@ -1392,10 +1392,10 @@ const NCReport = ({ props }: any) => {
                                     </table> */}
 
 
-                                    <table className="table">
+                                    <table className="mtable table-centered table-nowrap table-borderless">
                                         <thead>
                                             <tr>
-                                                <th onClick={() => requestSort('S.No')}>
+                                                <th style={{ minWidth: '50px', maxWidth: '50px' }} onClick={() => requestSort('S.No')}>
                                                     S.No.
                                                     {sortConfig?.key === 'S.No' && (
                                                         <span className="sortIcon">
@@ -1421,7 +1421,7 @@ const NCReport = ({ props }: any) => {
                                                 ))}
                                             </tr>
                                             <tr className="filterRow">
-                                                <td className="filterCell">
+                                                <th style={{ minWidth: '50px', maxWidth: '50px' }} className="filterCell">
                                                     <input
                                                         type="text"
                                                         className="filterInput"
@@ -1429,17 +1429,17 @@ const NCReport = ({ props }: any) => {
                                                         value={columnFilters['S.No'] || ''}
                                                         onChange={(e) => handleColumnFilterChange('S.No', e.target.value)}
                                                     />
-                                                </td>
+                                                </th>
                                                 {columns.map((col) => (
-                                                    <td key={col.key} className="filterCell">
+                                                    <th key={col.key} className="filterCell">
                                                         <input
                                                             type="text"
-                                                            className="filterCell"
+                                                            className="filterCell form-control"
                                                             placeholder={`Filter...`}
                                                             value={columnFilters[col.key] || ''}
                                                             onChange={(e) => handleColumnFilterChange(col.key, e.target.value)}
                                                         />
-                                                    </td>
+                                                    </th>
                                                 ))}
                                             </tr>
                                         </thead>
@@ -1447,7 +1447,7 @@ const NCReport = ({ props }: any) => {
                                             {currentRows.length > 0 ? (
                                                 currentRows.map((item, itemIndex) => (
                                                     <tr key={itemIndex} className={itemIndex % 2 === 0 ? "rowEven" : ''}>
-                                                        <td >{indexOfFirstRow + itemIndex + 1}</td>
+                                                        <td style={{ minWidth: '50px', maxWidth: '50px' }}>{indexOfFirstRow + itemIndex + 1}</td>
                                                         {columns.map((col) => (
                                                             <td key={col.key} >
                                                                 {getNestedValue(item, col.key)}

@@ -7,9 +7,9 @@ export const fetchEventdata = async (_sp) => {
   const today = new Date();
       today.setHours(0, 0, 0, 0); 
      await _sp.web.lists.getByTitle("ARGEventMaster")
-     .items.select("*,Attendees/Id,Attendees/Title,Attendees/EMail,Entity/Entity,Entity/ID")
+     .items.select("*,Attendees/Id,Attendees/Title,Attendees/EMail,Entity/Entity,Entity/ADDepartmentName,Entity/ID")
      .expand("Attendees,Entity")
-     .filter(`(Entity/Entity eq '${entity}' or Entity/Entity eq '${currentUserDept}') and Status eq 'Approved'`)
+     .filter(`(Entity/ADDepartmentName eq '${entity}' or Entity/ADDepartmentName eq '${currentUserDept}') and Status eq 'Approved'`)
      .orderBy("EventDate",true)      
      ().then((res) => {
       console.log(res);

@@ -15,7 +15,7 @@ const DepartmentPieChart: React.FC<ChartComponentProps> = ({ UniqNCDept }) => {
     const saturation = 70;
     const lightness = 60;
     for (let i = 0; i < count; i++) {
-      const hue = Math.floor((360 / count) * i);
+      const hue = Math.floor((300 / count) * i);
       colors.push(`hsl(${hue}, ${saturation}%, ${lightness}%)`);
     }
     return colors;
@@ -78,7 +78,7 @@ const DepartmentPieChart: React.FC<ChartComponentProps> = ({ UniqNCDept }) => {
   }, [UniqNCDept]);
 
   return (
-    <canvas ref={canvasRef} style={{ height: '270px' }}></canvas>
+    <canvas ref={canvasRef} style={{ height: '220px' }}></canvas>
     // <canvas id="lifetime-sales" style={{ height: '270px' }}></canvas>
   );
 };

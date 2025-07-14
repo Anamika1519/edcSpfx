@@ -77,8 +77,8 @@ export const getNewsone = async (_sp) => {
   const currentUserDept = userProfile.UserProfileProperties ? userProfile.UserProfileProperties[userProfile.UserProfileProperties.findIndex(obj => obj.Key === "Department")].Value : "";
   let entity ="Global";
  
-  await _sp.web.lists.getByTitle("ARGAnnouncementAndNews").items.select("*,AnnouncementandNewsTypeMaster/Id,AnnouncementandNewsTypeMaster/TypeMaster,Category/Id,Category/Category,Entity/Entity,Entity/ID").expand("AnnouncementandNewsTypeMaster,Category,Entity")
-    .filter(`(Entity/Entity eq '${entity}' or Entity/Entity eq '${currentUserDept}') and AnnouncementandNewsTypeMaster/TypeMaster eq '${str}' and Status eq 'Approved'`)
+  await _sp.web.lists.getByTitle("ARGAnnouncementAndNews").items.select("*,AnnouncementandNewsTypeMaster/Id,AnnouncementandNewsTypeMaster/TypeMaster,Category/Id,Category/Category,Entity/ADDepartmentName,Entity/Entity,Entity/ID").expand("AnnouncementandNewsTypeMaster,Category,Entity")
+    .filter(`(Entity/ADDepartmentName eq '${entity}' or Entity/ADDepartmentName eq '${currentUserDept}') and AnnouncementandNewsTypeMaster/TypeMaster eq '${str}' and Status eq 'Approved'`)
     .orderBy("Modified", false).top(2)().then((res) => {
       console.log(res);
 
@@ -99,8 +99,8 @@ const currentUserDept = userProfile.UserProfileProperties ? userProfile.UserProf
 let entity ="Global";
 
   await _sp.web.lists.getByTitle("ARGEventMaster").items
-    .select("*,Entity/Entity,Entity/ID").expand("Entity")
-    .filter(`(Entity/Entity eq '${entity}' or Entity/Entity eq '${currentUserDept}') and Status eq 'Approved'`)
+    .select("*,Entity/Entity,Entity/ADDepartmentName,Entity/ID").expand("Entity")
+    .filter(`(Entity/ADDepartmentName eq '${entity}' or Entity/ADDepartmentName eq '${currentUserDept}') and Status eq 'Approved'`)
     .orderBy("EventDate", true).top(3)
     ()
 

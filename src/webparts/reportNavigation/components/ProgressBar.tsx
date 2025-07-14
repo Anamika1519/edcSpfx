@@ -9,7 +9,7 @@ interface ICircularProgressBarProps {
 
 const CircularProgressBar: React.FC<ICircularProgressBarProps> = ({ value, text }) => {
   return (
-    <div style={{ width: 120, height: 120 , margin: '10px 0px 0px 75px' }}>
+    <div style={{ width: 200, height: 200 , margin: '40px auto' }}>
       <CircularProgressbar
         value={value}
         text={text || `${value}%`}

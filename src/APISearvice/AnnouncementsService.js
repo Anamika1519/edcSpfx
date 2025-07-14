@@ -329,9 +329,9 @@ export const getAllAnnouncementnonselected = async (_sp, Idnum,text) => {
 const currentUserDept = userProfile.UserProfileProperties ? userProfile.UserProfileProperties[userProfile.UserProfileProperties.findIndex(obj => obj.Key === "Department")].Value : "";
 let entity ="Global";
   await _sp.web.lists.getByTitle("ARGAnnouncementAndNews").items
-  .select("*,AnnouncementandNewsTypeMaster/Id,AnnouncementandNewsTypeMaster/TypeMaster,Category/Id,Category/Category,Author/ID,Author/Title,Entity/ID,Entity/Entity")
+  .select("*,AnnouncementandNewsTypeMaster/Id,AnnouncementandNewsTypeMaster/TypeMaster,Category/Id,Category/Category,Author/ID,Author/Title,Entity/ID,Entity/ADDepartmentName,Entity/Entity")
   .expand("AnnouncementandNewsTypeMaster,Category,Author,Entity")
-  .filter(`(Entity/Entity eq '${entity}' or Entity/Entity eq '${currentUserDept}') and AnnouncementandNewsTypeMaster/TypeMaster eq '${text}' and ID ne ${Idnum}  and Status eq 'Approved'`)
+  .filter(`(Entity/ADDepartmentName eq '${entity}' or Entity/ADDepartmentName eq '${currentUserDept}') and AnnouncementandNewsTypeMaster/TypeMaster eq '${text}' and ID ne ${Idnum}  and Status eq 'Approved'`)
     //.filter(`ID ne ${Idnum}`)
     .top(3)
     .orderBy("Modified", false)
