@@ -1130,9 +1130,9 @@ const MyApprovalContext = ({ props }: any) => {
             (getnonconfirmitydata?.CurrentUserRole === "FirstAssignedTo" || getnonconfirmitydata?.CurrentUserRole === "DelegateTo");
           const isRework =
             getnonconfirmitydata?.Status === "Rework" &&
-            getnonconfirmitydata?.SubmitStatus === "Yes" &&
-            (getnonconfirmitydata?.CurrentUserRole === "FirstInitiator") ||
-            (getnonconfirmitydata?.CurrentUserRole === "FirstAssignedTo" || getnonconfirmitydata?.CurrentUserRole === "DelegateTo");
+            //(getnonconfirmitydata?.SubmitStatus === "Yes" || getnonconfirmitydata?.SubmitStatus === "No") &&
+            ((getnonconfirmitydata?.CurrentUserRole === "FirstInitiator") ||
+            (getnonconfirmitydata?.CurrentUserRole === "FirstAssignedTo" || getnonconfirmitydata?.CurrentUserRole === "DelegateTo"));
           console.log("getprocessapprovaldata", getprocessapprovaldata)
           //  alert("isEditable"+ isEditable)
           if (isEditable || isRework) {
