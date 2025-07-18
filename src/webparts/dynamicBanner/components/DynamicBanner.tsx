@@ -491,10 +491,10 @@ const DynamicBannercontext = ({ props }: any) => {
                             return (
                               <tr key={index}>
                                 <td style={{ minWidth: '30px', maxWidth: '30px' }}><div style={{ marginLeft: '20px' }} className='indexdesign'> {index + 1}</div>  </td>
-                                <td style={{ minWidth: '130px', maxWidth: '130px' }}>{item.Title}</td>
+                                <td style={{ minWidth: '130px', maxWidth: '130px' }} title={item.Title}>{item.Title}</td>
 
                                 
-                                <td style={{ minWidth: '60px', maxWidth: '60px', textAlign:'center' }}>  <div style={{width:'130px'}} className='btn btn-status'> {item.Entity?.Entity} </div> </td>
+                                <td style={{ minWidth: '60px', maxWidth: '60px', textAlign:'center' }}>  <div style={{width:'130px'}} className='btn btn-status' title= {item.Entity?.Entity}> {item.Entity?.Entity} </div> </td>
                                 <td style={{ minWidth: '60px', maxWidth: '60px', textAlign:'center' }}> <div className='btn btn-light'>{moment(item.Created).format("DD-MMM-YYYY")} </div> </td>
 <td style={{ minWidth: '60px', maxWidth: '60px', textAlign:'center' }}>  <div className='btn btn-status'> {item.Status} </div> </td>
                                 <td style={{ minWidth: '50px', maxWidth: '50px' }} className="ng-binding">

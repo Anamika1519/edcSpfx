@@ -239,7 +239,13 @@ const Announcementmastercontext = ({ props }: any) => {
     // Filter data
 
     const filteredData = data.filter((item, index) => {
-
+      const formatDateToDDMMYYYY = (date: string) => {
+        return new Intl.DateTimeFormat('en-GB', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+        }).format(new Date(date)); // Always gives DD/MM/YYYY
+      };
       return (
 
         (filters.SNo === '' || String(index + 1).includes(filters.SNo)) &&
@@ -254,7 +260,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
         (filters?.Status === '' || item?.Status?.toLowerCase().includes(filters?.Status?.toLowerCase())) &&
 
-        (filters.SubmittedDate === '' || item.Created.toLowerCase().includes(filters.SubmittedDate.toLowerCase()))
+        (filters.SubmittedDate === '' || (formatDateToDDMMYYYY(item.Created).toLowerCase()).includes(filters.SubmittedDate.toLowerCase()))
 
       );
 
@@ -661,7 +667,7 @@ const Announcementmastercontext = ({ props }: any) => {
               onSelect={() => tabclicked(CurrentTabs == "Announcement" ? "News" : "Announcement")}
             >
 
-           
+
               <Tab eventKey="News" title="News">
 
                 <div className="card cardCss mt-3">
@@ -786,7 +792,7 @@ const Announcementmastercontext = ({ props }: any) => {
 
                               </th>
 
-                             
+
 
                               <th style={{ minWidth: '100px', maxWidth: '100px' }}>
 
@@ -886,18 +892,24 @@ const Announcementmastercontext = ({ props }: any) => {
                                         maxWidth: "50px",
 
                                       }}
-
+                                      title={(startIndex + index + 1).toString()}
                                     >
 
                                       {startIndex + index + 1}
 
                                     </td>
 
-                                    <td >{item.Title}</td>
+                                    <td title={item.Title}>{item.Title}</td>
 
-                                    <td>{item?.Category?.Category}</td>
+                                    <td title={item?.Category?.Category}>{item?.Category?.Category}</td>
 
-                                    <td>
+                                    <td title={
+
+                                      item?.AnnouncementandNewsTypeMaster
+
+                                        ?.TypeMaster
+
+                                    }>
 
                                       {
 
@@ -919,7 +931,7 @@ const Announcementmastercontext = ({ props }: any) => {
                                         textAlign: 'center'
 
                                       }}
-
+                                      title={moment(item.Created).format("L")}
                                     >
 
                                       <div className='btn  btn-light'>      {moment(item.Created).format("L")} </div>
@@ -936,7 +948,7 @@ const Announcementmastercontext = ({ props }: any) => {
                                         textAlign: 'center'
 
                                       }}
-
+                                      title={item.Status}
                                     >
 
                                       <div className='btn btn-status'>{item.Status} </div>

@@ -498,11 +498,11 @@ const HelloWorldContext = ({ props }: any) => {
                                     className="d-block img-fluid"
                                   />
                                   <div className="carousel-caption d-none d-md-block">
-                                    <p style={{ width: '100%' }} className="font-18 mb-0 mt-0 ps-4 pe-4 py-0">
+                                    <p style={{ width: '100%' }} className="font-18 mb-0 mt-0 ps-4 pe-4 py-0" title={item.Title}>
                                       {item.Title}
                                     </p>
                                     <div className="newpos1"><span style={{padding:'5px 10px',display:'none'}} className="badge bg-warning"> {item.Entity.Entity}</span></div>
-                                    <span style={{ width: '100%' }} className="font-14 nwdescrp mb-1 mt-0 ps-4 pe-4 py-0">
+                                    <span style={{ width: '100%' }} className="font-14 nwdescrp mb-1 mt-0 ps-4 pe-4 py-0" title={item.Description}>
                                       {item.Description}
                                     </span>
                                   </div>
@@ -728,7 +728,7 @@ const HelloWorldContext = ({ props }: any) => {
                                     </div>
                                     <div className="col-sm-9 upcom2">
                                       <div className="w-100 ps-0 mt-1">
-                                        <h4
+                                        <h4 title= {event.EventName}
                                           className="mb-0 text-dark lin30 fw-bold"
                                           style={{
                                             fontSize: "14px",
@@ -743,7 +743,7 @@ const HelloWorldContext = ({ props }: any) => {
                                         >
                                           {event.EventName} {/* Event title */}
                                         </h4>
-                                        <p className="font-12 mt-0 mb-0 text-primary">{event.Entity.Entity}</p>
+                                        <p className="font-12 mt-0 mb-0 text-primary" title={event.Entity.Entity}>{event.Entity.Entity}</p>
                                         <p className=" font-12 mb-0 mt-1">
 
                                           {moment(formattedDate).format("DD-MMM-YYYY")}
@@ -852,7 +852,7 @@ const HelloWorldContext = ({ props }: any) => {
                                     alt={news.title}
                                   /> */}
                                 </div>
-                                <h4
+                                <h4 title={news.title}
                                   style={{
                                     lineHeight: "22px",
                                     fontSize: "16px",
@@ -863,14 +863,14 @@ const HelloWorldContext = ({ props }: any) => {
                                 >
                                   {news.Title}
                                 </h4>
-                                <p
+                                <p title={news.Overview}
                                   style={{ lineHeight: "22px" }}
                                   className="mb-2 twolinewrap1 font-14"
                                 >
                                   {news.Overview}
                                 </p>
                                 <p className="mb-3 font-12">
-                              <span>{moment(news.Modified).format("DD-MMM-YYYY")}</span> <span>&nbsp;|&nbsp;</span> <span className="text-primary">{news.Entity.Entity}</span>
+                              <span>{moment(news.Modified).format("DD-MMM-YYYY")}</span> <span>&nbsp;|&nbsp;</span> <span className="text-primary" title={news.Entity.Entity}>{news.Entity.Entity}</span>
                                 </p>
                               </div>
                             );

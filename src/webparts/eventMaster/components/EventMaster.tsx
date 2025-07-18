@@ -211,6 +211,14 @@ const EntityMastercontext = ({ props }: any) => {
     debugger;
     // Filter data
     const filteredData = data.filter((item, index) => {
+      const formatToUTCDate = (date: string) => new Date(date).toISOString().slice(0, 10);
+      const formatDateToDDMMYYYY = (date: string) => {
+        return new Intl.DateTimeFormat('en-GB', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+        }).format(new Date(date)); // Always gives DD/MM/YYYY
+      };
       return (
         (filters.SNo === "" || String(index + 1).includes(filters.SNo)) &&
         (filters.EventName === "" ||
@@ -220,7 +228,7 @@ const EntityMastercontext = ({ props }: any) => {
             ))) &&
         (filters.EventDate === "" ||
           (item.EventDate != null &&
-            item.EventDate.toLowerCase().includes(
+            (formatDateToDDMMYYYY(item.EventDate).toLowerCase()).includes(
               filters.EventDate.toLowerCase()
             ))) &&
         (filters?.Overview === "" ||
@@ -696,6 +704,7 @@ const EntityMastercontext = ({ props }: any) => {
                           currentData.map((item, index) => (
                             <tr key={index}>
                               <td
+                              title={(startIndex + index + 1).toString()}
                                 style={{ minWidth: "50px", maxWidth: "50px" }}
                               >
                                 <div
@@ -707,7 +716,7 @@ const EntityMastercontext = ({ props }: any) => {
                                 </div>
                               </td>
 
-                              <td>{item.EventName}</td>
+                              <td title={item.EventName}>{item.EventName}</td>
 
                               <td
                                 style={{
@@ -715,6 +724,7 @@ const EntityMastercontext = ({ props }: any) => {
                                   maxWidth: "80px",
                                   textAlign: "center",
                                 }}
+                                title={moment(item.EventDate).format("DD/MM/yyyy")}
                               >
                                 <div className="btn  btn-light">
                                   {moment(item.EventDate).format("DD/MM/yyyy")}
@@ -724,11 +734,13 @@ const EntityMastercontext = ({ props }: any) => {
                              
                               <td
                                 style={{ minWidth: "100px", maxWidth: "100px" }}
+                                title={item.Overview}
                               >
                                 {item.Overview}
                               </td>
                               <td
                                 style={{ minWidth: "80px", maxWidth: "80px" }}
+                                title={item.EventAgenda}
                               >
                                 {item.EventAgenda}
                               </td>
@@ -738,6 +750,7 @@ const EntityMastercontext = ({ props }: any) => {
                                   maxWidth: "80px",
                                   textAlign: "center",
                                 }}
+                                title={item.Status}
                               >
                                 {" "}
                                 <div className="btn  btn-status">
