@@ -214,7 +214,8 @@ const NotificationDetailsContext = ({ props }: any) => {
                                       </div>
                                       <div className="inbox-item-details">
                                         <p className="inbox-item-author mb-1"><span className="me-4"> {notification?.ActionUser?.Title} </span>  <span className="text-info font-12">
-                                          {moment(notification.Created).fromNow()}
+                                          {/* {moment(notification.Created).fromNow()} */}
+                                          {moment(notification.Created).format("DD/MMM/YYYY")}
                                         </span></p>
                                         
                                         <p
@@ -280,7 +281,9 @@ const NotificationDetailsContext = ({ props }: any) => {
                                       </div>
                                       <div className="inbox-item-details">
                                         <p className="inbox-item-author mb-1"><span className="me-4">{notification?.ActionUser?.Title}</span>  <span style={{ fontWeight: '400' }} className="text-info font-12">
-                                          {moment(notification.Created).fromNow()}
+                                          {/* {moment(notification.Created).fromNow()} */}
+                                          {moment(notification.Created).format("DD/MMM/YYYY")}
+
                                         </span></p>
                                         <p
                                           className="inbox-item-text clickable-text mb-1"
@@ -344,7 +347,9 @@ const NotificationDetailsContext = ({ props }: any) => {
                                     </div>
                                     <div className="inbox-item-details">
                                       <p className="inbox-item-author mb-1"> <span className="me-4"> {notification?.ActionUser?.Title} </span>  <span className="text-info font-12">
-                                        {moment(notification.Created).fromNow()}
+                                        {/* {moment(notification.Created).fromNow()} */}
+                                        {moment(notification.Created).format("DD/MMM/YYYY")}
+
                                       </span></p>
                                       <p
                                           className="inbox-item-text clickable-text mb-1"

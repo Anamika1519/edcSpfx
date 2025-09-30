@@ -181,3 +181,31 @@ div:where(.swal2-container) button:where(.swal2-styled):where(.swal2-confirm)
     margin: -7px !important;}
 .btn-light1{padding:7px 12px !important;}
 .newse{padding: 0px !important; margin: 0px !important; border: 0px solid #ccc !important; height: 36px !important;}
+.date-field-wrapper {
+    position: relative;
+  }
+  
+  .date-text-display {
+    width: 100%;
+    height: 40px;
+    padding-right: 30px; /* space for calendar icon */
+    font-size: 0.95rem;
+    border: none;
+    border-radius: 4px;
+    background: transparent;
+    color: #000;
+    cursor: default;
+  }
+  
+  .date-picker-icon {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    border-style: none;
+    width: 18px;
+    height: 35px;
+    //opacity: 0; /* hide native text */
+    cursor: pointer;
+    z-index: 2; /* keep it clickable */
+    background: transparent;
+  }

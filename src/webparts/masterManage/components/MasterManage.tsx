@@ -21,235 +21,245 @@ import HorizontalNavbar from '../../horizontalNavBar/components/HorizontalNavBar
 import { IMasterManageProps } from './IMasterManageProps';
 import { useEffect, useState } from 'react';
 import { Tenant_URL } from '../../../Shared/Constants';
+import { ManageSuper } from './ManageSuper';
 const endsWith = (str: string, ending: string) => {
   console.log("strrrr", str, ending)
   return str.slice(-ending.length) === ending;
 }
 let siteID: any;
 let response: any;
-let mycurrentpageurl:any
+let mycurrentpageurl: any
 export const MastersettingContext = ({ props }: any) => {
   const sp: SPFI = getSP();
   console.log(sp, 'sp');
   const [showIframe, setShowIframe] = useState(false);
+  const [ShowOEScomponent, SetShowOEScomponent] = useState(false);
   const [iframeUrl, setIframeUrl] = useState('');
-  const handleCardClick = (url: any) => {
-    setIframeUrl(url);
-    setShowIframe(true);
-    mycurrentpageurl= url;
+  const handleCardClick = (url: any, item: any) => {
+    debugger
+    if (item?.Title == "Organizational Excellence Specialist Group") {
+      SetShowOEScomponent(true);
+      setShowIframe(true);
+    } else {
+      setIframeUrl(url);
+      setShowIframe(true);
+      mycurrentpageurl = url;
+    }
+
 
     // hideElementsInIframe()
 
   };
 
   // this was old code working fine but there was issue after adding user in iframe it was rendering entire webpart
-  // useEffect(() => {
-  //   if (showIframe && iframeUrl) {
-  //     const iframe = document.querySelector('iframe');
-  //     if (iframe) {
-  //       const handleLoad = () => {
-  //         const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
-  //         const sideNavBox = iframeDocument.getElementById('sideNavBox');
-  //         const s4TitleRow = iframeDocument.getElementById('s4-titlerow');
-  //         const mainribbon = iframeDocument.getElementById('suiteBarDelta');
-
-  //         if (sideNavBox) {
-  //           // sideNavBox.style.display = 'none';
-  //           sideNavBox.remove()
-  //         }
-  //         if (mainribbon) {
-  //           // sideNavBox.style.display = 'none';
-  //           mainribbon.remove()
-  //         }
-  //         if (s4TitleRow) {
-  //           // s4TitleRow.style.display = 'none';
-  //           s4TitleRow.remove()
-  //         }
-  //       };
-
-  //       iframe.addEventListener('load', handleLoad);
-
-  //       // Cleanup the event listener
-  //       return () => {
-  //         iframe.removeEventListener('load', handleLoad);
-  //       };
-  //     }
-  //   }
-  // }, [showIframe, iframeUrl]);
-  
-  
   useEffect(() => {
     if (showIframe && iframeUrl) {
       const iframe = document.querySelector('iframe');
-  
       if (iframe) {
         const handleLoad = () => {
           const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
-  
-          // ✅ Remove side panels
           const sideNavBox = iframeDocument.getElementById('sideNavBox');
           const s4TitleRow = iframeDocument.getElementById('s4-titlerow');
           const mainribbon = iframeDocument.getElementById('suiteBarDelta');
-  
-          sideNavBox?.remove();
-          mainribbon?.remove();
-          s4TitleRow?.remove();
-  
-          // ✅ Start polling for inner dialog iframe
-          // const pollForDialogIframe = setInterval(() => {
-          //   try {
-          //     const dialogIframe = iframe.contentWindow.document.querySelector('iframe[style*="z-index"]') as HTMLIFrameElement;
-              
-          //     if (dialogIframe) {
-          //       console.log(dialogIframe.getElementsByClassName , "✅ Dialog iframe found");
-          //       console.log("✅ Dialog iframe found");
-            
-          //       const dialogDoc = dialogIframe.contentDocument || dialogIframe.contentWindow.document;
-          //       const shareButton = dialogDoc?.getElementById("ctl00_PlaceHolderMain_btnShare");
-  
-          //       if (shareButton) {
-          //         alert("Share button clicked in dialog iframe");
-          //         console.log("✅ Share button found!");
-  
-          //         shareButton.addEventListener('click', () => {
-          //           console.log("⏳ Share clicked! Reloading page in 3 sec...");
-          //           setTimeout(() => {
-          //             window.location.reload();
-          //           }, 3000);
-          //         });
-  
-          //         clearInterval(pollForDialogIframe);
-          //       }
-          //     }
-          //   } catch (err) {
-          //     console.warn("⚠️ Error accessing dialog iframe", err);
-          //   }
-          // }, 1000);
-  const monitorShareButton = () => {
-    const outerIframe = document.getElementById("iframe") as HTMLIFrameElement;
-  
-    if (!outerIframe) return;
-  
-    const tryAttachShareListener = () => {
-      try {
-        const outerDoc = outerIframe.contentDocument || outerIframe.contentWindow.document;
-  
-        const dlgFrameContainer = outerDoc.querySelector(".ms-dlgFrameContainer");
-  
-        if (!dlgFrameContainer) {
-          console.log("❌ Dialog not yet loaded.");
-          return;
-        }
-  
-        const innerIframe = dlgFrameContainer.querySelector("iframe") as HTMLIFrameElement;
-  
-        if (!innerIframe) {
-          console.log("❌ Inner iframe not found.");
-          return;
-        }
-  
-        innerIframe.onload = () => {
-          try {
-            const innerDoc = innerIframe.contentDocument || innerIframe.contentWindow.document;
-  
-            const shareButton = innerDoc.querySelector("input[type='button'][value='Share'], button[value='Share'], button[title*='Share']");
-  
-            if (!shareButton) {
-              console.log("❌ Share button not found.");
-              return;
-            }
-  
-            shareButton.addEventListener("click", () => {
-              console.log("✅ Share button clicked. Reloading page...");
-              // window.location.reload(); // or any callback
-              // setShowIframe(false);
-              setTimeout(() => {
-               setIframeUrl('about:blank');
-              },1500);
-               // or setIframeUrl('');
-                setTimeout(() => {
-                setIframeUrl(mycurrentpageurl);
-              }, 1500);
-  
-            });
-  
-            console.log("✅ Share button listener attached.");
-          } catch (err) {
-            console.error("❌ Error accessing inner iframe:", err);
+
+          if (sideNavBox) {
+            // sideNavBox.style.display = 'none';
+            sideNavBox.remove()
+          }
+          if (mainribbon) {
+            // sideNavBox.style.display = 'none';
+            mainribbon.remove()
+          }
+          if (s4TitleRow) {
+            // s4TitleRow.style.display = 'none';
+            s4TitleRow.remove()
           }
         };
-      } catch (err) {
-        console.error("❌ Error in outer iframe handling:", err);
-      }
-    };
-  
-    const observeDialogForShareClick = () => {
-    const checkAndBind = () => {
-      const dlgContainer = document.querySelector('.ms-dlgFrameContainer iframe') as HTMLIFrameElement;
-      if (dlgContainer && dlgContainer.contentWindow) {
-        try {
-          const shareIframeDoc = dlgContainer.contentDocument || dlgContainer.contentWindow.document;
-  
-          const tryFindButton = () => {
-            const buttons = shareIframeDoc.querySelectorAll('input[type="button"], button');
-            buttons.forEach((btn: any) => {
-              if (btn.value?.toLowerCase().includes("share") || btn.innerText?.toLowerCase().includes("share")) {
-                btn.addEventListener('click', () => {
-                  console.log("✅ Share button clicked!");
-                  setTimeout(() => {
-                    // location.reload();
-                     setIframeUrl('about:blank'); // or setIframeUrl('');
-              setTimeout(() => {
-                setIframeUrl(mycurrentpageurl);
-              }, 1500);
-                    // or window.location.reload()
-                  }, 2500); // Give SharePoint time to complete the operation
-                });
-              }
-            });
-          };
-  
-          // Wait a bit before checking the iframe contents to ensure it's fully loaded
-          setTimeout(tryFindButton, 1000);
-        } catch (err) {
-          console.warn("Can't access inner iframe due to cross-origin:", err);
-        }
-      } else {
-        console.log("⏳ Waiting for dialog iframe...");
-        setTimeout(checkAndBind, 500);
-      }
-    };
-  
-    checkAndBind();
-  };
-  
-  
-    // Retry checking every second for dialog popup
-    const intervalId = setInterval(() => {
-      const dlgFrame = outerIframe.contentDocument?.querySelector(".ms-dlgFrameContainer iframe");
-      if (dlgFrame) {
-        clearInterval(intervalId);
-        tryAttachShareListener();
-      }
-    }, 1000);
-  };
-  
-  // Call this after page is loaded and iframe is ready
-  monitorShareButton();
-  
-  
-        };
-  
+
         iframe.addEventListener('load', handleLoad);
-  
+
+        // Cleanup the event listener
         return () => {
           iframe.removeEventListener('load', handleLoad);
         };
       }
     }
   }, [showIframe, iframeUrl]);
+
+
+  // useEffect(() => {
+  //   if (showIframe && iframeUrl) {
+  //     const iframe = document.querySelector('iframe');
+
+  //     if (iframe) {
+  //       const handleLoad = () => {
+  //         const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+
+  //         // ✅ Remove side panels
+  //         const sideNavBox = iframeDocument.getElementById('sideNavBox');
+  //         const s4TitleRow = iframeDocument.getElementById('s4-titlerow');
+  //         const mainribbon = iframeDocument.getElementById('suiteBarDelta');
+
+  //         sideNavBox?.remove();
+  //         mainribbon?.remove();
+  //         s4TitleRow?.remove();
+
+  //         // ✅ Start polling for inner dialog iframe
+  //         // const pollForDialogIframe = setInterval(() => {
+  //         //   try {
+  //         //     const dialogIframe = iframe.contentWindow.document.querySelector('iframe[style*="z-index"]') as HTMLIFrameElement;
+
+  //         //     if (dialogIframe) {
+  //         //       console.log(dialogIframe.getElementsByClassName , "✅ Dialog iframe found");
+  //         //       console.log("✅ Dialog iframe found");
+
+  //         //       const dialogDoc = dialogIframe.contentDocument || dialogIframe.contentWindow.document;
+  //         //       const shareButton = dialogDoc?.getElementById("ctl00_PlaceHolderMain_btnShare");
+
+  //         //       if (shareButton) {
+  //         //         alert("Share button clicked in dialog iframe");
+  //         //         console.log("✅ Share button found!");
+
+  //         //         shareButton.addEventListener('click', () => {
+  //         //           console.log("⏳ Share clicked! Reloading page in 3 sec...");
+  //         //           setTimeout(() => {
+  //         //             window.location.reload();
+  //         //           }, 3000);
+  //         //         });
+
+  //         //         clearInterval(pollForDialogIframe);
+  //         //       }
+  //         //     }
+  //         //   } catch (err) {
+  //         //     console.warn("⚠️ Error accessing dialog iframe", err);
+  //         //   }
+  //         // }, 1000);
+  // const monitorShareButton = () => {
+  //   const outerIframe = document.getElementById("iframe") as HTMLIFrameElement;
+
+  //   if (!outerIframe) return;
+
+  //   const tryAttachShareListener = () => {
+  //     try {
+  //       const outerDoc = outerIframe.contentDocument || outerIframe.contentWindow.document;
+
+  //       const dlgFrameContainer = outerDoc.querySelector(".ms-dlgFrameContainer");
+
+  //       if (!dlgFrameContainer) {
+  //         console.log("❌ Dialog not yet loaded.");
+  //         return;
+  //       }
+
+  //       const innerIframe = dlgFrameContainer.querySelector("iframe") as HTMLIFrameElement;
+
+  //       if (!innerIframe) {
+  //         console.log("❌ Inner iframe not found.");
+  //         return;
+  //       }
+
+  //       innerIframe.onload = () => {
+  //         try {
+  //           const innerDoc = innerIframe.contentDocument || innerIframe.contentWindow.document;
+
+  //           const shareButton = innerDoc.querySelector("input[type='button'][value='Share'], button[value='Share'], button[title*='Share']");
+
+  //           if (!shareButton) {
+  //             console.log("❌ Share button not found.");
+  //             return;
+  //           }
+
+  //           shareButton.addEventListener("click", () => {
+  //             console.log("✅ Share button clicked. Reloading page...");
+  //             // window.location.reload(); // or any callback
+  //             // setShowIframe(false);
+  //             setTimeout(() => {
+  //              setIframeUrl('about:blank');
+  //             },1500);
+  //              // or setIframeUrl('');
+  //               setTimeout(() => {
+  //               setIframeUrl(mycurrentpageurl);
+  //             }, 1500);
+
+  //           });
+
+  //           console.log("✅ Share button listener attached.");
+  //         } catch (err) {
+  //           console.error("❌ Error accessing inner iframe:", err);
+  //         }
+  //       };
+  //     } catch (err) {
+  //       console.error("❌ Error in outer iframe handling:", err);
+  //     }
+  //   };
+
+  //   const observeDialogForShareClick = () => {
+  //   const checkAndBind = () => {
+  //     const dlgContainer = document.querySelector('.ms-dlgFrameContainer iframe') as HTMLIFrameElement;
+  //     if (dlgContainer && dlgContainer.contentWindow) {
+  //       try {
+  //         const shareIframeDoc = dlgContainer.contentDocument || dlgContainer.contentWindow.document;
+
+  //         const tryFindButton = () => {
+  //           const buttons = shareIframeDoc.querySelectorAll('input[type="button"], button');
+  //           buttons.forEach((btn: any) => {
+  //             if (btn.value?.toLowerCase().includes("share") || btn.innerText?.toLowerCase().includes("share")) {
+  //               btn.addEventListener('click', () => {
+  //                 console.log("✅ Share button clicked!");
+  //                 setTimeout(() => {
+  //                   // location.reload();
+  //                    setIframeUrl('about:blank'); // or setIframeUrl('');
+  //             setTimeout(() => {
+  //               setIframeUrl(mycurrentpageurl);
+  //             }, 1500);
+  //                   // or window.location.reload()
+  //                 }, 2500); // Give SharePoint time to complete the operation
+  //               });
+  //             }
+  //           });
+  //         };
+
+  //         // Wait a bit before checking the iframe contents to ensure it's fully loaded
+  //         setTimeout(tryFindButton, 1000);
+  //       } catch (err) {
+  //         console.warn("Can't access inner iframe due to cross-origin:", err);
+  //       }
+  //     } else {
+  //       console.log("⏳ Waiting for dialog iframe...");
+  //       setTimeout(checkAndBind, 500);
+  //     }
+  //   };
+
+  //   checkAndBind();
+  // };
+
+
+  //   // Retry checking every second for dialog popup
+  //   const intervalId = setInterval(() => {
+  //     const dlgFrame = outerIframe.contentDocument?.querySelector(".ms-dlgFrameContainer iframe");
+  //     if (dlgFrame) {
+  //       clearInterval(intervalId);
+  //       tryAttachShareListener();
+  //     }
+  //   }, 1000);
+  // };
+
+  // // Call this after page is loaded and iframe is ready
+  // monitorShareButton();
+
+
+  //       };
+
+  //       iframe.addEventListener('load', handleLoad);
+
+  //       return () => {
+  //         iframe.removeEventListener('load', handleLoad);
+  //       };
+  //     }
+  //   }
+  // }, [showIframe, iframeUrl]);
   const handleBackClick = () => {
     setShowIframe(false);
+    setIframeUrl('');
   };
   function hideElementsInIframe() {
 
@@ -276,7 +286,7 @@ export const MastersettingContext = ({ props }: any) => {
     });
   }
   const isSpecialGroup = (linkUrl: any) => {
-    const specialGroups = ['Super Admin Group', 'Content Contributor Group', 'Intranet Member Group' , 'Strategy and Sustainable Growth Group' , 'Organizational Excellence Specialist Group'];
+    const specialGroups = ['Super Admin Group', 'Content Contributor Group', 'Intranet Member Group', 'Strategy and Sustainable Growth Group', 'Organizational Excellence Specialist Group'];
     // const specialGroups = ['Super Admin Group', 'Content Contributor Group', 'Intranet Member Group'];
     return specialGroups.some(group => linkUrl.includes(group));
   };
@@ -499,16 +509,16 @@ export const MastersettingContext = ({ props }: any) => {
                         //? `${imageData.serverUrl}${imageData.serverRelativeUrl}`
                         ? img
                         : require("../assets/news.png");
-                      console.log("imageurl", imageData && imageData.serverRelativeUrl,imageUrl)
+                      console.log("imageurl", imageData && imageData.serverRelativeUrl, imageUrl)
                       return (
                         <div className="col-sm-3 col-md-3 mt-2" key={item.Title}>
                           {isSpecialGroup(item?.Title) ? (
                             <div
                               className="card-master box1"
-                              onClick={() => handleCardClick(item?.LinkUrl)}
+                              onClick={() => handleCardClick(item?.LinkUrl, item)}
                             >
                               <div className="icon">
-                                {console.log(imageUrl, "final image", item.Title, "new url",`${SiteUrl}/SiteAssets/Lists/${listID}/${imageData.fileName}`)}
+                                {console.log(imageUrl, "final image", item.Title, "new url", `${SiteUrl}/SiteAssets/Lists/${listID}/${imageData.fileName}`)}
                                 <img src={imageUrl} alt="Icon" />
                               </div>
                               <p className="text-dark">{item.Title}</p>
@@ -517,7 +527,7 @@ export const MastersettingContext = ({ props }: any) => {
                             <a href={item?.LinkUrl}>
                               <div className="card-master box1">
                                 <div className="icon">
-                                    <img src={imageUrl} alt="Icon" />
+                                  <img src={imageUrl} alt="Icon" />
                                 </div>
                                 <p className="text-dark">{item.Title}</p>
                               </div>
@@ -531,19 +541,21 @@ export const MastersettingContext = ({ props }: any) => {
                   )
                 ) : (
                   <div>
-                    <button
-                      style={{ margin: '10px' }}
-                      className="btn btn-secondary"
-                      onClick={handleBackClick}
-                    >
-                      Back
-                    </button>
-                    <iframe
-                      id='iframe'
-                      src={iframeUrl}
-                      style={{ width: '100%', height: '600px', border: 'none' }}
-                      title="Content"
-                    ></iframe>
+                    {ShowOEScomponent && <ManageSuper _context={sp} onButtonClick={handleBackClick}/>}
+                    {iframeUrl !== "" &&
+                    <><button
+                          style={{ margin: '10px' }}
+                          className="btn btn-secondary"
+                          onClick={handleBackClick}
+                        >
+                          Back
+                        </button><iframe
+                          id='iframe'
+                          src={iframeUrl}
+                          style={{ width: '100%', height: '600px', border: 'none' }}
+                          title="Content"
+                        ></iframe></>
+                    }
                   </div>
                 )}
                 <div id="iframeContainer" style={{ marginTop: '20px' }}></div>

@@ -37,43 +37,44 @@ const DynamicBannercontext = ({ props }: any) => {
   const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
 
 
-  
-  
-      const [isIntranetAdmin,setIsIntranetAdmin]=React.useState(false);
-      let superA=false;
-      let IntranetSuperAdmin:any[];
-      const currentUserEmailRef = React.useRef('');
-        React.useEffect(() => {
-        getcurrentuseremail();
-      }, []);
-      const getcurrentuseremail = async()=>{
-          const userdata = await sp.web.currentUser();
-          currentUserEmailRef.current = userdata.Email;
-          getDetailsOfIntranetAdmin();
-    
-        }
-       const getDetailsOfIntranetAdmin=async()=>{
-          try {
-              const usersFromDMSIntranetAdmin = await sp.web.siteGroups.getByName('IntranetAdmin').users();
-              IntranetSuperAdmin=usersFromDMSIntranetAdmin;
-              usersFromDMSIntranetAdmin.forEach((user)=>{
-                  if(user.Email === currentUserEmailRef.current){
-                    superA=true;
-                    setIsIntranetAdmin(true);
-                    // alert(`current user is intranet super admin ${currentUserEmailRef.current , user.Email }`)
-                    // setToggleManagePermission('Yes');
-                  }
-              })
-              console.log("usersFromIntranetAdmin",usersFromDMSIntranetAdmin);
-          } catch (error) {
-            console.log("error in getting the details of super admin",error);
-          }
-        }
 
-    
-    
+  const [Loading, setLoading] = React.useState(false);
+  const [isIntranetAdmin, setIsIntranetAdmin] = React.useState(false);
+  let superA = false;
+  let IntranetSuperAdmin: any[];
+  const currentUserEmailRef = React.useRef('');
+  React.useEffect(() => {
+    getcurrentuseremail();
+  }, []);
+  const getcurrentuseremail = async () => {
+    const userdata = await sp.web.currentUser();
+    currentUserEmailRef.current = userdata.Email;
+    getDetailsOfIntranetAdmin();
+
+  }
+  const getDetailsOfIntranetAdmin = async () => {
+    try {
+      const usersFromDMSIntranetAdmin = await sp.web.siteGroups.getByName('IntranetAdmin').users();
+      IntranetSuperAdmin = usersFromDMSIntranetAdmin;
+      usersFromDMSIntranetAdmin.forEach((user) => {
+        if (user.Email === currentUserEmailRef.current) {
+          superA = true;
+          setIsIntranetAdmin(true);
+          // alert(`current user is intranet super admin ${currentUserEmailRef.current , user.Email }`)
+          // setToggleManagePermission('Yes');
+        }
+      })
+      console.log("usersFromIntranetAdmin", usersFromDMSIntranetAdmin);
+    } catch (error) {
+      console.log("error in getting the details of super admin", error);
+    }
+  }
+
+
+
   const ApiCall = async () => {
     let bannersArr: any[] = [];
+    setLoading(true);
     const userGroups = await sp.web.currentUser.groups();
     let groupTitles: string[] = userGroups.map((group) => group.Title.toLowerCase());
 
@@ -85,7 +86,7 @@ const DynamicBannercontext = ({ props }: any) => {
     // }
     bannersArr = await getDynamicBanner(sp, "Yes");
     setBannersData(bannersArr);
-
+    setLoading(false);
   };
   const [filters, setFilters] = React.useState({
     SNo: '',
@@ -94,7 +95,7 @@ const DynamicBannercontext = ({ props }: any) => {
     URL: '',
     Status: '',
     SubmittedDate: '',
-    Department:''
+    Department: ''
   });
   const [sortConfig, setSortConfig] = React.useState({ key: '', direction: 'ascending' });
 
@@ -184,12 +185,21 @@ const DynamicBannercontext = ({ props }: any) => {
     debugger
     // Filter data
     const filteredData = data.filter((item, index) => {
+      const isDateMatch = (itemDate: string | null, filterDate: string) => {
+        if (!itemDate) return false;
+        // const formattedDate = formatDateToDDMMYYYY(itemDate);
+        const formattedDate = moment(itemDate).format("DD/MMM/YYYY");
+        return formattedDate.toLowerCase().includes(filterDate.toLowerCase());
+      };
       return (
         (filters.SNo === '' || String(index + 1).includes(filters.SNo)) &&
         (filters.Title === '' || item.Title.toLowerCase().includes(filters.Title.toLowerCase())) &&
         (filters.URL === '' || item.URL.toLowerCase().includes(filters.URL.toLowerCase())) &&
         (filters?.Status === '' || item?.Status?.toLowerCase().includes(filters?.Status?.toLowerCase())) &&
-        (filters.SubmittedDate === '' || item.Created.toLowerCase().includes(filters.SubmittedDate.toLowerCase()))&&
+        // (filters.SubmittedDate === '' || item.Created.toLowerCase().includes(filters.SubmittedDate.toLowerCase()))&&
+        (filters.SubmittedDate === "" ||
+          isDateMatch(item.Created, filters.SubmittedDate)) &&
+        //(filters.SubmittedDate === '' || moment(item.Created).format("DD/MMM/YYYY").toLowerCase().includes(filters.SubmittedDate.toLowerCase()))&&
         (filters.Department === '' || item.Department.toLowerCase().includes(filters.Department.toLowerCase()))
       );
     });
@@ -200,6 +210,17 @@ const DynamicBannercontext = ({ props }: any) => {
         const bIndex = data.indexOf(b);
 
         return sortConfig.direction === 'ascending' ? aIndex - bIndex : bIndex - aIndex;
+      } else if (sortConfig.key == "SubmittedDate") {
+        // Sort by other keys
+        const aValue = a["Created"] ? a["Created"].toLowerCase() : '';
+        const bValue = b["Created"] ? b["Created"].toLowerCase() : '';
+
+        if (aValue < bValue) {
+          return sortConfig.direction === 'ascending' ? -1 : 1;
+        }
+        if (aValue > bValue) {
+          return sortConfig.direction === 'ascending' ? 1 : -1;
+        }
       } else if (sortConfig.key) {
         // Sort by other keys
         const aValue = a[sortConfig.key] ? a[sortConfig.key].toLowerCase() : '';
@@ -271,7 +292,7 @@ const DynamicBannercontext = ({ props }: any) => {
 
 
   //#region 
-  const EditBanner = (id: any , superadminedit:any) => {
+  const EditBanner = (id: any, superadminedit: any) => {
     debugger
     // setUseId(id)
     const encryptedId = encryptId(String(id));
@@ -418,21 +439,21 @@ const DynamicBannercontext = ({ props }: any) => {
                               </div>
                             </div>
                           </th>
-                           <th style={{ minWidth: '60px', maxWidth: '60px' }}>
-                                                      <div className="d-flex flex-column bd-highlight ">
-                                                        <div className="d-flex pb-2" style={{ justifyContent: 'space-evenly' }}>
-                                                          <span >Department</span>  <span onClick={() => handleSortChange('Department')}><FontAwesomeIcon icon={faSort} /> </span></div>
-                                                        <div className=" bd-highlight">
-                                                          <input type="text" placeholder="Filter by Department" onChange={(e) => handleFilterChange(e, 'Department')}
-                                                            onKeyDown={(e) => {
-                                                              if (e.key === 'Enter' && !e.shiftKey) {
-                                                                e.preventDefault(); // Prevents the new line in textarea
-                                                              }
-                                                            }}
-                                                            className='inputcss' style={{ width: '100%' }} />
-                                                        </div>
-                                                      </div>
-                                                    </th>
+                          <th style={{ minWidth: '60px', maxWidth: '60px' }}>
+                            <div className="d-flex flex-column bd-highlight ">
+                              <div className="d-flex pb-2" style={{ justifyContent: 'space-evenly' }}>
+                                <span >Department</span>  <span onClick={() => handleSortChange('Department')}><FontAwesomeIcon icon={faSort} /> </span></div>
+                              <div className=" bd-highlight">
+                                <input type="text" placeholder="Filter by Department" onChange={(e) => handleFilterChange(e, 'Department')}
+                                  onKeyDown={(e) => {
+                                    if (e.key === 'Enter' && !e.shiftKey) {
+                                      e.preventDefault(); // Prevents the new line in textarea
+                                    }
+                                  }}
+                                  className='inputcss' style={{ width: '100%' }} />
+                              </div>
+                            </div>
+                          </th>
                           <th style={{ minWidth: '60px', maxWidth: '60px' }}>
                             <div className="d-flex flex-column bd-highlight ">
                               <div className="d-flex pb-2" style={{ justifyContent: 'space-evenly' }}>
@@ -466,7 +487,7 @@ const DynamicBannercontext = ({ props }: any) => {
                           <th style={{ borderBottomRightRadius: '0px', minWidth: '50px', maxWidth: '50px', borderTopRightRadius: '0px' }}>
                             <div className="d-flex flex-column bd-highlight pb-2">
                               <div className="d-flex  pb-2" style={{ justifyContent: 'space-evenly' }}>  <span >Action</span> <div className="dropdown">
-                                <FontAwesomeIcon style={{top:'3px'}} icon={faEllipsisV} onClick={toggleDropdownNews} size='xl' />
+                                <FontAwesomeIcon style={{ top: '3px' }} icon={faEllipsisV} onClick={toggleDropdownNews} size='xl' />
                               </div>
                               </div>
                               {/* <div className=" bd-highlight">   <div id="myDropdown" className={`dropdown-content ${isOpenNews ? 'showNews' : ''}`}>
@@ -480,56 +501,79 @@ const DynamicBannercontext = ({ props }: any) => {
                           </th>
                         </tr>
                       </thead>
-                      <tbody style={{ maxHeight: '5000px' }}>
-                        {currentData.length === 0 ?
-                          (
-                            <div className="no-results" style={{ display: 'flex', justifyContent: 'center' }}>No results found</div>
-                          )
-                          :
-                          currentData.map((item, index) => {
-                            const ImageUrl = item.BannerImage == undefined || item.BannerImage == null ? "" : JSON.parse(item.BannerImage);
-                            return (
-                              <tr key={index}>
-                                <td style={{ minWidth: '30px', maxWidth: '30px' }}><div style={{ marginLeft: '20px' }} className='indexdesign'> {index + 1}</div>  </td>
-                                <td style={{ minWidth: '130px', maxWidth: '130px' }} title={item.Title}>{item.Title}</td>
+                      <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                        
+                          <tbody style={{ maxHeight: '400px' }}>
+                            {(Loading && currentData?.length == 0
+                            ) && (
+                                <div style={{ minHeight: '100vh', marginTop: '100px' }} className="loadernewadd mt-10">
+                                  <div>
+                                    <img
+                                      src={require("../../../CustomAsset/edc-gif.gif")}
+                                      className="alignrightl"
+                                      alt="Loading..."
+                                    />
+                                  </div>
+                                  <span>Loading </span>{" "}
+                                  <span>
+                                    <img
+                                      src={require("../../../CustomAsset/edcnew.gif")}
+                                      className="alignrightl"
+                                      alt="Loading..."
+                                    />
+                                  </span>
+                                </div>)}
+                            {!Loading && currentData.length === 0 ?
+                              (
+                                <div className="no-results" style={{ display: 'flex', justifyContent: 'center' }}>No results found</div>
+                              )
+                              :
+                              currentData.map((item, index) => {
+                                const ImageUrl = item.BannerImage == undefined || item.BannerImage == null ? "" : JSON.parse(item.BannerImage);
+                                return (
+                                  <tr key={index}>
+                                    <td style={{ minWidth: '30px', maxWidth: '30px' }}><div style={{ marginLeft: '20px' }} className='indexdesign'> {index + 1}</div>  </td>
+                                    <td style={{ minWidth: '130px', maxWidth: '130px' }} title={item.Title}>{item.Title}</td>
 
-                                
-                                <td style={{ minWidth: '60px', maxWidth: '60px', textAlign:'center' }}>  <div style={{width:'130px'}} className='btn btn-status' title= {item.Entity?.Entity}> {item.Entity?.Entity} </div> </td>
-                                <td style={{ minWidth: '60px', maxWidth: '60px', textAlign:'center' }}> <div className='btn btn-light'>{moment(item.Created).format("DD-MMM-YYYY")} </div> </td>
-<td style={{ minWidth: '60px', maxWidth: '60px', textAlign:'center' }}>  <div className='btn btn-status'> {item.Status} </div> </td>
-                                <td style={{ minWidth: '50px', maxWidth: '50px' }} className="ng-binding">
-                                {
-                                      isIntranetAdmin ? (
-                                        <div className="d-flex  pb-0" style={{ justifyContent: 'center', gap: '5px' }}>
-                                        <span > <a className="action-icon text-primary" onClick={() => EditBanner(item.ID , 'True')}>
-                                          <img src={require('../../../CustomAsset/edit.png')} />
-                                        </a> 
-                                        </span >
-                                        <span>   <a className="action-icon text-danger" onClick={() => DeleteBanner(item.ID)}>
-                                          <img src={require('../../../CustomAsset/del.png')} />
-                                        </a> </span>
-                                      </div>
-                                       ) : (
-                                        <div className="d-flex  pb-0" style={{ justifyContent: 'center', gap: '5px' }}>
-                                        <span > <a className="action-icon text-primary"
-                                        //  onClick={() => EditBanner(item.ID)}
-                                         onClick={() => ViewFormReadOnly(item.ID )}
-                                         >
-                                          <img src={require('../../../CustomAsset/edit.png')} />
-                                        </a> </span >
-                                        {/* <span>   <a className="action-icon text-danger" onClick={() => DeleteBanner(item.ID)}>
+
+                                    <td style={{ minWidth: '60px', maxWidth: '60px', textAlign: 'center' }}>  <div style={{ width: '130px' }} className='btn btn-status' title={item.Entity?.Entity}> {item.Entity?.Entity} </div> </td>
+                                    <td style={{ minWidth: '60px', maxWidth: '60px', textAlign: 'center' }} title={moment(item.Created).format("DD/MMM/YYYY")}> <div className='btn btn-light'>{moment(item.Created).format("DD/MMM/YYYY")} </div> </td>
+                                    <td style={{ minWidth: '60px', maxWidth: '60px', textAlign: 'center' }}>  <div className='btn btn-status'> {item.Status} </div> </td>
+                                    <td style={{ minWidth: '50px', maxWidth: '50px' }} className="ng-binding">
+                                      {
+                                        isIntranetAdmin ? (
+                                          <div className="d-flex  pb-0" style={{ justifyContent: 'center', gap: '5px' }}>
+                                            <span > <a className="action-icon text-primary" onClick={() => EditBanner(item.ID, 'True')}>
+                                              <img src={require('../../../CustomAsset/edit.png')} />
+                                            </a>
+                                            </span >
+                                            <span>   <a className="action-icon text-danger" onClick={() => DeleteBanner(item.ID)}>
+                                              <img src={require('../../../CustomAsset/del.png')} />
+                                            </a> </span>
+                                          </div>
+                                        ) : (
+                                          <div className="d-flex  pb-0" style={{ justifyContent: 'center', gap: '5px' }}>
+                                            <span > <a className="action-icon text-primary"
+                                              //  onClick={() => EditBanner(item.ID)}
+                                              onClick={() => ViewFormReadOnly(item.ID)}
+                                            >
+                                              <img src={require('../../../CustomAsset/edit.png')} />
+                                            </a> </span >
+                                            {/* <span>   <a className="action-icon text-danger" onClick={() => DeleteBanner(item.ID)}>
                                           <img src={require('../../../CustomAsset/del.png')} />
                                         </a>
                                          </span> */}
-                                      </div>
-                                      ) }
-                               
-                                </td>
-                              </tr>
-                            )
-                          })
-                        }
-                      </tbody>
+                                          </div>
+                                        )}
+
+                                    </td>
+                                  </tr>
+                                )
+                              })
+                            }
+                          </tbody>
+                       
+                      </div>
                     </table>
 
 

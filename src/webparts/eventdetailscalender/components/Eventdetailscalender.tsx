@@ -38,7 +38,7 @@ interface Reply {
   AuthorId: number;
   UserName: string;
   UserEmail: string;
-  SPSPicturePlaceholderState:string;
+  SPSPicturePlaceholderState: string;
   Comments: string;
   Created: string;
   UserProfile: string;
@@ -76,7 +76,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [ArrDetails, setArrDetails]: any[] = useState([]);
   const [CurrentUserProfile, setCurrentUserProfile]: any[] = useState("");
-  const [SPSPicturePlaceholderState, setSPSPicturePlaceholderState]= useState(null);
+  const [SPSPicturePlaceholderState, setSPSPicturePlaceholderState] = useState(null);
   const [copySuccess, setCopySuccess] = useState('');
   const [EventId, setId] = useState(0)
   const { useHide }: any = React.useContext(UserContext);
@@ -203,7 +203,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
                   "ID": result1[j].Id,
                   "AuthorId": result1[j].AuthorId,
                   "AuthorEmail": result1[j]?.Author?.EMail,
-                  "SPSPicturePlaceholderState":result1[j].Author.SPSPicturePlaceholderState,
+                  "SPSPicturePlaceholderState": result1[j].Author.SPSPicturePlaceholderState,
                   "UserName": result1[j].UserName,
                   "Like": result1[j].Like,
                   "Created": result1[j].Created
@@ -216,7 +216,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
                 UserName: initialComments[i].UserName,
                 AuthorId: initialComments[i].AuthorId,
                 AuthorEmail: initialComments[i]?.Author?.EMail,
-                SPSPicturePlaceholderState : initialComments[i].Author.SPSPicturePlaceholderState,
+                SPSPicturePlaceholderState: initialComments[i].Author.SPSPicturePlaceholderState,
                 Comments: initialComments[i].Comments,
                 Created: initialComments[i].Created, // Formatting the created date
                 UserLikesJSON: result1.length > 0 ? likeArray : []
@@ -278,7 +278,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
     setCurrentUser(await getCurrentUser(sp, siteUrl));
     setCurrentUserProfile(await getCurrentUserProfile(sp, siteUrl));
     const profileemail = await getCurrentUserProfileEmail(sp);
-    setSPSPicturePlaceholderState( await getuserprofilepic(sp,profileemail));
+    setSPSPicturePlaceholderState(await getuserprofilepic(sp, profileemail));
     // var user = await getCurrentUser(sp, siteUrl);
     // var profile = await sp.profiles.getPropertiesFor(`i:0#.f|membership|${user.Email}`);
 
@@ -302,10 +302,10 @@ const EventdetailscalenderContext = ({ props }: any) => {
 
   // Add a new comment
   const handleAddComment = async () => {
-    if (newComment.trim() === ""){
+    if (newComment.trim() === "") {
       Swal.fire('Please enter a comment before submitting.');
       return;
-    } 
+    }
     setLoading(true);
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
@@ -333,7 +333,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
           userHasLiked: false, // Initialize as false
           UserProfile: ress.data.UserProfile,
         };
-        setComments((prevComments) => [newCommentData1,...prevComments]);
+        setComments((prevComments) => [newCommentData1, ...prevComments]);
         let notifiedArr = {
           ContentId: ArrDetails[0].Id,
           NotifiedUserId: ArrDetails[0].AuthorId,
@@ -472,14 +472,14 @@ const EventdetailscalenderContext = ({ props }: any) => {
         })
         .then(async (ress: any) => {
           console.log(ress, "ressress");
-  
-         var SPSPicturePlaceholderState =await getuserprofilepic(sp,CurrentUser.Email);
+
+          var SPSPicturePlaceholderState = await getuserprofilepic(sp, CurrentUser.Email);
           const newReplyJson = {
             Id: ress.data.Id,
             AuthorId: ress.data.AuthorId,
             UserName: ress.data.UserName, // Replace with actual username
-            UserEmail :CurrentUser.Email,
-            SPSPicturePlaceholderState : SPSPicturePlaceholderState,
+            UserEmail: CurrentUser.Email,
+            SPSPicturePlaceholderState: SPSPicturePlaceholderState,
             Comments: ress.data.Comments,
             Created: ress.data.Created,
             UserProfile: CurrentUserProfile,
@@ -546,8 +546,8 @@ const EventdetailscalenderContext = ({ props }: any) => {
     //const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     const subject = "Thought You’d Find This Interesting!";
     const body = 'Hi,' +
-        'I came across something that might interest you: ' +
-        `<a href="${siteUrl}/SitePages/EventDetailsCalendar.aspx?${item.Id}"></a>`
+      'I came across something that might interest you: ' +
+      `<a href="${siteUrl}/SitePages/EventDetailsCalendar.aspx?${item.Id}"></a>`
     const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${subject}&body=${body}`;
 
     window.open(office365MailLink, '_blank');
@@ -687,10 +687,10 @@ const EventdetailscalenderContext = ({ props }: any) => {
                           </div>
                         </div>
                         <div className="row mt-4">
-                          <p className="d-block mt-2 mb-0 font-28">
+                          <p title={item.EventName} className="d-block mt-2 mb-0 font-28">
                             {item.EventName}
                           </p>
-                         
+
 
                           <div className="row mt-2">
 
@@ -698,11 +698,11 @@ const EventdetailscalenderContext = ({ props }: any) => {
                               <p className="mb-2 mt-1 text-dark d-flex eventtextnew">
                                 <span className="pe-2 text-nowrap mb-0 d-inline-block" >
                                   <span style={{ paddingTop: '0px' }}>
-                                    <Calendar size={18} /> </span> <span>Event: {moment(item.EventDate).format("DD-MMM-YYYY")} </span>  &nbsp;  &nbsp;  &nbsp;|
+                                    <Calendar size={18} /> </span> <span>Event: {moment(item.EventDate).format("DD/MMM/YYYY")} </span>  &nbsp;  &nbsp;  &nbsp;|
                                 </span>
                                 <span className="pe-2 text-nowrap mb-0 d-inline-block" >
                                   <span style={{ paddingTop: '0px' }}>
-                                    <Calendar size={18} /> </span> <span>Registration: {moment(item.RegistrationDueDate).format("DD-MMM-YYYY")} </span>  &nbsp;  &nbsp;  &nbsp;|
+                                    <Calendar size={18} /> </span> <span>Registration: {moment(item.RegistrationDueDate).format("DD/MMM/YYYY")} </span>  &nbsp;  &nbsp;  &nbsp;|
                                 </span>
                                 <span className="text-nowrap hovertext mb-0 d-inline-block" onClick={() => sendanEmail(item)} >
                                   <Share size={18} />  Share by email &nbsp;  &nbsp;  &nbsp;|&nbsp;  &nbsp;  &nbsp;
@@ -736,23 +736,23 @@ const EventdetailscalenderContext = ({ props }: any) => {
                                               {/* <img src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item1.EMail}`} className="attendeesImg" />  */}
 
                                               {Number(item1.SPSPicturePlaceholderState) == 0 ?
-                                                          <img
-                                                            src={
+                                                <img
+                                                  src={
 
-                                                              `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item1.EMail}`
+                                                    `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item1.EMail}`
 
-                                                            }
-                                                            className="attendeesImg"
-                                                            alt={item1.Title}
-                                                          />
-                                                          :
-                                                          item1.EMail !== null &&
-                                                          <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle floatr avatar-xl martop0">
-                                                            {`${item1.EMail?.split('.')[0].charAt(0)}${item1.EMail?.split('.')[1].charAt(0)}`.toUpperCase()}
-                                                          </Avatar>
-                                                        }
-                                              
-                                              </span> :
+                                                  }
+                                                  className="attendeesImg"
+                                                  alt={item1.Title}
+                                                />
+                                                :
+                                                item1.EMail !== null &&
+                                                <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle floatr avatar-xl martop0">
+                                                  {`${item1.EMail?.split('.')[0].charAt(0)}${item1.EMail?.split('.')[1].charAt(0)}`.toUpperCase()}
+                                                </Avatar>
+                                              }
+
+                                            </span> :
                                               <span> <AvtarComponents Name={item1.Title} /> </span>
                                             }
                                           </>
@@ -784,22 +784,22 @@ const EventdetailscalenderContext = ({ props }: any) => {
                                                 <p>
                                                   {/* <img style={{ borderRadius: '50%', height: '50px', width: '50px' }} src={`${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item1.EMail}`} /> */}
                                                   {item1.SPSPicturePlaceholderState == 0 ?
-                                                          <img
-                                                          style={{ borderRadius: '50%', height: '50px', width: '50px' }}
-                                                            src={
+                                                    <img
+                                                      style={{ borderRadius: '50%', height: '50px', width: '50px' }}
+                                                      src={
 
-                                                              `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item1.EMail}`
+                                                        `${siteUrl}/_layouts/15/userphoto.aspx?size=M&accountname=${item1.EMail}`
 
-                                                            }
-                                                            
-                                                            alt={item1.Title}
-                                                          />
-                                                          :
-                                                          item1.EMail !== null &&
-                                                          <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle avatar-xl">
-                                                            {`${item1.EMail?.split('.')[0].charAt(0)}${item1.EMail?.split('.')[1].charAt(0)}`.toUpperCase()}
-                                                          </Avatar>
-                                                        }
+                                                      }
+
+                                                      alt={item1.Title}
+                                                    />
+                                                    :
+                                                    item1.EMail !== null &&
+                                                    <Avatar sx={{ bgcolor: 'primary.main' }} className="rounded-circle avatar-xl">
+                                                      {`${item1.EMail?.split('.')[0].charAt(0)}${item1.EMail?.split('.')[1].charAt(0)}`.toUpperCase()}
+                                                    </Avatar>
+                                                  }
                                                   <span>{item1.Title}</span>
                                                 </p>
                                               </ul>
@@ -812,7 +812,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
                                   </Modal>
                                   {item?.Attendees?.length > 0 && item?.AttendeesId.indexOf(CurrentUser.Id) == 0 && (<span className="font-14" style={{ paddingTop: '3px', paddingLeft: '3px' }}>Registered</span>)}
                                 </span>
-                                <span style={{float:'left', marginTop:'30px'}} className="font-14  mb-0">&nbsp;&nbsp;|&nbsp;&nbsp; <span className="text-primary"> {item.Entity.Entity} </span> </span>
+                                <span style={{ float: 'left', marginTop: '30px' }} className="font-14  mb-0">&nbsp;&nbsp;|&nbsp;&nbsp; <span className="text-primary"> {item.Entity.Entity} </span> </span>
 
 
                               </p>
@@ -821,16 +821,17 @@ const EventdetailscalenderContext = ({ props }: any) => {
                         </div>
                         <div className="row" >
                           <p
+                            title={item?.Overview}
                             style={{ lineHeight: "22px" }}
                             className="d-block text-dark mt-2 font-16"
                           >
-                            {item.Overview}
+                            {item?.Overview}
                           </p>
                         </div>
                         <div className="row internalmedia filterable-content mt-3">
                           {EventGalleryJson.length > 0 ? (
                             EventGalleryJson.map((res: any) => {
-                              {console.log("resresres",res)}
+                              { console.log("resresres", res) }
                               return (
                                 <div className="col-sm-6 col-xl-4 filter-item all web illustrator">
                                   <div
@@ -844,7 +845,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
                                       title="Screenshot-1"
                                     >
                                       {res.fileType.startsWith('video/') ?
-                                        <video muted={true} id='Backendvideo' ref={getvideo} style={{ width: "100%", height: "100%",cursor:'auto' }} className="imgcssscustom" controls={true}>
+                                        <video muted={true} id='Backendvideo' ref={getvideo} style={{ width: "100%", height: "100%", cursor: 'auto' }} className="imgcssscustom" controls={true}>
                                           <source src={(videositeurl + res.fileUrl) + "#t=5"} type="video/mp4"></source>
                                         </video> :
                                         <img
@@ -852,7 +853,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
                                           className="img-fluid imgcssscustom"
                                           alt="work-thumbnail"
                                           data-themekey="#"
-                                          style={{ width: "100%", height: "100%",cursor:'auto' }}
+                                          style={{ width: "100%", height: "100%", cursor: 'auto' }}
                                         />
                                       }
                                     </a>
@@ -893,7 +894,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
                               onClick={handleAddComment}
                               disabled={loading} // Disable button when loading
                             >
-                              <FontAwesomeIcon style={{float:'left',margin:"7px 0px 0px 6px"}} icon={faPaperPlane} /> 
+                              <FontAwesomeIcon style={{ float: 'left', margin: "7px 0px 0px 6px" }} icon={faPaperPlane} />
                               {loading ? "Submitting..." : "Post"}{" "}
                               {/* Change button text */}
                             </button>
@@ -924,9 +925,9 @@ const EventdetailscalenderContext = ({ props }: any) => {
                         onLike={() => handleLikeToggle(index)} // Pass like handler
                         loadingReply={loadingReply}
                         EventArray={ArrDetails}
-                        siteUrl = {siteUrl}
-                        CurrentUserEmail = {CurrentUser.Email}
-                        CurrSPSPicturePlaceholderState ={SPSPicturePlaceholderState}
+                        siteUrl={siteUrl}
+                        CurrentUserEmail={CurrentUser.Email}
+                        CurrSPSPicturePlaceholderState={SPSPicturePlaceholderState}
 
                       />
                     </div>
@@ -949,7 +950,7 @@ const EventdetailscalenderContext = ({ props }: any) => {
                             <h3 className="twolinewrap font-16 text-dark fw-bold mb-2 hovertext cursor-pointer" style={{ cursor: "pointer" }} onClick={() => gotoNewsDetails(res)}>{res.EventName}</h3>
                             <p style={{ lineHeight: '22px', fontSize: '15px' }} className="text-muted twolinewrap">{res.Overview}</p>
                             <div className="row">
-                              <div className="col-sm-12"> <span style={{ marginTop: "4px" }} className="date-color font-12 float-start  mb-1 ng-binding"><i className="fe-calendar"></i> {moment(res.Created).format("DD-MMM-YYYY")}</span>  &nbsp; &nbsp;| &nbsp; <span className="font-12" style={{ color: '#f37421 ', fontWeight: '600' }}>{res?.Entity?.Entity}  </span></div>
+                              <div className="col-sm-12"> <span style={{ marginTop: "4px" }} className="date-color font-12 float-start  mb-1 ng-binding"><i className="fe-calendar"></i> {moment(res.Created).format("DD/MMM/YYYY")}</span>  &nbsp; &nbsp;| &nbsp; <span className="font-12" style={{ color: '#f37421 ', fontWeight: '600' }}>{res?.Entity?.Entity}  </span></div>
 
                             </div>
                           </div>

@@ -139,7 +139,9 @@ const CustomNewsWebpartTemplate = ({ _sp, SiteUrl }) => {
                                                 <p className="mb-2 mt-1 d-block text-dark customhead">
                                                     <span style={{ fontWeight: '400' }} className="text-nowrap font-14 mb-0 d-inline-block">
                                                         <Calendar size={12} strokeWidth={1} className="pl-2 text-muted" style={{ fontWeight: '400' }} />&nbsp;
-                                                        {moment(item.Modified).format("DD-MMM-YYYY")}  &nbsp;&nbsp;| &nbsp;  &nbsp; 
+                                                        {/* {moment(item.Modified).format("DD-MMM-YYYY")} */}
+                                                        {moment(item?.Modified).format("DD/MMM/YYYY")}
+                                                          &nbsp;&nbsp;| &nbsp;  &nbsp; 
                                                     </span>
                                                     <span style={{ fontWeight: '400' }} className="text-nowrap mb-0  font-14 text-muted2 d-inline-block">
                                                         Author: <span style={{ color: '#009157', fontWeight: '600' }}>{item.Author.Title}  
@@ -202,7 +204,9 @@ const CustomNewsWebpartTemplate = ({ _sp, SiteUrl }) => {
                                                         {/* <span className="font-12 date-color float-start mt-0 mb-1 ng-binding" style={{ color: '#6b6b6b', fontSize: '12px', paddingRight: '0.2rem' }}>
                                                             <Calendar size={12} color="#6b6b6b" strokeWidth={2} style={{ fontWeight: '400' }} /></span> */}
 
-                                                        <span className="font-13 date-color float-start  mb-1 ng-binding" style={{ color: '#6b6b6b', fontSize: '12px',marginTop: '0px' }}>{moment(item.Modified).format("DD-MMM-YYYY")}
+                                                        <span className="font-13 date-color float-start  mb-1 ng-binding" style={{ color: '#6b6b6b', fontSize: '12px',marginTop: '0px' }}>
+                                                            {/* {moment(item.Modified).format("DD-MMM-YYYY")} */}
+                                                            {moment(item?.Modified).format("DD/MMM/YYYY")}
                                                             {/* 12-Mar-2024 18:37 */}
                                                         </span>
                                                         <span  style={{float:'left', marginTop:'2px', fontSize:'12px', marginLeft:'3px', marginRight:'3px'}}>&nbsp;|&nbsp;</span> <span style={{float:'left'}} className="font-13 mt-0 mb-1 text-primary">{item.Entity.Entity}</span>

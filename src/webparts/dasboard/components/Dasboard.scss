@@ -3,9 +3,9 @@
     width: 100%;
     bottom: 0px !important;
     padding-top: 0.25rem;
-    padding-bottom: 2.25rem;
+    padding-bottom: 1.25rem;
     left: 0;
-    height: 100%;
+    //height: 100%;
     display: flex !important;
     align-items: flex-end !important;
     text-align: left !important;
@@ -17,7 +17,7 @@
     flex-shrink: 0;
     flex-grow: 1;
     flex-direction: column;
-    justify-content: flex-end;
+    justify-content: flex-start;
 }
 .carousel-caption p{
     -webkit-line-clamp: 1;
@@ -52,13 +52,13 @@
 }
 .newwidth6{width: 33.3% !important; }
 .appltext{margin-top: 7px;}
-.aaplnbg{background: #f6f6f6;height: 130px; padding: 13px 0px 0px 0px; margin-top: 13px; border: 1px solid #f6f6f6; border-radius: 0px; text-align: center;}
+.aaplnbg{background: #f6f6f6;height: 150px; padding: 13px 0px 0px 0px; margin-top: 13px; border: 1px solid #f6f6f6; border-radius: 0px; text-align: center;}
 .gheightnew{height: 400px;}
 .aaplnbg:hover{cursor: pointer;border: 1px solid #f37421 ;}
 .margin01{margin-top: 5px;}
 .float-right{float: right;}
 .justify-between{gap:20px;}
-.carousel-indicators{list-style: none;;}
+.carousel-indicators{list-style: none; margin-bottom:0px;}
 .paddlright{padding-left: 0px  !important; padding-right:0px !important;}
 .paddlright .view-all{right: 0px !important;}
 .inbox-widget .heit8 .rounded-circle, .border-radius .rounded-circle  {width: 52px; height: 52px; margin-right: 7px;}
@@ -479,7 +479,7 @@ img, svg {
         .news-feed {
             height: 802px;
         }
-        .aaplnbg{height: 145px; padding-top: 20px;}
+        .aaplnbg{height: 160px; padding-top: 20px;}
 }
 
 @media(max-width:1440px){
@@ -490,7 +490,7 @@ img, svg {
     .event h4 {
         height: 40px;
     }
-    .aaplnbg{height: 135px; padding-top: 15px;}
+    .aaplnbg{height: 150px; padding-top: 15px;}
     .heifgtgal{height: 384px;}
     .event{margin-bottom: 1px;
         margin-top: 8px;}

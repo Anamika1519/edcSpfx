@@ -295,7 +295,7 @@ const HelloWorldContext = ({ props }: any) => {
   const handleCancel = () => {
     debugger;
     window.location.href =
-      `${Tenant_URL}/sites/ededms/SitePages/Project.aspx`;
+      `${Tenant_URL}/sites/edcspfx/SitePages/Project.aspx`;
   };
 
   const saveProjectData = async (formData: {
@@ -358,7 +358,7 @@ const HelloWorldContext = ({ props }: any) => {
         // // Budget: formData.Budget,
         ProjectOverview: formData.ProjectOverview,
         TeamMembersId: selectedIds,
-        ProjectFileManager: `/sites/ededms/ARGProjectsFiles/${formData.ProjectName}`,
+        ProjectFileManager: `/sites/edcspfx/ARGProjectsFiles/${formData.ProjectName}`,
         ProjectStatus: "Ongoing",
         ProjectFolderName: formData.ProjectName,
         FolderInProgress: 'In Progress'

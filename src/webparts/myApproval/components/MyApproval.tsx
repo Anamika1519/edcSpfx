@@ -459,13 +459,56 @@ const MyApprovalContext = ({ props }: any) => {
       let allItems: any[] = [];
 
       edcProcessApprovalItems.forEach(item => {
+        let displayNametooltip = "";
+        let displaynameProcess = "";
+
+        if (item?.ProcessName === "Change Request") {
+          displayNametooltip = item?.CRRequestType === "Change in Existing Documented Information"
+            ? `Change Request (Existing, Issue No:${item.CRIssueNumber}, Revision No:${item.CRRevisionNumber})`
+            : `Change Request (New, Issue No:${item.CRIssueNumber}, Revision No:${item.CRRevisionNumber})`;
+
+          displaynameProcess = item?.CRRequestType === "Change in Existing Documented Information"
+            ? "Change Request (Existing)"
+            : "Change Request (New)";
+
+        }
+        else if (item?.ProcessName === "Document Cancellation") {
+          displayNametooltip = `Document Cancellation (Issue No:${item.CRIssueNumber}, Revision No:${item.CRRevisionNumber})`;
+          displaynameProcess = "Document Cancellation";
+
+        } else if (item?.ProcessName === "Annual Audit Plan") {
+          displayNametooltip = "IMS Audit Plan";
+          displaynameProcess = "IMS Audit Plan";
+
+        } else if (item?.ProcessName === "Annual Audit Program") {
+          displayNametooltip = "IMS Annual Audit Program";
+          displaynameProcess = "IMS Annual Audit Program";
+
+        } else if (item?.ProcessName === "Annual Audit Report") {
+          displayNametooltip = "IMS Audit Report and Checklist";
+          displaynameProcess = "IMS Audit Report and Checklist";
+
+        } else if (item?.ProcessName === "Non Conformity") {
+          displayNametooltip = item.RequestId.toLowerCase().includes("/ nc /")
+            ? "Non Conformity"
+            : "Observation";
+          displaynameProcess = item.RequestId.toLowerCase().includes("/ nc /")
+            ? "Non Conformity"
+            : "Observation";
+
+        } else {
+          displayNametooltip = item?.ProcessName || "";
+          displaynameProcess = item?.ProcessName || "";
+        }
+
         allItems.push({
           RequestId: item.RequestId,
           Title: item.ContentTitle,
           ProcessName: item.ProcessName,
           RequestedBy: item.RequesterName ? item.RequesterName.Title : '',
           RequestedDate: item?.RequestedDate,
-
+          ProcessNameNew: displaynameProcess,
+          ProcessTooltip: displayNametooltip,
           // RequestedDate: item.RequestedDate ? new Date(item.RequestedDate).toLocaleDateString() : '',
           Created: item?.RequestedDate ? new Date(item.RequestedDate).toLocaleDateString() : '',
           Status: item.Status,
@@ -492,7 +535,7 @@ const MyApprovalContext = ({ props }: any) => {
     currentUserIdRef.current = userdata.Id;
     console.log("currentUserEmailRefhhg", currentUserEmailRef)
     //getApprovalmasterTasklist('Pending', '');
-    // myActingfordata()
+    myActingfordata()
     getEdcApprovalData('Pending', '');
   };
   React.useEffect(() => {
@@ -745,16 +788,57 @@ const MyApprovalContext = ({ props }: any) => {
 
     const filteredData = data?.filter((item, index) => {
       console.log("new Date(item.RequestedDate)toLocaleDateString()", new Date(item.RequestedDate).toLocaleDateString(), filters.RequestedDate)
+      const isDateMatch = (itemDate: string | Date | null, filterDate: string) => {
+        if (!itemDate || !filterDate) return false;
+
+        const d = new Date(itemDate);
+        if (isNaN(d.getTime())) return false;
+
+        const day = String(d.getDate()).padStart(2, "0");
+        const month = String(d.getMonth() + 1).padStart(2, "0");
+        const year = d.getFullYear();
+
+        const shortMonth = d.toLocaleString("en-US", { month: "short" }); // Jun
+        const longMonth = d.toLocaleString("en-US", { month: "long" });   // June
+
+        const hours = String(d.getHours()).padStart(2, "0");
+        const minutes = String(d.getMinutes()).padStart(2, "0");
+
+        const dateParts = [
+          `${day}/${month}/${year}`,       // 16/06/2025
+          `${day}/${shortMonth}/${year}`,  // 16/Jun/2025
+          `${day}-${shortMonth}-${year}`,  // 16-Jun-2025
+          `${day} ${shortMonth} ${year}`,  // 16 Jun 2025
+          `${day}/${shortMonth}`,          // 16/Jun
+          `${day}-${shortMonth}`,          // 16-Jun
+          `${day}`,                        // 16
+        ];
+
+        const timePart = `${hours}:${minutes}`; // 10:30
+
+        // Combine date + time formats
+        const formats = [
+          ...dateParts,
+          ...dateParts.map(date => `${date} ${timePart}`),
+          timePart, // allow just time search like "10:30"
+        ];
+
+        const normalizedFilter = filterDate.toLowerCase();
+
+        return formats.some(f => f.toLowerCase().includes(normalizedFilter));
+      };
+
       return (
         (filters.SNo === "" || String(index + 1).includes(filters.SNo)) &&
         // (filters.Title === "" ||
         //   (activeTab == "Intranet" ? item.Title != undefined : item.ApprovalTitle != undefined) &&
         // (activeTab == "Intranet" ? item.Title : item.ApprovalTitle).toLowerCase().includes(filters.Title.toLowerCase()))
         (filters.ProcessName === "" ||
-          (item.ProcessName != undefined &&
-            item.ProcessName.toLowerCase().includes(
-              filters.ProcessName.toLowerCase()
-            ))) &&
+          ((item.ProcessName != undefined &&
+            (item?.ProcessName !== "Annual Audit Plan" && item?.ProcessName !== "Annual Audit Program"
+              && item?.ProcessName !== "Annual Audit Report" && item?.ProcessName !== "Change Request" && item?.ProcessName !== "Non Conformity") ? item?.ProcessName : item?.ProcessNameNew).toLowerCase().includes(
+                filters.ProcessName.toLowerCase()
+              ))) &&
         (filters.RequestID === "" ||
           (item.RequestId != undefined &&
             item.RequestId.toLowerCase().includes(
@@ -766,12 +850,19 @@ const MyApprovalContext = ({ props }: any) => {
 
         (filters.Status === "" ||
           item.Status.toLowerCase().includes(filters.Status.toLowerCase())) &&
-        (filters.RequestedDate === "" ||
-          (activeTab == "Automation" || activeTab == "EDC Approval"
-            ? moment(item.RequestedDate).format("DD-MMM-YYYY")
-              .includes(filters.RequestedDate + "")
-            : moment(item.Created).format("DD-MMM-YYYY")
-              .includes(filters.RequestedDate + ""))) &&
+        // (filters.RequestedDate === "" ||
+        //   (activeTab == "Automation" || activeTab == "EDC Approval"
+        //     ? moment(item.RequestedDate).format("DD-MMM-YYYY")
+        //       .includes(filters.RequestedDate + "")
+        //     : moment(item.Created).format("DD-MMM-YYYY")
+        //       .includes(filters.RequestedDate + ""))) &&
+        (!filters.RequestedDate ||
+          isDateMatch(
+            (activeTab === "Automation" || activeTab === "EDC Approval")
+              ? item.RequestedDate
+              : item.Created,
+            filters.RequestedDate
+          )) &&
 
         (filters.Title === "" ||
           (activeTab == "Automation" || activeTab == "EDC Approval"
@@ -1132,7 +1223,7 @@ const MyApprovalContext = ({ props }: any) => {
             getnonconfirmitydata?.Status === "Rework" &&
             //(getnonconfirmitydata?.SubmitStatus === "Yes" || getnonconfirmitydata?.SubmitStatus === "No") &&
             ((getnonconfirmitydata?.CurrentUserRole === "FirstInitiator") ||
-            (getnonconfirmitydata?.CurrentUserRole === "FirstAssignedTo" || getnonconfirmitydata?.CurrentUserRole === "DelegateTo"));
+              (getnonconfirmitydata?.CurrentUserRole === "FirstAssignedTo" || getnonconfirmitydata?.CurrentUserRole === "DelegateTo"));
           console.log("getprocessapprovaldata", getprocessapprovaldata)
           //  alert("isEditable"+ isEditable)
           if (isEditable || isRework) {
@@ -1283,7 +1374,7 @@ const MyApprovalContext = ({ props }: any) => {
               <div className="col-md-8">
                 <div className="row" style={{ justifyContent: "flex-end" }}>
                   {/* acting for */}
-                  {/* <div style={{ textAlign: "center" }} className="col-md-3 newtexleft">
+                  <div style={{ textAlign: "center" }} className="col-md-3 newtexleft">
                     <div className="mb-0">
                       <label htmlFor="Status" className="form-label mt-2">
                         <img src={require('../assets/delegation.png')}
@@ -1291,7 +1382,7 @@ const MyApprovalContext = ({ props }: any) => {
                       </label>
                     </div>
                   </div>
-                <div style={{ paddingLeft: '0px' }} className="col-md-4">
+                  <div style={{ paddingLeft: '0px' }} className="col-md-4">
                     <select
                       id="Type"
                       name="Type"
@@ -1308,7 +1399,7 @@ const MyApprovalContext = ({ props }: any) => {
                         </option>
                       ))}
                     </select>
-                  </div> */}
+                  </div>
                   {/* acting for */}
                   <div style={{ textAlign: "center", padding: '0px' }} className="col-md-1 newtexleft ivon">
                     <div className="mb-0">
@@ -1885,12 +1976,12 @@ const MyApprovalContext = ({ props }: any) => {
                                                 month: 'short',
                                                 year: 'numeric'
                                               }).format(new Date(new Date(item?.Created).getTime() - 4 * 60 * 60 * 1000)).replace(/ /g, "/")} ${new Date(new Date(item?.Created).getTime() - 4 * 60 * 60 * 1000).toLocaleTimeString('en-GB', {
-                                                
+
                                                 hour: '2-digit',
                                                 minute: '2-digit',
                                                 hour12: false
                                               })}`} className="btn btn-light1">
-                                                {/* {moment(item?.Created).format("DD/MMM/YYYY hh:mm A").substring(0, 21)} */ }
+                                                {/* {moment(item?.Created).format("DD/MMM/YYYY hh:mm A").substring(0, 21)} */}
                                                 {`${new Intl.DateTimeFormat('en-GB', {
                                                   day: '2-digit',
                                                   month: 'short',
@@ -1900,7 +1991,7 @@ const MyApprovalContext = ({ props }: any) => {
                                                   minute: '2-digit',
                                                   hour12: false
                                                 })}`}
-                                               
+
                                               </div>
                                             </td>
 
@@ -2640,7 +2731,7 @@ const MyApprovalContext = ({ props }: any) => {
                                                     <Edit
                                                       onClick={(e) => {
 
-                                                        item?.IsDocChange == "CRDC" ? window.location.href = `${Tenant_URL}/sites/ededms/SitePages/ChangeRequest.aspx/${item?.RedirectionLink}` : getTaskItemsbyID(e, item?.FileUID?.FileUID); handleShowNestedDMSTable()
+                                                        item?.IsDocChange == "CRDC" ? window.location.href = `${Tenant_URL}/sites/edcspfx/SitePages/ChangeRequest.aspx/${item?.RedirectionLink}` : getTaskItemsbyID(e, item?.FileUID?.FileUID); handleShowNestedDMSTable()
                                                       }}
                                                       style={{
                                                         minWidth: "20px",
@@ -3152,9 +3243,9 @@ const MyApprovalContext = ({ props }: any) => {
                                         </tr>
                                       </thead>
                                       {console.log(
-                                        "currentData",
+                                        "currentData new",
                                         currentData,
-                                        isActivedata
+                                        isActivedata, activeTab
                                       )}
                                       <tbody>
                                         {((loading && currentData?.length == 0)
@@ -3256,12 +3347,14 @@ const MyApprovalContext = ({ props }: any) => {
                                                     maxWidth: "120px",
                                                     textAlign: 'center'
                                                   }}
+                                                  title={item?.ProcessTooltip}
                                                 >
                                                   <span className="badge font-12 bg-secondary">
-                                                    {item?.ProcessName === "Annual Audit Plan" && "IMS Audit Plan"}
+                                                    {/* {item?.ProcessName === "Annual Audit Plan" && "IMS Audit Plan"}
                                                     {item?.ProcessName === "Annual Audit Program" && "IMS Annual Audit Program"}
-                                                    {item?.ProcessName === "Annual Audit Report" && "IMS Audit Report and Checklist"}
-                                                    {item?.ProcessName !== "Annual Audit Plan" && item?.ProcessName !== "Annual Audit Program" && item?.ProcessName !== "Annual Audit Report" && item?.ProcessName}
+                                                    {item?.ProcessName === "Annual Audit Report" && "IMS Audit Report and Checklist"} */}
+                                                    {(item?.ProcessName !== "Annual Audit Plan" && item?.ProcessName !== "Annual Audit Program"
+                                                      && item?.ProcessName !== "Annual Audit Report" && item?.ProcessName !== "Change Request" && item?.ProcessName !== "Non Conformity") ? item?.ProcessName : item?.ProcessNameNew}
                                                   </span>
                                                 </td>
 
@@ -3296,7 +3389,7 @@ const MyApprovalContext = ({ props }: any) => {
                                                       day: '2-digit',
                                                       month: 'short',
                                                       year: 'numeric'
-                                                    // }).format(new Date(new Date(item?.Created).getTime() - (5 * 60 + 30) * 60 * 1000)).replace(/ /g, "/")} ${new Date(new Date(item?.Created).getTime() - (5 * 60 + 30) * 60 * 1000).toLocaleTimeString('en-GB', {
+                                                      // }).format(new Date(new Date(item?.Created).getTime() - (5 * 60 + 30) * 60 * 1000)).replace(/ /g, "/")} ${new Date(new Date(item?.Created).getTime() - (5 * 60 + 30) * 60 * 1000).toLocaleTimeString('en-GB', {
                                                     }).format(new Date(new Date(item?.RequestedDate).getTime() - 4 * 60 * 60 * 1000)).replace(/ /g, "/")} ${new Date(new Date(item?.RequestedDate).getTime() - 4 * 60 * 60 * 1000).toLocaleTimeString('en-GB', {
                                                       hour: '2-digit',
                                                       minute: '2-digit',

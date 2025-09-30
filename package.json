@@ -50,6 +50,7 @@
     "material-react-table": "^2.13.2",
     "multiselect-react-dropdown": "^2.0.25",
     "npm": "^10.8.3",
+    "office-ui-fabric-react": "^7.204.1",
     "react": "17.0.1",
     "react-big-calendar": "^1.14.1",
     "react-bootstrap": "^2.10.4",

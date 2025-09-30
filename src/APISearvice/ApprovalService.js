@@ -587,7 +587,7 @@ export const getAllDMSTasks = async (sp, itemStatus) => {
      
 //       let arrnew = [];
 //       arr = res
-//       let siteurl =`https://edcadae.sharepoint.com/sites/ededms/SitePages/ChangeRequest.aspx`;
+//       let siteurl =`https://officeindia.sharepoint.com/sites/edcspfx/SitePages/ChangeRequest.aspx`;
 //       console.log("resresresresr", res,siteurl)
 //       for (let i = 0; i < res.length; i++) {
 //         arrnew.push({

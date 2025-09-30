@@ -58,7 +58,7 @@ const EntityMastercontext = ({ props }: any) => {
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(true);
   const [bannersData, setBannersData] = React.useState([]);
   const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
-
+  const [Loading, setLoading] = React.useState(false);
 
 
 
@@ -98,6 +98,7 @@ const EntityMastercontext = ({ props }: any) => {
   
   const ApiCall = async () => {
     let bannersArr: any[] = [];
+    setLoading(true);
     const userGroups = await sp.web.currentUser.groups();
     let groupTitles: string[] = userGroups.map((group) =>
       group.Title.toLowerCase()
@@ -109,6 +110,7 @@ const EntityMastercontext = ({ props }: any) => {
       bannersArr = await getAllEventMaster(sp, "No");
     }
     setBannersData(bannersArr);
+    setLoading(false);
   };
   const [filters, setFilters] = React.useState({
     SNo: "",
@@ -213,11 +215,17 @@ const EntityMastercontext = ({ props }: any) => {
     const filteredData = data.filter((item, index) => {
       const formatToUTCDate = (date: string) => new Date(date).toISOString().slice(0, 10);
       const formatDateToDDMMYYYY = (date: string) => {
-        return new Intl.DateTimeFormat('en-GB', {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric',
-        }).format(new Date(date)); // Always gives DD/MM/YYYY
+        const d = new Date(date);
+        const day = String(d.getDate()).padStart(2, '0');
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const year = d.getFullYear();
+        return `${day}/${month}/${year}`;
+      };
+      const isDateMatch = (itemDate: string | null, filterDate: string) => {
+        if (!itemDate) return false;
+        // const formattedDate = formatDateToDDMMYYYY(itemDate);
+        const formattedDate =moment(itemDate).format("DD/MMM/YYYY");
+        return formattedDate.toLowerCase().includes(filterDate.toLowerCase());
       };
       return (
         (filters.SNo === "" || String(index + 1).includes(filters.SNo)) &&
@@ -226,11 +234,13 @@ const EntityMastercontext = ({ props }: any) => {
             item.EventName.toLowerCase().includes(
               filters.EventName.toLowerCase()
             ))) &&
+        // (filters.EventDate === "" ||
+        //   (item.EventDate != null &&
+        //     (formatDateToDDMMYYYY(item.EventDate).toLowerCase()).includes(
+        //       filters.EventDate.toLowerCase()
+        //     ))) &&
         (filters.EventDate === "" ||
-          (item.EventDate != null &&
-            (formatDateToDDMMYYYY(item.EventDate).toLowerCase()).includes(
-              filters.EventDate.toLowerCase()
-            ))) &&
+          isDateMatch(item.EventDate, filters.EventDate)) &&
         (filters?.Overview === "" ||
           (item.Overview != null &&
             item?.Overview?.toLowerCase().includes(
@@ -693,15 +703,35 @@ const EntityMastercontext = ({ props }: any) => {
                           </th>
                         </tr>
                       </thead>
-                      <tbody>
-                        {currentData.length === 0 ? (
+                      <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                      <tbody style={{ maxHeight: '400px' }}>
+                      {(Loading && currentData?.length == 0
+                            ) && (
+                                <div style={{ minHeight: '100vh', marginTop: '100px' }} className="loadernewadd mt-10">
+                                  <div>
+                                    <img
+                                      src={require("../../../CustomAsset/edc-gif.gif")}
+                                      className="alignrightl"
+                                      alt="Loading..."
+                                    />
+                                  </div>
+                                  <span>Loading </span>{" "}
+                                  <span>
+                                    <img
+                                      src={require("../../../CustomAsset/edcnew.gif")}
+                                      className="alignrightl"
+                                      alt="Loading..."
+                                    />
+                                  </span>
+                                </div>)}
+                        {!Loading && currentData.length === 0 ? (
                           <tr>
                             <td colSpan={7} style={{ textAlign: "center" }}>
                               No results found
                             </td>
                           </tr>
                         ) : (
-                          currentData.map((item, index) => (
+                         currentData.map((item, index) => (
                             <tr key={index}>
                               <td
                               title={(startIndex + index + 1).toString()}
@@ -724,10 +754,13 @@ const EntityMastercontext = ({ props }: any) => {
                                   maxWidth: "80px",
                                   textAlign: "center",
                                 }}
-                                title={moment(item.EventDate).format("DD/MM/yyyy")}
+                                // title={moment(item.EventDate).format("DD/MM/yyyy")}
+                                title={moment(item.EventDate).format("DD/MMM/YYYY")}
                               >
                                 <div className="btn  btn-light">
-                                  {moment(item.EventDate).format("DD/MM/yyyy")}
+                                  {/* {moment(item.EventDate).format("DD/MM/yyyy")} */}
+                                  {moment(item.EventDate).format("DD/MMM/YYYY")}
+
                                 </div>
                               </td>
 
@@ -891,6 +924,7 @@ const EntityMastercontext = ({ props }: any) => {
                           ))
                         )}
                       </tbody>
+                      </div>
                     </table>
 
                     <nav className="pagination-container">

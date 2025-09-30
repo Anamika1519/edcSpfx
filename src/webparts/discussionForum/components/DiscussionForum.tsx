@@ -1154,7 +1154,7 @@ const DiscussionForumContext = ({ props }: any) => {
                 InviteMemebersId: selectedIds,
                 ARGDiscussionStatus: "Ongoing",
                 DiscussionInProgress: "In Progress",
-                DiscussionFileManager: `/sites/ededms/ARGDiscussionFiles/${formData.topic}`,
+                DiscussionFileManager: `/sites/edcspfx/ARGDiscussionFiles/${formData.topic}`,
                 DiscussionFolderName: formData.topic
               };
             }
@@ -1168,7 +1168,7 @@ const DiscussionForumContext = ({ props }: any) => {
                 DiscussionForumCategoryId: Number(formData.category),
                 ARGDiscussionStatus: "Ongoing",
                 DiscussionInProgress: "In Progress",
-                DiscussionFileManager: `/sites/ededms/ARGDiscussionFiles/${formData.topic}`,
+                DiscussionFileManager: `/sites/edcspfx/ARGDiscussionFiles/${formData.topic}`,
                 DiscussionFolderName: formData.topic
               };
             }
@@ -1277,7 +1277,7 @@ const DiscussionForumContext = ({ props }: any) => {
 
   const handleCancel = () => {
     window.location.href =
-      `${Tenant_URL}/sites/ededms/SitePages/Blogs.aspx`;
+      `${Tenant_URL}/sites/edcspfx/SitePages/Blogs.aspx`;
   };
 
   const formats = [

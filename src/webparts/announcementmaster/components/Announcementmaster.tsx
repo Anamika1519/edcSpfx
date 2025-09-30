@@ -74,7 +74,7 @@ const Announcementmastercontext = ({ props }: any) => {
   const { setUseId, useId }: any = context;
 
   const elementRef = React.useRef<HTMLDivElement>(null);
-
+  const [Loading, setLoading] = React.useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(true);
 
   const [announcementData, setAnnouncementData] = React.useState([]);
@@ -146,6 +146,7 @@ const Announcementmastercontext = ({ props }: any) => {
   const ApiCall = async () => {
     let announcementArr: any[] = [];
     let NewsArr: any[] = [];
+    setLoading(true);
     const userGroups = await sp.web.currentUser.groups();
     let groupTitles: string[] = userGroups.map((group) => group.Title.toLowerCase());
 
@@ -160,7 +161,7 @@ const Announcementmastercontext = ({ props }: any) => {
     //if(announcementArr.length >0)
     setAnnouncementData(announcementArr);
     setNewsData(NewsArr);
-
+    setLoading(false);
   };
 
 
@@ -239,12 +240,22 @@ const Announcementmastercontext = ({ props }: any) => {
     // Filter data
 
     const filteredData = data.filter((item, index) => {
+      // const formatDateToDDMMYYYY = (date: string | Date) => {
+      //   const d = new Date(date);
+      //   return d.toLocaleDateString('en-GB'); // Outputs: "17/12/2025"
+      // };
       const formatDateToDDMMYYYY = (date: string) => {
-        return new Intl.DateTimeFormat('en-GB', {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric',
-        }).format(new Date(date)); // Always gives DD/MM/YYYY
+        const d = new Date(date);
+        const day = String(d.getDate()).padStart(2, '0');
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const year = d.getFullYear();
+        return `${day}/${month}/${year}`;
+      };
+      const isDateMatch = (itemDate: string | null, filterDate: string) => {
+        if (!itemDate) return false;
+        // const formattedDate = formatDateToDDMMYYYY(itemDate);
+        const formattedDate = moment(itemDate).format("DD/MMM/YYYY");
+        return formattedDate.toLowerCase().includes(filterDate.toLowerCase());
       };
       return (
 
@@ -260,7 +271,10 @@ const Announcementmastercontext = ({ props }: any) => {
 
         (filters?.Status === '' || item?.Status?.toLowerCase().includes(filters?.Status?.toLowerCase())) &&
 
-        (filters.SubmittedDate === '' || (formatDateToDDMMYYYY(item.Created).toLowerCase()).includes(filters.SubmittedDate.toLowerCase()))
+        (filters.SubmittedDate === "" ||
+          isDateMatch(item.Created, filters.SubmittedDate))
+
+        //(filters.SubmittedDate === '' || formatDateToDDMMYYYY(item.Created).includes(filters.SubmittedDate))
 
       );
 
@@ -309,6 +323,17 @@ const Announcementmastercontext = ({ props }: any) => {
 
         return sortConfig.direction === 'ascending' ? aIndex - bIndex : bIndex - aIndex;
 
+      } else if (sortConfig.key == "SubmittedDate") {
+        // Sort by other keys
+        const aValue = a["Created"] ? a["Created"].toLowerCase() : '';
+        const bValue = b["Created"] ? b["Created"].toLowerCase() : '';
+
+        if (aValue < bValue) {
+          return sortConfig.direction === 'ascending' ? -1 : 1;
+        }
+        if (aValue > bValue) {
+          return sortConfig.direction === 'ascending' ? 1 : -1;
+        }
       } else if (sortConfig.key === 'Category') {
 
         // Sort by other keys
@@ -860,284 +885,302 @@ const Announcementmastercontext = ({ props }: any) => {
                             </tr>
 
                           </thead>
+                          <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                            <tbody style={{ maxHeight: '400px' }}>
+                              {(Loading && newsCurrentData?.length == 0
+                              ) && (
+                                  <div style={{ minHeight: '100vh', marginTop: '100px' }} className="loadernewadd mt-10">
+                                    <div>
+                                      <img
+                                        src={require("../../../CustomAsset/edc-gif.gif")}
+                                        className="alignrightl"
+                                        alt="Loading..."
+                                      />
+                                    </div>
+                                    <span>Loading </span>{" "}
+                                    <span>
+                                      <img
+                                        src={require("../../../CustomAsset/edcnew.gif")}
+                                        className="alignrightl"
+                                        alt="Loading..."
+                                      />
+                                    </span>
+                                  </div>)}
+                              {!Loading && newsCurrentData.length === 0 ? (
 
-                          <tbody>
+                                <tr>
 
-                            {newsCurrentData.length === 0 ? (
+                                  <td colSpan={7} style={{ textAlign: "center" }}>
 
-                              <tr>
+                                    No results found
 
-                                <td colSpan={7} style={{ textAlign: "center" }}>
+                                  </td>
 
-                                  No results found
+                                </tr>
 
-                                </td>
+                              ) : (
 
-                              </tr>
+                                newsCurrentData.map(
 
-                            ) : (
+                                  (item: any, index: number) => (
 
-                              newsCurrentData.map(
+                                    <tr key={index}>
 
-                                (item: any, index: number) => (
+                                      <td
 
-                                  <tr key={index}>
+                                        style={{
 
-                                    <td
+                                          minWidth: "50px",
 
-                                      style={{
+                                          maxWidth: "50px",
 
-                                        minWidth: "50px",
+                                        }}
+                                        title={(startIndex + index + 1).toString()}
+                                      >
 
-                                        maxWidth: "50px",
+                                        {startIndex + index + 1}
 
-                                      }}
-                                      title={(startIndex + index + 1).toString()}
-                                    >
+                                      </td>
 
-                                      {startIndex + index + 1}
+                                      <td title={item.Title}>{item.Title}</td>
 
-                                    </td>
+                                      <td title={item?.Category?.Category}>{item?.Category?.Category}</td>
 
-                                    <td title={item.Title}>{item.Title}</td>
-
-                                    <td title={item?.Category?.Category}>{item?.Category?.Category}</td>
-
-                                    <td title={
-
-                                      item?.AnnouncementandNewsTypeMaster
-
-                                        ?.TypeMaster
-
-                                    }>
-
-                                      {
+                                      <td title={
 
                                         item?.AnnouncementandNewsTypeMaster
 
                                           ?.TypeMaster
 
-                                      }
+                                      }>
 
-                                    </td>
+                                        {
 
-                                    <td
+                                          item?.AnnouncementandNewsTypeMaster
 
-                                      style={{
+                                            ?.TypeMaster
 
-                                        minWidth: "100px",
+                                        }
 
-                                        maxWidth: "100px",
-                                        textAlign: 'center'
+                                      </td>
 
-                                      }}
-                                      title={moment(item.Created).format("L")}
-                                    >
-
-                                      <div className='btn  btn-light'>      {moment(item.Created).format("L")} </div>
-
-                                    </td>
-
-                                    <td
-
-                                      style={{
-
-                                        minWidth: "100px",
-
-                                        maxWidth: "100px",
-                                        textAlign: 'center'
-
-                                      }}
-                                      title={item.Status}
-                                    >
-
-                                      <div className='btn btn-status'>{item.Status} </div>
-
-                                    </td>
-
-                                    <td
-
-                                      style={{
-
-                                        minWidth: "80px",
-
-                                        maxWidth: "80px",
-
-                                      }}
-
-                                      className="ng-binding"
-
-                                    >
-
-                                      <div
-
-                                        className="d-flex pb-0"
+                                      <td
 
                                         style={{
 
-                                          justifyContent: "center",
+                                          minWidth: "100px",
+
+                                          maxWidth: "100px",
+                                          textAlign: 'center'
+
+                                        }}
+                                        title={moment(item.Created).format("DD/MMM/YYYY")}
+                                      >
+
+                                        <div className='btn  btn-light'>      {moment(item.Created).format("DD/MMM/YYYY")} </div>
+
+                                      </td>
+
+                                      <td
+
+                                        style={{
+
+                                          minWidth: "100px",
+
+                                          maxWidth: "100px",
+                                          textAlign: 'center'
+
+                                        }}
+                                        title={item.Status}
+                                      >
+
+                                        <div className='btn btn-status'>{item.Status} </div>
+
+                                      </td>
+
+                                      <td
+
+                                        style={{
+
+                                          minWidth: "80px",
+
+                                          maxWidth: "80px",
 
                                         }}
 
+                                        className="ng-binding"
+
                                       >
 
-                                        {/* Conditionally render the edit button based on status */}
+                                        <div
 
-                                        {
-                                          isIntranetAdmin ? (
-                                            <div>
-                                              <span>
+                                          className="d-flex pb-0"
 
-                                                <a
+                                          style={{
 
-                                                  className={`action-icon`}
+                                            justifyContent: "center",
 
-                                                  onClick={
-                                                    () =>
-                                                      EditAnnouncement(item.ID, 'True')
+                                          }}
 
+                                        >
 
+                                          {/* Conditionally render the edit button based on status */}
 
-                                                  }
+                                          {
+                                            isIntranetAdmin ? (
+                                              <div>
+                                                <span>
 
-                                                  style={{
+                                                  <a
 
-                                                    cursor:
+                                                    className={`action-icon`}
 
-
-                                                      "pointer"
-
-
-
-                                                  }}
-
-                                                >
-                                                  <img src={require('../../../CustomAsset/edit.png')} />
-
-
-                                                </a>
-
-                                              </span>
-
-                                              <span>
+                                                    onClick={
+                                                      () =>
+                                                        EditAnnouncement(item.ID, 'True')
 
 
 
-                                                <a
+                                                    }
 
-                                                  className="action-icon text-danger"
+                                                    style={{
 
-                                                  onClick={() =>
+                                                      cursor:
 
-                                                    DeleteAnnouncement(item.ID)
 
-                                                  }
+                                                        "pointer"
 
-                                                >
 
-                                                  <FontAwesomeIcon
 
-                                                    icon={faTrashAlt}
+                                                    }}
 
-                                                    fontSize={18}
+                                                  >
+                                                    <img src={require('../../../CustomAsset/edit.png')} />
 
-                                                  />
 
-                                                </a>
+                                                  </a>
 
-                                              </span>
-                                            </div>
-                                          ) : (
-                                            <div>
-                                              <span>
+                                                </span>
 
-                                                <a
+                                                <span>
 
-                                                  className={`action-icon ${item.Status === "Save as draft"
 
-                                                    ? "text-primary"
 
-                                                    : "text-muted"
+                                                  <a
 
-                                                    }`}
+                                                    className="action-icon text-danger"
 
-                                                  onClick={
+                                                    onClick={() =>
 
-                                                    item.Status === "Save as draft"
+                                                      DeleteAnnouncement(item.ID)
 
-                                                      ? () =>
+                                                    }
 
-                                                        EditAnnouncement(item.ID, 'False')
+                                                  >
 
-                                                      : () => ViewFormReadOnly(item.ID)
+                                                    <FontAwesomeIcon
 
-                                                  }
+                                                      icon={faTrashAlt}
 
-                                                  style={{
+                                                      fontSize={18}
 
-                                                    cursor:
+                                                    />
+
+                                                  </a>
+
+                                                </span>
+                                              </div>
+                                            ) : (
+                                              <div>
+                                                <span>
+
+                                                  <a
+
+                                                    className={`action-icon ${item.Status === "Save as draft"
+
+                                                      ? "text-primary"
+
+                                                      : "text-muted"
+
+                                                      }`}
+
+                                                    onClick={
 
                                                       item.Status === "Save as draft"
 
-                                                        ? "pointer"
+                                                        ? () =>
 
-                                                        : "not-allowed",
+                                                          EditAnnouncement(item.ID, 'False')
 
-                                                  }}
+                                                        : () => ViewFormReadOnly(item.ID)
 
-                                                >
-                                                  <img src={require('../../../CustomAsset/edit.png')} />
+                                                    }
 
+                                                    style={{
 
-                                                </a>
+                                                      cursor:
 
-                                              </span>
+                                                        item.Status === "Save as draft"
 
-                                              <span>
+                                                          ? "pointer"
 
+                                                          : "not-allowed",
 
+                                                    }}
 
-                                                {(item.Status === "Save as draft") ? (<a
-
-                                                  className="action-icon text-danger"
-
-                                                  onClick={() =>
-
-                                                    DeleteAnnouncement(item.ID)
-
-                                                  }
-
-                                                >
-
-                                                  <FontAwesomeIcon
-
-                                                    icon={faTrashAlt}
-
-                                                    fontSize={18}
-
-                                                  />
-
-                                                </a>) : (<div></div>)}
-
-                                              </span>
-                                            </div>
-                                          )}
+                                                  >
+                                                    <img src={require('../../../CustomAsset/edit.png')} />
 
 
-                                      </div>
+                                                  </a>
 
-                                    </td>
+                                                </span>
 
-                                  </tr>
+                                                <span>
+
+
+
+                                                  {(item.Status === "Save as draft") ? (<a
+
+                                                    className="action-icon text-danger"
+
+                                                    onClick={() =>
+
+                                                      DeleteAnnouncement(item.ID)
+
+                                                    }
+
+                                                  >
+
+                                                    <FontAwesomeIcon
+
+                                                      icon={faTrashAlt}
+
+                                                      fontSize={18}
+
+                                                    />
+
+                                                  </a>) : (<div></div>)}
+
+                                                </span>
+                                              </div>
+                                            )}
+
+
+                                        </div>
+
+                                      </td>
+
+                                    </tr>
+
+                                  )
 
                                 )
 
-                              )
+                              )}
 
-                            )}
-
-                          </tbody>
-
+                            </tbody>
+                          </div>
                           {/* <div style={{position:'absolute'}}>
 
                               <img src={require("../../../Assets/ExtraImage/NodataFound.png")}/>

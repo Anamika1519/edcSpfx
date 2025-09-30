@@ -201,7 +201,9 @@ const HelloWorldContext = ({ props }: any) => {
       siteID = CurrentsiteID;
       response = await sp.web.lists.getByTitle(listTitle).select('Id')();
       const galleryItemsone = await fetchMediaGallerydata(sp);
-      setGalleryData(galleryItemsone);
+      const topSixItems = galleryItemsone.slice(0, 6);
+
+      setGalleryData(topSixItems);
       setActiveTab(galleryItemsone[0]?.ID);
       // console.log("galleryItems--data--check", galleryItemsone);
 
@@ -292,16 +294,16 @@ const HelloWorldContext = ({ props }: any) => {
     const encryptedId = encryptId(String(item.ID));
     window.location.href = `${siteUrl}/SitePages/QuickLinks.aspx`;
   };
-  const GotoNextPageApp = (e:any,item: any) => {
+  const GotoNextPageApp = (e: any, item: any) => {
     console.log("item-->>>>appppp", item)
-   if(item.RedirectToNewTab){
-    window.open(item.URL, "_blank", "noopener,noreferrer");
+    if (item.RedirectToNewTab) {
+      window.open(item.URL, "_blank", "noopener,noreferrer");
 
-   }
-   else{
-    window.location.href = `${item.URL}`;
-   }
-   
+    }
+    else {
+      window.location.href = `${item.URL}`;
+    }
+
   };
 
   const GotoNextPagefour = (item: any) => {
@@ -501,7 +503,7 @@ const HelloWorldContext = ({ props }: any) => {
                                     <p style={{ width: '100%' }} className="font-18 mb-0 mt-0 ps-4 pe-4 py-0" title={item.Title}>
                                       {item.Title}
                                     </p>
-                                    <div className="newpos1"><span style={{padding:'5px 10px',display:'none'}} className="badge bg-warning"> {item.Entity.Entity}</span></div>
+                                    <div className="newpos1"><span style={{ padding: '5px 10px', display: 'none' }} className="badge bg-warning" title={item.Entity.Entity}> {item.Entity.Entity}</span></div>
                                     <span style={{ width: '100%' }} className="font-14 nwdescrp mb-1 mt-0 ps-4 pe-4 py-0" title={item.Description}>
                                       {item.Description}
                                     </span>
@@ -514,7 +516,7 @@ const HelloWorldContext = ({ props }: any) => {
                       </div>
                     </div>
 
-                  
+
                   </div>
 
 
@@ -599,7 +601,7 @@ const HelloWorldContext = ({ props }: any) => {
 
                                   return (
                                     <div className="col-sm-3 newwidth6" key={item.ID}
-                                      id={item.ID} onClick={(e) => GotoNextPageApp(e,item)}>
+                                      id={item.ID} onClick={(e) => GotoNextPageApp(e, item)}>
                                       <div>
                                         <div>
                                           <div className="aaplnbg">
@@ -612,10 +614,10 @@ const HelloWorldContext = ({ props }: any) => {
                                               alt="Gallery"
                                             />
                                             <div className="appltext font-14 mb-1" title={item?.Title}>
-                                            {item?.Title?.length > 40 ? `${item?.Title.substring(0, 40)}...` : item?.Title}
+                                              {item?.Title?.length > 40 ? `${item?.Title.substring(0, 40)}...` : item?.Title}
 
                                             </div>
-                                            <p className="font-12 mb-2 text-primary">{item.Entity.Entity}</p>
+                                            <p className="font-12 mb-2 text-primary" title={item.Entity.Entity}>{item.Entity.Entity}</p>
 
 
                                           </div>
@@ -646,8 +648,8 @@ const HelloWorldContext = ({ props }: any) => {
                         </div>
                       </div>
                     </div>
-                      {/* Announcement Section */}
-                      <div className="col-xl-4 col-lg-4 order-lg-1 order-xl-1">
+                    {/* Announcement Section */}
+                    <div className="col-xl-4 col-lg-4 order-lg-1 order-xl-1">
                       <div
                         className="card"
                         style={{ borderRadius: "1rem" }}
@@ -728,7 +730,7 @@ const HelloWorldContext = ({ props }: any) => {
                                     </div>
                                     <div className="col-sm-9 upcom2">
                                       <div className="w-100 ps-0 mt-1">
-                                        <h4 title= {event.EventName}
+                                        <h4 title={event.EventName}
                                           className="mb-0 text-dark lin30 fw-bold"
                                           style={{
                                             fontSize: "14px",
@@ -746,7 +748,8 @@ const HelloWorldContext = ({ props }: any) => {
                                         <p className="font-12 mt-0 mb-0 text-primary" title={event.Entity.Entity}>{event.Entity.Entity}</p>
                                         <p className=" font-12 mb-0 mt-1">
 
-                                          {moment(formattedDate).format("DD-MMM-YYYY")}
+                                          {/* {moment(formattedDate).format("DD-MMM-YYYY")} */}
+                                          {moment(event?.EventDate).format("DD/MMM/YYYY")}
                                           {/* Display the full formatted date (22 Jul 2024) */}
                                         </p>
                                       </div>
@@ -870,7 +873,31 @@ const HelloWorldContext = ({ props }: any) => {
                                   {news.Overview}
                                 </p>
                                 <p className="mb-3 font-12">
-                              <span>{moment(news.Modified).format("DD-MMM-YYYY")}</span> <span>&nbsp;|&nbsp;</span> <span className="text-primary" title={news.Entity.Entity}>{news.Entity.Entity}</span>
+                                  {/* <span title={moment(news.Modified).format("DD-MMM-YYYY")}>{moment(news.Modified).format("DD-MMM-YYYY")}</span>  */}
+                                  {/* <span title= {`${new Intl.DateTimeFormat('en-GB', {
+                                    day: '2-digit',
+                                    month: 'short',
+                                    year: 'numeric'
+                                  }).format(new Date(news?.Modified))}`}> */}
+                                  {/* {`${new Intl.DateTimeFormat('en-GB', {
+                                    day: '2-digit',
+                                    month: 'short',
+                                    year: 'numeric'
+                                    // }).format(new Date(new Date(item?.Created).getTime() - (5 * 60 + 30) * 60 * 1000)).replace(/ /g, "/")} ${new Date(new Date(item?.Created).getTime() - (5 * 60 + 30) * 60 * 1000).toLocaleTimeString('en-GB', {
+                                  }).format(new Date(new Date(news?.Modified).getTime() - 4 * 60 * 60 * 1000)).replace(/ /g, "/")} ${new Date(new Date(news?.Modified).getTime() - 4 * 60 * 60 * 1000).toLocaleTimeString('en-GB', {
+                                    hour: '2-digit',
+                                    minute: '2-digit',
+                                    hour12: false
+                                  })}`} */}
+                                  {/* {`${new Intl.DateTimeFormat('en-GB', {
+                                    day: '2-digit',
+                                    month: 'short',
+                                    year: 'numeric'
+                                  }).format(new Date(news?.Modified))}`}
+                                  </span> */}
+                                  <span title={moment(news?.Modified).format("DD/MMM/YYYY")}>{moment(news?.Modified).format("DD/MMM/YYYY")}</span>
+
+                                  <span>&nbsp;|&nbsp;</span> <span className="text-primary" title={news.Entity.Entity}>{news.Entity.Entity}</span>
                                 </p>
                               </div>
                             );

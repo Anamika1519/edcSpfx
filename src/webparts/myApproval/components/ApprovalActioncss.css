@@ -97,6 +97,13 @@
       
       
   }
+  .spinner{
+    display: 'flex';
+    flex-direction: 'column';
+    justify-content: 'center';
+    align-items: 'center';
+    position: 'absolute'
+  }
   @media(max-width:640px)
   {
     .mtbalenew{overflow: auto !important;}

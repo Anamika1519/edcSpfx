@@ -179,6 +179,11 @@ const DMSMyApprovalAction = ({ props }: any) => {
     console.log(activeComponent, "activeComponent updated")
   };
   const getApprovalmasterTasklist = async () => {
+
+    const spinner = document.getElementById("spinner");
+    if (spinner) {
+      spinner.style.display = "block"; // Show the spinner
+    }
     try {
       const items = await sp.web.lists.getByTitle('DMSFileApprovalTaskList').items.select(
         "Log", "CurrentUser", "Remark"
@@ -413,8 +418,6 @@ const DMSMyApprovalAction = ({ props }: any) => {
     let payload;
     let successtext :string = "";
     if (buttonText === "Approve") {
-
-
       const updatedData = await sp.web.lists.getByTitle("DMSFileApprovalList").items
         .select("FileUID", "ID", "ApproveAction", "ApprovedLevel", "SiteName", "DocumentLibraryName", "ApprovedLevel", "FilePreviewUrl")
         .filter(`FileUID eq '${filterData.FileUID.FileUID}'`)()
@@ -534,6 +537,22 @@ const DMSMyApprovalAction = ({ props }: any) => {
                         // alert(`${itemId} Updated DMSFileApprovalList with Approved status`)
                       }
                     });
+                       const updateStatusinMaster = await sp.web.lists
+                      .getByTitle(`DMS${filterData.FileUID.SiteName}FileMaster`)
+                      .items.filter(`RequestNo eq '${filterData.FileUID.RequestNo}'`)();
+                    debugger
+                    console.log(updateStatusinMaster, "updateStatusinMaster");
+                   
+                    for (let item of updateStatusinMaster) {
+                      const updatelistitem = await sp.web.lists
+                        .getByTitle(`DMS${filterData.FileUID.SiteName}FileMaster`)
+                        .items.getById(item.ID)
+                        .update({ Status: "Approved" }); // or "Rework" if that's your business case
+                        debugger
+                      console.log(`Updated FileMaster ID ${item.ID} to Approved`);
+                      console.log("updatelistitem" , updatelistitem)
+                
+                    }
                 } catch (error) {
                   console.log(error, "Error updating DMSFileApprovalList status");
                 }
@@ -589,33 +608,86 @@ const DMSMyApprovalAction = ({ props }: any) => {
                           // alert(`${itemId} Updated DMSFileApprovalList with Approved status`)
                         }
                       });
+                         const updateStatusinMaster = await sp.web.lists
+                      .getByTitle(`DMS${filterData.FileUID.SiteName}FileMaster`)
+                      .items.filter(`RequestNo eq '${filterData.FileUID.RequestNo}'`)();
+                    debugger
+                    console.log(updateStatusinMaster, "updateStatusinMaster");
+                   
+                    for (let item of updateStatusinMaster) {
+                      const updatelistitem = await sp.web.lists
+                        .getByTitle(`DMS${filterData.FileUID.SiteName}FileMaster`)
+                        .items.getById(item.ID)
+                        .update({ Status: "Approved" }); // or "Rework" if that's your business case
+                        debugger
+                      console.log(`Updated FileMaster ID ${item.ID} to Approved`);
+                      console.log("updatelistitem" , updatelistitem)
+                
+                    }
                   } catch (error) {
                     console.log(error, "Error updating DMSFileApprovalList status");
                   }
-                  try {
-                    // Update Column Status on Document library or folder
-                    // updatedData1[0].DocumentLibraryName
-                    // FileUID
-                    // New code start
-                    const siteName = updatedData1[0].SiteName
-                    // console.log("siteName",siteName);
-                    const subsite = await sp.web.webs.filter(`Title eq '${siteName}'`)();
-                    // console.log(subsite , "subsite");
-                    // console.log("subsite id",subsite[0].Id)
+                  // try {
+                  //   // Update Column Status on Document library or folder
+                  //   // updatedData1[0].DocumentLibraryName
+                  //   // FileUID
+                  //   // New code start
+                  //   const siteName = updatedData1[0].SiteName
+                  //   // console.log("siteName",siteName);
+                  //   const subsite = await sp.web.webs.filter(`Title eq '${siteName}'`)();
+                  //   // console.log(subsite , "subsite");
+                  //   // console.log("subsite id",subsite[0].Id)
 
-                    const { web } = await sp.site.openWebById(subsite[0].Id)
-                    // end
-                    // get the details of the file present inside the document library
+                  //   const { web } = await sp.site.openWebById(subsite[0].Id)
+                  //   // end
+                  //   // get the details of the file present inside the document library
+                  //   const file = web.getFileById(filterData.FileUID.FileUID);
+                  //   const listItem = await file.getItem();
+                  //   const updatedData = await listItem.update({
+                  //     Status: "Approved"
+                  //   });
+                  //   console.log("updatedData", updatedData);
+                  // } catch (error) {
+                  //   console.log(error, "Error updating status column on Libray or Folder");
+                  // }
+               
+                  try {
+                    // ✅ Update Column Status on Document Library
+                    const siteName = updatedData1[0].SiteName;
+                    const subsite = await sp.web.webs.filter(`Title eq '${siteName}'`)();
+                    const { web } = await sp.site.openWebById(subsite[0].Id);
+                
                     const file = web.getFileById(filterData.FileUID.FileUID);
                     const listItem = await file.getItem();
                     const updatedData = await listItem.update({
                       Status: "Approved"
                     });
-                    console.log("updatedData", updatedData);
+                    console.log("Document library file status updated", updatedData);
                   } catch (error) {
-                    console.log(error, "Error updating status column on Libray or Folder");
+                    console.log(error, "Error updating status column on Library or Folder");
                   }
-
+                
+                  // try {
+                  //   // ✅ NEW: Update File Master List (DMS<SiteName>FileMaster)
+                  //   const updateStatusinMaster = await sp.web.lists
+                  //     .getByTitle(`DMS${filterData.FileUID.SiteName}FileMaster`)
+                  //     .items.filter(`RequestNo eq '${filterData.FileUID.RequestNo}'`)();
+                  //   debugger
+                  //   console.log(updateStatusinMaster, "updateStatusinMaster");
+                   
+                  //   for (let item of updateStatusinMaster) {
+                  //     const updatelistitem = await sp.web.lists
+                  //       .getByTitle(`DMS${filterData.FileUID.SiteName}FileMaster`)
+                  //       .items.getById(item.ID)
+                  //       .update({ Status: "Approved" }); // or "Rework" if that's your business case
+                  //       debugger
+                  //     console.log(`Updated FileMaster ID ${item.ID} to Approved`);
+                  //     console.log("updatelistitem" , updatelistitem)
+                
+                  //   }
+                  // } catch (error) {
+                  //   console.log(error, "Error updating FileMaster status");
+                  // }
                 }
 
               }
@@ -645,13 +717,84 @@ const DMSMyApprovalAction = ({ props }: any) => {
     }
     else if (buttonText === "Reject") {
       setFinalStatus = 'Rejected';
-      successtext = "Approved";
+      successtext = "Rejected";
+
+      //reject in DmsEntityFilemasterlist
+      const updateStatusinMaster = await sp.web.lists
+      .getByTitle(`DMS${filterData.FileUID.SiteName}FileMaster`)
+      .items.filter(`RequestNo eq '${filterData.FileUID.RequestNo}'`)();
+    debugger
+    console.log(updateStatusinMaster, "updateStatusinMaster");
+   
+    for (let item of updateStatusinMaster) {
+      const updatelistitem = await sp.web.lists
+        .getByTitle(`DMS${filterData.FileUID.SiteName}FileMaster`)
+        .items.getById(item.ID)
+        .update({ Status: "Rejected" }); // or "Rework" if that's your business case
+        debugger
+      console.log(`Updated FileMaster ID ${item.ID} to Rejected`);
+      console.log("updatelistitem" , updatelistitem)
+
+    }
+      //update dmsfileapprovallist
+      await sp.web.lists.getByTitle("DMSFileApprovalList").items
+      .filter(`FileUID eq '${filterData.FileUID.FileUID}'`)()
+      .then(async (items) => {
+        if (items.length > 0) {
+          const itemId = items[0].Id; // Assuming one item per FileUID
+          // alert(`${itemId} item id is 1`)
+          await sp.web.lists.getByTitle("DMSFileApprovalList").items.getById(itemId).update({
+            Status: "Rejected",
+          });
+          console.log("Updated DMSFileApprovalList with Rejected status");
+          // alert(`${itemId} Updated DMSFileApprovalList with Approved status`)
+        }
+      });
+      try {
+        // ✅ Update Column Status on Document Library
+        const updatedData1: any = await sp.web.lists.getByTitle("DMSFileApprovalList").items
+          .select("FileUID", "ID", "ApproveAction", "ApprovedLevel", "SiteName", "DocumentLibraryName", "ApprovedLevel", "FilePreviewUrl")
+          .filter(`FileUID eq '${FileUID}'`)()
+          .catch((error) => console.error("Error fetching data from DMSFileApprovalList:", error));
+        console.log(updatedData1, "updatedData")
+        const siteName = updatedData1[0].SiteName;
+        const subsite = await sp.web.webs.filter(`Title eq '${siteName}'`)();
+        const { web } = await sp.site.openWebById(subsite[0].Id);
+    
+        const file = web.getFileById(filterData.FileUID.FileUID);
+        const listItem = await file.getItem();
+        const updatedData = await listItem.update({
+          Status: "Rejected"
+        });
+        console.log("Document library file status updated", updatedData);
+      
       payload = {
         Log: setFinalStatus,
         LogHistory: isoDate,
         Remark: remark,
         // ApprovedLevel:approvedLevel
       }
+      const context = await sp.site.getContextInfo();
+      // context.WebFullUrl = "https://tenant.sharepoint.com/sites/edcspfx"
+      const fullUrl = context.WebFullUrl;
+      const parts = fullUrl.split("/");
+      const siteName2 = parts[parts.indexOf("sites") + 1]; // "EDeDMS"
+      console.log("Site Segment:", siteName);
+
+      const url = window.location.href;
+      // example: https://tenant.sharepoint.com/sites/edcspfx/SitePages/MyApprovals.aspx
+      const parts2 = url.split("/");
+      const index = parts2.indexOf("sites");
+      const baseUrl = parts2.slice(0, index + 1).join("/"); 
+    
+      if(updatedData){
+        Swal.fire(`File Rejected successfully`);
+        window.location.href = `${baseUrl}/${siteName2}/SitePages/MyApprovals.aspx`;
+      }
+    }catch{
+      console.error("errro" );
+      
+    }
     } else if (buttonText === "Rework") {
       setFinalStatus = 'Rework';
       successtext = "Submitted for Rework";
@@ -661,7 +804,7 @@ const DMSMyApprovalAction = ({ props }: any) => {
         Remark: remark,
         // ApprovedLevel:approvedLevel
       }
-
+      
     }
 
     console.log("payload for DMSFileApprovalTaskList", payload);
@@ -688,11 +831,30 @@ const DMSMyApprovalAction = ({ props }: any) => {
         console.log(getTaskdata, "getTaskdatagetTaskdata");
         for (const item of getTaskdata) {
           // alert(item.ID)
-          await sp.web.lists.getByTitle("DMSFileApprovalTaskList").items.getById(item.ID).delete();
+         const deleteitems= await sp.web.lists.getByTitle("DMSFileApprovalTaskList").items.getById(item.ID).delete();
         }
+
+     
       } else {
         console.log("No items found to delete.");
       }
+      const context = await sp.site.getContextInfo();
+      // context.WebFullUrl = "https://tenant.sharepoint.com/sites/edcspfx"
+      const fullUrl = context.WebFullUrl;
+      const parts = fullUrl.split("/");
+      const siteName2 = parts[parts.indexOf("sites") + 1]; // "EDeDMS"
+      console.log("Site Segment:", siteName2);
+   
+      const url = window.location.href;
+      // example: https://tenant.sharepoint.com/sites/edcspfx/SitePages/MyApprovals.aspx
+      const parts2 = url.split("/");
+      const index = parts2.indexOf("sites");
+      const baseUrl = parts2.slice(0, index + 1).join("/"); 
+    
+   
+        Swal.fire(`File Rework successfully`);
+        window.location.href = `${baseUrl}/${siteName2}/SitePages/MyApprovals.aspx`;
+      
     }
 
     const data = await sp.web.lists.getByTitle('DMSFileApprovalList').items.select("ID", "ApproveAction", "ApprovedLevel").filter(` FileUID eq '${filterData.FileUID.FileUID}'`)();
@@ -710,16 +872,28 @@ const DMSMyApprovalAction = ({ props }: any) => {
     console.log("paylaodForDMSFileApprovalList", paylaodForDMSFileApprovalList);
 
     const updateddata1 = await sp.web.lists.getByTitle("DMSFileApprovalList").items.getById(id).update(paylaodForDMSFileApprovalList);
-    const SiteUrl = props.siteUrl;
+ 
+    const context = await sp.site.getContextInfo();
+    // context.WebFullUrl = "https://tenant.sharepoint.com/sites/edcspfx"
+    const fullUrl = context.WebFullUrl;
+    const parts = fullUrl.split("/");
+    const siteName = parts[parts.indexOf("sites") + 1]; // "EDeDMS"
+    console.log("Site Segment:", siteName);
     console.log("updateddata1", updateddata1);
+    const url = window.location.href;
+    // example: https://tenant.sharepoint.com/sites/edcspfx/SitePages/MyApprovals.aspx
+    const parts2 = url.split("/");
+    const index = parts2.indexOf("sites");
+    const baseUrl = parts2.slice(0, index + 1).join("/"); 
+  
     if(updateddata1){
       Swal.fire(`${successtext} successfully`);
-      window.location.href = `${SiteUrl}/SitePages/MyApprovals.aspx`;
+      window.location.href = `${baseUrl}/${siteName}/SitePages/MyApprovals.aspx`;
     }
     
   }
   const iframe = document.getElementById("filePreview") as HTMLIFrameElement;
-  // const spinner = document.getElementById("spinner") as HTMLElement;
+   const spinner = document.getElementById("spinner") as HTMLElement;
 
   // Show the spinner and hide the iframe initially
   // spinner.style.display = "block";
@@ -774,64 +948,120 @@ const DMSMyApprovalAction = ({ props }: any) => {
       checkAndHideButton();
     };
   }
+  
+  
+  // const previewFile = async (previewUrl: string) => {
+  //   try {
+  //     console.log("Previewing file at URL:", previewUrl);
+  //     const iframe = document.getElementById("filePreview") as HTMLIFrameElement;
+  //     const spinner = document.getElementById("spinner") as HTMLElement;
+
+  //     // Show the spinner and hide the iframe initially
+  //     if(spinner)spinner.style.display = "block";
+  //     iframe.style.display = "none";
+  //     iframe.src = previewUrl;
+
+  //     // Add an onload event listener to the iframe
+  //     iframe.onload = () => {
+  //       const spinner = document.getElementById("spinner") as HTMLElement;
+  //             if(spinner)spinner.style.display = "none";   
+  //       console.log("Iframe has loaded");
+
+  //       const checkAndHideButton = () => {
+  //         try {
+  //           const iframeDocument = iframe.contentDocument || iframe.contentWindow?.document;
+  //           if (iframeDocument) {
+  //             const button = iframeDocument.getElementById("OneUpCommandBar") as HTMLElement;
+  //             const excelToolbar = iframeDocument.getElementById("m_excelEmbedRenderer_m_ewaEmbedViewerBar") as HTMLElement;
+
+              
+  //             if (excelToolbar) {
+  //               excelToolbar.style.display = "none"
+  //             }
+  //             if (button) {
+  //               console.log("Hiding the OneUpCommandBar element");
+  //               button.style.display = "none";
+
+
+  //               // spinner.style.display = "none";
+  //               iframe.style.display = "block";
+
+
+  //             } else {
+  //               console.log("OneUpCommandBar not found, rechecking...");
+  //             }
+
+  //             const helpbutton = iframeDocument.getElementById("m_excelEmbedRenderer_m_ewaEmbedViewerBar") as HTMLElement;
+  //             if (helpbutton) {
+  //               helpbutton.style.display = "none"
+  //             }
+  //           }
+  //         } catch (error) {
+  //           console.error("Error accessing iframe content:", error);
+  //         }
+
+
+  //         setTimeout(checkAndHideButton, 100);
+  //       };
+
+
+  //       checkAndHideButton();
+  //     };
+  //   } catch (error) {
+  //     console.error("Error previewing file:", error);
+  //   }
+
+  // };
   const previewFile = async (previewUrl: string) => {
     try {
       console.log("Previewing file at URL:", previewUrl);
       const iframe = document.getElementById("filePreview") as HTMLIFrameElement;
       const spinner = document.getElementById("spinner") as HTMLElement;
-
-      // Show the spinner and hide the iframe initially
-      if(spinner)spinner.style.display = "block";
+  
+      // Show loader and hide iframe initially
+      if (spinner) spinner.style.display = "none";
       iframe.style.display = "none";
       iframe.src = previewUrl;
-
-      // Add an onload event listener to the iframe
+  
       iframe.onload = () => {
-        console.log("Iframe has loaded");
-
+        console.log("Iframe has loaded ✅");
+  
+        // 🔹 Immediately hide loader when iframe is ready
+        if (spinner) spinner.style.display = "none";
+        iframe.style.display = "block";
+  
+        // Continue toolbar cleanup asynchronously
         const checkAndHideButton = () => {
           try {
             const iframeDocument = iframe.contentDocument || iframe.contentWindow?.document;
             if (iframeDocument) {
               const button = iframeDocument.getElementById("OneUpCommandBar") as HTMLElement;
               const excelToolbar = iframeDocument.getElementById("m_excelEmbedRenderer_m_ewaEmbedViewerBar") as HTMLElement;
+  
               if (excelToolbar) {
-                excelToolbar.style.display = "none"
+                excelToolbar.style.display = "none";
               }
               if (button) {
                 console.log("Hiding the OneUpCommandBar element");
                 button.style.display = "none";
-
-
-                spinner.style.display = "none";
-                iframe.style.display = "block";
-
-
-              } else {
-                console.log("OneUpCommandBar not found, rechecking...");
-              }
-
-              const helpbutton = iframeDocument.getElementById("m_excelEmbedRenderer_m_ewaEmbedViewerBar") as HTMLElement;
-              if (helpbutton) {
-                helpbutton.style.display = "none"
+                return; // stop retrying once hidden
               }
             }
           } catch (error) {
             console.error("Error accessing iframe content:", error);
           }
-
-
+  
+          // Retry if not yet found
           setTimeout(checkAndHideButton, 100);
         };
-
-
+  
         checkAndHideButton();
       };
     } catch (error) {
       console.error("Error previewing file:", error);
     }
-
   };
+  
   return (
 
     <div>
@@ -850,9 +1080,16 @@ const DMSMyApprovalAction = ({ props }: any) => {
                   </div>
 
 
-                  {toggleLog && (
-                    <div className="" style={{ backgroundColor: 'white', border: '1px solid #54ade0', marginTop: '20px', borderRadius: '20px', padding: '15px' }}>
+                <div className="" style={{ backgroundColor: 'white', border: '1px solid #54ade0', marginTop: '20px', borderRadius: '20px', padding: '15px' }}>
+                     
+        <div style={{textAlign:'center'}} className='spinner' id="spinner">
+        <img style={{width :'116px'  ,margin: '0px auto'}} src={require("../assets/ESSAROLLER.gif")} alt="Loading..." />
+        <div style={{color:'#2c9942',marginBottom:'10px'}}>Loading Preview File</div>
+        </div>
+      
                       <iframe id="filePreview" width="100%" height="400"></iframe>
+                      
+                  {toggleLog && (
                       <div className="">
                         <div className="">
 
@@ -920,9 +1157,10 @@ const DMSMyApprovalAction = ({ props }: any) => {
                           </div>
                         </div>
                       </div>
+                    )}
                     </div>
 
-                  )}
+               
                   <div>
                     <div className="DMSMasterContainer">
                       {/* <h4 className="page-title fw-bold mb-1 font-20">Settings</h4> */}
@@ -1008,8 +1246,8 @@ const DMSMyApprovalAction = ({ props }: any) => {
                                   </td>
                                   <td style={{ minWidth: '150px', maxWidth: '150px' }}>
 
-                                    {item?.Modified}
-
+                                    {/* {item?.Modified} */}
+                                    {item?.Modified ? item.Modified : ""}
 
                                   </td>
 

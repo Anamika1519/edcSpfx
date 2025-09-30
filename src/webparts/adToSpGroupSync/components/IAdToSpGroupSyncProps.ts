@@ -18,6 +18,8 @@ export interface IAdToSpGroupSyncState {
   spGroups: IDropdownOption[]; // SharePoint Groups
   selectedADGroup: string; // Selected AD Group
   selectedSPGroup: string; // Selected SP Group
+  selectedSPGroupName: string; // Selected SP Group Name
+  selectedADGroupName: string; // Selected AD Group Name
   adGroupUsers: any[]; // Users in the AD group
   status: string; // Status message
 }

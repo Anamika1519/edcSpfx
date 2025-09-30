@@ -290,6 +290,14 @@
         }
       ]
     },
+    "ad-to-sp-group-sync-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/adToSpGroupSync/AdToSpGroupSyncWebPart.js",
+          "manifest": "./src/webparts/adToSpGroupSync/AdToSpGroupSyncWebPart.manifest.json"
+        }
+      ]
+    },
     "reports-web-part": {
       "components": [
         {
@@ -347,6 +355,7 @@
     "ArgDelegationWebPartStrings": "lib/webparts/argDelegation/loc/{locale}.js",
     "ArgDelegationMasterWebPartStrings": "lib/webparts/argDelegationMaster/loc/{locale}.js",
     "ReportNavigationWebPartStrings": "lib/webparts/reportNavigation/loc/{locale}.js",
+    "AdToSpGroupSyncWebPartStrings": "lib/webparts/adToSpGroupSync/loc/{locale}.js",
     "ReportsWebPartStrings": "lib/webparts/reports/loc/{locale}.js"
   }
 }

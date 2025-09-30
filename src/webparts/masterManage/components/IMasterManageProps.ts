@@ -6,4 +6,5 @@ export interface IMasterManageProps {
   userDisplayName: string;
   context: any;
   siteUrl: string;
+  onButtonClick?:Function;
 }

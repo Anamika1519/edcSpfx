@@ -32,3 +32,143 @@
     }
   }
 }
+.argform {
+  left: 2%;
+  /* position: absolute; */
+  top: 7rem;
+  width: 100%;
+  z-index: 1;
+}
+.container {
+  width: 100%; /* Adjust to match the container width */
+  margin: 0 auto;
+  border-style: solid;
+    border-width: thin;
+    border-color: #5db0e0;
+    border-radius: 20px;
+    background-color: white;
+    overflow: auto;
+}
+.title {
+  font-size: 16px;
+  font-weight: 400;
+  color: #000000;
+  position: relative;
+
+}
+.editdeleteicons{
+  // display: flex;
+  margin-top: 4px;
+  min-width:70px !important;
+  max-width:70px !important;
+}
+.editdicon{
+  height: 20px;
+}
+.deleteicon{
+  height: 25px;
+}
+.backbuttonform:hover{
+  text-decoration: none;
+}
+.backbuttonform{
+ background-color:  #6c757d;
+ display: flex;
+ margin-left: 10px;
+border: none;
+color: white;
+border-radius: 4px;
+padding: 8px 15px;
+// height: 27px;
+height: 40px;
+text-decoration: none;
+cursor: pointer;
+}
+.backbuttonform1:hover{
+  text-decoration: none;
+}
+.backbuttonform1{
+ background-color:  #1fb0e5;
+ display: flex;
+ margin-left: 10px;
+border: none;
+color: white;
+border-radius: 4px;
+padding: 8px;
+// height: 27px;
+height: 40px;
+text-decoration: none;
+cursor: pointer;
+}
+.addbuttonargform:hover{
+  text-decoration: none;
+}
+.addbuttonargform{
+  display: flex;
+background-color: #1fb0e5;
+margin-left: 10px;
+border: none;
+color: white;
+border-radius: 4px;
+padding: 8px;
+// height: 27px;
+height: 40px;
+text-decoration: none;
+cursor: pointer;
+}
+.addbuttonargform1:hover{
+  text-decoration: none;
+}
+.addbuttonargform1{
+  display: flex;
+background-color: #6c757d;
+margin-left: 10px;
+border: none;
+color: white;
+border-radius: 4px;
+padding: 8px;
+// height: 27px;
+height: 40px;
+text-decoration: none;
+cursor: pointer;
+}
+
+@media(max-width:640px){
+  .addbuttonargform{font-size: 12px !important; padding: 8px 4px; line-height: 30px;}
+  .Addtext{font-size: 12px !important; margin-top: -2px !important;}
+  .backbuttonform{    padding: 13px !important;}
+}
+.customTable {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+
+  th,
+  td {
+    padding: 10px 12px;
+    text-align: left;
+    vertical-align: middle;
+    word-wrap: break-word;
+    border: 1px solid #ddd; // Optional: remove if you want no borders
+  }
+
+  th {
+    background-color: #f5f5f5;
+    font-weight: 600;
+    color: #333;
+  }
+
+  tr:nth-child(even) {
+    background-color: #fafafa;
+  }
+
+  img {
+    cursor: pointer;
+    width: 18px;
+    height: 18px;
+  }
+}
+
+.indexdesign {
+  font-weight: 500;
+}

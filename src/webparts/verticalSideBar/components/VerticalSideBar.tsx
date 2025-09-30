@@ -161,7 +161,7 @@ const VerticalContext = ({ _context }: any) => {
       console.log(res, "currentuser");
     })
     
-    const siteUrl = `${Tenant_URL}/sites/ededms/`;
+    const siteUrl = `${Tenant_URL}/sites/edcspfx/`;
     let listTitle = 'UtilitySettings'
     let CurrentsiteID ="ec1d9ac4-4785-46e0-91bf-9e0ce3b8f5e6";
     siteID = CurrentsiteID;

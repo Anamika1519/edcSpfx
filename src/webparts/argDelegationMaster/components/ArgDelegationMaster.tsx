@@ -51,6 +51,9 @@ const ArgDelegationMasterContext = ({ props }: any) => {
      else if (groupTitles.includes("intranetcontentcontributor")) {
        DelegateArr = await getDelegateList(sp, "No");
      }
+     else{
+      DelegateArr = await getDelegateList(sp, "No");
+     }
  
      setDelegateData(DelegateArr);
  
@@ -58,10 +61,10 @@ const ArgDelegationMasterContext = ({ props }: any) => {
  const [filters, setFilters] = React.useState({
     SNo: '',
     Title: '',
-    Overview: '',
-    URL: '',
+    ActingFor: '',
     Status: '',
-    SubmittedDate: ''
+    StartDate: '',
+    EndDate: ''
   });
   const Breadcrumb = [
     {
@@ -70,7 +73,7 @@ const ArgDelegationMasterContext = ({ props }: any) => {
     },
     {
       "ChildComponent": "Delegation Master",
-      "ChildComponentURl": `${siteUrl}/SitePages/DelegationMaster.aspx`
+      "ChildComponentURl": `${siteUrl}/SitePages/DelegateMaster.aspx`
     }
   ]
 
@@ -99,10 +102,15 @@ const ArgDelegationMasterContext = ({ props }: any) => {
     const filteredData = data.filter((item, index) => {
       return (
         (filters.SNo === '' || String(index + 1).includes(filters.SNo)) &&
-        (filters.Title === '' || item.Title.toLowerCase().includes(filters.Title.toLowerCase())) &&
-        (filters.URL === '' || item.URL.toLowerCase().includes(filters.URL.toLowerCase())) &&
-        (filters?.Status === '' || item?.Status?.toLowerCase().includes(filters?.Status?.toLowerCase())) &&
-        (filters.SubmittedDate === '' || item.Created.toLowerCase().includes(filters.SubmittedDate.toLowerCase()))
+        // (filters.Title === '' || item.Title.toLowerCase().includes(filters.Title.toLowerCase())) &&
+        (filters.Title === '' || item.DelegateName.Title.toLowerCase().includes(filters.Title.toLowerCase())) &&
+        (filters.ActingFor === '' || item.ActingFor.Title.toLowerCase().includes(filters.ActingFor.toLowerCase())) &&
+        // (filters?.StartDate === '' || item?.StartDate?.toLowerCase().includes(filters?.StartDate?.toLowerCase())) &&
+        // (filters.EndDate === '' || item.EndDate.toLowerCase().includes(filters.EndDate.toLowerCase())) &&
+        (filters?.StartDate === '' || moment(item.StartDate).format("DD/MMM/YYYY").toLowerCase().includes(filters?.StartDate?.toLowerCase())) &&
+        (filters.EndDate === '' || moment(item.EndDate).format("DD/MMM/YYYY").toLowerCase().includes(filters.EndDate.toLowerCase())) &&
+       
+        (filters.Status === '' || item.Status.toLowerCase().includes(filters.Status.toLowerCase()))
       );
     });
     const sortedData = filteredData.sort((a, b) => {
@@ -210,9 +218,24 @@ const ArgDelegationMasterContext = ({ props }: any) => {
     
           'DelegateName': item.DelegateName.Title,
     
-          'StartDate': item.StartDate,
+          // 'StartDate': item.StartDate,
+
+          // 'StartDate': new Intl.DateTimeFormat('en-GB', {
+          //   day: '2-digit',
+          //   month: 'short',
+          //   year: 'numeric'
+          // }).format(new Date(item?.StartDate)),
+
     
-          'EndDate': item.EndDate,
+          // 'EndDate': item.EndDate,
+          // 'EndDate': new Intl.DateTimeFormat('en-GB', {
+          //   day: '2-digit',
+          //   month: 'short',
+          //   year: 'numeric'
+          // }).format(new Date(item?.EndDate)),
+          'StartDate':moment(item.StartDate).format("DD/MMM/YYYY"),
+
+           'EndDate': moment(item.EndDate).format("DD/MMM/YYYY"),
     
           'ActingFor': item.ActingFor.Title,
     
@@ -318,7 +341,7 @@ const ArgDelegationMasterContext = ({ props }: any) => {
                                 <div className="d-flex pb-2" style={{ justifyContent: 'space-evenly' }}>
                                   <span >Employee Name</span>  <span onClick={() => handleSortChange('Title')}><FontAwesomeIcon icon={faSort} /> </span></div>
                                 <div className=" bd-highlight">
-                                  <input type="text" placeholder="Filter by Title" onChange={(e) => handleFilterChange(e, 'Title')}
+                                  <input type="text" placeholder="Filter by Employee Name" onChange={(e) => handleFilterChange(e, 'Title')}
                                     onKeyDown={(e) => {
                                       if (e.key === 'Enter' && !e.shiftKey) {
                                         e.preventDefault(); // Prevents the new line in textarea
@@ -332,9 +355,9 @@ const ArgDelegationMasterContext = ({ props }: any) => {
                             <th style={{ minWidth: '120px', maxWidth: '120px' }}>
                               <div className="d-flex flex-column bd-highlight ">
                                 <div className="d-flex pb-2" style={{ justifyContent: 'space-evenly' }}>
-                                  <span >Delegate Access To</span>  <span onClick={() => handleSortChange('Title')}><FontAwesomeIcon icon={faSort} /> </span></div>
+                                  <span >Delegate Access To</span>  <span onClick={() => handleSortChange('ActingFor')}><FontAwesomeIcon icon={faSort} /> </span></div>
                                 <div className=" bd-highlight">
-                                  <input type="text" placeholder="Filter by Title" onChange={(e) => handleFilterChange(e, 'Title')}
+                                  <input type="text" placeholder="Filter by Acting For" onChange={(e) => handleFilterChange(e, 'ActingFor')}
                                     onKeyDown={(e) => {
                                       if (e.key === 'Enter' && !e.shiftKey) {
                                         e.preventDefault(); // Prevents the new line in textarea
@@ -349,9 +372,9 @@ const ArgDelegationMasterContext = ({ props }: any) => {
                             <th style={{ minWidth: '80px', maxWidth: '80px' }}>
                               <div className="d-flex flex-column bd-highlight ">
                                 <div className="d-flex pb-2" style={{ justifyContent: 'space-evenly' }}>
-                                  <span >Start Date</span>  <span onClick={() => handleSortChange('SubmittedDate')}><FontAwesomeIcon icon={faSort} /> </span></div>
+                                  <span >Start Date</span>  <span onClick={() => handleSortChange('StartDate')}><FontAwesomeIcon icon={faSort} /> </span></div>
                                 <div className=" bd-highlight">
-                                  <input type="text" placeholder="Filter by SubmittedDate" onChange={(e) => handleFilterChange(e, 'SubmittedDate')}
+                                  <input type="text" placeholder="Filter by Start Date" onChange={(e) => handleFilterChange(e, 'StartDate')}
                                     onKeyDown={(e) => {
                                       if (e.key === 'Enter' && !e.shiftKey) {
                                         e.preventDefault(); // Prevents the new line in textarea
@@ -364,9 +387,9 @@ const ArgDelegationMasterContext = ({ props }: any) => {
                             <th style={{ minWidth: '80px', maxWidth: '80px' }}>
                               <div className="d-flex flex-column bd-highlight ">
                                 <div className="d-flex pb-2" style={{ justifyContent: 'space-evenly' }}>
-                                  <span >Finish Date</span>  <span onClick={() => handleSortChange('SubmittedDate')}><FontAwesomeIcon icon={faSort} /> </span></div>
+                                  <span >Finish Date</span>  <span onClick={() => handleSortChange('EndDate')}><FontAwesomeIcon icon={faSort} /> </span></div>
                                 <div className=" bd-highlight">
-                                  <input type="text" placeholder="Filter by SubmittedDate" onChange={(e) => handleFilterChange(e, 'SubmittedDate')}
+                                  <input type="text" placeholder="Filter by Finish Date" onChange={(e) => handleFilterChange(e, 'EndDate')}
                                     onKeyDown={(e) => {
                                       if (e.key === 'Enter' && !e.shiftKey) {
                                         e.preventDefault(); // Prevents the new line in textarea
@@ -448,9 +471,23 @@ const ArgDelegationMasterContext = ({ props }: any) => {
                                   <td style={{ minWidth: '40px', maxWidth: '40px' }}><div style={{ marginLeft: '10px' }} className='indexdesign'> {index + 1}</div>  </td>
                                   <td style={{ minWidth: '120px', maxWidth: '120px' }}>{item.DelegateName.Title}</td>
                                   <td style={{ minWidth: '120px', maxWidth: '120px' }}>{item.ActingFor.Title}</td>
+
+                                  <td style={{ minWidth: '80px', maxWidth: '80px',textAlign:'center' }}><div className='btn btn-light newlight'> {moment(item.StartDate).format("DD/MMM/YYYY")} </div> </td>
+                                  <td style={{ minWidth: '80px', maxWidth: '80px',textAlign:'center' }}><div className='btn btn-light newlight'> {moment(item.EndDate).format("DD/MMM/YYYY")} </div> </td>
+                                  
                                  
-                                  <td style={{ minWidth: '80px', maxWidth: '80px',textAlign:'center' }}><div className='btn btn-light newlight'> {moment(item.StartDate).format("DD-MMM-YYYY")} </div> </td>
-                                  <td style={{ minWidth: '80px', maxWidth: '80px',textAlign:'center' }}><div className='btn btn-light newlight'> {moment(item.EndDate).format("DD-MMM-YYYY")} </div> </td>
+                                  {/* <td style={{ minWidth: '80px', maxWidth: '80px',textAlign:'center' }}><div className='btn btn-light newlight'> {moment(item.StartDate).add(1,'days').format("DD/MMM/YYYY")} </div> </td>
+                                  <td style={{ minWidth: '80px', maxWidth: '80px',textAlign:'center' }}><div className='btn btn-light newlight'> {moment(item.EndDate).add(1,'days').format("DD/MMM/YYYY")} </div> </td> */}
+                                  {/* <td style={{ minWidth: '80px', maxWidth: '80px',textAlign:'center' }}><div className='btn btn-light newlight'>{`${new Intl.DateTimeFormat('en-GB', {
+                                    day: '2-digit',
+                                    month: 'short',
+                                    year: 'numeric'
+                                  }).format(new Date(item.StartDate))}`}</div> </td>
+                                  <td style={{ minWidth: '80px', maxWidth: '80px',textAlign:'center' }}><div className='btn btn-light newlight'>{`${new Intl.DateTimeFormat('en-GB', {
+                                    day: '2-digit',
+                                    month: 'short',
+                                    year: 'numeric'
+                                  }).format(new Date(item.EndDate))}`}</div> </td> */}
                                   <td style={{ minWidth: '80px', maxWidth: '80px',textAlign:'center' }}>  <div className='btn btn-status newlight'> {item.Status} </div> </td>
                                   <td style={{ minWidth: '80px', maxWidth: '80px' }} className="ng-binding">
                                     <div className="d-flex  pb-0" style={{ justifyContent: 'center', gap: '5px' }}>

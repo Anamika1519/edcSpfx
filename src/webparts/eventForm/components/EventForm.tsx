@@ -38,7 +38,8 @@ import moment from 'moment';
 import { DatePicker } from '@fluentui/react/lib/DatePicker';
 let mode = "";
 let newfileupload: any
-let newfilepreview: any
+let newfilepreview: any;
+let Showinputdate: boolean = false;
 const HelloWorldContext = ({ props }: any) => {
   const sp: SPFI = getSP();
   console.log(sp, 'sp');
@@ -76,6 +77,7 @@ const HelloWorldContext = ({ props }: any) => {
   // const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
   const { useHide }: any = React.useContext(UserContext);
   console.log('This function is called only once', useHide);
+  const hiddenDateRef = useRef(null);
   const elementRef = React.useRef<HTMLDivElement>(null);
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(true);
   const context = React.useContext(UserContext);
@@ -104,7 +106,7 @@ const HelloWorldContext = ({ props }: any) => {
 
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedRegistrationDueDate, setSelectedRegistrationDueDate] = useState("");
-
+  const [showCalendar, setShowCalendar] = useState(false);
   const [ApprovalMode, setApprovalMode] = React.useState(false);
   const [ApprovalRequestItem, setApprovalRequestItem] = React.useState(null);
   const [InputDisabled, setInputDisabled] = React.useState(false);
@@ -218,8 +220,33 @@ const HelloWorldContext = ({ props }: any) => {
       [name]: value === true ? true : false, // Ensure the correct boolean value is set for checkboxes
     }));
   };
+  const handleTextClick = () => {
+    if (!InputDisabled) {
+      hiddenDateRef.current.showPicker(); // Show native date picker
+    }
+  };
+  const formattedDisplayDate = formData.EventDate
+    ? new Date(formData.EventDate).toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric'
+    }).replace(/ /g, '/')
+    : '';
+  const handleDateChange = (e: { target: { value: string | number | Date; }; }) => {
+    const selectedDate = new Date(e.target.value);
+    const formattedDate = selectedDate.toISOString().split("T")[0]; // yyyy-mm-dd
+    const displayDate = selectedDate.toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric'
+    }).replace(/ /g, '/'); // Format to dd/mmm/yyyy
+
+    onChange("EventDate", formattedDate);
+    setShowCalendar(false); // Optional: keep it open if you prefer
+  };
   const onChange = async (name: string, value: any) => {
     debugger
+    // Showinputdate = false;
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
@@ -246,7 +273,7 @@ const HelloWorldContext = ({ props }: any) => {
       setRows(initialRows);
       console.log("initialRows", initialRows)
     }
-
+    Showinputdate = true;
   };
   // Function to fetch or return the initial description value
   const getDescription = (des: any) => {
@@ -278,6 +305,15 @@ const HelloWorldContext = ({ props }: any) => {
   const validateForm = async (formsubmode: FormSubmissionMode) => {
     const { EventName, EventDate, EventAgenda, RegistrationDueDate, EntityId, Overview } = formData;
     const { description } = richTextValues;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Set time to 00:00:00.000
+
+    const regDate = new Date(RegistrationDueDate);
+    regDate.setHours(0, 0, 0, 0); // Set time to 00:00:00.000
+
+    const eveDate = new Date(EventDate);
+    eveDate.setHours(0, 0, 0, 0); // Set time to 00:00:00.000
+
     let valid = true;
     setValidDraft(true);
     setValidSubmit(true);
@@ -305,13 +341,13 @@ const HelloWorldContext = ({ props }: any) => {
       if (!RegistrationDueDate) {
         valid = false;
       }
-      else if (EventDate && new Date(EventDate).getTime() < new Date().getTime()) {
+      else if (EventDate && eveDate < today) {
         valid = false;
       }
-      else if (RegistrationDueDate && new Date(RegistrationDueDate).getTime() < new Date().getTime()) {
+      else if (RegistrationDueDate && regDate < today) {
         valid = false;
       }
-      else if (EventDate && RegistrationDueDate && new Date(RegistrationDueDate).getTime() > new Date(EventDate).getTime()) {
+      else if (EventDate && RegistrationDueDate && regDate > today) {
         valid = false;
       }
       setValidDraft(valid);
@@ -323,13 +359,13 @@ const HelloWorldContext = ({ props }: any) => {
       //  else if (!EventDate || (EventDate && moment(new Date(EventDate)).format("DD-MM-YYYY") < moment(new Date()).format("DD-MM-YYYY"))) {
       //   valid = false;
       // }
-      else if (!EventDate || (EventDate && new Date(EventDate).getTime() < new Date().getTime())) {
+      else if (!EventDate || (EventDate && eveDate < today)) {
         valid = false;
       }
-      else if (!RegistrationDueDate || RegistrationDueDate && new Date(RegistrationDueDate).getTime() < new Date().getTime()) {
+      else if (!RegistrationDueDate || RegistrationDueDate && regDate < today) {
         valid = false;
       }
-      else if (EventDate && RegistrationDueDate && new Date(RegistrationDueDate).getTime() > new Date(EventDate).getTime()) {
+      else if (EventDate && RegistrationDueDate && regDate > eveDate) {
         valid = false;
       }
       // else if (!RegistrationDueDate || RegistrationDueDate && moment(new Date(RegistrationDueDate)).format("DD-MM-YYYY") < moment(new Date()).format("DD-MM-YYYY")) {
@@ -354,9 +390,9 @@ const HelloWorldContext = ({ props }: any) => {
     }
     console.log("new Date(RegistrationDueDate) > new Date(EventDate)", EventGalleryArr1.length, BnnerImagepostArr.length, valid);
 
-    if (!valid && (EventDate && RegistrationDueDate && new Date(RegistrationDueDate).getTime() > new Date(EventDate).getTime())) {
+    if (!valid && (EventDate && RegistrationDueDate && regDate > eveDate)) {
       Swal.fire('Registration date cannot be later than the event date.');
-    } else if (!valid && (EventDate && new Date(EventDate).getTime() < new Date().getTime())) {
+    } else if (!valid && (EventDate && eveDate < today)) {
       if (hidesavasdraft === 'true') {
         valid = true;
       } else {
@@ -365,10 +401,15 @@ const HelloWorldContext = ({ props }: any) => {
       }
 
     }
-    else if (!valid && (RegistrationDueDate && new Date(RegistrationDueDate).getTime() < new Date().getTime())) {
+
+
+    if (!valid && RegistrationDueDate && regDate < today) {
       Swal.fire('Registration date cannot be earlier than today.');
-      //Swal.fire('Please select a future event date to continue.');
     }
+    // else if (!valid && (RegistrationDueDate && new Date(RegistrationDueDate).getTime() < new Date().getTime())) {
+    //   Swal.fire('Registration date cannot be earlier than today.');
+    //   //Swal.fire('Please select a future event date to continue.');
+    // }
     else {
       Swal.fire(errormsg !== "" ? errormsg : 'Please fill the mandatory fields.');
     }
@@ -1431,7 +1472,15 @@ const HelloWorldContext = ({ props }: any) => {
     }
 
   }
-
+  const getFormattedDate = (dateStr: string | number | Date) => {
+    if (!dateStr) return '';
+    const dateObj = new Date(dateStr);
+    return dateObj.toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric'
+    }).replace(/ /g, '/'); // e.g., 07/Aug/2025
+  };
   //#region deleteLocalFile
   const deleteLocalFile = (index: number, filArray: any[], name: string) => {
     //debugger
@@ -1605,6 +1654,7 @@ const HelloWorldContext = ({ props }: any) => {
                             Event Name <span className="text-danger">*</span>
                           </label>
                           <input
+                          title={formData.EventName}
                             type="text"
                             id="title"
                             name="EventName"
@@ -1621,20 +1671,50 @@ const HelloWorldContext = ({ props }: any) => {
                           <label htmlFor="EventDate" className="form-label">
                             Event Date<span className="text-danger">*</span>
                           </label>
+                          {/* <input
+                            type="text"
+                            value={formattedDisplayDate}
+                            placeholder="Enter Event Date"
+                            className={`form-control ${(!ValidDraft || !ValidSubmit) ? "border-on-error" : ""}`}
+                            onClick={handleTextClick}
+                            disabled={InputDisabled}
+                            readOnly
+                            style={{ cursor: 'pointer' }}
+                          />
                           <input
                             type="date"
-                            id="EventDate"
-                            name="EventDate"
-                            placeholder='Enter Event Date'
-                            className={`form-control ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
-                            value={formData.EventDate ? new Date(formData.EventDate).toLocaleDateString("en-GB").split('/').reverse().join('-') : ""}
-                            onChange={(e) => {
-                              const formattedDate = new Date(e.target.value).toISOString().split('T')[0];
-                              onChange(e.target.name, formattedDate);
-                            }}
+                            ref={hiddenDateRef}
+                            style={{ display: 'none' }}
+                            value={formData.EventDate || ""}
+                            onChange={handleDateChange}
                             disabled={InputDisabled}
-                          />
-
+                          /> */}
+                          <div className="date-field-wrapper" title={formData?.EventDate && getFormattedDate(formData?.EventDate)}>
+                            <input
+                              type="text"
+                              id="title"
+                              placeholder='DD/MMM/YYYY'
+                              value={getFormattedDate(formData.EventDate)}
+                              //className={`form-control ${(!ValidDraft || !ValidSubmit) ? "border-on-error" : ""}`}
+                              disabled={InputDisabled}
+                              className={`form-control date-text-display ${(!ValidDraft || !ValidSubmit) ? "border-on-error" : ""}`}
+                              readOnly
+                            />
+                            <input
+                              type="date"
+                              ref={hiddenDateRef}
+                              id="EventDate"
+                              name="EventDate"
+                              placeholder='Enter Event Date'
+                              className={`date-picker-icon ${(!ValidDraft || !ValidSubmit) ? "border-on-errordate" : ""}`}
+                              value={formData.EventDate ? new Date(formData.EventDate).toLocaleDateString("en-GB").split('/').reverse().join('-') : ""}
+                              onChange={(e) => {
+                                const formattedDate = new Date(e.target.value).toISOString().split('T')[0];
+                                onChange(e.target.name, formattedDate);
+                              }}
+                              disabled={InputDisabled}
+                            />
+                          </div>
                           {/* <DatePicker id="EventDate"
                             value={
                               formData?.EventDate
@@ -1658,7 +1738,7 @@ const HelloWorldContext = ({ props }: any) => {
                           <label htmlFor="RegistrationDueDate" className="form-label">
                             Registration Due Date <span className="text-danger">*</span>
                           </label>
-                          <input
+                          {/* <input
                             type="date"
                             id="RegistrationDueDate"
                             name="RegistrationDueDate"
@@ -1668,17 +1748,44 @@ const HelloWorldContext = ({ props }: any) => {
                             // value={formData.RegistrationDueDate}
                             onChange={(e) => onChange(e.target.name, e.target.value)}
                             disabled={InputDisabled}
-                          />
+                          /> */}
+                          <div className="date-field-wrapper" title={formData?.RegistrationDueDate && getFormattedDate(formData?.RegistrationDueDate)}>
+                            <input
+                              type="text"
+                              id="title"
+                              placeholder='DD/MMM/YYYY'
+                              value={getFormattedDate(formData.RegistrationDueDate)}
+                              //className={`form-control ${(!ValidDraft || !ValidSubmit) ? "border-on-error" : ""}`}
+                              disabled={InputDisabled}
+                              className={`form-control date-text-display ${(!ValidDraft || !ValidSubmit) ? "border-on-error" : ""}`}
+                              readOnly
+                            />
+                            <input
+                              type="date"
+                              ref={hiddenDateRef}
+                              id="RegistrationDueDate"
+                              name="RegistrationDueDate"
+                              placeholder='Enter RegistrationDueDate'
+                              className={`date-picker-icon ${(!ValidDraft || !ValidSubmit) ? "border-on-errordate" : ""}`}
+                              value={formData.RegistrationDueDate ? new Date(formData.RegistrationDueDate).toLocaleDateString("en-GB").split('/').reverse().join('-') : ""}
+                              onChange={(e) => {
+                                const formattedDate = new Date(e.target.value).toISOString().split('T')[0];
+                                onChange(e.target.name, formattedDate);
+                              }}
+                              disabled={InputDisabled}
+                            />
+                          </div>
                         </div>
                       </div>
 
-
+                      {console.log("EnityDataEnityData",EnityData,formData?.EntityId)}
                       <div className="col-lg-4">
                         <div className="mb-3">
                           <label htmlFor="EntityId" className="form-label">
                             Department <span className="text-danger">*</span>
                           </label>
                           <select
+                            title={formData?.EntityId > 0 && EnityData.length > 0 && EnityData.find((x) => x.id == formData.EntityId)?.name}
                             //  className="form-select inputcss"
                             className={`form-select ${(!ValidSubmit) ? "border-on-error" : ""}`}
                             id="EntityId"
@@ -1734,6 +1841,7 @@ const HelloWorldContext = ({ props }: any) => {
                             onChange={(e) => onFileChange(e, "bannerimg", "Document")}
                             disabled={InputDisabled}
                           />
+                           <small className="text-muted">Recommended: 398x310 px</small>
                         </div>
                       </div>
 
@@ -1747,6 +1855,7 @@ const HelloWorldContext = ({ props }: any) => {
                                 Event Gallery <span className="text-danger">*</span>
                               </label>
                             </div>
+
                             <div>
 
                               {EventGalleryArr1.length > 0 &&
@@ -1773,6 +1882,7 @@ const HelloWorldContext = ({ props }: any) => {
                             onChange={(e) => onFileChange(e, "Gallery", "EventGallery")}
                             disabled={InputDisabled}
                           />
+                          <small className="text-muted">Recommended: 812x330 px</small>
                         </div>
                       </div>
 
@@ -1816,7 +1926,7 @@ const HelloWorldContext = ({ props }: any) => {
                           <label htmlFor="overview" className="form-label">
                             Event Overview
                           </label>
-                          <textarea
+                          <textarea title={formData.Overview}
                             className="form-control"
                             id="overview"
                             placeholder='Enter Event Overview'
@@ -1836,8 +1946,9 @@ const HelloWorldContext = ({ props }: any) => {
                           <label htmlFor="EventAgenda" className="form-label">
                             Event Agenda
                           </label>
-                          <div style={{ display: "contents", justifyContent: "start" }}>
+                          <div style={{ display: "contents", justifyContent: "start" }} title={formData.EventAgenda}>
                             <textarea
+                            title={formData.EventAgenda}
                               className="form-control"
                               id="EventAgenda"
                               placeholder='Enter Event Agenda'
@@ -2072,7 +2183,7 @@ const HelloWorldContext = ({ props }: any) => {
                           <table className="table table-bordered" style={{ fontSize: '0.75rem' }}>
                             <thead style={{ background: '#eef6f7' }}>
                               <tr>
-                                <th>Serial No.</th>
+                                <th className='text-center'>Serial No.</th>
                                 <th>File Name</th>
                                 <th>File Size</th>
                                 {mode != 'view' &&
@@ -2083,9 +2194,9 @@ const HelloWorldContext = ({ props }: any) => {
                             <tbody>
                               {EventThumbnailArr1.map((file: any, index: number) => (
                                 <tr key={index}>
-                                  <td className='text-center'>{index + 1}</td>
-                                  <td>{file.fileName}</td>
-                                  <td className='text-right'>{file.fileSize}</td>
+                                  <td >{index + 1}</td>
+                                  <td title={file?.fileName}>{file.fileName}</td>
+                                  <td title={file?.fileSize} className='text-right'>{file.fileSize}</td>
                                   {mode != 'view' &&
                                     <td className='text-center'> <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, EventThumbnailArr1, "docs")} /> </td>
                                   }
@@ -2119,7 +2230,7 @@ const HelloWorldContext = ({ props }: any) => {
                             <tbody>
                               {EventGalleryArr1.map((file: any, index: number) => (
                                 <tr key={index}>
-                                  <td className='text-center'>{index + 1}</td>
+                                  <td >{index + 1}</td>
                                   <td>
 
                                     <img
@@ -2139,8 +2250,8 @@ const HelloWorldContext = ({ props }: any) => {
 
                                   </td>
 
-                                  <td>{file.fileName}</td>
-                                  <td className='text-right'>{file.fileSize}</td>
+                                  <td title={file.fileName}>{file.fileName}</td>
+                                  <td title={file.fileSize} className='text-right'>{file.fileSize}</td>
                                   {mode != 'view' &&
                                     <td className='text-center'> <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, EventGalleryArr1, "Gallery")} /> </td>
                                   }

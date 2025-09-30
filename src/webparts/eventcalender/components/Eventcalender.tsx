@@ -449,7 +449,8 @@ const EventcalenderContext = ({ props }: any) => {
                               <div className="row">
                                 <div className="col-sm-12">
                                   <span className="font-13 float-start me-1 mt-0 mb-1">
-                                    {moment(item.EventDate).format("DD-MMM-YYYY")}
+                                    {/* {moment(item.EventDate).format("DD-MMM-YYYY")} */}
+                                    {moment(item?.EventDate).format("DD/MMM/YYYY")}
                                   </span>
                                   <span  style={{float:'left', marginTop:'1px', marginRight:'3px'}}>&nbsp;|&nbsp;</span> <span style={{float:'left'}} className="font-13 mt-0 mb-1 text-primary">{item.Entity.Entity}</span>
                                 </div>

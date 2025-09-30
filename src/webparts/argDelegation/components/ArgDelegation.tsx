@@ -35,7 +35,7 @@ const ArgDelegationContext = ({ props }: any) => {
  
   const { useHide }: any = React.useContext(UserContext);
   const elementRef = React.useRef<HTMLDivElement>(null);
-  
+  const hiddenDateRef = React.useRef(null);
   // const tenantUrl = props.siteUrl?.split("/sites/")[0];
   const [Loading, setLoading] = React.useState(false);
   const [ValidDraft, setValidDraft] = React.useState(true);
@@ -150,8 +150,30 @@ if(Currusers){
             debugger
             setEditForm(true)
             // setCategoryData(await getCategory(sp, Number(setBannerById[0]?.TypeMaster))) // Category
-            const startDate = setDelegateById[0].StartDate ?new Date(setDelegateById[0].StartDate).toISOString()?.split("T")[0]:"";
-            const endDate =setDelegateById[0].EndDate? new Date(setDelegateById[0].EndDate).toISOString()?.split("T")[0]:"";
+            // const startDate = setDelegateById[0].StartDate ?new Date(setDelegateById[0].StartDate).toISOString()?.split("T")[0]:"";
+            // const endDate =setDelegateById[0].EndDate? new Date(setDelegateById[0].EndDate).toISOString()?.split("T")[0]:"";
+          //   const startDate = setDelegateById[0].StartDate 
+          //   ? new Date(new Date(setDelegateById[0].StartDate).setDate(new Date(setDelegateById[0].StartDate).getDate() +1))
+          //       .toISOString()
+          //       ?.split("T")[0]
+          //   : "";
+
+          // const endDate = setDelegateById[0].EndDate 
+          //   ? new Date(new Date(setDelegateById[0].EndDate).setDate(new Date(setDelegateById[0].EndDate).getDate() + 1))
+          //       .toISOString()
+          //       ?.split("T")[0]
+          //   : "";
+          const startDate = setDelegateById[0].StartDate 
+            ? new Date(new Date(setDelegateById[0].StartDate).setDate(new Date(setDelegateById[0].StartDate).getDate()))
+                .toISOString()
+                ?.split("T")[0]
+            : "";
+
+          const endDate = setDelegateById[0].EndDate 
+            ? new Date(new Date(setDelegateById[0].EndDate).setDate(new Date(setDelegateById[0].EndDate).getDate()))
+                .toISOString()
+                ?.split("T")[0]
+            : "";
 
 
             let arr = {
@@ -323,7 +345,7 @@ if(Currusers){
     
                 const postResult = await addItem(postPayload, sp);
                 const postId = postResult?.data?.ID;
-                openEmailDialog(formData,postPayload);
+                // openEmailDialog(formData,postPayload);
                 // sendEmailUsingSMTP(formData,postPayload);
               //   debugger
               //   if (!postId) {
@@ -432,7 +454,15 @@ if(Currusers){
       console.log(selectedList , "selectedList");
       setSelectedOption(selectedList);  // Set the selected users
     };
-
+    const getFormattedDate = (dateStr: string | number | Date) => {
+      if (!dateStr) return '';
+      const dateObj = new Date(dateStr);
+      return dateObj.toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric'
+      }).replace(/ /g, '/'); // e.g., 07/Aug/2025
+    };
 
   return (
     <div id="wrapper" ref={elementRef}>
@@ -487,8 +517,8 @@ if(Currusers){
                             id="title"
                             name="title"
                             placeholder='Enter Title'
-                            // className="form-control inputcss"
-                            className={`form-control ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                            className="form-control "
+                            // className={`form-control ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
                             value={formData.DelegateName}
                             onChange={(e) => onChange(e.target.name, e.target.value)}
                             disabled={true}
@@ -543,7 +573,33 @@ if(Currusers){
                           <label htmlFor="StartDate" className="form-label">
                             Start Date<span className="text-danger">*</span>
                           </label>
-                          <input
+                          <div className="date-field-wrapper">
+                            <input
+                              type="text"
+                              id="title"
+                               placeholder='DD/MMM/YYYY'
+                              value={getFormattedDate(formData.StartDate)}
+                              //className={`form-control ${(!ValidDraft || !ValidSubmit) ? "border-on-error" : ""}`}
+                              disabled={InputDisabled}
+                              className={`form-control date-text-display ${(!ValidDraft || !ValidSubmit) ? "border-on-error" : ""}`}
+                              readOnly
+                            />
+                            <input
+                              type="date"
+                              ref={hiddenDateRef}
+                              id="StartDate"
+                              name="StartDate"
+                              placeholder='Enter Start Date'
+                              className={`date-picker-icon ${(!ValidDraft || !ValidSubmit) ? "border-on-errordate" : ""}`}
+                              value={formData.StartDate ? new Date(formData.StartDate).toLocaleDateString("en-GB").split('/').reverse().join('-') : ""}
+                              onChange={(e) => {
+                                const formattedDate = new Date(e.target.value).toISOString().split('T')[0];
+                                onChange(e.target.name, formattedDate);
+                              }}
+                              disabled={InputDisabled}
+                            />
+                          </div>
+                          {/* <input
                             type="date"
                             id="StartDate"
                             name="StartDate"
@@ -553,7 +609,7 @@ if(Currusers){
                             
                             onChange={(e) => onChange(e.target.name, e.target.value)}
                             disabled={InputDisabled}
-                          />
+                          /> */}
                         </div>
                       </div>
                       <div className="col-lg-4">
@@ -561,7 +617,33 @@ if(Currusers){
                           <label htmlFor="EndDate" className="form-label">
                             Finish Date<span className="text-danger">*</span>
                           </label>
-                          <input
+                          <div className="date-field-wrapper">
+                            <input
+                              type="text"
+                              id="title"
+                               placeholder='DD/MMM/YYYY'
+                              value={getFormattedDate(formData.EndDate)}
+                              //className={`form-control ${(!ValidDraft || !ValidSubmit) ? "border-on-error" : ""}`}
+                              disabled={InputDisabled}
+                              className={`form-control date-text-display ${(!ValidDraft || !ValidSubmit) ? "border-on-error" : ""}`}
+                              readOnly
+                            />
+                            <input
+                              type="date"
+                              ref={hiddenDateRef}
+                              id="EndDate"
+                              name="EndDate"
+                              placeholder='Enter End Date'
+                              className={`date-picker-icon ${(!ValidDraft || !ValidSubmit) ? "border-on-errordate" : ""}`}
+                              value={formData.EndDate ? new Date(formData.EndDate).toLocaleDateString("en-GB").split('/').reverse().join('-') : ""}
+                              onChange={(e) => {
+                                const formattedDate = new Date(e.target.value).toISOString().split('T')[0];
+                                onChange(e.target.name, formattedDate);
+                              }}
+                              disabled={InputDisabled}
+                            />
+                          </div>
+                          {/* <input
                             type="date"
                             id="EndDate"
                             name="EndDate"
@@ -571,7 +653,7 @@ if(Currusers){
                             // value={formData.EventDate}
                             onChange={(e) => onChange(e.target.name, e.target.value)}
                             disabled={InputDisabled}
-                          />
+                          /> */}
                         </div>
                       </div>
                       <div className="col-lg-4">

@@ -3,6 +3,7 @@ import type { IAdToSpGroupSyncProps, IAdToSpGroupSyncState } from './IAdToSpGrou
 import { escape } from '@microsoft/sp-lodash-subset';
 import * as React from "react";
 import { SPFI, spfi ,SPFx as spSPFx } from "@pnp/sp";
+import { getSP } from '../loc/pnpjsConfig';
 import { GraphFI, graphfi,SPFx as graphSPFx } from "@pnp/graph";
 import * as grpahpnp from "@pnp/graph";
 import "@pnp/graph/groups";
@@ -15,11 +16,13 @@ import { PrimaryButton } from "@fluentui/react/lib/Button";
 import { DetailsList, IColumn } from "@fluentui/react/lib/DetailsList";
 
 export default class AdToSpGroupSync extends React.Component<IAdToSpGroupSyncProps,IAdToSpGroupSyncState> {
+  
   _graph:GraphFI;
   _sp:SPFI;
+  sp:any;
   constructor(props: IAdToSpGroupSyncProps) {
     super(props);
-    
+    this.sp = getSP(this.props.ctx);
     this._graph = graphfi().using(graphSPFx(this.props.ctx));
     this._sp = spfi().using(spSPFx(this.props.ctx));
     this.state = {
@@ -29,6 +32,8 @@ export default class AdToSpGroupSync extends React.Component<IAdToSpGroupSyncPro
       selectedSPGroup: "",
       adGroupUsers: [],
       status: "",
+      selectedSPGroupName: "",
+      selectedADGroupName: "",
     };
   }
 
@@ -144,7 +149,7 @@ export default class AdToSpGroupSync extends React.Component<IAdToSpGroupSyncPro
         this.setState({ status: "Please select an Azure AD group." });
         return;
       }
-
+       
       //const members = await this._graph.groups.getById(selectedADGroup).members();
       
       const members = await this.getAllGroupMembers(selectedADGroup);
@@ -183,12 +188,39 @@ export default class AdToSpGroupSync extends React.Component<IAdToSpGroupSyncPro
   private syncGroups = async () => {
     try {
       const { selectedSPGroup, adGroupUsers } = this.state;
-
+      const { selectedADGroup } = this.state;
+      const { selectedADGroupName , selectedSPGroupName } = this.state; 
       if (!selectedSPGroup) {
         this.setState({ status: "Please select a SharePoint group." });
         return;
       }
-   
+      console.log("selectedADGroupName",selectedADGroupName)
+      console.log("selectedSPGroupName",selectedSPGroupName)
+      
+      // const additem = await this.sp.web.lists.getByTitle("AdToSpSyncLog").items.add({  
+      //   Title: `Sync Done for AD Group : ${selectedADGroupName} to SP Group ID: ${selectedSPGroupName} at ${new Date().toLocaleString()}`, 
+      //   Status: "Done",
+      //   ADGroup : selectedADGroupName,
+      //   SPGroup : selectedSPGroupName
+      // });
+ // 1. Check if the item already exists
+const existingItems = await this.sp.web.lists.getByTitle("AdToSpSyncLog").items
+.filter(`ADGroup eq '${selectedADGroupName}' and SPGroup eq '${selectedSPGroupName}'`).getAll();
+
+if (existingItems.length > 0) {
+console.log("This AD -> SP group mapping is already logged. Skipping creation.");
+} else {
+// 2. Add new item
+const additem = await this.sp.web.lists.getByTitle("AdToSpSyncLog").items.add({  
+  Title: `Sync Done for AD Group : ${selectedADGroupName} to SP Group : ${selectedSPGroupName} at ${new Date().toLocaleString()}`, 
+  Status: "Done",
+  ADGroup: selectedADGroupName,
+  SPGroup: selectedSPGroupName
+});
+
+console.log("New log item created:", additem);
+}
+
       const spGroup = await this._sp.web.siteGroups.getById(Number(selectedSPGroup))();
       const spGroupUsers = await this._sp.web.siteGroups.getById(spGroup.Id).users();
       const spUserEmails = spGroupUsers.map(user => user.Email);
@@ -254,13 +286,13 @@ export default class AdToSpGroupSync extends React.Component<IAdToSpGroupSyncPro
         <Dropdown
           placeholder="Select Azure AD Group"
           options={adGroups}
-          onChange={(e, option) => this.setState({ selectedADGroup: option?.key as string })}
+          onChange={(e, option) => this.setState({ selectedADGroup: option?.key as string ,      selectedADGroupName: option?.text || ""     })}
         />
         <span>Total number of SP groups retreived:{spGroups.length}</span>
         <Dropdown
           placeholder="Select SharePoint Group"
           options={spGroups}
-          onChange={(e, option) => this.setState({ selectedSPGroup: option?.key as string })}
+          onChange={(e, option) => this.setState({ selectedSPGroup: option?.key as string ,       selectedSPGroupName: option?.text || ""     })}
         />
         <PrimaryButton
           text="Load AD Group Users"

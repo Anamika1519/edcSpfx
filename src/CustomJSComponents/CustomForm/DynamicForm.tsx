@@ -469,9 +469,9 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ formSchemas, onChange, onSubm
                                     <tbody>
                                         {DocumentpostArr[0].files.map((file: any, index: number) => (
                                             <tr key={index}>
-                                                <td className='text-center'>{index + 1}</td>
-                                                <td>{file.name}</td>
-                                                <td className='text-right'>{file.size}</td>
+                                                <td >{index + 1}</td>
+                                                <td title={file?.name}>{file.name}</td>
+                                                <td title={file?.size} className='text-right'>{file.size}</td>
                                                 <td className='text-center'> <img src={require("../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, DocumentpostArr, DocumentpostArr[0].docLib, "docs")} /> </td>
                                             </tr>
                                         ))}
@@ -494,9 +494,9 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ formSchemas, onChange, onSubm
                                     <tbody>
                                         {ImagepostArr[0].files.map((file: any, index: number) => (
                                             <tr key={index}>
-                                                <td className='text-center'>{index + 1}</td>
-                                                <td>{file.name}</td>
-                                                <td className='text-right'>{file.size}</td>
+                                                <td >{index + 1}</td>
+                                                <td title={file.name}>{file.name}</td>
+                                                <td title={file.size} className='text-right'>{file.size}</td>
                                                 <td className='text-center'> <img src={require("../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, ImagepostArr, ImagepostArr[0].docLib, "Gallery")} /> </td>
 
                                             </tr>
@@ -519,9 +519,9 @@ const DynamicForm: React.FC<DynamicFormProps> = ({ formSchemas, onChange, onSubm
                                     <tbody>
                                         {BnnerImagepostArr[0].files.map((file: any, index: number) => (
                                             <tr key={index}>
-                                                <td className='text-center'>{index + 1}</td>
-                                                <td>{file.name}</td>
-                                                <td className='text-right'>{file.size}</td>
+                                                <td >{index + 1}</td>
+                                                <td title={file.name}>{file.name}</td>
+                                                <td title={file.size} className='text-right'>{file.size}</td>
                                                 <td className='text-center'> <img src={require("../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, BnnerImagepostArr, BnnerImagepostArr[0].docLib, "bannerimg")} /> </td>
                                             </tr>
                                         ))}

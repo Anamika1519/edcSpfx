@@ -26,7 +26,7 @@ import Swal from 'sweetalert2';
 import moment from 'moment';
 import * as XLSX from "xlsx";
 
- 
+
 
 const QuickLinksMasterContext = ({ props }: any) => {
   const sp: SPFI = getSP();
@@ -35,49 +35,50 @@ const QuickLinksMasterContext = ({ props }: any) => {
   const { useHide }: any = React.useContext(UserContext);
   const [QuickLinklistdata, setQuickLinkData] = React.useState([]);
   const [sortConfig, setSortConfig] = React.useState({ key: '', direction: 'ascending' });
-  
+  const [Loading, setLoading] = React.useState(false);
   const ApiCall = async () => {
-      let QuickLinkArr: any[] = [];
+    let QuickLinkArr: any[] = [];
     //  const userGroups = await sp.web.currentUser.groups();
     //  let groupTitles: string[] = userGroups.map((group) => group.Title.toLowerCase());
- 
+
     //  if (groupTitles.includes("intranetadmin")) {
     //   DelegateArr = await getDelegateList(sp, "yes");
     //  }
     //  else if (groupTitles.includes("intranetcontentcontributor")) {
-      QuickLinkArr = await getQuickLinkList(sp, "No");
+    setLoading(true);
+    QuickLinkArr = await getQuickLinkList(sp, "No");
     //  }
- 
+
     setQuickLinkData(QuickLinkArr);
- 
-   };
+    setLoading(false);
+  };
 
-    const [isOpen, setIsOpen] = React.useState(false);
-       
-         const toggleDropdown = () => {
-       
-           setIsOpen(!isOpen);
-       
-         };
+  const [isOpen, setIsOpen] = React.useState(false);
 
-   React.useEffect(() => {
-       ApiCall();
-      });
-   
+  const toggleDropdown = () => {
 
-   const [filters, setFilters] = React.useState({
-       SNo: '',
-       Title: '',
-       URL: '',
-       RedirectToNewTab: '',
-       Entity:{
-        ID:'',
-        Entity:''
-       },
-       IsActive:''
-       
-     });
-   const applyFiltersAndSorting = (data: any[]) => {
+    setIsOpen(!isOpen);
+
+  };
+
+  React.useEffect(() => {
+    ApiCall();
+  });
+
+
+  const [filters, setFilters] = React.useState({
+    SNo: '',
+    Title: '',
+    URL: '',
+    RedirectToNewTab: '',
+    Entity: {
+      ID: '',
+      Entity: ''
+    },
+    IsActive: ''
+
+  });
+  const applyFiltersAndSorting = (data: any[]) => {
     // debugger
     // Filter data
     const filteredData = data.filter((item, index) => {
@@ -86,7 +87,7 @@ const QuickLinksMasterContext = ({ props }: any) => {
         (filters.Title === '' || item.Title.toLowerCase().includes(filters.Title.toLowerCase())) &&
         (filters.URL === '' || item.URL.toLowerCase().includes(filters.URL.toLowerCase())) &&
         // (filters.RedirectToNewTab === '' || String(item.RedirectToNewTab).toLowerCase() === filters.RedirectToNewTab.toLowerCase())&&
-        (filters.RedirectToNewTab === '' || String(item.RedirectToNewTab ? 'Yes' : 'No').toLowerCase() === filters.RedirectToNewTab.toLowerCase())&&
+        (filters.RedirectToNewTab === '' || String(item.RedirectToNewTab ? 'Yes' : 'No').toLowerCase() === filters.RedirectToNewTab.toLowerCase()) &&
 
         // (filters?.RedirectToNewTab === '' || item?.RedirectToNewTab?.toLowerCase().includes(filters?.RedirectToNewTab?.toLowerCase()))&&
         (Object.keys(filters.Entity).length === 0 || item.Entity?.Entity?.toLowerCase().includes(filters.Entity.Entity.toLowerCase())) &&
@@ -119,136 +120,136 @@ const QuickLinksMasterContext = ({ props }: any) => {
     return sortedData;
   };
 
-   const filteredQuickLinkData = applyFiltersAndSorting(QuickLinklistdata);
-     
-       const [currentPage, setCurrentPage] = React.useState(1);
-       const itemsPerPage = 10;
-       const totalPages = Math.ceil(filteredQuickLinkData.length / itemsPerPage);
-     
-       const handlePageChange = (pageNumber: any) => {
-         if (pageNumber > 0 && pageNumber <= totalPages) {
-           setCurrentPage(pageNumber);
-         }
-       };
-     
-       const startIndex = (currentPage - 1) * itemsPerPage;
-       const endIndex = startIndex + itemsPerPage;
-       const currentData = filteredQuickLinkData.slice(startIndex, endIndex);
+  const filteredQuickLinkData = applyFiltersAndSorting(QuickLinklistdata);
 
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const itemsPerPage = 10;
+  const totalPages = Math.ceil(filteredQuickLinkData.length / itemsPerPage);
 
-
-
-
-    const Breadcrumb = [
-      {
-        "MainComponent": "Settings",
-        "MainComponentURl": `${siteUrl}/SitePages/MasterSettings.aspx`
-      },
-      {
-        ChildComponent: "QuickLinks Master",
-        ChildComponentURl: `${siteUrl}/SitePages/QuickLinksMaster.aspx`,
-      },
-    ];
-
-
-    const goToAddForm = () => {
-      sessionStorage.removeItem("quicklinkId")
-      window.location.href = `${siteUrl}/SitePages/QuickLinksForm.aspx`;
+  const handlePageChange = (pageNumber: any) => {
+    if (pageNumber > 0 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
     }
-    const handleSortChange = (key: string) => {
-      let direction = 'ascending';
-      if (sortConfig.key === key && sortConfig.direction === 'ascending') {
-        direction = 'descending';
+  };
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentData = filteredQuickLinkData.slice(startIndex, endIndex);
+
+
+
+
+
+  const Breadcrumb = [
+    {
+      "MainComponent": "Settings",
+      "MainComponentURl": `${siteUrl}/SitePages/MasterSettings.aspx`
+    },
+    {
+      ChildComponent: "QuickLinks Master",
+      ChildComponentURl: `${siteUrl}/SitePages/QuickLinksMaster.aspx`,
+    },
+  ];
+
+
+  const goToAddForm = () => {
+    sessionStorage.removeItem("quicklinkId")
+    window.location.href = `${siteUrl}/SitePages/QuickLinksForm.aspx`;
+  }
+  const handleSortChange = (key: string) => {
+    let direction = 'ascending';
+    if (sortConfig.key === key && sortConfig.direction === 'ascending') {
+      direction = 'descending';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  // const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
+  //       setFilters({
+  //         ...filters,
+  //         [field]: e.target.value,
+  //       });
+  //     };
+
+  const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      ...(field === "Entity"
+        ? { Entity: { ...prevFilters.Entity, Entity: e.target.value } } // Corrected bracket placement
+        : { [field]: e.target.value }) // Update other fields normally
+    }));
+  };
+
+
+
+
+  //#region 
+  const EditDelegate = (id: any) => {
+    // debugger
+    // setUseId(id)
+    const encryptedId = encryptId(String(id));
+    sessionStorage.setItem("quicklinkId", encryptedId)
+    window.location.href = `${siteUrl}/SitePages/QuickLinksForm.aspx`;
+  }
+  //#endregion
+
+  //#region 
+  const DeleteDelegate = (id: any) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!"
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await DeleteQuickLink(sp, id)
+        setQuickLinkData(prevBanners => prevBanners.filter(item => item.ID !== id));
+        Swal.fire({
+          title: "Deleted!",
+          text: "Item has been deleted.",
+          icon: "success"
+        });
+
       }
-      setSortConfig({ key, direction });
-    };
+    })
+  }
 
-    // const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
-    //       setFilters({
-    //         ...filters,
-    //         [field]: e.target.value,
-    //       });
-    //     };
+  //#region Download exl file
+  const handleExportClick = () => {
+    const exportData = currentData.map((item, index) => ({
+      // 'S.No.': startIndex + index + 1,
+      // 'Title': item.Title,
+      // 'Url': item.Url,
 
-    const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
-      setFilters((prevFilters) => ({
-        ...prevFilters,
-        ...(field === "Entity"
-          ? { Entity: { ...prevFilters.Entity, Entity: e.target.value } } // Corrected bracket placement
-          : { [field]: e.target.value }) // Update other fields normally
-      }));
-    };
-   
-   
-   
+      // 'Status': item.Status,
+      // 'Submitted Date': item.Created,
+      "S.No.": startIndex + index + 1,
 
-        //#region 
-            const EditDelegate = (id: any) => {
-              // debugger
-              // setUseId(id)
-              const encryptedId = encryptId(String(id));
-              sessionStorage.setItem("quicklinkId", encryptedId)
-              window.location.href = `${siteUrl}/SitePages/QuickLinksForm.aspx`;
-            }
-            //#endregion
-          
-            //#region 
-            const DeleteDelegate = (id: any) => {
-              Swal.fire({
-                title: "Are you sure?",
-                text: "You won't be able to revert this!",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Yes, delete it!"
-              }).then(async (result) => {
-                if (result.isConfirmed) {
-                  await DeleteQuickLink(sp, id)
-                  setQuickLinkData(prevBanners => prevBanners.filter(item => item.ID !== id));
-                  Swal.fire({
-                    title: "Deleted!",
-                    text: "Item has been deleted.",
-                    icon: "success"
-                  });
-          
-                }
-              })
-            }
+      Title: item.Title,
 
-            //#region Download exl file
-              const handleExportClick = () => {
-                const exportData = currentData.map((item, index) => ({
-                  // 'S.No.': startIndex + index + 1,
-                  // 'Title': item.Title,
-                  // 'Url': item.Url,
-           
-                  // 'Status': item.Status,
-                  // 'Submitted Date': item.Created,
-                  "S.No.": startIndex + index + 1,
-           
-                  Title: item.Title,
-           
-                  URL: item.URL,
-                  Department: item.Entity.Entity,
-           
-                  "Redirect to new tab": item.RedirectToNewTab,
-           
-                  Active: item.IsActive,
-           
-                  "Submitted Date": item.Created,
-                }));
-           
-                exportToExcel(exportData, "Application Links Master");
-              };
-              const exportToExcel = (data: any[], fileName: string) => {
-                const workbook = XLSX.utils.book_new();
-                const worksheet = XLSX.utils.json_to_sheet(data);
-                XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
-                XLSX.writeFile(workbook, `${fileName}.xlsx`);
-              };
-              //#endregion
-       
+      URL: item.URL,
+      Department: item.Entity.Entity,
+
+      "Redirect to new tab": item.RedirectToNewTab,
+
+      Active: item.IsActive,
+
+      "Submitted Date": item.Created,
+    }));
+
+    exportToExcel(exportData, "Application Links Master");
+  };
+  const exportToExcel = (data: any[], fileName: string) => {
+    const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+    XLSX.writeFile(workbook, `${fileName}.xlsx`);
+  };
+  //#endregion
+
 
   return (
 
@@ -261,7 +262,7 @@ const QuickLinksMasterContext = ({ props }: any) => {
       <div className="content-page">
         <HorizontalNavbar _context={sp} siteUrl={siteUrl} />
         <div className="content " style={{ marginLeft: `${!useHide ? '240px' : '80px'}` }}>
-          <div style={{marginTop:'2.4rem'}} className="container-fluid  paddb">
+          <div style={{ marginTop: '2.4rem' }} className="container-fluid  paddb">
             <div className="row">
               <div className="col-lg-3">
                 <CustomBreadcrumb Breadcrumb={Breadcrumb} />
@@ -307,7 +308,7 @@ const QuickLinksMasterContext = ({ props }: any) => {
                             <div className="bd-highlight">
                               <input
                                 type="text"
-                                placeholder="SNo"
+                                placeholder="S No"
                                 onKeyDown={(e) => {
                                   if (e.key === 'Enter' && !e.shiftKey) {
                                     e.preventDefault(); // Prevents the new line in textarea
@@ -335,7 +336,7 @@ const QuickLinksMasterContext = ({ props }: any) => {
                             </div>
                           </th>
 
-                          <th style={{ minWidth: '120px', maxWidth: '120px' }}>
+                          <th style={{ minWidth: '125px', maxWidth: '125px' }}>
                             <div className="d-flex flex-column bd-highlight ">
                               <div className="d-flex pb-2" style={{ justifyContent: 'space-evenly' }}>
                                 <span >URL</span>  <span onClick={() => handleSortChange('URL')}><FontAwesomeIcon icon={faSort} /> </span></div>
@@ -351,7 +352,7 @@ const QuickLinksMasterContext = ({ props }: any) => {
                             </div>
                           </th>
 
-                          <th style={{ minWidth: '80px', maxWidth: '80px' }}>
+                          <th style={{ minWidth: '120px', maxWidth: '120px' }}>
                             <div className="d-flex flex-column bd-highlight ">
                               <div className="d-flex pb-2" style={{ justifyContent: 'space-evenly' }}>
                                 <span >Department</span>  <span onClick={() => handleSortChange('Department')}><FontAwesomeIcon icon={faSort} /> </span></div>
@@ -366,9 +367,9 @@ const QuickLinksMasterContext = ({ props }: any) => {
                               </div>
                             </div>
                           </th>
-                          
-                         
-                          
+
+
+
                           <th style={{ minWidth: '80px', maxWidth: '80px' }}>
                             <div className="d-flex flex-column bd-highlight ">
                               <div className="d-flex pb-2" style={{ justifyContent: 'space-evenly' }}>
@@ -399,34 +400,34 @@ const QuickLinksMasterContext = ({ props }: any) => {
                               </div>
                             </div>
                           </th>
-                          
 
-                          <th style={{ textAlign: 'center', minWidth:'80px',maxWidth:'80px', borderBottomRightRadius: '0px', borderTopRightRadius: '0px' }}> <div className="d-flex flex-column bd-highlight pb-2">
-                          
-                                                          <div className="d-flex  pb-2" style={{ justifyContent: 'space-evenly' }}>  <span >Action</span> <div className="dropdown">
-                          
-                                                            <FontAwesomeIcon icon={faEllipsisV} onClick={toggleDropdown} size='xl' />
-                          
-                                                          </div>
-                          
-                                                          </div>
-                         
-                                                          <div className=" bd-highlight">   <div id="myDropdown" className={`dropdown-content ${isOpen ? 'show' : ''}`}>
-                         
-                                                            <div onClick={handleExportClick} className="" >
-                          
-                                                              <FontAwesomeIcon icon={faFileExport} />  Export
-                          
-                                                            </div>
-                         
-                                                          </div></div>
-                         
-                         
-                                                        </div>
-                          
-                                                          <div style={{ height: '32px' }}></div>
-                          
-                                                        </th>
+
+                          <th style={{ textAlign: 'center', minWidth: '80px', maxWidth: '80px', borderBottomRightRadius: '0px', borderTopRightRadius: '0px' }}> <div className="d-flex flex-column bd-highlight pb-2">
+
+                            <div className="d-flex  pb-2" style={{ justifyContent: 'space-evenly' }}>  <span >Action</span> <div className="dropdown">
+
+                              <FontAwesomeIcon icon={faEllipsisV} onClick={toggleDropdown} size='xl' />
+
+                            </div>
+
+                            </div>
+
+                            <div className=" bd-highlight">   <div id="myDropdown" className={`dropdown-content ${isOpen ? 'show' : ''}`}>
+
+                              <div onClick={handleExportClick} className="" >
+
+                                <FontAwesomeIcon icon={faFileExport} />  Export
+
+                              </div>
+
+                            </div></div>
+
+
+                          </div>
+
+                            <div style={{ height: '32px' }}></div>
+
+                          </th>
                           {/* <th style={{ borderBottomRightRadius: '0px', minWidth: '50px', maxWidth: '50px', borderTopRightRadius: '0px' }}>
                             <div className="d-flex flex-column bd-highlight pb-2">
                               <div className="d-flex  pb-2" style={{ justifyContent: 'space-evenly' }}>  <span >Action</span> <div className="dropdown">
@@ -444,8 +445,28 @@ const QuickLinksMasterContext = ({ props }: any) => {
                           </th> */}
                         </tr>
                       </thead>
-                      <tbody style={{ maxHeight: '5000px' }}>
-                        {currentData.length === 0 ?
+                      <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                      <tbody style={{ maxHeight: '400px' }}>
+                        {(Loading && currentData?.length == 0
+                        ) && (
+                            <div style={{ minHeight: '100vh', marginTop: '100px' }} className="loadernewadd mt-10">
+                              <div>
+                                <img
+                                  src={require("../../../CustomAsset/edc-gif.gif")}
+                                  className="alignrightl"
+                                  alt="Loading..."
+                                />
+                              </div>
+                              <span>Loading </span>{" "}
+                              <span>
+                                <img
+                                  src={require("../../../CustomAsset/edcnew.gif")}
+                                  className="alignrightl"
+                                  alt="Loading..."
+                                />
+                              </span>
+                            </div>)}
+                        {!Loading && currentData.length === 0 ?
                           (
                             <div className="no-results" style={{ display: 'flex', justifyContent: 'center' }}>No results found</div>
                           )
@@ -458,11 +479,11 @@ const QuickLinksMasterContext = ({ props }: any) => {
                                 <td style={{ minWidth: '120px', maxWidth: '120px' }}>{item.Title}</td>
                                 <td style={{ minWidth: '120px', maxWidth: '120px' }}>{item.URL}</td>
                                 <td style={{ minWidth: '120px', maxWidth: '120px' }}>{item?.Entity?.Entity}</td>
-                               
+
                                 {/* <td style={{ minWidth: '80px', maxWidth: '80px',textAlign:'center' }}><div className='btn btn-light newlight'> {moment(item.StartDate).format("DD-MMM-YYYY")} </div> </td>
                                 <td style={{ minWidth: '80px', maxWidth: '80px',textAlign:'center' }}><div className='btn btn-light newlight'> {moment(item.EndDate).format("DD-MMM-YYYY")} </div> </td> */}
-                                <td style={{ minWidth: '80px', maxWidth: '80px',textAlign:'center' }}>  <div className='btn btn-status newlight'> {item.RedirectToNewTab?"Yes":"No"} </div> </td>
-                                <td style={{ minWidth: '80px', maxWidth: '80px',textAlign:'center' }}>  <div className='btn btn-status newlight'> {item.IsActive?"Yes":"No"} </div> </td>
+                                <td style={{ minWidth: '80px', maxWidth: '80px', textAlign: 'center' }}>  <div className='btn btn-status newlight'> {item.RedirectToNewTab ? "Yes" : "No"} </div> </td>
+                                <td style={{ minWidth: '80px', maxWidth: '80px', textAlign: 'center' }}>  <div className='btn btn-status newlight'> {item.IsActive ? "Yes" : "No"} </div> </td>
                                 <td style={{ minWidth: '80px', maxWidth: '80px' }} className="ng-binding">
                                   <div className="d-flex  pb-0" style={{ justifyContent: 'center', gap: '5px' }}>
                                     <span > <a className="action-icon text-primary" onClick={() => EditDelegate(item.ID)}>
@@ -478,6 +499,7 @@ const QuickLinksMasterContext = ({ props }: any) => {
                           })
                         }
                       </tbody>
+                      </div>
                     </table>
 
 

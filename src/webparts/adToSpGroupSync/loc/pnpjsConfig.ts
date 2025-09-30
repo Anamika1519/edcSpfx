@@ -12,7 +12,6 @@ import "@pnp/sp/items/get-all";
 import "@pnp/sp/folders";
 import "@pnp/sp/files/folder";
 import "@pnp/sp/fields";
-import "@pnp/sp/site-groups";
 
 // var _sp: SPFI;
 // export const getSP = (context?: WebPartContext): SPFI => {

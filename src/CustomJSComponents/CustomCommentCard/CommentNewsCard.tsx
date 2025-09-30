@@ -278,7 +278,7 @@ export const CommentNewsCard: React.FC<{
                 {/* </a> */}
               </h5>
               <p className="text-muted font-12 mt-1">
-                <small>{moment(Created).format("DD-MMM-YYYY")}</small>
+                <small>{moment(Created).format("DD/MMM/YYYY")}</small>
               </p>
               <div className="post-content">
                 <div className="post-actions">
@@ -356,9 +356,9 @@ export const CommentNewsCard: React.FC<{
                   </div>
                   <div className="w-100 mt-0">
                     <h6 className="font-14 fw600">{reply.UserName}</h6>
-                    <p className="mb-0 para-width  text-muted ng-binding" style={{ wordBreak: 'break-all', paddingRight: '20px' }}>{reply.Comments}</p>
-                    <p className="text-muted font-12 mt-1">
-                      <small>{moment(reply.Created).format("DD-MMM-YYYY")}</small>
+                    <p title={reply.Comments} className="mb-0 para-width  text-muted ng-binding" style={{ wordBreak: 'break-all', paddingRight: '20px' }}>{reply.Comments}</p>
+                    <p title={moment(reply.Created).format("DD/MMM/YYYY")} className="text-muted font-12 mt-1">
+                      <small>{moment(reply.Created).format("DD/MMM/YYYY")}</small>
                     </p>
 
                   </div>

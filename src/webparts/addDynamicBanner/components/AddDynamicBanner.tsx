@@ -22,7 +22,9 @@ import "../../../CustomJSComponents/CustomForm/CustomForm.scss"
 import HorizontalNavbar from '../../horizontalNavBar/components/HorizontalNavBar';
 import context from '../../../GlobalContext/context';
 import { useRef } from 'react';
-import { Modal } from 'react-bootstrap';
+import { Button, Modal } from 'react-bootstrap';
+let imageheight: any;
+let imagewidth: any;
 const AddDynamicBannerContext = ({ props }: any) => {
   const sp: SPFI = getSP();
   const Spurl = sp.web;
@@ -53,7 +55,7 @@ const AddDynamicBannerContext = ({ props }: any) => {
     URL: ""
   })
   const [bannerByIDArrs, setBannerByIdArrs] = React.useState([])
-
+  const [imageDimensions, setImageDimensions] = React.useState<{ width: number, height: number }>({ width: 812, height: 330 });
   const [showBannerModal, setShowBannerTable] = React.useState(false);
   const [formData, setFormData] = React.useState({
     title: '',
@@ -64,7 +66,105 @@ const AddDynamicBannerContext = ({ props }: any) => {
     URL: "",
     Status: '',
     EntityId: 0
-  })
+  });
+  const [show, setShow] = React.useState(false);
+  const [modalImageSrc, setModalImageSrc] = React.useState('');
+
+  const handleClose = () => setShow(false);
+  // const handleShow = (src: any) => {
+  //   //setModalImageSrc(src);
+  //   setShow(true);
+  // };
+  const handleShow = (src: string) => {
+    const img = new Image();
+    img.crossOrigin = "anonymous"; // Important for SharePoint or external images
+    img.src = src;
+
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const fixedWidth = 812;
+      const fixedHeight = 330;
+
+      canvas.width = fixedWidth;
+      canvas.height = fixedHeight;
+
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.drawImage(img, 0, 0, fixedWidth, fixedHeight);
+        const resizedImageDataUrl = canvas.toDataURL('image/jpeg');
+
+        Swal.fire({
+          title: "Resized Image Preview",
+          // html: `<img src="${resizedImageDataUrl}" style="width: 100%; max-width: 812px; height: auto;" />`,
+          //width: 850
+          html: `
+    <div style="margin-bottom: 10px; font-size: 14px;">
+      <strong>Original Size:</strong> ${imagewidth}px × ${imageheight}px<br/>
+      <strong>Resized Size:</strong>  812px × 330px
+    </div>
+    <img 
+      src="${resizedImageDataUrl}" 
+      style="width: 100%; max-width: 812px; height: auto; object-fit: cover; display: block; margin: 0 auto;" 
+    />
+  `,
+
+          width: 850,
+        });
+      }
+    };
+
+    img.onerror = () => {
+      Swal.fire("Failed to load image.");
+    };
+  };
+  const handleShowEdit = async (src: string) => {
+    try {
+      // Fetch the image as a blob
+      const response = await fetch(src, { mode: 'cors' });
+      const blob = await response.blob();
+
+      // Convert blob to base64
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64Data = reader.result as string;
+
+        const img = new Image();
+        img.src = base64Data;
+
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const fixedWidth = 812;
+          const fixedHeight = 330;
+
+          canvas.width = fixedWidth;
+          canvas.height = fixedHeight;
+
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            ctx.drawImage(img, 0, 0, fixedWidth, fixedHeight);
+            const resizedImageDataUrl = canvas.toDataURL('image/jpeg');
+
+            Swal.fire({
+              title: "Image Preview",
+              html: `<img src="${resizedImageDataUrl}" style="width: 100%; max-width: 812px; height: auto;object-fit: cover; display: block; margin: 0 auto;" />`,
+              width: 850,
+              showConfirmButton: false,
+              showCancelButton: false
+            });
+          }
+        };
+
+        img.onerror = () => {
+          Swal.fire("Failed to load image for preview.");
+        };
+      };
+
+      reader.readAsDataURL(blob);
+    } catch (error) {
+      console.error("Image fetch error", error);
+      Swal.fire("Unable to preview image.");
+    }
+  };
 
   React.useEffect(() => {
     // alert("useEffect called");
@@ -267,29 +367,6 @@ const AddDynamicBannerContext = ({ props }: any) => {
             fileUrl: URL.createObjectURL(imageVideoFiles[0])
           };
           uloadBannerImageFiles.push(arr);
-          //setBannerImagepostArr(uloadBannerImageFiles);
-          // console.log(imageVideoFiles, 'imageVideoFiles');
-          //  if(BnnerImagepostArr.length>0)
-          //  {
-          //   let bannerPost={
-          //     filename:BnnerImagepostArr[0].Filename,
-          //     size:BnnerImagepostArr[0].size,
-          //     type:BnnerImagepostArr[0].type
-          //   }
-          //   uloadBannerImageFiles.push(bannerPost)
-          //   let bannerPost1={
-          //     filename:imageVideoFiles[0].name,
-          //     size:imageVideoFiles[0].size,
-          //     type:imageVideoFiles[0].type
-          //   }
-          //   uloadBannerImageFiles.push(bannerPost1);
-          //   setBannerImagepostArr(uloadBannerImageFiles);
-          //  }
-          //  else{
-          //   uloadBannerImageFiles.push(imageVideoFiles[0]);
-          //   setBannerImagepostArr(uloadBannerImageFiles);
-          //  }
-          //uloadBannerImageFiles.push(imageVideoFiles[0]);
           setBannerImagepostArr(uloadBannerImageFiles);
 
         } else {
@@ -300,6 +377,102 @@ const AddDynamicBannerContext = ({ props }: any) => {
       }
     }
   };
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>, libraryName: string, docLib: string) => {
+    let arrr: any[] = [];
+    const file = e.target.files?.[0];
+    if (!file) return;
+    e.preventDefault();
+    let uloadBannerImageFiles: any[] = [];
+    if (e.target.files && e.target.files.length > 0) {
+      const files = Array.from(e.target.files);
+      (e.target as HTMLInputElement).value = '';
+      if (libraryName === "bannerimg") {
+        const imageVideoFiles = files.filter(file =>
+          file.type.startsWith('image/')
+          //|| file.type.startsWith('video/')
+        );
+
+        setBannerImagepostArr(arrr);
+        console.log("imageVideoFiles", files, imageVideoFiles, BnnerImagepostArr)
+        if (imageVideoFiles.length > 0) {
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            const img = new Image();
+            img.src = event.target?.result as string;
+
+            img.onload = () => {
+              const canvas = document.createElement('canvas');
+              const originalWidth = img.width;
+              const originalHeight = img.height;
+              imageheight = originalHeight;
+              imagewidth = originalWidth;
+              const fixedWidth = 812;
+              const fixedHeight = 330;
+
+              canvas.width = fixedWidth;
+              canvas.height = fixedHeight;
+
+              const ctx = canvas.getContext('2d');
+              if (ctx) {
+                // Draw image scaled to fit the fixed dimensions
+                ctx.drawImage(img, 0, 0, fixedWidth, fixedHeight);
+
+                const resizedImageDataUrl = canvas.toDataURL('image/jpeg'); // or 'image/png'
+                setModalImageSrc(resizedImageDataUrl);
+                // Show in popup using Swal
+                Swal.fire({
+                  title: "Image Preview",
+                  // html: `<img src="${resizedImageDataUrl}" style="width: 100%; max-width: 812px; height: auto; object-fit: cover; display: block; margin: 0 auto;" />`,
+                  html: `
+    <div style="margin-bottom: 10px; font-size: 14px;">
+      <strong>Original Size:</strong> ${originalWidth}px × ${originalHeight}px<br/>
+      <strong>Resized Size:</strong> ${fixedWidth}px × ${fixedHeight}px
+    </div>
+    <img 
+      src="${resizedImageDataUrl}" 
+      style="width: 100%; max-width: ${fixedWidth}px; height: auto; object-fit: cover; display: block; margin: 0 auto;" 
+    />
+  `,
+
+                  width: fixedWidth + 40,
+                  showConfirmButton: true,
+                  showCancelButton: true, // ✅ Add this line
+                  confirmButtonText: "Yes",
+                  cancelButtonText: "No"
+                  // icon: 'warning'
+                }
+                ).then(async (result) => {
+                  console.log(result)
+                  if (result.isConfirmed) {
+                    const arr = {
+                      files: imageVideoFiles,
+                      name: imageVideoFiles[0].name,
+                      size: imageVideoFiles[0].size,
+                      libraryName: libraryName,
+                      docLib: docLib,
+                      fileUrl: URL.createObjectURL(imageVideoFiles[0])
+                    };
+                    uloadBannerImageFiles.push(arr);
+                    setBannerImagepostArr(uloadBannerImageFiles);
+                  } else {
+                    handleReset();
+                    //Swal.fire("Image upload cancelled");
+                  }
+                });
+              }
+            };
+
+          }
+          reader.readAsDataURL(file);
+        } else {
+          handleReset();
+          //setBannerImagepostArr(arrr);
+          Swal.fire("Only image can be uploaded")
+        }
+      }
+    }
+  };
+
   //#endregion
 
   //#region OpenModal
@@ -356,7 +529,7 @@ const AddDynamicBannerContext = ({ props }: any) => {
   //           //   for (const file of BnnerImagepostArr) {
   //           //     if (!file.serverRelativeUrl) {
   //           //       // const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
-  //           //       bannerImageArray = await uploadFile(file, sp, "Documents", "https://edcadae.sharepoint.com");
+  //           //       bannerImageArray = await uploadFile(file, sp, "Documents", "https://officeindia.sharepoint.com");
   //           //     }
 
   //           //   }
@@ -435,7 +608,7 @@ const AddDynamicBannerContext = ({ props }: any) => {
   //           // if (BnnerImagepostArr.length > 0) {
   //           //   for (const file of BnnerImagepostArr) {
   //           //     // const uploadedBanner = await uploadFile(file, sp, "Documents", Url);
-  //           //     bannerImageArray = await uploadFile(file, sp, "Documents", "https://edcadae.sharepoint.com");
+  //           //     bannerImageArray = await uploadFile(file, sp, "Documents", "https://officeindia.sharepoint.com");
   //           //   }
   //           // }
   //           if (BnnerImagepostArr.length > 0 && BnnerImagepostArr[0]?.files?.length > 0) {
@@ -577,20 +750,21 @@ const AddDynamicBannerContext = ({ props }: any) => {
           ).then(async (result) => {
             console.log(result)
             if (result.isConfirmed) {
-          console.log(postPayload);
-          const postResult = await addItem(postPayload, sp);
-          const postId = postResult?.data?.ID;
-          if (postResult != null) {
-            sessionStorage.removeItem("bannerId")
-            setTimeout(() => {
-              window.location.href = `${siteUrl}/SitePages/BannerMaster.aspx`;
-            }, 2000);
+              console.log(postPayload);
+              const postResult = await addItem(postPayload, sp);
+              const postId = postResult?.data?.ID;
+              if (postResult != null) {
+                sessionStorage.removeItem("bannerId")
+                setTimeout(() => {
+                  window.location.href = `${siteUrl}/SitePages/BannerMaster.aspx`;
+                }, 2000);
 
-          }
-          if (!postId) {
-            throw new Error("Failed to create item.");
-          }
-        }})
+              }
+              if (!postId) {
+                throw new Error("Failed to create item.");
+              }
+            }
+          })
 
         }
 
@@ -683,6 +857,7 @@ const AddDynamicBannerContext = ({ props }: any) => {
                             Title <span className="text-danger">*</span>
                           </label>
                           <input
+                            title={formData.title}
                             type="text"
                             id="title"
                             name="title"
@@ -696,12 +871,15 @@ const AddDynamicBannerContext = ({ props }: any) => {
 
                         </div>
                       </div>
+                      {console.log("EnityDataEnityData", EnityData, formData?.EntityId)}
                       <div className="col-lg-4">
                         <div className="mb-3">
                           <label htmlFor="EntityId" className="form-label">
                             Department <span className="text-danger">*</span>
                           </label>
                           <select
+                            title={formData?.EntityId && EnityData.length > 0 && EnityData.find((x) => x.id == formData.EntityId)?.name}
+                            //title={EnityData.length > 0 && formData?.EntityId > 0 && EnityData.filter((x) => { x.id == formData.EntityId })[0]?.name}
                             className={`form-select ${(!ValidSubmit) ? "border-on-error" : ""}`}
                             id="EntityId"
                             name="EntityId"
@@ -743,14 +921,15 @@ const AddDynamicBannerContext = ({ props }: any) => {
                           </div>
                           <input
                             type="file"
+                            accept=".jpeg,.jpg,.png,.gif"
                             ref={inputFile}
                             id="bannerImage"
                             name="bannerImage"
                             className={`form-control ${(!ValidSubmit) ? "border-on-error" : ""}`}
-                            onChange={(e) => onFileChange(e, "bannerimg", "Document")}
+                            onChange={(e) => handleImageUpload(e, "bannerimg", "Document")}
                             disabled={InputDisabled}
                           />
-
+                          <small className="text-muted"><a href="https://image.pi7.org/resize-image-for-youtube-banner" target="_blank">Recommended Dimensions: 812 x 330 pixels</a></small>
                         </div>
                       </div>
                       <div className="col-lg-12">
@@ -759,6 +938,7 @@ const AddDynamicBannerContext = ({ props }: any) => {
                             Description <span className="text-danger">*</span>
                           </label>
                           <textarea
+                            title={formData.description}
                             id="description"
                             name="description"
                             placeholder='Enter description'
@@ -838,7 +1018,14 @@ const AddDynamicBannerContext = ({ props }: any) => {
                                 <tr key={index}>
                                   <td className='text-center'>{index + 1}</td>
                                   <td>
-                                    <img className='imagefe' src={file.fileUrl ? file.fileUrl : `${file.serverUrl}${file.serverRelativeUrl}`}
+                                    <img className='imagefe'
+                                      src={file.fileUrl ? file.fileUrl : `${file.serverUrl}${file.serverRelativeUrl}`}
+                                    // onClick={() => handleShowEdit(
+                                    //   file.serverUrl && file.serverRelativeUrl
+                                    //     ?
+                                    //     `${siteUrl}/Documents/${file.fileName}`
+                                    //     : file.fileUrl
+                                    // )}
                                     />
                                   </td>
                                   <td>{file.name || file.fileName}</td>
@@ -850,6 +1037,9 @@ const AddDynamicBannerContext = ({ props }: any) => {
                                   <td className='text-center'>{index + 1}</td>
                                   <td>
                                     <img className='imagefe' src={file.fileUrl}
+                                      onClick={() => handleShow(
+                                        file.fileUrl
+                                      )}
                                     />
                                   </td>
                                   <td>{file.name}</td>
@@ -864,6 +1054,19 @@ const AddDynamicBannerContext = ({ props }: any) => {
                 </Modal.Body>
               </Modal> : ""
             }
+            <Modal show={show} onHide={handleClose} size='xl'>
+              <Modal.Header closeButton>
+                <Modal.Title>Image Preview</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <img src={modalImageSrc} alt="Image Preview" style={{ width: '100%' }} />
+              </Modal.Body>
+              <Modal.Footer>
+                <Button variant="secondary" onClick={handleClose}>
+                  Close
+                </Button>
+              </Modal.Footer>
+            </Modal>
           </div>
         </div>
       </div>

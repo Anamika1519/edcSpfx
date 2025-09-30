@@ -75,8 +75,8 @@ export const getNewsone = async (_sp) => {
   const userProfile = await _sp.profiles.myProperties();
   // console.log("***userProfile", userProfile);
   const currentUserDept = userProfile.UserProfileProperties ? userProfile.UserProfileProperties[userProfile.UserProfileProperties.findIndex(obj => obj.Key === "Department")].Value : "";
-  let entity ="Global";
- 
+  let entity = "Global";
+
   await _sp.web.lists.getByTitle("ARGAnnouncementAndNews").items.select("*,AnnouncementandNewsTypeMaster/Id,AnnouncementandNewsTypeMaster/TypeMaster,Category/Id,Category/Category,Entity/ADDepartmentName,Entity/Entity,Entity/ID").expand("AnnouncementandNewsTypeMaster,Category,Entity")
     .filter(`(Entity/ADDepartmentName eq '${entity}' or Entity/ADDepartmentName eq '${currentUserDept}') and AnnouncementandNewsTypeMaster/TypeMaster eq '${str}' and Status eq 'Approved'`)
     .orderBy("Modified", false).top(2)().then((res) => {
@@ -94,29 +94,32 @@ export const getNewsone = async (_sp) => {
 export const fetchEventdataone = async (_sp) => {
   let arr = [];
   const userProfile = await _sp.profiles.myProperties();
-// console.log("***userProfile", userProfile);
-const currentUserDept = userProfile.UserProfileProperties ? userProfile.UserProfileProperties[userProfile.UserProfileProperties.findIndex(obj => obj.Key === "Department")].Value : "";
-let entity ="Global";
-
+  // console.log("***userProfile", userProfile);
+  const currentUserDept = userProfile.UserProfileProperties ? userProfile.UserProfileProperties[userProfile.UserProfileProperties.findIndex(obj => obj.Key === "Department")].Value : "";
+  let entity = "Global";
+  const today = new Date().toISOString();
   await _sp.web.lists.getByTitle("ARGEventMaster").items
     .select("*,Entity/Entity,Entity/ADDepartmentName,Entity/ID").expand("Entity")
-    .filter(`(Entity/ADDepartmentName eq '${entity}' or Entity/ADDepartmentName eq '${currentUserDept}') and Status eq 'Approved'`)
-    .orderBy("EventDate", true).top(3)
+    .filter(`(Entity/ADDepartmentName eq '${entity}' or Entity/ADDepartmentName eq '${currentUserDept}') and Status eq 'Approved' and EventDate ge '${today}'`)
+    .orderBy("EventDate", true).top(4)
     ()
 
     .then((res) => {
       console.log(res);
-      const today = new Date();
-      today.setHours(0, 0, 0, 0); 
- 
-      
-      const filteredEvents = res.filter(event => {
-          const eventDate = new Date(event.EventDate);
-          return eventDate >= today;
-      });
+      // const today = new Date();
+      // today.setHours(0, 0, 0, 0); 
+
+
+      // const filteredEvents = res.filter(event => {
+      //     const eventDate = new Date(event.EventDate);
+      //     return eventDate >= today;
+      // });
+
+      const filteredEvents = res;
+
       //const limitedEvents = filteredEvents.slice(0, 4);
       //res.filter(x=>x.Category?.Category==str)
-      arr = filteredEvents.slice(0, 4);
+      arr = filteredEvents.slice(0, 3);
 
     })
     .catch((error) => {
@@ -146,7 +149,7 @@ export const fetchPinnedUser = async (sp) => {
       console.error("Error fetching current user: ", error);
       return [];
     });
-    //select=Pinned/Title,Pinned/SPSPicturePlaceholderState&$expand=Pinned
+  //select=Pinned/Title,Pinned/SPSPicturePlaceholderState&$expand=Pinned
   let arr = []
   try {
     const userList = await sp.web.lists.getByTitle("ARGPinned").items

@@ -298,11 +298,11 @@ const AddannouncementContext = ({ props }: any) => {
           ...prevValues,
           description: initialContent,
         }));
-        setImagepostIdsArr(setBannerById[0]?.AnnouncementAndNewsGallaryId != null ? setBannerById[0]?.AnnouncementAndNewsGallaryId:[])
-        setImagepostArr(setBannerById[0]?.AnnouncementAndNewsGallaryId != null ? setBannerById[0].AnnouncementAndNewsGallaryJSON:[]);
-        setDocumentpostIdsArr(setBannerById[0]?.AnnouncementsAndNewsDocsId != null ? setBannerById[0]?.AnnouncementsAndNewsDocsId:[])
-        setImagepostArr1(setBannerById[0]?.AnnouncementAndNewsGallaryId != null ?setBannerById[0].AnnouncementAndNewsGallaryJSON:[])
-        setDocumentpostArr1(setBannerById[0]?.AnnouncementsAndNewsDocsId != null ?setBannerById[0].AnnouncementAndNewsDocsJSON:[])
+        setImagepostIdsArr(setBannerById[0]?.AnnouncementAndNewsGallaryId != null ? setBannerById[0]?.AnnouncementAndNewsGallaryId : [])
+        setImagepostArr(setBannerById[0]?.AnnouncementAndNewsGallaryId != null ? setBannerById[0].AnnouncementAndNewsGallaryJSON : []);
+        setDocumentpostIdsArr(setBannerById[0]?.AnnouncementsAndNewsDocsId != null ? setBannerById[0]?.AnnouncementsAndNewsDocsId : [])
+        setImagepostArr1(setBannerById[0]?.AnnouncementAndNewsGallaryId != null ? setBannerById[0].AnnouncementAndNewsGallaryJSON : [])
+        setDocumentpostArr1(setBannerById[0]?.AnnouncementsAndNewsDocsId != null ? setBannerById[0].AnnouncementAndNewsDocsJSON : [])
         if (setBannerById[0].BannerImage.length > 0) {
           banneimagearr = setBannerById[0].BannerImage
           console.log(banneimagearr, 'banneimagearr');
@@ -417,10 +417,12 @@ const AddannouncementContext = ({ props }: any) => {
       if (!title) {
         //Swal.fire('Error', 'Title is required!', 'error');
         valid = false;
-      } else if (!Type) {
-        //Swal.fire('Error', 'Type is required!', 'error');
-        valid = false;
-      } else if (!category || category == "Select") {
+      }
+      // else if (!Type) {
+      //   //Swal.fire('Error', 'Type is required!', 'error');
+      //   valid = false;
+      // }
+      else if (!category || category == "Select") {
         //Swal.fire('Error', 'Category is required!', 'error');
         valid = false;
       }
@@ -435,6 +437,10 @@ const AddannouncementContext = ({ props }: any) => {
       else if (BnnerImagepostArr.length == 0) {
         valid = false;
       }
+      else if (ImagepostArr1.length == 0) {
+        valid = false;
+      }
+     
       // else if ((ImagepostArr.length == 0 || ImagepostArr.length > 5) && (ImagepostArr1.length > 0 && ImagepostArr1.length > 5)) {
       //   valid = false;
       // }
@@ -445,10 +451,11 @@ const AddannouncementContext = ({ props }: any) => {
       if (!title) {
         //Swal.fire('Error', 'Title is required!', 'error');
         valid = false;
-      } else if (!Type) {
-        //Swal.fire('Error', 'Type is required!', 'error');
-        valid = false;
       }
+      //  else if (!Type) {
+      //   //Swal.fire('Error', 'Type is required!', 'error');
+      //   valid = false;
+      // }
 
       setValidDraft(valid);
 
@@ -467,7 +474,7 @@ const AddannouncementContext = ({ props }: any) => {
     if (!valid && fmode == FormSubmissionMode.SUBMIT)
       Swal.fire(errormsg !== "" ? errormsg : 'Please fill all the mandatory fields.');
     else if (!valid && fmode == FormSubmissionMode.DRAFT) {
-      Swal.fire(errormsg !== "" ? errormsg : 'Please fill the mandatory fields for draft - Title and Type');
+      Swal.fire(errormsg !== "" ? errormsg : 'Please fill the mandatory fields for draft - Title');
     }
     return valid;
   };
@@ -496,7 +503,7 @@ const AddannouncementContext = ({ props }: any) => {
             let documentIds: any[] = [];
             let galleryArray: any[] = [];
             let documentArray: any[] = [];
-            let ImagepostIdsArrN:any[]=[];
+            let ImagepostIdsArrN: any[] = [];
             // formData.FeaturedAnnouncement === "on"?  true :false;
 
             // Upload Banner Images
@@ -796,7 +803,7 @@ const AddannouncementContext = ({ props }: any) => {
           title: 'Do you want to submit this request?',
           showConfirmButton: true,
           showCancelButton: true,
-          confirmButtonText: "yes",
+          confirmButtonText: "Yes",
           cancelButtonText: "No",
           icon: 'warning'
         }
@@ -1807,6 +1814,7 @@ const AddannouncementContext = ({ props }: any) => {
                             Title <span className="text-danger">*</span>
                           </label>
                           <input
+                            title={formData.title}
                             type="text"
                             id="title"
                             name="title"
@@ -1826,12 +1834,13 @@ const AddannouncementContext = ({ props }: any) => {
                             Type <span className="text-danger">*</span>
                           </label>
                           <select
+                            title='News'
                             // className="form-select inputcss"
                             id="Type"
                             name="Type"
                             value={formData.Type}
                             onChange={(e) => onChange(e.target.name, e.target.value)}
-                            className={`form-select ${(!ValidDraft) ? "border-on-error" : ""} ${(!ValidSubmit) ? "border-on-error" : ""}`}
+                            className={`form-select`}
                             disabled={true}
                           >
                             <option>Select</option>
@@ -1846,12 +1855,15 @@ const AddannouncementContext = ({ props }: any) => {
                           </select>
                         </div>
                       </div>
+                      {console.log("EnitycategoryyyyyDataEnityData",CategoryData,formData?.category)}
                       <div className="col-lg-4">
                         <div className="mb-3">
                           <label htmlFor="category" className="form-label">
                             Category <span className="text-danger">*</span>
                           </label>
                           <select
+                          title={formData?.category && CategoryData.length > 0 && CategoryData.find((x) => x.id == formData.category)?.name}
+                            //title={CategoryData.length>0 && formData?.category && CategoryData.filter((x) => { x.id == formData.category })[0]?.name}
                             // className="form-select inputcss"
                             className={`form-select ${(!ValidSubmit) ? "border-on-error" : ""}`}
                             id="category"
@@ -1874,13 +1886,15 @@ const AddannouncementContext = ({ props }: any) => {
                           </select>
                         </div>
                       </div>
-
+                      {console.log("EnityDataEnityData",EnityData,formData?.entity)}
                       <div className="col-lg-4">
                         <div className="mb-3">
                           <label htmlFor="entity" className="form-label">
                             Department <span className="text-danger">*</span>
                           </label>
                           <select
+                          title={formData?.entity && EnityData.length > 0 && EnityData.find((x) => x.id == formData.entity)?.name}
+                            //title={EnityData.length > 0 && formData?.entity  && EnityData.filter((x) => { x.id == formData.entity })[0]?.name}
                             //  className="form-select inputcss"
                             className={`form-select ${(!ValidSubmit) ? "border-on-error" : ""}`}
                             id="entity"
@@ -1937,6 +1951,7 @@ const AddannouncementContext = ({ props }: any) => {
                             disabled={InputDisabled}
 
                           />
+                          <small className="text-muted">Recommended: 398x310 px</small>
                         </div>
                       </div>
 
@@ -1980,6 +1995,7 @@ const AddannouncementContext = ({ props }: any) => {
                             disabled={InputDisabled}
 
                           />
+                          <small className="text-muted">Recommended: 812x330 px</small>
                         </div>
                       </div>
 
@@ -2048,6 +2064,7 @@ const AddannouncementContext = ({ props }: any) => {
                             Overview <span className="text-danger">*</span>
                           </label>
                           <textarea
+                            title={formData.overview}
                             className={`form-control  ${(!ValidSubmit) ? "border-on-error" : ""}`}
                             // className="form-control inputcss"
                             id="overview"
@@ -2069,7 +2086,7 @@ const AddannouncementContext = ({ props }: any) => {
                             Description
                             {/* <span className="text-danger">*</span> */}
                           </label>
-                          <div style={{ display: "contents", justifyContent: "start" }}>
+                          <div style={{ display: "contents", justifyContent: "start" }} >
                             <ReactQuill
                               theme="snow"
                               modules={modules}
@@ -2259,7 +2276,7 @@ const AddannouncementContext = ({ props }: any) => {
                       <table className="table table-bordered" style={{ fontSize: '0.75rem' }}>
                         <thead style={{ background: '#eef6f7' }}>
                           <tr>
-                            <th>Serial No.</th>
+                            <th className='text-center'>Serial No.</th>
                             <th>File Name</th>
                             <th>File Size</th>
                             <th className='text-center'>Action</th>
@@ -2268,8 +2285,8 @@ const AddannouncementContext = ({ props }: any) => {
                         <tbody>
                           {DocumentpostArr1.map((file: any, index: number) => (
                             <tr key={index}>
-                              <td className='text-center'>{index + 1}</td>
-                              <td>{file.fileName.replace("/sites/ededms/", "")}</td>
+                              <td >{index + 1}</td>
+                              <td>{file?.fileName.replace("/sites/edcspfx/", "")}</td>
                               <td className='text-right'>{file.fileSize}</td>
                               <td className='text-center'> <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, DocumentpostArr1, "docs")} /> </td>
                             </tr>
@@ -2295,12 +2312,15 @@ const AddannouncementContext = ({ props }: any) => {
                         <tbody>
                           {ImagepostArr1.map((file: any, index: number) => (
                             <tr key={index}>
-                              <td className='text-center'>{index + 1}</td>
+                              <td >{index + 1}</td>
                               <td>
                                 <img className='imagefe' src={file.fileUrl ? file.fileUrl : `${siteUrl}/AnnouncementAndNewsGallary/${file.fileName}`}
                                   style={{ cursor: 'pointer' }}
                                   onClick={() => handleShow(
-                                    `${siteUrl}/AnnouncementAndNewsGallary/${file.fileName}`
+                                    file.serverUrl && file.serverRelativeUrl
+                                      ?
+                                      `${siteUrl}/AnnouncementAndNewsGallary/${file.fileName}`
+                                      : file.fileUrl
                                   )}
                                 />
                               </td>
@@ -2333,7 +2353,7 @@ const AddannouncementContext = ({ props }: any) => {
                         <tbody>
                           {BnnerImagepostArr[0].files.map((file: any, index: number) => (
                             <tr key={index}>
-                              <td className='text-center'>{index + 1}</td>
+                              <td >{index + 1}</td>
                               <img
                                 className='imagefe'
                                 src={file.fileType.startsWith('video/') ?
@@ -2341,8 +2361,8 @@ const AddannouncementContext = ({ props }: any) => {
                                   (file.fileUrl ? file.fileUrl : `${siteUrl}/MediaGallery/${file.fileName}`)}
                                 alt={'default image'}
                               />
-                              <td>{file.name}</td>
-                              <td className='text-right'>{file.size}</td>
+                              <td title={file?.name}>{file.name}</td>
+                              <td title={file?.size} className='text-right'>{file.size}</td>
                               <td className='text-center'> <img src={require("../../../CustomAsset/trashed.svg")} style={{ width: '15px' }} onClick={() => deleteLocalFile(index, BnnerImagepostArr, "bannerimg")} /> </td>
                             </tr>
                           ))}

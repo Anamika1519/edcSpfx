@@ -6,7 +6,7 @@ import { getSP } from '../loc/pnpjsConfig';
 
 import { SPFI } from '@pnp/sp/presets/all';
 
-import {addNotification, getCurrentUser, getCurrentUserProfile, getCurrentUserProfileEmail, getuserprofilepic } from '../../../APISearvice/CustomService';
+import { addNotification, getCurrentUser, getCurrentUserProfile, getCurrentUserProfileEmail, getuserprofilepic } from '../../../APISearvice/CustomService';
 
 import VerticalSideBar from '../../verticalSideBar/components/VerticalSideBar';
 
@@ -48,7 +48,7 @@ interface Reply {
   UserName: string;
 
   UserEmail: string;
-  SPSPicturePlaceholderState:string;
+  SPSPicturePlaceholderState: string;
 
 
   Comments: string;
@@ -86,7 +86,7 @@ interface Comment {
   UserName: string;
 
   AuthorEmail: string,
-  SPSPicturePlaceholderState:string; 
+  SPSPicturePlaceholderState: string;
 
   AuthorId: number,
 
@@ -122,7 +122,7 @@ const NewsdetailsContext = ({ props }: any) => {
   const [loading, setLoading] = useState<boolean>(false);
 
   const [ArrDetails, setArrDetails]: any[] = useState([])
- const [SPSPicturePlaceholderState, setSPSPicturePlaceholderState]= useState(null);
+  const [SPSPicturePlaceholderState, setSPSPicturePlaceholderState] = useState(null);
   const [CurrentUserProfile, setCurrentUserProfile]: any[] = useState("")
 
   const siteUrl = props.siteUrl;
@@ -325,7 +325,7 @@ const NewsdetailsContext = ({ props }: any) => {
                 UserName: initialComments[i].UserName,
                 AuthorId: initialComments[i].AuthorId,
                 AuthorEmail: initialComments[i].Author.EMail,
-                SPSPicturePlaceholderState : initialComments[i].Author.SPSPicturePlaceholderState,
+                SPSPicturePlaceholderState: initialComments[i].Author.SPSPicturePlaceholderState,
                 Comments: initialComments[i].Comments,
                 Created: initialComments[i].Created, // Formatting the created date
                 UserLikesJSON: result1.length > 0 ? likeArray : []
@@ -345,7 +345,7 @@ const NewsdetailsContext = ({ props }: any) => {
         let initialArraynew = initialArray.sort((a, b) => {
           return a.Created === new Date(b.Created) ? 0 : new Date(a.Created) ? -1 : 1;
         });
-        
+
         setComments(initialArraynew);
         // setComments(initialComments.map((res) => ({
 
@@ -400,8 +400,8 @@ const NewsdetailsContext = ({ props }: any) => {
 
     setCurrentUserProfile(await getCurrentUserProfile(sp, siteUrl))
 
-     const profileemail = await getCurrentUserProfileEmail(sp);
-      setSPSPicturePlaceholderState( await getuserprofilepic(sp,profileemail));
+    const profileemail = await getCurrentUserProfileEmail(sp);
+    setSPSPicturePlaceholderState(await getuserprofilepic(sp, profileemail));
 
 
 
@@ -454,10 +454,10 @@ const NewsdetailsContext = ({ props }: any) => {
   };
   const handleAddComment = async () => {
 
-    if (newComment.trim() === ""){
+    if (newComment.trim() === "") {
       Swal.fire('Please enter a comment before submitting.');
       return;
-    } 
+    }
 
     setLoading(true);
 
@@ -494,11 +494,11 @@ const NewsdetailsContext = ({ props }: any) => {
         AuthorId: ress.data.AuthorId,
 
         AuthorEmail: CurrentUser.Email,
-        SPSPicturePlaceholderState : SPSPicturePlaceholderState,
+        SPSPicturePlaceholderState: SPSPicturePlaceholderState,
 
         Comments: ress.data.Comments,
 
-        Created:ress.data.Created,
+        Created: ress.data.Created,
 
         UserLikesJSON: [],
 
@@ -510,7 +510,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
       };
 
-      setComments((prevComments) => [newCommentData1,...prevComments]);
+      setComments((prevComments) => [newCommentData1, ...prevComments]);
 
       setNewComment('');
 
@@ -597,38 +597,38 @@ const NewsdetailsContext = ({ props }: any) => {
 
         // /////*** changes */
 
-          if (CurrentUser.Id != ArrDetails[0].AuthorId) {
-       
-                    let notifiedArr = {
-       
-                      ContentId: ArrDetails[0].Id,
-       
-                      NotifiedUserId: ArrDetails[0].AuthorId,
-       
-                      ContentType0: "Like on comment on news",
-       
-                      ContentName: ArrDetails[0].Title,
-       
-                      ActionUserId: CurrentUser.Id,
-       
-                      DeatilPage: "NewsDetails",
-       
-                      ReadStatus: false,
-       
-                      ContentComment: updatedComments[commentIndex].Comments,
-       
-                      ContentCommentId: updatedComments[commentIndex].Id,
-       
-                      CommentOnReply: ""
-       
-                    }
-       
-                    const nofiArr = await addNotification(notifiedArr, sp)
-       
-                    // console.log(nofiArr, 'nofiArr');
-       
-                  }
-       
+        if (CurrentUser.Id != ArrDetails[0].AuthorId) {
+
+          let notifiedArr = {
+
+            ContentId: ArrDetails[0].Id,
+
+            NotifiedUserId: ArrDetails[0].AuthorId,
+
+            ContentType0: "Like on comment on news",
+
+            ContentName: ArrDetails[0].Title,
+
+            ActionUserId: CurrentUser.Id,
+
+            DeatilPage: "NewsDetails",
+
+            ReadStatus: false,
+
+            ContentComment: updatedComments[commentIndex].Comments,
+
+            ContentCommentId: updatedComments[commentIndex].Id,
+
+            CommentOnReply: ""
+
+          }
+
+          const nofiArr = await addNotification(notifiedArr, sp)
+
+          // console.log(nofiArr, 'nofiArr');
+
+        }
+
 
         // ////***** */
 
@@ -640,41 +640,41 @@ const NewsdetailsContext = ({ props }: any) => {
         });
 
         updatedComments[commentIndex].userHasLiked = true; // Set like status for this comment only
-         setComments(updatedComments);
+        setComments(updatedComments);
         ///////////******************changes */
 
-         const ids = window.location.search;
-       
-                    const originalString = ids;
-       
-                    const idNum = originalString.substring(1); // Extract the ID from query string
-       
-                    const likeUpdateBody = {
-       
-                      LikeCounts: updatedComments[commentIndex].UserLikesJSON.length
-       
-                    };
-       
-       
-       
-                    const newItem = await sp.web.lists.getByTitle('ARGAnnouncementAndNews').items.getById(Number(idNum)).update(likeUpdateBody);
-       
-                    console.log('Like count updated successfully:', newItem);
-       
-                  // });
-                  // setComments(updatedComments);
-                  // let notifiedArr = {
-                  //   ContentId: ArrDetails[0].Id,
-                  //   NotifiedUserId: ArrDetails[0].AuthorId,
-                  //   ContentType0: "Like",
-                  //   ContentName: ArrDetails[0].Title,
-                  //   ActionUserId: CurrentUser.Id,
-                  //   DeatilPage: "NewsDetails",
-                  //   ReadStatus: false
-                  // }
-                  // const nofiArr = await addNotification(notifiedArr, sp)
-                  // console.log(nofiArr, 'nofiArr');
-       
+        const ids = window.location.search;
+
+        const originalString = ids;
+
+        const idNum = originalString.substring(1); // Extract the ID from query string
+
+        const likeUpdateBody = {
+
+          LikeCounts: updatedComments[commentIndex].UserLikesJSON.length
+
+        };
+
+
+
+        const newItem = await sp.web.lists.getByTitle('ARGAnnouncementAndNews').items.getById(Number(idNum)).update(likeUpdateBody);
+
+        console.log('Like count updated successfully:', newItem);
+
+        // });
+        // setComments(updatedComments);
+        // let notifiedArr = {
+        //   ContentId: ArrDetails[0].Id,
+        //   NotifiedUserId: ArrDetails[0].AuthorId,
+        //   ContentType0: "Like",
+        //   ContentName: ArrDetails[0].Title,
+        //   ActionUserId: CurrentUser.Id,
+        //   DeatilPage: "NewsDetails",
+        //   ReadStatus: false
+        // }
+        // const nofiArr = await addNotification(notifiedArr, sp)
+        // console.log(nofiArr, 'nofiArr');
+
 
 
         // ////////*********** */
@@ -786,8 +786,8 @@ const NewsdetailsContext = ({ props }: any) => {
 
           UserName: ress.data.UserName, // Replace with actual username
 
-          UserEmail :CurrentUser.Email,
-          SPSPicturePlaceholderState : SPSPicturePlaceholderState,
+          UserEmail: CurrentUser.Email,
+          SPSPicturePlaceholderState: SPSPicturePlaceholderState,
 
           Comments: ress.data.Comments,
 
@@ -818,38 +818,38 @@ const NewsdetailsContext = ({ props }: any) => {
 
           // /////******* changes//// */
 
-            if (CurrentUser.Id != ArrDetails[0].AuthorId) {
-         
-                      let notifiedArr = {
-         
-                        ContentId: ArrDetails[0].Id,
-         
-                        NotifiedUserId: ArrDetails[0].AuthorId,
-         
-                        ContentType0: "Reply on comment on news",
-         
-                        ContentName: ArrDetails[0].Title,
-         
-                        ActionUserId: CurrentUser.Id,
-         
-                        DeatilPage: "NewsDetails",
-         
-                        ReadStatus: false,
-         
-                        ContentComment: updatedComments[commentIndex].Comments,
-         
-                        ContentCommentId: updatedComments[commentIndex].Id,
-         
-                        CommentOnReply: newReplyJson.Comments
-         
-                      }
-         
-                      const nofiArr = await addNotification(notifiedArr, sp)
-         
-                      console.log(nofiArr, 'nofiArr');
-         
-                    }
-         
+          if (CurrentUser.Id != ArrDetails[0].AuthorId) {
+
+            let notifiedArr = {
+
+              ContentId: ArrDetails[0].Id,
+
+              NotifiedUserId: ArrDetails[0].AuthorId,
+
+              ContentType0: "Reply on comment on news",
+
+              ContentName: ArrDetails[0].Title,
+
+              ActionUserId: CurrentUser.Id,
+
+              DeatilPage: "NewsDetails",
+
+              ReadStatus: false,
+
+              ContentComment: updatedComments[commentIndex].Comments,
+
+              ContentCommentId: updatedComments[commentIndex].Id,
+
+              CommentOnReply: newReplyJson.Comments
+
+            }
+
+            const nofiArr = await addNotification(notifiedArr, sp)
+
+            console.log(nofiArr, 'nofiArr');
+
+          }
+
           // ///////////// changes////
 
         })
@@ -903,8 +903,8 @@ const NewsdetailsContext = ({ props }: any) => {
     //const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     const subject = "Thought You’d Find This Interesting!";
     const body = 'Hi,' +
-        'I came across something that might interest you: ' +
-        `<a href="${siteUrl}/SitePages/NewsDetails.aspx?${item.Id}"></a>`
+      'I came across something that might interest you: ' +
+      `<a href="${siteUrl}/SitePages/NewsDetails.aspx?${item.Id}"></a>`
     const office365MailLink = `https://outlook.office.com/mail/deeplink/compose?subject=${subject}&body=${body}`;
 
     window.open(office365MailLink, '_blank');
@@ -967,7 +967,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
                           </p>
 
-                         
+
 
                           <div className="row mt-2">
 
@@ -977,7 +977,7 @@ const NewsdetailsContext = ({ props }: any) => {
 
                                 <span className="pe-2 text-nowrap mb-0 d-inline-block">
 
-                                  <Calendar size={18} /> {moment(item.Modified).format("DD-MMM-YYYY")}  &nbsp;  &nbsp;  &nbsp;|
+                                  <Calendar size={18} /> {moment(item.Modified).format("DD/MMM/YYYY")}  &nbsp;  &nbsp;  &nbsp;|
 
                                 </span>
 
@@ -994,10 +994,10 @@ const NewsdetailsContext = ({ props }: any) => {
                                   {copySuccess && <span className="text-success">{copySuccess}</span>}
 
                                 </span>
-                         <span style={{color:'#f37421 '}} className="font-14 mt-1 mb-0">{item.Entity?.Entity}</span>
+                                <span style={{ color: '#f37421 ' }} className="font-14 mt-1 mb-0">{item.Entity?.Entity}</span>
 
-                              
-                                
+
+
 
                               </p>
 
@@ -1013,9 +1013,9 @@ const NewsdetailsContext = ({ props }: any) => {
 
 
 
-                            <p style={{ lineHeight: '22px', fontSize: '15px' }} className="d-block text-dark mt-2">
+                            <p title={item?.Overview} style={{ lineHeight: '22px', fontSize: '15px' }} className="d-block text-dark mt-2">
 
-                              {item.Overview}
+                              {item?.Overview}
 
                             </p>
 
@@ -1210,9 +1210,9 @@ const NewsdetailsContext = ({ props }: any) => {
                           loadingReply={loadingReply}
                           newsArray={ArrDetails}
 
-                          CurrentUserEmail = {CurrentUser.Email}
-                         CurrSPSPicturePlaceholderState ={SPSPicturePlaceholderState}
-                        siteUrl = {siteUrl}
+                          CurrentUserEmail={CurrentUser.Email}
+                          CurrSPSPicturePlaceholderState={SPSPicturePlaceholderState}
+                          siteUrl={siteUrl}
                         />
 
                       </div>
@@ -1237,9 +1237,11 @@ const NewsdetailsContext = ({ props }: any) => {
                         <div className="mainevent mt-2">
                           <div className="bordernew">
                             <h3 className="twolinewrap font-16 hovertext text-dark fw-bold mb-2 cursor-pointer" style={{ cursor: "pointer" }} onClick={() => gotoNewsDetails(res)}>{res.Title}</h3>
-                            <p style={{ lineHeight: '20px', fontSize: '15px' }} className=" text-muted twolinewrap">{res.Overview}</p>
+                            <p title={res?.Overview} style={{ lineHeight: '20px', fontSize: '15px' }} className=" text-muted twolinewrap">{res.Overview}</p>
                             <div className="row">
-                              <div className="col-sm-12"> <span style={{ marginTop: "4px" }} className="date-color font-12 float-start  mb-1 ng-binding"><i className="fe-calendar"></i> {moment(res.Modified).format("DD-MMM-YYYY")}</span>  &nbsp; &nbsp; &nbsp;| &nbsp; <span className="font-12" style={{ color: '#f37421 ', fontWeight: '600' }}>{res.Entity?.Entity}  </span></div>
+                              <div className="col-sm-12"> < span title={moment(res.Modified).format("DD/MMM/YYYY")} style={{ marginTop: "4px" }}
+                                className="date-color font-12 float-start  mb-1 ng-binding"><i className="fe-calendar"></i> {moment(res.Modified).format("DD/MMM/YYYY")}</span>  &nbsp; &nbsp; &nbsp;| &nbsp;
+                                <span title={res.Entity?.Entity} className="font-12" style={{ color: '#f37421 ', fontWeight: '600' }}>{res.Entity?.Entity}  </span></div>
 
                             </div>
                           </div>

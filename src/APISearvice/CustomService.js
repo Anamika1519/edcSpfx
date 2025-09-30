@@ -42,10 +42,15 @@ export const getCategory = async (_sp, id) => {
 
       console.log(res);
 
-      const newArray = res.map(({ ID, Category }) => ({ id: ID, name: Category }));
+      //const newArray = res.map(({ ID, Category }) => ({ id: ID, name: Category }));
 
       console.log(newArray, 'newArray');
+      const newArray = res
+      .map(({ ID, Category }) => ({ id: ID, name: Category }))
+      .sort((a, b) => a.name.localeCompare(b.name)); // <-- Sort by 'name'
 
+    console.log(newArray, 'newArray');
+    arr = newArray;
 
       arr = newArray;
 
